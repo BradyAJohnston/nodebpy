@@ -1,15 +1,47 @@
+# Example Node Tree
 
 
 # nodebpy
 
-A python package to help build node trees in blender more elegantly with
-python code.
+A package to help build node trees in blender more elegantly with python
+code.
+
+## The Design Idea
+
+Other projects have attempted similar but none quite handled the API how
+I felt it should be done. Notable existing projects are
+[geometry-script](https://github.com/carson-katri/geometry-script),
+[geonodes](https://github.com/al1brn/geonodes),
+[NodeToPython](https://github.com/BrendanParmer/NodeToPython).
+
+Other projects implement chaining of nodes mostly as dot methos of nodes
+to chain them (`InstanceOnPoints().set_position()`). This has the
+potential to crowd the API for individual nodes and easy chaining is
+instead approached via overriding the `>>` operator.
+
+### Chain Nodes with `>>`
+
+By default the operator attempts to link the first output of the
+previous node with the first input of the next. You can override this
+behaviour by being explicit with the socket you are passing out
+(`AccumulateField().o_total`) or using the `...` for the inputs into the
+next node. The dots can appear at multiple locations and each input will
+be linked to the previous node via the inferred or specified socket.
+
+``` python
+from nodebpy import nodes, sockets, TreeBuilder
+
+with TreeBuilder('NewTree') as tree:
+    nodes.NamedAttribute("test", "INT") >> nodes.Math.power(2, ...)
+```
 
 ``` python
 import bpy
 from nodebpy import nodes, sockets, TreeBuilder
 
-with TreeBuilder() as tree:
+bpy.ops.wm.read_homefile()
+
+with TreeBuilder("AnotherTree") as tree:
     tree.interface(
         inputs=[sockets.SocketInt("Count")],
         outputs=[sockets.SocketGeometry("Instances")],
@@ -42,11 +74,11 @@ mod.node_group = tree.tree
 bpy.ops.wm.save_as_mainfile(filepath="example.blend")
 ```
 
-    Linking from <nodebpy.nodes.manually_specified.RandomValue object at 0x322cce590> to Position
-    Linking from <nodebpy.nodes.mesh.Cube object at 0x159312d10> to Instance
-    Linking from <nodebpy.nodes.utilities.RotateRotation object at 0x323b53890> to Rotation
-    Linking from <nodebpy.nodes.manually_specified.VectorMath object at 0x159312d10> to Position
-    Linking from <nodebpy.nodes.mesh.Cube object at 0x3240b1510> to Points
+    Linking from <nodebpy.nodes.manually_specified.RandomValue object at 0x16891d510> to Position
+    Linking from <nodebpy.nodes.mesh.Cube object at 0x168cb7d50> to Instance
+    Linking from <nodebpy.nodes.utilities.RotateRotation object at 0x168c54dd0> to Rotation
+    Linking from <nodebpy.nodes.manually_specified.VectorMath object at 0x12f5f8290> to Position
+    Linking from <nodebpy.nodes.mesh.Cube object at 0x12f578d90> to Points
     Info: Saved as "example.blend"
 
     {'FINISHED'}

@@ -90,6 +90,7 @@ class TreeBuilder:
         # Create socket accessors for named access
         self.inputs = SocketAccessor(self, "INPUT")
         self.outputs = SocketAccessor(self, "OUTPUT")
+        self._arrange = arrange
 
     def __enter__(self):
         TreeBuilder._previous_tree = TreeBuilder._active_tree
@@ -97,7 +98,7 @@ class TreeBuilder:
         return self
 
     def __exit__(self, *args):
-        if self.arrange:
+        if self._arrange:
             self.arrange()
         TreeBuilder._active_tree = TreeBuilder._previous_tree
         TreeBuilder._previous_tree = None
@@ -338,7 +339,7 @@ class NodeBuilder:
 
         Usage:
             node1 >> node2 >> node3
-            tree.inputs.value >> Math.add_(..., 0.1) >> tree.outputs.result
+            tree.inputs.value >> Math.add(..., 0.1) >> tree.outputs.result
 
         If the target node has an ellipsis placeholder (...), links to that specific input.
         Otherwise, tries to find Geometry sockets first, then falls back to default.
