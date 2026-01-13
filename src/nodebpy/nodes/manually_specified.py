@@ -985,6 +985,8 @@ class VectorMath(NodeBuilder):
         value: _VectorMathOperations,
     ):
         self.node.operation = value
+    
+
 
     @classmethod
     def add(

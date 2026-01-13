@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, Any
 
 import arrangebpy
 import bpy
@@ -14,7 +14,7 @@ from bpy.types import (
 # from .arrange import arrange_tree
 
 if TYPE_CHECKING:
-    from molecularnodes.nodes.sockets import SocketBase
+    from nodebpy.sockets import SocketBase
 
 GEO_NODE_NAMES = (
     f"GeometryNode{name}"
@@ -373,6 +373,72 @@ class NodeBuilder:
 
         self.tree.link(self_out, other_in)
         return other
+    
+    def __mul__(self, other: Any) -> "VectorMath | Math":
+        from .nodes import VectorMath, Math
+        match self._default_output_socket.type:
+            case "VECTOR":
+                if isinstance(other, (int, float)):
+                    return VectorMath.scale(self._default_output_socket, other)
+                elif isinstance(other, (list, tuple)) and len(other) == 3:
+                    return VectorMath.multiply(self._default_output_socket, other)
+                else:
+                    raise TypeError(f"Unsupported type for multiplication with VECTOR socket: {type(other)}")
+            case "VALUE":
+                return Math.multiply(self._default_output_socket, other)
+            case _:
+                raise TypeError(f"Unsupported socket type for multiplication: {self._default_output_socket.type}")
+    
+    def __rmul__(self, other: Any) -> "VectorMath | Math":
+        from .nodes import VectorMath, Math
+        match self._default_output_socket.type:
+            case "VECTOR":
+                if isinstance(other, (int, float)):
+                    return VectorMath.scale(self._default_output_socket, other)
+                elif isinstance(other, (list, tuple)) and len(other) == 3:
+                    return VectorMath.multiply(other, self._default_output_socket)
+                else:
+                    raise TypeError(f"Unsupported type for multiplication with VECTOR socket: {type(other)}")
+            case "VALUE":
+                return Math.multiply(other, self._default_output_socket)
+            case _:
+                raise TypeError(f"Unsupported socket type for multiplication: {self._default_output_socket.type}")
+
+    def __truediv__(self, other: Any) -> "VectorMath":
+        from .nodes import VectorMath
+        match self._default_output_socket.type:
+            case "VECTOR":
+                return VectorMath.divide(self._default_output_socket, other)
+            case _:
+                raise TypeError(f"Unsupported socket type for division: {self._default_output_socket.type}")
+    
+    def __rtruediv__(self, other: Any) -> "VectorMath":
+        from .nodes import VectorMath
+        match self._default_output_socket.type:
+            case "VECTOR":
+                return VectorMath.divide(other, self._default_output_socket)
+            case _:
+                raise TypeError(f"Unsupported socket type for division: {self._default_output_socket.type}")
+    
+    def __add__(self, other: Any) -> "VectorMath | Math":
+        from .nodes import VectorMath, Math
+        match self._default_output_socket.type:
+            case "VECTOR":
+                return VectorMath.add(self._default_output_socket, other)
+            case "VALUE":
+                return Math.add(self._default_output_socket, other)
+            case _:
+                raise TypeError(f"Unsupported socket type for addition: {self._default_output_socket.type}")
+    
+    def __radd__(self, other: Any) -> "VectorMath | Math":
+        from .nodes import VectorMath, Math
+        match self._default_output_socket.type:
+            case "VECTOR":
+                return VectorMath.add(other, self._default_output_socket)
+            case "VALUE":
+                return Math.add(other, self._default_output_socket)
+            case _:
+                raise TypeError(f"Unsupported socket type for addition: {self._default_output_socket.type}")
 
 
 class SocketNodeBuilder(NodeBuilder):

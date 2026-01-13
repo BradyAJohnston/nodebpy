@@ -29,42 +29,42 @@ next node. The dots can appear at multiple locations and each input will
 be linked to the previous node via the inferred or specified socket.
 
 ``` python
-from nodebpy import nodes, sockets, TreeBuilder
+import bpy
+from nodebpy import TreeBuilder
+from nodebpy import nodes as n
+from nodebpy import sockets as s
 
-with TreeBuilder('NewTree') as tree:
-    nodes.NamedAttribute("test", "INT") >> nodes.Math.power(2, ...)
+with TreeBuilder("NewTree") as tree:
+    n.NamedAttribute("test", "INT") >> n.Math.power(2, ...)
 ```
 
 ``` python
-import bpy
-from nodebpy import nodes, sockets, TreeBuilder
-
 bpy.ops.wm.read_homefile()
 
 with TreeBuilder("AnotherTree") as tree:
     tree.interface(
-        inputs=[sockets.SocketInt("Count")],
-        outputs=[sockets.SocketGeometry("Instances")],
+        inputs=[s.SocketInt("Count")],
+        outputs=[s.SocketGeometry("Instances")],
     )
 
     rotation = (
-        nodes.RandomValue.vector(min=(-1, -1, -1), seed=2)
-        >> nodes.AlignRotationToVector()
-        >> nodes.RotateRotation()
+        n.RandomValue.vector(min=(-1, -1, -1), seed=2)
+        >> n.AlignRotationToVector()
+        >> n.RotateRotation(
+            rotate_by=n.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
+        )
     )
 
     _ = (
         tree.inputs.count
-        >> nodes.Points(position=nodes.RandomValue.vector(min=(-1, -1, -1)))
-        >> nodes.InstanceOnPoints(instance=nodes.Cube(), rotation=rotation)
-        >> nodes.SetPosition(
-            position=nodes.Position()
-            >> nodes.VectorMath.scale(..., 2.0)
-            >> nodes.VectorMath.add(b=(0, 0.2, 0.3)),
+        >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
+        >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
+        >> n.SetPosition(
+            position=n.Position() * 2.0 + (0, 0.2, 0.3),
             offset=(0, 0, 0.1),
         )
-        >> nodes.RealizeInstances()
-        >> nodes.InstanceOnPoints(nodes.Cube(), instance=...)
+        >> n.RealizeInstances()
+        >> n.InstanceOnPoints(n.Cube(), instance=...)
         >> tree.outputs.instances
     )
 
@@ -74,11 +74,14 @@ mod.node_group = tree.tree
 bpy.ops.wm.save_as_mainfile(filepath="example.blend")
 ```
 
-    Linking from <nodebpy.nodes.manually_specified.RandomValue object at 0x339922c90> to Position
-    Linking from <nodebpy.nodes.mesh.Cube object at 0x33993bed0> to Instance
-    Linking from <nodebpy.nodes.utilities.RotateRotation object at 0x33ac37b90> to Rotation
-    Linking from <nodebpy.nodes.manually_specified.VectorMath object at 0x33993bed0> to Position
-    Linking from <nodebpy.nodes.mesh.Cube object at 0x3399a8b90> to Points
+    Linking from <nodebpy.nodes.utilities.AxisAngleToRotation object at 0x103fe5850> to Rotate By
+    Linking from <nodebpy.nodes.manually_specified.RandomValue object at 0x323cce550> to Position
+    Linking from <nodebpy.nodes.mesh.Cube object at 0x1591d4190> to Instance
+    Linking from <nodebpy.nodes.utilities.RotateRotation object at 0x1497dcb50> to Rotation
+    Linking from <bpy_struct, NodeSocketVector("Position") at 0x323f361c8> to Vector
+    Linking from <bpy_struct, NodeSocketVector("Vector") at 0x323f31538> to Vector
+    Linking from <nodebpy.nodes.manually_specified.VectorMath object at 0x169df0e10> to Position
+    Linking from <nodebpy.nodes.mesh.Cube object at 0x1591d4190> to Points
     Info: Saved as "example.blend"
 
     {'FINISHED'}
