@@ -1,12 +1,3 @@
----
-format: gfm
----
-
-# nodebpy
-
-A python package to help build node trees in blender more elegantly with python code.
-
-```{python}
 import bpy
 from nodebpy import nodes, sockets, TreeBuilder
 
@@ -41,6 +32,3 @@ with TreeBuilder() as tree:
 mod = bpy.data.objects["Cube"].modifiers.new("TestModifier", "NODES")
 mod.node_group = tree.tree
 bpy.ops.wm.save_as_mainfile(filepath="example.blend")
-```
-
-![](images/paste-1.png)
