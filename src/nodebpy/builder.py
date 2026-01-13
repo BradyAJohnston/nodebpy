@@ -324,7 +324,7 @@ class NodeBuilder:
             # we can also provide just a default value for the socket to take if we aren't
             # providing a socket to link with
             elif isinstance(value, (NodeBuilder, SocketNodeBuilder, NodeSocket, Node)):
-                print("Linking from", value, "to", name)
+                # print("Linking from", value, "to", name)
                 self.link_from(value, name)
             else:
                 if name in input_ids:
