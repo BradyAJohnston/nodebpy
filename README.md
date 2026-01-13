@@ -74,16 +74,16 @@ mod.node_group = tree.tree
 bpy.ops.wm.save_as_mainfile(filepath="example.blend")
 ```
 
-    Linking from <nodebpy.nodes.utilities.AxisAngleToRotation object at 0x103fe5850> to Rotate By
-    Linking from <nodebpy.nodes.manually_specified.RandomValue object at 0x323cce550> to Position
-    Linking from <nodebpy.nodes.mesh.Cube object at 0x1591d4190> to Instance
-    Linking from <nodebpy.nodes.utilities.RotateRotation object at 0x1497dcb50> to Rotation
-    Linking from <bpy_struct, NodeSocketVector("Position") at 0x323f361c8> to Vector
-    Linking from <bpy_struct, NodeSocketVector("Vector") at 0x323f31538> to Vector
-    Linking from <nodebpy.nodes.manually_specified.VectorMath object at 0x169df0e10> to Position
-    Linking from <nodebpy.nodes.mesh.Cube object at 0x1591d4190> to Points
+    Linking from <nodebpy.nodes.utilities.AxisAngleToRotation object at 0x169df0e90> to Rotate By
+    Linking from <nodebpy.nodes.manually_specified.RandomValue object at 0x140208250> to Position
+    Linking from <nodebpy.nodes.mesh.Cube object at 0x1233c1d90> to Instance
+    Linking from <nodebpy.nodes.utilities.RotateRotation object at 0x1058ad850> to Rotation
+    Linking from <bpy_struct, NodeSocketVector("Position") at 0x3231d31d8> to Vector
+    Linking from <bpy_struct, NodeSocketVector("Vector") at 0x3231d47d8> to Vector
+    Linking from <nodebpy.nodes.manually_specified.VectorMath object at 0x143182650> to Position
+    Linking from <nodebpy.nodes.mesh.Cube object at 0x140208250> to Points
     Info: Saved as "example.blend"
 
     {'FINISHED'}
 
-![](images/paste-1.png)
+![](images/paste-2.png)
