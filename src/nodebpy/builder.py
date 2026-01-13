@@ -156,18 +156,7 @@ class TreeBuilder:
             outputs: List of output socket definitions
 
         Example:
-            from molecularnodes.nodes.sockets import SocketGeometry, SocketBoolean, SocketVector
 
-            tree.interface(
-                inputs=[
-                    SocketGeometry(name="Geometry"),
-                    SocketBoolean(name="Selection", default=True),
-                    SocketVector(name="Offset", default=(0, 0, 0)),
-                ],
-                outputs=[
-                    SocketGeometry(name="Geometry"),
-                ]
-            )
         """
         if inputs:
             for socket_def in inputs:

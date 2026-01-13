@@ -7,9 +7,6 @@ for all geometry nodes with proper type hints and autocomplete support.
 Run this script from within Blender to generate node classes:
     blender --background --python generator.py
 
-Or import and run from Blender's Python console:
-    import molecularnodes.nodes.generator as gen
-    gen.generate_all()
 """
 
 from __future__ import annotations

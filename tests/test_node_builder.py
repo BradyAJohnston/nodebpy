@@ -8,11 +8,10 @@ from math import pi
 import bpy
 import pytest
 from numpy.testing import assert_allclose
-from molecularnodes.nodes import generated as n
-from molecularnodes.nodes import sockets
-from molecularnodes.nodes.builder import TreeBuilder
-from molecularnodes.nodes.generated.input import Boolean
-from molecularnodes.nodes.generated.manually_specified import BooleanMath
+import bpy
+from nodebpy import TreeBuilder
+from nodebpy import nodes as n
+from nodebpy import sockets
 
 
 class TestTreeBuilder:
@@ -512,7 +511,7 @@ def test_mix_node():
     # so for rotation the socket is the 4th output - this will change in the future
     # with raibow sockets eventually
     assert len(rotation.node.outputs[3].links) == 1
-    assert len(tree.nodes) == 17
+    assert len(tree.nodes) == 20
 
 
 def test_warning_innactive_socket():

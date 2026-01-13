@@ -1,30 +1,34 @@
 import bpy
-from nodebpy import nodes, sockets, TreeBuilder
+from nodebpy import TreeBuilder
+from nodebpy import nodes as n
+from nodebpy import sockets as s
 
-with TreeBuilder() as tree:
+bpy.ops.wm.read_homefile()
+
+with TreeBuilder("AnotherTree") as tree:
     tree.interface(
-        inputs=[sockets.SocketInt("Count")],
-        outputs=[sockets.SocketGeometry("Instances")],
+        inputs=[s.SocketInt("Count")],
+        outputs=[s.SocketGeometry("Instances")],
     )
 
     rotation = (
-        nodes.RandomValue.vector(min=(-1, -1, -1), seed=2)
-        >> nodes.AlignRotationToVector()
-        >> nodes.RotateRotation()
+        n.RandomValue.vector(min=(-1, -1, -1), seed=2)
+        >> n.AlignRotationToVector()
+        >> n.RotateRotation(
+            rotate_by=n.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
+        )
     )
 
     _ = (
         tree.inputs.count
-        >> nodes.Points(position=nodes.RandomValue.vector(min=(-1, -1, -1)))
-        >> nodes.InstanceOnPoints(instance=nodes.Cube(), rotation=rotation)
-        >> nodes.SetPosition(
-            position=nodes.Position()
-            >> nodes.VectorMath.scale(..., 2.0)
-            >> nodes.VectorMath.add((0, 0.2, 0.3)),
+        >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
+        >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
+        >> n.SetPosition(
+            position=n.Position() * 2.0 + (0, 0.2, 0.3),
             offset=(0, 0, 0.1),
         )
-        >> nodes.RealizeInstances()
-        >> nodes.InstanceOnPoints(nodes.Cube(), instance=...)
+        >> n.RealizeInstances()
+        >> n.InstanceOnPoints(n.Cube(), instance=...)
         >> tree.outputs.instances
     )
 
