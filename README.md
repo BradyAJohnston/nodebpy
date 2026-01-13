@@ -60,7 +60,7 @@ with TreeBuilder("AnotherTree") as tree:
         >> nodes.SetPosition(
             position=nodes.Position()
             >> nodes.VectorMath.scale(..., 2.0)
-            >> nodes.VectorMath.add((0, 0.2, 0.3)),
+            >> nodes.VectorMath.add(b=(0, 0.2, 0.3)),
             offset=(0, 0, 0.1),
         )
         >> nodes.RealizeInstances()
@@ -74,11 +74,11 @@ mod.node_group = tree.tree
 bpy.ops.wm.save_as_mainfile(filepath="example.blend")
 ```
 
-    Linking from <nodebpy.nodes.manually_specified.RandomValue object at 0x16891d510> to Position
-    Linking from <nodebpy.nodes.mesh.Cube object at 0x168cb7d50> to Instance
-    Linking from <nodebpy.nodes.utilities.RotateRotation object at 0x168c54dd0> to Rotation
-    Linking from <nodebpy.nodes.manually_specified.VectorMath object at 0x12f5f8290> to Position
-    Linking from <nodebpy.nodes.mesh.Cube object at 0x12f578d90> to Points
+    Linking from <nodebpy.nodes.manually_specified.RandomValue object at 0x339922c90> to Position
+    Linking from <nodebpy.nodes.mesh.Cube object at 0x33993bed0> to Instance
+    Linking from <nodebpy.nodes.utilities.RotateRotation object at 0x33ac37b90> to Rotation
+    Linking from <nodebpy.nodes.manually_specified.VectorMath object at 0x33993bed0> to Position
+    Linking from <nodebpy.nodes.mesh.Cube object at 0x3399a8b90> to Points
     Info: Saved as "example.blend"
 
     {'FINISHED'}

@@ -23,20 +23,17 @@ from . import types
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
 
 
-
 class Boolean(NodeBuilder):
     """Provide a True/False value that can be connected to other nodes in the tree"""
 
     name = "FunctionNodeInputBool"
     node: bpy.types.FunctionNodeInputBool
 
-    def __init__(self, boolean: bool  = False, **kwargs):
+    def __init__(self, boolean: bool = False, **kwargs):
         super().__init__()
         key_args = kwargs
         self.boolean = boolean
         self._establish_links(**key_args)
-
-
 
     @property
     def o_boolean(self) -> bpy.types.NodeSocketBool:
@@ -51,6 +48,7 @@ class Boolean(NodeBuilder):
     def boolean(self, value: bool):
         self.node.boolean = value
 
+
 class Color(NodeBuilder):
     """Output a color value chosen with the color picker widget"""
 
@@ -62,8 +60,6 @@ class Color(NodeBuilder):
         key_args = kwargs
         self.value = value
         self._establish_links(**key_args)
-
-
 
     @property
     def o_color(self) -> bpy.types.NodeSocketColor:
@@ -78,19 +74,18 @@ class Color(NodeBuilder):
     def value(self, value: float):
         self.node.value = value
 
+
 class Integer(NodeBuilder):
     """Provide an integer value that can be connected to other nodes in the tree"""
 
     name = "FunctionNodeInputInt"
     node: bpy.types.FunctionNodeInputInt
 
-    def __init__(self, integer: int  = 1, **kwargs):
+    def __init__(self, integer: int = 1, **kwargs):
         super().__init__()
         key_args = kwargs
         self.integer = integer
         self._establish_links(**key_args)
-
-
 
     @property
     def o_integer(self) -> bpy.types.NodeSocketInt:
@@ -105,6 +100,7 @@ class Integer(NodeBuilder):
     def integer(self, value: int):
         self.node.integer = value
 
+
 class Rotation(NodeBuilder):
     """Provide a rotation value that can be connected to other nodes in the tree"""
 
@@ -116,8 +112,6 @@ class Rotation(NodeBuilder):
         key_args = kwargs
         self.rotation_euler = rotation_euler
         self._establish_links(**key_args)
-
-
 
     @property
     def o_rotation(self) -> bpy.types.NodeSocketRotation:
@@ -132,6 +126,7 @@ class Rotation(NodeBuilder):
     def rotation_euler(self, value: float):
         self.node.rotation_euler = value
 
+
 class SpecialCharacters(NodeBuilder):
     """Output string characters that cannot be typed directly with the keyboard"""
 
@@ -144,16 +139,16 @@ class SpecialCharacters(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_line_break(self) -> bpy.types.NodeSocketString:
         """Output socket: Line Break"""
         return self._output("Line Break")
+
     @property
     def o_tab(self) -> bpy.types.NodeSocketString:
         """Output socket: Tab"""
         return self._output("Tab")
+
 
 class String(NodeBuilder):
     """Provide a string value that can be connected to other nodes in the tree"""
@@ -166,8 +161,6 @@ class String(NodeBuilder):
         key_args = kwargs
         self.string = string
         self._establish_links(**key_args)
-
-
 
     @property
     def o_string(self) -> bpy.types.NodeSocketString:
@@ -182,6 +175,7 @@ class String(NodeBuilder):
     def string(self, value: str):
         self.node.string = value
 
+
 class Vector(NodeBuilder):
     """Provide a vector value that can be connected to other nodes in the tree"""
 
@@ -193,8 +187,6 @@ class Vector(NodeBuilder):
         key_args = kwargs
         self.vector = vector
         self._establish_links(**key_args)
-
-
 
     @property
     def o_vector(self) -> bpy.types.NodeSocketVector:
@@ -209,6 +201,7 @@ class Vector(NodeBuilder):
     def vector(self, value: list[float, float, float]):
         self.node.vector = value
 
+
 class ForEachGeometryElementInput(NodeBuilder):
     """For Each Geometry Element Input node"""
 
@@ -220,38 +213,39 @@ class ForEachGeometryElementInput(NodeBuilder):
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         extend: LINKABLE | None = None,
-        **kwargs
+        **kwargs,
     ):
         super().__init__()
-        key_args = {
-            "Geometry": geometry, "Selection": selection, "__extend__": extend
-        }
+        key_args = {"Geometry": geometry, "Selection": selection, "__extend__": extend}
         key_args.update(kwargs)
 
         self._establish_links(**key_args)
-
 
     @property
     def i_geometry(self) -> NodeSocket:
         """Input socket: Geometry"""
         return self._input("Geometry")
+
     @property
     def i_selection(self) -> bpy.types.NodeSocketBool:
         """Input socket: Selection"""
         return self._input("Selection")
+
     @property
     def i_input_socket(self) -> NodeSocket:
-        """Input socket: """
+        """Input socket:"""
         return self._input("__extend__")
 
     @property
     def o_index(self) -> bpy.types.NodeSocketInt:
         """Output socket: Index"""
         return self._output("Index")
+
     @property
     def o_input_socket(self) -> NodeSocket:
-        """Output socket: """
+        """Output socket:"""
         return self._output("__extend__")
+
 
 class ActiveCamera(NodeBuilder):
     """Retrieve the scene's active camera"""
@@ -265,12 +259,11 @@ class ActiveCamera(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_active_camera(self) -> bpy.types.NodeSocketObject:
         """Output socket: Active Camera"""
         return self._output("Active Camera")
+
 
 class Collection(NodeBuilder):
     """Output a single collection"""
@@ -284,12 +277,11 @@ class Collection(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_collection(self) -> bpy.types.NodeSocketCollection:
         """Output socket: Collection"""
         return self._output("Collection")
+
 
 class IsEdgeSmooth(NodeBuilder):
     """Retrieve whether each edge is marked for smooth or split normals"""
@@ -303,12 +295,11 @@ class IsEdgeSmooth(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_smooth(self) -> bpy.types.NodeSocketBool:
         """Output socket: Smooth"""
         return self._output("Smooth")
+
 
 class Id(NodeBuilder):
     """Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist"""
@@ -322,12 +313,11 @@ class Id(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_id(self) -> bpy.types.NodeSocketInt:
         """Output socket: ID"""
         return self._output("ID")
+
 
 class Image(NodeBuilder):
     """Input an image data-block"""
@@ -341,12 +331,11 @@ class Image(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_image(self) -> bpy.types.NodeSocketImage:
         """Output socket: Image"""
         return self._output("Image")
+
 
 class Index(NodeBuilder):
     """Retrieve an integer value indicating the position of each element in the list, starting at zero"""
@@ -360,12 +349,11 @@ class Index(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_index(self) -> bpy.types.NodeSocketInt:
         """Output socket: Index"""
         return self._output("Index")
+
 
 class InstanceBounds(NodeBuilder):
     """Calculate position bounds of each instance's geometry set"""
@@ -375,13 +363,10 @@ class InstanceBounds(NodeBuilder):
 
     def __init__(self, use_radius: TYPE_INPUT_BOOLEAN = True, **kwargs):
         super().__init__()
-        key_args = {
-            "Use Radius": use_radius
-        }
+        key_args = {"Use Radius": use_radius}
         key_args.update(kwargs)
 
         self._establish_links(**key_args)
-
 
     @property
     def i_use_radius(self) -> bpy.types.NodeSocketBool:
@@ -392,10 +377,12 @@ class InstanceBounds(NodeBuilder):
     def o_min(self) -> bpy.types.NodeSocketVector:
         """Output socket: Min"""
         return self._output("Min")
+
     @property
     def o_max(self) -> bpy.types.NodeSocketVector:
         """Output socket: Max"""
         return self._output("Max")
+
 
 class InstanceRotation(NodeBuilder):
     """Retrieve the rotation of each instance in the geometry"""
@@ -409,12 +396,11 @@ class InstanceRotation(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_rotation(self) -> bpy.types.NodeSocketRotation:
         """Output socket: Rotation"""
         return self._output("Rotation")
+
 
 class InstanceScale(NodeBuilder):
     """Retrieve the scale of each instance in the geometry"""
@@ -428,12 +414,11 @@ class InstanceScale(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_scale(self) -> bpy.types.NodeSocketVector:
         """Output socket: Scale"""
         return self._output("Scale")
+
 
 class Material(NodeBuilder):
     """Output a single material"""
@@ -447,12 +432,11 @@ class Material(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_material(self) -> bpy.types.NodeSocketMaterial:
         """Output socket: Material"""
         return self._output("Material")
+
 
 class MaterialIndex(NodeBuilder):
     """Retrieve the index of the material used for each element in the geometry's list of materials"""
@@ -466,12 +450,11 @@ class MaterialIndex(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_material_index(self) -> bpy.types.NodeSocketInt:
         """Output socket: Material Index"""
         return self._output("Material Index")
+
 
 class NamedLayerSelection(NodeBuilder):
     """Output a selection of a Grease Pencil layer"""
@@ -481,13 +464,10 @@ class NamedLayerSelection(NodeBuilder):
 
     def __init__(self, name: str | LINKABLE | None = "", **kwargs):
         super().__init__()
-        key_args = {
-            "Name": name
-        }
+        key_args = {"Name": name}
         key_args.update(kwargs)
 
         self._establish_links(**key_args)
-
 
     @property
     def i_name(self) -> bpy.types.NodeSocketString:
@@ -499,24 +479,24 @@ class NamedLayerSelection(NodeBuilder):
         """Output socket: Selection"""
         return self._output("Selection")
 
+
 class Normal(NodeBuilder):
     """Retrieve a unit length vector indicating the direction pointing away from the geometry at each element"""
 
     name = "GeometryNodeInputNormal"
     node: bpy.types.GeometryNodeInputNormal
 
-    def __init__(self, legacy_corner_normals: bool  = False, **kwargs):
+    def __init__(self, legacy_corner_normals: bool = False, **kwargs):
         super().__init__()
         key_args = kwargs
         self.legacy_corner_normals = legacy_corner_normals
         self._establish_links(**key_args)
 
-
-
     @property
     def o_normal(self) -> bpy.types.NodeSocketVector:
         """Output socket: Normal"""
         return self._output("Normal")
+
     @property
     def o_true_normal(self) -> bpy.types.NodeSocketVector:
         """Output socket: True Normal"""
@@ -530,6 +510,7 @@ class Normal(NodeBuilder):
     def legacy_corner_normals(self, value: bool):
         self.node.legacy_corner_normals = value
 
+
 class Object(NodeBuilder):
     """Output a single object"""
 
@@ -542,12 +523,11 @@ class Object(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_object(self) -> bpy.types.NodeSocketObject:
         """Output socket: Object"""
         return self._output("Object")
+
 
 class Position(NodeBuilder):
     """Retrieve a vector indicating the location of each element"""
@@ -561,12 +541,11 @@ class Position(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_position(self) -> bpy.types.NodeSocketVector:
         """Output socket: Position"""
         return self._output("Position")
+
 
 class Radius(NodeBuilder):
     """Retrieve the radius at each point on curve or point cloud geometry"""
@@ -580,12 +559,11 @@ class Radius(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_radius(self) -> bpy.types.NodeSocketFloat:
         """Output socket: Radius"""
         return self._output("Radius")
+
 
 class SceneTime(NodeBuilder):
     """Retrieve the current time in the scene's animation in units of seconds or frames"""
@@ -599,16 +577,16 @@ class SceneTime(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_seconds(self) -> bpy.types.NodeSocketFloat:
         """Output socket: Seconds"""
         return self._output("Seconds")
+
     @property
     def o_frame(self) -> bpy.types.NodeSocketFloat:
         """Output socket: Frame"""
         return self._output("Frame")
+
 
 class IsFaceSmooth(NodeBuilder):
     """Retrieve whether each face is marked for smooth or sharp normals"""
@@ -622,12 +600,11 @@ class IsFaceSmooth(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_smooth(self) -> bpy.types.NodeSocketBool:
         """Output socket: Smooth"""
         return self._output("Smooth")
+
 
 class ShortestEdgePaths(NodeBuilder):
     """Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge"""
@@ -639,21 +616,19 @@ class ShortestEdgePaths(NodeBuilder):
         self,
         end_vertex: TYPE_INPUT_BOOLEAN = False,
         edge_cost: float | LINKABLE | None = 1.0,
-        **kwargs
+        **kwargs,
     ):
         super().__init__()
-        key_args = {
-            "End Vertex": end_vertex, "Edge Cost": edge_cost
-        }
+        key_args = {"End Vertex": end_vertex, "Edge Cost": edge_cost}
         key_args.update(kwargs)
 
         self._establish_links(**key_args)
-
 
     @property
     def i_end_vertex(self) -> bpy.types.NodeSocketBool:
         """Input socket: End Vertex"""
         return self._input("End Vertex")
+
     @property
     def i_edge_cost(self) -> bpy.types.NodeSocketFloat:
         """Input socket: Edge Cost"""
@@ -663,10 +638,12 @@ class ShortestEdgePaths(NodeBuilder):
     def o_next_vertex_index(self) -> bpy.types.NodeSocketInt:
         """Output socket: Next Vertex Index"""
         return self._output("Next Vertex Index")
+
     @property
     def o_total_cost(self) -> bpy.types.NodeSocketFloat:
         """Output socket: Total Cost"""
         return self._output("Total Cost")
+
 
 class IsSplineCyclic(NodeBuilder):
     """Retrieve whether each spline endpoint connects to the beginning"""
@@ -680,12 +657,11 @@ class IsSplineCyclic(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_cyclic(self) -> bpy.types.NodeSocketBool:
         """Output socket: Cyclic"""
         return self._output("Cyclic")
+
 
 class SplineResolution(NodeBuilder):
     """Retrieve the number of evaluated points that will be generated for every control point on curves"""
@@ -699,12 +675,11 @@ class SplineResolution(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_resolution(self) -> bpy.types.NodeSocketInt:
         """Output socket: Resolution"""
         return self._output("Resolution")
+
 
 class CurveTangent(NodeBuilder):
     """Retrieve the direction of curves at each control point"""
@@ -718,12 +693,11 @@ class CurveTangent(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_tangent(self) -> bpy.types.NodeSocketVector:
         """Output socket: Tangent"""
         return self._output("Tangent")
+
 
 class VoxelIndex(NodeBuilder):
     """Retrieve the integer coordinates of the voxel that the field is evaluated on"""
@@ -737,36 +711,41 @@ class VoxelIndex(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_x(self) -> bpy.types.NodeSocketInt:
         """Output socket: X"""
         return self._output("X")
+
     @property
     def o_y(self) -> bpy.types.NodeSocketInt:
         """Output socket: Y"""
         return self._output("Y")
+
     @property
     def o_z(self) -> bpy.types.NodeSocketInt:
         """Output socket: Z"""
         return self._output("Z")
+
     @property
     def o_is_tile(self) -> bpy.types.NodeSocketBool:
         """Output socket: Is Tile"""
         return self._output("Is Tile")
+
     @property
     def o_extent_x(self) -> bpy.types.NodeSocketInt:
         """Output socket: Extent X"""
         return self._output("Extent X")
+
     @property
     def o_extent_y(self) -> bpy.types.NodeSocketInt:
         """Output socket: Extent Y"""
         return self._output("Extent Y")
+
     @property
     def o_extent_z(self) -> bpy.types.NodeSocketInt:
         """Output socket: Extent Z"""
         return self._output("Extent Z")
+
 
 class Value(NodeBuilder):
     """Input numerical values to other nodes in the tree"""
@@ -780,10 +759,7 @@ class Value(NodeBuilder):
 
         self._establish_links(**key_args)
 
-
-
     @property
     def o_value(self) -> bpy.types.NodeSocketFloat:
         """Output socket: Value"""
         return self._output("Value")
-
