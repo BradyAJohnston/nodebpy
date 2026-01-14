@@ -11,3 +11,6 @@ wheels/
 /README_files
 *.blend
 *.blend1
+/.quarto/
+**/*.quarto_ipynb
+/docs/_build

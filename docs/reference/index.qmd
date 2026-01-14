@@ -1,0 +1,9 @@
+# Function reference {.doc .doc-index}
+
+## Some functions
+
+Functions to inspect docstrings.
+
+| | |
+| --- | --- |
+| [nodes.geometry](nodes.geometry.qmd#nodebpy.nodes.geometry) | Auto-generated Blender Geometry Node classes. |

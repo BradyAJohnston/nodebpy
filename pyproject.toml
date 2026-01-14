@@ -18,6 +18,13 @@ nodebpy = "nodebpy:main"
 bpy = [
     "bpy>=4.5.0",
 ]
+screenshot = [
+    "pillow>=10.0.0",
+]
+jupyter = [
+    "pillow>=10.0.0",
+    "ipython>=8.0.0",
+]
 dev = [
     "fake-bpy-module>=20260113",
     "pytest>=9.0.2",

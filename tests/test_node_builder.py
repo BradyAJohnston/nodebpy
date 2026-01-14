@@ -8,10 +8,8 @@ from math import pi
 import bpy
 import pytest
 from numpy.testing import assert_allclose
-import bpy
 from nodebpy import TreeBuilder
-from nodebpy import nodes as n
-from nodebpy import sockets
+from nodebpy import nodes as n, sockets as s
 
 
 class TestTreeBuilder:
@@ -29,13 +27,13 @@ class TestTreeBuilder:
         tree = TreeBuilder("InterfaceTest")
         tree.interface(
             inputs=[
-                sockets.SocketGeometry(name="Geometry"),
-                sockets.SocketBoolean(name="Selection", default=True),
-                sockets.SocketVector(name="Offset", default=(1.0, 2.0, 3.0)),
+                s.SocketGeometry(name="Geometry"),
+                s.SocketBoolean(name="Selection", default=True),
+                s.SocketVector(name="Offset", default=(1.0, 2.0, 3.0)),
             ],
             outputs=[
-                sockets.SocketGeometry(name="Geometry"),
-                sockets.SocketInt(name="Count"),
+                s.SocketGeometry(name="Geometry"),
+                s.SocketInt(name="Count"),
             ],
         )
 
@@ -63,13 +61,11 @@ class TestTreeBuilder:
         tree = TreeBuilder("DefaultsTest")
         tree.interface(
             inputs=[
-                sockets.SocketBoolean(name="Selection", default=True),
-                sockets.SocketVector(name="Offset", default=(1.0, 2.0, 3.0)),
-                sockets.SocketFloat(
-                    name="Scale", default=2.5, min_value=0.0, max_value=10.0
-                ),
+                s.SocketBoolean(name="Selection", default=True),
+                s.SocketVector(name="Offset", default=(1.0, 2.0, 3.0)),
+                s.SocketFloat(name="Scale", default=2.5, min_value=0.0, max_value=10.0),
             ],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         # Find the selection input
@@ -90,8 +86,8 @@ class TestContextManager:
         """Test using the tree as a context manager."""
         tree = TreeBuilder("ContextTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -104,8 +100,8 @@ class TestContextManager:
         """Test that nodes created in context use the active tree."""
         tree = TreeBuilder("NodeCreationTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -126,8 +122,8 @@ class TestOperatorChaining:
         """Test basic node chaining with >> operator."""
         tree = TreeBuilder("ChainingTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -148,8 +144,8 @@ class TestOperatorChaining:
         """Test chaining multiple nodes together."""
         tree = TreeBuilder("MultiChainTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -173,11 +169,11 @@ class TestNamedSocketAccess:
         tree = TreeBuilder("InputAccessTest")
         tree.interface(
             inputs=[
-                sockets.SocketGeometry(name="Geometry"),
-                sockets.SocketBoolean(name="Selection"),
-                sockets.SocketVector(name="My Offset"),
+                s.SocketGeometry(name="Geometry"),
+                s.SocketBoolean(name="Selection"),
+                s.SocketVector(name="My Offset"),
             ],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -194,11 +190,11 @@ class TestNamedSocketAccess:
         """Test accessing output sockets by name."""
         tree = TreeBuilder("OutputAccessTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
             outputs=[
-                sockets.SocketGeometry(name="Geometry"),
-                sockets.SocketInt(name="Count"),
-                sockets.SocketFloat(name="Total Area"),
+                s.SocketGeometry(name="Geometry"),
+                s.SocketInt(name="Count"),
+                s.SocketFloat(name="Total Area"),
             ],
         )
 
@@ -222,12 +218,12 @@ class TestExamples:
 
         tree.interface(
             inputs=[
-                sockets.SocketGeometry(name="Geometry"),
-                sockets.SocketBoolean(name="Selection", default=True),
-                sockets.SocketVector(name="Offset", default=(1.0, 2.0, 3.0)),
+                s.SocketGeometry(name="Geometry"),
+                s.SocketBoolean(name="Selection", default=True),
+                s.SocketVector(name="Offset", default=(1.0, 2.0, 3.0)),
             ],
             outputs=[
-                sockets.SocketGeometry(name="Geometry"),
+                s.SocketGeometry(name="Geometry"),
             ],
         )
 
@@ -250,12 +246,12 @@ class TestExamples:
 
         tree.interface(
             inputs=[
-                sockets.SocketGeometry(name="Geometry"),
-                sockets.SocketBoolean(name="Selection", default=True),
+                s.SocketGeometry(name="Geometry"),
+                s.SocketBoolean(name="Selection", default=True),
             ],
             outputs=[
-                sockets.SocketGeometry(name="Geometry"),
-                sockets.SocketInt(name="Count"),
+                s.SocketGeometry(name="Geometry"),
+                s.SocketInt(name="Count"),
             ],
         )
 
@@ -288,8 +284,8 @@ class TestGeneratedNodes:
         """Test the Position input node."""
         tree = TreeBuilder("PositionTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -301,8 +297,8 @@ class TestGeneratedNodes:
         """Test the SetPosition node with parameters."""
         tree = TreeBuilder("SetPositionTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -320,8 +316,8 @@ class TestGeneratedNodes:
         """Test the TransformGeometry node."""
         tree = TreeBuilder("TransformTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -334,8 +330,8 @@ class TestGeneratedNodes:
         """Test that output properties are accessible."""
         tree = TreeBuilder("OutputPropsTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -359,8 +355,8 @@ class TestComplexWorkflow:
         """Test a workflow with branching node connections."""
         tree = TreeBuilder("BranchingTest")
         tree.interface(
-            inputs=[sockets.SocketGeometry(name="Geometry")],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            inputs=[s.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -378,11 +374,11 @@ class TestComplexWorkflow:
         tree = TreeBuilder("MultiInputTest")
         tree.interface(
             inputs=[
-                sockets.SocketGeometry(name="Geometry"),
-                sockets.SocketBoolean(name="Selection"),
-                sockets.SocketVector(name="Translation"),
+                s.SocketGeometry(name="Geometry"),
+                s.SocketBoolean(name="Selection"),
+                s.SocketVector(name="Translation"),
             ],
-            outputs=[sockets.SocketGeometry(name="Geometry")],
+            outputs=[s.SocketGeometry(name="Geometry")],
         )
 
         with tree:
@@ -406,8 +402,8 @@ class TestComplexWorkflow:
 def create_tree_chain():
     tree = TreeBuilder("MathTest")
     tree.interface(
-        inputs=[sockets.SocketFloat(name="Value")],
-        outputs=[sockets.SocketFloat(name="Result")],
+        inputs=[s.SocketFloat(name="Value")],
+        outputs=[s.SocketFloat(name="Result")],
     )
 
     with tree:
@@ -424,8 +420,8 @@ def create_tree_chain():
 def create_tree():
     tree = TreeBuilder("MathTest")
     tree.interface(
-        inputs=[sockets.SocketFloat(name="Value")],
-        outputs=[sockets.SocketFloat(name="Result")],
+        inputs=[s.SocketFloat(name="Value")],
+        outputs=[s.SocketFloat(name="Result")],
     )
 
     with tree:
@@ -463,7 +459,7 @@ def test_math_nodes(maker):
 
 def test_nodes():
     tree = TreeBuilder()
-    tree.interface(outputs=[sockets.SocketGeometry("Geometry")])
+    tree.interface(outputs=[s.SocketGeometry("Geometry")])
 
     with tree:
         _ = (
@@ -477,8 +473,8 @@ def test_nodes():
 def test_mix_node():
     tree = TreeBuilder()
     tree.interface(
-        inputs=[sockets.SocketInt("Count", min_value=0, max_value=100, default=50)],
-        outputs=[sockets.SocketGeometry("Instances")],
+        inputs=[s.SocketInt("Count", min_value=0, max_value=100, default=50)],
+        outputs=[s.SocketGeometry("Instances")],
     )
 
     with tree:
@@ -526,3 +522,32 @@ def test_warning_innactive_socket():
         mix._default_input_id = "A_Float"
         with pytest.raises(RuntimeError):
             pos >> mix
+
+
+def test_readme_tree():
+    with TreeBuilder("AnotherTree") as tree:
+        tree.interface(
+            inputs=[s.SocketInt("Count")],
+            outputs=[s.SocketGeometry("Instances")],
+        )
+
+        rotation = (
+            n.RandomValue.vector(min=(-1, -1, -1), seed=2)
+            >> n.AlignRotationToVector()
+            >> n.RotateRotation(
+                rotate_by=n.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
+            )
+        )
+
+        _ = (
+            tree.inputs.count
+            >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
+            >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
+            >> n.SetPosition(
+                position=n.Position() * 2.0 + (0, 0.2, 0.3),
+                offset=(0, 0, 0.1),
+            )
+            >> n.RealizeInstances()
+            >> n.InstanceOnPoints(n.Cube(), instance=...)
+            >> tree.outputs.instances
+        )
