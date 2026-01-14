@@ -21,6 +21,7 @@ bpy = [
 dev = [
     "fake-bpy-module>=20260113",
     "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
     "quarto-cli>=1.8.26",
     "quartodoc>=0.11.1",
     "ruff>=0.14.11",
@@ -31,4 +32,4 @@ requires = ["uv_build>=0.8.15,<0.9.0"]
 build-backend = "uv_build"
 
 [tool.uv.sources]
-arrangebpy = { path = "../arrangebpy" }
+arrangebpy = { git = "https://github.com/BradyAJohnston/arrangebpy" }
