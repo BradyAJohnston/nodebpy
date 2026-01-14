@@ -4,6 +4,8 @@ format: gfm
 
 # nodebpy
 
+[![Run Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml) [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy) 
+
 A package to help build node trees in blender more elegantly with python code.
 
 ## The Design Idea
@@ -30,7 +32,7 @@ with TreeBuilder("NewTree") as tree:
     n.NamedAttribute("test", "INT") >> n.Math.power(2, ...)
 ```
 
-## Example Node Tree
+# Example Node Tree
 
 ```{python}
 bpy.ops.wm.read_homefile()
