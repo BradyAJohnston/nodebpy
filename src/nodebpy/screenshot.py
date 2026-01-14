@@ -361,7 +361,7 @@ def generate_mermaid_diagram(tree) -> str:
     else:
         node_tree = tree
 
-    mermaid_lines = ["```mermaid", "graph LR"]
+    mermaid_lines = ["```{mermaid}", "graph LR"]
 
     # Define color mappings for different node types
     color_class_map = {

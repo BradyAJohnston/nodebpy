@@ -23,6 +23,7 @@ The dots can appear at multiple locations and each input will be linked to the p
 # Example Node Tree
 
 ```{python}
+# | output: asis
 import bpy
 from nodebpy import TreeBuilder, nodes as n, sockets as s
 
@@ -55,6 +56,9 @@ with TreeBuilder("AnotherTree") as tree:
         >> tree.outputs.instances
     )
 
+# print("```{mermaid}")
+# print(tree._repr_markdown_())
+# print("```")
 tree
 ```
 
