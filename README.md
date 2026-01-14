@@ -115,7 +115,7 @@ graph LR
     classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
-![](images/paste-2.png)
+![](docs/images/paste-2.png)
 
 # Design Considerations
 

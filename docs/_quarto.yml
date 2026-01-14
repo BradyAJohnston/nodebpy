@@ -2,6 +2,17 @@ project:
   type: website
   output-dir: _build
 
+website:
+  title: "databpy"
+  page-navigation: true
+
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: reference/
+        text: Reference
+
 # tell quarto to read the generated sidebar
 metadata-files:
   - reference/_sidebar.yml
