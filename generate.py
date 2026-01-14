@@ -19,6 +19,16 @@ import bpy
 from bpy.types import bpy_prop_array
 from mathutils import Euler, Vector
 
+NODES_TO_SKIP = [
+    "Closure",
+    "Simulation",
+    "Repeat",
+    "IndexSwitch",
+    "MenuSwitch",
+    "VectorMath",
+    "CaptureAttribute",
+]
+
 
 @dataclass
 class SocketInfo:
@@ -792,8 +802,11 @@ def generate_all(output_dir: Path | None = None):
     # Introspect all nodes (excluding manually specified ones)
     node_infos = []
     skipped_count = 0
+
     for node_type in all_nodes:
-        if node_type.__name__ in manually_specified:
+        if node_type.__name__ in manually_specified or any(
+            [n in node_type.__name__ for n in NODES_TO_SKIP]
+        ):
             print(f"  Skipping manually specified node: {node_type.__name__}")
             skipped_count += 1
             continue
@@ -815,7 +828,6 @@ def generate_all(output_dir: Path | None = None):
 
     # Generate files by category
     generated_files = []
-    NODES_TO_SKIP = ["Closure", "Simulation", "Repeat", "IndexSwitch", "MenuSwitch"]
     for category, nodes in by_category.items():
         filename = f"{category}.py"
         filepath = output_dir / filename
@@ -827,8 +839,6 @@ def generate_all(output_dir: Path | None = None):
             f.write("\n\n")
 
             for node_info in nodes:
-                if any([n in node_info.name for n in NODES_TO_SKIP]):
-                    continue
                 try:
                     class_code, has_dynamic = generate_node_class(node_info)
                     f.write(class_code)

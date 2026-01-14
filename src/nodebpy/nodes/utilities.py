@@ -15,12 +15,9 @@ KNOWN LIMITATIONS:
 """
 
 from __future__ import annotations
-
-from typing import Any
-
 import bpy
+from typing import Any
 from typing_extensions import Literal
-
 from ..builder import NodeBuilder, NodeSocket
 from . import types
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
