@@ -113,6 +113,22 @@ class TreeBuilder:
         )
         arrangebpy.sugiyama_layout(self.tree, settings)
 
+    def _repr_markdown_(self) -> str | None:
+        """
+        Return Markdown representation for Jupyter notebook display.
+
+        This special method is called by Jupyter to display the TreeBuilder as a Mermaid diagram
+        when it's the return value of a cell.
+        """
+        try:
+            from .screenshot import generate_mermaid_diagram
+
+            return generate_mermaid_diagram(self)
+        except Exception as e:
+            # Diagram generation failed - return None to let Jupyter use text representation
+            print(f"Mermaid diagram generation failed: {e}")
+            return None
+
     def _input_node(self) -> Node:
         """Get or create the Group Input node."""
         try:
