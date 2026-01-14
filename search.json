@@ -1,25 +1,5 @@
 [
   {
-    "objectID": "reference/index.html",
-    "href": "reference/index.html",
-    "title": "Function reference",
-    "section": "",
-    "text": "Functions to inspect docstrings.\n\n\n\nnodes.geometry\nAuto-generated Blender Geometry Node classes.",
-    "crumbs": [
-      "Function reference"
-    ]
-  },
-  {
-    "objectID": "reference/index.html#some-functions",
-    "href": "reference/index.html#some-functions",
-    "title": "Function reference",
-    "section": "",
-    "text": "Functions to inspect docstrings.\n\n\n\nnodes.geometry\nAuto-generated Blender Geometry Node classes.",
-    "crumbs": [
-      "Function reference"
-    ]
-  },
-  {
     "objectID": "reference/nodes.geometry.html",
     "href": "reference/nodes.geometry.html",
     "title": "nodes.geometry",
@@ -39,6 +19,40 @@
     "crumbs": [
       "Some functions",
       "nodes.geometry"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "nodebpy",
+    "section": "",
+    "text": "A package to help build node trees in blender more elegantly with python code."
+  },
+  {
+    "objectID": "index.html#the-design-idea",
+    "href": "index.html#the-design-idea",
+    "title": "nodebpy",
+    "section": "The Design Idea",
+    "text": "The Design Idea\nOther projects have attempted similar but none quite handled the API how I felt it should be done. Notable existing projects are geometry-script, geonodes, NodeToPython.\nOther projects implement chaining of nodes mostly as dot methos of nodes to chain them (InstanceOnPoints().set_position()). This has the potential to crowd the API for individual nodes and easy chaining is instead approached via overriding the &gt;&gt; operator.\n\nChain Nodes with &gt;&gt;\nBy default the operator attempts to link the first output of the previous node with the first input of the next. You can override this behaviour by being explicit with the socket you are passing out (AccumulateField().o_total) or using the ... for the inputs into the next node. The dots can appear at multiple locations and each input will be linked to the previous node via the inferred or specified socket."
+  },
+  {
+    "objectID": "reference/index.html",
+    "href": "reference/index.html",
+    "title": "Function reference",
+    "section": "",
+    "text": "Functions to inspect docstrings.\n\n\n\nnodes.geometry\nAuto-generated Blender Geometry Node classes.",
+    "crumbs": [
+      "Function reference"
+    ]
+  },
+  {
+    "objectID": "reference/index.html#some-functions",
+    "href": "reference/index.html#some-functions",
+    "title": "Function reference",
+    "section": "",
+    "text": "Functions to inspect docstrings.\n\n\n\nnodes.geometry\nAuto-generated Blender Geometry Node classes.",
+    "crumbs": [
+      "Function reference"
     ]
   }
 ]
