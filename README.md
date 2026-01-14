@@ -35,7 +35,7 @@ be linked to the previous node via the inferred or specified socket.
 
 ``` python
 import bpy
-from nodebpy import TreeBuilder, NodeTreeDisplay, nodes as n, sockets as s
+from nodebpy import TreeBuilder, nodes as n, sockets as s
 
 bpy.ops.wm.read_homefile()
 
@@ -66,27 +66,56 @@ with TreeBuilder("AnotherTree") as tree:
         >> tree.outputs.instances
     )
 
-NodeTreeDisplay(tree)
+tree
 ```
 
-    Found Blender at: /usr/bin/blender
-    Info: Saved as "tmpbn8wrkx0.blend"
-    Launching Blender to capture screenshot...
-    Command: /usr/bin/blender --window-geometry 0 0 1920 1080 --python /tmp/tmpa_iwflsa.py
-    Blender exited with code: -11
-    stdout: 00:02.934  blend            | Read blend: "/tmp/tmpbn8wrkx0.blend"
-    Writing: /tmp/tmpbn8wrkx0.crash.txt
+``` mermaid
+graph LR
+    N0("NodeGroupInput"):::default-node
+    N1("RandomValue<br/><small>(-1,-1,-1) seed:2</small>"):::converter-node
+    N2("RandomValue<br/><small>(-1,-1,-1) seed:1</small>"):::converter-node
+    N3("AlignRotationToVector<br/><small>(0,0,1)</small>"):::converter-node
+    N4("AxisAngleToRotation<br/><small>(0,0,1)</small>"):::converter-node
+    N5("InputPosition"):::input-node
+    N6("Points"):::geometry-node
+    N7("MeshCube"):::geometry-node
+    N8("RotateRotation"):::converter-node
+    N9("VectorMath<br/><small>×2</small>"):::vector-node
+    N10("InstanceOnPoints"):::geometry-node
+    N11("VectorMath<br/><small>(0,0.2,0.3)</small>"):::vector-node
+    N12("SetPosition<br/><small>+(0,0,0.1)</small>"):::geometry-node
+    N13("MeshCube"):::geometry-node
+    N14("RealizeInstances"):::geometry-node
+    N15("InstanceOnPoints"):::geometry-node
+    N16("NodeGroupOutput"):::default-node
+    N1 -->|"Value>>Rotation"| N3
+    N4 -->|"Rotation>>Rotate By"| N8
+    N3 -->|"Rotation>>Rotation"| N8
+    N2 -->|"Value>>Position"| N6
+    N0 -->|"Count>>Count"| N6
+    N7 -->|"Mesh>>Instance"| N10
+    N8 -->|"Rotation>>Rotation"| N10
+    N6 -->|"Points>>Points"| N10
+    N5 -->|"Position>>Vector"| N9
+    N9 -->|"Vector>>Vector"| N11
+    N11 -->|"Vector>>Position"| N12
+    N10 -->|"Instances>>Geometry"| N12
+    N12 -->|"Geometry>>Geometry"| N14
+    N13 -->|"Mesh>>Points"| N15
+    N14 -->|"Geometry>>Instance"| N15
+    N15 -->|"Instances>>Instances"| N16
 
-    Screenshot failed: Blender screenshot failed with exit code -11
-    stdout: 00:02.934  blend            | Read blend: "/tmp/tmpbn8wrkx0.blend"
-    Writing: /tmp/tmpbn8wrkx0.crash.txt
+    classDef geometry-node fill:#4a9c59,stroke:#3a7c49,stroke-width:2px
+    classDef converter-node fill:#8e5a9e,stroke:#7e4a8e,stroke-width:2px
+    classDef vector-node fill:#5a8ec9,stroke:#4a7eb9,stroke-width:2px
+    classDef texture-node fill:#c99a5a,stroke:#b98a4a,stroke-width:2px
+    classDef shader-node fill:#e67c52,stroke:#d66c42,stroke-width:2px
+    classDef input-node fill:#7fb069,stroke:#6fa059,stroke-width:2px
+    classDef output-node fill:#c97659,stroke:#b96649,stroke-width:2px
+    classDef default-node fill:#5a5a5a,stroke:#4a4a4a,stroke-width:2px
+```
 
-    stderr: 
-    Check that Blender is installed and accessible.
-
-    <NodeTreeDisplay: 'AnotherTree' with 17 nodes>
-
-<!-- ![](images/paste-2.png) -->
+![](images/paste-2.png)
 
 # Design Considerations
 
@@ -108,87 +137,3 @@ actually build.
   - `TransformGeometry.matrix(CombineTrasnsform(translation=(0, 0, 1))`
   - `TransformGeoemtry.components(translation=(0, 0, 1))`
   - `TransformGeometry(translation=(0, 0, 1))`
-
-# Jupyter Notebook Integration
-
-Install with Jupyter support:
-
-``` bash
-pip install nodebpy[jupyter]
-```
-
-You can automatically capture and display screenshots of your node trees
-in Jupyter notebooks.
-
-## How It Works
-
-Screenshots work in two modes:
-
-1.  **Direct Mode** (GUI available): Fast, captures from the current
-    Blender window
-2.  **Subprocess Mode** (Headless/Jupyter): Launches Blender in GUI
-    mode, captures screenshot, exits
-
-The mode is automatically detected - no configuration needed!
-
-## Method 1: Explicit Screenshot
-
-``` python
-from nodebpy import screenshot_node_tree, TreeBuilder
-from IPython.display import display
-
-# Build your node tree
-with TreeBuilder("MyTree") as tree:
-    # ... create nodes ...
-    pass
-
-# Capture and display screenshot (auto-detects mode)
-img = screenshot_node_tree(tree=tree, return_format='pil')
-display(img)
-```
-
-## Method 2: Auto-Display Wrapper
-
-``` python
-from nodebpy import NodeTreeDisplay, TreeBuilder, nodes as n
-
-# Use NodeTreeDisplay wrapper for automatic display
-with NodeTreeDisplay(TreeBuilder("MyTree")) as tree:
-    # Build your tree
-    tree.inputs.geometry >> n.SetPosition() >> tree.outputs.geometry
-
-# Simply evaluate the tree object to see the screenshot
-tree  # Automatically displays the node tree screenshot in Jupyter
-```
-
-## Method 3: Save to File
-
-``` python
-from nodebpy import save_node_tree_screenshot
-save_node_tree_screenshot('/tmp/my_tree.png', tree=tree)
-```
-
-## Advanced: Force Subprocess Mode
-
-If you want to explicitly use subprocess mode (e.g., for consistent
-behavior):
-
-``` python
-img = screenshot_node_tree(
-    tree=tree,
-    use_subprocess=True,
-    blender_executable="/path/to/blender",  # Optional, auto-detected
-    timeout=30.0  # Timeout in seconds
-)
-```
-
-## Technical Details
-
-**Direct Mode:** - Captures tiles of the node editor view - Stitches
-them together into a single image - Very fast, requires existing Blender
-GUI
-
-**Subprocess Mode:** - Saves current .blend file - Launches Blender with
-GUI as subprocess - Blender opens file, captures screenshot, exits -
-Slower (~5-10 seconds) but works everywhere - Automatically cleans up
-temporary files
