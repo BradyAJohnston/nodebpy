@@ -1,0 +1,42 @@
+name: docs-build-deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - uses: quarto-dev/quarto-actions/setup@v2
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v4
+        with:
+            version: "latest"
+
+      - name: Build Docs
+        run: |
+            uv sync --all-extras --dev
+            uv pip install -e .
+            cd docs
+            uv run -m quartodoc build
+
+      - name: Quarto Render
+        run: |
+            uv run quarto render docs
+
+      # Only publish to GitHub Pages on push to main, not on PRs
+      - name: Publish to GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+            target: gh-pages
+            path: docs
+            render: false
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
