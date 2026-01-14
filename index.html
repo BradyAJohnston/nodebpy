@@ -103,6 +103,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="reference/_styles-quartodoc.css">
@@ -193,7 +196,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="example-node-tree" class="level1">
 <h1>Example Node Tree</h1>
-<div id="d8882c79" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> bpy</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder, nodes <span class="im">as</span> n, sockets <span class="im">as</span> s</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -226,9 +228,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.instances</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="1">
-<pre class="mermaid"><code>graph LR
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># print("```{mermaid}")</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># print(tree._repr_markdown_())</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># print("```")</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
     N0("NodeGroupInput"):::default-node
     N1("RandomValue&lt;br/&gt;&lt;small&gt;(-1,-1,-1) seed:2&lt;/small&gt;"):::converter-node
     N2("RandomValue&lt;br/&gt;&lt;small&gt;(-1,-1,-1) seed:1&lt;/small&gt;"):::converter-node
@@ -270,7 +279,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
     classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
     classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px</code></pre>
+    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
 </div>
 </div>
 <p><img src="images/paste-2.png" class="img-fluid"></p>
