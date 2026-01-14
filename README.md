@@ -1,4 +1,3 @@
-# Example Node Tree
 
 
 # nodebpy
@@ -32,17 +31,12 @@ behaviour by being explicit with the socket you are passing out
 next node. The dots can appear at multiple locations and each input will
 be linked to the previous node via the inferred or specified socket.
 
+# Example Node Tree
+
 ``` python
 import bpy
-from nodebpy import TreeBuilder
-from nodebpy import nodes as n
-from nodebpy import sockets as s
+from nodebpy import TreeBuilder, nodes as n, sockets as s
 
-with TreeBuilder("NewTree") as tree:
-    n.NamedAttribute("test", "INT") >> n.Math.power(2, ...)
-```
-
-``` python
 bpy.ops.wm.read_homefile()
 
 with TreeBuilder("AnotherTree") as tree:
