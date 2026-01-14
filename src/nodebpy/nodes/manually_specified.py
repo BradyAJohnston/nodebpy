@@ -8,7 +8,13 @@ import bpy
 from bpy.types import NodeSocketFloat, NodeSocketVector
 from typing_extensions import Literal
 
-from ..builder import NodeBuilder, NodeSocket, source_socket, SocketNodeBuilder, SocketLinker
+from ..builder import (
+    NodeBuilder,
+    NodeSocket,
+    source_socket,
+    SocketNodeBuilder,
+    SocketLinker,
+)
 from . import types
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
 
@@ -374,10 +380,14 @@ class Mix(NodeBuilder):
         builder.node.clamp_factor = clamp_factor
         return builder
 
+
 _AttributeDomains = Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ]
-_AttributeDataTypes = Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX"]
+    "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+]
+_AttributeDataTypes = Literal[
+    "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX"
+]
+
 
 class CaptureAttribute(NodeBuilder):
     """Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation"""
@@ -396,27 +406,30 @@ class CaptureAttribute(NodeBuilder):
         key_args.update(kwargs)
         self.domain = domain
         self._establish_links(**key_args)
-    
-    def capture(self, value: LINKABLE, name: str | None = None, data_type: _AttributeDataTypes | None = None):
+
+    def capture(
+        self,
+        value: LINKABLE,
+        name: str | None = None,
+        data_type: _AttributeDataTypes | None = None,
+    ):
         """Capture the value to store in the attribute"""
         source = source_socket(value)
         if name is None:
             name = source.name
         if data_type is None:
-            data_type = source.type # type: ignore
-            
-        item = self._add_item(name, data_type) # type: ignore
+            data_type = source.type  # type: ignore
+
+        item = self._add_item(name, data_type)  # type: ignore
         self._establish_links(**{item.name: value})
         return SocketLinker(self.node.outputs[item.name])
 
     def _add_item(
-        self,
-        name: str,
-        data_type: _AttributeDataTypes = "FLOAT"
-        ) -> bpy.types.NodeGeometryCaptureAttributeItem:
+        self, name: str, data_type: _AttributeDataTypes = "FLOAT"
+    ) -> bpy.types.NodeGeometryCaptureAttributeItem:
         """Add a new output socket to capture additional attributes"""
         return self._items.new(data_type, name)
-    
+
     @property
     def _items(self) -> bpy.types.NodeGeometryCaptureAttributeItems:
         return self.node.capture_items
@@ -443,7 +456,6 @@ class CaptureAttribute(NodeBuilder):
         value: _AttributeDomains,
     ):
         self.node.domain = value
-
 
 
 class Math(NodeBuilder):
@@ -1056,8 +1068,6 @@ class VectorMath(NodeBuilder):
         value: _VectorMathOperations,
     ):
         self.node.operation = value
-    
-
 
     @classmethod
     def add(

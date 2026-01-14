@@ -308,6 +308,7 @@ class TestGeneratedNodes:
         with tree:
             pos = n.Position()
             set_pos = n.SetPosition(position=pos)
+            tree.inputs.geometry >> set_pos >> tree.outputs.geometry
 
             assert set_pos.node is not None
             assert set_pos.node.bl_idname == "GeometryNodeSetPosition"

@@ -329,7 +329,6 @@ class BlurAttribute(NodeBuilder):
         self.node.data_type = value
 
 
-
 class NamedAttribute(NodeBuilder):
     """Retrieve the data of a specified attribute"""
 

@@ -132,9 +132,9 @@ class TreeBuilder:
             socket1 = socket1._socket
         if isinstance(socket2, SocketLinker):
             socket2 = socket2._socket
-        
+
         self.tree.links.new(socket1, socket2)
-        
+
         if any(socket.is_inactive for socket in [socket1, socket2]):
             # the warning message should report which sockets from which nodes were linked and which were innactive
             for socket in [socket1, socket2]:
@@ -355,7 +355,9 @@ class NodeBuilder:
 
         # If target socket already has a link and isn't multi-input, try next available socket
         if socket_in.links and not socket_in.is_multi_input:
-            socket_in = self._get_next_available_socket(socket_in, socket_out) or socket_in
+            socket_in = (
+                self._get_next_available_socket(socket_in, socket_out) or socket_in
+            )
 
         self.tree.link(socket_out, socket_in)
         return other
@@ -369,7 +371,9 @@ class NodeBuilder:
             title_name = name.replace("_", " ").title()
             return node.node.inputs[title_name]
 
-    def _get_next_available_socket(self, socket: NodeSocket, socket_out: NodeSocket) -> NodeSocket | None:
+    def _get_next_available_socket(
+        self, socket: NodeSocket, socket_out: NodeSocket
+    ) -> NodeSocket | None:
         """Get the next available socket after the given one."""
         try:
             inputs = socket.node.inputs
@@ -385,9 +389,10 @@ class NodeBuilder:
         except (KeyError, IndexError, AttributeError):
             pass
         return None
-    
+
     def __mul__(self, other: Any) -> "VectorMath | Math":
         from .nodes import VectorMath, Math
+
         match self._default_output_socket.type:
             case "VECTOR":
                 if isinstance(other, (int, float)):
@@ -395,14 +400,19 @@ class NodeBuilder:
                 elif isinstance(other, (list, tuple)) and len(other) == 3:
                     return VectorMath.multiply(self._default_output_socket, other)
                 else:
-                    raise TypeError(f"Unsupported type for multiplication with VECTOR socket: {type(other)}")
+                    raise TypeError(
+                        f"Unsupported type for multiplication with VECTOR socket: {type(other)}"
+                    )
             case "VALUE":
                 return Math.multiply(self._default_output_socket, other)
             case _:
-                raise TypeError(f"Unsupported socket type for multiplication: {self._default_output_socket.type}")
-    
+                raise TypeError(
+                    f"Unsupported socket type for multiplication: {self._default_output_socket.type}"
+                )
+
     def __rmul__(self, other: Any) -> "VectorMath | Math":
         from .nodes import VectorMath, Math
+
         match self._default_output_socket.type:
             case "VECTOR":
                 if isinstance(other, (int, float)):
@@ -410,47 +420,64 @@ class NodeBuilder:
                 elif isinstance(other, (list, tuple)) and len(other) == 3:
                     return VectorMath.multiply(other, self._default_output_socket)
                 else:
-                    raise TypeError(f"Unsupported type for multiplication with VECTOR socket: {type(other)}")
+                    raise TypeError(
+                        f"Unsupported type for multiplication with VECTOR socket: {type(other)}"
+                    )
             case "VALUE":
                 return Math.multiply(other, self._default_output_socket)
             case _:
-                raise TypeError(f"Unsupported socket type for multiplication: {self._default_output_socket.type}")
+                raise TypeError(
+                    f"Unsupported socket type for multiplication: {self._default_output_socket.type}"
+                )
 
     def __truediv__(self, other: Any) -> "VectorMath":
         from .nodes import VectorMath
+
         match self._default_output_socket.type:
             case "VECTOR":
                 return VectorMath.divide(self._default_output_socket, other)
             case _:
-                raise TypeError(f"Unsupported socket type for division: {self._default_output_socket.type}")
-    
+                raise TypeError(
+                    f"Unsupported socket type for division: {self._default_output_socket.type}"
+                )
+
     def __rtruediv__(self, other: Any) -> "VectorMath":
         from .nodes import VectorMath
+
         match self._default_output_socket.type:
             case "VECTOR":
                 return VectorMath.divide(other, self._default_output_socket)
             case _:
-                raise TypeError(f"Unsupported socket type for division: {self._default_output_socket.type}")
-    
+                raise TypeError(
+                    f"Unsupported socket type for division: {self._default_output_socket.type}"
+                )
+
     def __add__(self, other: Any) -> "VectorMath | Math":
         from .nodes import VectorMath, Math
+
         match self._default_output_socket.type:
             case "VECTOR":
                 return VectorMath.add(self._default_output_socket, other)
             case "VALUE":
                 return Math.add(self._default_output_socket, other)
             case _:
-                raise TypeError(f"Unsupported socket type for addition: {self._default_output_socket.type}")
-    
+                raise TypeError(
+                    f"Unsupported socket type for addition: {self._default_output_socket.type}"
+                )
+
     def __radd__(self, other: Any) -> "VectorMath | Math":
         from .nodes import VectorMath, Math
+
         match self._default_output_socket.type:
             case "VECTOR":
                 return VectorMath.add(other, self._default_output_socket)
             case "VALUE":
                 return Math.add(other, self._default_output_socket)
             case _:
-                raise TypeError(f"Unsupported socket type for addition: {self._default_output_socket.type}")
+                raise TypeError(
+                    f"Unsupported socket type for addition: {self._default_output_socket.type}"
+                )
+
 
 class SocketLinker(NodeBuilder):
     def __init__(self, socket: NodeSocket):
@@ -458,11 +485,12 @@ class SocketLinker(NodeBuilder):
         self._socket = socket
         self.node = socket.node
         self._default_output_id = socket.identifier
-        self._tree = TreeBuilder(socket.node.id_data) # type: ignore
-    
+        self._tree = TreeBuilder(socket.node.id_data)  # type: ignore
+
     @property
     def type(self) -> str:
         return self._socket.type
+
 
 class SocketNodeBuilder(NodeBuilder):
     """Special NodeBuilder for accessing specific sockets on input/output nodes."""
