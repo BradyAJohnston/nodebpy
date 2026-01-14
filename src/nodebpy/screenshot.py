@@ -476,18 +476,19 @@ def generate_mermaid_diagram(tree) -> str:
         else:
             mermaid_lines.append(f"    {from_node_id} --> {to_node_id}")
 
-    # Add CSS styling for node colors (matching Blender's node editor)
+    # Add CSS styling for node colors (lighter tints for subtlety)
+    # Mermaid doesn't support gradients, so using light tints as a compromise
     mermaid_lines.extend(
         [
             "",
-            "    classDef geometry-node fill:#4a9c59,stroke:#3a7c49,stroke-width:2px",
-            "    classDef converter-node fill:#8e5a9e,stroke:#7e4a8e,stroke-width:2px",
-            "    classDef vector-node fill:#5a8ec9,stroke:#4a7eb9,stroke-width:2px",
-            "    classDef texture-node fill:#c99a5a,stroke:#b98a4a,stroke-width:2px",
-            "    classDef shader-node fill:#e67c52,stroke:#d66c42,stroke-width:2px",
-            "    classDef input-node fill:#7fb069,stroke:#6fa059,stroke-width:2px",
-            "    classDef output-node fill:#c97659,stroke:#b96649,stroke-width:2px",
-            "    classDef default-node fill:#5a5a5a,stroke:#4a4a4a,stroke-width:2px",
+            "    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px",
+            "    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px",
+            "    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px",
+            "    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px",
+            "    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px",
+            "    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px",
+            "    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px",
+            "    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px",
         ]
     )
 
