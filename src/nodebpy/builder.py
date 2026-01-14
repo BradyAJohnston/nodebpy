@@ -128,7 +128,13 @@ class TreeBuilder:
             return self.tree.nodes.new("NodeGroupOutput")  # type: ignore
 
     def link(self, socket1: NodeSocket, socket2: NodeSocket):
+        if isinstance(socket1, SocketLinker):
+            socket1 = socket1._socket
+        if isinstance(socket2, SocketLinker):
+            socket2 = socket2._socket
+        
         self.tree.links.new(socket1, socket2)
+        
         if any(socket.is_inactive for socket in [socket1, socket2]):
             # the warning message should report which sockets from which nodes were linked and which were innactive
             for socket in [socket1, socket2]:
@@ -273,13 +279,13 @@ class NodeBuilder:
         output_ids = [output.identifier for output in self.node.outputs]
         return output_ids.index(identifier)
 
-    def _input(self, identifier: str) -> NodeSocket:
+    def _input(self, identifier: str) -> SocketLinker:
         """Input socket: Vector"""
-        return self.node.inputs[self._input_idx(identifier)]
+        return SocketLinker(self.node.inputs[self._input_idx(identifier)])
 
-    def _output(self, identifier: str) -> NodeSocket:
+    def _output(self, identifier: str) -> SocketLinker:
         """Output socket: Vector"""
-        return self.node.outputs[self._output_idx(identifier)]
+        return SocketLinker(self.node.outputs[self._output_idx(identifier)])
 
     def link(self, source: LINKABLE, target: LINKABLE):
         self.tree.link(source_socket(source), target_socket(target))
@@ -335,33 +341,50 @@ class NodeBuilder:
 
         Returns the right-hand node to enable continued chaining.
         """
-        # Get source socket
-        try:
-            self_out = self.node.outputs.get("Geometry") or self._default_output_socket
-        except (KeyError, IndexError):
-            self_out = self._default_output_socket
+        # Get source socket - prefer Geometry, fall back to default
+        socket_out = self.node.outputs.get("Geometry") or self._default_output_socket
+        other._from_socket = socket_out
 
-        other._from_socket = self_out
-
-        # Get target socket - use link target if specified by ellipsis
+        # Get target socket
         if other._link_target is not None:
-            try:
-                other_in = other.node.inputs[other._link_target]
-            except KeyError:
-                # Try with title case if direct access fails
-                target_name = other._link_target.replace("_", " ").title()
-                other_in = other.node.inputs[target_name]
+            # Use specific target if set by ellipsis
+            socket_in = self._get_input_socket_by_name(other, other._link_target)
         else:
-            # Default behavior - try Geometry first, then default input
-            try:
-                other_in = (
-                    other.node.inputs.get("Geometry") or other._default_input_socket
-                )
-            except (KeyError, IndexError):
-                other_in = other._default_input_socket
+            # Default behavior - prefer Geometry, fall back to default
+            socket_in = other.node.inputs.get("Geometry") or other._default_input_socket
 
-        self.tree.link(self_out, other_in)
+        # If target socket already has a link and isn't multi-input, try next available socket
+        if socket_in.links and not socket_in.is_multi_input:
+            socket_in = self._get_next_available_socket(socket_in, socket_out) or socket_in
+
+        self.tree.link(socket_out, socket_in)
         return other
+
+    def _get_input_socket_by_name(self, node: "NodeBuilder", name: str) -> NodeSocket:
+        """Get input socket by name, trying direct access first, then title case."""
+        try:
+            return node.node.inputs[name]
+        except KeyError:
+            # Try with title case if direct access fails
+            title_name = name.replace("_", " ").title()
+            return node.node.inputs[title_name]
+
+    def _get_next_available_socket(self, socket: NodeSocket, socket_out: NodeSocket) -> NodeSocket | None:
+        """Get the next available socket after the given one."""
+        try:
+            inputs = socket.node.inputs
+            current_idx = inputs.find(socket.identifier)
+            if current_idx >= 0 and current_idx + 1 < len(inputs):
+                if socket_out.type == "GEOMETRY":
+                    # Prefer Geometry sockets
+                    for idx in range(current_idx + 1, len(inputs)):
+                        if inputs[idx].type == "GEOMETRY" and not inputs[idx].links:
+                            return inputs[idx]
+                    raise RuntimeError("No available Geometry input sockets found.")
+                return inputs[current_idx + 1]
+        except (KeyError, IndexError, AttributeError):
+            pass
+        return None
     
     def __mul__(self, other: Any) -> "VectorMath | Math":
         from .nodes import VectorMath, Math
@@ -429,6 +452,17 @@ class NodeBuilder:
             case _:
                 raise TypeError(f"Unsupported socket type for addition: {self._default_output_socket.type}")
 
+class SocketLinker(NodeBuilder):
+    def __init__(self, socket: NodeSocket):
+        assert socket.node is not None
+        self._socket = socket
+        self.node = socket.node
+        self._default_output_id = socket.identifier
+        self._tree = TreeBuilder(socket.node.id_data) # type: ignore
+    
+    @property
+    def type(self) -> str:
+        return self._socket.type
 
 class SocketNodeBuilder(NodeBuilder):
     """Special NodeBuilder for accessing specific sockets on input/output nodes."""
