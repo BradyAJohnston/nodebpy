@@ -34,16 +34,13 @@ be linked to the previous node via the inferred or specified socket.
 # Example Node Tree
 
 ``` python
-import bpy
 from nodebpy import TreeBuilder, nodes as n, sockets as s
 
-bpy.ops.wm.read_homefile()
-
 with TreeBuilder("AnotherTree") as tree:
-    tree.interface(
-        inputs=[s.SocketInt("Count")],
-        outputs=[s.SocketGeometry("Instances")],
-    )
+    with tree.inputs:
+        count = s.SocketInt("Count", 10)
+    with tree.outputs:
+        instances = s.SocketGeometry("Instances")
 
     rotation = (
         n.RandomValue.vector(min=(-1, -1, -1), seed=2)
@@ -54,7 +51,7 @@ with TreeBuilder("AnotherTree") as tree:
     )
 
     _ = (
-        tree.inputs.count
+        count
         >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
         >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
         >> n.SetPosition(
@@ -63,7 +60,7 @@ with TreeBuilder("AnotherTree") as tree:
         )
         >> n.RealizeInstances()
         >> n.InstanceOnPoints(n.Cube(), instance=...)
-        >> tree.outputs.instances
+        >> instances
     )
 
 tree

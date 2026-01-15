@@ -827,6 +827,18 @@ wheels = [
 ]
 
 [[package]]
+name = "jsondiff"
+version = "2.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/35/48/841137f1843fa215ea284834d1514b8e9e20962bda63a636c7417e02f8fb/jsondiff-2.2.1.tar.gz", hash = "sha256:658d162c8a86ba86de26303cd86a7b37e1b2c1ec98b569a60e2ca6180545f7fe", size = 26649, upload-time = "2024-08-29T04:09:06.201Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/63/94/a8066f84d62ab666d61ef97deba1a33126e3e5c0c0da2c458ada17053ed6/jsondiff-2.2.1-py3-none-any.whl", hash = "sha256:b1f0f7e2421881848b1d556d541ac01a91680cfcc14f51a9b62cdf4da0e56722", size = 13440, upload-time = "2024-08-29T04:09:04.955Z" },
+]
+
+[[package]]
 name = "jsonpointer"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1287,6 +1299,9 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "arrangebpy" },
+    { name = "jsondiff" },
+    { name = "syrupy" },
+    { name = "tree-clipper" },
 ]
 
 [package.optional-dependencies]
@@ -1315,6 +1330,7 @@ requires-dist = [
     { name = "bpy", marker = "extra == 'bpy'", specifier = ">=4.5.0" },
     { name = "fake-bpy-module", marker = "extra == 'dev'", specifier = ">=20260113" },
     { name = "ipython", marker = "extra == 'jupyter'", specifier = ">=8.0.0" },
+    { name = "jsondiff", specifier = ">=2.2.1" },
     { name = "pillow", marker = "extra == 'jupyter'", specifier = ">=10.0.0" },
     { name = "pillow", marker = "extra == 'screenshot'", specifier = ">=10.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.2" },
@@ -1322,6 +1338,8 @@ requires-dist = [
     { name = "quarto-cli", marker = "extra == 'dev'", specifier = ">=1.8.26" },
     { name = "quartodoc", marker = "extra == 'dev'", specifier = ">=0.11.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.11" },
+    { name = "syrupy", specifier = ">=5.0.0" },
+    { name = "tree-clipper", specifier = ">=0.1.1" },
 ]
 provides-extras = ["bpy", "screenshot", "jupyter", "dev"]
 
@@ -2246,6 +2264,18 @@ wheels = [
 ]
 
 [[package]]
+name = "syrupy"
+version = "5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c1/90/1a442d21527009d4b40f37fe50b606ebb68a6407142c2b5cc508c34b696b/syrupy-5.0.0.tar.gz", hash = "sha256:3282fe963fa5d4d3e47231b16d1d4d0f4523705e8199eeb99a22a1bc9f5942f2", size = 48881, upload-time = "2025-09-28T21:15:12.783Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9d/9a/6c68aad2ccfce6e2eeebbf5bb709d0240592eb51ff142ec4c8fbf3c2460a/syrupy-5.0.0-py3-none-any.whl", hash = "sha256:c848e1a980ca52a28715cd2d2b4d434db424699c05653bd1158fb31cf56e9546", size = 49087, upload-time = "2025-09-28T21:15:11.639Z" },
+]
+
+[[package]]
 name = "tabulate"
 version = "0.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2360,6 +2390,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/eb/79/72064e6a701c2183016abbbfedaba506d81e30e232a68c9f0d6f6fcd1574/traitlets-5.14.3.tar.gz", hash = "sha256:9ed0579d3502c94b4b3732ac120375cda96f923114522847de4b3bb98b96b6b7", size = 161621, upload-time = "2024-04-19T11:11:49.746Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl", hash = "sha256:b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f", size = 85359, upload-time = "2024-04-19T11:11:46.763Z" },
+]
+
+[[package]]
+name = "tree-clipper"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/31/5b/78250d6481f13b528a0b1c8e7ad568644a87b260237b9b3c761de0493b15/tree_clipper-0.1.1.tar.gz", hash = "sha256:c3ce24a78d2e3bbaedcc4811d28471b7d09dff306382f77a420112d10a2ece84", size = 35587, upload-time = "2026-01-08T13:48:07.534Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/be/19/fb4e79a588f2fea8c29bde08880711ff002bc4c3722af311981146e938ef/tree_clipper-0.1.1-py3-none-any.whl", hash = "sha256:5b589a3d0c80acd3904ae3f654d9c30f21df7bd2a125b1399f20e19e933e8b92", size = 41034, upload-time = "2026-01-08T13:48:06.43Z" },
 ]
 
 [[package]]

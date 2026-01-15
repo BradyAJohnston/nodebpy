@@ -27,6 +27,7 @@ NODES_TO_SKIP = [
     "MenuSwitch",
     "VectorMath",
     "CaptureAttribute",
+    "JoinGeometry",
 ]
 
 

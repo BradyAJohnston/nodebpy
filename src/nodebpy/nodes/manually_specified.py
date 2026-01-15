@@ -6,17 +6,16 @@ from __future__ import annotations
 
 import bpy
 from bpy.types import NodeSocketFloat, NodeSocketVector
-from typing_extensions import Literal
+from typing import Iterable, Literal
 
 from ..builder import (
     NodeBuilder,
     NodeSocket,
     source_socket,
-    SocketNodeBuilder,
     SocketLinker,
 )
 from . import types
-from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
+from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR, _AttributeDomains
 
 _RANDOM_VALUE_DATA_TYPES = Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
 
@@ -75,7 +74,7 @@ class RandomValue(NodeBuilder):
                 return self._input("Min_002")
             case "BOOLEAN":
                 raise ValueError(
-                    f"Boolean data type does not support minimum value, use 'Probability'"
+                    "Boolean data type does not support minimum value, use 'Probability'"
                 )
             case "FLOAT_VECTOR":
                 return self._input("Min")
@@ -89,7 +88,7 @@ class RandomValue(NodeBuilder):
                 return self._input("Max_002")
             case "BOOLEAN":
                 raise ValueError(
-                    f"Boolean data type does not support maximum value, use 'Probability'"
+                    "Boolean data type does not support maximum value, use 'Probability'"
                 )
             case "FLOAT_VECTOR":
                 return self._input("Max")
@@ -381,9 +380,6 @@ class Mix(NodeBuilder):
         return builder
 
 
-_AttributeDomains = Literal[
-    "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-]
 _AttributeDataTypes = Literal[
     "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX"
 ]
@@ -456,6 +452,32 @@ class CaptureAttribute(NodeBuilder):
         value: _AttributeDomains,
     ):
         self.node.domain = value
+
+
+class JoinGeometry(NodeBuilder):
+    """Merge separately generated geometries into a single one"""
+
+    name = "GeometryNodeJoinGeometry"
+    node: bpy.types.GeometryNodeJoinGeometry
+
+    def __init__(self, geometry: NodeBuilder | Iterable[NodeBuilder] | None = None):
+        super().__init__()
+        if geometry is None:
+            return
+        elif isinstance(geometry, NodeBuilder):
+            geometry = [geometry]
+        for source in reversed(geometry):
+            self.link_from(source, self)
+
+    @property
+    def i_geometry(self) -> NodeSocket:
+        """Input socket: Geometry"""
+        return self._input("Geometry")
+
+    @property
+    def o_geometry(self) -> NodeSocket:
+        """Output socket: Geometry"""
+        return self._output("Geometry")
 
 
 class Math(NodeBuilder):

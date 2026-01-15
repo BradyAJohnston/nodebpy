@@ -12,7 +12,6 @@ import os
 import subprocess
 import sys
 import tempfile
-import time
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
@@ -357,7 +356,7 @@ def screenshot_node_tree_subprocess(
             temp_script.name,
         ]
 
-        print(f"Launching Blender to capture screenshot...")
+        print("Launching Blender to capture screenshot...")
         print(f"Command: {' '.join(cmd)}")
 
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
