@@ -20,6 +20,32 @@ from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR, _AttributeDo
 _RANDOM_VALUE_DATA_TYPES = Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
 
 
+class Vector(NodeBuilder):
+    """Provide a vector value that can be connected to other nodes in the tree"""
+
+    name = "FunctionNodeInputVector"
+    node: bpy.types.FunctionNodeInputVector
+
+    def __init__(self, vector: list[float, float, float] | None = (0, 0, 0), **kwargs):
+        super().__init__()
+        key_args = kwargs
+        self.vector = vector
+        self._establish_links(**key_args)
+
+    @property
+    def o_vector(self) -> bpy.types.NodeSocketVector:
+        """Output socket: Vector"""
+        return self._output("Vector")
+
+    @property
+    def vector(self) -> list[float, float, float]:
+        return self.node.vector
+
+    @vector.setter
+    def vector(self, value: list[float, float, float]):
+        self.node.vector = value
+
+
 class RandomValue(NodeBuilder):
     """Random Value node"""
 

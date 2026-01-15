@@ -3,13 +3,15 @@ project:
   output-dir: _build
 
 website:
-  title: "databpy"
+  title: "nodebpy"
   page-navigation: true
 
   navbar:
     left:
       - href: index.qmd
         text: Home
+      - href: introduction.qmd
+        text: Introduction
       - href: reference/
         text: Reference
 
