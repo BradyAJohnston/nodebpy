@@ -42,10 +42,15 @@ def test_complex_tree_snapshot(snapshot_tree):
         transform2 = nodes.TransformGeometry(scale=scale)
 
         # Set up the tree
-        _  = nodes.JoinGeometry([
-            input >> subdivide >> transform1,
-            input >> transform2,
-        ]) >> output
+        _ = (
+            nodes.JoinGeometry(
+                [
+                    input >> subdivide >> transform1,
+                    input >> transform2,
+                ]
+            )
+            >> output
+        )
 
         # Set some specific values
         transform1.node.inputs["Translation"].default_value = (2.0, 0.0, 0.0)
@@ -60,8 +65,9 @@ def test_tree_with_math_nodes(snapshot_tree):
     """Test tree with math operations."""
     with TreeBuilder("MathTest") as tree:
         with tree.inputs:
-            value = sockets.SocketFloat("Value", 5.0)
             geo_in = sockets.SocketGeometry()
+            value = sockets.SocketFloat("Value", 5.0)
+
         with tree.outputs:
             geo_out = sockets.SocketGeometry()
             result = sockets.SocketFloat("Result")
