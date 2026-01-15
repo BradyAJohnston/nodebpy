@@ -8,6 +8,10 @@ TYPE_INPUT_ROTATION = (
 )
 TYPE_INPUT_BOOLEAN = "bool | NodeSocket | NodeBuilder | None"
 
+_AttributeDomains = typing.Literal[
+    "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+]
+
 
 class DataTypes:
     FLOAT = "FLOAT"
@@ -27,6 +31,36 @@ class AttributeTypes:
     ROTATION = "ROTATION"
     COLOR = "RGBA"
     RGBA = "RGBA"
+
+
+FloatInterfaceSubtypes = typing.Literal[
+    "NONE",
+    "PERCENTAGE",
+    "FACTOR",
+    "ANGLE",
+    "TIME",
+    "TIME_ABSOLUTE",
+    "DISTANCE",
+    "WAVELENGTH",
+    "COLOR_TEMPERATURE",
+    "FREQUENCY",
+]
+VectorInterfaceSubtypes = typing.Literal[
+    "NONE",
+    "PERCENTAGE",
+    "FACTOR",
+    "ANGLE",
+    "TIME",
+    "TIME_ABSOLUTE",
+    "DISTANCE",
+    "WAVELENGTH",
+    "COLOR_TEMPERATURE",
+    "FREQUENCY",
+]
+
+IntegerInterfaceSubtypes = typing.Literal["NONE", "PERCENTAGE", "FACTOR"]
+
+StringInterfaceSubtypes = typing.Literal["NONE", "FILE_PATH"]
 
 
 NodeMathItems = typing.Literal[

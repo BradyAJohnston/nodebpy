@@ -2,9 +2,10 @@ import pytest
 from pathlib import Path
 import bpy
 from nodebpy import TreeBuilder, nodes, sockets
+from .snapshots import TreeBuilderSnapshotExtension
 
 BLEND_DIR = Path(__file__).parent / "blend_files"
-
+JSON_DIR = Path(__file__).parent / "clippings"
 
 @pytest.fixture(autouse=True, scope="function")
 def clean_and_save(request):
@@ -26,8 +27,13 @@ def clean_and_save(request):
     bpy.data.objects["Cube"].modifiers.new("StoreTrees", "NODES")
     mod: bpy.types.NodesModifier = bpy.data.objects["Cube"].modifiers["StoreTrees"]  # type: ignore
     with TreeBuilder("StoredTrees") as tree:
-        geom = sockets.SocketGeometry("Geometry")
-        tree.interface(inputs=[geom], outputs=[geom])
+        with tree.inputs:
+            ing = sockets.SocketGeometry()
+        with tree.outputs:
+            ong = sockets.SocketGeometry()
+
+        _ = ing >> ong
+
         for i, name in enumerate(tree_names):
             n = nodes.Group()
             n.node.node_tree = bpy.data.node_groups[name]  # type: ignore
@@ -37,5 +43,10 @@ def clean_and_save(request):
 
     # save a .blendfile for inspection with the current tests' nodes and also
     # named after the current test function
-
     bpy.ops.wm.save_as_mainfile(filepath=str(BLEND_DIR / f"{request.node.name}.blend"))
+
+
+@pytest.fixture
+def snapshot_tree(snapshot):
+    """Fixture that provides tree snapshot functionality."""
+    return snapshot.with_defaults(extension_class=TreeBuilderSnapshotExtension)

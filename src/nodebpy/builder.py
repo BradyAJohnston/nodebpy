@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar, Any
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 import arrangebpy
 import bpy
@@ -11,10 +11,14 @@ from bpy.types import (
     NodeSocket,
 )
 
+from .nodes.types import (
+    FloatInterfaceSubtypes,
+    IntegerInterfaceSubtypes,
+    StringInterfaceSubtypes,
+    VectorInterfaceSubtypes,
+    _AttributeDomains,
+)
 # from .arrange import arrange_tree
-
-if TYPE_CHECKING:
-    from nodebpy.sockets import SocketBase
 
 GEO_NODE_NAMES = (
     f"GeometryNode{name}"
@@ -27,6 +31,7 @@ GEO_NODE_NAMES = (
         "PointsToVertices",
     )
 )
+
 
 # POSSIBLE_NODE_NAMES = "GeometryNode"
 LINKABLE = "Node | NodeSocket | NodeBuilder"
@@ -88,8 +93,8 @@ class TreeBuilder:
             self.tree = tree
 
         # Create socket accessors for named access
-        self.inputs = SocketAccessor(self, "INPUT")
-        self.outputs = SocketAccessor(self, "OUTPUT")
+        self.inputs = InputInterfaceContext(self)
+        self.outputs = OutputInterfaceContext(self)
         self._arrange = arrange
 
     def __enter__(self):
@@ -145,9 +150,9 @@ class TreeBuilder:
 
     def link(self, socket1: NodeSocket, socket2: NodeSocket):
         if isinstance(socket1, SocketLinker):
-            socket1 = socket1._socket
+            socket1 = socket1.socket
         if isinstance(socket2, SocketLinker):
-            socket2 = socket2._socket
+            socket2 = socket2.socket
 
         self.tree.links.new(socket1, socket2)
 
@@ -166,72 +171,65 @@ class TreeBuilder:
         assert self.just_added is not None
         return self.just_added
 
-    def interface(
-        self,
-        inputs: list[SocketBase] | None = None,
-        outputs: list[SocketBase] | None = None,
-    ) -> None:
-        """Define the node group interface with typed socket definitions.
 
-        Args:
-            inputs: List of input socket definitions
-            outputs: List of output socket definitions
+class SocketContext:
+    _direction: Literal["INPUT", "OUTPUT"] | None
+    _active_context: SocketContext | None = None
 
-        Example:
+    def __init__(self, tree_builder: TreeBuilder):
+        self.builder = tree_builder
 
-        """
-        if inputs:
-            for socket_def in inputs:
-                self._create_input_socket(socket_def)
+    @property
+    def tree(self) -> GeometryNodeTree:
+        tree = self.builder.tree
+        assert tree is not None and isinstance(tree, GeometryNodeTree)
+        return tree
 
-        if outputs:
-            for socket_def in outputs:
-                self._create_output_socket(socket_def)
+    @property
+    def interface(self) -> bpy.types.NodeTreeInterface:
+        interface = self.tree.interface
+        assert interface is not None
+        return interface
 
-    def _create_input_socket(self, socket_def: SocketBase) -> None:
-        """Create an input socket from a socket definition."""
-        socket = self.tree.interface.new_socket(
+    def _create_socket(
+        self, socket_def: SocketBase
+    ) -> bpy.types.NodeTreeInterfaceSocket:
+        """Create a socket from a socket definition."""
+        socket = self.interface.new_socket(
             name=socket_def.name,
-            in_out="INPUT",
-            socket_type=socket_def.bl_socket_type,
+            in_out=self._direction,
+            socket_type=socket_def._bl_socket_type,
         )
-        self._configure_socket(socket, socket_def)
+        socket.description = socket_def.description
+        return socket
 
-    def _create_output_socket(self, socket_def: SocketBase) -> None:
-        """Create an output socket from a socket definition."""
-        socket = self.tree.interface.new_socket(
-            name=socket_def.name,
-            in_out="OUTPUT",
-            socket_type=socket_def.bl_socket_type,
-        )
-        self._configure_socket(socket, socket_def)
+    def __enter__(self):
+        SocketContext._direction = self._direction
+        SocketContext._active_context = self
+        return self
 
-    def _configure_socket(self, socket, socket_def: SocketBase) -> None:
-        """Configure socket properties from definition."""
-        # Set default value if it exists
-        if hasattr(socket_def, "default") and hasattr(socket, "default_value"):
-            socket.default_value = socket_def.default
+    def __exit__(self, *args):
+        SocketContext._direction = None
+        SocketContext._active_context = None
+        pass
 
-        # Set min/max values if they exist
-        if hasattr(socket_def, "min_value") and socket_def.min_value is not None:
-            if hasattr(socket, "min_value"):
-                socket.min_value = socket_def.min_value
 
-        if hasattr(socket_def, "max_value") and socket_def.max_value is not None:
-            if hasattr(socket, "max_value"):
-                socket.max_value = socket_def.max_value
+class InputInterfaceContext(SocketContext):
+    _direction = "INPUT"
+    _active_context = None
 
-        # Set description
-        if socket_def.description:
-            socket.description = socket_def.description
+
+class OutputInterfaceContext(SocketContext):
+    _direction = "OUTPUT"
+    _active_context = None
 
 
 class NodeBuilder:
     """Base class for all geometry node wrappers."""
 
     node: Node
-    _tree: "TreeBuilder"
     name: str
+    _tree: "TreeBuilder"
     _link_target: str | None = None  # Track which input should receive links
     _from_socket: NodeSocket | None = None
     _default_input_id: str | None = None
@@ -247,6 +245,9 @@ class NodeBuilder:
                 f"  with tree:\n"
                 f"      node = {self.__class__.__name__}()\n"
             )
+
+        self.inputs = InputInterfaceContext(tree)
+        self.outputs = OutputInterfaceContext(tree)
 
         self._tree = tree
         self._link_target = None
@@ -407,7 +408,7 @@ class NodeBuilder:
         return None
 
     def __mul__(self, other: Any) -> "VectorMath | Math":
-        from .nodes import VectorMath, Math
+        from .nodes import Math, VectorMath
 
         match self._default_output_socket.type:
             case "VECTOR":
@@ -427,7 +428,7 @@ class NodeBuilder:
                 )
 
     def __rmul__(self, other: Any) -> "VectorMath | Math":
-        from .nodes import VectorMath, Math
+        from .nodes import Math, VectorMath
 
         match self._default_output_socket.type:
             case "VECTOR":
@@ -469,7 +470,7 @@ class NodeBuilder:
                 )
 
     def __add__(self, other: Any) -> "VectorMath | Math":
-        from .nodes import VectorMath, Math
+        from .nodes import Math, VectorMath
 
         match self._default_output_socket.type:
             case "VECTOR":
@@ -482,7 +483,7 @@ class NodeBuilder:
                 )
 
     def __radd__(self, other: Any) -> "VectorMath | Math":
-        from .nodes import VectorMath, Math
+        from .nodes import Math, VectorMath
 
         match self._default_output_socket.type:
             case "VECTOR":
@@ -498,14 +499,14 @@ class NodeBuilder:
 class SocketLinker(NodeBuilder):
     def __init__(self, socket: NodeSocket):
         assert socket.node is not None
-        self._socket = socket
+        self.socket = socket
         self.node = socket.node
         self._default_output_id = socket.identifier
         self._tree = TreeBuilder(socket.node.id_data)  # type: ignore
 
     @property
     def type(self) -> str:
-        return self._socket.type
+        return self.socket.type
 
 
 class SocketNodeBuilder(NodeBuilder):
@@ -535,34 +536,396 @@ class SocketNodeBuilder(NodeBuilder):
             raise ValueError("Input nodes don't have inputs")
 
 
-class SocketAccessor:
-    """Provides named access to tree input or output sockets.
+class SocketBase(SocketLinker):
+    """Base class for all socket definitions."""
 
-    Usage:
-        tree.inputs.geometry  # Access "Geometry" input socket
-        tree.outputs.result   # Access "Result" output socket
-    """
+    _bl_socket_type: str = ""
 
-    def __init__(self, tree: "TreeBuilder", direction: str):
-        self._tree = tree
-        self._direction = direction  # 'INPUT' or 'OUTPUT'
+    def __init__(self, name: str, description: str = ""):
+        self.name = name
+        self.description = description
 
-    def __getattr__(self, name: str) -> "NodeBuilder":
-        """Access a socket by normalized name.
-
-        Example:
-            tree.inputs.geometry -> accesses "Geometry" socket
-            tree.inputs.my_socket -> accesses "My Socket" socket
-        """
-        # Convert attribute name to socket name
-        socket_name = denormalize_name(name)
-
-        # Get the appropriate node
-        if self._direction == "INPUT":
-            node = self._tree._input_node()
+        self._socket_context: SocketContext = SocketContext._active_context
+        self.interface_socket = self._socket_context._create_socket(self)
+        self._tree = self._socket_context.builder
+        if self._socket_context._direction == "INPUT":
+            socket = self.tree._input_node().outputs[self.interface_socket.identifier]
         else:
-            node = self._tree._output_node()
+            socket = self.tree._output_node().inputs[self.interface_socket.identifier]
+        super().__init__(socket)
 
-        # Return a NodeBuilder wrapping this specific socket access
-        # We create a wrapper that will connect the right socket
-        return SocketNodeBuilder(node, socket_name, self._direction)
+    def _set_values(self, **kwargs):
+        for key, value in kwargs.items():
+            if value is None:
+                continue
+            setattr(self.interface_socket, key, value)
+
+
+class SocketGeometry(SocketBase):
+    """Geometry socket - holds mesh, curve, point cloud, or volume data."""
+
+    _bl_socket_type: str = "NodeSocketGeometry"
+    socket: bpy.types.NodeTreeInterfaceSocketGeometry
+
+    def __init__(self, name: str = "Geometry", description: str = ""):
+        super().__init__(name, description)
+
+
+class SocketBoolean(SocketBase):
+    """Boolean socket - true/false value."""
+
+    _bl_socket_type: str = "NodeSocketBool"
+    socket: bpy.types.NodeTreeInterfaceSocketBool
+
+    def __init__(
+        self,
+        name: str = "Boolean",
+        default_value: bool = False,
+        *,
+        description: str = "",
+        hide_value: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            hide_value=hide_value,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketFloat(SocketBase):
+    """Float socket"""
+
+    _bl_socket_type: str = "NodeSocketFloat"
+    socket: bpy.types.NodeTreeInterfaceSocketFloat
+
+    def __init__(
+        self,
+        name: str = "Value",
+        default_value: float = 0.0,
+        *,
+        description: str = "",
+        min_value: float | None = None,
+        max_value: float | None = None,
+        subtype: FloatInterfaceSubtypes = "NONE",
+        hide_value: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            subtype=subtype,
+            hide_value=hide_value,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketVector(SocketBase):
+    _bl_socket_type: str = "NodeSocketVector"
+    socket: bpy.types.NodeTreeInterfaceSocketVector
+
+    def __init__(
+        self,
+        name: str = "Vector",
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        *,
+        description: str = "",
+        dimensions: int = 3,
+        min_value: float | None = None,
+        max_value: float | None = None,
+        hide_value: bool = False,
+        subtype: VectorInterfaceSubtypes = "NONE",
+        default_attribute: str | None = None,
+        attribute_domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__(name, description)
+        assert len(default_value) == dimensions, (
+            "Default value length must match dimensions"
+        )
+        self._set_values(
+            dimensions=dimensions,
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            hide_value=hide_value,
+            subtype=subtype,
+            default_attribute=default_attribute,
+            attribute_domain=attribute_domain,
+        )
+
+
+class SocketInt(SocketBase):
+    _bl_socket_type: str = "NodeSocketInt"
+    socket: bpy.types.NodeTreeInterfaceSocketInt
+
+    def __init__(
+        self,
+        name: str = "Integer",
+        default_value: int = 0,
+        *,
+        description: str = "",
+        min_value: int = -2147483648,
+        max_value: int = 2147483647,
+        hide_value: bool = False,
+        subtype: IntegerInterfaceSubtypes = "NONE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            hide_value=hide_value,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketColor(SocketBase):
+    """Color socket - RGB color value."""
+
+    _bl_socket_type: str = "NodeSocketColor"
+    socket: bpy.types.NodeTreeInterfaceSocketColor
+
+    def __init__(
+        self,
+        name: str = "Color",
+        default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
+        *,
+        description: str = "",
+        hide_value: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        assert len(default_value) == 4, "Default color must be RGBA tuple"
+        self._set_values(
+            default_value=default_value,
+            hide_value=hide_value,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketRotation(SocketBase):
+    """Rotation socket - rotation value (Euler or Quaternion)."""
+
+    _bl_socket_type: str = "NodeSocketRotation"
+    socket: bpy.types.NodeTreeInterfaceSocketRotation
+
+    def __init__(
+        self,
+        name: str = "Rotation",
+        default_value: tuple[float, float, float] = (1.0, 0.0, 0.0),
+        *,
+        description: str = "",
+        hide_value: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        assert len(default_value) == 4, "Default rotation must be quaternion tuple"
+        self._set_values(
+            default_value=default_value,
+            hide_value=hide_value,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketMatrix(SocketBase):
+    """Matrix socket - 4x4 transformation matrix."""
+
+    _bl_socket_type: str = "NodeSocketMatrix"
+    socket: bpy.types.NodeTreeInterfaceSocketMatrix
+
+    def __init__(
+        self,
+        name: str = "Matrix",
+        *,
+        description: str = "",
+        hide_value: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            hide_value=hide_value,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketString(SocketBase):
+    _bl_socket_type: str = "NodeSocketString"
+    socket: bpy.types.NodeTreeInterfaceSocketString
+
+    def __init__(
+        self,
+        name: str = "String",
+        default_value: str = "",
+        *,
+        description: str = "",
+        hide_value: bool = False,
+        subtype: StringInterfaceSubtypes = "NONE",
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            hide_value=hide_value,
+            subtype=subtype,
+        )
+
+
+class MenuSocket(SocketBase):
+    """Menu socket - holds a selection from predefined items."""
+
+    _bl_socket_type: str = "NodeSocketMenu"
+    socket: bpy.types.NodeTreeInterfaceSocketMenu
+
+    def __init__(
+        self,
+        name: str = "Menu",
+        default_value: str | None = None,
+        *,
+        description: str = "",
+        expanded: bool = False,
+        hide_value: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            menu_expanded=expanded,
+            hide_value=hide_value,
+        )
+
+
+class SocketObject(SocketBase):
+    """Object socket - Blender object reference."""
+
+    _bl_socket_type: str = "NodeSocketObject"
+    socket: bpy.types.NodeTreeInterfaceSocketObject
+
+    def __init__(
+        self,
+        name: str = "Object",
+        default_value: bpy.types.Object | None = None,
+        *,
+        description: str = "",
+        hide_value: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            hide_value=hide_value,
+        )
+
+
+class SocketCollection(SocketBase):
+    """Collection socket - Blender collection reference."""
+
+    _bl_socket_type: str = "NodeSocketCollection"
+    socket: bpy.types.NodeTreeInterfaceSocketCollection
+
+    def __init__(
+        self,
+        name: str = "Collection",
+        default_value: bpy.types.Collection | None = None,
+        *,
+        description: str = "",
+        hide_value: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            hide_value=hide_value,
+        )
+
+
+class SocketImage(SocketBase):
+    """Image socket - Blender image datablock reference."""
+
+    _bl_socket_type: str = "NodeSocketImage"
+    socket: bpy.types.NodeTreeInterfaceSocketImage
+
+    def __init__(
+        self,
+        name: str = "Image",
+        default_value: bpy.types.Image | None = None,
+        *,
+        description: str = "",
+        hide_value: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            hide_value=hide_value,
+        )
+
+
+class SocketMaterial(SocketBase):
+    """Material socket - Blender material reference."""
+
+    _bl_socket_type: str = "NodeSocketMaterial"
+    socket: bpy.types.NodeTreeInterfaceSocketMaterial
+
+    def __init__(
+        self,
+        name: str = "Material",
+        default_value: bpy.types.Material | None = None,
+        *,
+        description: str = "",
+        hide_value: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            hide_value=hide_value,
+        )
+
+
+class SocketBundle(SocketBase):
+    """Bundle socket - holds multiple data types in one socket."""
+
+    _bl_socket_type: str = "NodeSocketBundle"
+    socket: bpy.types.NodeTreeInterfaceSocketBundle
+
+    def __init__(
+        self,
+        name: str = "Bundle",
+        *,
+        description: str = "",
+        hide_value: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            hide_value=hide_value,
+        )
+
+
+class SocketClosure(SocketBase):
+    """Closure socket - holds shader closure data."""
+
+    _bl_socket_type: str = "NodeSocketClosure"
+    socket: bpy.types.NodeTreeInterfaceSocketClosure
+
+    def __init__(
+        self,
+        name: str = "Closure",
+        *,
+        description: str = "",
+        hide_value: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            hide_value=hide_value,
+        )

@@ -16,10 +16,8 @@ KNOWN LIMITATIONS:
 
 from __future__ import annotations
 import bpy
-from typing import Any
 from typing_extensions import Literal
 from ..builder import NodeBuilder, NodeSocket
-from . import types
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
 
 
@@ -3012,30 +3010,6 @@ class IsViewport(NodeBuilder):
     def o_is_viewport(self) -> bpy.types.NodeSocketBool:
         """Output socket: Is Viewport"""
         return self._output("Is Viewport")
-
-
-class JoinGeometry(NodeBuilder):
-    """Merge separately generated geometries into a single one"""
-
-    name = "GeometryNodeJoinGeometry"
-    node: bpy.types.GeometryNodeJoinGeometry
-
-    def __init__(self, geometry: LINKABLE = None, **kwargs):
-        super().__init__()
-        key_args = {"Geometry": geometry}
-        key_args.update(kwargs)
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_geometry(self) -> NodeSocket:
-        """Input socket: Geometry"""
-        return self._input("Geometry")
-
-    @property
-    def o_geometry(self) -> NodeSocket:
-        """Output socket: Geometry"""
-        return self._output("Geometry")
 
 
 class List(NodeBuilder):

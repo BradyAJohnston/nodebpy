@@ -1,4 +1,3 @@
-import bpy
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
 from nodebpy import sockets as s
@@ -6,10 +5,11 @@ from nodebpy import sockets as s
 
 def test_create_tree_and_save():
     with TreeBuilder("AnotherTree") as tree:
-        tree.interface(
-            inputs=[s.SocketInt("Count")],
-            outputs=[s.SocketGeometry("Instances")],
-        )
+        with tree.inputs:
+            count = s.SocketInt("Count")
+        with tree.outputs:
+            instances = s.SocketGeometry("Instances")
+
 
         rotation = (
             n.RandomValue.vector(min=(-1, -1, -1), seed=2)
@@ -20,7 +20,7 @@ def test_create_tree_and_save():
         )
 
         _ = (
-            tree.inputs.count
+            count
             >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
             >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
             >> n.SetPosition(
@@ -29,5 +29,5 @@ def test_create_tree_and_save():
             )
             >> n.RealizeInstances()
             >> n.InstanceOnPoints(n.Cube(), instance=...)
-            >> tree.outputs.instances
+            >> instances
         )
