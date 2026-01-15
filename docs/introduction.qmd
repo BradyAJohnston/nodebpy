@@ -1,0 +1,90 @@
+---
+title: What happens when we add nodes?
+---
+
+```{python}
+from nodebpy import TreeBuilder, nodes as n, sockets as s
+```
+
+## Adding Nodes
+
+Adding nodes must be done inside of a context. We enter a context using the `with` keyword.
+While inside of this context, whenever you call a node class (`n.SetPosition()`) a node of that type will be added to the current tree.
+
+This first example creates a new tree and adds two new nodes, linking the `Set Position` node into the `Transform Geometry` node. The output and input sockets for each are inferred based on simple heuristics around socket type and order.
+
+```{python}
+with TreeBuilder("NewTree") as tree:
+    n.SetPosition() >> n.TransformGeometry()
+
+tree
+```
+
+These nodes can be saved as variables for re-use later in the node tree as well. After instantiating a class you can specify the input and output sockets using the `i_*` and `o_*` properties on the class. 
+
+These two approaches are equivalent:
+
+::: {.panel-tabset}
+
+## Individual Socket Access
+
+```{python}
+with TreeBuilder("AnotherTree") as tree:
+    pos = n.SetPosition()
+    
+    n.Position() * 0.5 >> pos.i_position
+    n.Vector() >> pos.i_offset
+```
+
+## Using Arguments to Class
+
+```{python}
+with TreeBuilder("AnotherAnotherTree") as tree:
+    n.SetPosition(
+        offset = n.Vector(),
+        position = n.Position() * 0.5
+    )
+```
+
+:::
+
+```{python}
+#| echo: false
+tree
+```
+
+## Node Input Sockets
+
+The socket interface nodes define what values / sockets are available as inputs for the node tree.
+
+We define them in a similar way to the socekts themselves, using context with the `tree.inputs` and `tree.outputs` and adding sockets with the `s.SocketGeometry()`.
+
+```{python}
+with TreeBuilder("NewTree") as tree:
+    with tree.inputs:
+        geom_inputs = [s.SocketGeometry(f"Geometry_{i}") for i in range(5)]
+    
+    with tree.outputs:
+        n.JoinGeometry(geom_inputs) >> s.SocketGeometry("The Output Socket")
+        
+tree
+
+```
+
+
+```{python}
+with TreeBuilder() as tree:
+    with tree.inputs:
+        count = s.SocketInt("Count", 10)
+    
+    with tree.outputs:
+        output = s.SocketGeometry()
+    
+    (
+        count
+        >> n.Points(position=n.RandomValue.vector(min=(-0.1,-0.1,-0.2)))
+        >> output
+    )
+
+tree
+```

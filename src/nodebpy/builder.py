@@ -290,7 +290,14 @@ class NodeBuilder:
         # so instead we have to convert the identifier to an index and then lookup the socket
         # from the index instead
         input_ids = [input.identifier for input in self.node.inputs]
-        return input_ids.index(identifier)
+        if identifier in input_ids:
+            idx = input_ids.index(identifier)
+            return idx
+        input_names = [input.name for input in self.node.inputs]
+        if identifier in input_names:
+            return input_names.index(identifier)
+
+        raise RuntimeError()
 
     def _output_idx(self, identifier: str) -> int:
         output_ids = [output.identifier for output in self.node.outputs]
@@ -298,7 +305,8 @@ class NodeBuilder:
 
     def _input(self, identifier: str) -> SocketLinker:
         """Input socket: Vector"""
-        return SocketLinker(self.node.inputs[self._input_idx(identifier)])
+        input = self.node.inputs[self._input_idx(identifier)]
+        return SocketLinker(input)
 
     def _output(self, identifier: str) -> SocketLinker:
         """Output socket: Vector"""
@@ -336,7 +344,6 @@ class NodeBuilder:
             # we can also provide just a default value for the socket to take if we aren't
             # providing a socket to link with
             elif isinstance(value, (NodeBuilder, SocketNodeBuilder, NodeSocket, Node)):
-                # print("Linking from", value, "to", name)
                 self.link_from(value, name)
             else:
                 if name in input_ids:
@@ -346,7 +353,7 @@ class NodeBuilder:
                     input = self.node.inputs[name.replace("_", "").capitalize()]
                     input.default_value = value
 
-    def __rshift__(self, other: "NodeBuilder") -> "NodeBuilder":
+    def __rshift__(self, other: "NodeBuilder | SocketLinker") -> "NodeBuilder":
         """Chain nodes using >> operator. Links output to input.
 
         Usage:
@@ -362,19 +369,24 @@ class NodeBuilder:
         socket_out = self.node.outputs.get("Geometry") or self._default_output_socket
         other._from_socket = socket_out
 
-        # Get target socket
-        if other._link_target is not None:
-            # Use specific target if set by ellipsis
-            socket_in = self._get_input_socket_by_name(other, other._link_target)
+        if isinstance(other, SocketLinker):
+            socket_in = other.socket
         else:
-            # Default behavior - prefer Geometry, fall back to default
-            socket_in = other.node.inputs.get("Geometry") or other._default_input_socket
+            # Get target socket
+            if other._link_target is not None:
+                # Use specific target if set by ellipsis
+                socket_in = self._get_input_socket_by_name(other, other._link_target)
+            else:
+                # Default behavior - prefer Geometry, fall back to default
+                socket_in = (
+                    other.node.inputs.get("Geometry") or other._default_input_socket
+                )
 
-        # If target socket already has a link and isn't multi-input, try next available socket
-        if socket_in.links and not socket_in.is_multi_input:
-            socket_in = (
-                self._get_next_available_socket(socket_in, socket_out) or socket_in
-            )
+            # If target socket already has a link and isn't multi-input, try next available socket
+            if socket_in.links and not socket_in.is_multi_input:
+                socket_in = (
+                    self._get_next_available_socket(socket_in, socket_out) or socket_in
+                )
 
         self.tree.link(socket_out, socket_in)
         return other
@@ -507,6 +519,10 @@ class SocketLinker(NodeBuilder):
     @property
     def type(self) -> str:
         return self.socket.type
+
+    @property
+    def socket_name(self) -> str:
+        return self.socket.name
 
 
 class SocketNodeBuilder(NodeBuilder):
