@@ -19,7 +19,7 @@ from __future__ import annotations
 import bpy
 from typing_extensions import Literal
 
-from ..builder import NodeBuilder, NodeSocket
+from ..builder import NodeBuilder, NodeSocket, SocketLinker
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
 
 
@@ -49,7 +49,7 @@ class CurveToMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
@@ -59,17 +59,17 @@ class CurveToMesh(NodeBuilder):
         return self._input("Profile Curve")
 
     @property
-    def i_scale(self) -> bpy.types.NodeSocketFloat:
+    def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
         return self._input("Scale")
 
     @property
-    def i_fill_caps(self) -> bpy.types.NodeSocketBool:
+    def i_fill_caps(self) -> SocketLinker:
         """Input socket: Fill Caps"""
         return self._input("Fill Caps")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
@@ -93,7 +93,7 @@ class DualMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
@@ -103,7 +103,7 @@ class DualMesh(NodeBuilder):
         return self._input("Keep Boundaries")
 
     @property
-    def o_dual_mesh(self) -> NodeSocket:
+    def o_dual_mesh(self) -> SocketLinker:
         """Output socket: Dual Mesh"""
         return self._output("Dual Mesh")
 
@@ -137,17 +137,17 @@ class ExtrudeMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_offset(self) -> NodeSocket:
+    def i_offset(self) -> SocketLinker:
         """Input socket: Offset"""
         return self._input("Offset")
 
@@ -157,22 +157,22 @@ class ExtrudeMesh(NodeBuilder):
         return self._input("Offset Scale")
 
     @property
-    def i_individual(self) -> bpy.types.NodeSocketBool:
+    def i_individual(self) -> SocketLinker:
         """Input socket: Individual"""
         return self._input("Individual")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
     @property
-    def o_top(self) -> bpy.types.NodeSocketBool:
+    def o_top(self) -> SocketLinker:
         """Output socket: Top"""
         return self._output("Top")
 
     @property
-    def o_side(self) -> bpy.types.NodeSocketBool:
+    def o_side(self) -> SocketLinker:
         """Output socket: Side"""
         return self._output("Side")
 
@@ -205,22 +205,22 @@ class GridToMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grid(self) -> bpy.types.NodeSocketFloat:
+    def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
         return self._input("Grid")
 
     @property
-    def i_threshold(self) -> bpy.types.NodeSocketFloat:
+    def i_threshold(self) -> SocketLinker:
         """Input socket: Threshold"""
         return self._input("Threshold")
 
     @property
-    def i_adaptivity(self) -> NodeSocket:
+    def i_adaptivity(self) -> SocketLinker:
         """Input socket: Adaptivity"""
         return self._input("Adaptivity")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
@@ -261,7 +261,7 @@ class EdgeNeighbors(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_face_count(self) -> bpy.types.NodeSocketInt:
+    def o_face_count(self) -> SocketLinker:
         """Output socket: Face Count"""
         return self._output("Face Count")
 
@@ -289,12 +289,12 @@ class EdgeVertices(NodeBuilder):
         return self._output("Vertex Index 2")
 
     @property
-    def o_position_1(self) -> bpy.types.NodeSocketVector:
+    def o_position_1(self) -> SocketLinker:
         """Output socket: Position 1"""
         return self._output("Position 1")
 
     @property
-    def o_position_2(self) -> bpy.types.NodeSocketVector:
+    def o_position_2(self) -> SocketLinker:
         """Output socket: Position 2"""
         return self._output("Position 2")
 
@@ -312,7 +312,7 @@ class FaceArea(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_area(self) -> bpy.types.NodeSocketFloat:
+    def o_area(self) -> SocketLinker:
         """Output socket: Area"""
         return self._output("Area")
 
@@ -331,12 +331,12 @@ class IsFacePlanar(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_threshold(self) -> NodeSocket:
+    def i_threshold(self) -> SocketLinker:
         """Input socket: Threshold"""
         return self._input("Threshold")
 
     @property
-    def o_planar(self) -> bpy.types.NodeSocketBool:
+    def o_planar(self) -> SocketLinker:
         """Output socket: Planar"""
         return self._output("Planar")
 
@@ -359,7 +359,7 @@ class FaceNeighbors(NodeBuilder):
         return self._output("Vertex Count")
 
     @property
-    def o_face_count(self) -> bpy.types.NodeSocketInt:
+    def o_face_count(self) -> SocketLinker:
         """Output socket: Face Count"""
         return self._output("Face Count")
 
@@ -405,7 +405,7 @@ class VertexNeighbors(NodeBuilder):
         return self._output("Vertex Count")
 
     @property
-    def o_face_count(self) -> bpy.types.NodeSocketInt:
+    def o_face_count(self) -> SocketLinker:
         """Output socket: Face Count"""
         return self._output("Face Count")
 
@@ -451,17 +451,17 @@ class MeshBoolean(NodeBuilder):
         return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
 
     @property
-    def i_mesh_1(self) -> NodeSocket:
+    def i_mesh_1(self) -> SocketLinker:
         """Input socket: Mesh 1"""
         return self._input("Mesh 1")
 
     @property
-    def i_mesh_2(self) -> NodeSocket:
+    def i_mesh_2(self) -> SocketLinker:
         """Input socket: Mesh 2"""
         return self._input("Mesh 2")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
@@ -502,17 +502,17 @@ class MeshCircle(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vertices(self) -> bpy.types.NodeSocketInt:
+    def i_vertices(self) -> SocketLinker:
         """Input socket: Vertices"""
         return self._input("Vertices")
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
@@ -556,7 +556,7 @@ class Cone(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vertices(self) -> bpy.types.NodeSocketInt:
+    def i_vertices(self) -> SocketLinker:
         """Input socket: Vertices"""
         return self._input("Vertices")
 
@@ -571,7 +571,7 @@ class Cone(NodeBuilder):
         return self._input("Fill Segments")
 
     @property
-    def i_radius_top(self) -> NodeSocket:
+    def i_radius_top(self) -> SocketLinker:
         """Input socket: Radius Top"""
         return self._input("Radius Top")
 
@@ -581,32 +581,32 @@ class Cone(NodeBuilder):
         return self._input("Radius Bottom")
 
     @property
-    def i_depth(self) -> NodeSocket:
+    def i_depth(self) -> SocketLinker:
         """Input socket: Depth"""
         return self._input("Depth")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
     @property
-    def o_top(self) -> bpy.types.NodeSocketBool:
+    def o_top(self) -> SocketLinker:
         """Output socket: Top"""
         return self._output("Top")
 
     @property
-    def o_bottom(self) -> bpy.types.NodeSocketBool:
+    def o_bottom(self) -> SocketLinker:
         """Output socket: Bottom"""
         return self._output("Bottom")
 
     @property
-    def o_side(self) -> bpy.types.NodeSocketBool:
+    def o_side(self) -> SocketLinker:
         """Output socket: Side"""
         return self._output("Side")
 
     @property
-    def o_uv_map(self) -> bpy.types.NodeSocketVector:
+    def o_uv_map(self) -> SocketLinker:
         """Output socket: UV Map"""
         return self._output("UV Map")
 
@@ -645,32 +645,32 @@ class Cube(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_size(self) -> NodeSocket:
+    def i_size(self) -> SocketLinker:
         """Input socket: Size"""
         return self._input("Size")
 
     @property
-    def i_vertices_x(self) -> bpy.types.NodeSocketInt:
+    def i_vertices_x(self) -> SocketLinker:
         """Input socket: Vertices X"""
         return self._input("Vertices X")
 
     @property
-    def i_vertices_y(self) -> bpy.types.NodeSocketInt:
+    def i_vertices_y(self) -> SocketLinker:
         """Input socket: Vertices Y"""
         return self._input("Vertices Y")
 
     @property
-    def i_vertices_z(self) -> bpy.types.NodeSocketInt:
+    def i_vertices_z(self) -> SocketLinker:
         """Input socket: Vertices Z"""
         return self._input("Vertices Z")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
     @property
-    def o_uv_map(self) -> bpy.types.NodeSocketVector:
+    def o_uv_map(self) -> SocketLinker:
         """Output socket: UV Map"""
         return self._output("UV Map")
 
@@ -704,7 +704,7 @@ class Cylinder(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vertices(self) -> bpy.types.NodeSocketInt:
+    def i_vertices(self) -> SocketLinker:
         """Input socket: Vertices"""
         return self._input("Vertices")
 
@@ -719,37 +719,37 @@ class Cylinder(NodeBuilder):
         return self._input("Fill Segments")
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
     @property
-    def i_depth(self) -> NodeSocket:
+    def i_depth(self) -> SocketLinker:
         """Input socket: Depth"""
         return self._input("Depth")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
     @property
-    def o_top(self) -> bpy.types.NodeSocketBool:
+    def o_top(self) -> SocketLinker:
         """Output socket: Top"""
         return self._output("Top")
 
     @property
-    def o_side(self) -> bpy.types.NodeSocketBool:
+    def o_side(self) -> SocketLinker:
         """Output socket: Side"""
         return self._output("Side")
 
     @property
-    def o_bottom(self) -> bpy.types.NodeSocketBool:
+    def o_bottom(self) -> SocketLinker:
         """Output socket: Bottom"""
         return self._output("Bottom")
 
     @property
-    def o_uv_map(self) -> bpy.types.NodeSocketVector:
+    def o_uv_map(self) -> SocketLinker:
         """Output socket: UV Map"""
         return self._output("UV Map")
 
@@ -812,32 +812,32 @@ class Grid(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_size_x(self) -> NodeSocket:
+    def i_size_x(self) -> SocketLinker:
         """Input socket: Size X"""
         return self._input("Size X")
 
     @property
-    def i_size_y(self) -> NodeSocket:
+    def i_size_y(self) -> SocketLinker:
         """Input socket: Size Y"""
         return self._input("Size Y")
 
     @property
-    def i_vertices_x(self) -> bpy.types.NodeSocketInt:
+    def i_vertices_x(self) -> SocketLinker:
         """Input socket: Vertices X"""
         return self._input("Vertices X")
 
     @property
-    def i_vertices_y(self) -> bpy.types.NodeSocketInt:
+    def i_vertices_y(self) -> SocketLinker:
         """Input socket: Vertices Y"""
         return self._input("Vertices Y")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
     @property
-    def o_uv_map(self) -> bpy.types.NodeSocketVector:
+    def o_uv_map(self) -> SocketLinker:
         """Output socket: UV Map"""
         return self._output("UV Map")
 
@@ -861,7 +861,7 @@ class IcoSphere(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
@@ -871,12 +871,12 @@ class IcoSphere(NodeBuilder):
         return self._input("Subdivisions")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
     @property
-    def o_uv_map(self) -> bpy.types.NodeSocketVector:
+    def o_uv_map(self) -> SocketLinker:
         """Output socket: UV Map"""
         return self._output("UV Map")
 
@@ -904,7 +904,7 @@ class MeshLine(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_count(self) -> bpy.types.NodeSocketInt:
+    def i_count(self) -> SocketLinker:
         """Input socket: Count"""
         return self._input("Count")
 
@@ -914,12 +914,12 @@ class MeshLine(NodeBuilder):
         return self._input("Start Location")
 
     @property
-    def i_offset(self) -> NodeSocket:
+    def i_offset(self) -> SocketLinker:
         """Input socket: Offset"""
         return self._input("Offset")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
@@ -960,17 +960,17 @@ class MeshToCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1009,17 +1009,17 @@ class MeshToDensityGrid(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
     @property
-    def i_density(self) -> bpy.types.NodeSocketFloat:
+    def i_density(self) -> SocketLinker:
         """Input socket: Density"""
         return self._input("Density")
 
     @property
-    def i_voxel_size(self) -> NodeSocket:
+    def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
         return self._input("Voxel Size")
 
@@ -1061,27 +1061,27 @@ class MeshToPoints(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_position(self) -> bpy.types.NodeSocketVector:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
         return self._input("Position")
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
     @property
-    def o_points(self) -> NodeSocket:
+    def o_points(self) -> SocketLinker:
         """Output socket: Points"""
         return self._output("Points")
 
@@ -1114,22 +1114,22 @@ class MeshToSDFGrid(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
     @property
-    def i_voxel_size(self) -> NodeSocket:
+    def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
         return self._input("Voxel Size")
 
     @property
-    def i_band_width(self) -> bpy.types.NodeSocketInt:
+    def i_band_width(self) -> SocketLinker:
         """Input socket: Band Width"""
         return self._input("Band Width")
 
     @property
-    def o_sdf_grid(self) -> bpy.types.NodeSocketFloat:
+    def o_sdf_grid(self) -> SocketLinker:
         """Output socket: SDF Grid"""
         return self._output("SDF Grid")
 
@@ -1164,12 +1164,12 @@ class MeshToVolume(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
     @property
-    def i_density(self) -> bpy.types.NodeSocketFloat:
+    def i_density(self) -> SocketLinker:
         """Input socket: Density"""
         return self._input("Density")
 
@@ -1179,7 +1179,7 @@ class MeshToVolume(NodeBuilder):
         return self._input("Resolution Mode")
 
     @property
-    def i_voxel_size(self) -> NodeSocket:
+    def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
         return self._input("Voxel Size")
 
@@ -1194,7 +1194,7 @@ class MeshToVolume(NodeBuilder):
         return self._input("Interior Band Width")
 
     @property
-    def o_volume(self) -> NodeSocket:
+    def o_volume(self) -> SocketLinker:
         """Output socket: Volume"""
         return self._output("Volume")
 
@@ -1219,27 +1219,27 @@ class UVSphere(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_segments(self) -> bpy.types.NodeSocketInt:
+    def i_segments(self) -> SocketLinker:
         """Input socket: Segments"""
         return self._input("Segments")
 
     @property
-    def i_rings(self) -> bpy.types.NodeSocketInt:
+    def i_rings(self) -> SocketLinker:
         """Input socket: Rings"""
         return self._input("Rings")
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
     @property
-    def o_uv_map(self) -> bpy.types.NodeSocketVector:
+    def o_uv_map(self) -> SocketLinker:
         """Output socket: UV Map"""
         return self._output("UV Map")
 
@@ -1273,7 +1273,7 @@ class SetMeshNormal(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
@@ -1293,7 +1293,7 @@ class SetMeshNormal(NodeBuilder):
         return self._input("Face Sharpness")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
@@ -1330,17 +1330,17 @@ class SubdivideMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
     @property
-    def i_level(self) -> bpy.types.NodeSocketInt:
+    def i_level(self) -> SocketLinker:
         """Input socket: Level"""
         return self._input("Level")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
@@ -1375,7 +1375,7 @@ class VolumeToMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_volume(self) -> NodeSocket:
+    def i_volume(self) -> SocketLinker:
         """Input socket: Volume"""
         return self._input("Volume")
 
@@ -1385,7 +1385,7 @@ class VolumeToMesh(NodeBuilder):
         return self._input("Resolution Mode")
 
     @property
-    def i_voxel_size(self) -> NodeSocket:
+    def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
         return self._input("Voxel Size")
 
@@ -1395,16 +1395,16 @@ class VolumeToMesh(NodeBuilder):
         return self._input("Voxel Amount")
 
     @property
-    def i_threshold(self) -> bpy.types.NodeSocketFloat:
+    def i_threshold(self) -> SocketLinker:
         """Input socket: Threshold"""
         return self._input("Threshold")
 
     @property
-    def i_adaptivity(self) -> NodeSocket:
+    def i_adaptivity(self) -> SocketLinker:
         """Input socket: Adaptivity"""
         return self._input("Adaptivity")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")

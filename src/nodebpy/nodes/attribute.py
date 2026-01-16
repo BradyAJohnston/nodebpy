@@ -15,9 +15,11 @@ KNOWN LIMITATIONS:
 """
 
 from __future__ import annotations
+
 import bpy
 from typing_extensions import Literal
-from ..builder import NodeBuilder, NodeSocket
+
+from ..builder import NodeBuilder, NodeSocket, SocketLinker
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN
 
 
@@ -42,7 +44,7 @@ class DomainSize(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> NodeSocket:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
         return self._input("Geometry")
 
@@ -52,12 +54,12 @@ class DomainSize(NodeBuilder):
         return self._output("Point Count")
 
     @property
-    def o_edge_count(self) -> bpy.types.NodeSocketInt:
+    def o_edge_count(self) -> SocketLinker:
         """Output socket: Edge Count"""
         return self._output("Edge Count")
 
     @property
-    def o_face_count(self) -> bpy.types.NodeSocketInt:
+    def o_face_count(self) -> SocketLinker:
         """Output socket: Face Count"""
         return self._output("Face Count")
 
@@ -122,47 +124,47 @@ class AttributeStatistic(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> NodeSocket:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
         return self._input("Geometry")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_attribute(self) -> bpy.types.NodeSocketFloat:
+    def i_attribute(self) -> SocketLinker:
         """Input socket: Attribute"""
         return self._input("Attribute")
 
     @property
-    def o_mean(self) -> bpy.types.NodeSocketFloat:
+    def o_mean(self) -> SocketLinker:
         """Output socket: Mean"""
         return self._output("Mean")
 
     @property
-    def o_median(self) -> bpy.types.NodeSocketFloat:
+    def o_median(self) -> SocketLinker:
         """Output socket: Median"""
         return self._output("Median")
 
     @property
-    def o_sum(self) -> bpy.types.NodeSocketFloat:
+    def o_sum(self) -> SocketLinker:
         """Output socket: Sum"""
         return self._output("Sum")
 
     @property
-    def o_min(self) -> bpy.types.NodeSocketFloat:
+    def o_min(self) -> SocketLinker:
         """Output socket: Min"""
         return self._output("Min")
 
     @property
-    def o_max(self) -> bpy.types.NodeSocketFloat:
+    def o_max(self) -> SocketLinker:
         """Output socket: Max"""
         return self._output("Max")
 
     @property
-    def o_range(self) -> bpy.types.NodeSocketFloat:
+    def o_range(self) -> SocketLinker:
         """Output socket: Range"""
         return self._output("Range")
 
@@ -172,7 +174,7 @@ class AttributeStatistic(NodeBuilder):
         return self._output("Standard Deviation")
 
     @property
-    def o_variance(self) -> bpy.types.NodeSocketFloat:
+    def o_variance(self) -> SocketLinker:
         """Output socket: Variance"""
         return self._output("Variance")
 
@@ -266,22 +268,22 @@ class BlurAttribute(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_value(self) -> bpy.types.NodeSocketFloat:
+    def i_value(self) -> SocketLinker:
         """Input socket: Value"""
         return self._input("Value")
 
     @property
-    def i_iterations(self) -> bpy.types.NodeSocketInt:
+    def i_iterations(self) -> SocketLinker:
         """Input socket: Iterations"""
         return self._input("Iterations")
 
     @property
-    def i_weight(self) -> NodeSocket:
+    def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
         return self._input("Weight")
 
     @property
-    def o_value(self) -> bpy.types.NodeSocketFloat:
+    def o_value(self) -> SocketLinker:
         """Output socket: Value"""
         return self._output("Value")
 
@@ -360,17 +362,17 @@ class NamedAttribute(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_name(self) -> bpy.types.NodeSocketString:
+    def i_name(self) -> SocketLinker:
         """Input socket: Name"""
         return self._input("Name")
 
     @property
-    def o_attribute(self) -> bpy.types.NodeSocketFloat:
+    def o_attribute(self) -> SocketLinker:
         """Output socket: Attribute"""
         return self._output("Attribute")
 
     @property
-    def o_exists(self) -> bpy.types.NodeSocketBool:
+    def o_exists(self) -> SocketLinker:
         """Output socket: Exists"""
         return self._output("Exists")
 
@@ -436,7 +438,7 @@ class RemoveNamedAttribute(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> NodeSocket:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
         return self._input("Geometry")
 
@@ -446,12 +448,12 @@ class RemoveNamedAttribute(NodeBuilder):
         return self._input("Pattern Mode")
 
     @property
-    def i_name(self) -> bpy.types.NodeSocketString:
+    def i_name(self) -> SocketLinker:
         """Input socket: Name"""
         return self._input("Name")
 
     @property
-    def o_geometry(self) -> NodeSocket:
+    def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
         return self._output("Geometry")
 
@@ -501,27 +503,27 @@ class StoreNamedAttribute(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> NodeSocket:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
         return self._input("Geometry")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_name(self) -> bpy.types.NodeSocketString:
+    def i_name(self) -> SocketLinker:
         """Input socket: Name"""
         return self._input("Name")
 
     @property
-    def i_value(self) -> bpy.types.NodeSocketFloat:
+    def i_value(self) -> SocketLinker:
         """Input socket: Value"""
         return self._input("Value")
 
     @property
-    def o_geometry(self) -> NodeSocket:
+    def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
         return self._output("Geometry")
 
