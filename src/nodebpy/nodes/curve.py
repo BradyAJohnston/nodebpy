@@ -235,7 +235,7 @@ class BezierSegment(NodeBuilder):
         resolution: LINKABLE | None = 16,
         start: LINKABLE | None = [-1.0, 0.0, 0.0],
         start_handle: LINKABLE | None = [-0.5, 0.5, 0.0],
-        end_handle: LINKABLE | None = [0.0, 0.0, 0.0],
+        end_handle: LINKABLE | None = (0.0, 0.0, 0.0),
         end: LINKABLE | None = [1.0, 0.0, 0.0],
         mode: Literal["POSITION", "OFFSET"] = "POSITION",
         **kwargs,
@@ -342,7 +342,7 @@ class CurveLine(NodeBuilder):
 
     def __init__(
         self,
-        start: LINKABLE | None = [0.0, 0.0, 0.0],
+        start: LINKABLE | None = (0.0, 0.0, 0.0),
         end: LINKABLE | None = [0.0, 0.0, 1.0],
         mode: Literal["POINTS", "DIRECTION"] = "POINTS",
         **kwargs,
@@ -1063,10 +1063,10 @@ class InterpolateCurves(NodeBuilder):
     def __init__(
         self,
         guide_curves: LINKABLE = None,
-        guide_up: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        guide_up: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         guide_group_id: int | LINKABLE | None = 0,
         points: LINKABLE = None,
-        point_up: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        point_up: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         point_group_id: int | LINKABLE | None = 0,
         max_neighbors: int | LINKABLE | None = 4,
         **kwargs,
@@ -1518,8 +1518,8 @@ class SetHandlePositions(NodeBuilder):
         self,
         curve: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
-        offset: LINKABLE | None = [0.0, 0.0, 0.0],
+        position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        offset: LINKABLE | None = (0.0, 0.0, 0.0),
         mode: Literal["LEFT", "RIGHT"] = "LEFT",
         **kwargs,
     ):

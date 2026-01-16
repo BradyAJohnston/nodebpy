@@ -609,3 +609,27 @@ class Value(NodeBuilder):
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
         return self._output("Value")
+
+
+class Vector(NodeBuilder):
+    """Provide a vector value that can be connected to other nodes in the tree"""
+
+    name = "FunctionNodeInputVector"
+    node: bpy.types.FunctionNodeInputVector
+
+    def __init__(self, vector: tuple[float, float, float] = (0, 0, 0)):
+        super().__init__()
+        self.vector = vector
+
+    @property
+    def o_vector(self) -> SocketLinker:
+        """Output socket: Vector"""
+        return self._output("Vector")
+
+    @property
+    def vector(self) -> tuple[float, float, float]:
+        return tuple(list(self.node.vector))  # type: ignore
+
+    @vector.setter
+    def vector(self, value: tuple[float, float, float]):
+        self.node.vector = value

@@ -96,7 +96,7 @@ nodes.curve.BezierSegment(
     resolution=16,
     start=[-1.0, 0.0, 0.0],
     start_handle=[-0.5, 0.5, 0.0],
-    end_handle=[0.0, 0.0, 0.0],
+    end_handle=(0.0, 0.0, 0.0),
     end=[1.0, 0.0, 0.0],
     mode='POSITION',
     **kwargs,
@@ -167,7 +167,7 @@ Retrieve the length of all splines added together
 
 ```python
 nodes.curve.CurveLine(
-    start=[0.0, 0.0, 0.0],
+    start=(0.0, 0.0, 0.0),
     end=[0.0, 0.0, 1.0],
     mode='POINTS',
     **kwargs,
@@ -412,10 +412,10 @@ Provide a selection based on the handle types of Bézier control points
 ```python
 nodes.curve.InterpolateCurves(
     guide_curves=None,
-    guide_up=[0.0, 0.0, 0.0],
+    guide_up=(0.0, 0.0, 0.0),
     guide_group_id=0,
     points=None,
-    point_up=[0.0, 0.0, 0.0],
+    point_up=(0.0, 0.0, 0.0),
     point_group_id=0,
     max_neighbors=4,
     **kwargs,
@@ -689,8 +689,8 @@ Set the tilt angle at each curve control point
 nodes.curve.SetHandlePositions(
     curve=None,
     selection=True,
-    position=[0.0, 0.0, 0.0],
-    offset=[0.0, 0.0, 0.0],
+    position=(0.0, 0.0, 0.0),
+    offset=(0.0, 0.0, 0.0),
     mode='LEFT',
     **kwargs,
 )

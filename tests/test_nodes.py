@@ -3,6 +3,7 @@ import itertools
 import pytest
 
 import nodebpy.nodes.converter
+import nodebpy.nodes.geometry
 import nodebpy.nodes.input
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
@@ -29,7 +30,7 @@ def test_capture_attribute():
 def test_join_geometry():
     with TreeBuilder("TestJoinGeometry") as tree:
         items = [n.Cube(), n.UVSphere(), n.Cone(), n.Cylinder(), n.Grid()]
-        join = n.JoinGeometry(geometry=items)
+        join = nodebpy.nodes.geometry.JoinGeometry(*items)
 
     assert "Join Geometry" in tree.nodes
     assert len(join.node.inputs["Geometry"].links) == 5
@@ -40,7 +41,7 @@ def test_join_geometry():
 def test_socket_selection():
     with TreeBuilder("AnotherTree"):
         pos = n.SetPosition()
-        vec = n.Vector()
+        vec = nodebpy.nodes.input.Vector()
 
         vec >> pos.i_offset
         nodebpy.nodes.input.Position() * 1.0 >> pos.i_position
@@ -54,7 +55,10 @@ def test_socket_selection():
 class TestMathOperators:
     @pytest.mark.parametrize(
         "operator,input",
-        itertools.product(["+", "-", "*", "/"], [n.Vector, nodebpy.nodes.input.Value]),
+        itertools.product(
+            ["+", "-", "*", "/"],
+            [nodebpy.nodes.input.Vector, nodebpy.nodes.input.Value],
+        ),
     )
     def test_math_operators(self, operator, input):
         with TreeBuilder("TestMathOperators"):

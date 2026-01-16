@@ -1,0 +1,34 @@
+# nodes.zone { #nodebpy.nodes.zone }
+
+`nodes.zone`
+
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [ForEachGeometryElementInput](#nodebpy.nodes.zone.ForEachGeometryElementInput) | For Each Geometry Element Input node |
+
+### ForEachGeometryElementInput { #nodebpy.nodes.zone.ForEachGeometryElementInput }
+
+```python
+nodes.zone.ForEachGeometryElementInput(
+    geometry=None,
+    selection=True,
+    extend=None,
+    **kwargs,
+)
+```
+
+For Each Geometry Element Input node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.zone.ForEachGeometryElementInput.i_geometry) | Input socket: Geometry |
+| [i_input_socket](#nodebpy.nodes.zone.ForEachGeometryElementInput.i_input_socket) | Input socket: |
+| [i_selection](#nodebpy.nodes.zone.ForEachGeometryElementInput.i_selection) | Input socket: Selection |
+| [o_index](#nodebpy.nodes.zone.ForEachGeometryElementInput.o_index) | Output socket: Index |
+| [o_input_socket](#nodebpy.nodes.zone.ForEachGeometryElementInput.o_input_socket) | Output socket: |

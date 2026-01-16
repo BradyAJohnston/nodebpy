@@ -1,6 +1,19 @@
 """Auto-generated geometry node classes."""
 
-from . import attribute_auto, curve, mesh, utilities
+from .geometry import JoinGeometry
+from . import (
+    attribute_auto,
+    curve,
+    mesh,
+    utilities,
+    input,
+    attribute,
+    color,
+    converter,
+    texture,
+    vector,
+    zone,
+)
 from .attribute_auto import (
     AttributeStatistic,
     BlurAttribute,
@@ -14,15 +27,22 @@ from .converter import (
     AxesToRotation,
     AxisAngleToRotation,
     BitMath,
+    BooleanMath,
     CombineColor,
     CombineMatrix,
     CombineTransform,
+    CombineXYZ,
     Compare,
     EulerToRotation,
     FindInString,
     FloatToInteger,
     FormatString,
     HashValue,
+    Math,
+    Mix,
+    RandomValue,
+    SeparateXYZ,
+    VectorMath,
 )
 from .curve import (
     Arc,
@@ -228,19 +248,11 @@ from .input import (
     SplineResolution,
     String,
     Value,
+    Vector,
     VoxelIndex,
 )
 from .manually_specified import (
-    BooleanMath,
     CaptureAttribute,
-    CombineXYZ,
-    JoinGeometry,
-    Math,
-    Mix,
-    RandomValue,
-    SeparateXYZ,
-    Vector,
-    VectorMath,
 )
 from .mesh import (
     Cone,
@@ -315,6 +327,12 @@ __all__ = [
     "manually_specified",
     "mesh",
     "utilities",
+    "attribute",
+    "color",
+    "converter",
+    "texture",
+    "vector",
+    "zone",
     # From attribute
     "AttributeStatistic",
     "BlurAttribute",

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import typing
-
-import bpy
-from arrangebpy.arrange.graph import Literal
+from typing import Literal
 from bpy.types import (
     NodeSocket,
     NodeSocketBool,
@@ -62,6 +60,64 @@ TYPE_INPUT_MATRIX = typing.Union[LINKABLE, NodeSocketMatrix]
 _AttributeDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
 ]
+_RandomValueDataTypes = Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
+
+_MixDataTypes = Literal["FLOAT", "VECTOR", "COLOR", "ROTATION"]
+
+_MixColorBlendTypes = Literal[
+    "MIX",
+    "DARKEN",
+    "MULTIPLY",
+    "BURN",
+    "LIGHTEN",
+    "SCREEN",
+    "DODGE",
+    "ADD",
+    "OVERLAY",
+    "SOFT_LIGHT",
+    "LINEAR_LIGHT",
+    "DIFFERENCE",
+    "EXCLUSION",
+    "SUBTRACT",
+    "DIVIDE",
+    "HUE",
+    "SATURATION",
+    "COLOR",
+    "VALUE",
+]
+
+_VectorMathOperations = Literal[
+    "ADD",
+    "SUBTRACT",
+    "MULTIPLY",
+    "DIVIDE",
+    "MULTIPLY_ADD",
+    "CROSS_PRODUCT",
+    "PROJECT",
+    "REFLECT",
+    "REFRACT",
+    "FACEFORWARD",
+    "DOT_PRODUCT",
+    "DISTANCE",
+    "LENGTH",
+    "SCALE",
+    "NORMALIZE",
+    "ABSOLUTE",
+    "POWER",
+    "SIGN",
+    "MINIMUM",
+    "MAXIMUM",
+    "FLOOR",
+    "CEIL",
+    "FRACTION",
+    "MODULO",
+    "WRAP",
+    "SNAP",
+    "SINE",
+    "COSINE",
+    "TANGENT",
+]
+
 
 SOCKET_TYPES = Literal[
     "VALUE",

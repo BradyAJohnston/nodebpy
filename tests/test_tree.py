@@ -13,7 +13,7 @@ def test_create_tree_and_save():
             instances = s.SocketGeometry("Instances")
 
         rotation = (
-            n.RandomValue.vector(min=(-1, -1, -1), seed=2)
+            nodebpy.nodes.converter.RandomValue.vector(min=(-1, -1, -1), seed=2)
             >> nodebpy.nodes.converter.AlignRotationToVector()
             >> n.RotateRotation(
                 rotate_by=nodebpy.nodes.converter.AxisAngleToRotation(angle=0.3),
@@ -23,7 +23,9 @@ def test_create_tree_and_save():
 
         _ = (
             count
-            >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
+            >> n.Points(
+                position=nodebpy.nodes.converter.RandomValue.vector(min=(-1, -1, -1))
+            )
             >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
             >> n.SetPosition(
                 position=nodebpy.nodes.input.Position() * 2.0 + (0, 0.2, 0.3),

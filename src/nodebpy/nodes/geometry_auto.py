@@ -1755,7 +1755,7 @@ class DialGizmo(NodeBuilder):
     def __init__(
         self,
         value: float | LINKABLE | None = 0.0,
-        position: LINKABLE | None = [0.0, 0.0, 0.0],
+        position: LINKABLE | None = (0.0, 0.0, 0.0),
         up: LINKABLE | None = [0.0, 0.0, 1.0],
         screen_space: TYPE_INPUT_BOOLEAN = True,
         radius: float | LINKABLE | None = 1.0,
@@ -1822,7 +1822,7 @@ class LinearGizmo(NodeBuilder):
     def __init__(
         self,
         value: float | LINKABLE | None = 0.0,
-        position: LINKABLE | None = [0.0, 0.0, 0.0],
+        position: LINKABLE | None = (0.0, 0.0, 0.0),
         direction: LINKABLE | None = [0.0, 0.0, 1.0],
         color_id: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"] = "PRIMARY",
         draw_style: Literal["ARROW", "CROSS", "BOX"] = "ARROW",
@@ -1881,8 +1881,8 @@ class TransformGizmo(NodeBuilder):
     def __init__(
         self,
         value: LINKABLE | None = None,
-        position: LINKABLE | None = [0.0, 0.0, 0.0],
-        rotation: TYPE_INPUT_ROTATION = [0.0, 0.0, 0.0],
+        position: LINKABLE | None = (0.0, 0.0, 0.0),
+        rotation: TYPE_INPUT_ROTATION = (0.0, 0.0, 0.0),
         use_translation_x: bool = False,
         use_translation_y: bool = False,
         use_translation_z: bool = False,
@@ -2010,7 +2010,7 @@ class AdvectGrid(NodeBuilder):
     def __init__(
         self,
         grid: float | LINKABLE | None = 0.0,
-        velocity: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        velocity: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         time_step: LINKABLE | None = 1.0,
         integration_scheme: LINKABLE | None = "Runge-Kutta 3",
         limiter: LINKABLE | None = "Clamp",
@@ -2136,7 +2136,7 @@ class GridCurl(NodeBuilder):
     name = "GeometryNodeGridCurl"
     node: bpy.types.GeometryNodeGridCurl
 
-    def __init__(self, grid: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0], **kwargs):
+    def __init__(self, grid: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0), **kwargs):
         super().__init__()
         key_args = {"Grid": grid}
         key_args.update(kwargs)
@@ -2160,7 +2160,7 @@ class GridDivergence(NodeBuilder):
     name = "GeometryNodeGridDivergence"
     node: bpy.types.GeometryNodeGridDivergence
 
-    def __init__(self, grid: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0], **kwargs):
+    def __init__(self, grid: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0), **kwargs):
         super().__init__()
         key_args = {"Grid": grid}
         key_args.update(kwargs)
@@ -2613,7 +2613,7 @@ class ImageTexture(NodeBuilder):
     def __init__(
         self,
         image: LINKABLE | None = None,
-        vector: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        vector: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         frame: int | LINKABLE | None = 0,
         interpolation: Literal["Linear", "Closest", "Cubic"] = "Linear",
         extension: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"] = "REPEAT",
@@ -2830,7 +2830,7 @@ class IndexOfNearest(NodeBuilder):
 
     def __init__(
         self,
-        position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         group_id: int | LINKABLE | None = 0,
         **kwargs,
     ):
@@ -2874,7 +2874,7 @@ class InstanceOnPoints(NodeBuilder):
         instance: LINKABLE = None,
         pick_instance: TYPE_INPUT_BOOLEAN = False,
         instance_index: int | LINKABLE | None = 0,
-        rotation: TYPE_INPUT_ROTATION = [0.0, 0.0, 0.0],
+        rotation: TYPE_INPUT_ROTATION = (0.0, 0.0, 0.0),
         scale: LINKABLE | None = [1.0, 1.0, 1.0],
         **kwargs,
     ):
@@ -2962,7 +2962,7 @@ class InstancesToPoints(NodeBuilder):
         self,
         instances: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         radius: LINKABLE | None = 0.05000000074505806,
         **kwargs,
     ):
@@ -3554,7 +3554,7 @@ class Points(NodeBuilder):
     def __init__(
         self,
         count: int | LINKABLE | None = 1,
-        position: LINKABLE | None = [0.0, 0.0, 0.0],
+        position: LINKABLE | None = (0.0, 0.0, 0.0),
         radius: LINKABLE | None = 0.10000000149011612,
         **kwargs,
     ):
@@ -3731,7 +3731,7 @@ class GeometryProximity(NodeBuilder):
         self,
         target: LINKABLE = None,
         group_id: int | LINKABLE | None = 0,
-        source_position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        source_position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         sample_group_id: int | LINKABLE | None = 0,
         target_element: Literal["POINTS", "EDGES", "FACES"] = "FACES",
         **kwargs,
@@ -3802,7 +3802,7 @@ class Raycast(NodeBuilder):
         target_geometry: LINKABLE = None,
         attribute: float | LINKABLE | None = 0.0,
         interpolation: LINKABLE | None = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        source_position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         ray_direction: TYPE_INPUT_VECTOR = [0.0, 0.0, -1.0],
         ray_length: LINKABLE | None = 100.0,
         data_type: Literal[
@@ -4033,8 +4033,8 @@ class RotateInstances(NodeBuilder):
         self,
         instances: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        rotation: TYPE_INPUT_ROTATION = [0.0, 0.0, 0.0],
-        pivot_point: LINKABLE | None = [0.0, 0.0, 0.0],
+        rotation: TYPE_INPUT_ROTATION = (0.0, 0.0, 0.0),
+        pivot_point: LINKABLE | None = (0.0, 0.0, 0.0),
         local_space: TYPE_INPUT_BOOLEAN = True,
         **kwargs,
     ):
@@ -4376,7 +4376,7 @@ class SampleGrid(NodeBuilder):
     def __init__(
         self,
         grid: float | LINKABLE | None = 0.0,
-        position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         interpolation: LINKABLE | None = "Trilinear",
         data_type: Literal[
             "FLOAT",
@@ -4727,7 +4727,7 @@ class SampleNearest(NodeBuilder):
     def __init__(
         self,
         geometry: LINKABLE = None,
-        sample_position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        sample_position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         domain: Literal["POINT", "EDGE", "FACE", "CORNER"] = "POINT",
         **kwargs,
     ):
@@ -4772,7 +4772,7 @@ class SampleNearestSurface(NodeBuilder):
         mesh: LINKABLE = None,
         value: float | LINKABLE | None = 0.0,
         group_id: int | LINKABLE | None = 0,
-        sample_position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        sample_position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         sample_group_id: int | LINKABLE | None = 0,
         data_type: Literal[
             "FLOAT",
@@ -4890,8 +4890,8 @@ class SampleUVSurface(NodeBuilder):
         self,
         mesh: LINKABLE = None,
         value: float | LINKABLE | None = 0.0,
-        source_uv_map: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
-        sample_uv: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        source_uv_map: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        sample_uv: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -5003,7 +5003,7 @@ class ScaleElements(NodeBuilder):
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         scale: float | LINKABLE | None = 1.0,
-        center: LINKABLE | None = [0.0, 0.0, 0.0],
+        center: LINKABLE | None = (0.0, 0.0, 0.0),
         scale_mode: LINKABLE | None = "Uniform",
         axis: TYPE_INPUT_VECTOR = [1.0, 0.0, 0.0],
         domain: Literal["FACE", "EDGE"] = "FACE",
@@ -5077,7 +5077,7 @@ class ScaleInstances(NodeBuilder):
         instances: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         scale: LINKABLE | None = [1.0, 1.0, 1.0],
-        center: LINKABLE | None = [0.0, 0.0, 0.0],
+        center: LINKABLE | None = (0.0, 0.0, 0.0),
         local_space: TYPE_INPUT_BOOLEAN = True,
         **kwargs,
     ):
@@ -5853,8 +5853,8 @@ class SetPosition(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        position: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
-        offset: LINKABLE | None = [0.0, 0.0, 0.0],
+        position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        offset: LINKABLE | None = (0.0, 0.0, 0.0),
         **kwargs,
     ):
         super().__init__()
@@ -6776,8 +6776,8 @@ class TransformGeometry(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         mode: LINKABLE | None = "Components",
-        translation: LINKABLE | None = [0.0, 0.0, 0.0],
-        rotation: TYPE_INPUT_ROTATION = [0.0, 0.0, 0.0],
+        translation: LINKABLE | None = (0.0, 0.0, 0.0),
+        rotation: TYPE_INPUT_ROTATION = (0.0, 0.0, 0.0),
         scale: LINKABLE | None = [1.0, 1.0, 1.0],
         transform: LINKABLE | None = None,
         **kwargs,
@@ -6841,7 +6841,7 @@ class TranslateInstances(NodeBuilder):
         self,
         instances: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        translation: LINKABLE | None = [0.0, 0.0, 0.0],
+        translation: LINKABLE | None = (0.0, 0.0, 0.0),
         local_space: TYPE_INPUT_BOOLEAN = True,
         **kwargs,
     ):
@@ -6941,7 +6941,7 @@ class PackUVIslands(NodeBuilder):
 
     def __init__(
         self,
-        uv: TYPE_INPUT_VECTOR = [0.0, 0.0, 0.0],
+        uv: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         selection: TYPE_INPUT_BOOLEAN = True,
         margin: float | LINKABLE | None = 0.0010000000474974513,
         rotate: TYPE_INPUT_BOOLEAN = True,

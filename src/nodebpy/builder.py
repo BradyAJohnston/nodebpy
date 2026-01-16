@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 if TYPE_CHECKING:
-    from .nodes.manually_specified import Math, VectorMath
+    from .nodes.converter import Math, VectorMath
 
 import arrangebpy
 import bpy
@@ -51,6 +51,7 @@ def denormalize_name(attr_name: str) -> str:
 
 
 def source_socket(node: LINKABLE) -> NodeSocket:
+    assert node
     if isinstance(node, NodeSocket):
         return node
     elif isinstance(node, Node):
@@ -62,6 +63,7 @@ def source_socket(node: LINKABLE) -> NodeSocket:
 
 
 def target_socket(node: LINKABLE) -> NodeSocket:
+    assert node
     if isinstance(node, NodeSocket):
         return node
     elif isinstance(node, Node):
@@ -437,7 +439,7 @@ class NodeBuilder:
         self, other: Any, operation: str, reverse: bool = False
     ) -> "VectorMath | Math":
         """Apply a math operation with appropriate Math/VectorMath node."""
-        from .nodes import Math, VectorMath
+        from .nodes.converter import VectorMath
 
         values = (
             (self._default_output_socket, other)
@@ -481,6 +483,7 @@ class NodeBuilder:
                             f"Unsupported type for {operation} with VECTOR socket: {type(other)}"
                         )
             case "VALUE":
+                from .nodes.converter import Math
                 return getattr(Math, operation)(*values)
             case _:
                 raise TypeError(

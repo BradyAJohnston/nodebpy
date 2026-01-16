@@ -1,0 +1,1275 @@
+# nodes.converter { #nodebpy.nodes.converter }
+
+`nodes.converter`
+
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [AlignRotationToVector](#nodebpy.nodes.converter.AlignRotationToVector) | Orient a rotation along the given direction |
+| [AxesToRotation](#nodebpy.nodes.converter.AxesToRotation) | Create a rotation from a primary and (ideally orthogonal) secondary axis |
+| [AxisAngleToRotation](#nodebpy.nodes.converter.AxisAngleToRotation) | Build a rotation from an axis and a rotation around that axis |
+| [BitMath](#nodebpy.nodes.converter.BitMath) | Perform bitwise operations on 32-bit integers |
+| [BooleanMath](#nodebpy.nodes.converter.BooleanMath) | Boolean Math node |
+| [CombineColor](#nodebpy.nodes.converter.CombineColor) | Combine four channels into a single color, based on a particular color model |
+| [CombineMatrix](#nodebpy.nodes.converter.CombineMatrix) | Construct a 4x4 matrix from its individual values |
+| [CombineTransform](#nodebpy.nodes.converter.CombineTransform) | Combine a translation vector, a rotation, and a scale vector into a transformation matrix |
+| [CombineXYZ](#nodebpy.nodes.converter.CombineXYZ) | Create a vector from X, Y, and Z components |
+| [Compare](#nodebpy.nodes.converter.Compare) | Perform a comparison operation on the two given inputs |
+| [EulerToRotation](#nodebpy.nodes.converter.EulerToRotation) | Build a rotation from separate angles around each axis |
+| [FindInString](#nodebpy.nodes.converter.FindInString) | Find the number of times a given string occurs in another string and the position of the first match |
+| [FloatToInteger](#nodebpy.nodes.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
+| [FormatString](#nodebpy.nodes.converter.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
+| [HashValue](#nodebpy.nodes.converter.HashValue) | Generate a randomized integer using the given input value as a seed |
+| [Math](#nodebpy.nodes.converter.Math) | Perform math operations |
+| [Mix](#nodebpy.nodes.converter.Mix) | Mix values by a factor |
+| [RandomValue](#nodebpy.nodes.converter.RandomValue) | Random Value node |
+| [SeparateXYZ](#nodebpy.nodes.converter.SeparateXYZ) | Split a vector into its X, Y, and Z components |
+| [VectorMath](#nodebpy.nodes.converter.VectorMath) | Perform vector math operation |
+
+### AlignRotationToVector { #nodebpy.nodes.converter.AlignRotationToVector }
+
+```python
+nodes.converter.AlignRotationToVector(
+    rotation=(0.0, 0.0, 0.0),
+    factor=1.0,
+    vector=(0.0, 0.0, 1.0),
+    axis='Z',
+    pivot_axis='AUTO',
+    **kwargs,
+)
+```
+
+Orient a rotation along the given direction
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_factor](#nodebpy.nodes.converter.AlignRotationToVector.i_factor) | Input socket: Factor |
+| [i_rotation](#nodebpy.nodes.converter.AlignRotationToVector.i_rotation) | Input socket: Rotation |
+| [i_vector](#nodebpy.nodes.converter.AlignRotationToVector.i_vector) | Input socket: Vector |
+| [o_rotation](#nodebpy.nodes.converter.AlignRotationToVector.o_rotation) | Output socket: Rotation |
+
+### AxesToRotation { #nodebpy.nodes.converter.AxesToRotation }
+
+```python
+nodes.converter.AxesToRotation(
+    primary_axis_vector=(0.0, 0.0, 1.0),
+    secondary_axis_vector=(1.0, 0.0, 0.0),
+    primary_axis='Z',
+    secondary_axis='X',
+    **kwargs,
+)
+```
+
+Create a rotation from a primary and (ideally orthogonal) secondary axis
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_primary_axis](#nodebpy.nodes.converter.AxesToRotation.i_primary_axis) | Input socket: Primary Axis |
+| [i_secondary_axis](#nodebpy.nodes.converter.AxesToRotation.i_secondary_axis) | Input socket: Secondary Axis |
+| [o_rotation](#nodebpy.nodes.converter.AxesToRotation.o_rotation) | Output socket: Rotation |
+
+### AxisAngleToRotation { #nodebpy.nodes.converter.AxisAngleToRotation }
+
+```python
+nodes.converter.AxisAngleToRotation(axis=(0.0, 0.0, 1.0), angle=0.0, **kwargs)
+```
+
+Build a rotation from an axis and a rotation around that axis
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_angle](#nodebpy.nodes.converter.AxisAngleToRotation.i_angle) | Input socket: Angle |
+| [i_axis](#nodebpy.nodes.converter.AxisAngleToRotation.i_axis) | Input socket: Axis |
+| [o_rotation](#nodebpy.nodes.converter.AxisAngleToRotation.o_rotation) | Output socket: Rotation |
+
+### BitMath { #nodebpy.nodes.converter.BitMath }
+
+```python
+nodes.converter.BitMath(a=0, b=0, operation='AND', **kwargs)
+```
+
+Perform bitwise operations on 32-bit integers
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_a](#nodebpy.nodes.converter.BitMath.i_a) | Input socket: A |
+| [i_b](#nodebpy.nodes.converter.BitMath.i_b) | Input socket: B |
+| [o_value](#nodebpy.nodes.converter.BitMath.o_value) | Output socket: Value |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [l_and](#nodebpy.nodes.converter.BitMath.l_and) | Create Bit Math with operation 'And'. |
+| [l_exclusive_or](#nodebpy.nodes.converter.BitMath.l_exclusive_or) | Create Bit Math with operation 'XOR'. |
+| [l_not](#nodebpy.nodes.converter.BitMath.l_not) | Create Bit Math with operation 'Not'. |
+| [l_or](#nodebpy.nodes.converter.BitMath.l_or) | Create Bit Math with operation 'Or'. |
+| [rotate](#nodebpy.nodes.converter.BitMath.rotate) | Create Bit Math with operation 'Rotate'. |
+| [shift](#nodebpy.nodes.converter.BitMath.shift) | Create Bit Math with operation 'Shift'. |
+
+##### l_and { #nodebpy.nodes.converter.BitMath.l_and }
+
+```python
+nodes.converter.BitMath.l_and(a=0, b=0)
+```
+
+Create Bit Math with operation 'And'.
+
+##### l_exclusive_or { #nodebpy.nodes.converter.BitMath.l_exclusive_or }
+
+```python
+nodes.converter.BitMath.l_exclusive_or(a=0, b=0)
+```
+
+Create Bit Math with operation 'XOR'.
+
+##### l_not { #nodebpy.nodes.converter.BitMath.l_not }
+
+```python
+nodes.converter.BitMath.l_not(a=0)
+```
+
+Create Bit Math with operation 'Not'.
+
+##### l_or { #nodebpy.nodes.converter.BitMath.l_or }
+
+```python
+nodes.converter.BitMath.l_or(a=0, b=0)
+```
+
+Create Bit Math with operation 'Or'.
+
+##### rotate { #nodebpy.nodes.converter.BitMath.rotate }
+
+```python
+nodes.converter.BitMath.rotate(a=0, shift=0)
+```
+
+Create Bit Math with operation 'Rotate'.
+
+##### shift { #nodebpy.nodes.converter.BitMath.shift }
+
+```python
+nodes.converter.BitMath.shift(a=0, shift=0)
+```
+
+Create Bit Math with operation 'Shift'.
+
+### BooleanMath { #nodebpy.nodes.converter.BooleanMath }
+
+```python
+nodes.converter.BooleanMath(operation='AND', **kwargs)
+```
+
+Boolean Math node
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [l_and](#nodebpy.nodes.converter.BooleanMath.l_and) | Create Boolean Math with operation 'AND'. |
+| [l_equal](#nodebpy.nodes.converter.BooleanMath.l_equal) | Create Boolean Math with operation 'XNOR'. |
+| [l_imply](#nodebpy.nodes.converter.BooleanMath.l_imply) | Create Boolean Math with operation 'IMPLY'. |
+| [l_nor](#nodebpy.nodes.converter.BooleanMath.l_nor) | Create Boolean Math with operation 'NOR'. |
+| [l_not](#nodebpy.nodes.converter.BooleanMath.l_not) | Create Boolean Math with operation 'NOT'. |
+| [l_not_and](#nodebpy.nodes.converter.BooleanMath.l_not_and) | Create Boolean Math with operation 'NAND'. |
+| [l_not_equal](#nodebpy.nodes.converter.BooleanMath.l_not_equal) | Create Boolean Math with operation 'XOR'. |
+| [l_or](#nodebpy.nodes.converter.BooleanMath.l_or) | Create Boolean Math with operation 'OR'. |
+| [l_subtract](#nodebpy.nodes.converter.BooleanMath.l_subtract) | Create Boolean Math with operation 'NIMPLY'. |
+
+##### l_and { #nodebpy.nodes.converter.BooleanMath.l_and }
+
+```python
+nodes.converter.BooleanMath.l_and(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'AND'.
+
+##### l_equal { #nodebpy.nodes.converter.BooleanMath.l_equal }
+
+```python
+nodes.converter.BooleanMath.l_equal(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'XNOR'.
+
+##### l_imply { #nodebpy.nodes.converter.BooleanMath.l_imply }
+
+```python
+nodes.converter.BooleanMath.l_imply(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'IMPLY'.
+
+##### l_nor { #nodebpy.nodes.converter.BooleanMath.l_nor }
+
+```python
+nodes.converter.BooleanMath.l_nor(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'NOR'.
+
+##### l_not { #nodebpy.nodes.converter.BooleanMath.l_not }
+
+```python
+nodes.converter.BooleanMath.l_not(boolean=False)
+```
+
+Create Boolean Math with operation 'NOT'.
+
+##### l_not_and { #nodebpy.nodes.converter.BooleanMath.l_not_and }
+
+```python
+nodes.converter.BooleanMath.l_not_and(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'NAND'.
+
+##### l_not_equal { #nodebpy.nodes.converter.BooleanMath.l_not_equal }
+
+```python
+nodes.converter.BooleanMath.l_not_equal(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'XOR'.
+
+##### l_or { #nodebpy.nodes.converter.BooleanMath.l_or }
+
+```python
+nodes.converter.BooleanMath.l_or(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'OR'.
+
+##### l_subtract { #nodebpy.nodes.converter.BooleanMath.l_subtract }
+
+```python
+nodes.converter.BooleanMath.l_subtract(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'NIMPLY'.
+
+### CombineColor { #nodebpy.nodes.converter.CombineColor }
+
+```python
+nodes.converter.CombineColor(
+    red=0.0,
+    green=0.0,
+    blue=0.0,
+    alpha=1.0,
+    mode='RGB',
+)
+```
+
+Combine four channels into a single color, based on a particular color model
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_alpha](#nodebpy.nodes.converter.CombineColor.i_alpha) | Input socket: Alpha |
+| [i_blue](#nodebpy.nodes.converter.CombineColor.i_blue) | Input socket: Blue |
+| [i_green](#nodebpy.nodes.converter.CombineColor.i_green) | Input socket: Green |
+| [i_red](#nodebpy.nodes.converter.CombineColor.i_red) | Input socket: Red |
+| [o_color](#nodebpy.nodes.converter.CombineColor.o_color) | Output socket: Color |
+
+### CombineMatrix { #nodebpy.nodes.converter.CombineMatrix }
+
+```python
+nodes.converter.CombineMatrix(
+    column_1_row_1=1.0,
+    column_1_row_2=0.0,
+    column_1_row_3=0.0,
+    column_1_row_4=0.0,
+    column_2_row_1=0.0,
+    column_2_row_2=1.0,
+    column_2_row_3=0.0,
+    column_2_row_4=0.0,
+    column_3_row_1=0.0,
+    column_3_row_2=0.0,
+    column_3_row_3=1.0,
+    column_3_row_4=0.0,
+    column_4_row_1=0.0,
+    column_4_row_2=0.0,
+    column_4_row_3=0.0,
+    column_4_row_4=1.0,
+    **kwargs,
+)
+```
+
+Construct a 4x4 matrix from its individual values
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_column_1_row_1](#nodebpy.nodes.converter.CombineMatrix.i_column_1_row_1) | Input socket: Column 1 Row 1 |
+| [i_column_1_row_2](#nodebpy.nodes.converter.CombineMatrix.i_column_1_row_2) | Input socket: Column 1 Row 2 |
+| [i_column_1_row_3](#nodebpy.nodes.converter.CombineMatrix.i_column_1_row_3) | Input socket: Column 1 Row 3 |
+| [i_column_1_row_4](#nodebpy.nodes.converter.CombineMatrix.i_column_1_row_4) | Input socket: Column 1 Row 4 |
+| [i_column_2_row_1](#nodebpy.nodes.converter.CombineMatrix.i_column_2_row_1) | Input socket: Column 2 Row 1 |
+| [i_column_2_row_2](#nodebpy.nodes.converter.CombineMatrix.i_column_2_row_2) | Input socket: Column 2 Row 2 |
+| [i_column_2_row_3](#nodebpy.nodes.converter.CombineMatrix.i_column_2_row_3) | Input socket: Column 2 Row 3 |
+| [i_column_2_row_4](#nodebpy.nodes.converter.CombineMatrix.i_column_2_row_4) | Input socket: Column 2 Row 4 |
+| [i_column_3_row_1](#nodebpy.nodes.converter.CombineMatrix.i_column_3_row_1) | Input socket: Column 3 Row 1 |
+| [i_column_3_row_2](#nodebpy.nodes.converter.CombineMatrix.i_column_3_row_2) | Input socket: Column 3 Row 2 |
+| [i_column_3_row_3](#nodebpy.nodes.converter.CombineMatrix.i_column_3_row_3) | Input socket: Column 3 Row 3 |
+| [i_column_3_row_4](#nodebpy.nodes.converter.CombineMatrix.i_column_3_row_4) | Input socket: Column 3 Row 4 |
+| [i_column_4_row_1](#nodebpy.nodes.converter.CombineMatrix.i_column_4_row_1) | Input socket: Column 4 Row 1 |
+| [i_column_4_row_2](#nodebpy.nodes.converter.CombineMatrix.i_column_4_row_2) | Input socket: Column 4 Row 2 |
+| [i_column_4_row_3](#nodebpy.nodes.converter.CombineMatrix.i_column_4_row_3) | Input socket: Column 4 Row 3 |
+| [i_column_4_row_4](#nodebpy.nodes.converter.CombineMatrix.i_column_4_row_4) | Input socket: Column 4 Row 4 |
+| [o_matrix](#nodebpy.nodes.converter.CombineMatrix.o_matrix) | Output socket: Matrix |
+
+### CombineTransform { #nodebpy.nodes.converter.CombineTransform }
+
+```python
+nodes.converter.CombineTransform(
+    translation=(0.0, 0.0, 0.0),
+    rotation=(0.0, 0.0, 0.0),
+    scale=(1.0, 1.0, 1.0),
+    **kwargs,
+)
+```
+
+Combine a translation vector, a rotation, and a scale vector into a transformation matrix
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_rotation](#nodebpy.nodes.converter.CombineTransform.i_rotation) | Input socket: Rotation |
+| [i_scale](#nodebpy.nodes.converter.CombineTransform.i_scale) | Input socket: Scale |
+| [i_translation](#nodebpy.nodes.converter.CombineTransform.i_translation) | Input socket: Translation |
+| [o_transform](#nodebpy.nodes.converter.CombineTransform.o_transform) | Output socket: Transform |
+
+### CombineXYZ { #nodebpy.nodes.converter.CombineXYZ }
+
+```python
+nodes.converter.CombineXYZ(x=0.0, y=0.0, z=0.0)
+```
+
+Create a vector from X, Y, and Z components
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_x](#nodebpy.nodes.converter.CombineXYZ.i_x) | Input socket: X |
+| [i_y](#nodebpy.nodes.converter.CombineXYZ.i_y) | Input socket: Y |
+| [i_z](#nodebpy.nodes.converter.CombineXYZ.i_z) | Input socket: Z |
+| [o_vector](#nodebpy.nodes.converter.CombineXYZ.o_vector) | Output socket: Vector |
+
+### Compare { #nodebpy.nodes.converter.Compare }
+
+```python
+nodes.converter.Compare(operation='GREATER_THAN', data_type='FLOAT', **kwargs)
+```
+
+Perform a comparison operation on the two given inputs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_a](#nodebpy.nodes.converter.Compare.i_a) | Input socket: A |
+| [i_b](#nodebpy.nodes.converter.Compare.i_b) | Input socket: B |
+| [o_result](#nodebpy.nodes.converter.Compare.o_result) | Output socket: Result |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [color](#nodebpy.nodes.converter.Compare.color) | Create Compare with operation 'Color'. |
+| [string](#nodebpy.nodes.converter.Compare.string) | Create Compare with operation 'String'. |
+
+##### color { #nodebpy.nodes.converter.Compare.color }
+
+```python
+nodes.converter.Compare.color(
+    a=None,
+    b=None,
+    operation='EQUAL',
+    *,
+    epsilon=None,
+)
+```
+
+Create Compare with operation 'Color'.
+
+##### string { #nodebpy.nodes.converter.Compare.string }
+
+```python
+nodes.converter.Compare.string(a, b)
+```
+
+Create Compare with operation 'String'.
+
+### EulerToRotation { #nodebpy.nodes.converter.EulerToRotation }
+
+```python
+nodes.converter.EulerToRotation(euler=(0.0, 0.0, 0.0))
+```
+
+Build a rotation from separate angles around each axis
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_euler](#nodebpy.nodes.converter.EulerToRotation.i_euler) | Input socket: Euler |
+| [o_rotation](#nodebpy.nodes.converter.EulerToRotation.o_rotation) | Output socket: Rotation |
+
+### FindInString { #nodebpy.nodes.converter.FindInString }
+
+```python
+nodes.converter.FindInString(string='', search='')
+```
+
+Find the number of times a given string occurs in another string and the position of the first match
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_search](#nodebpy.nodes.converter.FindInString.i_search) | Input socket: Search |
+| [i_string](#nodebpy.nodes.converter.FindInString.i_string) | Input socket: String |
+| [o_count](#nodebpy.nodes.converter.FindInString.o_count) | Output socket: Count |
+| [o_first_found](#nodebpy.nodes.converter.FindInString.o_first_found) | Output socket: First Found |
+
+### FloatToInteger { #nodebpy.nodes.converter.FloatToInteger }
+
+```python
+nodes.converter.FloatToInteger(float=0.0, rounding_mode='ROUND')
+```
+
+Convert the given floating-point number to an integer, with a choice of methods
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_float](#nodebpy.nodes.converter.FloatToInteger.i_float) | Input socket: Float |
+| [o_integer](#nodebpy.nodes.converter.FloatToInteger.o_integer) | Output socket: Integer |
+
+### FormatString { #nodebpy.nodes.converter.FormatString }
+
+```python
+nodes.converter.FormatString(*args, format='', **kwargs)
+```
+
+Insert values into a string using a Python and path template compatible formatting syntax
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_format](#nodebpy.nodes.converter.FormatString.i_format) | Input socket: Format |
+| [i_input_socket](#nodebpy.nodes.converter.FormatString.i_input_socket) | Input socket: |
+| [items](#nodebpy.nodes.converter.FormatString.items) | Input sockets: |
+| [o_string](#nodebpy.nodes.converter.FormatString.o_string) | Output socket: String |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [add_inputs](#nodebpy.nodes.converter.FormatString.add_inputs) | Dictionary with {new_socket.name: from_linkable} for link creation |
+
+##### add_inputs { #nodebpy.nodes.converter.FormatString.add_inputs }
+
+```python
+nodes.converter.FormatString.add_inputs(*args, **kwargs)
+```
+
+Dictionary with {new_socket.name: from_linkable} for link creation
+
+### HashValue { #nodebpy.nodes.converter.HashValue }
+
+```python
+nodes.converter.HashValue(value=None, seed=0, data_type='INT')
+```
+
+Generate a randomized integer using the given input value as a seed
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_seed](#nodebpy.nodes.converter.HashValue.i_seed) | Input socket: Seed |
+| [i_value](#nodebpy.nodes.converter.HashValue.i_value) | Input socket: Value |
+| [o_hash](#nodebpy.nodes.converter.HashValue.o_hash) | Output socket: Hash |
+
+### Math { #nodebpy.nodes.converter.Math }
+
+```python
+nodes.converter.Math(operation='ADD', use_clamp=False, **kwargs)
+```
+
+Perform math operations
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [absolute](#nodebpy.nodes.converter.Math.absolute) | Create Math with operation `abs(value)`. |
+| [add](#nodebpy.nodes.converter.Math.add) | Create Math with operation of `a + b`. |
+| [arccosine](#nodebpy.nodes.converter.Math.arccosine) | Create Math with operation 'arccos(value)'. |
+| [arcsine](#nodebpy.nodes.converter.Math.arcsine) | Create Math with operation `arcsin(value)'. |
+| [arctan2](#nodebpy.nodes.converter.Math.arctan2) | Create Math with operation 'arctan(a / b)'. |
+| [arctangent](#nodebpy.nodes.converter.Math.arctangent) | Create Math with operation 'arctan(value)'. |
+| [ceil](#nodebpy.nodes.converter.Math.ceil) | The smallest integer greater than or equal to `value` |
+| [compare](#nodebpy.nodes.converter.Math.compare) | Create Math with operation `compare(a, b, epsilon)` returning -1, 0, or 1. |
+| [cosh](#nodebpy.nodes.converter.Math.cosh) | Create Math with operation `cosh(value)`. |
+| [cosine](#nodebpy.nodes.converter.Math.cosine) | Create Math with operation 'cos(value)'. |
+| [degrees](#nodebpy.nodes.converter.Math.degrees) | Create Math with operation 'To Degrees'. |
+| [divide](#nodebpy.nodes.converter.Math.divide) | Create Math with operation of `a / b`. |
+| [exponent](#nodebpy.nodes.converter.Math.exponent) | Create Math with operation `exp(value)`. |
+| [floor](#nodebpy.nodes.converter.Math.floor) | The largest integer smaller than or equal to `value` |
+| [floored_modulo](#nodebpy.nodes.converter.Math.floored_modulo) | The remained of floored division |
+| [fraction](#nodebpy.nodes.converter.Math.fraction) | The fractional part of `value` |
+| [greater_than](#nodebpy.nodes.converter.Math.greater_than) | Create Math with operation `value > threshold` returning 1 or 0. |
+| [inverse_sqrt](#nodebpy.nodes.converter.Math.inverse_sqrt) | Create Math with operation `inverse_sqrt(value)`. |
+| [less_than](#nodebpy.nodes.converter.Math.less_than) | Create Math with operation `value < threshold` returning 1 or 0. |
+| [logarithm](#nodebpy.nodes.converter.Math.logarithm) | Create Math with operation `log(value, base)`. |
+| [maximum](#nodebpy.nodes.converter.Math.maximum) | Create Math with operation `max(a, b)`. |
+| [minimum](#nodebpy.nodes.converter.Math.minimum) | Create Math with operation `min(a, b)`. |
+| [multiply](#nodebpy.nodes.converter.Math.multiply) | Create Math with operation of `a * b`. |
+| [multiply_add](#nodebpy.nodes.converter.Math.multiply_add) | Create Math with operation `a * b + c`. |
+| [ping_pong](#nodebpy.nodes.converter.Math.ping_pong) | Wraps a value and reverses every other cycle |
+| [power](#nodebpy.nodes.converter.Math.power) | Create Math with operation `base ** exponent`. |
+| [radians](#nodebpy.nodes.converter.Math.radians) | Create Math with operation `radians(degrees)`. |
+| [round](#nodebpy.nodes.converter.Math.round) | Round A to the nearest integer. Round up if 0.5 or greater. |
+| [sign](#nodebpy.nodes.converter.Math.sign) | Create Math with operation `sign(value)` returning -1, 0, or 1. |
+| [sine](#nodebpy.nodes.converter.Math.sine) | Create Math with operation 'sin(value)'. |
+| [sinh](#nodebpy.nodes.converter.Math.sinh) | Create Math with operation `sinh(value)`. |
+| [smooth_max_](#nodebpy.nodes.converter.Math.smooth_max_) | Create Math with operation `smooth_max(a, b, distance)`. |
+| [smooth_min](#nodebpy.nodes.converter.Math.smooth_min) | Create Math with operation `smooth_min(a, b, distance)`. |
+| [snap](#nodebpy.nodes.converter.Math.snap) | Snap to increment of `snap(value, increment)` |
+| [sqrt](#nodebpy.nodes.converter.Math.sqrt) | Create Math with operation `sqrt(value)`. |
+| [subtract](#nodebpy.nodes.converter.Math.subtract) | Create Math with operation of `a - b`. |
+| [tangent](#nodebpy.nodes.converter.Math.tangent) | Create Math with operation 'tan(value)'. |
+| [tanh](#nodebpy.nodes.converter.Math.tanh) | Create Math with operation `tanh(value)`. |
+| [truncate](#nodebpy.nodes.converter.Math.truncate) | The integer part of `value` removing the fractional part |
+| [truncated_modulo](#nodebpy.nodes.converter.Math.truncated_modulo) | The remained of truncated division using fmod(a, b) |
+| [wrap](#nodebpy.nodes.converter.Math.wrap) | Wrap value to range, wrap(value, max, min) |
+
+##### absolute { #nodebpy.nodes.converter.Math.absolute }
+
+```python
+nodes.converter.Math.absolute(value=0.5)
+```
+
+Create Math with operation `abs(value)`.
+
+##### add { #nodebpy.nodes.converter.Math.add }
+
+```python
+nodes.converter.Math.add(a=0.5, b=0.5)
+```
+
+Create Math with operation of `a + b`.
+
+##### arccosine { #nodebpy.nodes.converter.Math.arccosine }
+
+```python
+nodes.converter.Math.arccosine(value=0.5)
+```
+
+Create Math with operation 'arccos(value)'.
+
+##### arcsine { #nodebpy.nodes.converter.Math.arcsine }
+
+```python
+nodes.converter.Math.arcsine(value=0.5)
+```
+
+Create Math with operation `arcsin(value)'.
+
+##### arctan2 { #nodebpy.nodes.converter.Math.arctan2 }
+
+```python
+nodes.converter.Math.arctan2(a=0.5, b=0.5)
+```
+
+Create Math with operation 'arctan(a / b)'.
+
+##### arctangent { #nodebpy.nodes.converter.Math.arctangent }
+
+```python
+nodes.converter.Math.arctangent(value=0.5)
+```
+
+Create Math with operation 'arctan(value)'.
+
+##### ceil { #nodebpy.nodes.converter.Math.ceil }
+
+```python
+nodes.converter.Math.ceil(value=0.5)
+```
+
+The smallest integer greater than or equal to `value`
+
+##### compare { #nodebpy.nodes.converter.Math.compare }
+
+```python
+nodes.converter.Math.compare(a=0.5, b=0.5, epsilon=0.5)
+```
+
+Create Math with operation `compare(a, b, epsilon)` returning -1, 0, or 1.
+
+##### cosh { #nodebpy.nodes.converter.Math.cosh }
+
+```python
+nodes.converter.Math.cosh(value=0.5)
+```
+
+Create Math with operation `cosh(value)`.
+
+##### cosine { #nodebpy.nodes.converter.Math.cosine }
+
+```python
+nodes.converter.Math.cosine(value=0.5)
+```
+
+Create Math with operation 'cos(value)'.
+
+##### degrees { #nodebpy.nodes.converter.Math.degrees }
+
+```python
+nodes.converter.Math.degrees(radians=0.5)
+```
+
+Create Math with operation 'To Degrees'.
+
+##### divide { #nodebpy.nodes.converter.Math.divide }
+
+```python
+nodes.converter.Math.divide(a=0.5, b=0.5)
+```
+
+Create Math with operation of `a / b`.
+
+##### exponent { #nodebpy.nodes.converter.Math.exponent }
+
+```python
+nodes.converter.Math.exponent(value=0.5)
+```
+
+Create Math with operation `exp(value)`.
+
+##### floor { #nodebpy.nodes.converter.Math.floor }
+
+```python
+nodes.converter.Math.floor(value=0.5)
+```
+
+The largest integer smaller than or equal to `value`
+
+##### floored_modulo { #nodebpy.nodes.converter.Math.floored_modulo }
+
+```python
+nodes.converter.Math.floored_modulo(a=0.5, b=0.5)
+```
+
+The remained of floored division
+
+##### fraction { #nodebpy.nodes.converter.Math.fraction }
+
+```python
+nodes.converter.Math.fraction(value=0.5)
+```
+
+The fractional part of `value`
+
+##### greater_than { #nodebpy.nodes.converter.Math.greater_than }
+
+```python
+nodes.converter.Math.greater_than(value=0.5, threshold=0.5)
+```
+
+Create Math with operation `value > threshold` returning 1 or 0.
+
+##### inverse_sqrt { #nodebpy.nodes.converter.Math.inverse_sqrt }
+
+```python
+nodes.converter.Math.inverse_sqrt(value=0.5)
+```
+
+Create Math with operation `inverse_sqrt(value)`.
+
+##### less_than { #nodebpy.nodes.converter.Math.less_than }
+
+```python
+nodes.converter.Math.less_than(value=0.5, threshold=0.5)
+```
+
+Create Math with operation `value < threshold` returning 1 or 0.
+
+##### logarithm { #nodebpy.nodes.converter.Math.logarithm }
+
+```python
+nodes.converter.Math.logarithm(value=0.5, base=0.5)
+```
+
+Create Math with operation `log(value, base)`.
+
+##### maximum { #nodebpy.nodes.converter.Math.maximum }
+
+```python
+nodes.converter.Math.maximum(a=0.5, b=0.5)
+```
+
+Create Math with operation `max(a, b)`.
+
+##### minimum { #nodebpy.nodes.converter.Math.minimum }
+
+```python
+nodes.converter.Math.minimum(a=0.5, b=0.5)
+```
+
+Create Math with operation `min(a, b)`.
+
+##### multiply { #nodebpy.nodes.converter.Math.multiply }
+
+```python
+nodes.converter.Math.multiply(a=0.5, b=0.5)
+```
+
+Create Math with operation of `a * b`.
+
+##### multiply_add { #nodebpy.nodes.converter.Math.multiply_add }
+
+```python
+nodes.converter.Math.multiply_add(a=0.5, b=0.5, c=0.5)
+```
+
+Create Math with operation `a * b + c`.
+
+##### ping_pong { #nodebpy.nodes.converter.Math.ping_pong }
+
+```python
+nodes.converter.Math.ping_pong(value=0.5, scale=0.5)
+```
+
+Wraps a value and reverses every other cycle
+
+##### power { #nodebpy.nodes.converter.Math.power }
+
+```python
+nodes.converter.Math.power(base=0.5, exponent=0.5)
+```
+
+Create Math with operation `base ** exponent`.
+
+##### radians { #nodebpy.nodes.converter.Math.radians }
+
+```python
+nodes.converter.Math.radians(degrees=0.5)
+```
+
+Create Math with operation `radians(degrees)`.
+
+##### round { #nodebpy.nodes.converter.Math.round }
+
+```python
+nodes.converter.Math.round(value=0.5)
+```
+
+Round A to the nearest integer. Round up if 0.5 or greater.
+
+##### sign { #nodebpy.nodes.converter.Math.sign }
+
+```python
+nodes.converter.Math.sign(value=0.5)
+```
+
+Create Math with operation `sign(value)` returning -1, 0, or 1.
+
+##### sine { #nodebpy.nodes.converter.Math.sine }
+
+```python
+nodes.converter.Math.sine(value=0.5)
+```
+
+Create Math with operation 'sin(value)'.
+
+##### sinh { #nodebpy.nodes.converter.Math.sinh }
+
+```python
+nodes.converter.Math.sinh(value=0.5)
+```
+
+Create Math with operation `sinh(value)`.
+
+##### smooth_max_ { #nodebpy.nodes.converter.Math.smooth_max_ }
+
+```python
+nodes.converter.Math.smooth_max_(a=0.5, b=0.5, distance=0.5)
+```
+
+Create Math with operation `smooth_max(a, b, distance)`.
+
+##### smooth_min { #nodebpy.nodes.converter.Math.smooth_min }
+
+```python
+nodes.converter.Math.smooth_min(a=0.5, b=0.5, distance=0.5)
+```
+
+Create Math with operation `smooth_min(a, b, distance)`.
+
+##### snap { #nodebpy.nodes.converter.Math.snap }
+
+```python
+nodes.converter.Math.snap(value=0.5, increment=0.5)
+```
+
+Snap to increment of `snap(value, increment)`
+
+##### sqrt { #nodebpy.nodes.converter.Math.sqrt }
+
+```python
+nodes.converter.Math.sqrt(value=0.5)
+```
+
+Create Math with operation `sqrt(value)`.
+
+##### subtract { #nodebpy.nodes.converter.Math.subtract }
+
+```python
+nodes.converter.Math.subtract(a=0.5, b=0.5)
+```
+
+Create Math with operation of `a - b`.
+
+##### tangent { #nodebpy.nodes.converter.Math.tangent }
+
+```python
+nodes.converter.Math.tangent(value=0.5)
+```
+
+Create Math with operation 'tan(value)'.
+
+##### tanh { #nodebpy.nodes.converter.Math.tanh }
+
+```python
+nodes.converter.Math.tanh(value=0.5)
+```
+
+Create Math with operation `tanh(value)`.
+
+##### truncate { #nodebpy.nodes.converter.Math.truncate }
+
+```python
+nodes.converter.Math.truncate(value=0.5)
+```
+
+The integer part of `value` removing the fractional part
+
+##### truncated_modulo { #nodebpy.nodes.converter.Math.truncated_modulo }
+
+```python
+nodes.converter.Math.truncated_modulo(a=0.5, b=0.5)
+```
+
+The remained of truncated division using fmod(a, b)
+
+##### wrap { #nodebpy.nodes.converter.Math.wrap }
+
+```python
+nodes.converter.Math.wrap(value=0.5, max=0.5, min=0.5)
+```
+
+Wrap value to range, wrap(value, max, min)
+
+### Mix { #nodebpy.nodes.converter.Mix }
+
+```python
+nodes.converter.Mix(data_type='FLOAT', **kwargs)
+```
+
+Mix values by a factor
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_factor](#nodebpy.nodes.converter.Mix.i_factor) | Input socket: Factor |
+| [i_value_a](#nodebpy.nodes.converter.Mix.i_value_a) | Input socket: Value A |
+| [i_value_b](#nodebpy.nodes.converter.Mix.i_value_b) | Input socket: Value B |
+| [o_result](#nodebpy.nodes.converter.Mix.o_result) | Output socket: Result |
+
+### RandomValue { #nodebpy.nodes.converter.RandomValue }
+
+```python
+nodes.converter.RandomValue(data_type, id=None, seed=0, **kwargs)
+```
+
+Random Value node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_value](#nodebpy.nodes.converter.RandomValue.o_value) | Output socket: Value |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [i_max](#nodebpy.nodes.converter.RandomValue.i_max) | Input socket: Maximum |
+| [i_min](#nodebpy.nodes.converter.RandomValue.i_min) | Input socket: Minimum |
+| [i_probability](#nodebpy.nodes.converter.RandomValue.i_probability) | Input socket: Probability |
+
+##### i_max { #nodebpy.nodes.converter.RandomValue.i_max }
+
+```python
+nodes.converter.RandomValue.i_max()
+```
+
+Input socket: Maximum
+
+##### i_min { #nodebpy.nodes.converter.RandomValue.i_min }
+
+```python
+nodes.converter.RandomValue.i_min()
+```
+
+Input socket: Minimum
+
+##### i_probability { #nodebpy.nodes.converter.RandomValue.i_probability }
+
+```python
+nodes.converter.RandomValue.i_probability()
+```
+
+Input socket: Probability
+
+### SeparateXYZ { #nodebpy.nodes.converter.SeparateXYZ }
+
+```python
+nodes.converter.SeparateXYZ(vector=(0.0, 0.0, 0.0))
+```
+
+Split a vector into its X, Y, and Z components
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_vector](#nodebpy.nodes.converter.SeparateXYZ.i_vector) | Input socket: Vector |
+| [o_x](#nodebpy.nodes.converter.SeparateXYZ.o_x) | Output socket: X |
+| [o_y](#nodebpy.nodes.converter.SeparateXYZ.o_y) | Output socket: Y |
+| [o_z](#nodebpy.nodes.converter.SeparateXYZ.o_z) | Output socket: Z |
+
+### VectorMath { #nodebpy.nodes.converter.VectorMath }
+
+```python
+nodes.converter.VectorMath(operation='ADD', **kwargs)
+```
+
+Perform vector math operation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_vector](#nodebpy.nodes.converter.VectorMath.i_vector) | Input socket: Vector |
+| [i_vector_001](#nodebpy.nodes.converter.VectorMath.i_vector_001) | Input socket: Vector |
+| [o_value](#nodebpy.nodes.converter.VectorMath.o_value) | Output socket: Value |
+| [o_vector](#nodebpy.nodes.converter.VectorMath.o_vector) | Output socket: Vector |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [absolute](#nodebpy.nodes.converter.VectorMath.absolute) | Create Vector Math with operation 'Absolute'. |
+| [add](#nodebpy.nodes.converter.VectorMath.add) | Create Vector Math with operation `a + b`. |
+| [ceil](#nodebpy.nodes.converter.VectorMath.ceil) | Create Vector Math with operation 'Ceil'. |
+| [cosine](#nodebpy.nodes.converter.VectorMath.cosine) | Create Vector Math with operation 'Cosine'. |
+| [cross_product](#nodebpy.nodes.converter.VectorMath.cross_product) | Create Vector Math with operation 'Cross Product'. |
+| [distance](#nodebpy.nodes.converter.VectorMath.distance) | Create Vector Math with operation 'Distance'. |
+| [divide](#nodebpy.nodes.converter.VectorMath.divide) | Create Vector Math with operation 'Divide'. |
+| [dot_product](#nodebpy.nodes.converter.VectorMath.dot_product) | Create Vector Math with operation 'Dot Product'. |
+| [face_forward](#nodebpy.nodes.converter.VectorMath.face_forward) | Orients a vector to face away from a surface (incidence) defined by it's normal (reference) |
+| [floor](#nodebpy.nodes.converter.VectorMath.floor) | Create Vector Math with operation 'Floor'. |
+| [fraction](#nodebpy.nodes.converter.VectorMath.fraction) | Create Vector Math with operation 'Fraction'. |
+| [length](#nodebpy.nodes.converter.VectorMath.length) | Create Vector Math with operation 'Length'. |
+| [maximum](#nodebpy.nodes.converter.VectorMath.maximum) | Create Vector Math with operation 'Maximum'. |
+| [minimum](#nodebpy.nodes.converter.VectorMath.minimum) | Create Vector Math with operation 'Minimum'. |
+| [modulo](#nodebpy.nodes.converter.VectorMath.modulo) | Create Vector Math with operation 'Modulo'. |
+| [multiply](#nodebpy.nodes.converter.VectorMath.multiply) | Create Vector Math with operation `a * b` element-wise. |
+| [multiply_add](#nodebpy.nodes.converter.VectorMath.multiply_add) | Create Vector Math with operation 'Multiply Add'. |
+| [normalize](#nodebpy.nodes.converter.VectorMath.normalize) | Create Vector Math with operation 'Normalize'. |
+| [power](#nodebpy.nodes.converter.VectorMath.power) | Create Vector Math with operation 'Power'. |
+| [project](#nodebpy.nodes.converter.VectorMath.project) | Project A onto B. |
+| [reflect](#nodebpy.nodes.converter.VectorMath.reflect) | Reflect A around the normal B. B does not need to be normalized. |
+| [refract](#nodebpy.nodes.converter.VectorMath.refract) | For a given incident vector and surface normal (b) with an index of refraction (ior), return the refraction vector |
+| [scale](#nodebpy.nodes.converter.VectorMath.scale) | Create Vector Math with operation 'Scale'. |
+| [sign](#nodebpy.nodes.converter.VectorMath.sign) | Create Vector Math with operation 'Sign'. |
+| [sine](#nodebpy.nodes.converter.VectorMath.sine) | Create Vector Math with operation 'Sine'. |
+| [snap](#nodebpy.nodes.converter.VectorMath.snap) | Create Vector Math with operation 'Snap'. |
+| [subtract](#nodebpy.nodes.converter.VectorMath.subtract) | Create Vector Math with operation `a - b`. |
+| [tangent](#nodebpy.nodes.converter.VectorMath.tangent) | Create Vector Math with operation 'Tangent'. |
+| [wrap](#nodebpy.nodes.converter.VectorMath.wrap) | Create Vector Math with operation 'Wrap'. |
+
+##### absolute { #nodebpy.nodes.converter.VectorMath.absolute }
+
+```python
+nodes.converter.VectorMath.absolute(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Absolute'.
+
+##### add { #nodebpy.nodes.converter.VectorMath.add }
+
+```python
+nodes.converter.VectorMath.add(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation `a + b`.
+
+##### ceil { #nodebpy.nodes.converter.VectorMath.ceil }
+
+```python
+nodes.converter.VectorMath.ceil(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Ceil'.
+
+##### cosine { #nodebpy.nodes.converter.VectorMath.cosine }
+
+```python
+nodes.converter.VectorMath.cosine(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Cosine'.
+
+##### cross_product { #nodebpy.nodes.converter.VectorMath.cross_product }
+
+```python
+nodes.converter.VectorMath.cross_product(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Cross Product'.
+
+##### distance { #nodebpy.nodes.converter.VectorMath.distance }
+
+```python
+nodes.converter.VectorMath.distance(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Distance'.
+
+##### divide { #nodebpy.nodes.converter.VectorMath.divide }
+
+```python
+nodes.converter.VectorMath.divide(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Divide'.
+
+##### dot_product { #nodebpy.nodes.converter.VectorMath.dot_product }
+
+```python
+nodes.converter.VectorMath.dot_product(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Dot Product'.
+
+##### face_forward { #nodebpy.nodes.converter.VectorMath.face_forward }
+
+```python
+nodes.converter.VectorMath.face_forward(
+    vector=(0.0, 0.0, 0.0),
+    incidence=(0.0, 0.0, 0.0),
+    reference=(0.0, 0.0, 0.0),
+)
+```
+
+Orients a vector to face away from a surface (incidence) defined by it's normal (reference)
+
+##### floor { #nodebpy.nodes.converter.VectorMath.floor }
+
+```python
+nodes.converter.VectorMath.floor(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Floor'.
+
+##### fraction { #nodebpy.nodes.converter.VectorMath.fraction }
+
+```python
+nodes.converter.VectorMath.fraction(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Fraction'.
+
+##### length { #nodebpy.nodes.converter.VectorMath.length }
+
+```python
+nodes.converter.VectorMath.length(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Length'.
+
+##### maximum { #nodebpy.nodes.converter.VectorMath.maximum }
+
+```python
+nodes.converter.VectorMath.maximum(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Maximum'.
+
+##### minimum { #nodebpy.nodes.converter.VectorMath.minimum }
+
+```python
+nodes.converter.VectorMath.minimum(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Minimum'.
+
+##### modulo { #nodebpy.nodes.converter.VectorMath.modulo }
+
+```python
+nodes.converter.VectorMath.modulo(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Modulo'.
+
+##### multiply { #nodebpy.nodes.converter.VectorMath.multiply }
+
+```python
+nodes.converter.VectorMath.multiply(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation `a * b` element-wise.
+
+##### multiply_add { #nodebpy.nodes.converter.VectorMath.multiply_add }
+
+```python
+nodes.converter.VectorMath.multiply_add(
+    vector=(0.0, 0.0, 0.0),
+    multiplier=(0.0, 0.0, 0.0),
+    addend=(0.0, 0.0, 0.0),
+)
+```
+
+Create Vector Math with operation 'Multiply Add'.
+
+##### normalize { #nodebpy.nodes.converter.VectorMath.normalize }
+
+```python
+nodes.converter.VectorMath.normalize(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Normalize'.
+
+##### power { #nodebpy.nodes.converter.VectorMath.power }
+
+```python
+nodes.converter.VectorMath.power(base=(0.0, 0.0, 0.0), exponent=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Power'.
+
+##### project { #nodebpy.nodes.converter.VectorMath.project }
+
+```python
+nodes.converter.VectorMath.project(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Project A onto B.
+
+##### reflect { #nodebpy.nodes.converter.VectorMath.reflect }
+
+```python
+nodes.converter.VectorMath.reflect(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Reflect A around the normal B. B does not need to be normalized.
+
+##### refract { #nodebpy.nodes.converter.VectorMath.refract }
+
+```python
+nodes.converter.VectorMath.refract(
+    a=(0.0, 0.0, 0.0),
+    b=(0.0, 0.0, 0.0),
+    ior=1.0,
+)
+```
+
+For a given incident vector and surface normal (b) with an index of refraction (ior), return the refraction vector
+
+##### scale { #nodebpy.nodes.converter.VectorMath.scale }
+
+```python
+nodes.converter.VectorMath.scale(vector=(0.0, 0.0, 0.0), scale=1.0)
+```
+
+Create Vector Math with operation 'Scale'.
+
+##### sign { #nodebpy.nodes.converter.VectorMath.sign }
+
+```python
+nodes.converter.VectorMath.sign(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Sign'.
+
+##### sine { #nodebpy.nodes.converter.VectorMath.sine }
+
+```python
+nodes.converter.VectorMath.sine(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Sine'.
+
+##### snap { #nodebpy.nodes.converter.VectorMath.snap }
+
+```python
+nodes.converter.VectorMath.snap(
+    vector=(0.0, 0.0, 0.0),
+    increment=(0.0, 0.0, 0.0),
+)
+```
+
+Create Vector Math with operation 'Snap'.
+
+##### subtract { #nodebpy.nodes.converter.VectorMath.subtract }
+
+```python
+nodes.converter.VectorMath.subtract(a=(0.0, 0.0, 0.0), b=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation `a - b`.
+
+##### tangent { #nodebpy.nodes.converter.VectorMath.tangent }
+
+```python
+nodes.converter.VectorMath.tangent(vector=(0.0, 0.0, 0.0))
+```
+
+Create Vector Math with operation 'Tangent'.
+
+##### wrap { #nodebpy.nodes.converter.VectorMath.wrap }
+
+```python
+nodes.converter.VectorMath.wrap(
+    vector=(0.0, 0.0, 0.0),
+    min=(0.0, 0.0, 0.0),
+    max=(0.0, 0.0, 0.0),
+)
+```
+
+Create Vector Math with operation 'Wrap'.
