@@ -119,7 +119,7 @@ class RandomValue(NodeBuilder):
             case "FLOAT_VECTOR":
                 return self._input("Max")
 
-    def i_probability(self) -> NodeSocket:
+    def i_probability(self) -> SocketLinker:
         """Input socket: Probability"""
         if self.data_type != "BOOLEAN":
             raise ValueError(
@@ -936,7 +936,7 @@ class BooleanMath(NodeBuilder):
         return self._input("Boolean")  # type: ignore
 
     @property
-    def i_boolean_001(self) -> bpy.types.NodeSocketBool:
+    def i_boolean_001(self) -> SocketLinker:
         return self._input("Boolean_001")  # type: ignore
 
     @property

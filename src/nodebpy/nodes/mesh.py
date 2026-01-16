@@ -54,7 +54,7 @@ class CurveToMesh(NodeBuilder):
         return self._input("Curve")
 
     @property
-    def i_profile_curve(self) -> NodeSocket:
+    def i_profile_curve(self) -> SocketLinker:
         """Input socket: Profile Curve"""
         return self._input("Profile Curve")
 
@@ -98,7 +98,7 @@ class DualMesh(NodeBuilder):
         return self._input("Mesh")
 
     @property
-    def i_keep_boundaries(self) -> bpy.types.NodeSocketBool:
+    def i_keep_boundaries(self) -> SocketLinker:
         """Input socket: Keep Boundaries"""
         return self._input("Keep Boundaries")
 
@@ -152,7 +152,7 @@ class ExtrudeMesh(NodeBuilder):
         return self._input("Offset")
 
     @property
-    def i_offset_scale(self) -> bpy.types.NodeSocketFloat:
+    def i_offset_scale(self) -> SocketLinker:
         """Input socket: Offset Scale"""
         return self._input("Offset Scale")
 
@@ -238,12 +238,12 @@ class EdgeAngle(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_unsigned_angle(self) -> bpy.types.NodeSocketFloat:
+    def o_unsigned_angle(self) -> SocketLinker:
         """Output socket: Unsigned Angle"""
         return self._output("Unsigned Angle")
 
     @property
-    def o_signed_angle(self) -> bpy.types.NodeSocketFloat:
+    def o_signed_angle(self) -> SocketLinker:
         """Output socket: Signed Angle"""
         return self._output("Signed Angle")
 
@@ -279,12 +279,12 @@ class EdgeVertices(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_vertex_index_1(self) -> bpy.types.NodeSocketInt:
+    def o_vertex_index_1(self) -> SocketLinker:
         """Output socket: Vertex Index 1"""
         return self._output("Vertex Index 1")
 
     @property
-    def o_vertex_index_2(self) -> bpy.types.NodeSocketInt:
+    def o_vertex_index_2(self) -> SocketLinker:
         """Output socket: Vertex Index 2"""
         return self._output("Vertex Index 2")
 
@@ -354,7 +354,7 @@ class FaceNeighbors(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_vertex_count(self) -> bpy.types.NodeSocketInt:
+    def o_vertex_count(self) -> SocketLinker:
         """Output socket: Vertex Count"""
         return self._output("Vertex Count")
 
@@ -377,12 +377,12 @@ class MeshIsland(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_island_index(self) -> bpy.types.NodeSocketInt:
+    def o_island_index(self) -> SocketLinker:
         """Output socket: Island Index"""
         return self._output("Island Index")
 
     @property
-    def o_island_count(self) -> bpy.types.NodeSocketInt:
+    def o_island_count(self) -> SocketLinker:
         """Output socket: Island Count"""
         return self._output("Island Count")
 
@@ -400,7 +400,7 @@ class VertexNeighbors(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_vertex_count(self) -> bpy.types.NodeSocketInt:
+    def o_vertex_count(self) -> SocketLinker:
         """Output socket: Vertex Count"""
         return self._output("Vertex Count")
 
@@ -561,12 +561,12 @@ class Cone(NodeBuilder):
         return self._input("Vertices")
 
     @property
-    def i_side_segments(self) -> bpy.types.NodeSocketInt:
+    def i_side_segments(self) -> SocketLinker:
         """Input socket: Side Segments"""
         return self._input("Side Segments")
 
     @property
-    def i_fill_segments(self) -> bpy.types.NodeSocketInt:
+    def i_fill_segments(self) -> SocketLinker:
         """Input socket: Fill Segments"""
         return self._input("Fill Segments")
 
@@ -576,7 +576,7 @@ class Cone(NodeBuilder):
         return self._input("Radius Top")
 
     @property
-    def i_radius_bottom(self) -> NodeSocket:
+    def i_radius_bottom(self) -> SocketLinker:
         """Input socket: Radius Bottom"""
         return self._input("Radius Bottom")
 
@@ -709,12 +709,12 @@ class Cylinder(NodeBuilder):
         return self._input("Vertices")
 
     @property
-    def i_side_segments(self) -> bpy.types.NodeSocketInt:
+    def i_side_segments(self) -> SocketLinker:
         """Input socket: Side Segments"""
         return self._input("Side Segments")
 
     @property
-    def i_fill_segments(self) -> bpy.types.NodeSocketInt:
+    def i_fill_segments(self) -> SocketLinker:
         """Input socket: Fill Segments"""
         return self._input("Fill Segments")
 
@@ -776,12 +776,12 @@ class FaceGroupBoundaries(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_face_group_id(self) -> bpy.types.NodeSocketInt:
+    def i_face_group_id(self) -> SocketLinker:
         """Input socket: Face Group ID"""
         return self._input("Face Set")
 
     @property
-    def o_boundary_edges(self) -> bpy.types.NodeSocketBool:
+    def o_boundary_edges(self) -> SocketLinker:
         """Output socket: Boundary Edges"""
         return self._output("Boundary Edges")
 
@@ -866,7 +866,7 @@ class IcoSphere(NodeBuilder):
         return self._input("Radius")
 
     @property
-    def i_subdivisions(self) -> bpy.types.NodeSocketInt:
+    def i_subdivisions(self) -> SocketLinker:
         """Input socket: Subdivisions"""
         return self._input("Subdivisions")
 
@@ -909,7 +909,7 @@ class MeshLine(NodeBuilder):
         return self._input("Count")
 
     @property
-    def i_start_location(self) -> NodeSocket:
+    def i_start_location(self) -> SocketLinker:
         """Input socket: Start Location"""
         return self._input("Start Location")
 
@@ -1024,12 +1024,12 @@ class MeshToDensityGrid(NodeBuilder):
         return self._input("Voxel Size")
 
     @property
-    def i_gradient_width(self) -> NodeSocket:
+    def i_gradient_width(self) -> SocketLinker:
         """Input socket: Gradient Width"""
         return self._input("Gradient Width")
 
     @property
-    def o_density_grid(self) -> bpy.types.NodeSocketFloat:
+    def o_density_grid(self) -> SocketLinker:
         """Output socket: Density Grid"""
         return self._output("Density Grid")
 
@@ -1174,7 +1174,7 @@ class MeshToVolume(NodeBuilder):
         return self._input("Density")
 
     @property
-    def i_resolution_mode(self) -> NodeSocket:
+    def i_resolution_mode(self) -> SocketLinker:
         """Input socket: Resolution Mode"""
         return self._input("Resolution Mode")
 
@@ -1184,12 +1184,12 @@ class MeshToVolume(NodeBuilder):
         return self._input("Voxel Size")
 
     @property
-    def i_voxel_amount(self) -> bpy.types.NodeSocketFloat:
+    def i_voxel_amount(self) -> SocketLinker:
         """Input socket: Voxel Amount"""
         return self._input("Voxel Amount")
 
     @property
-    def i_interior_band_width(self) -> NodeSocket:
+    def i_interior_band_width(self) -> SocketLinker:
         """Input socket: Interior Band Width"""
         return self._input("Interior Band Width")
 
@@ -1278,17 +1278,17 @@ class SetMeshNormal(NodeBuilder):
         return self._input("Mesh")
 
     @property
-    def i_remove_custom(self) -> bpy.types.NodeSocketBool:
+    def i_remove_custom(self) -> SocketLinker:
         """Input socket: Remove Custom"""
         return self._input("Remove Custom")
 
     @property
-    def i_edge_sharpness(self) -> bpy.types.NodeSocketBool:
+    def i_edge_sharpness(self) -> SocketLinker:
         """Input socket: Edge Sharpness"""
         return self._input("Edge Sharpness")
 
     @property
-    def i_face_sharpness(self) -> bpy.types.NodeSocketBool:
+    def i_face_sharpness(self) -> SocketLinker:
         """Input socket: Face Sharpness"""
         return self._input("Face Sharpness")
 
@@ -1380,7 +1380,7 @@ class VolumeToMesh(NodeBuilder):
         return self._input("Volume")
 
     @property
-    def i_resolution_mode(self) -> NodeSocket:
+    def i_resolution_mode(self) -> SocketLinker:
         """Input socket: Resolution Mode"""
         return self._input("Resolution Mode")
 
@@ -1390,7 +1390,7 @@ class VolumeToMesh(NodeBuilder):
         return self._input("Voxel Size")
 
     @property
-    def i_voxel_amount(self) -> bpy.types.NodeSocketFloat:
+    def i_voxel_amount(self) -> SocketLinker:
         """Input socket: Voxel Amount"""
         return self._input("Voxel Amount")
 

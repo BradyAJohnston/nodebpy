@@ -1,14 +1,17 @@
 import typing
 
-
 # Type aliases for node inputs
-LINKABLE = "NodeSocket | NodeBuilder | Any"
-TYPE_INPUT_VECTOR = "tuple[float, float, float] | NodeSocket | NodeBuilder | None"
-TYPE_INPUT_ROTATION = (
-    "tuple[float, float, float, float] | NodeSocket | NodeBuilder | None"
+LINKABLE = "NodeSocket | NodeBuilder | SocketLinker | Any"
+TYPE_INPUT_VECTOR = (
+    "tuple[float, float, float] | NodeSocket | NodeBuilder | SocketLinker | None"
 )
-TYPE_INPUT_BOOLEAN = "bool | NodeSocket | NodeBuilder | None"
-TYPE_INPUT_ROTATION = "Quaternion | Euler |tuple[float, float, float, float] | NodeSocket | NodeBuilder | None"
+TYPE_INPUT_ROTATION = (
+    "tuple[float, float, float, float] | NodeSocket | NodeBuilder | SocketLinker | None"
+)
+TYPE_INPUT_BOOLEAN = "bool | NodeSocket | NodeBuilder | SocketLinker | None "
+TYPE_INPUT_ROTATION = "Quaternion | Euler |tuple[float, float, float, float] | NodeSocket | NodeBuilder | SocketLinker | None"
+TYPE_INPUT_VALUE = "float | int | NodeSocket | NodeBuilder | SocketLinker | None"
+TYPE_INPUT_INT = "int | NodeSocket | NodeBuilder | SocketLinker | None"
 
 _AttributeDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"

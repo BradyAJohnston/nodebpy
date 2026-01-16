@@ -163,12 +163,12 @@ class AxesToRotation(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_primary_axis(self) -> bpy.types.NodeSocketVector:
+    def i_primary_axis(self) -> SocketLinker:
         """Input socket: Primary Axis"""
         return self._input("Primary Axis")
 
     @property
-    def i_secondary_axis(self) -> bpy.types.NodeSocketVector:
+    def i_secondary_axis(self) -> SocketLinker:
         """Input socket: Secondary Axis"""
         return self._input("Secondary Axis")
 
@@ -418,82 +418,82 @@ class CombineMatrix(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_column_1_row_1(self) -> bpy.types.NodeSocketFloat:
+    def i_column_1_row_1(self) -> SocketLinker:
         """Input socket: Column 1 Row 1"""
         return self._input("Column 1 Row 1")
 
     @property
-    def i_column_1_row_2(self) -> bpy.types.NodeSocketFloat:
+    def i_column_1_row_2(self) -> SocketLinker:
         """Input socket: Column 1 Row 2"""
         return self._input("Column 1 Row 2")
 
     @property
-    def i_column_1_row_3(self) -> bpy.types.NodeSocketFloat:
+    def i_column_1_row_3(self) -> SocketLinker:
         """Input socket: Column 1 Row 3"""
         return self._input("Column 1 Row 3")
 
     @property
-    def i_column_1_row_4(self) -> bpy.types.NodeSocketFloat:
+    def i_column_1_row_4(self) -> SocketLinker:
         """Input socket: Column 1 Row 4"""
         return self._input("Column 1 Row 4")
 
     @property
-    def i_column_2_row_1(self) -> bpy.types.NodeSocketFloat:
+    def i_column_2_row_1(self) -> SocketLinker:
         """Input socket: Column 2 Row 1"""
         return self._input("Column 2 Row 1")
 
     @property
-    def i_column_2_row_2(self) -> bpy.types.NodeSocketFloat:
+    def i_column_2_row_2(self) -> SocketLinker:
         """Input socket: Column 2 Row 2"""
         return self._input("Column 2 Row 2")
 
     @property
-    def i_column_2_row_3(self) -> bpy.types.NodeSocketFloat:
+    def i_column_2_row_3(self) -> SocketLinker:
         """Input socket: Column 2 Row 3"""
         return self._input("Column 2 Row 3")
 
     @property
-    def i_column_2_row_4(self) -> bpy.types.NodeSocketFloat:
+    def i_column_2_row_4(self) -> SocketLinker:
         """Input socket: Column 2 Row 4"""
         return self._input("Column 2 Row 4")
 
     @property
-    def i_column_3_row_1(self) -> bpy.types.NodeSocketFloat:
+    def i_column_3_row_1(self) -> SocketLinker:
         """Input socket: Column 3 Row 1"""
         return self._input("Column 3 Row 1")
 
     @property
-    def i_column_3_row_2(self) -> bpy.types.NodeSocketFloat:
+    def i_column_3_row_2(self) -> SocketLinker:
         """Input socket: Column 3 Row 2"""
         return self._input("Column 3 Row 2")
 
     @property
-    def i_column_3_row_3(self) -> bpy.types.NodeSocketFloat:
+    def i_column_3_row_3(self) -> SocketLinker:
         """Input socket: Column 3 Row 3"""
         return self._input("Column 3 Row 3")
 
     @property
-    def i_column_3_row_4(self) -> bpy.types.NodeSocketFloat:
+    def i_column_3_row_4(self) -> SocketLinker:
         """Input socket: Column 3 Row 4"""
         return self._input("Column 3 Row 4")
 
     @property
-    def i_column_4_row_1(self) -> bpy.types.NodeSocketFloat:
+    def i_column_4_row_1(self) -> SocketLinker:
         """Input socket: Column 4 Row 1"""
         return self._input("Column 4 Row 1")
 
     @property
-    def i_column_4_row_2(self) -> bpy.types.NodeSocketFloat:
+    def i_column_4_row_2(self) -> SocketLinker:
         """Input socket: Column 4 Row 2"""
         return self._input("Column 4 Row 2")
 
     @property
-    def i_column_4_row_3(self) -> bpy.types.NodeSocketFloat:
+    def i_column_4_row_3(self) -> SocketLinker:
         """Input socket: Column 4 Row 3"""
         return self._input("Column 4 Row 3")
 
     @property
-    def i_column_4_row_4(self) -> bpy.types.NodeSocketFloat:
+    def i_column_4_row_4(self) -> SocketLinker:
         """Input socket: Column 4 Row 4"""
         return self._input("Column 4 Row 4")
 
@@ -523,7 +523,7 @@ class CombineTransform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_translation(self) -> NodeSocket:
+    def i_translation(self) -> SocketLinker:
         """Input socket: Translation"""
         return self._input("Translation")
 
@@ -815,7 +815,7 @@ class FindInString(NodeBuilder):
         return self._input("Search")
 
     @property
-    def o_first_found(self) -> bpy.types.NodeSocketInt:
+    def o_first_found(self) -> SocketLinker:
         """Output socket: First Found"""
         return self._output("First Found")
 
@@ -887,7 +887,7 @@ class FormatString(NodeBuilder):
         return self._input("Format")
 
     @property
-    def i_input_socket(self) -> NodeSocket:
+    def i_input_socket(self) -> SocketLinker:
         """Input socket:"""
         return self._input("__extend__")
 
@@ -1353,7 +1353,7 @@ class MatrixDeterminant(NodeBuilder):
         return self._input("Matrix")
 
     @property
-    def o_determinant(self) -> bpy.types.NodeSocketFloat:
+    def o_determinant(self) -> SocketLinker:
         """Output socket: Determinant"""
         return self._output("Determinant")
 
@@ -1810,82 +1810,82 @@ class SeparateMatrix(NodeBuilder):
         return self._input("Matrix")
 
     @property
-    def o_column_1_row_1(self) -> bpy.types.NodeSocketFloat:
+    def o_column_1_row_1(self) -> SocketLinker:
         """Output socket: Column 1 Row 1"""
         return self._output("Column 1 Row 1")
 
     @property
-    def o_column_1_row_2(self) -> bpy.types.NodeSocketFloat:
+    def o_column_1_row_2(self) -> SocketLinker:
         """Output socket: Column 1 Row 2"""
         return self._output("Column 1 Row 2")
 
     @property
-    def o_column_1_row_3(self) -> bpy.types.NodeSocketFloat:
+    def o_column_1_row_3(self) -> SocketLinker:
         """Output socket: Column 1 Row 3"""
         return self._output("Column 1 Row 3")
 
     @property
-    def o_column_1_row_4(self) -> bpy.types.NodeSocketFloat:
+    def o_column_1_row_4(self) -> SocketLinker:
         """Output socket: Column 1 Row 4"""
         return self._output("Column 1 Row 4")
 
     @property
-    def o_column_2_row_1(self) -> bpy.types.NodeSocketFloat:
+    def o_column_2_row_1(self) -> SocketLinker:
         """Output socket: Column 2 Row 1"""
         return self._output("Column 2 Row 1")
 
     @property
-    def o_column_2_row_2(self) -> bpy.types.NodeSocketFloat:
+    def o_column_2_row_2(self) -> SocketLinker:
         """Output socket: Column 2 Row 2"""
         return self._output("Column 2 Row 2")
 
     @property
-    def o_column_2_row_3(self) -> bpy.types.NodeSocketFloat:
+    def o_column_2_row_3(self) -> SocketLinker:
         """Output socket: Column 2 Row 3"""
         return self._output("Column 2 Row 3")
 
     @property
-    def o_column_2_row_4(self) -> bpy.types.NodeSocketFloat:
+    def o_column_2_row_4(self) -> SocketLinker:
         """Output socket: Column 2 Row 4"""
         return self._output("Column 2 Row 4")
 
     @property
-    def o_column_3_row_1(self) -> bpy.types.NodeSocketFloat:
+    def o_column_3_row_1(self) -> SocketLinker:
         """Output socket: Column 3 Row 1"""
         return self._output("Column 3 Row 1")
 
     @property
-    def o_column_3_row_2(self) -> bpy.types.NodeSocketFloat:
+    def o_column_3_row_2(self) -> SocketLinker:
         """Output socket: Column 3 Row 2"""
         return self._output("Column 3 Row 2")
 
     @property
-    def o_column_3_row_3(self) -> bpy.types.NodeSocketFloat:
+    def o_column_3_row_3(self) -> SocketLinker:
         """Output socket: Column 3 Row 3"""
         return self._output("Column 3 Row 3")
 
     @property
-    def o_column_3_row_4(self) -> bpy.types.NodeSocketFloat:
+    def o_column_3_row_4(self) -> SocketLinker:
         """Output socket: Column 3 Row 4"""
         return self._output("Column 3 Row 4")
 
     @property
-    def o_column_4_row_1(self) -> bpy.types.NodeSocketFloat:
+    def o_column_4_row_1(self) -> SocketLinker:
         """Output socket: Column 4 Row 1"""
         return self._output("Column 4 Row 1")
 
     @property
-    def o_column_4_row_2(self) -> bpy.types.NodeSocketFloat:
+    def o_column_4_row_2(self) -> SocketLinker:
         """Output socket: Column 4 Row 2"""
         return self._output("Column 4 Row 2")
 
     @property
-    def o_column_4_row_3(self) -> bpy.types.NodeSocketFloat:
+    def o_column_4_row_3(self) -> SocketLinker:
         """Output socket: Column 4 Row 3"""
         return self._output("Column 4 Row 3")
 
     @property
-    def o_column_4_row_4(self) -> bpy.types.NodeSocketFloat:
+    def o_column_4_row_4(self) -> SocketLinker:
         """Output socket: Column 4 Row 4"""
         return self._output("Column 4 Row 4")
 
@@ -1909,7 +1909,7 @@ class SeparateTransform(NodeBuilder):
         return self._input("Transform")
 
     @property
-    def o_translation(self) -> NodeSocket:
+    def o_translation(self) -> SocketLinker:
         """Output socket: Translation"""
         return self._output("Translation")
 
