@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import typing
 from typing import Literal
+
 from bpy.types import (
     NodeSocket,
     NodeSocketBool,
     NodeSocketCollection,
     NodeSocketColor,
     NodeSocketFloat,
+    NodeSocketGeometry,
     NodeSocketImage,
     NodeSocketInt,
     NodeSocketMaterial,
@@ -51,18 +53,31 @@ TYPE_INPUT_STRING = typing.Union[str, LINKABLE, NodeSocketString]
 TYPE_INPUT_COLOR = typing.Union[
     LINKABLE, tuple[float, float, float, float], NodeSocketColor
 ]
+TYPE_INPUT_GEOMETRY = typing.Union[LINKABLE, NodeSocketGeometry]
 TYPE_INPUT_OBJECT = typing.Union[LINKABLE, NodeSocketObject]
 TYPE_INPUT_MATERIAL = typing.Union[LINKABLE, NodeSocketMaterial]
 TYPE_INPUT_IMAGE = typing.Union[LINKABLE, NodeSocketImage]
 TYPE_INPUT_COLLECTION = typing.Union[LINKABLE, NodeSocketCollection]
 TYPE_INPUT_MATRIX = typing.Union[LINKABLE, NodeSocketMatrix]
 
+_AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
+
 _AttributeDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
 ]
+_DeleteGeometryDomains = typing.Literal[
+    "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
+]
+
+_DeleteGeoemtryModes = Literal["ALL", "EDGE_FACE", "ONLY_FACE"]
 _RandomValueDataTypes = Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
 
+
+_AttributeDataTypes = Literal[
+    "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX"
+]
 _MixDataTypes = Literal["FLOAT", "VECTOR", "COLOR", "ROTATION"]
+
 
 _MixColorBlendTypes = Literal[
     "MIX",

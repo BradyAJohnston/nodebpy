@@ -1,6 +1,7 @@
 """Auto-generated geometry node classes."""
 
-from .geometry import JoinGeometry
+from .grid import DistributePointsInGrid
+from .geometry import BoundingBox, DeleteGeometry, JoinGeometry
 from . import (
     attribute_auto,
     curve,
@@ -10,6 +11,7 @@ from . import (
     attribute,
     color,
     converter,
+    grid,
     texture,
     vector,
     zone,
@@ -23,6 +25,7 @@ from .attribute_auto import (
     StoreNamedAttribute,
 )
 from .converter import (
+    AccumulateField,
     AlignRotationToVector,
     AxesToRotation,
     AxisAngleToRotation,
@@ -86,21 +89,11 @@ from .curve import (
     TrimCurve,
 )
 from .geometry_auto import (
-    AccumulateField,
     ActiveElement,
     AdvectGrid,
     Bake,
-    BoundingBox,
-    CameraInfo,
-    CollectionInfo,
-    ConvexHull,
-    CornersOfEdge,
-    CornersOfFace,
-    CornersOfVertex,
     DCursor3,
-    DeleteGeometry,
     DialGizmo,
-    DistributePointsInGrid,
     DistributePointsInVolume,
     DistributePointsOnFaces,
     DuplicateElements,
@@ -222,8 +215,12 @@ from .input import (
     ID,
     ActiveCamera,
     Boolean,
+    CameraInfo,
     Collection,
     Color,
+    CornersOfEdge,
+    CornersOfFace,
+    CornersOfVertex,
     CurveTangent,
     Image,
     Index,
@@ -331,6 +328,7 @@ __all__ = [
     "color",
     "converter",
     "texture",
+    "grid",
     "vector",
     "zone",
     # From attribute

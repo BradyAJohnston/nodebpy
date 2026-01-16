@@ -23,548 +23,14 @@ from ..builder import NodeBuilder, SocketLinker
 from .types import (
     LINKABLE,
     TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_GEOMETRY,
     TYPE_INPUT_INT,
+    TYPE_INPUT_OBJECT,
     TYPE_INPUT_ROTATION,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
-
-
-class AccumulateField(NodeBuilder):
-    """Add the values of an evaluated field together and output the running total for each element"""
-
-    name = "GeometryNodeAccumulateField"
-    node: bpy.types.GeometryNodeAccumulateField
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 1.0,
-        group_index: TYPE_INPUT_INT = 0,
-        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"] = "FLOAT",
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-        **kwargs,
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Group Index": group_index}
-        key_args.update(kwargs)
-        self.data_type = data_type
-        self.domain = domain
-        self._establish_links(**key_args)
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def i_group_id(self) -> SocketLinker:
-        """Input socket: Group ID"""
-        return self._input("Group Index")
-
-    @property
-    def o_leading(self) -> SocketLinker:
-        """Output socket: Leading"""
-        return self._output("Leading")
-
-    @property
-    def o_trailing(self) -> SocketLinker:
-        """Output socket: Trailing"""
-        return self._output("Trailing")
-
-    @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self._output("Total")
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]):
-        self.node.data_type = value
-
-    @property
-    def domain(
-        self,
-    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self,
-        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
-        self.node.domain = value
-
-
-class Bake(NodeBuilder):
-    """Cache the incoming data so that it can be used without recomputation"""
-
-    name = "GeometryNodeBake"
-    node: bpy.types.GeometryNodeBake
-
-    def __init__(self, extend: LINKABLE | None = None, active_index: int = 0, **kwargs):
-        super().__init__()
-        key_args = {"__extend__": extend}
-        key_args.update(kwargs)
-        self.active_index = active_index
-        self._establish_links(**key_args)
-
-    @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__")
-
-    @property
-    def o_input_socket(self) -> SocketLinker:
-        """Output socket:"""
-        return self._output("__extend__")
-
-    @property
-    def active_index(self) -> int:
-        return self.node.active_index
-
-    @active_index.setter
-    def active_index(self, value: int):
-        self.node.active_index = value
-
-
-class BoundingBox(NodeBuilder):
-    """Calculate the limits of a geometry's positions and generate a box mesh with those dimensions"""
-
-    name = "GeometryNodeBoundBox"
-    node: bpy.types.GeometryNodeBoundBox
-
-    def __init__(
-        self, geometry: LINKABLE = None, use_radius: TYPE_INPUT_BOOLEAN = True, **kwargs
-    ):
-        super().__init__()
-        key_args = {"Geometry": geometry, "Use Radius": use_radius}
-        key_args.update(kwargs)
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self._input("Geometry")
-
-    @property
-    def i_use_radius(self) -> SocketLinker:
-        """Input socket: Use Radius"""
-        return self._input("Use Radius")
-
-    @property
-    def o_bounding_box(self) -> SocketLinker:
-        """Output socket: Bounding Box"""
-        return self._output("Bounding Box")
-
-    @property
-    def o_min(self) -> SocketLinker:
-        """Output socket: Min"""
-        return self._output("Min")
-
-    @property
-    def o_max(self) -> SocketLinker:
-        """Output socket: Max"""
-        return self._output("Max")
-
-
-class CameraInfo(NodeBuilder):
-    """Retrieve information from a camera object"""
-
-    name = "GeometryNodeCameraInfo"
-    node: bpy.types.GeometryNodeCameraInfo
-
-    def __init__(self, camera: LINKABLE | None = None, **kwargs):
-        super().__init__()
-        key_args = {"Camera": camera}
-        key_args.update(kwargs)
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_camera(self) -> SocketLinker:
-        """Input socket: Camera"""
-        return self._input("Camera")
-
-    @property
-    def o_projection_matrix(self) -> SocketLinker:
-        """Output socket: Projection Matrix"""
-        return self._output("Projection Matrix")
-
-    @property
-    def o_focal_length(self) -> SocketLinker:
-        """Output socket: Focal Length"""
-        return self._output("Focal Length")
-
-    @property
-    def o_sensor(self) -> SocketLinker:
-        """Output socket: Sensor"""
-        return self._output("Sensor")
-
-    @property
-    def o_shift(self) -> SocketLinker:
-        """Output socket: Shift"""
-        return self._output("Shift")
-
-    @property
-    def o_clip_start(self) -> SocketLinker:
-        """Output socket: Clip Start"""
-        return self._output("Clip Start")
-
-    @property
-    def o_clip_end(self) -> SocketLinker:
-        """Output socket: Clip End"""
-        return self._output("Clip End")
-
-    @property
-    def o_focus_distance(self) -> SocketLinker:
-        """Output socket: Focus Distance"""
-        return self._output("Focus Distance")
-
-    @property
-    def o_is_orthographic(self) -> SocketLinker:
-        """Output socket: Is Orthographic"""
-        return self._output("Is Orthographic")
-
-    @property
-    def o_orthographic_scale(self) -> SocketLinker:
-        """Output socket: Orthographic Scale"""
-        return self._output("Orthographic Scale")
-
-
-class CollectionInfo(NodeBuilder):
-    """Retrieve geometry instances from a collection"""
-
-    name = "GeometryNodeCollectionInfo"
-    node: bpy.types.GeometryNodeCollectionInfo
-
-    def __init__(
-        self,
-        collection: LINKABLE | None = None,
-        separate_children: TYPE_INPUT_BOOLEAN = False,
-        reset_children: TYPE_INPUT_BOOLEAN = False,
-        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
-        **kwargs,
-    ):
-        super().__init__()
-        key_args = {
-            "Collection": collection,
-            "Separate Children": separate_children,
-            "Reset Children": reset_children,
-        }
-        key_args.update(kwargs)
-        self.transform_space = transform_space
-        self._establish_links(**key_args)
-
-    @property
-    def i_collection(self) -> SocketLinker:
-        """Input socket: Collection"""
-        return self._input("Collection")
-
-    @property
-    def i_separate_children(self) -> SocketLinker:
-        """Input socket: Separate Children"""
-        return self._input("Separate Children")
-
-    @property
-    def i_reset_children(self) -> SocketLinker:
-        """Input socket: Reset Children"""
-        return self._input("Reset Children")
-
-    @property
-    def o_instances(self) -> SocketLinker:
-        """Output socket: Instances"""
-        return self._output("Instances")
-
-    @property
-    def transform_space(self) -> Literal["ORIGINAL", "RELATIVE"]:
-        return self.node.transform_space
-
-    @transform_space.setter
-    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]):
-        self.node.transform_space = value
-
-
-class ConvexHull(NodeBuilder):
-    """Create a mesh that encloses all points in the input geometry with the smallest number of points"""
-
-    name = "GeometryNodeConvexHull"
-    node: bpy.types.GeometryNodeConvexHull
-
-    def __init__(self, geometry: LINKABLE = None, **kwargs):
-        super().__init__()
-        key_args = {"Geometry": geometry}
-        key_args.update(kwargs)
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self._input("Geometry")
-
-    @property
-    def o_convex_hull(self) -> SocketLinker:
-        """Output socket: Convex Hull"""
-        return self._output("Convex Hull")
-
-
-class CornersOfEdge(NodeBuilder):
-    """Retrieve face corners connected to edges"""
-
-    name = "GeometryNodeCornersOfEdge"
-    node: bpy.types.GeometryNodeCornersOfEdge
-
-    def __init__(
-        self,
-        edge_index: int | LINKABLE | None = 0,
-        weights: float | LINKABLE | None = 0.0,
-        sort_index: int | LINKABLE | None = 0,
-        **kwargs,
-    ):
-        super().__init__()
-        key_args = {
-            "Edge Index": edge_index,
-            "Weights": weights,
-            "Sort Index": sort_index,
-        }
-        key_args.update(kwargs)
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_edge_index(self) -> SocketLinker:
-        """Input socket: Edge Index"""
-        return self._input("Edge Index")
-
-    @property
-    def i_weights(self) -> SocketLinker:
-        """Input socket: Weights"""
-        return self._input("Weights")
-
-    @property
-    def i_sort_index(self) -> SocketLinker:
-        """Input socket: Sort Index"""
-        return self._input("Sort Index")
-
-    @property
-    def o_corner_index(self) -> SocketLinker:
-        """Output socket: Corner Index"""
-        return self._output("Corner Index")
-
-    @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self._output("Total")
-
-
-class CornersOfFace(NodeBuilder):
-    """Retrieve corners that make up a face"""
-
-    name = "GeometryNodeCornersOfFace"
-    node: bpy.types.GeometryNodeCornersOfFace
-
-    def __init__(
-        self,
-        face_index: int | LINKABLE | None = 0,
-        weights: float | LINKABLE | None = 0.0,
-        sort_index: int | LINKABLE | None = 0,
-        **kwargs,
-    ):
-        super().__init__()
-        key_args = {
-            "Face Index": face_index,
-            "Weights": weights,
-            "Sort Index": sort_index,
-        }
-        key_args.update(kwargs)
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_face_index(self) -> SocketLinker:
-        """Input socket: Face Index"""
-        return self._input("Face Index")
-
-    @property
-    def i_weights(self) -> SocketLinker:
-        """Input socket: Weights"""
-        return self._input("Weights")
-
-    @property
-    def i_sort_index(self) -> SocketLinker:
-        """Input socket: Sort Index"""
-        return self._input("Sort Index")
-
-    @property
-    def o_corner_index(self) -> SocketLinker:
-        """Output socket: Corner Index"""
-        return self._output("Corner Index")
-
-    @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self._output("Total")
-
-
-class CornersOfVertex(NodeBuilder):
-    """Retrieve face corners connected to vertices"""
-
-    name = "GeometryNodeCornersOfVertex"
-    node: bpy.types.GeometryNodeCornersOfVertex
-
-    def __init__(
-        self,
-        vertex_index: int | LINKABLE | None = 0,
-        weights: float | LINKABLE | None = 0.0,
-        sort_index: int | LINKABLE | None = 0,
-        **kwargs,
-    ):
-        super().__init__()
-        key_args = {
-            "Vertex Index": vertex_index,
-            "Weights": weights,
-            "Sort Index": sort_index,
-        }
-        key_args.update(kwargs)
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_vertex_index(self) -> SocketLinker:
-        """Input socket: Vertex Index"""
-        return self._input("Vertex Index")
-
-    @property
-    def i_weights(self) -> SocketLinker:
-        """Input socket: Weights"""
-        return self._input("Weights")
-
-    @property
-    def i_sort_index(self) -> SocketLinker:
-        """Input socket: Sort Index"""
-        return self._input("Sort Index")
-
-    @property
-    def o_corner_index(self) -> SocketLinker:
-        """Output socket: Corner Index"""
-        return self._output("Corner Index")
-
-    @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self._output("Total")
-
-
-class DeleteGeometry(NodeBuilder):
-    """Remove selected elements of a geometry"""
-
-    name = "GeometryNodeDeleteGeometry"
-    node: bpy.types.GeometryNodeDeleteGeometry
-
-    def __init__(
-        self,
-        geometry: LINKABLE = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-        **kwargs,
-    ):
-        super().__init__()
-        key_args = {"Geometry": geometry, "Selection": selection}
-        key_args.update(kwargs)
-        self.mode = mode
-        self.domain = domain
-        self._establish_links(**key_args)
-
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self._input("Geometry")
-
-    @property
-    def i_selection(self) -> SocketLinker:
-        """Input socket: Selection"""
-        return self._input("Selection")
-
-    @property
-    def o_geometry(self) -> SocketLinker:
-        """Output socket: Geometry"""
-        return self._output("Geometry")
-
-    @property
-    def mode(self) -> Literal["ALL", "EDGE_FACE", "ONLY_FACE"]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: Literal["ALL", "EDGE_FACE", "ONLY_FACE"]):
-        self.node.mode = value
-
-    @property
-    def domain(self) -> Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]
-    ):
-        self.node.domain = value
-
-
-class DistributePointsInGrid(NodeBuilder):
-    """Generate points inside a volume grid"""
-
-    name = "GeometryNodeDistributePointsInGrid"
-    node: bpy.types.GeometryNodeDistributePointsInGrid
-
-    def __init__(
-        self,
-        grid: float | LINKABLE | None = 0.0,
-        density: float | LINKABLE | None = 1.0,
-        seed: int | LINKABLE | None = 0,
-        mode: Literal["DENSITY_RANDOM", "DENSITY_GRID"] = "DENSITY_RANDOM",
-        **kwargs,
-    ):
-        super().__init__()
-        key_args = {"Grid": grid, "Density": density, "Seed": seed}
-        key_args.update(kwargs)
-        self.mode = mode
-        self._establish_links(**key_args)
-
-    @property
-    def i_grid(self) -> SocketLinker:
-        """Input socket: Grid"""
-        return self._input("Grid")
-
-    @property
-    def i_density(self) -> SocketLinker:
-        """Input socket: Density"""
-        return self._input("Density")
-
-    @property
-    def i_seed(self) -> SocketLinker:
-        """Input socket: Seed"""
-        return self._input("Seed")
-
-    @property
-    def o_points(self) -> SocketLinker:
-        """Output socket: Points"""
-        return self._output("Points")
-
-    @property
-    def mode(self) -> Literal["DENSITY_RANDOM", "DENSITY_GRID"]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: Literal["DENSITY_RANDOM", "DENSITY_GRID"]):
-        self.node.mode = value
 
 
 class DistributePointsInVolume(NodeBuilder):
@@ -577,14 +43,14 @@ class DistributePointsInVolume(NodeBuilder):
         self,
         volume: LINKABLE = None,
         mode: LINKABLE | None = "Random",
-        density: float | LINKABLE | None = 1.0,
-        seed: int | LINKABLE | None = 0,
-        spacing: LINKABLE | None = [
-            0.30000001192092896,
-            0.30000001192092896,
-            0.30000001192092896,
-        ],
-        threshold: float | LINKABLE | None = 0.10000000149011612,
+        density: TYPE_INPUT_VALUE = 1.0,
+        seed: TYPE_INPUT_INT = 0,
+        spacing: TYPE_INPUT_VECTOR = (
+            0.3,
+            0.3,
+            0.3,
+        ),
+        threshold: TYPE_INPUT_VALUE = 0.10000000149011612,
         **kwargs,
     ):
         super().__init__()
@@ -646,8 +112,8 @@ class DistributePointsOnFaces(NodeBuilder):
         self,
         mesh: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        density: float | LINKABLE | None = 10.0,
-        seed: int | LINKABLE | None = 0,
+        density: TYPE_INPUT_VALUE = 10.0,
+        seed: TYPE_INPUT_INT = 0,
         distribute_method: Literal["RANDOM", "POISSON"] = "RANDOM",
         use_legacy_normal: bool = False,
         **kwargs,
@@ -726,7 +192,7 @@ class DuplicateElements(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        amount: int | LINKABLE | None = 1,
+        amount: TYPE_INPUT_INT = 1,
         domain: Literal[
             "POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"
         ] = "POINT",
@@ -783,7 +249,7 @@ class EdgePathsToSelection(NodeBuilder):
     def __init__(
         self,
         start_vertices: TYPE_INPUT_BOOLEAN = True,
-        next_vertex_index: int | LINKABLE | None = -1,
+        next_vertex_index: TYPE_INPUT_INT = -1,
         **kwargs,
     ):
         super().__init__()
@@ -817,7 +283,7 @@ class EdgesOfCorner(NodeBuilder):
     name = "GeometryNodeEdgesOfCorner"
     node: bpy.types.GeometryNodeEdgesOfCorner
 
-    def __init__(self, corner_index: int | LINKABLE | None = 0, **kwargs):
+    def __init__(self, corner_index: TYPE_INPUT_INT = 0, **kwargs):
         super().__init__()
         key_args = {"Corner Index": corner_index}
         key_args.update(kwargs)
@@ -848,9 +314,9 @@ class EdgesOfVertex(NodeBuilder):
 
     def __init__(
         self,
-        vertex_index: int | LINKABLE | None = 0,
-        weights: float | LINKABLE | None = 0.0,
-        sort_index: int | LINKABLE | None = 0,
+        vertex_index: TYPE_INPUT_INT = 0,
+        weights: TYPE_INPUT_VALUE = 0.0,
+        sort_index: TYPE_INPUT_INT = 0,
         **kwargs,
     ):
         super().__init__()
@@ -919,7 +385,7 @@ class FaceOfCorner(NodeBuilder):
     name = "GeometryNodeFaceOfCorner"
     node: bpy.types.GeometryNodeFaceOfCorner
 
-    def __init__(self, corner_index: int | LINKABLE | None = 0, **kwargs):
+    def __init__(self, corner_index: TYPE_INPUT_INT = 0, **kwargs):
         super().__init__()
         key_args = {"Corner Index": corner_index}
         key_args.update(kwargs)
@@ -950,8 +416,8 @@ class EvaluateAtIndex(NodeBuilder):
 
     def __init__(
         self,
-        value: float | LINKABLE | None = 0.0,
-        index: int | LINKABLE | None = 0,
+        value: TYPE_INPUT_VALUE = 0.0,
+        index: TYPE_INPUT_INT = 0,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ] = "POINT",
@@ -1057,8 +523,8 @@ class FieldAverage(NodeBuilder):
 
     def __init__(
         self,
-        value: float | LINKABLE | None = 0.0,
-        group_index: int | LINKABLE | None = 0,
+        value: TYPE_INPUT_VALUE = 0.0,
+        group_index: TYPE_INPUT_INT = 0,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
@@ -1122,8 +588,8 @@ class FieldMinMax(NodeBuilder):
 
     def __init__(
         self,
-        value: float | LINKABLE | None = 0.0,
-        group_index: int | LINKABLE | None = 0,
+        value: TYPE_INPUT_VALUE = 0.0,
+        group_index: TYPE_INPUT_INT = 0,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
@@ -1187,7 +653,7 @@ class EvaluateOnDomain(NodeBuilder):
 
     def __init__(
         self,
-        value: float | LINKABLE | None = 0.0,
+        value: TYPE_INPUT_VALUE = 0.0,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ] = "POINT",
@@ -1288,7 +754,7 @@ class FieldToGrid(NodeBuilder):
 
     def __init__(
         self,
-        topology: float | LINKABLE | None = 0.0,
+        topology: TYPE_INPUT_VALUE = 0.0,
         extend: LINKABLE | None = None,
         active_index: int = 0,
         data_type: Literal[
@@ -1403,8 +869,8 @@ class FieldVariance(NodeBuilder):
 
     def __init__(
         self,
-        value: float | LINKABLE | None = 0.0,
-        group_index: int | LINKABLE | None = 0,
+        value: TYPE_INPUT_VALUE = 0.0,
+        group_index: TYPE_INPUT_INT = 0,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
@@ -1754,11 +1220,11 @@ class DialGizmo(NodeBuilder):
 
     def __init__(
         self,
-        value: float | LINKABLE | None = 0.0,
+        value: TYPE_INPUT_VALUE = 0.0,
         position: LINKABLE | None = (0.0, 0.0, 0.0),
         up: LINKABLE | None = [0.0, 0.0, 1.0],
         screen_space: TYPE_INPUT_BOOLEAN = True,
-        radius: float | LINKABLE | None = 1.0,
+        radius: TYPE_INPUT_VALUE = 1.0,
         color_id: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"] = "PRIMARY",
         **kwargs,
     ):
@@ -1821,7 +1287,7 @@ class LinearGizmo(NodeBuilder):
 
     def __init__(
         self,
-        value: float | LINKABLE | None = 0.0,
+        value: TYPE_INPUT_VALUE = 0.0,
         position: LINKABLE | None = (0.0, 0.0, 0.0),
         direction: LINKABLE | None = [0.0, 0.0, 1.0],
         color_id: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"] = "PRIMARY",
@@ -2009,7 +1475,7 @@ class AdvectGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
         velocity: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         time_step: LINKABLE | None = 1.0,
         integration_scheme: LINKABLE | None = "Runge-Kutta 3",
@@ -2184,7 +1650,7 @@ class GridGradient(NodeBuilder):
     name = "GeometryNodeGridGradient"
     node: bpy.types.GeometryNodeGridGradient
 
-    def __init__(self, grid: float | LINKABLE | None = 0.0, **kwargs):
+    def __init__(self, grid: TYPE_INPUT_VALUE = 0.0, **kwargs):
         super().__init__()
         key_args = {"Grid": grid}
         key_args.update(kwargs)
@@ -2210,7 +1676,7 @@ class GridInfo(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -2312,7 +1778,7 @@ class GridLaplacian(NodeBuilder):
     name = "GeometryNodeGridLaplacian"
     node: bpy.types.GeometryNodeGridLaplacian
 
-    def __init__(self, grid: float | LINKABLE | None = 0.0, **kwargs):
+    def __init__(self, grid: TYPE_INPUT_VALUE = 0.0, **kwargs):
         super().__init__()
         key_args = {"Grid": grid}
         key_args.update(kwargs)
@@ -2338,9 +1804,9 @@ class PruneGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
         mode: LINKABLE | None = "Threshold",
-        threshold: float | LINKABLE | None = 0.009999999776482582,
+        threshold: TYPE_INPUT_VALUE = 0.009999999776482582,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -2449,7 +1915,7 @@ class VoxelizeGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -2560,7 +2026,7 @@ class ImageInfo(NodeBuilder):
     node: bpy.types.GeometryNodeImageInfo
 
     def __init__(
-        self, image: LINKABLE | None = None, frame: int | LINKABLE | None = 0, **kwargs
+        self, image: LINKABLE | None = None, frame: TYPE_INPUT_INT = 0, **kwargs
     ):
         super().__init__()
         key_args = {"Image": image, "Frame": frame}
@@ -2614,7 +2080,7 @@ class ImageTexture(NodeBuilder):
         self,
         image: LINKABLE | None = None,
         vector: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-        frame: int | LINKABLE | None = 0,
+        frame: TYPE_INPUT_INT = 0,
         interpolation: Literal["Linear", "Closest", "Cubic"] = "Linear",
         extension: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"] = "REPEAT",
         **kwargs,
@@ -2831,7 +2297,7 @@ class IndexOfNearest(NodeBuilder):
     def __init__(
         self,
         position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-        group_id: int | LINKABLE | None = 0,
+        group_id: TYPE_INPUT_INT = 0,
         **kwargs,
     ):
         super().__init__()
@@ -2873,7 +2339,7 @@ class InstanceOnPoints(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         instance: LINKABLE = None,
         pick_instance: TYPE_INPUT_BOOLEAN = False,
-        instance_index: int | LINKABLE | None = 0,
+        instance_index: TYPE_INPUT_INT = 0,
         rotation: TYPE_INPUT_ROTATION = (0.0, 0.0, 0.0),
         scale: LINKABLE | None = [1.0, 1.0, 1.0],
         **kwargs,
@@ -3029,8 +2495,8 @@ class List(NodeBuilder):
 
     def __init__(
         self,
-        count: int | LINKABLE | None = 1,
-        value: float | LINKABLE | None = 0.0,
+        count: TYPE_INPUT_INT = 1,
+        value: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -3134,8 +2600,8 @@ class GetListItem(NodeBuilder):
 
     def __init__(
         self,
-        list: float | LINKABLE | None = 0.0,
-        index: int | LINKABLE | None = 0,
+        list: TYPE_INPUT_VALUE = 0.0,
+        index: TYPE_INPUT_INT = 0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -3239,7 +2705,7 @@ class ListLength(NodeBuilder):
 
     def __init__(
         self,
-        list: float | LINKABLE | None = 0.0,
+        list: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -3519,8 +2985,8 @@ class OffsetCornerInFace(NodeBuilder):
 
     def __init__(
         self,
-        corner_index: int | LINKABLE | None = 0,
-        offset: int | LINKABLE | None = 0,
+        corner_index: TYPE_INPUT_INT = 0,
+        offset: TYPE_INPUT_INT = 0,
         **kwargs,
     ):
         super().__init__()
@@ -3553,7 +3019,7 @@ class Points(NodeBuilder):
 
     def __init__(
         self,
-        count: int | LINKABLE | None = 1,
+        count: TYPE_INPUT_INT = 1,
         position: LINKABLE | None = (0.0, 0.0, 0.0),
         radius: LINKABLE | None = 0.10000000149011612,
         **kwargs,
@@ -3665,10 +3131,10 @@ class PointsToVolume(NodeBuilder):
     def __init__(
         self,
         points: LINKABLE = None,
-        density: float | LINKABLE | None = 1.0,
+        density: TYPE_INPUT_VALUE = 1.0,
         resolution_mode: LINKABLE | None = "Amount",
         voxel_size: LINKABLE | None = 0.30000001192092896,
-        voxel_amount: float | LINKABLE | None = 64.0,
+        voxel_amount: TYPE_INPUT_VALUE = 64.0,
         radius: LINKABLE | None = 0.5,
         **kwargs,
     ):
@@ -3730,9 +3196,9 @@ class GeometryProximity(NodeBuilder):
     def __init__(
         self,
         target: LINKABLE = None,
-        group_id: int | LINKABLE | None = 0,
+        group_id: TYPE_INPUT_INT = 0,
         source_position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-        sample_group_id: int | LINKABLE | None = 0,
+        sample_group_id: TYPE_INPUT_INT = 0,
         target_element: Literal["POINTS", "EDGES", "FACES"] = "FACES",
         **kwargs,
     ):
@@ -3800,7 +3266,7 @@ class Raycast(NodeBuilder):
     def __init__(
         self,
         target_geometry: LINKABLE = None,
-        attribute: float | LINKABLE | None = 0.0,
+        attribute: TYPE_INPUT_VALUE = 0.0,
         interpolation: LINKABLE | None = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         ray_direction: TYPE_INPUT_VECTOR = [0.0, 0.0, -1.0],
@@ -3943,7 +3409,7 @@ class RealizeInstances(NodeBuilder):
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         realize_all: TYPE_INPUT_BOOLEAN = True,
-        depth: int | LINKABLE | None = 0,
+        depth: TYPE_INPUT_INT = 0,
         **kwargs,
     ):
         super().__init__()
@@ -4089,8 +3555,8 @@ class SDFGridBoolean(NodeBuilder):
 
     def __init__(
         self,
-        grid_1: float | LINKABLE | None = 0.0,
-        grid_2: float | LINKABLE | None = 0.0,
+        grid_1: TYPE_INPUT_VALUE = 0.0,
+        grid_2: TYPE_INPUT_VALUE = 0.0,
         operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
         **kwargs,
     ):
@@ -4103,8 +3569,8 @@ class SDFGridBoolean(NodeBuilder):
     @classmethod
     def intersect(
         cls,
-        grid_1: float | LINKABLE | None = 0.0,
-        grid_2: float | LINKABLE | None = 0.0,
+        grid_1: TYPE_INPUT_VALUE = 0.0,
+        grid_2: TYPE_INPUT_VALUE = 0.0,
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Intersect'."""
         return cls(operation="INTERSECT", grid_1=grid_1, grid_2=grid_2)
@@ -4112,8 +3578,8 @@ class SDFGridBoolean(NodeBuilder):
     @classmethod
     def union(
         cls,
-        grid_1: float | LINKABLE | None = 0.0,
-        grid_2: float | LINKABLE | None = 0.0,
+        grid_1: TYPE_INPUT_VALUE = 0.0,
+        grid_2: TYPE_INPUT_VALUE = 0.0,
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Union'."""
         return cls(operation="UNION", grid_1=grid_1, grid_2=grid_2)
@@ -4121,8 +3587,8 @@ class SDFGridBoolean(NodeBuilder):
     @classmethod
     def difference(
         cls,
-        grid_1: float | LINKABLE | None = 0.0,
-        grid_2: float | LINKABLE | None = 0.0,
+        grid_1: TYPE_INPUT_VALUE = 0.0,
+        grid_2: TYPE_INPUT_VALUE = 0.0,
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         return cls(operation="DIFFERENCE", grid_1=grid_1, grid_2=grid_2)
@@ -4159,8 +3625,8 @@ class SDFGridFillet(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
-        iterations: int | LINKABLE | None = 1,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        iterations: TYPE_INPUT_INT = 1,
         **kwargs,
     ):
         super().__init__()
@@ -4193,8 +3659,8 @@ class SDFGridLaplacian(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
-        iterations: int | LINKABLE | None = 1,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        iterations: TYPE_INPUT_INT = 1,
         **kwargs,
     ):
         super().__init__()
@@ -4227,9 +3693,9 @@ class SDFGridMean(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
-        width: int | LINKABLE | None = 1,
-        iterations: int | LINKABLE | None = 1,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        width: TYPE_INPUT_INT = 1,
+        iterations: TYPE_INPUT_INT = 1,
         **kwargs,
     ):
         super().__init__()
@@ -4267,8 +3733,8 @@ class SDFGridMeanCurvature(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
-        iterations: int | LINKABLE | None = 1,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        iterations: TYPE_INPUT_INT = 1,
         **kwargs,
     ):
         super().__init__()
@@ -4301,9 +3767,9 @@ class SDFGridMedian(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
-        width: int | LINKABLE | None = 1,
-        iterations: int | LINKABLE | None = 1,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        width: TYPE_INPUT_INT = 1,
+        iterations: TYPE_INPUT_INT = 1,
         **kwargs,
     ):
         super().__init__()
@@ -4341,7 +3807,7 @@ class SDFGridOffset(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
         distance: LINKABLE | None = 0.10000000149011612,
         **kwargs,
     ):
@@ -4375,7 +3841,7 @@ class SampleGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
         position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         interpolation: LINKABLE | None = "Trilinear",
         data_type: Literal[
@@ -4486,10 +3952,10 @@ class SampleGridIndex(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
-        x: int | LINKABLE | None = 0,
-        y: int | LINKABLE | None = 0,
-        z: int | LINKABLE | None = 0,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        x: TYPE_INPUT_INT = 0,
+        y: TYPE_INPUT_INT = 0,
+        z: TYPE_INPUT_INT = 0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -4604,8 +4070,8 @@ class SampleIndex(NodeBuilder):
     def __init__(
         self,
         geometry: LINKABLE = None,
-        value: float | LINKABLE | None = 0.0,
-        index: int | LINKABLE | None = 0,
+        value: TYPE_INPUT_VALUE = 0.0,
+        index: TYPE_INPUT_INT = 0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -4770,10 +4236,10 @@ class SampleNearestSurface(NodeBuilder):
     def __init__(
         self,
         mesh: LINKABLE = None,
-        value: float | LINKABLE | None = 0.0,
-        group_id: int | LINKABLE | None = 0,
+        value: TYPE_INPUT_VALUE = 0.0,
+        group_id: TYPE_INPUT_INT = 0,
         sample_position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-        sample_group_id: int | LINKABLE | None = 0,
+        sample_group_id: TYPE_INPUT_INT = 0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -4889,7 +4355,7 @@ class SampleUVSurface(NodeBuilder):
     def __init__(
         self,
         mesh: LINKABLE = None,
-        value: float | LINKABLE | None = 0.0,
+        value: TYPE_INPUT_VALUE = 0.0,
         source_uv_map: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         sample_uv: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         data_type: Literal[
@@ -5002,7 +4468,7 @@ class ScaleElements(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        scale: float | LINKABLE | None = 1.0,
+        scale: TYPE_INPUT_VALUE = 1.0,
         center: LINKABLE | None = (0.0, 0.0, 0.0),
         scale_mode: LINKABLE | None = "Uniform",
         axis: TYPE_INPUT_VECTOR = [1.0, 0.0, 0.0],
@@ -5290,7 +4756,7 @@ class SetGreasePencilColor(NodeBuilder):
             1.0,
             1.0,
         ],
-        opacity: float | LINKABLE | None = 1.0,
+        opacity: TYPE_INPUT_VALUE = 1.0,
         mode: Literal["STROKE", "FILL"] = "STROKE",
         **kwargs,
     ):
@@ -5386,7 +4852,7 @@ class SetGreasePencilSoftness(NodeBuilder):
         self,
         grease_pencil: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        softness: float | LINKABLE | None = 0.0,
+        softness: TYPE_INPUT_VALUE = 0.0,
         **kwargs,
     ):
         super().__init__()
@@ -5428,8 +4894,8 @@ class SetGridBackground(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
-        background: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        background: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -5533,7 +4999,7 @@ class SetGridTransform(NodeBuilder):
 
     def __init__(
         self,
-        grid: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
         transform: LINKABLE | None = None,
         data_type: Literal[
             "FLOAT",
@@ -5645,7 +5111,7 @@ class SetID(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        id: int | LINKABLE | None = 0,
+        id: TYPE_INPUT_INT = 0,
         **kwargs,
     ):
         super().__init__()
@@ -5769,7 +5235,7 @@ class SetMaterialIndex(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        material_index: int | LINKABLE | None = 0,
+        material_index: TYPE_INPUT_INT = 0,
         **kwargs,
     ):
         super().__init__()
@@ -5997,7 +5463,7 @@ class SetSplineResolution(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        resolution: int | LINKABLE | None = 12,
+        resolution: TYPE_INPUT_INT = 12,
         **kwargs,
     ):
         super().__init__()
@@ -6041,8 +5507,8 @@ class SortElements(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: int | LINKABLE | None = 0,
-        sort_weight: float | LINKABLE | None = 0.0,
+        group_id: TYPE_INPUT_INT = 0,
+        sort_weight: TYPE_INPUT_VALUE = 0.0,
         domain: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE"] = "POINT",
         **kwargs,
     ):
@@ -6183,7 +5649,7 @@ class SplitToInstances(NodeBuilder):
         self,
         geometry: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: int | LINKABLE | None = 0,
+        group_id: TYPE_INPUT_INT = 0,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
         ] = "POINT",
@@ -6241,7 +5707,7 @@ class StoreNamedGrid(NodeBuilder):
         self,
         volume: LINKABLE = None,
         name: str | LINKABLE | None = "",
-        grid: float | LINKABLE | None = 0.0,
+        grid: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
             "BOOLEAN",
             "FLOAT",
@@ -6364,7 +5830,7 @@ class SubdivisionSurface(NodeBuilder):
     def __init__(
         self,
         mesh: LINKABLE = None,
-        level: int | LINKABLE | None = 1,
+        level: TYPE_INPUT_INT = 1,
         edge_crease: LINKABLE | None = 0.0,
         vertex_crease: LINKABLE | None = 0.0,
         limit_surface: TYPE_INPUT_BOOLEAN = True,
@@ -6683,7 +6149,7 @@ class SetFaceSet(NodeBuilder):
         self,
         mesh: LINKABLE = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        face_set: int | LINKABLE | None = 0,
+        face_set: TYPE_INPUT_INT = 0,
         **kwargs,
     ):
         super().__init__()
@@ -6943,7 +6409,7 @@ class PackUVIslands(NodeBuilder):
         self,
         uv: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         selection: TYPE_INPUT_BOOLEAN = True,
-        margin: float | LINKABLE | None = 0.0010000000474974513,
+        margin: TYPE_INPUT_VALUE = 0.0010000000474974513,
         rotate: TYPE_INPUT_BOOLEAN = True,
         method: LINKABLE | None = "Bounding Box",
         **kwargs,
@@ -7035,7 +6501,7 @@ class UVUnwrap(NodeBuilder):
         self,
         selection: TYPE_INPUT_BOOLEAN = True,
         seam: TYPE_INPUT_BOOLEAN = False,
-        margin: float | LINKABLE | None = 0.0010000000474974513,
+        margin: TYPE_INPUT_VALUE = 0.0010000000474974513,
         fill_holes: TYPE_INPUT_BOOLEAN = True,
         method: LINKABLE | None = "Angle Based",
         **kwargs,
@@ -7089,7 +6555,7 @@ class VertexOfCorner(NodeBuilder):
     name = "GeometryNodeVertexOfCorner"
     node: bpy.types.GeometryNodeVertexOfCorner
 
-    def __init__(self, corner_index: int | LINKABLE | None = 0, **kwargs):
+    def __init__(self, corner_index: TYPE_INPUT_INT = 0, **kwargs):
         super().__init__()
         key_args = {"Corner Index": corner_index}
         key_args.update(kwargs)
@@ -7206,13 +6672,13 @@ class VolumeCube(NodeBuilder):
 
     def __init__(
         self,
-        density: float | LINKABLE | None = 1.0,
-        background: float | LINKABLE | None = 0.0,
+        density: TYPE_INPUT_VALUE = 1.0,
+        background: TYPE_INPUT_VALUE = 0.0,
         min: TYPE_INPUT_VECTOR = [-1.0, -1.0, -1.0],
         max: TYPE_INPUT_VECTOR = [1.0, 1.0, 1.0],
-        resolution_x: int | LINKABLE | None = 32,
-        resolution_y: int | LINKABLE | None = 32,
-        resolution_z: int | LINKABLE | None = 32,
+        resolution_x: TYPE_INPUT_INT = 32,
+        resolution_y: TYPE_INPUT_INT = 32,
+        resolution_z: TYPE_INPUT_INT = 32,
         **kwargs,
     ):
         super().__init__()
@@ -7311,3 +6777,35 @@ class Warning(NodeBuilder):
     @warning_type.setter
     def warning_type(self, value: Literal["ERROR", "WARNING", "INFO"]):
         self.node.warning_type = value
+
+
+class Bake(NodeBuilder):
+    """Cache the incoming data so that it can be used without recomputation"""
+
+    name = "GeometryNodeBake"
+    node: bpy.types.GeometryNodeBake
+
+    def __init__(self, extend: LINKABLE | None = None, active_index: int = 0, **kwargs):
+        super().__init__()
+        key_args = {"__extend__": extend}
+        key_args.update(kwargs)
+        self.active_index = active_index
+        self._establish_links(**key_args)
+
+    @property
+    def i_input_socket(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__")
+
+    @property
+    def o_input_socket(self) -> SocketLinker:
+        """Output socket:"""
+        return self._output("__extend__")
+
+    @property
+    def active_index(self) -> int:
+        return self.node.active_index
+
+    @active_index.setter
+    def active_index(self, value: int):
+        self.node.active_index = value

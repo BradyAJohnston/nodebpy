@@ -1,12 +1,16 @@
 import bpy
 from mathutils import Euler
+from typing_extensions import Literal
 
 from nodebpy.builder import NodeBuilder, SocketLinker
 
 from .types import (
     TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_OBJECT,
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
+    TYPE_INPUT_INT,
 )
 
 
@@ -633,3 +637,255 @@ class Vector(NodeBuilder):
     @vector.setter
     def vector(self, value: tuple[float, float, float]):
         self.node.vector = value
+
+
+class CameraInfo(NodeBuilder):
+    """Retrieve information from a camera object"""
+
+    name = "GeometryNodeCameraInfo"
+    node: bpy.types.GeometryNodeCameraInfo
+
+    def __init__(self, camera: TYPE_INPUT_OBJECT = None):
+        super().__init__()
+        key_args = {"Camera": camera}
+        self._establish_links(**key_args)
+
+    @property
+    def i_camera(self) -> SocketLinker:
+        """Input socket: Camera"""
+        return self._input("Camera")
+
+    @property
+    def o_projection_matrix(self) -> SocketLinker:
+        """Output socket: Projection Matrix"""
+        return self._output("Projection Matrix")
+
+    @property
+    def o_focal_length(self) -> SocketLinker:
+        """Output socket: Focal Length"""
+        return self._output("Focal Length")
+
+    @property
+    def o_sensor(self) -> SocketLinker:
+        """Output socket: Sensor"""
+        return self._output("Sensor")
+
+    @property
+    def o_shift(self) -> SocketLinker:
+        """Output socket: Shift"""
+        return self._output("Shift")
+
+    @property
+    def o_clip_start(self) -> SocketLinker:
+        """Output socket: Clip Start"""
+        return self._output("Clip Start")
+
+    @property
+    def o_clip_end(self) -> SocketLinker:
+        """Output socket: Clip End"""
+        return self._output("Clip End")
+
+    @property
+    def o_focus_distance(self) -> SocketLinker:
+        """Output socket: Focus Distance"""
+        return self._output("Focus Distance")
+
+    @property
+    def o_is_orthographic(self) -> SocketLinker:
+        """Output socket: Is Orthographic"""
+        return self._output("Is Orthographic")
+
+    @property
+    def o_orthographic_scale(self) -> SocketLinker:
+        """Output socket: Orthographic Scale"""
+        return self._output("Orthographic Scale")
+
+
+class CollectionInfo(NodeBuilder):
+    """Retrieve geometry instances from a collection"""
+
+    name = "GeometryNodeCollectionInfo"
+    node: bpy.types.GeometryNodeCollectionInfo
+
+    def __init__(
+        self,
+        collection: TYPE_INPUT_COLLECTION = None,
+        separate_children: TYPE_INPUT_BOOLEAN = False,
+        reset_children: TYPE_INPUT_BOOLEAN = False,
+        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
+    ):
+        super().__init__()
+        key_args = {
+            "Collection": collection,
+            "Separate Children": separate_children,
+            "Reset Children": reset_children,
+        }
+        self.transform_space = transform_space
+        self._establish_links(**key_args)
+
+    @property
+    def i_collection(self) -> SocketLinker:
+        """Input socket: Collection"""
+        return self._input("Collection")
+
+    @property
+    def i_separate_children(self) -> SocketLinker:
+        """Input socket: Separate Children"""
+        return self._input("Separate Children")
+
+    @property
+    def i_reset_children(self) -> SocketLinker:
+        """Input socket: Reset Children"""
+        return self._input("Reset Children")
+
+    @property
+    def o_instances(self) -> SocketLinker:
+        """Output socket: Instances"""
+        return self._output("Instances")
+
+    @property
+    def transform_space(self) -> Literal["ORIGINAL", "RELATIVE"]:
+        return self.node.transform_space
+
+    @transform_space.setter
+    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]):
+        self.node.transform_space = value
+
+
+class CornersOfEdge(NodeBuilder):
+    """Retrieve face corners connected to edges"""
+
+    name = "GeometryNodeCornersOfEdge"
+    node: bpy.types.GeometryNodeCornersOfEdge
+
+    def __init__(
+        self,
+        edge_index: TYPE_INPUT_INT = None,
+        weights: TYPE_INPUT_VALUE = None,
+        sort_index: TYPE_INPUT_INT = 0,
+    ):
+        super().__init__()
+        key_args = {
+            "Edge Index": edge_index,
+            "Weights": weights,
+            "Sort Index": sort_index,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_edge_index(self) -> SocketLinker:
+        """Input socket: Edge Index"""
+        return self._input("Edge Index")
+
+    @property
+    def i_weights(self) -> SocketLinker:
+        """Input socket: Weights"""
+        return self._input("Weights")
+
+    @property
+    def i_sort_index(self) -> SocketLinker:
+        """Input socket: Sort Index"""
+        return self._input("Sort Index")
+
+    @property
+    def o_corner_index(self) -> SocketLinker:
+        """Output socket: Corner Index"""
+        return self._output("Corner Index")
+
+    @property
+    def o_total(self) -> SocketLinker:
+        """Output socket: Total"""
+        return self._output("Total")
+
+
+class CornersOfVertex(NodeBuilder):
+    """Retrieve face corners connected to vertices"""
+
+    name = "GeometryNodeCornersOfVertex"
+    node: bpy.types.GeometryNodeCornersOfVertex
+
+    def __init__(
+        self,
+        vertex_index: TYPE_INPUT_INT = None,
+        weights: TYPE_INPUT_VALUE = None,
+        sort_index: TYPE_INPUT_INT = 0,
+    ):
+        super().__init__()
+        key_args = {
+            "Vertex Index": vertex_index,
+            "Weights": weights,
+            "Sort Index": sort_index,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_vertex_index(self) -> SocketLinker:
+        """Input socket: Vertex Index"""
+        return self._input("Vertex Index")
+
+    @property
+    def i_weights(self) -> SocketLinker:
+        """Input socket: Weights"""
+        return self._input("Weights")
+
+    @property
+    def i_sort_index(self) -> SocketLinker:
+        """Input socket: Sort Index"""
+        return self._input("Sort Index")
+
+    @property
+    def o_corner_index(self) -> SocketLinker:
+        """Output socket: Corner Index"""
+        return self._output("Corner Index")
+
+    @property
+    def o_total(self) -> SocketLinker:
+        """Output socket: Total"""
+        return self._output("Total")
+
+
+class CornersOfFace(NodeBuilder):
+    """Retrieve corners that make up a face"""
+
+    name = "GeometryNodeCornersOfFace"
+    node: bpy.types.GeometryNodeCornersOfFace
+
+    def __init__(
+        self,
+        face_index: TYPE_INPUT_INT = None,
+        weights: TYPE_INPUT_VALUE = None,
+        sort_index: TYPE_INPUT_INT = 0,
+    ):
+        super().__init__()
+        key_args = {
+            "Face Index": face_index,
+            "Weights": weights,
+            "Sort Index": sort_index,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_face_index(self) -> SocketLinker:
+        """Input socket: Face Index"""
+        return self._input("Face Index")
+
+    @property
+    def i_weights(self) -> SocketLinker:
+        """Input socket: Weights"""
+        return self._input("Weights")
+
+    @property
+    def i_sort_index(self) -> SocketLinker:
+        """Input socket: Sort Index"""
+        return self._input("Sort Index")
+
+    @property
+    def o_corner_index(self) -> SocketLinker:
+        """Output socket: Corner Index"""
+        return self._output("Corner Index")
+
+    @property
+    def o_total(self) -> SocketLinker:
+        """Output socket: Total"""
+        return self._output("Total")

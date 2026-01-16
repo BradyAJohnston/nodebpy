@@ -8,7 +8,64 @@
 
 | Name | Description |
 | --- | --- |
+| [BoundingBox](#nodebpy.nodes.geometry.BoundingBox) | Calculate the limits of a geometry's positions and generate a box mesh with those dimensions |
+| [ConvexHull](#nodebpy.nodes.geometry.ConvexHull) | Create a mesh that encloses all points in the input geometry with the smallest number of points |
+| [DeleteGeometry](#nodebpy.nodes.geometry.DeleteGeometry) | Remove selected elements of a geometry |
 | [JoinGeometry](#nodebpy.nodes.geometry.JoinGeometry) | Merge separately generated geometries into a single one |
+
+### BoundingBox { #nodebpy.nodes.geometry.BoundingBox }
+
+```python
+nodes.geometry.BoundingBox(geometry=None, use_radius=True)
+```
+
+Calculate the limits of a geometry's positions and generate a box mesh with those dimensions
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.geometry.BoundingBox.i_geometry) | Input socket: Geometry |
+| [i_use_radius](#nodebpy.nodes.geometry.BoundingBox.i_use_radius) | Input socket: Use Radius |
+| [o_bounding_box](#nodebpy.nodes.geometry.BoundingBox.o_bounding_box) | Output socket: Bounding Box |
+| [o_max](#nodebpy.nodes.geometry.BoundingBox.o_max) | Output socket: Max |
+| [o_min](#nodebpy.nodes.geometry.BoundingBox.o_min) | Output socket: Min |
+
+### ConvexHull { #nodebpy.nodes.geometry.ConvexHull }
+
+```python
+nodes.geometry.ConvexHull(geometry=None)
+```
+
+Create a mesh that encloses all points in the input geometry with the smallest number of points
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.geometry.ConvexHull.i_geometry) | Input socket: Geometry |
+| [o_convex_hull](#nodebpy.nodes.geometry.ConvexHull.o_convex_hull) | Output socket: Convex Hull |
+
+### DeleteGeometry { #nodebpy.nodes.geometry.DeleteGeometry }
+
+```python
+nodes.geometry.DeleteGeometry(
+    geometry=None,
+    selection=True,
+    mode='ALL',
+    domain='POINT',
+)
+```
+
+Remove selected elements of a geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.geometry.DeleteGeometry.i_geometry) | Input socket: Geometry |
+| [i_selection](#nodebpy.nodes.geometry.DeleteGeometry.i_selection) | Input socket: Selection |
+| [o_geometry](#nodebpy.nodes.geometry.DeleteGeometry.o_geometry) | Output socket: Geometry |
 
 ### JoinGeometry { #nodebpy.nodes.geometry.JoinGeometry }
 

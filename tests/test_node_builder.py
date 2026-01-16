@@ -11,6 +11,7 @@ from numpy.testing import assert_allclose
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n, sockets as s
 import nodebpy.nodes.converter
+import nodebpy.nodes.geometry
 import nodebpy.nodes.input
 
 
@@ -250,7 +251,7 @@ class TestGeneratedNodes:
         """Test that output properties are accessible."""
 
         with TreeBuilder("OutputPropsTest"):
-            bbox = n.BoundingBox()
+            bbox = nodebpy.nodes.geometry.BoundingBox()
 
             # Test output property accessors
             assert hasattr(bbox, "o_bounding_box")

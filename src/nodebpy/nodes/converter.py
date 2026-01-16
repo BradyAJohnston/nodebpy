@@ -20,6 +20,8 @@ from .types import (
     _RandomValueDataTypes,
     _MixDataTypes,
     _MixColorBlendTypes,
+    _AccumulateFieldDataTypes,
+    _AttributeDomains,
 )
 
 
@@ -2151,3 +2153,71 @@ class Mix(NodeBuilder):
         )
         builder.node.clamp_factor = clamp_factor
         return builder
+
+
+class AccumulateField(NodeBuilder):
+    """Add the values of an evaluated field together and output the running total for each element"""
+
+    name = "GeometryNodeAccumulateField"
+    node: bpy.types.GeometryNodeAccumulateField
+
+    def __init__(
+        self,
+        value: TYPE_INPUT_VALUE = 1.0,
+        group_index: TYPE_INPUT_INT = 0,
+        data_type: _AccumulateFieldDataTypes = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        key_args.update(kwargs)
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group Index")
+
+    @property
+    def o_leading(self) -> SocketLinker:
+        """Output socket: Leading"""
+        return self._output("Leading")
+
+    @property
+    def o_trailing(self) -> SocketLinker:
+        """Output socket: Trailing"""
+        return self._output("Trailing")
+
+    @property
+    def o_total(self) -> SocketLinker:
+        """Output socket: Total"""
+        return self._output("Total")
+
+    @property
+    def data_type(self) -> _AccumulateFieldDataTypes:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: _AccumulateFieldDataTypes):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value

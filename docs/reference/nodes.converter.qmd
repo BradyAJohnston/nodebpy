@@ -8,6 +8,7 @@
 
 | Name | Description |
 | --- | --- |
+| [AccumulateField](#nodebpy.nodes.converter.AccumulateField) | Add the values of an evaluated field together and output the running total for each element |
 | [AlignRotationToVector](#nodebpy.nodes.converter.AlignRotationToVector) | Orient a rotation along the given direction |
 | [AxesToRotation](#nodebpy.nodes.converter.AxesToRotation) | Create a rotation from a primary and (ideally orthogonal) secondary axis |
 | [AxisAngleToRotation](#nodebpy.nodes.converter.AxisAngleToRotation) | Build a rotation from an axis and a rotation around that axis |
@@ -28,6 +29,30 @@
 | [RandomValue](#nodebpy.nodes.converter.RandomValue) | Random Value node |
 | [SeparateXYZ](#nodebpy.nodes.converter.SeparateXYZ) | Split a vector into its X, Y, and Z components |
 | [VectorMath](#nodebpy.nodes.converter.VectorMath) | Perform vector math operation |
+
+### AccumulateField { #nodebpy.nodes.converter.AccumulateField }
+
+```python
+nodes.converter.AccumulateField(
+    value=1.0,
+    group_index=0,
+    data_type='FLOAT',
+    domain='POINT',
+    **kwargs,
+)
+```
+
+Add the values of an evaluated field together and output the running total for each element
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_group_id](#nodebpy.nodes.converter.AccumulateField.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.converter.AccumulateField.i_value) | Input socket: Value |
+| [o_leading](#nodebpy.nodes.converter.AccumulateField.o_leading) | Output socket: Leading |
+| [o_total](#nodebpy.nodes.converter.AccumulateField.o_total) | Output socket: Total |
+| [o_trailing](#nodebpy.nodes.converter.AccumulateField.o_trailing) | Output socket: Trailing |
 
 ### AlignRotationToVector { #nodebpy.nodes.converter.AlignRotationToVector }
 

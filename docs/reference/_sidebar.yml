@@ -10,6 +10,7 @@ website:
       - reference/nodes.texture.qmd
       - reference/nodes.vector.qmd
       - reference/nodes.zone.qmd
+      - reference/nodes.grid.qmd
       - reference/nodes.geometry.qmd
       - reference/nodes.attribute.qmd
       - reference/nodes.curve.qmd

@@ -50,6 +50,7 @@ quartodoc:
     - nodes.texture
     - nodes.vector
     - nodes.zone
+    - nodes.grid
     ####################
     - nodes.geometry
     - nodes.attribute

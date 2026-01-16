@@ -65,7 +65,7 @@ with TreeBuilder("NewTree") as tree:
         geom_inputs = [s.SocketGeometry(f"Geometry_{i}") for i in range(5)]
 
     with tree.outputs:
-        n.JoinGeometry(geom_inputs) >> s.SocketGeometry("The Output Socket")
+        n.JoinGeometry(*geom_inputs) >> s.SocketGeometry("The Output Socket")
 
 tree
 

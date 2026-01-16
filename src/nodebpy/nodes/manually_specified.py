@@ -4,8 +4,6 @@ Some of the nodes need to be manually specified because they are a bit tricky to
 
 from __future__ import annotations
 
-from typing import Iterable, Literal
-
 import bpy
 
 from ..builder import (
@@ -13,23 +11,11 @@ from ..builder import (
     SocketLinker,
     source_socket,
 )
-from . import types
 from .types import (
     LINKABLE,
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_ROTATION,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    _AttributeDataTypes,
     _AttributeDomains,
-    _MixColorBlendTypes,
 )
-
-
-_AttributeDataTypes = Literal[
-    "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX"
-]
 
 
 class CaptureAttribute(NodeBuilder):
@@ -41,6 +27,7 @@ class CaptureAttribute(NodeBuilder):
     def __init__(
         self,
         geometry: LINKABLE = None,
+        *args,
         domain: _AttributeDomains = "POINT",
         **kwargs,
     ):

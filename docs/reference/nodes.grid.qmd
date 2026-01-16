@@ -1,0 +1,28 @@
+# nodes.grid { #nodebpy.nodes.grid }
+
+`nodes.grid`
+
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [DistributePointsInGrid](#nodebpy.nodes.grid.DistributePointsInGrid) | Generate points inside a volume grid |
+
+### DistributePointsInGrid { #nodebpy.nodes.grid.DistributePointsInGrid }
+
+```python
+nodes.grid.DistributePointsInGrid(grid=0.0, mode='DENSITY_RANDOM', **kwargs)
+```
+
+Generate points inside a volume grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_density](#nodebpy.nodes.grid.DistributePointsInGrid.i_density) | Input socket: Density |
+| [i_grid](#nodebpy.nodes.grid.DistributePointsInGrid.i_grid) | Input socket: Grid |
+| [i_seed](#nodebpy.nodes.grid.DistributePointsInGrid.i_seed) | Input socket: Seed |
+| [o_points](#nodebpy.nodes.grid.DistributePointsInGrid.o_points) | Output socket: Points |

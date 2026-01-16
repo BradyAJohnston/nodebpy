@@ -10,8 +10,13 @@
 | --- | --- |
 | [ActiveCamera](#nodebpy.nodes.input.ActiveCamera) | Retrieve the scene's active camera |
 | [Boolean](#nodebpy.nodes.input.Boolean) | Provide a True/False value that can be connected to other nodes in the tree |
+| [CameraInfo](#nodebpy.nodes.input.CameraInfo) | Retrieve information from a camera object |
 | [Collection](#nodebpy.nodes.input.Collection) | Output a single collection |
+| [CollectionInfo](#nodebpy.nodes.input.CollectionInfo) | Retrieve geometry instances from a collection |
 | [Color](#nodebpy.nodes.input.Color) | Output a color value chosen with the color picker widget |
+| [CornersOfEdge](#nodebpy.nodes.input.CornersOfEdge) | Retrieve face corners connected to edges |
+| [CornersOfFace](#nodebpy.nodes.input.CornersOfFace) | Retrieve corners that make up a face |
+| [CornersOfVertex](#nodebpy.nodes.input.CornersOfVertex) | Retrieve face corners connected to vertices |
 | [CurveTangent](#nodebpy.nodes.input.CurveTangent) | Retrieve the direction of curves at each control point |
 | [ID](#nodebpy.nodes.input.ID) | Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist |
 | [Image](#nodebpy.nodes.input.Image) | Input an image data-block |
@@ -68,6 +73,29 @@ Provide a True/False value that can be connected to other nodes in the tree
 | --- | --- |
 | [o_boolean](#nodebpy.nodes.input.Boolean.o_boolean) | Output socket: Boolean |
 
+### CameraInfo { #nodebpy.nodes.input.CameraInfo }
+
+```python
+nodes.input.CameraInfo(camera=None)
+```
+
+Retrieve information from a camera object
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_camera](#nodebpy.nodes.input.CameraInfo.i_camera) | Input socket: Camera |
+| [o_clip_end](#nodebpy.nodes.input.CameraInfo.o_clip_end) | Output socket: Clip End |
+| [o_clip_start](#nodebpy.nodes.input.CameraInfo.o_clip_start) | Output socket: Clip Start |
+| [o_focal_length](#nodebpy.nodes.input.CameraInfo.o_focal_length) | Output socket: Focal Length |
+| [o_focus_distance](#nodebpy.nodes.input.CameraInfo.o_focus_distance) | Output socket: Focus Distance |
+| [o_is_orthographic](#nodebpy.nodes.input.CameraInfo.o_is_orthographic) | Output socket: Is Orthographic |
+| [o_orthographic_scale](#nodebpy.nodes.input.CameraInfo.o_orthographic_scale) | Output socket: Orthographic Scale |
+| [o_projection_matrix](#nodebpy.nodes.input.CameraInfo.o_projection_matrix) | Output socket: Projection Matrix |
+| [o_sensor](#nodebpy.nodes.input.CameraInfo.o_sensor) | Output socket: Sensor |
+| [o_shift](#nodebpy.nodes.input.CameraInfo.o_shift) | Output socket: Shift |
+
 ### Collection { #nodebpy.nodes.input.Collection }
 
 ```python
@@ -82,6 +110,28 @@ Output a single collection
 | --- | --- |
 | [o_collection](#nodebpy.nodes.input.Collection.o_collection) | Output socket: Collection |
 
+### CollectionInfo { #nodebpy.nodes.input.CollectionInfo }
+
+```python
+nodes.input.CollectionInfo(
+    collection=None,
+    separate_children=False,
+    reset_children=False,
+    transform_space='ORIGINAL',
+)
+```
+
+Retrieve geometry instances from a collection
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_collection](#nodebpy.nodes.input.CollectionInfo.i_collection) | Input socket: Collection |
+| [i_reset_children](#nodebpy.nodes.input.CollectionInfo.i_reset_children) | Input socket: Reset Children |
+| [i_separate_children](#nodebpy.nodes.input.CollectionInfo.i_separate_children) | Input socket: Separate Children |
+| [o_instances](#nodebpy.nodes.input.CollectionInfo.o_instances) | Output socket: Instances |
+
 ### Color { #nodebpy.nodes.input.Color }
 
 ```python
@@ -95,6 +145,60 @@ Output a color value chosen with the color picker widget
 | Name | Description |
 | --- | --- |
 | [o_color](#nodebpy.nodes.input.Color.o_color) | Output socket: Color |
+
+### CornersOfEdge { #nodebpy.nodes.input.CornersOfEdge }
+
+```python
+nodes.input.CornersOfEdge(edge_index=None, weights=None, sort_index=0)
+```
+
+Retrieve face corners connected to edges
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_edge_index](#nodebpy.nodes.input.CornersOfEdge.i_edge_index) | Input socket: Edge Index |
+| [i_sort_index](#nodebpy.nodes.input.CornersOfEdge.i_sort_index) | Input socket: Sort Index |
+| [i_weights](#nodebpy.nodes.input.CornersOfEdge.i_weights) | Input socket: Weights |
+| [o_corner_index](#nodebpy.nodes.input.CornersOfEdge.o_corner_index) | Output socket: Corner Index |
+| [o_total](#nodebpy.nodes.input.CornersOfEdge.o_total) | Output socket: Total |
+
+### CornersOfFace { #nodebpy.nodes.input.CornersOfFace }
+
+```python
+nodes.input.CornersOfFace(face_index=None, weights=None, sort_index=0)
+```
+
+Retrieve corners that make up a face
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_face_index](#nodebpy.nodes.input.CornersOfFace.i_face_index) | Input socket: Face Index |
+| [i_sort_index](#nodebpy.nodes.input.CornersOfFace.i_sort_index) | Input socket: Sort Index |
+| [i_weights](#nodebpy.nodes.input.CornersOfFace.i_weights) | Input socket: Weights |
+| [o_corner_index](#nodebpy.nodes.input.CornersOfFace.o_corner_index) | Output socket: Corner Index |
+| [o_total](#nodebpy.nodes.input.CornersOfFace.o_total) | Output socket: Total |
+
+### CornersOfVertex { #nodebpy.nodes.input.CornersOfVertex }
+
+```python
+nodes.input.CornersOfVertex(vertex_index=None, weights=None, sort_index=0)
+```
+
+Retrieve face corners connected to vertices
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_sort_index](#nodebpy.nodes.input.CornersOfVertex.i_sort_index) | Input socket: Sort Index |
+| [i_vertex_index](#nodebpy.nodes.input.CornersOfVertex.i_vertex_index) | Input socket: Vertex Index |
+| [i_weights](#nodebpy.nodes.input.CornersOfVertex.i_weights) | Input socket: Weights |
+| [o_corner_index](#nodebpy.nodes.input.CornersOfVertex.o_corner_index) | Output socket: Corner Index |
+| [o_total](#nodebpy.nodes.input.CornersOfVertex.o_total) | Output socket: Total |
 
 ### CurveTangent { #nodebpy.nodes.input.CurveTangent }
 
