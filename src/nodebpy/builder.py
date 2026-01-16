@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-import math
-from ast import Return
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
+
+
+if TYPE_CHECKING:
+    from .nodes.manually_specified import Math, VectorMath
 
 import arrangebpy
 import bpy
@@ -234,7 +236,7 @@ class NodeBuilder:
     node: Node
     name: str
     _tree: "TreeBuilder"
-    _link_target: str | None = None  # Track which input should receive links
+    _link_target: str | None = None
     _from_socket: NodeSocket | None = None
     _default_input_id: str | None = None
     _default_output_id: str | None = None
@@ -338,7 +340,6 @@ class NodeBuilder:
             and input.type == "VECTOR"
             and isinstance(value, (int, float))
         ):
-            # Convert scalar to vector (scalar, scalar, scalar)
             input.default_value = [value] * len(input.default_value)
         else:
             input.default_value = value
@@ -351,13 +352,14 @@ class NodeBuilder:
         compatibility_order = SOCKET_COMPATIBILITY.get(output_type, ())
 
         # First, check if the default input socket is compatible and available
+        # If the default isn't available or compatible, search for a compatible socket
+        # and if none is found arise an informative error
         default_socket = target_node._default_input_socket
         if default_socket.type in compatibility_order and (
             not default_socket.links or default_socket.is_multi_input
         ):
             return default_socket
 
-        # Search for compatible sockets in order of preference
         for compatible_type in compatibility_order:
             for input_socket in target_node.node.inputs:
                 # Skip if socket already has a link and isn't multi-input
@@ -367,7 +369,6 @@ class NodeBuilder:
                 if input_socket.type == compatible_type:
                     return input_socket
 
-        # If no compatible socket found, raise an informative error
         available_types = [
             socket.type
             for socket in target_node.node.inputs
@@ -436,7 +437,6 @@ class NodeBuilder:
         try:
             return node.node.inputs[name]
         except KeyError:
-            # Try with title case if direct access fails
             title_name = name.replace("_", " ").title()
             return node.node.inputs[title_name]
 

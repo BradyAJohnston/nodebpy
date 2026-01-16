@@ -15,10 +15,12 @@ KNOWN LIMITATIONS:
 """
 
 from __future__ import annotations
+
 import bpy
 from typing_extensions import Literal
+
 from ..builder import NodeBuilder, NodeSocket
-from .types import LINKABLE, TYPE_INPUT_VECTOR
+from .types import LINKABLE, TYPE_INPUT_ROTATION, TYPE_INPUT_VECTOR
 
 
 class AlignEulerToVector(NodeBuilder):

@@ -1,5 +1,6 @@
 import typing
 
+
 # Type aliases for node inputs
 LINKABLE = "NodeSocket | NodeBuilder | Any"
 TYPE_INPUT_VECTOR = "tuple[float, float, float] | NodeSocket | NodeBuilder | None"
@@ -7,6 +8,7 @@ TYPE_INPUT_ROTATION = (
     "tuple[float, float, float, float] | NodeSocket | NodeBuilder | None"
 )
 TYPE_INPUT_BOOLEAN = "bool | NodeSocket | NodeBuilder | None"
+TYPE_INPUT_ROTATION = "Quaternion | Euler |tuple[float, float, float, float] | NodeSocket | NodeBuilder | None"
 
 _AttributeDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
