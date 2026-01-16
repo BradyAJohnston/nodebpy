@@ -20,7 +20,7 @@ with TreeBuilder("NewTree") as tree:
 tree
 ```
 
-These nodes can be saved as variables for re-use later in the node tree as well. After instantiating a class you can specify the input and output sockets using the `i_*` and `o_*` properties on the class. 
+These nodes can be saved as variables for re-use later in the node tree as well. After instantiating a class you can specify the input and output sockets using the `i_*` and `o_*` properties on the class.
 
 These two approaches are equivalent:
 
@@ -31,7 +31,7 @@ These two approaches are equivalent:
 ```{python}
 with TreeBuilder("AnotherTree") as tree:
     pos = n.SetPosition()
-    
+
     n.Position() * 0.5 >> pos.i_position
     n.Vector() >> pos.i_offset
 ```
@@ -63,10 +63,10 @@ We define them in a similar way to the socekts themselves, using context with th
 with TreeBuilder("NewTree") as tree:
     with tree.inputs:
         geom_inputs = [s.SocketGeometry(f"Geometry_{i}") for i in range(5)]
-    
+
     with tree.outputs:
         n.JoinGeometry(geom_inputs) >> s.SocketGeometry("The Output Socket")
-        
+
 tree
 
 ```
@@ -76,13 +76,30 @@ tree
 with TreeBuilder() as tree:
     with tree.inputs:
         count = s.SocketInt("Count", 10)
-    
+
     with tree.outputs:
         output = s.SocketGeometry()
-    
+
     (
         count
         >> n.Points(position=n.RandomValue.vector(min=(-0.1,-0.1,-0.2)))
+        >> output
+    )
+
+tree
+```
+
+```{python}
+with TreeBuilder() as tree:
+    with tree.inputs:
+        count = s.SocketInt("Count", 10)
+
+    with tree.outputs:
+        output = s.SocketGeometry()
+
+    (
+        count
+        >> n.Points(position=n.RandomValue.vector() * 0.5 * n.Position())
         >> output
     )
 

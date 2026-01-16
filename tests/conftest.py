@@ -1,11 +1,15 @@
-import pytest
 from pathlib import Path
+
 import bpy
+import pytest
+
 from nodebpy import TreeBuilder, nodes, sockets
+
 from .snapshots import TreeBuilderSnapshotExtension
 
 BLEND_DIR = Path(__file__).parent / "blend_files"
 JSON_DIR = Path(__file__).parent / "clippings"
+
 
 @pytest.fixture(autouse=True, scope="function")
 def clean_and_save(request):
@@ -43,7 +47,15 @@ def clean_and_save(request):
 
     # save a .blendfile for inspection with the current tests' nodes and also
     # named after the current test function
-    bpy.ops.wm.save_as_mainfile(filepath=str(BLEND_DIR / f"{request.node.name}.blend"))
+    name = request.node.name
+    for key, value in (
+        ("/", "divide"),
+        ("+", "plus"),
+        ("*", "multiply"),
+        ("-", "subtract"),
+    ):
+        name = name.replace(key, value)
+    bpy.ops.wm.save_as_mainfile(filepath=str(BLEND_DIR / f"{name}.blend"))
 
 
 @pytest.fixture

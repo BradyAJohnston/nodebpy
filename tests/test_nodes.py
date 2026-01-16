@@ -1,4 +1,9 @@
-from nodebpy import TreeBuilder, nodes as n
+import itertools
+
+import pytest
+
+from nodebpy import TreeBuilder
+from nodebpy import nodes as n
 
 
 def test_capture_attribute():
@@ -42,3 +47,19 @@ def test_socket_selection():
     assert vec.o_vector.socket.links[0].to_socket.node == pos.node
     assert vec.o_vector.socket.links[0].to_socket == pos.i_offset.socket
     assert len(pos.i_offset.socket.links) == 1
+
+
+class TestMathOperators:
+    @pytest.mark.parametrize(
+        "operator,input", itertools.product(["+", "-", "*", "/"], [n.Vector, n.Value])
+    )
+    def test_math_operators(self, operator, input):
+        with TreeBuilder("TestMathOperators") as tree:
+            set_pos = n.SetPosition()
+            pos = n.Position()
+
+            eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
+
+        assert len(set_pos.i_offset.socket.links) == 0
+        assert len(set_pos.i_geometry.socket.links) == 0
+        assert len(set_pos.i_position.socket.links) == 1

@@ -12,6 +12,25 @@ _AttributeDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
 ]
 
+SOCKET_COMPATIBILITY = {
+    "VALUE": ("VALUE", "INT", "VECTOR", "BOOLEAN", "RGBA", "ROTATION"),
+    "INT": ("INT", "VALUE", "BOOLEAN", "VECTOR", "RGBA"),
+    "BOOLEAN": ("BOOLEAN", "INT", "VALUE", "VECTOR", "RGBA"),
+    "VECTOR": ("VECTOR", "RGBA", "ROTATION", "VALUE", "INT", "BOOLEAN"),
+    "RGBA": ("RGBA", "VECTOR", "VALUE", "INT", "BOOLEAN"),
+    "ROTATION": ("ROTATION", "MATRIX", "VECTOR"),
+    "MATRIX": ("MATRIX", "ROTATION"),
+    "STRING": ("STRING"),
+    "MENU": ("MENU",),
+    "OBJECT": ("OBJECT",),
+    "GEOMETRY": ("GEOMETRY",),
+    "COLLECTION": ("COLLECTION",),
+    "IMAGE": ("IMAGE",),
+    "MATERIAL": ("MATERIAL",),
+    "BUNDLE": ("BUNDLE",),
+    "CLOSURE": ("CLOSURE",),
+}
+
 
 class DataTypes:
     FLOAT = "FLOAT"
