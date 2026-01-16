@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+from ast import Return
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 import arrangebpy
@@ -12,12 +14,14 @@ from bpy.types import (
 )
 
 from .nodes.types import (
+    SOCKET_COMPATIBILITY,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
     StringInterfaceSubtypes,
     VectorInterfaceSubtypes,
     _AttributeDomains,
 )
+
 # from .arrange import arrange_tree
 
 GEO_NODE_NAMES = (
@@ -327,6 +331,54 @@ class NodeBuilder:
         else:
             self.link(source, input)
 
+    def _set_input_default_value(self, input, value):
+        """Set the default value for an input socket, handling type conversions."""
+        if (
+            hasattr(input, "type")
+            and input.type == "VECTOR"
+            and isinstance(value, (int, float))
+        ):
+            # Convert scalar to vector (scalar, scalar, scalar)
+            input.default_value = [value] * len(input.default_value)
+        else:
+            input.default_value = value
+
+    def _find_best_compatible_socket(
+        self, target_node: "NodeBuilder", output_socket: NodeSocket
+    ) -> NodeSocket:
+        """Find the best compatible input socket on target node for the given output socket."""
+        output_type = output_socket.type
+        compatibility_order = SOCKET_COMPATIBILITY.get(output_type, ())
+
+        # First, check if the default input socket is compatible and available
+        default_socket = target_node._default_input_socket
+        if default_socket.type in compatibility_order and (
+            not default_socket.links or default_socket.is_multi_input
+        ):
+            return default_socket
+
+        # Search for compatible sockets in order of preference
+        for compatible_type in compatibility_order:
+            for input_socket in target_node.node.inputs:
+                # Skip if socket already has a link and isn't multi-input
+                if input_socket.links and not input_socket.is_multi_input:
+                    continue
+
+                if input_socket.type == compatible_type:
+                    return input_socket
+
+        # If no compatible socket found, raise an informative error
+        available_types = [
+            socket.type
+            for socket in target_node.node.inputs
+            if not socket.links or socket.is_multi_input
+        ]
+        raise RuntimeError(
+            f"Cannot link {output_type} output to {target_node.node.name}. "
+            f"Compatible types: {compatibility_order}, "
+            f"Available input types: {available_types}"
+        )
+
     def _establish_links(self, **kwargs):
         input_ids = [input.identifier for input in self.node.inputs]
         for name, value in kwargs.items():
@@ -348,10 +400,10 @@ class NodeBuilder:
             else:
                 if name in input_ids:
                     input = self.node.inputs[input_ids.index(name)]
-                    input.default_value = value
+                    self._set_input_default_value(input, value)
                 else:
                     input = self.node.inputs[name.replace("_", "").capitalize()]
-                    input.default_value = value
+                    self._set_input_default_value(input, value)
 
     def __rshift__(self, other: "NodeBuilder | SocketLinker") -> "NodeBuilder":
         """Chain nodes using >> operator. Links output to input.
@@ -361,32 +413,20 @@ class NodeBuilder:
             tree.inputs.value >> Math.add(..., 0.1) >> tree.outputs.result
 
         If the target node has an ellipsis placeholder (...), links to that specific input.
-        Otherwise, tries to find Geometry sockets first, then falls back to default.
+        Otherwise, finds the best compatible input socket based on type compatibility.
 
         Returns the right-hand node to enable continued chaining.
         """
-        # Get source socket - prefer Geometry, fall back to default
         socket_out = self.node.outputs.get("Geometry") or self._default_output_socket
         other._from_socket = socket_out
 
         if isinstance(other, SocketLinker):
             socket_in = other.socket
         else:
-            # Get target socket
             if other._link_target is not None:
-                # Use specific target if set by ellipsis
                 socket_in = self._get_input_socket_by_name(other, other._link_target)
             else:
-                # Default behavior - prefer Geometry, fall back to default
-                socket_in = (
-                    other.node.inputs.get("Geometry") or other._default_input_socket
-                )
-
-            # If target socket already has a link and isn't multi-input, try next available socket
-            if socket_in.links and not socket_in.is_multi_input:
-                socket_in = (
-                    self._get_next_available_socket(socket_in, socket_out) or socket_in
-                )
+                socket_in = self._find_best_compatible_socket(other, socket_out)
 
         self.tree.link(socket_out, socket_in)
         return other
@@ -400,112 +440,83 @@ class NodeBuilder:
             title_name = name.replace("_", " ").title()
             return node.node.inputs[title_name]
 
-    def _get_next_available_socket(
-        self, socket: NodeSocket, socket_out: NodeSocket
-    ) -> NodeSocket | None:
-        """Get the next available socket after the given one."""
-        try:
-            inputs = socket.node.inputs
-            current_idx = inputs.find(socket.identifier)
-            if current_idx >= 0 and current_idx + 1 < len(inputs):
-                if socket_out.type == "GEOMETRY":
-                    # Prefer Geometry sockets
-                    for idx in range(current_idx + 1, len(inputs)):
-                        if inputs[idx].type == "GEOMETRY" and not inputs[idx].links:
-                            return inputs[idx]
-                    raise RuntimeError("No available Geometry input sockets found.")
-                return inputs[current_idx + 1]
-        except (KeyError, IndexError, AttributeError):
-            pass
-        return None
+    def _apply_math_operation(
+        self, other: Any, operation: str, reverse: bool = False
+    ) -> "VectorMath | Math":
+        """Apply a math operation with appropriate Math/VectorMath node."""
+        from .nodes import Math, VectorMath
+
+        values = (
+            (self._default_output_socket, other)
+            if not reverse
+            else (other, self._default_output_socket)
+        )
+
+        match self._default_output_socket.type:
+            case "VECTOR":
+                if operation == "multiply":
+                    # Handle special cases for vector multiplication where we might scale instead
+                    # of using the multiply method
+                    if isinstance(other, (int, float)):
+                        return VectorMath.scale(self._default_output_socket, other)
+                    elif isinstance(other, (list, tuple)) and len(other) == 3:
+                        return VectorMath.multiply(*values)
+                    elif isinstance(other, NodeBuilder):
+                        return VectorMath.multiply(*values)
+                    else:
+                        raise TypeError(
+                            f"Unsupported type for {operation} with VECTOR socket: {type(other)}"
+                        )
+                else:
+                    vector_method = getattr(VectorMath, operation)
+                    if isinstance(other, (int, float)):
+                        scalar_vector = (other, other, other)
+                        return (
+                            vector_method(scalar_vector, self._default_output_socket)
+                            if not reverse
+                            else vector_method(
+                                self._default_output_socket, scalar_vector
+                            )
+                        )
+                    elif (
+                        isinstance(other, (list, tuple)) and len(other) == 3
+                    ) or isinstance(other, NodeBuilder):
+                        return vector_method(*values)
+
+                    else:
+                        raise TypeError(
+                            f"Unsupported type for {operation} with VECTOR socket: {type(other)}"
+                        )
+            case "VALUE":
+                return getattr(Math, operation)(*values)
+            case _:
+                raise TypeError(
+                    f"Unsupported socket type for {operation}: {self._default_output_socket.type}"
+                )
 
     def __mul__(self, other: Any) -> "VectorMath | Math":
-        from .nodes import Math, VectorMath
-
-        match self._default_output_socket.type:
-            case "VECTOR":
-                if isinstance(other, (int, float)):
-                    return VectorMath.scale(self._default_output_socket, other)
-                elif isinstance(other, (list, tuple)) and len(other) == 3:
-                    return VectorMath.multiply(self._default_output_socket, other)
-                else:
-                    raise TypeError(
-                        f"Unsupported type for multiplication with VECTOR socket: {type(other)}"
-                    )
-            case "VALUE":
-                return Math.multiply(self._default_output_socket, other)
-            case _:
-                raise TypeError(
-                    f"Unsupported socket type for multiplication: {self._default_output_socket.type}"
-                )
+        return self._apply_math_operation(other, "multiply")
 
     def __rmul__(self, other: Any) -> "VectorMath | Math":
-        from .nodes import Math, VectorMath
+        return self._apply_math_operation(other, "multiply", reverse=True)
 
-        match self._default_output_socket.type:
-            case "VECTOR":
-                if isinstance(other, (int, float)):
-                    return VectorMath.scale(self._default_output_socket, other)
-                elif isinstance(other, (list, tuple)) and len(other) == 3:
-                    return VectorMath.multiply(other, self._default_output_socket)
-                else:
-                    raise TypeError(
-                        f"Unsupported type for multiplication with VECTOR socket: {type(other)}"
-                    )
-            case "VALUE":
-                return Math.multiply(other, self._default_output_socket)
-            case _:
-                raise TypeError(
-                    f"Unsupported socket type for multiplication: {self._default_output_socket.type}"
-                )
+    def __truediv__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_math_operation(other, "divide")
 
-    def __truediv__(self, other: Any) -> "VectorMath":
-        from .nodes import VectorMath
-
-        match self._default_output_socket.type:
-            case "VECTOR":
-                return VectorMath.divide(self._default_output_socket, other)
-            case _:
-                raise TypeError(
-                    f"Unsupported socket type for division: {self._default_output_socket.type}"
-                )
-
-    def __rtruediv__(self, other: Any) -> "VectorMath":
-        from .nodes import VectorMath
-
-        match self._default_output_socket.type:
-            case "VECTOR":
-                return VectorMath.divide(other, self._default_output_socket)
-            case _:
-                raise TypeError(
-                    f"Unsupported socket type for division: {self._default_output_socket.type}"
-                )
+    def __rtruediv__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_math_operation(other, "divide", reverse=True)
 
     def __add__(self, other: Any) -> "VectorMath | Math":
-        from .nodes import Math, VectorMath
-
-        match self._default_output_socket.type:
-            case "VECTOR":
-                return VectorMath.add(self._default_output_socket, other)
-            case "VALUE":
-                return Math.add(self._default_output_socket, other)
-            case _:
-                raise TypeError(
-                    f"Unsupported socket type for addition: {self._default_output_socket.type}"
-                )
+        return self._apply_math_operation(other, "add")
 
     def __radd__(self, other: Any) -> "VectorMath | Math":
-        from .nodes import Math, VectorMath
+        return self._apply_math_operation(other, "add", reverse=True)
 
-        match self._default_output_socket.type:
-            case "VECTOR":
-                return VectorMath.add(other, self._default_output_socket)
-            case "VALUE":
-                return Math.add(other, self._default_output_socket)
-            case _:
-                raise TypeError(
-                    f"Unsupported socket type for addition: {self._default_output_socket.type}"
-                )
+    def __sub__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_math_operation(other, "subtract")
+
+    def __rsub__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_math_operation(other, "subtract", reverse=True)
 
 
 class SocketLinker(NodeBuilder):
