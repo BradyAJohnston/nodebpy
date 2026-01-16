@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>nodes.mesh – nodebpy</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../reference/nodes.utilities.html" rel="next">
+<link href="../reference/nodes.input.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8fd1faf6fd93e4e6d207ae0f9db51d78.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">nodebpy</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../introduction.html"> 
+<span class="menu-text">Introduction</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.geometry.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.mesh.html">nodes.mesh</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Function reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Some functions</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.curve.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.curve</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.input.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.input</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.mesh.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">nodes.mesh</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.utilities</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#nodebpy.nodes.mesh" id="toc-nodebpy.nodes.mesh" class="nav-link active" data-scroll-target="#nodebpy.nodes.mesh">nodes.mesh</a>
+  <ul class="collapse">
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <ul class="collapse">
+  <li><a href="#nodebpy.nodes.mesh.Cone" id="toc-nodebpy.nodes.mesh.Cone" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.Cone">Cone</a></li>
+  <li><a href="#nodebpy.nodes.mesh.Cube" id="toc-nodebpy.nodes.mesh.Cube" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.Cube">Cube</a></li>
+  <li><a href="#nodebpy.nodes.mesh.CurveToMesh" id="toc-nodebpy.nodes.mesh.CurveToMesh" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.CurveToMesh">CurveToMesh</a></li>
+  <li><a href="#nodebpy.nodes.mesh.Cylinder" id="toc-nodebpy.nodes.mesh.Cylinder" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.Cylinder">Cylinder</a></li>
+  <li><a href="#nodebpy.nodes.mesh.DualMesh" id="toc-nodebpy.nodes.mesh.DualMesh" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.DualMesh">DualMesh</a></li>
+  <li><a href="#nodebpy.nodes.mesh.EdgeAngle" id="toc-nodebpy.nodes.mesh.EdgeAngle" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.EdgeAngle">EdgeAngle</a></li>
+  <li><a href="#nodebpy.nodes.mesh.EdgeNeighbors" id="toc-nodebpy.nodes.mesh.EdgeNeighbors" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.EdgeNeighbors">EdgeNeighbors</a></li>
+  <li><a href="#nodebpy.nodes.mesh.EdgeVertices" id="toc-nodebpy.nodes.mesh.EdgeVertices" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.EdgeVertices">EdgeVertices</a></li>
+  <li><a href="#nodebpy.nodes.mesh.ExtrudeMesh" id="toc-nodebpy.nodes.mesh.ExtrudeMesh" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.ExtrudeMesh">ExtrudeMesh</a></li>
+  <li><a href="#nodebpy.nodes.mesh.FaceArea" id="toc-nodebpy.nodes.mesh.FaceArea" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.FaceArea">FaceArea</a></li>
+  <li><a href="#nodebpy.nodes.mesh.FaceGroupBoundaries" id="toc-nodebpy.nodes.mesh.FaceGroupBoundaries" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.FaceGroupBoundaries">FaceGroupBoundaries</a></li>
+  <li><a href="#nodebpy.nodes.mesh.FaceNeighbors" id="toc-nodebpy.nodes.mesh.FaceNeighbors" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.FaceNeighbors">FaceNeighbors</a></li>
+  <li><a href="#nodebpy.nodes.mesh.Grid" id="toc-nodebpy.nodes.mesh.Grid" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.Grid">Grid</a></li>
+  <li><a href="#nodebpy.nodes.mesh.GridToMesh" id="toc-nodebpy.nodes.mesh.GridToMesh" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.GridToMesh">GridToMesh</a></li>
+  <li><a href="#nodebpy.nodes.mesh.IcoSphere" id="toc-nodebpy.nodes.mesh.IcoSphere" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.IcoSphere">IcoSphere</a></li>
+  <li><a href="#nodebpy.nodes.mesh.IsFacePlanar" id="toc-nodebpy.nodes.mesh.IsFacePlanar" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.IsFacePlanar">IsFacePlanar</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshBoolean" id="toc-nodebpy.nodes.mesh.MeshBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshBoolean">MeshBoolean</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshCircle" id="toc-nodebpy.nodes.mesh.MeshCircle" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshCircle">MeshCircle</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshIsland" id="toc-nodebpy.nodes.mesh.MeshIsland" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshIsland">MeshIsland</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshLine" id="toc-nodebpy.nodes.mesh.MeshLine" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshLine">MeshLine</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshToCurve" id="toc-nodebpy.nodes.mesh.MeshToCurve" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshToCurve">MeshToCurve</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshToDensityGrid" id="toc-nodebpy.nodes.mesh.MeshToDensityGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshToDensityGrid">MeshToDensityGrid</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshToPoints" id="toc-nodebpy.nodes.mesh.MeshToPoints" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshToPoints">MeshToPoints</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshToSDFGrid" id="toc-nodebpy.nodes.mesh.MeshToSDFGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshToSDFGrid">MeshToSDFGrid</a></li>
+  <li><a href="#nodebpy.nodes.mesh.MeshToVolume" id="toc-nodebpy.nodes.mesh.MeshToVolume" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.MeshToVolume">MeshToVolume</a></li>
+  <li><a href="#nodebpy.nodes.mesh.SetMeshNormal" id="toc-nodebpy.nodes.mesh.SetMeshNormal" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.SetMeshNormal">SetMeshNormal</a></li>
+  <li><a href="#nodebpy.nodes.mesh.SubdivideMesh" id="toc-nodebpy.nodes.mesh.SubdivideMesh" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.SubdivideMesh">SubdivideMesh</a></li>
+  <li><a href="#nodebpy.nodes.mesh.UVSphere" id="toc-nodebpy.nodes.mesh.UVSphere" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.UVSphere">UVSphere</a></li>
+  <li><a href="#nodebpy.nodes.mesh.VertexNeighbors" id="toc-nodebpy.nodes.mesh.VertexNeighbors" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.VertexNeighbors">VertexNeighbors</a></li>
+  <li><a href="#nodebpy.nodes.mesh.VolumeToMesh" id="toc-nodebpy.nodes.mesh.VolumeToMesh" class="nav-link" data-scroll-target="#nodebpy.nodes.mesh.VolumeToMesh">VolumeToMesh</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.geometry.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.mesh.html">nodes.mesh</a></li></ol></nav></header>
+
+
+
+
+<section id="nodebpy.nodes.mesh" class="level1">
+<h1>nodes.mesh</h1>
+<p><code>nodes.mesh</code></p>
+<p>Auto-generated Blender Geometry Node classes.</p>
+<p>DO NOT EDIT THIS FILE MANUALLY. This file is generated by molecularnodes/nodes/generator.py</p>
+<p>To regenerate: Run generator.py from within Blender</p>
+<p>KNOWN LIMITATIONS: - Dynamic multi-input/output sockets are not yet supported (these are the unnamed sockets that appear in the UI for nodes like “Evaluate Closure”, “Join Geometry”, etc. that allow dragging in multiple connections) - TODO: Add support for dynamic socket creation</p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cone">Cone</a></td>
+<td>Generate a cone mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cube">Cube</a></td>
+<td>Generate a cuboid mesh with variable side lengths and subdivisions</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.CurveToMesh">CurveToMesh</a></td>
+<td>Convert curves into a mesh, optionally with a custom profile shape defined by curves</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cylinder">Cylinder</a></td>
+<td>Generate a cylinder mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.DualMesh">DualMesh</a></td>
+<td>Convert Faces into vertices and vertices into faces</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.EdgeAngle">EdgeAngle</a></td>
+<td>The angle between the normals of connected manifold faces</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.EdgeNeighbors">EdgeNeighbors</a></td>
+<td>Retrieve the number of faces that use each edge as one of their sides</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.EdgeVertices">EdgeVertices</a></td>
+<td>Retrieve topology information relating to each edge of a mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh">ExtrudeMesh</a></td>
+<td>Generate new vertices, edges, or faces from selected elements and move them based on an offset while keeping them connected by their boundary</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.FaceArea">FaceArea</a></td>
+<td>Calculate the surface area of a mesh’s faces</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.FaceGroupBoundaries">FaceGroupBoundaries</a></td>
+<td>Find edges on the boundaries between groups of faces with the same ID value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.FaceNeighbors">FaceNeighbors</a></td>
+<td>Retrieve topology information relating to each face of a mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Grid">Grid</a></td>
+<td>Generate a planar mesh on the XY plane</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.GridToMesh">GridToMesh</a></td>
+<td>Generate a mesh on the “surface” of a volume grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.IcoSphere">IcoSphere</a></td>
+<td>Generate a spherical mesh that consists of equally sized triangles</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.IsFacePlanar">IsFacePlanar</a></td>
+<td>Retrieve whether all triangles in a face are on the same plane, i.e.&nbsp;whether they have the same normal</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshBoolean">MeshBoolean</a></td>
+<td>Cut, subtract, or join multiple mesh inputs</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshCircle">MeshCircle</a></td>
+<td>Generate a circular ring of edges</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshIsland">MeshIsland</a></td>
+<td>Retrieve information about separate connected regions in a mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshLine">MeshLine</a></td>
+<td>Generate vertices in a line and connect them with edges</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToCurve">MeshToCurve</a></td>
+<td>Generate a curve from a mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToDensityGrid">MeshToDensityGrid</a></td>
+<td>Create a filled volume grid from a mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToPoints">MeshToPoints</a></td>
+<td>Generate a point cloud from a mesh’s vertices</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToSDFGrid">MeshToSDFGrid</a></td>
+<td>Create a signed distance volume grid from a mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToVolume">MeshToVolume</a></td>
+<td>Create a fog volume with the shape of the input mesh’s surface</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.SetMeshNormal">SetMeshNormal</a></td>
+<td>Store a normal vector for each mesh element</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.SubdivideMesh">SubdivideMesh</a></td>
+<td>Divide mesh faces into smaller ones without changing the shape or volume, using linear interpolation to place the new vertices</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.UVSphere">UVSphere</a></td>
+<td>Generate a spherical mesh with quads, except for triangles at the top and bottom</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.VertexNeighbors">VertexNeighbors</a></td>
+<td>Retrieve topology information relating to each vertex of a mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.VolumeToMesh">VolumeToMesh</a></td>
+<td>Generate a mesh on the “surface” of a volume</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.mesh.Cone" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.Cone">Cone</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.Cone(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    vertices<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    side_segments<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    fill_segments<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    radius_top<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    radius_bottom<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    depth<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    fill_type<span class="op">=</span><span class="st">'NGON'</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a cone mesh</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cone.i_depth">i_depth</a></td>
+<td>Input socket: Depth</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cone.i_fill_segments">i_fill_segments</a></td>
+<td>Input socket: Fill Segments</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cone.i_radius_bottom">i_radius_bottom</a></td>
+<td>Input socket: Radius Bottom</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cone.i_radius_top">i_radius_top</a></td>
+<td>Input socket: Radius Top</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cone.i_side_segments">i_side_segments</a></td>
+<td>Input socket: Side Segments</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cone.i_vertices">i_vertices</a></td>
+<td>Input socket: Vertices</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cone.o_bottom">o_bottom</a></td>
+<td>Output socket: Bottom</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cone.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cone.o_side">o_side</a></td>
+<td>Output socket: Side</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cone.o_top">o_top</a></td>
+<td>Output socket: Top</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cone.o_uv_map">o_uv_map</a></td>
+<td>Output socket: UV Map</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.Cube" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.Cube">Cube</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.Cube(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>],</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    vertices_x<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    vertices_y<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    vertices_z<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a cuboid mesh with variable side lengths and subdivisions</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cube.i_size">i_size</a></td>
+<td>Input socket: Size</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cube.i_vertices_x">i_vertices_x</a></td>
+<td>Input socket: Vertices X</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cube.i_vertices_y">i_vertices_y</a></td>
+<td>Input socket: Vertices Y</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cube.i_vertices_z">i_vertices_z</a></td>
+<td>Input socket: Vertices Z</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cube.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cube.o_uv_map">o_uv_map</a></td>
+<td>Output socket: UV Map</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.CurveToMesh" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.CurveToMesh">CurveToMesh</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.CurveToMesh(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    curve<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    profile_curve<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    fill_caps<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Convert curves into a mesh, optionally with a custom profile shape defined by curves</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.CurveToMesh.i_curve">i_curve</a></td>
+<td>Input socket: Curve</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.CurveToMesh.i_fill_caps">i_fill_caps</a></td>
+<td>Input socket: Fill Caps</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.CurveToMesh.i_profile_curve">i_profile_curve</a></td>
+<td>Input socket: Profile Curve</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.CurveToMesh.i_scale">i_scale</a></td>
+<td>Input socket: Scale</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.CurveToMesh.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.Cylinder" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.Cylinder">Cylinder</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.Cylinder(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    vertices<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    side_segments<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    fill_segments<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    radius<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    depth<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    fill_type<span class="op">=</span><span class="st">'NGON'</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a cylinder mesh</p>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.i_depth">i_depth</a></td>
+<td>Input socket: Depth</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.i_fill_segments">i_fill_segments</a></td>
+<td>Input socket: Fill Segments</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.i_radius">i_radius</a></td>
+<td>Input socket: Radius</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.i_side_segments">i_side_segments</a></td>
+<td>Input socket: Side Segments</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.i_vertices">i_vertices</a></td>
+<td>Input socket: Vertices</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.o_bottom">o_bottom</a></td>
+<td>Output socket: Bottom</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.o_side">o_side</a></td>
+<td>Output socket: Side</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.o_top">o_top</a></td>
+<td>Output socket: Top</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Cylinder.o_uv_map">o_uv_map</a></td>
+<td>Output socket: UV Map</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.DualMesh" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.DualMesh">DualMesh</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.DualMesh(mesh<span class="op">=</span><span class="va">None</span>, keep_boundaries<span class="op">=</span><span class="va">False</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Convert Faces into vertices and vertices into faces</p>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.DualMesh.i_keep_boundaries">i_keep_boundaries</a></td>
+<td>Input socket: Keep Boundaries</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.DualMesh.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.DualMesh.o_dual_mesh">o_dual_mesh</a></td>
+<td>Output socket: Dual Mesh</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.EdgeAngle" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.EdgeAngle">EdgeAngle</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.EdgeAngle(<span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The angle between the normals of connected manifold faces</p>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.EdgeAngle.o_signed_angle">o_signed_angle</a></td>
+<td>Output socket: Signed Angle</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.EdgeAngle.o_unsigned_angle">o_unsigned_angle</a></td>
+<td>Output socket: Unsigned Angle</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.EdgeNeighbors" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.EdgeNeighbors">EdgeNeighbors</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.EdgeNeighbors(<span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the number of faces that use each edge as one of their sides</p>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.EdgeNeighbors.o_face_count">o_face_count</a></td>
+<td>Output socket: Face Count</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.EdgeVertices" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.EdgeVertices">EdgeVertices</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.EdgeVertices(<span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve topology information relating to each edge of a mesh</p>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.EdgeVertices.o_position_1">o_position_1</a></td>
+<td>Output socket: Position 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.EdgeVertices.o_position_2">o_position_2</a></td>
+<td>Output socket: Position 2</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.EdgeVertices.o_vertex_index_1">o_vertex_index_1</a></td>
+<td>Output socket: Vertex Index 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.EdgeVertices.o_vertex_index_2">o_vertex_index_2</a></td>
+<td>Output socket: Vertex Index 2</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.ExtrudeMesh" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.ExtrudeMesh">ExtrudeMesh</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.ExtrudeMesh(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    offset_scale<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    individual<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'FACES'</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate new vertices, edges, or faces from selected elements and move them based on an offset while keeping them connected by their boundary</p>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh.i_individual">i_individual</a></td>
+<td>Input socket: Individual</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh.i_offset">i_offset</a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh.i_offset_scale">i_offset_scale</a></td>
+<td>Input socket: Offset Scale</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh.i_selection">i_selection</a></td>
+<td>Input socket: Selection</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh.o_side">o_side</a></td>
+<td>Output socket: Side</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.ExtrudeMesh.o_top">o_top</a></td>
+<td>Output socket: Top</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.FaceArea" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.FaceArea">FaceArea</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.FaceArea(<span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the surface area of a mesh’s faces</p>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.FaceArea.o_area">o_area</a></td>
+<td>Output socket: Area</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.FaceGroupBoundaries" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.FaceGroupBoundaries">FaceGroupBoundaries</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.FaceGroupBoundaries(face_set<span class="op">=</span><span class="dv">0</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Find edges on the boundaries between groups of faces with the same ID value</p>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.FaceGroupBoundaries.i_face_group_id">i_face_group_id</a></td>
+<td>Input socket: Face Group ID</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.FaceGroupBoundaries.o_boundary_edges">o_boundary_edges</a></td>
+<td>Output socket: Boundary Edges</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.FaceNeighbors" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.FaceNeighbors">FaceNeighbors</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.FaceNeighbors(<span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve topology information relating to each face of a mesh</p>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.FaceNeighbors.o_face_count">o_face_count</a></td>
+<td>Output socket: Face Count</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.FaceNeighbors.o_vertex_count">o_vertex_count</a></td>
+<td>Output socket: Vertex Count</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.Grid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.Grid">Grid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.Grid(size_x<span class="op">=</span><span class="fl">1.0</span>, size_y<span class="op">=</span><span class="fl">1.0</span>, vertices_x<span class="op">=</span><span class="dv">3</span>, vertices_y<span class="op">=</span><span class="dv">3</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a planar mesh on the XY plane</p>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Grid.i_size_x">i_size_x</a></td>
+<td>Input socket: Size X</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Grid.i_size_y">i_size_y</a></td>
+<td>Input socket: Size Y</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Grid.i_vertices_x">i_vertices_x</a></td>
+<td>Input socket: Vertices X</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Grid.i_vertices_y">i_vertices_y</a></td>
+<td>Input socket: Vertices Y</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.Grid.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.Grid.o_uv_map">o_uv_map</a></td>
+<td>Output socket: UV Map</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.GridToMesh" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.GridToMesh">GridToMesh</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.GridToMesh(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.10000000149011612</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    adaptivity<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a mesh on the “surface” of a volume grid</p>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.GridToMesh.i_adaptivity">i_adaptivity</a></td>
+<td>Input socket: Adaptivity</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.GridToMesh.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.GridToMesh.i_threshold">i_threshold</a></td>
+<td>Input socket: Threshold</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.GridToMesh.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.IcoSphere" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.IcoSphere">IcoSphere</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.IcoSphere(radius<span class="op">=</span><span class="fl">1.0</span>, subdivisions<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a spherical mesh that consists of equally sized triangles</p>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.IcoSphere.i_radius">i_radius</a></td>
+<td>Input socket: Radius</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.IcoSphere.i_subdivisions">i_subdivisions</a></td>
+<td>Input socket: Subdivisions</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.IcoSphere.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.IcoSphere.o_uv_map">o_uv_map</a></td>
+<td>Output socket: UV Map</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.IsFacePlanar" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.IsFacePlanar">IsFacePlanar</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.IsFacePlanar(threshold<span class="op">=</span><span class="fl">0.009999999776482582</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve whether all triangles in a face are on the same plane, i.e.&nbsp;whether they have the same normal</p>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.IsFacePlanar.i_threshold">i_threshold</a></td>
+<td>Input socket: Threshold</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.IsFacePlanar.o_planar">o_planar</a></td>
+<td>Output socket: Planar</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshBoolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshBoolean">MeshBoolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshBoolean(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    mesh_1<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    mesh_2<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cut, subtract, or join multiple mesh inputs</p>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshBoolean.i_mesh_1">i_mesh_1</a></td>
+<td>Input socket: Mesh 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshBoolean.i_mesh_2">i_mesh_2</a></td>
+<td>Input socket: Mesh 2</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshBoolean.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshBoolean.difference">difference</a></td>
+<td>Create Mesh Boolean with operation ‘Difference’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshBoolean.intersect">intersect</a></td>
+<td>Create Mesh Boolean with operation ‘Intersect’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshBoolean.union">union</a></td>
+<td>Create Mesh Boolean with operation ‘Union’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.mesh.MeshBoolean.difference" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshBoolean.difference">difference</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshBoolean.difference(mesh_1<span class="op">=</span><span class="va">None</span>, mesh_2<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mesh Boolean with operation ‘Difference’.</p>
+</section>
+<section id="nodebpy.nodes.mesh.MeshBoolean.intersect" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshBoolean.intersect">intersect</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshBoolean.intersect(mesh_1<span class="op">=</span><span class="va">None</span>, mesh_2<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mesh Boolean with operation ‘Intersect’.</p>
+</section>
+<section id="nodebpy.nodes.mesh.MeshBoolean.union" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshBoolean.union">union</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshBoolean.union(mesh_1<span class="op">=</span><span class="va">None</span>, mesh_2<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mesh Boolean with operation ‘Union’.</p>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshCircle" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshCircle">MeshCircle</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshCircle(vertices<span class="op">=</span><span class="dv">32</span>, radius<span class="op">=</span><span class="fl">1.0</span>, fill_type<span class="op">=</span><span class="st">'NONE'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a circular ring of edges</p>
+<section id="attributes-17" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshCircle.i_radius">i_radius</a></td>
+<td>Input socket: Radius</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshCircle.i_vertices">i_vertices</a></td>
+<td>Input socket: Vertices</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshCircle.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshIsland" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshIsland">MeshIsland</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshIsland(<span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve information about separate connected regions in a mesh</p>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshIsland.o_island_count">o_island_count</a></td>
+<td>Output socket: Island Count</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshIsland.o_island_index">o_island_index</a></td>
+<td>Output socket: Island Index</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshLine" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshLine">MeshLine</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshLine(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    count<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    start_location<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>],</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'OFFSET'</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    count_mode<span class="op">=</span><span class="st">'TOTAL'</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate vertices in a line and connect them with edges</p>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshLine.i_count">i_count</a></td>
+<td>Input socket: Count</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshLine.i_offset">i_offset</a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshLine.i_start_location">i_start_location</a></td>
+<td>Input socket: Start Location</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshLine.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshToCurve" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshToCurve">MeshToCurve</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshToCurve(mesh<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, mode<span class="op">=</span><span class="st">'EDGES'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a curve from a mesh</p>
+<section id="attributes-20" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToCurve.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToCurve.i_selection">i_selection</a></td>
+<td>Input socket: Selection</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToCurve.o_curve">o_curve</a></td>
+<td>Output socket: Curve</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshToDensityGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshToDensityGrid">MeshToDensityGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshToDensityGrid(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.30000001192092896</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    gradient_width<span class="op">=</span><span class="fl">0.20000000298023224</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a filled volume grid from a mesh</p>
+<section id="attributes-21" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToDensityGrid.i_density">i_density</a></td>
+<td>Input socket: Density</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToDensityGrid.i_gradient_width">i_gradient_width</a></td>
+<td>Input socket: Gradient Width</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToDensityGrid.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToDensityGrid.i_voxel_size">i_voxel_size</a></td>
+<td>Input socket: Voxel Size</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToDensityGrid.o_density_grid">o_density_grid</a></td>
+<td>Output socket: Density Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshToPoints" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshToPoints">MeshToPoints</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshToPoints(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    position<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    radius<span class="op">=</span><span class="fl">0.05000000074505806</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'VERTICES'</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a point cloud from a mesh’s vertices</p>
+<section id="attributes-22" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToPoints.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToPoints.i_position">i_position</a></td>
+<td>Input socket: Position</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToPoints.i_radius">i_radius</a></td>
+<td>Input socket: Radius</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToPoints.i_selection">i_selection</a></td>
+<td>Input socket: Selection</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToPoints.o_points">o_points</a></td>
+<td>Output socket: Points</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshToSDFGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshToSDFGrid">MeshToSDFGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshToSDFGrid(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.30000001192092896</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    band_width<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a signed distance volume grid from a mesh</p>
+<section id="attributes-23" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToSDFGrid.i_band_width">i_band_width</a></td>
+<td>Input socket: Band Width</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToSDFGrid.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToSDFGrid.i_voxel_size">i_voxel_size</a></td>
+<td>Input socket: Voxel Size</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToSDFGrid.o_sdf_grid">o_sdf_grid</a></td>
+<td>Output socket: SDF Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.MeshToVolume" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.MeshToVolume">MeshToVolume</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.MeshToVolume(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    resolution_mode<span class="op">=</span><span class="st">'Amount'</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.30000001192092896</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    voxel_amount<span class="op">=</span><span class="fl">64.0</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    interior_band_width<span class="op">=</span><span class="fl">0.20000000298023224</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a fog volume with the shape of the input mesh’s surface</p>
+<section id="attributes-24" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToVolume.i_density">i_density</a></td>
+<td>Input socket: Density</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToVolume.i_interior_band_width">i_interior_band_width</a></td>
+<td>Input socket: Interior Band Width</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToVolume.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToVolume.i_resolution_mode">i_resolution_mode</a></td>
+<td>Input socket: Resolution Mode</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToVolume.i_voxel_amount">i_voxel_amount</a></td>
+<td>Input socket: Voxel Amount</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.MeshToVolume.i_voxel_size">i_voxel_size</a></td>
+<td>Input socket: Voxel Size</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.MeshToVolume.o_volume">o_volume</a></td>
+<td>Output socket: Volume</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.SetMeshNormal" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.SetMeshNormal">SetMeshNormal</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.SetMeshNormal(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    remove_custom<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    edge_sharpness<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    face_sharpness<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'SHARPNESS'</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Store a normal vector for each mesh element</p>
+<section id="attributes-25" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.SetMeshNormal.i_edge_sharpness">i_edge_sharpness</a></td>
+<td>Input socket: Edge Sharpness</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.SetMeshNormal.i_face_sharpness">i_face_sharpness</a></td>
+<td>Input socket: Face Sharpness</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.SetMeshNormal.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.SetMeshNormal.i_remove_custom">i_remove_custom</a></td>
+<td>Input socket: Remove Custom</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.SetMeshNormal.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.SubdivideMesh" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.SubdivideMesh">SubdivideMesh</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.SubdivideMesh(mesh<span class="op">=</span><span class="va">None</span>, level<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Divide mesh faces into smaller ones without changing the shape or volume, using linear interpolation to place the new vertices</p>
+<section id="attributes-26" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.SubdivideMesh.i_level">i_level</a></td>
+<td>Input socket: Level</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.SubdivideMesh.i_mesh">i_mesh</a></td>
+<td>Input socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.SubdivideMesh.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.UVSphere" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.UVSphere">UVSphere</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.UVSphere(segments<span class="op">=</span><span class="dv">32</span>, rings<span class="op">=</span><span class="dv">16</span>, radius<span class="op">=</span><span class="fl">1.0</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a spherical mesh with quads, except for triangles at the top and bottom</p>
+<section id="attributes-27" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.UVSphere.i_radius">i_radius</a></td>
+<td>Input socket: Radius</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.UVSphere.i_rings">i_rings</a></td>
+<td>Input socket: Rings</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.UVSphere.i_segments">i_segments</a></td>
+<td>Input socket: Segments</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.UVSphere.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.UVSphere.o_uv_map">o_uv_map</a></td>
+<td>Output socket: UV Map</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.VertexNeighbors" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.VertexNeighbors">VertexNeighbors</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.VertexNeighbors(<span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve topology information relating to each vertex of a mesh</p>
+<section id="attributes-28" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.VertexNeighbors.o_face_count">o_face_count</a></td>
+<td>Output socket: Face Count</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.VertexNeighbors.o_vertex_count">o_vertex_count</a></td>
+<td>Output socket: Vertex Count</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.mesh.VolumeToMesh" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.mesh.VolumeToMesh">VolumeToMesh</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>nodes.mesh.VolumeToMesh(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    resolution_mode<span class="op">=</span><span class="st">'Grid'</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.30000001192092896</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    voxel_amount<span class="op">=</span><span class="fl">64.0</span>,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.10000000149011612</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    adaptivity<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a mesh on the “surface” of a volume</p>
+<section id="attributes-29" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.VolumeToMesh.i_adaptivity">i_adaptivity</a></td>
+<td>Input socket: Adaptivity</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.VolumeToMesh.i_resolution_mode">i_resolution_mode</a></td>
+<td>Input socket: Resolution Mode</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.VolumeToMesh.i_threshold">i_threshold</a></td>
+<td>Input socket: Threshold</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.VolumeToMesh.i_volume">i_volume</a></td>
+<td>Input socket: Volume</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.VolumeToMesh.i_voxel_amount">i_voxel_amount</a></td>
+<td>Input socket: Voxel Amount</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.mesh.VolumeToMesh.i_voxel_size">i_voxel_size</a></td>
+<td>Input socket: Voxel Size</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.mesh.VolumeToMesh.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../reference/nodes.input.html" class="pagination-link" aria-label="nodes.input">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.input</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../reference/nodes.utilities.html" class="pagination-link" aria-label="nodes.utilities">
+        <span class="nav-page-text">nodes.utilities</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

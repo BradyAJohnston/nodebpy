@@ -65,6 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../reference/nodes.attribute.html" rel="next">
 <link href="../reference/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -182,6 +183,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">nodes.geometry</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.curve.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.curve</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.input.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.input</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.mesh.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.mesh</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.utilities</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -242,12 +273,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.Group" id="toc-nodebpy.nodes.geometry.Group" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.Group">Group</a></li>
   <li><a href="#nodebpy.nodes.geometry.ImageInfo" id="toc-nodebpy.nodes.geometry.ImageInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImageInfo">ImageInfo</a></li>
   <li><a href="#nodebpy.nodes.geometry.ImageTexture" id="toc-nodebpy.nodes.geometry.ImageTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImageTexture">ImageTexture</a></li>
-  <li><a href="#nodebpy.nodes.geometry.ImportCsv" id="toc-nodebpy.nodes.geometry.ImportCsv" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportCsv">ImportCsv</a></li>
-  <li><a href="#nodebpy.nodes.geometry.ImportObj" id="toc-nodebpy.nodes.geometry.ImportObj" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportObj">ImportObj</a></li>
-  <li><a href="#nodebpy.nodes.geometry.ImportPly" id="toc-nodebpy.nodes.geometry.ImportPly" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportPly">ImportPly</a></li>
-  <li><a href="#nodebpy.nodes.geometry.ImportStl" id="toc-nodebpy.nodes.geometry.ImportStl" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportStl">ImportStl</a></li>
+  <li><a href="#nodebpy.nodes.geometry.ImportCSV" id="toc-nodebpy.nodes.geometry.ImportCSV" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportCSV">ImportCSV</a></li>
+  <li><a href="#nodebpy.nodes.geometry.ImportOBJ" id="toc-nodebpy.nodes.geometry.ImportOBJ" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportOBJ">ImportOBJ</a></li>
+  <li><a href="#nodebpy.nodes.geometry.ImportPLY" id="toc-nodebpy.nodes.geometry.ImportPLY" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportPLY">ImportPLY</a></li>
+  <li><a href="#nodebpy.nodes.geometry.ImportSTL" id="toc-nodebpy.nodes.geometry.ImportSTL" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportSTL">ImportSTL</a></li>
   <li><a href="#nodebpy.nodes.geometry.ImportText" id="toc-nodebpy.nodes.geometry.ImportText" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportText">ImportText</a></li>
-  <li><a href="#nodebpy.nodes.geometry.ImportVdb" id="toc-nodebpy.nodes.geometry.ImportVdb" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportVdb">ImportVdb</a></li>
+  <li><a href="#nodebpy.nodes.geometry.ImportVDB" id="toc-nodebpy.nodes.geometry.ImportVDB" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ImportVDB">ImportVDB</a></li>
   <li><a href="#nodebpy.nodes.geometry.IndexOfNearest" id="toc-nodebpy.nodes.geometry.IndexOfNearest" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.IndexOfNearest">IndexOfNearest</a></li>
   <li><a href="#nodebpy.nodes.geometry.InstanceOnPoints" id="toc-nodebpy.nodes.geometry.InstanceOnPoints" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.InstanceOnPoints">InstanceOnPoints</a></li>
   <li><a href="#nodebpy.nodes.geometry.InstanceTransform" id="toc-nodebpy.nodes.geometry.InstanceTransform" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.InstanceTransform">InstanceTransform</a></li>
@@ -263,9 +294,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.MousePosition" id="toc-nodebpy.nodes.geometry.MousePosition" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.MousePosition">MousePosition</a></li>
   <li><a href="#nodebpy.nodes.geometry.ObjectInfo" id="toc-nodebpy.nodes.geometry.ObjectInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ObjectInfo">ObjectInfo</a></li>
   <li><a href="#nodebpy.nodes.geometry.OffsetCornerInFace" id="toc-nodebpy.nodes.geometry.OffsetCornerInFace" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.OffsetCornerInFace">OffsetCornerInFace</a></li>
-  <li><a href="#nodebpy.nodes.geometry.PackUvIslands" id="toc-nodebpy.nodes.geometry.PackUvIslands" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.PackUvIslands">PackUvIslands</a></li>
+  <li><a href="#nodebpy.nodes.geometry.PackUVIslands" id="toc-nodebpy.nodes.geometry.PackUVIslands" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.PackUVIslands">PackUVIslands</a></li>
   <li><a href="#nodebpy.nodes.geometry.Points" id="toc-nodebpy.nodes.geometry.Points" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.Points">Points</a></li>
-  <li><a href="#nodebpy.nodes.geometry.PointsToSdfGrid" id="toc-nodebpy.nodes.geometry.PointsToSdfGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.PointsToSdfGrid">PointsToSdfGrid</a></li>
+  <li><a href="#nodebpy.nodes.geometry.PointsToSDFGrid" id="toc-nodebpy.nodes.geometry.PointsToSDFGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.PointsToSDFGrid">PointsToSDFGrid</a></li>
   <li><a href="#nodebpy.nodes.geometry.PointsToVertices" id="toc-nodebpy.nodes.geometry.PointsToVertices" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.PointsToVertices">PointsToVertices</a></li>
   <li><a href="#nodebpy.nodes.geometry.PointsToVolume" id="toc-nodebpy.nodes.geometry.PointsToVolume" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.PointsToVolume">PointsToVolume</a></li>
   <li><a href="#nodebpy.nodes.geometry.PruneGrid" id="toc-nodebpy.nodes.geometry.PruneGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.PruneGrid">PruneGrid</a></li>
@@ -273,21 +304,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.RealizeInstances" id="toc-nodebpy.nodes.geometry.RealizeInstances" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.RealizeInstances">RealizeInstances</a></li>
   <li><a href="#nodebpy.nodes.geometry.ReplaceMaterial" id="toc-nodebpy.nodes.geometry.ReplaceMaterial" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ReplaceMaterial">ReplaceMaterial</a></li>
   <li><a href="#nodebpy.nodes.geometry.RotateInstances" id="toc-nodebpy.nodes.geometry.RotateInstances" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.RotateInstances">RotateInstances</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SDFGridBoolean" id="toc-nodebpy.nodes.geometry.SDFGridBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SDFGridBoolean">SDFGridBoolean</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SDFGridFillet" id="toc-nodebpy.nodes.geometry.SDFGridFillet" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SDFGridFillet">SDFGridFillet</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SDFGridLaplacian" id="toc-nodebpy.nodes.geometry.SDFGridLaplacian" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SDFGridLaplacian">SDFGridLaplacian</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SDFGridMean" id="toc-nodebpy.nodes.geometry.SDFGridMean" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SDFGridMean">SDFGridMean</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SDFGridMeanCurvature" id="toc-nodebpy.nodes.geometry.SDFGridMeanCurvature" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SDFGridMeanCurvature">SDFGridMeanCurvature</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SDFGridMedian" id="toc-nodebpy.nodes.geometry.SDFGridMedian" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SDFGridMedian">SDFGridMedian</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SDFGridOffset" id="toc-nodebpy.nodes.geometry.SDFGridOffset" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SDFGridOffset">SDFGridOffset</a></li>
   <li><a href="#nodebpy.nodes.geometry.SampleGrid" id="toc-nodebpy.nodes.geometry.SampleGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SampleGrid">SampleGrid</a></li>
   <li><a href="#nodebpy.nodes.geometry.SampleGridIndex" id="toc-nodebpy.nodes.geometry.SampleGridIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SampleGridIndex">SampleGridIndex</a></li>
   <li><a href="#nodebpy.nodes.geometry.SampleIndex" id="toc-nodebpy.nodes.geometry.SampleIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SampleIndex">SampleIndex</a></li>
   <li><a href="#nodebpy.nodes.geometry.SampleNearest" id="toc-nodebpy.nodes.geometry.SampleNearest" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SampleNearest">SampleNearest</a></li>
   <li><a href="#nodebpy.nodes.geometry.SampleNearestSurface" id="toc-nodebpy.nodes.geometry.SampleNearestSurface" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SampleNearestSurface">SampleNearestSurface</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SampleUvSurface" id="toc-nodebpy.nodes.geometry.SampleUvSurface" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SampleUvSurface">SampleUvSurface</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SampleUVSurface" id="toc-nodebpy.nodes.geometry.SampleUVSurface" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SampleUVSurface">SampleUVSurface</a></li>
   <li><a href="#nodebpy.nodes.geometry.ScaleElements" id="toc-nodebpy.nodes.geometry.ScaleElements" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ScaleElements">ScaleElements</a></li>
   <li><a href="#nodebpy.nodes.geometry.ScaleInstances" id="toc-nodebpy.nodes.geometry.ScaleInstances" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ScaleInstances">ScaleInstances</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SdfGridBoolean" id="toc-nodebpy.nodes.geometry.SdfGridBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SdfGridBoolean">SdfGridBoolean</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SdfGridFillet" id="toc-nodebpy.nodes.geometry.SdfGridFillet" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SdfGridFillet">SdfGridFillet</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SdfGridLaplacian" id="toc-nodebpy.nodes.geometry.SdfGridLaplacian" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SdfGridLaplacian">SdfGridLaplacian</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SdfGridMean" id="toc-nodebpy.nodes.geometry.SdfGridMean" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SdfGridMean">SdfGridMean</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SdfGridMeanCurvature" id="toc-nodebpy.nodes.geometry.SdfGridMeanCurvature" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SdfGridMeanCurvature">SdfGridMeanCurvature</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SdfGridMedian" id="toc-nodebpy.nodes.geometry.SdfGridMedian" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SdfGridMedian">SdfGridMedian</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SdfGridOffset" id="toc-nodebpy.nodes.geometry.SdfGridOffset" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SdfGridOffset">SdfGridOffset</a></li>
   <li><a href="#nodebpy.nodes.geometry.Selection" id="toc-nodebpy.nodes.geometry.Selection" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.Selection">Selection</a></li>
   <li><a href="#nodebpy.nodes.geometry.SelfObject" id="toc-nodebpy.nodes.geometry.SelfObject" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SelfObject">SelfObject</a></li>
   <li><a href="#nodebpy.nodes.geometry.SeparateComponents" id="toc-nodebpy.nodes.geometry.SeparateComponents" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SeparateComponents">SeparateComponents</a></li>
@@ -299,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.SetGreasePencilSoftness" id="toc-nodebpy.nodes.geometry.SetGreasePencilSoftness" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SetGreasePencilSoftness">SetGreasePencilSoftness</a></li>
   <li><a href="#nodebpy.nodes.geometry.SetGridBackground" id="toc-nodebpy.nodes.geometry.SetGridBackground" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SetGridBackground">SetGridBackground</a></li>
   <li><a href="#nodebpy.nodes.geometry.SetGridTransform" id="toc-nodebpy.nodes.geometry.SetGridTransform" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SetGridTransform">SetGridTransform</a></li>
-  <li><a href="#nodebpy.nodes.geometry.SetId" id="toc-nodebpy.nodes.geometry.SetId" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SetId">SetId</a></li>
+  <li><a href="#nodebpy.nodes.geometry.SetID" id="toc-nodebpy.nodes.geometry.SetID" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SetID">SetID</a></li>
   <li><a href="#nodebpy.nodes.geometry.SetInstanceTransform" id="toc-nodebpy.nodes.geometry.SetInstanceTransform" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SetInstanceTransform">SetInstanceTransform</a></li>
   <li><a href="#nodebpy.nodes.geometry.SetMaterial" id="toc-nodebpy.nodes.geometry.SetMaterial" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SetMaterial">SetMaterial</a></li>
   <li><a href="#nodebpy.nodes.geometry.SetMaterialIndex" id="toc-nodebpy.nodes.geometry.SetMaterialIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.SetMaterialIndex">SetMaterialIndex</a></li>
@@ -321,8 +352,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.TransformGizmo" id="toc-nodebpy.nodes.geometry.TransformGizmo" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.TransformGizmo">TransformGizmo</a></li>
   <li><a href="#nodebpy.nodes.geometry.TranslateInstances" id="toc-nodebpy.nodes.geometry.TranslateInstances" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.TranslateInstances">TranslateInstances</a></li>
   <li><a href="#nodebpy.nodes.geometry.Triangulate" id="toc-nodebpy.nodes.geometry.Triangulate" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.Triangulate">Triangulate</a></li>
-  <li><a href="#nodebpy.nodes.geometry.UvTangent" id="toc-nodebpy.nodes.geometry.UvTangent" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.UvTangent">UvTangent</a></li>
-  <li><a href="#nodebpy.nodes.geometry.UvUnwrap" id="toc-nodebpy.nodes.geometry.UvUnwrap" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.UvUnwrap">UvUnwrap</a></li>
+  <li><a href="#nodebpy.nodes.geometry.UVTangent" id="toc-nodebpy.nodes.geometry.UVTangent" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.UVTangent">UVTangent</a></li>
+  <li><a href="#nodebpy.nodes.geometry.UVUnwrap" id="toc-nodebpy.nodes.geometry.UVUnwrap" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.UVUnwrap">UVUnwrap</a></li>
   <li><a href="#nodebpy.nodes.geometry.VertexOfCorner" id="toc-nodebpy.nodes.geometry.VertexOfCorner" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.VertexOfCorner">VertexOfCorner</a></li>
   <li><a href="#nodebpy.nodes.geometry.Viewer" id="toc-nodebpy.nodes.geometry.Viewer" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.Viewer">Viewer</a></li>
   <li><a href="#nodebpy.nodes.geometry.ViewportTransform" id="toc-nodebpy.nodes.geometry.ViewportTransform" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.ViewportTransform">ViewportTransform</a></li>
@@ -534,19 +565,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Sample values from an image texture</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ImportCsv">ImportCsv</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportCSV">ImportCSV</a></td>
 <td>Import geometry from an CSV file</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ImportObj">ImportObj</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportOBJ">ImportOBJ</a></td>
 <td>Import geometry from an OBJ file</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ImportPly">ImportPly</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportPLY">ImportPLY</a></td>
 <td>Import a point cloud from a PLY file</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ImportStl">ImportStl</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportSTL">ImportSTL</a></td>
 <td>Import a mesh from an STL file</td>
 </tr>
 <tr class="odd">
@@ -554,7 +585,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Import a string from a text file</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ImportVdb">ImportVdb</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportVDB">ImportVDB</a></td>
 <td>Import volume data from a .vdb file</td>
 </tr>
 <tr class="odd">
@@ -618,7 +649,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Retrieve corners in the same face as another</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.PackUvIslands">PackUvIslands</a></td>
+<td><a href="#nodebpy.nodes.geometry.PackUVIslands">PackUVIslands</a></td>
 <td>Scale islands of a UV map and move them so they fill the UV space as much as possible</td>
 </tr>
 <tr class="odd">
@@ -626,7 +657,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Generate a point cloud with positions and radii defined by fields</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.PointsToSdfGrid">PointsToSdfGrid</a></td>
+<td><a href="#nodebpy.nodes.geometry.PointsToSDFGrid">PointsToSDFGrid</a></td>
 <td>Create a signed distance volume grid from points</td>
 </tr>
 <tr class="odd">
@@ -658,64 +689,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Rotate geometry instances in local or global space</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SampleGrid">SampleGrid</a></td>
-<td>Retrieve values from the specified volume grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SampleGridIndex">SampleGridIndex</a></td>
-<td>Retrieve volume grid values at specific voxels</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SampleIndex">SampleIndex</a></td>
-<td>Retrieve values from specific geometry elements</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SampleNearest">SampleNearest</a></td>
-<td>Find the element of a geometry closest to a position. Similar to the “Index of Nearest” node</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SampleNearestSurface">SampleNearestSurface</a></td>
-<td>Calculate the interpolated value of a mesh attribute on the closest point of its surface</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SampleUvSurface">SampleUvSurface</a></td>
-<td>Calculate the interpolated values of a mesh attribute at a UV coordinate</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ScaleElements">ScaleElements</a></td>
-<td>Scale groups of connected edges and faces</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ScaleInstances">ScaleInstances</a></td>
-<td>Scale geometry instances in local or global space</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridBoolean">SdfGridBoolean</a></td>
+<td><a href="#nodebpy.nodes.geometry.SDFGridBoolean">SDFGridBoolean</a></td>
 <td>Cut, subtract, or join multiple SDF volume grid inputs</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridFillet">SdfGridFillet</a></td>
+<td><a href="#nodebpy.nodes.geometry.SDFGridFillet">SDFGridFillet</a></td>
 <td>Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridLaplacian">SdfGridLaplacian</a></td>
+<td><a href="#nodebpy.nodes.geometry.SDFGridLaplacian">SDFGridLaplacian</a></td>
 <td>Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMean">SdfGridMean</a></td>
+<td><a href="#nodebpy.nodes.geometry.SDFGridMean">SDFGridMean</a></td>
 <td>Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMeanCurvature">SdfGridMeanCurvature</a></td>
+<td><a href="#nodebpy.nodes.geometry.SDFGridMeanCurvature">SDFGridMeanCurvature</a></td>
 <td>Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMedian">SdfGridMedian</a></td>
+<td><a href="#nodebpy.nodes.geometry.SDFGridMedian">SDFGridMedian</a></td>
 <td>Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridOffset">SdfGridOffset</a></td>
+<td><a href="#nodebpy.nodes.geometry.SDFGridOffset">SDFGridOffset</a></td>
 <td>Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SampleGrid">SampleGrid</a></td>
+<td>Retrieve values from the specified volume grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SampleGridIndex">SampleGridIndex</a></td>
+<td>Retrieve volume grid values at specific voxels</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SampleIndex">SampleIndex</a></td>
+<td>Retrieve values from specific geometry elements</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SampleNearest">SampleNearest</a></td>
+<td>Find the element of a geometry closest to a position. Similar to the “Index of Nearest” node</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SampleNearestSurface">SampleNearestSurface</a></td>
+<td>Calculate the interpolated value of a mesh attribute on the closest point of its surface</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SampleUVSurface">SampleUVSurface</a></td>
+<td>Calculate the interpolated values of a mesh attribute at a UV coordinate</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.ScaleElements">ScaleElements</a></td>
+<td>Scale groups of connected edges and faces</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.ScaleInstances">ScaleInstances</a></td>
+<td>Scale geometry instances in local or global space</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.Selection">Selection</a></td>
@@ -762,7 +793,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Set the transform for the grid from index space into object space.</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SetId">SetId</a></td>
+<td><a href="#nodebpy.nodes.geometry.SetID">SetID</a></td>
 <td>Set the id attribute on the input geometry, mainly used internally for randomizing</td>
 </tr>
 <tr class="odd">
@@ -850,11 +881,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Convert all faces in a mesh to triangular faces</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.UvTangent">UvTangent</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVTangent">UVTangent</a></td>
 <td>Generate tangent directions based on a UV map</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.UvUnwrap">UvUnwrap</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVUnwrap">UVUnwrap</a></td>
 <td>Generate a UV map based on seam edges</td>
 </tr>
 <tr class="even">
@@ -2495,9 +2526,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.ImportCsv" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportCsv">ImportCsv</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportCsv(path<span class="op">=</span><span class="st">''</span>, delimiter<span class="op">=</span><span class="st">','</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.ImportCSV" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportCSV">ImportCSV</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportCSV(path<span class="op">=</span><span class="st">''</span>, delimiter<span class="op">=</span><span class="st">','</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import geometry from an CSV file</p>
 <section id="attributes-43" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-43">Attributes</h4>
@@ -2510,24 +2541,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ImportCsv.i_delimiter">i_delimiter</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportCSV.i_delimiter">i_delimiter</a></td>
 <td>Input socket: Delimiter</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ImportCsv.i_path">i_path</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportCSV.i_path">i_path</a></td>
 <td>Input socket: Path</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ImportCsv.o_point_cloud">o_point_cloud</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportCSV.o_point_cloud">o_point_cloud</a></td>
 <td>Output socket: Point Cloud</td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.ImportObj" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportObj">ImportObj</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportObj(path<span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.ImportOBJ" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportOBJ">ImportOBJ</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportOBJ(path<span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import geometry from an OBJ file</p>
 <section id="attributes-44" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-44">Attributes</h4>
@@ -2540,20 +2571,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ImportObj.i_path">i_path</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportOBJ.i_path">i_path</a></td>
 <td>Input socket: Path</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ImportObj.o_instances">o_instances</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportOBJ.o_instances">o_instances</a></td>
 <td>Output socket: Instances</td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.ImportPly" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportPly">ImportPly</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportPly(path<span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.ImportPLY" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportPLY">ImportPLY</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportPLY(path<span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import a point cloud from a PLY file</p>
 <section id="attributes-45" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-45">Attributes</h4>
@@ -2566,20 +2597,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ImportPly.i_path">i_path</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportPLY.i_path">i_path</a></td>
 <td>Input socket: Path</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ImportPly.o_mesh">o_mesh</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportPLY.o_mesh">o_mesh</a></td>
 <td>Output socket: Mesh</td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.ImportStl" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportStl">ImportStl</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportStl(path<span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.ImportSTL" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportSTL">ImportSTL</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportSTL(path<span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import a mesh from an STL file</p>
 <section id="attributes-46" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-46">Attributes</h4>
@@ -2592,11 +2623,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ImportStl.i_path">i_path</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportSTL.i_path">i_path</a></td>
 <td>Input socket: Path</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ImportStl.o_mesh">o_mesh</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportSTL.o_mesh">o_mesh</a></td>
 <td>Output socket: Mesh</td>
 </tr>
 </tbody>
@@ -2629,9 +2660,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.ImportVdb" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportVdb">ImportVdb</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportVdb(path<span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.ImportVDB" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ImportVDB">ImportVDB</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ImportVDB(path<span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import volume data from a .vdb file</p>
 <section id="attributes-48" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-48">Attributes</h4>
@@ -2644,11 +2675,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.ImportVdb.i_path">i_path</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportVDB.i_path">i_path</a></td>
 <td>Input socket: Path</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.ImportVdb.o_volume">o_volume</a></td>
+<td><a href="#nodebpy.nodes.geometry.ImportVDB.o_volume">o_volume</a></td>
 <td>Output socket: Volume</td>
 </tr>
 </tbody>
@@ -3183,9 +3214,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.PackUvIslands" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.PackUvIslands">PackUvIslands</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.PackUvIslands(</span>
+<section id="nodebpy.nodes.geometry.PackUVIslands" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.PackUVIslands">PackUVIslands</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.PackUVIslands(</span>
 <span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>    uv<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
 <span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">=</span><span class="fl">0.0010000000474974513</span>,</span>
@@ -3205,27 +3236,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.PackUvIslands.i_margin">i_margin</a></td>
+<td><a href="#nodebpy.nodes.geometry.PackUVIslands.i_margin">i_margin</a></td>
 <td>Input socket: Margin</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.PackUvIslands.i_method">i_method</a></td>
+<td><a href="#nodebpy.nodes.geometry.PackUVIslands.i_method">i_method</a></td>
 <td>Input socket: Method</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.PackUvIslands.i_rotate">i_rotate</a></td>
+<td><a href="#nodebpy.nodes.geometry.PackUVIslands.i_rotate">i_rotate</a></td>
 <td>Input socket: Rotate</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.PackUvIslands.i_selection">i_selection</a></td>
+<td><a href="#nodebpy.nodes.geometry.PackUVIslands.i_selection">i_selection</a></td>
 <td>Input socket: Selection</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.PackUvIslands.i_uv">i_uv</a></td>
+<td><a href="#nodebpy.nodes.geometry.PackUVIslands.i_uv">i_uv</a></td>
 <td>Input socket: UV</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.PackUvIslands.o_uv">o_uv</a></td>
+<td><a href="#nodebpy.nodes.geometry.PackUVIslands.o_uv">o_uv</a></td>
 <td>Output socket: UV</td>
 </tr>
 </tbody>
@@ -3271,9 +3302,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.PointsToSdfGrid" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.PointsToSdfGrid">PointsToSdfGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.PointsToSdfGrid(</span>
+<section id="nodebpy.nodes.geometry.PointsToSDFGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.PointsToSDFGrid">PointsToSDFGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.PointsToSDFGrid(</span>
 <span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>    points<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>    radius<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.30000001192092896</span>,</span>
@@ -3291,19 +3322,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.PointsToSdfGrid.i_points">i_points</a></td>
+<td><a href="#nodebpy.nodes.geometry.PointsToSDFGrid.i_points">i_points</a></td>
 <td>Input socket: Points</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.PointsToSdfGrid.i_radius">i_radius</a></td>
+<td><a href="#nodebpy.nodes.geometry.PointsToSDFGrid.i_radius">i_radius</a></td>
 <td>Input socket: Radius</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.PointsToSdfGrid.i_voxel_size">i_voxel_size</a></td>
+<td><a href="#nodebpy.nodes.geometry.PointsToSDFGrid.i_voxel_size">i_voxel_size</a></td>
 <td>Input socket: Voxel Size</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.PointsToSdfGrid.o_sdf_grid">o_sdf_grid</a></td>
+<td><a href="#nodebpy.nodes.geometry.PointsToSDFGrid.o_sdf_grid">o_sdf_grid</a></td>
 <td>Output socket: SDF Grid</td>
 </tr>
 </tbody>
@@ -3632,18 +3663,281 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.SampleGrid" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SampleGrid">SampleGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleGrid(</span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>    position<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
-<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Trilinear'</span>,</span>
-<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Retrieve values from the specified volume grid</p>
+<section id="nodebpy.nodes.geometry.SDFGridBoolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridBoolean">SDFGridBoolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridBoolean(</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>    grid_1<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>    grid_2<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>,</span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cut, subtract, or join multiple SDF volume grid inputs</p>
 <section id="attributes-74" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-74">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridBoolean.i_grid_1">i_grid_1</a></td>
+<td>Input socket: Grid 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridBoolean.i_grid_2">i_grid_2</a></td>
+<td>Input socket: Grid 2</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridBoolean.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridBoolean.difference">difference</a></td>
+<td>Create SDF Grid Boolean with operation ‘Difference’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridBoolean.intersect">intersect</a></td>
+<td>Create SDF Grid Boolean with operation ‘Intersect’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridBoolean.union">union</a></td>
+<td>Create SDF Grid Boolean with operation ‘Union’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.SDFGridBoolean.difference" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridBoolean.difference">difference</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridBoolean.difference(grid_1<span class="op">=</span><span class="fl">0.0</span>, grid_2<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create SDF Grid Boolean with operation ‘Difference’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.SDFGridBoolean.intersect" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridBoolean.intersect">intersect</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridBoolean.intersect(grid_1<span class="op">=</span><span class="fl">0.0</span>, grid_2<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create SDF Grid Boolean with operation ‘Intersect’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.SDFGridBoolean.union" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridBoolean.union">union</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridBoolean.union(grid_1<span class="op">=</span><span class="fl">0.0</span>, grid_2<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create SDF Grid Boolean with operation ‘Union’.</p>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.SDFGridFillet" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridFillet">SDFGridFillet</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridFillet(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces</p>
+<section id="attributes-75" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-75">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridFillet.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridFillet.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridFillet.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.SDFGridLaplacian" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridLaplacian">SDFGridLaplacian</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridLaplacian(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization</p>
+<section id="attributes-76" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-76">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridLaplacian.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridLaplacian.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridLaplacian.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.SDFGridMean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridMean">SDFGridMean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridMean(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field</p>
+<section id="attributes-77" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-77">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMean.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMean.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMean.i_width">i_width</a></td>
+<td>Input socket: Width</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMean.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.SDFGridMeanCurvature" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridMeanCurvature">SDFGridMeanCurvature</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridMeanCurvature(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas</p>
+<section id="attributes-78" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-78">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMeanCurvature.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMeanCurvature.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMeanCurvature.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.SDFGridMedian" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridMedian">SDFGridMedian</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridMedian(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field</p>
+<section id="attributes-79" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-79">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMedian.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMedian.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMedian.i_width">i_width</a></td>
+<td>Input socket: Width</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridMedian.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.SDFGridOffset" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SDFGridOffset">SDFGridOffset</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SDFGridOffset(grid<span class="op">=</span><span class="fl">0.0</span>, distance<span class="op">=</span><span class="fl">0.10000000149011612</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property</p>
+<section id="attributes-80" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-80">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridOffset.i_distance">i_distance</a></td>
+<td>Input socket: Distance</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.SDFGridOffset.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.SDFGridOffset.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.SampleGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SampleGrid">SampleGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleGrid(</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>    position<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Trilinear'</span>,</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve values from the specified volume grid</p>
+<section id="attributes-81" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-81">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3674,17 +3968,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.SampleGridIndex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SampleGridIndex">SampleGridIndex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleGridIndex(</span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>    z<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleGridIndex(</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>    z<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve volume grid values at specific voxels</p>
-<section id="attributes-75" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-75">Attributes</h4>
+<section id="attributes-82" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-82">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3719,18 +4013,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.SampleIndex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SampleIndex">SampleIndex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleIndex(</span>
-<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleIndex(</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>    clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve values from specific geometry elements</p>
-<section id="attributes-76" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-76">Attributes</h4>
+<section id="attributes-83" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-83">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3761,15 +4055,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.SampleNearest" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SampleNearest">SampleNearest</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleNearest(</span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>    sample_position<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
-<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleNearest(</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>    sample_position<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Find the element of a geometry closest to a position. Similar to the “Index of Nearest” node</p>
-<section id="attributes-77" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-77">Attributes</h4>
+<section id="attributes-84" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-84">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3796,18 +4090,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.SampleNearestSurface" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SampleNearestSurface">SampleNearestSurface</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleNearestSurface(</span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>    group_id<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>    sample_position<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
-<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>    sample_group_id<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb80-8"><a href="#cb80-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleNearestSurface(</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>    group_id<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>    sample_position<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>    sample_group_id<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the interpolated value of a mesh attribute on the closest point of its surface</p>
-<section id="attributes-78" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-78">Attributes</h4>
+<section id="attributes-85" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-85">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3848,19 +4142,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.SampleUvSurface" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SampleUvSurface">SampleUvSurface</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleUvSurface(</span>
-<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>    source_uv_map<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
-<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>    sample_uv<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
-<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.SampleUVSurface" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SampleUVSurface">SampleUVSurface</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SampleUVSurface(</span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>    source_uv_map<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>    sample_uv<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the interpolated values of a mesh attribute at a UV coordinate</p>
-<section id="attributes-79" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-79">Attributes</h4>
+<section id="attributes-86" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-86">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3870,27 +4164,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SampleUvSurface.i_mesh">i_mesh</a></td>
+<td><a href="#nodebpy.nodes.geometry.SampleUVSurface.i_mesh">i_mesh</a></td>
 <td>Input socket: Mesh</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SampleUvSurface.i_sample_uv">i_sample_uv</a></td>
+<td><a href="#nodebpy.nodes.geometry.SampleUVSurface.i_sample_uv">i_sample_uv</a></td>
 <td>Input socket: Sample UV</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SampleUvSurface.i_uv_map">i_uv_map</a></td>
+<td><a href="#nodebpy.nodes.geometry.SampleUVSurface.i_uv_map">i_uv_map</a></td>
 <td>Input socket: UV Map</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SampleUvSurface.i_value">i_value</a></td>
+<td><a href="#nodebpy.nodes.geometry.SampleUVSurface.i_value">i_value</a></td>
 <td>Input socket: Value</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SampleUvSurface.o_is_valid">o_is_valid</a></td>
+<td><a href="#nodebpy.nodes.geometry.SampleUVSurface.o_is_valid">o_is_valid</a></td>
 <td>Output socket: Is Valid</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SampleUvSurface.o_value">o_value</a></td>
+<td><a href="#nodebpy.nodes.geometry.SampleUVSurface.o_value">o_value</a></td>
 <td>Output socket: Value</td>
 </tr>
 </tbody>
@@ -3899,19 +4193,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.ScaleElements" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ScaleElements">ScaleElements</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ScaleElements(</span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
-<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>    scale_mode<span class="op">=</span><span class="st">'Uniform'</span>,</span>
-<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
-<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'FACE'</span>,</span>
-<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ScaleElements(</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>    scale_mode<span class="op">=</span><span class="st">'Uniform'</span>,</span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'FACE'</span>,</span>
+<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb92-10"><a href="#cb92-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Scale groups of connected edges and faces</p>
-<section id="attributes-80" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-80">Attributes</h4>
+<section id="attributes-87" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-87">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3954,17 +4248,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.ScaleInstances" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.ScaleInstances">ScaleInstances</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ScaleInstances(</span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>    instances<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>],</span>
-<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
-<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a>    local_space<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.ScaleInstances(</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>    instances<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>],</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>    local_space<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Scale geometry instances in local or global space</p>
-<section id="attributes-81" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-81">Attributes</h4>
+<section id="attributes-88" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-88">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3996,269 +4290,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.ScaleInstances.o_instances">o_instances</a></td>
 <td>Output socket: Instances</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridBoolean" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridBoolean">SdfGridBoolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridBoolean(</span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>    grid_1<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>    grid_2<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>,</span>
-<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Cut, subtract, or join multiple SDF volume grid inputs</p>
-<section id="attributes-82" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-82">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridBoolean.i_grid_1">i_grid_1</a></td>
-<td>Input socket: Grid 1</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridBoolean.i_grid_2">i_grid_2</a></td>
-<td>Input socket: Grid 2</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridBoolean.o_grid">o_grid</a></td>
-<td>Output socket: Grid</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="methods" class="level4">
-<h4 class="anchored" data-anchor-id="methods">Methods</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridBoolean.difference">difference</a></td>
-<td>Create SDF Grid Boolean with operation ‘Difference’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridBoolean.intersect">intersect</a></td>
-<td>Create SDF Grid Boolean with operation ‘Intersect’.</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridBoolean.union">union</a></td>
-<td>Create SDF Grid Boolean with operation ‘Union’.</td>
-</tr>
-</tbody>
-</table>
-<section id="nodebpy.nodes.geometry.SdfGridBoolean.difference" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridBoolean.difference">difference</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridBoolean.difference(grid_1<span class="op">=</span><span class="fl">0.0</span>, grid_2<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create SDF Grid Boolean with operation ‘Difference’.</p>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridBoolean.intersect" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridBoolean.intersect">intersect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridBoolean.intersect(grid_1<span class="op">=</span><span class="fl">0.0</span>, grid_2<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create SDF Grid Boolean with operation ‘Intersect’.</p>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridBoolean.union" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridBoolean.union">union</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridBoolean.union(grid_1<span class="op">=</span><span class="fl">0.0</span>, grid_2<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create SDF Grid Boolean with operation ‘Union’.</p>
-</section>
-</section>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridFillet" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridFillet">SdfGridFillet</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridFillet(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces</p>
-<section id="attributes-83" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-83">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridFillet.i_grid">i_grid</a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridFillet.i_iterations">i_iterations</a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridFillet.o_grid">o_grid</a></td>
-<td>Output socket: Grid</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridLaplacian" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridLaplacian">SdfGridLaplacian</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridLaplacian(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization</p>
-<section id="attributes-84" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-84">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridLaplacian.i_grid">i_grid</a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridLaplacian.i_iterations">i_iterations</a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridLaplacian.o_grid">o_grid</a></td>
-<td>Output socket: Grid</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridMean" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridMean">SdfGridMean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridMean(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field</p>
-<section id="attributes-85" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-85">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMean.i_grid">i_grid</a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMean.i_iterations">i_iterations</a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMean.i_width">i_width</a></td>
-<td>Input socket: Width</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMean.o_grid">o_grid</a></td>
-<td>Output socket: Grid</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridMeanCurvature" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridMeanCurvature">SdfGridMeanCurvature</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridMeanCurvature(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas</p>
-<section id="attributes-86" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-86">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMeanCurvature.i_grid">i_grid</a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMeanCurvature.i_iterations">i_iterations</a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMeanCurvature.o_grid">o_grid</a></td>
-<td>Output socket: Grid</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridMedian" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridMedian">SdfGridMedian</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridMedian(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field</p>
-<section id="attributes-87" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-87">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMedian.i_grid">i_grid</a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMedian.i_iterations">i_iterations</a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMedian.i_width">i_width</a></td>
-<td>Input socket: Width</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridMedian.o_grid">o_grid</a></td>
-<td>Output socket: Grid</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.geometry.SdfGridOffset" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SdfGridOffset">SdfGridOffset</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SdfGridOffset(grid<span class="op">=</span><span class="fl">0.0</span>, distance<span class="op">=</span><span class="fl">0.10000000149011612</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property</p>
-<section id="attributes-88" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-88">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridOffset.i_distance">i_distance</a></td>
-<td>Input socket: Distance</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SdfGridOffset.i_grid">i_grid</a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SdfGridOffset.o_grid">o_grid</a></td>
-<td>Output socket: Grid</td>
 </tr>
 </tbody>
 </table>
@@ -4649,9 +4680,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.SetId" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SetId">SetId</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SetId(geometry<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, <span class="bu">id</span><span class="op">=</span><span class="dv">0</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.SetID" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.SetID">SetID</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.SetID(geometry<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, <span class="bu">id</span><span class="op">=</span><span class="dv">0</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set the id attribute on the input geometry, mainly used internally for randomizing</p>
 <section id="attributes-100" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-100">Attributes</h4>
@@ -4664,19 +4695,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SetId.i_geometry">i_geometry</a></td>
+<td><a href="#nodebpy.nodes.geometry.SetID.i_geometry">i_geometry</a></td>
 <td>Input socket: Geometry</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SetId.i_id">i_id</a></td>
+<td><a href="#nodebpy.nodes.geometry.SetID.i_id">i_id</a></td>
 <td>Input socket: ID</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.SetId.i_selection">i_selection</a></td>
+<td><a href="#nodebpy.nodes.geometry.SetID.i_selection">i_selection</a></td>
 <td>Input socket: Selection</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.SetId.o_geometry">o_geometry</a></td>
+<td><a href="#nodebpy.nodes.geometry.SetID.o_geometry">o_geometry</a></td>
 <td>Output socket: Geometry</td>
 </tr>
 </tbody>
@@ -5541,9 +5572,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.UvTangent" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.UvTangent">UvTangent</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb127"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.UvTangent(method<span class="op">=</span><span class="st">'Exact'</span>, uv<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>], <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.UVTangent" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.UVTangent">UVTangent</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb127"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.UVTangent(method<span class="op">=</span><span class="st">'Exact'</span>, uv<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>], <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate tangent directions based on a UV map</p>
 <section id="attributes-122" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-122">Attributes</h4>
@@ -5556,24 +5587,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.UvTangent.i_method">i_method</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVTangent.i_method">i_method</a></td>
 <td>Input socket: Method</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.UvTangent.i_uv">i_uv</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVTangent.i_uv">i_uv</a></td>
 <td>Input socket: UV</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.UvTangent.o_tangent">o_tangent</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVTangent.o_tangent">o_tangent</a></td>
 <td>Output socket: Tangent</td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.UvUnwrap" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.UvUnwrap">UvUnwrap</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb128"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.UvUnwrap(</span>
+<section id="nodebpy.nodes.geometry.UVUnwrap" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.UVUnwrap">UVUnwrap</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb128"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.UVUnwrap(</span>
 <span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a>    seam<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">=</span><span class="fl">0.0010000000474974513</span>,</span>
@@ -5593,27 +5624,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.UvUnwrap.i_fill_holes">i_fill_holes</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVUnwrap.i_fill_holes">i_fill_holes</a></td>
 <td>Input socket: Fill Holes</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.UvUnwrap.i_margin">i_margin</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVUnwrap.i_margin">i_margin</a></td>
 <td>Input socket: Margin</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.UvUnwrap.i_method">i_method</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVUnwrap.i_method">i_method</a></td>
 <td>Input socket: Method</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.UvUnwrap.i_seam">i_seam</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVUnwrap.i_seam">i_seam</a></td>
 <td>Input socket: Seam</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.UvUnwrap.i_selection">i_selection</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVUnwrap.i_selection">i_selection</a></td>
 <td>Input socket: Selection</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.UvUnwrap.o_uv">o_uv</a></td>
+<td><a href="#nodebpy.nodes.geometry.UVUnwrap.o_uv">o_uv</a></td>
 <td>Output socket: UV</td>
 </tr>
 </tbody>
@@ -6232,6 +6263,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../reference/nodes.attribute.html" class="pagination-link" aria-label="nodes.attribute">
+        <span class="nav-page-text">nodes.attribute</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
