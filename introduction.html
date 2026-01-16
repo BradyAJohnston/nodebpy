@@ -183,14 +183,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="877bfb52" class="cell" data-execution_count="1">
+<div id="b06114bf" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder, nodes <span class="im">as</span> n, sockets <span class="im">as</span> s</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="adding-nodes" class="level2">
 <h2 class="anchored" data-anchor-id="adding-nodes">Adding Nodes</h2>
 <p>Adding nodes must be done inside of a context. We enter a context using the <code>with</code> keyword. While inside of this context, whenever you call a node class (<code>n.SetPosition()</code>) a node of that type will be added to the current tree.</p>
 <p>This first example creates a new tree and adds two new nodes, linking the <code>Set Position</code> node into the <code>Transform Geometry</code> node. The output and input sockets for each are inferred based on simple heuristics around socket type and order.</p>
-<div id="3ef17be7" class="cell" data-execution_count="2">
+<div id="abca08a2" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"NewTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    n.SetPosition() <span class="op">&gt;&gt;</span> n.TransformGeometry()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -228,16 +228,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Individual Socket Access</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Using Arguments to Class</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="e627948c" class="cell" data-execution_count="3">
+<div id="a02595f9" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"AnotherTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> n.SetPosition()</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    n.Position() <span class="op">*</span> <span class="fl">0.5</span> <span class="op">&gt;&gt;</span> pos.i_position</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    n.Vector() <span class="op">&gt;&gt;</span> pos.i_offset</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="f252c5d7" class="cell" data-execution_count="4">
+<div id="e0c53fbc" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"AnotherAnotherTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    n.SetPosition(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        offset <span class="op">=</span> n.Vector(),</span>
@@ -247,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="de6ac9f3" class="cell" data-execution_count="5">
+<div id="fe759684" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -284,14 +284,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="node-input-sockets">Node Input Sockets</h2>
 <p>The socket interface nodes define what values / sockets are available as inputs for the node tree.</p>
 <p>We define them in a similar way to the socekts themselves, using context with the <code>tree.inputs</code> and <code>tree.outputs</code> and adding sockets with the <code>s.SocketGeometry()</code>.</p>
-<div id="1c84dc70" class="cell" data-execution_count="6">
+<div id="b57469f0" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"NewTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        geom_inputs <span class="op">=</span> [s.SocketGeometry(<span class="ss">f"Geometry_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>)]</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        n.JoinGeometry(geom_inputs) <span class="op">&gt;&gt;</span> s.SocketGeometry(<span class="st">"The Output Socket"</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="6">
 <div class="cell" data-layout-align="default">
@@ -326,14 +326,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="a81d547c" class="cell" data-execution_count="7">
+<div id="fbce3949" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder() <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> s.SocketInt(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> s.SocketGeometry()</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    (</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        count</span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> n.Points(position<span class="op">=</span>n.RandomValue.vector(<span class="bu">min</span><span class="op">=</span>(<span class="op">-</span><span class="fl">0.1</span>,<span class="op">-</span><span class="fl">0.1</span>,<span class="op">-</span><span class="fl">0.2</span>)))</span>
@@ -355,6 +355,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N1 --&gt;|"Value&gt;&gt;Position"| N2
     N0 --&gt;|"Count&gt;&gt;Count"| N2
     N2 --&gt;|"Points&gt;&gt;Geometry"| N3
+
+    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
+    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
+    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
+    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
+    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
+    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
+    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
+    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="466341ce" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder() <span class="im">as</span> tree:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> s.SocketInt(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> s.SocketGeometry()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    (</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        count</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> n.Points(position<span class="op">=</span>n.RandomValue.vector() <span class="op">*</span> <span class="fl">0.5</span> <span class="op">*</span> n.Position())</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> output</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+    N0("NodeGroupInput"):::default-node
+    N1("RandomValue&lt;br/&gt;&lt;small&gt;seed:1&lt;/small&gt;"):::converter-node
+    N2("VectorMath&lt;br/&gt;&lt;small&gt;×0.5&lt;/small&gt;"):::vector-node
+    N3("InputPosition"):::input-node
+    N4("VectorMath"):::vector-node
+    N5("Points"):::geometry-node
+    N6("NodeGroupOutput"):::default-node
+    N1 --&gt;|"Value&gt;&gt;Vector"| N2
+    N2 --&gt;|"Vector&gt;&gt;Vector"| N4
+    N3 --&gt;|"Position&gt;&gt;Vector"| N4
+    N4 --&gt;|"Vector&gt;&gt;Position"| N5
+    N0 --&gt;|"Count&gt;&gt;Count"| N5
+    N5 --&gt;|"Points&gt;&gt;Geometry"| N6
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
