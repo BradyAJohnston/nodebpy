@@ -1,6 +1,7 @@
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
 from nodebpy import sockets as s
+import nodebpy.nodes.input
 
 
 def test_create_tree_and_save():
@@ -23,7 +24,7 @@ def test_create_tree_and_save():
             >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
             >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
             >> n.SetPosition(
-                position=n.Position() * 2.0 + (0, 0.2, 0.3),
+                position=nodebpy.nodes.input.Position() * 2.0 + (0, 0.2, 0.3),
                 offset=(0, 0, 0.1),
             )
             >> n.RealizeInstances()

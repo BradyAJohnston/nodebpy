@@ -4,6 +4,7 @@ import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
+import nodebpy.nodes.input
 
 
 def test_capture_attribute():
@@ -15,7 +16,7 @@ def test_capture_attribute():
             cube
             >> cap
             >> n.SetPosition(offset=(0, 0, 10))
-            >> n.SetPosition(position=cap.capture(n.Position()))
+            >> n.SetPosition(position=cap.capture(nodebpy.nodes.input.Position()))
         )
 
     assert "Capture Attribute" in tree.nodes
@@ -41,7 +42,7 @@ def test_socket_selection():
         vec = n.Vector()
 
         vec >> pos.i_offset
-        n.Position() * 1.0 >> pos.i_position
+        nodebpy.nodes.input.Position() * 1.0 >> pos.i_position
 
     assert pos.i_offset.socket_name == "Offset"
     assert vec.o_vector.socket.links[0].to_socket.node == pos.node
@@ -51,12 +52,13 @@ def test_socket_selection():
 
 class TestMathOperators:
     @pytest.mark.parametrize(
-        "operator,input", itertools.product(["+", "-", "*", "/"], [n.Vector, n.Value])
+        "operator,input",
+        itertools.product(["+", "-", "*", "/"], [n.Vector, nodebpy.nodes.input.Value]),
     )
     def test_math_operators(self, operator, input):
         with TreeBuilder("TestMathOperators"):
             set_pos = n.SetPosition()
-            pos = n.Position()  # noqa: F841
+            pos = nodebpy.nodes.input.Position()  # noqa: F841
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 

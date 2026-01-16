@@ -1,7 +1,40 @@
 """Auto-generated geometry node classes."""
 
-from . import attribute, curve, input, mesh, utilities
-from .attribute import (
+from .zone import ForEachGeometryElementInput
+from .input import (
+    ID,
+    ActiveCamera,
+    Boolean,
+    Collection,
+    Color,
+    CurveTangent,
+    Image,
+    Index,
+    InstanceBounds,
+    InstanceRotation,
+    InstanceScale,
+    Integer,
+    IsEdgeSmooth,
+    IsFaceSmooth,
+    IsSplineCyclic,
+    Material,
+    MaterialIndex,
+    Normal,
+    NamedLayerSelection,
+    Object,
+    Position,
+    Radius,
+    Rotation,
+    SceneTime,
+    ShortestEdgePaths,
+    SpecialCharacters,
+    SplineResolution,
+    String,
+    Value,
+    VoxelIndex,
+)
+from . import attribute_auto, curve, mesh, utilities
+from .attribute_auto import (
     AttributeStatistic,
     BlurAttribute,
     DomainSize,
@@ -50,7 +83,7 @@ from .curve import (
     SubdivideCurve,
     TrimCurve,
 )
-from .geometry import (
+from .geometry_auto import (
     AccumulateField,
     ActiveElement,
     AdvectGrid,
@@ -183,39 +216,6 @@ from .geometry import (
     VoxelizeGrid,
     Warning,
 )
-from .input import (
-    ID,
-    ActiveCamera,
-    Boolean,
-    Collection,
-    Color,
-    CurveTangent,
-    ForEachGeometryElementInput,
-    Image,
-    Index,
-    InstanceBounds,
-    InstanceRotation,
-    InstanceScale,
-    Integer,
-    IsEdgeSmooth,
-    IsFaceSmooth,
-    IsSplineCyclic,
-    Material,
-    MaterialIndex,
-    NamedLayerSelection,
-    Normal,
-    Object,
-    Position,
-    Radius,
-    Rotation,
-    SceneTime,
-    ShortestEdgePaths,
-    SpecialCharacters,
-    SplineResolution,
-    String,
-    Value,
-    VoxelIndex,
-)
 from .manually_specified import (
     BooleanMath,
     CaptureAttribute,
@@ -307,9 +307,9 @@ from .utilities import (
 
 __all__ = [
     # modules"
-    "attribute",
+    "attribute_auto",
     "curve",
-    "geometry",
+    "geometry_auto",
     "input",
     "manually_specified",
     "mesh",

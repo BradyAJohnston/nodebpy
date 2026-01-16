@@ -10,6 +10,7 @@ import pytest
 from numpy.testing import assert_allclose
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n, sockets as s
+import nodebpy.nodes.input
 
 
 class TestTreeBuilder:
@@ -82,7 +83,7 @@ class TestContextManager:
 
         with TreeBuilder("ContextTest") as tree:
             # Should be able to create nodes without passing tree
-            pos = n.Position()
+            pos = nodebpy.nodes.input.Position()
             assert pos.node is not None
             assert pos.tree == tree
 
@@ -90,7 +91,7 @@ class TestContextManager:
         """Test that nodes created in context use the active tree."""
 
         with TreeBuilder("NodeCreationTest") as tree:
-            node1 = n.Position()
+            node1 = nodebpy.nodes.input.Position()
             node2 = n.SetPosition()
 
             # Both nodes should be in the same tree
@@ -107,7 +108,7 @@ class TestOperatorChaining:
         """Test basic node chaining with >> operator."""
 
         with TreeBuilder("ChainingTest") as tree:
-            pos = n.Position()
+            pos = nodebpy.nodes.input.Position()
             set_pos = n.SetPosition()
 
             # Chain with >> operator
@@ -159,7 +160,9 @@ class TestExamples:
             _ = (
                 i_geo
                 >> n.SetPosition(
-                    selection=selection, position=n.Position() * 2.0, offset=offset
+                    selection=selection,
+                    position=nodebpy.nodes.input.Position() * 2.0,
+                    offset=offset,
                 )
                 >> n.TransformGeometry(translation=(0, 0, 1))
                 >> o_geo
@@ -210,7 +213,7 @@ class TestGeneratedNodes:
         tree = TreeBuilder("PositionTest")
 
         with tree:
-            pos = n.Position()
+            pos = nodebpy.nodes.input.Position()
             assert pos.node is not None
             assert pos.node.bl_idname == "GeometryNodeInputPosition"
 
@@ -223,7 +226,7 @@ class TestGeneratedNodes:
             out_geo = s.SocketGeometry()
 
         with tree:
-            pos = n.Position()
+            pos = nodebpy.nodes.input.Position()
             set_pos = n.SetPosition(position=pos)
             in_geo >> set_pos >> out_geo
 
@@ -266,7 +269,7 @@ class TestComplexWorkflow:
         """Test a workflow with branching node connections."""
 
         with TreeBuilder("BranchingTest"):
-            pos = n.Position()
+            pos = nodebpy.nodes.input.Position()
 
             # Use the same position node in multiple places
             _set_pos1 = n.SetPosition(position=pos, offset=(1, 0, 0))
@@ -382,7 +385,7 @@ def test_mix_node():
         rotation = n.Mix.rotation(
             n.RandomValue.vector((-pi, -pi, -pi), (pi, pi, pi)),
             (0, 0, 1),
-            factor=n.RandomValue.float(seed=n.Index()),
+            factor=n.RandomValue.float(seed=nodebpy.nodes.input.Index()),
         )
 
         selection = (
@@ -415,7 +418,7 @@ def test_mix_node():
 def test_warning_innactive_socket():
     "Raises an error because we want to not let a user silently link sockets that won't do anything"
     with TreeBuilder():
-        pos = n.Position()
+        pos = nodebpy.nodes.input.Position()
         mix = n.Mix.vector()
         # this works because by default we link to the currently active vector sockets
         pos >> mix
@@ -445,7 +448,7 @@ def test_readme_tree():
             >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
             >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
             >> n.SetPosition(
-                position=n.Position() * 2.0 + (0, 0.2, 0.3),
+                position=nodebpy.nodes.input.Position() * 2.0 + (0, 0.2, 0.3),
                 offset=(0, 0, 0.1),
             )
             >> n.RealizeInstances()
