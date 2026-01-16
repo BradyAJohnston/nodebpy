@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
-
 if TYPE_CHECKING:
     from .nodes.manually_specified import Math, VectorMath
 
 import arrangebpy
 import bpy
 from bpy.types import (
+    GeometryNode,
     GeometryNodeTree,
     Node,
     Nodes,
@@ -233,7 +233,7 @@ class OutputInterfaceContext(SocketContext):
 class NodeBuilder:
     """Base class for all geometry node wrappers."""
 
-    node: Node
+    node: Any
     name: str
     _tree: "TreeBuilder"
     _link_target: str | None = None

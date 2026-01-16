@@ -205,7 +205,7 @@ class ForEachGeometryElementInput(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_input_socket(self) -> NodeSocket:
+    def i_input_socket(self) -> SocketLinker:
         """Input socket:"""
         return self._input("__extend__")
 
@@ -215,7 +215,7 @@ class ForEachGeometryElementInput(NodeBuilder):
         return self._output("Index")
 
     @property
-    def o_input_socket(self) -> NodeSocket:
+    def o_input_socket(self) -> SocketLinker:
         """Output socket:"""
         return self._output("__extend__")
 
@@ -233,7 +233,7 @@ class ActiveCamera(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_active_camera(self) -> bpy.types.NodeSocketObject:
+    def o_active_camera(self) -> SocketLinker:
         """Output socket: Active Camera"""
         return self._output("Active Camera")
 
@@ -424,7 +424,7 @@ class MaterialIndex(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_material_index(self) -> bpy.types.NodeSocketInt:
+    def o_material_index(self) -> SocketLinker:
         """Output socket: Material Index"""
         return self._output("Material Index")
 
@@ -471,7 +471,7 @@ class Normal(NodeBuilder):
         return self._output("Normal")
 
     @property
-    def o_true_normal(self) -> bpy.types.NodeSocketVector:
+    def o_true_normal(self) -> SocketLinker:
         """Output socket: True Normal"""
         return self._output("True Normal")
 
@@ -608,7 +608,7 @@ class ShortestEdgePaths(NodeBuilder):
         return self._input("Edge Cost")
 
     @property
-    def o_next_vertex_index(self) -> bpy.types.NodeSocketInt:
+    def o_next_vertex_index(self) -> SocketLinker:
         """Output socket: Next Vertex Index"""
         return self._output("Next Vertex Index")
 

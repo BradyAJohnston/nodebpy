@@ -49,7 +49,7 @@ class DomainSize(NodeBuilder):
         return self._input("Geometry")
 
     @property
-    def o_point_count(self) -> bpy.types.NodeSocketInt:
+    def o_point_count(self) -> SocketLinker:
         """Output socket: Point Count"""
         return self._output("Point Count")
 
@@ -64,7 +64,7 @@ class DomainSize(NodeBuilder):
         return self._output("Face Count")
 
     @property
-    def o_face_corner_count(self) -> bpy.types.NodeSocketInt:
+    def o_face_corner_count(self) -> SocketLinker:
         """Output socket: Face Corner Count"""
         return self._output("Face Corner Count")
 
@@ -169,7 +169,7 @@ class AttributeStatistic(NodeBuilder):
         return self._output("Range")
 
     @property
-    def o_standard_deviation(self) -> bpy.types.NodeSocketFloat:
+    def o_standard_deviation(self) -> SocketLinker:
         """Output socket: Standard Deviation"""
         return self._output("Standard Deviation")
 
@@ -443,7 +443,7 @@ class RemoveNamedAttribute(NodeBuilder):
         return self._input("Geometry")
 
     @property
-    def i_pattern_mode(self) -> NodeSocket:
+    def i_pattern_mode(self) -> SocketLinker:
         """Input socket: Pattern Mode"""
         return self._input("Pattern Mode")
 
