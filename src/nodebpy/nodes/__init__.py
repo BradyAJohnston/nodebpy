@@ -306,6 +306,14 @@ from .utilities import (
 )
 
 __all__ = [
+    # modules"
+    "attribute",
+    "curve",
+    "geometry",
+    "input",
+    "manually_specified",
+    "mesh",
+    "utilities",
     # From attribute
     "AttributeStatistic",
     "BlurAttribute",
