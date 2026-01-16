@@ -10,6 +10,7 @@ from .attribute import (
 )
 from .curve import (
     Arc,
+    BezierSegment,
     CurveCircle,
     CurveHandlePositions,
     CurveLength,
@@ -30,6 +31,7 @@ from .curve import (
     OffsetPointInCurve,
     PointsOfCurve,
     PointsToCurves,
+    QuadraticBezier,
     Quadrilateral,
     ResampleCurve,
     ReverseCurve,
@@ -312,7 +314,7 @@ __all__ = [
     "StoreNamedAttribute",
     # From curve
     "Arc",
-    "BézierSegment",
+    "BezierSegment",
     "CurveCircle",
     "CurveHandlePositions",
     "CurveLength",
@@ -334,7 +336,7 @@ __all__ = [
     "PointsOfCurve",
     "PointsToCurves",
     "Quadrilateral",
-    "QuadraticBézier",
+    "QuadraticBezier",
     "ResampleCurve",
     "ReverseCurve",
     "RgbCurves",
