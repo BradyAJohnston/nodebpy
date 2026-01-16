@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import bpy
 
-from ..builder import NodeBuilder, NodeSocket
+from ..builder import NodeBuilder, NodeSocket, SocketLinker
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN
 
 
@@ -35,7 +35,7 @@ class Boolean(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_boolean(self) -> bpy.types.NodeSocketBool:
+    def o_boolean(self) -> SocketLinker:
         """Output socket: Boolean"""
         return self._output("Boolean")
 
@@ -61,7 +61,7 @@ class Color(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_color(self) -> bpy.types.NodeSocketColor:
+    def o_color(self) -> SocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -87,7 +87,7 @@ class Integer(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_integer(self) -> bpy.types.NodeSocketInt:
+    def o_integer(self) -> SocketLinker:
         """Output socket: Integer"""
         return self._output("Integer")
 
@@ -113,7 +113,7 @@ class Rotation(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_rotation(self) -> bpy.types.NodeSocketRotation:
+    def o_rotation(self) -> SocketLinker:
         """Output socket: Rotation"""
         return self._output("Rotation")
 
@@ -139,12 +139,12 @@ class SpecialCharacters(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_line_break(self) -> bpy.types.NodeSocketString:
+    def o_line_break(self) -> SocketLinker:
         """Output socket: Line Break"""
         return self._output("Line Break")
 
     @property
-    def o_tab(self) -> bpy.types.NodeSocketString:
+    def o_tab(self) -> SocketLinker:
         """Output socket: Tab"""
         return self._output("Tab")
 
@@ -162,7 +162,7 @@ class String(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_string(self) -> bpy.types.NodeSocketString:
+    def o_string(self) -> SocketLinker:
         """Output socket: String"""
         return self._output("String")
 
@@ -195,12 +195,12 @@ class ForEachGeometryElementInput(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> NodeSocket:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
         return self._input("Geometry")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
@@ -210,7 +210,7 @@ class ForEachGeometryElementInput(NodeBuilder):
         return self._input("__extend__")
 
     @property
-    def o_index(self) -> bpy.types.NodeSocketInt:
+    def o_index(self) -> SocketLinker:
         """Output socket: Index"""
         return self._output("Index")
 
@@ -251,7 +251,7 @@ class Collection(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_collection(self) -> bpy.types.NodeSocketCollection:
+    def o_collection(self) -> SocketLinker:
         """Output socket: Collection"""
         return self._output("Collection")
 
@@ -269,7 +269,7 @@ class IsEdgeSmooth(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_smooth(self) -> bpy.types.NodeSocketBool:
+    def o_smooth(self) -> SocketLinker:
         """Output socket: Smooth"""
         return self._output("Smooth")
 
@@ -287,7 +287,7 @@ class ID(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_id(self) -> bpy.types.NodeSocketInt:
+    def o_id(self) -> SocketLinker:
         """Output socket: ID"""
         return self._output("ID")
 
@@ -305,7 +305,7 @@ class Image(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_image(self) -> bpy.types.NodeSocketImage:
+    def o_image(self) -> SocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -323,7 +323,7 @@ class Index(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_index(self) -> bpy.types.NodeSocketInt:
+    def o_index(self) -> SocketLinker:
         """Output socket: Index"""
         return self._output("Index")
 
@@ -342,17 +342,17 @@ class InstanceBounds(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_use_radius(self) -> bpy.types.NodeSocketBool:
+    def i_use_radius(self) -> SocketLinker:
         """Input socket: Use Radius"""
         return self._input("Use Radius")
 
     @property
-    def o_min(self) -> bpy.types.NodeSocketVector:
+    def o_min(self) -> SocketLinker:
         """Output socket: Min"""
         return self._output("Min")
 
     @property
-    def o_max(self) -> bpy.types.NodeSocketVector:
+    def o_max(self) -> SocketLinker:
         """Output socket: Max"""
         return self._output("Max")
 
@@ -370,7 +370,7 @@ class InstanceRotation(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_rotation(self) -> bpy.types.NodeSocketRotation:
+    def o_rotation(self) -> SocketLinker:
         """Output socket: Rotation"""
         return self._output("Rotation")
 
@@ -388,7 +388,7 @@ class InstanceScale(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_scale(self) -> bpy.types.NodeSocketVector:
+    def o_scale(self) -> SocketLinker:
         """Output socket: Scale"""
         return self._output("Scale")
 
@@ -406,7 +406,7 @@ class Material(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_material(self) -> bpy.types.NodeSocketMaterial:
+    def o_material(self) -> SocketLinker:
         """Output socket: Material"""
         return self._output("Material")
 
@@ -443,12 +443,12 @@ class NamedLayerSelection(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_name(self) -> bpy.types.NodeSocketString:
+    def i_name(self) -> SocketLinker:
         """Input socket: Name"""
         return self._input("Name")
 
     @property
-    def o_selection(self) -> bpy.types.NodeSocketBool:
+    def o_selection(self) -> SocketLinker:
         """Output socket: Selection"""
         return self._output("Selection")
 
@@ -466,7 +466,7 @@ class Normal(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_normal(self) -> bpy.types.NodeSocketVector:
+    def o_normal(self) -> SocketLinker:
         """Output socket: Normal"""
         return self._output("Normal")
 
@@ -497,7 +497,7 @@ class Object(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_object(self) -> bpy.types.NodeSocketObject:
+    def o_object(self) -> SocketLinker:
         """Output socket: Object"""
         return self._output("Object")
 
@@ -515,7 +515,7 @@ class Position(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_position(self) -> bpy.types.NodeSocketVector:
+    def o_position(self) -> SocketLinker:
         """Output socket: Position"""
         return self._output("Position")
 
@@ -533,7 +533,7 @@ class Radius(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_radius(self) -> bpy.types.NodeSocketFloat:
+    def o_radius(self) -> SocketLinker:
         """Output socket: Radius"""
         return self._output("Radius")
 
@@ -551,12 +551,12 @@ class SceneTime(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_seconds(self) -> bpy.types.NodeSocketFloat:
+    def o_seconds(self) -> SocketLinker:
         """Output socket: Seconds"""
         return self._output("Seconds")
 
     @property
-    def o_frame(self) -> bpy.types.NodeSocketFloat:
+    def o_frame(self) -> SocketLinker:
         """Output socket: Frame"""
         return self._output("Frame")
 
@@ -574,7 +574,7 @@ class IsFaceSmooth(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_smooth(self) -> bpy.types.NodeSocketBool:
+    def o_smooth(self) -> SocketLinker:
         """Output socket: Smooth"""
         return self._output("Smooth")
 
@@ -598,12 +598,12 @@ class ShortestEdgePaths(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_end_vertex(self) -> bpy.types.NodeSocketBool:
+    def i_end_vertex(self) -> SocketLinker:
         """Input socket: End Vertex"""
         return self._input("End Vertex")
 
     @property
-    def i_edge_cost(self) -> bpy.types.NodeSocketFloat:
+    def i_edge_cost(self) -> SocketLinker:
         """Input socket: Edge Cost"""
         return self._input("Edge Cost")
 
@@ -613,7 +613,7 @@ class ShortestEdgePaths(NodeBuilder):
         return self._output("Next Vertex Index")
 
     @property
-    def o_total_cost(self) -> bpy.types.NodeSocketFloat:
+    def o_total_cost(self) -> SocketLinker:
         """Output socket: Total Cost"""
         return self._output("Total Cost")
 
@@ -631,7 +631,7 @@ class IsSplineCyclic(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_cyclic(self) -> bpy.types.NodeSocketBool:
+    def o_cyclic(self) -> SocketLinker:
         """Output socket: Cyclic"""
         return self._output("Cyclic")
 
@@ -649,7 +649,7 @@ class SplineResolution(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_resolution(self) -> bpy.types.NodeSocketInt:
+    def o_resolution(self) -> SocketLinker:
         """Output socket: Resolution"""
         return self._output("Resolution")
 
@@ -667,7 +667,7 @@ class CurveTangent(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_tangent(self) -> bpy.types.NodeSocketVector:
+    def o_tangent(self) -> SocketLinker:
         """Output socket: Tangent"""
         return self._output("Tangent")
 
@@ -685,37 +685,37 @@ class VoxelIndex(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_x(self) -> bpy.types.NodeSocketInt:
+    def o_x(self) -> SocketLinker:
         """Output socket: X"""
         return self._output("X")
 
     @property
-    def o_y(self) -> bpy.types.NodeSocketInt:
+    def o_y(self) -> SocketLinker:
         """Output socket: Y"""
         return self._output("Y")
 
     @property
-    def o_z(self) -> bpy.types.NodeSocketInt:
+    def o_z(self) -> SocketLinker:
         """Output socket: Z"""
         return self._output("Z")
 
     @property
-    def o_is_tile(self) -> bpy.types.NodeSocketBool:
+    def o_is_tile(self) -> SocketLinker:
         """Output socket: Is Tile"""
         return self._output("Is Tile")
 
     @property
-    def o_extent_x(self) -> bpy.types.NodeSocketInt:
+    def o_extent_x(self) -> SocketLinker:
         """Output socket: Extent X"""
         return self._output("Extent X")
 
     @property
-    def o_extent_y(self) -> bpy.types.NodeSocketInt:
+    def o_extent_y(self) -> SocketLinker:
         """Output socket: Extent Y"""
         return self._output("Extent Y")
 
     @property
-    def o_extent_z(self) -> bpy.types.NodeSocketInt:
+    def o_extent_z(self) -> SocketLinker:
         """Output socket: Extent Z"""
         return self._output("Extent Z")
 
@@ -733,6 +733,6 @@ class Value(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_value(self) -> bpy.types.NodeSocketFloat:
+    def o_value(self) -> SocketLinker:
         """Output socket: Value"""
         return self._output("Value")

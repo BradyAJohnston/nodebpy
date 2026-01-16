@@ -19,7 +19,7 @@ from __future__ import annotations
 import bpy
 from typing_extensions import Literal
 
-from ..builder import NodeBuilder, NodeSocket
+from ..builder import NodeBuilder, NodeSocket, SocketLinker
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
 
 
@@ -54,12 +54,12 @@ class Arc(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> NodeSocket:
+    def i_resolution(self) -> SocketLinker:
         """Input socket: Resolution"""
         return self._input("Resolution")
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
@@ -79,12 +79,12 @@ class Arc(NodeBuilder):
         return self._input("Connect Center")
 
     @property
-    def i_invert_arc(self) -> bpy.types.NodeSocketBool:
+    def i_invert_arc(self) -> SocketLinker:
         """Input socket: Invert Arc"""
         return self._input("Invert Arc")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -116,17 +116,17 @@ class EndpointSelection(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_start_size(self) -> bpy.types.NodeSocketInt:
+    def i_start_size(self) -> SocketLinker:
         """Input socket: Start Size"""
         return self._input("Start Size")
 
     @property
-    def i_end_size(self) -> bpy.types.NodeSocketInt:
+    def i_end_size(self) -> SocketLinker:
         """Input socket: End Size"""
         return self._input("End Size")
 
     @property
-    def o_selection(self) -> bpy.types.NodeSocketBool:
+    def o_selection(self) -> SocketLinker:
         """Output socket: Selection"""
         return self._output("Selection")
 
@@ -150,7 +150,7 @@ class HandleTypeSelection(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_selection(self) -> bpy.types.NodeSocketBool:
+    def o_selection(self) -> SocketLinker:
         """Output socket: Selection"""
         return self._output("Selection")
 
@@ -185,12 +185,12 @@ class CurveLength(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def o_length(self) -> bpy.types.NodeSocketFloat:
+    def o_length(self) -> SocketLinker:
         """Output socket: Length"""
         return self._output("Length")
 
@@ -253,12 +253,12 @@ class BezierSegment(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> NodeSocket:
+    def i_resolution(self) -> SocketLinker:
         """Input socket: Resolution"""
         return self._input("Resolution")
 
     @property
-    def i_start(self) -> NodeSocket:
+    def i_start(self) -> SocketLinker:
         """Input socket: Start"""
         return self._input("Start")
 
@@ -268,17 +268,17 @@ class BezierSegment(NodeBuilder):
         return self._input("Start Handle")
 
     @property
-    def i_end_handle(self) -> NodeSocket:
+    def i_end_handle(self) -> SocketLinker:
         """Input socket: End Handle"""
         return self._input("End Handle")
 
     @property
-    def i_end(self) -> NodeSocket:
+    def i_end(self) -> SocketLinker:
         """Input socket: End"""
         return self._input("End")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -311,17 +311,17 @@ class CurveCircle(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> bpy.types.NodeSocketInt:
+    def i_resolution(self) -> SocketLinker:
         """Input socket: Resolution"""
         return self._input("Resolution")
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -354,17 +354,17 @@ class CurveLine(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_start(self) -> NodeSocket:
+    def i_start(self) -> SocketLinker:
         """Input socket: Start"""
         return self._input("Start")
 
     @property
-    def i_end(self) -> NodeSocket:
+    def i_end(self) -> SocketLinker:
         """Input socket: End"""
         return self._input("End")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -399,17 +399,17 @@ class Quadrilateral(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_width(self) -> NodeSocket:
+    def i_width(self) -> SocketLinker:
         """Input socket: Width"""
         return self._input("Width")
 
     @property
-    def i_height(self) -> NodeSocket:
+    def i_height(self) -> SocketLinker:
         """Input socket: Height"""
         return self._input("Height")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -453,27 +453,27 @@ class QuadraticBezier(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> NodeSocket:
+    def i_resolution(self) -> SocketLinker:
         """Input socket: Resolution"""
         return self._input("Resolution")
 
     @property
-    def i_start(self) -> NodeSocket:
+    def i_start(self) -> SocketLinker:
         """Input socket: Start"""
         return self._input("Start")
 
     @property
-    def i_middle(self) -> NodeSocket:
+    def i_middle(self) -> SocketLinker:
         """Input socket: Middle"""
         return self._input("Middle")
 
     @property
-    def i_end(self) -> NodeSocket:
+    def i_end(self) -> SocketLinker:
         """Input socket: End"""
         return self._input("End")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -500,17 +500,17 @@ class SetHandleType(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -561,12 +561,12 @@ class Spiral(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> NodeSocket:
+    def i_resolution(self) -> SocketLinker:
         """Input socket: Resolution"""
         return self._input("Resolution")
 
     @property
-    def i_rotations(self) -> bpy.types.NodeSocketFloat:
+    def i_rotations(self) -> SocketLinker:
         """Input socket: Rotations"""
         return self._input("Rotations")
 
@@ -576,22 +576,22 @@ class Spiral(NodeBuilder):
         return self._input("Start Radius")
 
     @property
-    def i_end_radius(self) -> NodeSocket:
+    def i_end_radius(self) -> SocketLinker:
         """Input socket: End Radius"""
         return self._input("End Radius")
 
     @property
-    def i_height(self) -> NodeSocket:
+    def i_height(self) -> SocketLinker:
         """Input socket: Height"""
         return self._input("Height")
 
     @property
-    def i_reverse(self) -> bpy.types.NodeSocketBool:
+    def i_reverse(self) -> SocketLinker:
         """Input socket: Reverse"""
         return self._input("Reverse")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -616,17 +616,17 @@ class SetSplineType(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -665,7 +665,7 @@ class Star(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_points(self) -> NodeSocket:
+    def i_points(self) -> SocketLinker:
         """Input socket: Points"""
         return self._input("Points")
 
@@ -680,12 +680,12 @@ class Star(NodeBuilder):
         return self._input("Outer Radius")
 
     @property
-    def i_twist(self) -> NodeSocket:
+    def i_twist(self) -> SocketLinker:
         """Input socket: Twist"""
         return self._input("Twist")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -715,32 +715,32 @@ class CurveToPoints(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_count(self) -> bpy.types.NodeSocketInt:
+    def i_count(self) -> SocketLinker:
         """Input socket: Count"""
         return self._input("Count")
 
     @property
-    def o_points(self) -> NodeSocket:
+    def o_points(self) -> SocketLinker:
         """Output socket: Points"""
         return self._output("Points")
 
     @property
-    def o_tangent(self) -> bpy.types.NodeSocketVector:
+    def o_tangent(self) -> SocketLinker:
         """Output socket: Tangent"""
         return self._output("Tangent")
 
     @property
-    def o_normal(self) -> bpy.types.NodeSocketVector:
+    def o_normal(self) -> SocketLinker:
         """Output socket: Normal"""
         return self._output("Normal")
 
     @property
-    def o_rotation(self) -> bpy.types.NodeSocketRotation:
+    def o_rotation(self) -> SocketLinker:
         """Output socket: Rotation"""
         return self._output("Rotation")
 
@@ -777,12 +777,12 @@ class CurvesToGreasePencil(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curves(self) -> NodeSocket:
+    def i_curves(self) -> SocketLinker:
         """Input socket: Curves"""
         return self._input("Curves")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
@@ -811,12 +811,12 @@ class DeformCurvesOnSurface(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curves(self) -> NodeSocket:
+    def i_curves(self) -> SocketLinker:
         """Input socket: Curves"""
         return self._input("Curves")
 
     @property
-    def o_curves(self) -> NodeSocket:
+    def o_curves(self) -> SocketLinker:
         """Output socket: Curves"""
         return self._output("Curves")
 
@@ -845,7 +845,7 @@ class EdgePathsToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> NodeSocket:
+    def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Mesh")
 
@@ -860,7 +860,7 @@ class EdgePathsToCurves(NodeBuilder):
         return self._input("Next Vertex Index")
 
     @property
-    def o_curves(self) -> NodeSocket:
+    def o_curves(self) -> SocketLinker:
         """Output socket: Curves"""
         return self._output("Curves")
 
@@ -885,22 +885,22 @@ class FillCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_group_id(self) -> bpy.types.NodeSocketInt:
+    def i_group_id(self) -> SocketLinker:
         """Input socket: Group ID"""
         return self._input("Group ID")
 
     @property
-    def i_mode(self) -> NodeSocket:
+    def i_mode(self) -> SocketLinker:
         """Input socket: Mode"""
         return self._input("Mode")
 
     @property
-    def o_mesh(self) -> NodeSocket:
+    def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
 
@@ -933,12 +933,12 @@ class FilletCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
@@ -948,17 +948,17 @@ class FilletCurve(NodeBuilder):
         return self._input("Limit Radius")
 
     @property
-    def i_mode(self) -> NodeSocket:
+    def i_mode(self) -> SocketLinker:
         """Input socket: Mode"""
         return self._input("Mode")
 
     @property
-    def i_count(self) -> bpy.types.NodeSocketInt:
+    def i_count(self) -> SocketLinker:
         """Input socket: Count"""
         return self._input("Count")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -992,7 +992,7 @@ class GreasePencilToCurves(NodeBuilder):
         return self._input("Grease Pencil")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
@@ -1002,7 +1002,7 @@ class GreasePencilToCurves(NodeBuilder):
         return self._input("Layers as Instances")
 
     @property
-    def o_curves(self) -> NodeSocket:
+    def o_curves(self) -> SocketLinker:
         """Output socket: Curves"""
         return self._output("Curves")
 
@@ -1021,17 +1021,17 @@ class CurveHandlePositions(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_relative(self) -> bpy.types.NodeSocketBool:
+    def i_relative(self) -> SocketLinker:
         """Input socket: Relative"""
         return self._input("Relative")
 
     @property
-    def o_left(self) -> bpy.types.NodeSocketVector:
+    def o_left(self) -> SocketLinker:
         """Output socket: Left"""
         return self._output("Left")
 
     @property
-    def o_right(self) -> bpy.types.NodeSocketVector:
+    def o_right(self) -> SocketLinker:
         """Output socket: Right"""
         return self._output("Right")
 
@@ -1049,7 +1049,7 @@ class CurveTilt(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_tilt(self) -> bpy.types.NodeSocketFloat:
+    def o_tilt(self) -> SocketLinker:
         """Output socket: Tilt"""
         return self._output("Tilt")
 
@@ -1091,7 +1091,7 @@ class InterpolateCurves(NodeBuilder):
         return self._input("Guide Curves")
 
     @property
-    def i_guide_up(self) -> bpy.types.NodeSocketVector:
+    def i_guide_up(self) -> SocketLinker:
         """Input socket: Guide Up"""
         return self._input("Guide Up")
 
@@ -1101,12 +1101,12 @@ class InterpolateCurves(NodeBuilder):
         return self._input("Guide Group ID")
 
     @property
-    def i_points(self) -> NodeSocket:
+    def i_points(self) -> SocketLinker:
         """Input socket: Points"""
         return self._input("Points")
 
     @property
-    def i_point_up(self) -> bpy.types.NodeSocketVector:
+    def i_point_up(self) -> SocketLinker:
         """Input socket: Point Up"""
         return self._input("Point Up")
 
@@ -1121,7 +1121,7 @@ class InterpolateCurves(NodeBuilder):
         return self._input("Max Neighbors")
 
     @property
-    def o_curves(self) -> NodeSocket:
+    def o_curves(self) -> SocketLinker:
         """Output socket: Curves"""
         return self._output("Curves")
 
@@ -1160,7 +1160,7 @@ class OffsetPointInCurve(NodeBuilder):
         return self._input("Point Index")
 
     @property
-    def i_offset(self) -> bpy.types.NodeSocketInt:
+    def i_offset(self) -> SocketLinker:
         """Input socket: Offset"""
         return self._input("Offset")
 
@@ -1204,12 +1204,12 @@ class PointsOfCurve(NodeBuilder):
         return self._input("Curve Index")
 
     @property
-    def i_weights(self) -> bpy.types.NodeSocketFloat:
+    def i_weights(self) -> SocketLinker:
         """Input socket: Weights"""
         return self._input("Weights")
 
     @property
-    def i_sort_index(self) -> bpy.types.NodeSocketInt:
+    def i_sort_index(self) -> SocketLinker:
         """Input socket: Sort Index"""
         return self._input("Sort Index")
 
@@ -1219,7 +1219,7 @@ class PointsOfCurve(NodeBuilder):
         return self._output("Point Index")
 
     @property
-    def o_total(self) -> bpy.types.NodeSocketInt:
+    def o_total(self) -> SocketLinker:
         """Output socket: Total"""
         return self._output("Total")
 
@@ -1248,7 +1248,7 @@ class PointsToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_points(self) -> NodeSocket:
+    def i_points(self) -> SocketLinker:
         """Input socket: Points"""
         return self._input("Points")
 
@@ -1258,12 +1258,12 @@ class PointsToCurves(NodeBuilder):
         return self._input("Curve Group ID")
 
     @property
-    def i_weight(self) -> bpy.types.NodeSocketFloat:
+    def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
         return self._input("Weight")
 
     @property
-    def o_curves(self) -> NodeSocket:
+    def o_curves(self) -> SocketLinker:
         """Output socket: Curves"""
         return self._output("Curves")
 
@@ -1297,32 +1297,32 @@ class ResampleCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_mode(self) -> NodeSocket:
+    def i_mode(self) -> SocketLinker:
         """Input socket: Mode"""
         return self._input("Mode")
 
     @property
-    def i_count(self) -> bpy.types.NodeSocketInt:
+    def i_count(self) -> SocketLinker:
         """Input socket: Count"""
         return self._input("Count")
 
     @property
-    def i_length(self) -> NodeSocket:
+    def i_length(self) -> SocketLinker:
         """Input socket: Length"""
         return self._input("Length")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1351,17 +1351,17 @@ class ReverseCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1411,17 +1411,17 @@ class SampleCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curves(self) -> NodeSocket:
+    def i_curves(self) -> SocketLinker:
         """Input socket: Curves"""
         return self._input("Curves")
 
     @property
-    def i_value(self) -> bpy.types.NodeSocketFloat:
+    def i_value(self) -> SocketLinker:
         """Input socket: Value"""
         return self._input("Value")
 
     @property
-    def i_factor(self) -> NodeSocket:
+    def i_factor(self) -> SocketLinker:
         """Input socket: Factor"""
         return self._input("Factor")
 
@@ -1431,22 +1431,22 @@ class SampleCurve(NodeBuilder):
         return self._input("Curve Index")
 
     @property
-    def o_value(self) -> bpy.types.NodeSocketFloat:
+    def o_value(self) -> SocketLinker:
         """Output socket: Value"""
         return self._output("Value")
 
     @property
-    def o_position(self) -> bpy.types.NodeSocketVector:
+    def o_position(self) -> SocketLinker:
         """Output socket: Position"""
         return self._output("Position")
 
     @property
-    def o_tangent(self) -> bpy.types.NodeSocketVector:
+    def o_tangent(self) -> SocketLinker:
         """Output socket: Tangent"""
         return self._output("Tangent")
 
     @property
-    def o_normal(self) -> bpy.types.NodeSocketVector:
+    def o_normal(self) -> SocketLinker:
         """Output socket: Normal"""
         return self._output("Normal")
 
@@ -1535,27 +1535,27 @@ class SetHandlePositions(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_position(self) -> bpy.types.NodeSocketVector:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
         return self._input("Position")
 
     @property
-    def i_offset(self) -> NodeSocket:
+    def i_offset(self) -> SocketLinker:
         """Input socket: Offset"""
         return self._input("Offset")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1594,27 +1594,27 @@ class SetCurveNormal(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_mode(self) -> NodeSocket:
+    def i_mode(self) -> SocketLinker:
         """Input socket: Mode"""
         return self._input("Mode")
 
     @property
-    def i_normal(self) -> NodeSocket:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
         return self._input("Normal")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1639,22 +1639,22 @@ class SetCurveRadius(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_radius(self) -> NodeSocket:
+    def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
         return self._input("Radius")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1679,22 +1679,22 @@ class SetCurveTilt(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_tilt(self) -> NodeSocket:
+    def i_tilt(self) -> SocketLinker:
         """Input socket: Tilt"""
         return self._input("Tilt")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1746,12 +1746,12 @@ class StringToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_string(self) -> bpy.types.NodeSocketString:
+    def i_string(self) -> SocketLinker:
         """Input socket: String"""
         return self._input("String")
 
     @property
-    def i_size(self) -> NodeSocket:
+    def i_size(self) -> SocketLinker:
         """Input socket: Size"""
         return self._input("Size")
 
@@ -1781,7 +1781,7 @@ class StringToCurves(NodeBuilder):
         return self._output("Curve Instances")
 
     @property
-    def o_line(self) -> bpy.types.NodeSocketInt:
+    def o_line(self) -> SocketLinker:
         """Output socket: Line"""
         return self._output("Line")
 
@@ -1865,17 +1865,17 @@ class SubdivideCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_cuts(self) -> bpy.types.NodeSocketInt:
+    def i_cuts(self) -> SocketLinker:
         """Input socket: Cuts"""
         return self._input("Cuts")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1902,27 +1902,27 @@ class TrimCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> NodeSocket:
+    def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Curve")
 
     @property
-    def i_selection(self) -> bpy.types.NodeSocketBool:
+    def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
 
     @property
-    def i_start(self) -> NodeSocket:
+    def i_start(self) -> SocketLinker:
         """Input socket: Start"""
         return self._input("Start")
 
     @property
-    def i_end(self) -> NodeSocket:
+    def i_end(self) -> SocketLinker:
         """Input socket: End"""
         return self._input("End")
 
     @property
-    def o_curve(self) -> NodeSocket:
+    def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
 
@@ -1954,17 +1954,17 @@ class FloatCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_factor(self) -> NodeSocket:
+    def i_factor(self) -> SocketLinker:
         """Input socket: Factor"""
         return self._input("Factor")
 
     @property
-    def i_value(self) -> bpy.types.NodeSocketFloat:
+    def i_value(self) -> SocketLinker:
         """Input socket: Value"""
         return self._input("Value")
 
     @property
-    def o_value(self) -> bpy.types.NodeSocketFloat:
+    def o_value(self) -> SocketLinker:
         """Output socket: Value"""
         return self._output("Value")
 
@@ -1993,16 +1993,16 @@ class RgbCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_factor(self) -> NodeSocket:
+    def i_factor(self) -> SocketLinker:
         """Input socket: Factor"""
         return self._input("Fac")
 
     @property
-    def i_color(self) -> bpy.types.NodeSocketColor:
+    def i_color(self) -> SocketLinker:
         """Input socket: Color"""
         return self._input("Color")
 
     @property
-    def o_color(self) -> bpy.types.NodeSocketColor:
+    def o_color(self) -> SocketLinker:
         """Output socket: Color"""
         return self._output("Color")

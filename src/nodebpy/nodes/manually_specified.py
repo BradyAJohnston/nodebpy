@@ -33,7 +33,7 @@ class Vector(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_vector(self) -> bpy.types.NodeSocketVector:
+    def o_vector(self) -> SocketLinker:
         """Output socket: Vector"""
         return self._output("Vector")
 
@@ -79,7 +79,7 @@ class RandomValue(NodeBuilder):
         self.node.data_type = value
 
     @property
-    def o_value(self) -> NodeSocket:
+    def o_value(self) -> SocketLinker:
         """Output socket: Value"""
         match self.data_type:
             case "FLOAT":
@@ -91,7 +91,7 @@ class RandomValue(NodeBuilder):
             case "FLOAT_VECTOR":
                 return self._output("Value")
 
-    def i_min(self) -> NodeSocket:
+    def i_min(self) -> SocketLinker:
         """Input socket: Minimum"""
         match self.data_type:
             case "FLOAT":
@@ -105,7 +105,7 @@ class RandomValue(NodeBuilder):
             case "FLOAT_VECTOR":
                 return self._input("Min")
 
-    def i_max(self) -> NodeSocket:
+    def i_max(self) -> SocketLinker:
         """Input socket: Maximum"""
         match self.data_type:
             case "FLOAT":
@@ -187,22 +187,22 @@ class SeparateXYZ(NodeBuilder):
         self._establish_links(**{"Vector": vector})
 
     @property
-    def i_vector(self) -> NodeSocket:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
 
     @property
-    def o_x(self) -> NodeSocket:
+    def o_x(self) -> SocketLinker:
         """Output socket: X"""
         return self._output("X")
 
     @property
-    def o_y(self) -> NodeSocket:
+    def o_y(self) -> SocketLinker:
         """Output socket: Y"""
         return self._output("Y")
 
     @property
-    def o_z(self) -> NodeSocket:
+    def o_z(self) -> SocketLinker:
         """Output socket: Z"""
         return self._output("Z")
 
@@ -223,22 +223,22 @@ class CombineXYZ(NodeBuilder):
         self._establish_links(**{"X": x, "Y": y, "Z": z})
 
     @property
-    def o_vector(self) -> NodeSocket:
+    def o_vector(self) -> SocketLinker:
         """Output socket: Vector"""
         return self._output("Vector")
 
     @property
-    def i_x(self) -> NodeSocket:
+    def i_x(self) -> SocketLinker:
         """Input socket: X"""
         return self._input("X")
 
     @property
-    def i_y(self) -> NodeSocket:
+    def i_y(self) -> SocketLinker:
         """Input socket: Y"""
         return self._input("Y")
 
     @property
-    def i_z(self) -> NodeSocket:
+    def i_z(self) -> SocketLinker:
         """Input socket: Z"""
         return self._input("Z")
 
@@ -282,12 +282,12 @@ class Mix(NodeBuilder):
         self.node.factor_mode = value
 
     @property
-    def o_result(self) -> NodeSocket:
+    def o_result(self) -> SocketLinker:
         """Output socket: Result"""
         return self._default_output_socket
 
     @property
-    def i_factor(self) -> NodeSocket:
+    def i_factor(self) -> SocketLinker:
         """Input socket: Factor"""
         match self.data_type:
             case "FLOAT":
@@ -307,7 +307,7 @@ class Mix(NodeBuilder):
         return self.node.inputs[idx]
 
     @property
-    def i_value_a(self) -> NodeSocket:
+    def i_value_a(self) -> SocketLinker:
         """Input socket: Value A"""
         type_name = "Color" if self.data_type == "RGBA" else self.data_type
         name = f"A_{type_name}"
@@ -315,7 +315,7 @@ class Mix(NodeBuilder):
         return self.node.inputs[idx]
 
     @property
-    def i_value_b(self) -> NodeSocket:
+    def i_value_b(self) -> SocketLinker:
         """Input socket: Value B"""
         type_name = "Color" if self.data_type == "RGBA" else self.data_type
         name = f"B_{type_name}"
@@ -457,12 +457,12 @@ class CaptureAttribute(NodeBuilder):
         return self.node.capture_items
 
     @property
-    def i_geometry(self) -> NodeSocket:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
         return self._input("Geometry")
 
     @property
-    def o_geometry(self) -> NodeSocket:
+    def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
         return self._output("Geometry")
 
@@ -496,12 +496,12 @@ class JoinGeometry(NodeBuilder):
             self.link_from(source, self)
 
     @property
-    def i_geometry(self) -> NodeSocket:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
         return self._input("Geometry")
 
     @property
-    def o_geometry(self) -> NodeSocket:
+    def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
         return self._output("Geometry")
 
@@ -540,22 +540,22 @@ class Math(NodeBuilder):
         self.node.use_clamp = value
 
     @property
-    def o_value(self) -> NodeSocketFloat:
+    def o_value(self) -> SocketLinker:
         return self._output("Value")  # type: ignore
 
     def _input(self, identifier: str) -> NodeSocketFloat:
         return self._input(identifier)
 
     @property
-    def i_value(self) -> NodeSocketFloat:
+    def i_value(self) -> SocketLinker:
         return self._input("Value")
 
     @property
-    def i_value_001(self) -> NodeSocketFloat:
+    def i_value_001(self) -> SocketLinker:
         return self._input("Value_001")
 
     @property
-    def i_value_002(self) -> NodeSocketFloat:
+    def i_value_002(self) -> SocketLinker:
         return self._input("Value_002")
 
     @classmethod
@@ -932,7 +932,7 @@ class BooleanMath(NodeBuilder):
         self.node.operation = value
 
     @property
-    def i_boolean(self) -> bpy.types.NodeSocketBool:
+    def i_boolean(self) -> SocketLinker:
         return self._input("Boolean")  # type: ignore
 
     @property
@@ -940,7 +940,7 @@ class BooleanMath(NodeBuilder):
         return self._input("Boolean_001")  # type: ignore
 
     @property
-    def o_boolean(self) -> bpy.types.NodeSocketBool:
+    def o_boolean(self) -> SocketLinker:
         return self._output("Boolean")  # type: ignore
 
     @classmethod
@@ -1070,17 +1070,17 @@ class VectorMath(NodeBuilder):
         self._establish_links(**kwargs)
 
     @property
-    def i_vector(self) -> bpy.types.NodeSocketVector:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
 
     @property
-    def i_vector_001(self) -> bpy.types.NodeSocketVector:
+    def i_vector_001(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector_001")
 
     @property
-    def o_vector(self) -> bpy.types.NodeSocketVector:
+    def o_vector(self) -> SocketLinker:
         """Output socket: Vector"""
         if self.operation in {"DOT_PRODUCT", "DISTANCE", "LENGTH"}:
             raise RuntimeError(
@@ -1088,7 +1088,7 @@ class VectorMath(NodeBuilder):
             )
         return self._output("Vector")
 
-    def o_value(self) -> bpy.types.NodeSocketFloat:
+    def o_value(self) -> SocketLinker:
         """Output socket: Value"""
         if self.operation not in {"DOT_PRODUCT", "DISTANCE", "LENGTH"}:
             raise RuntimeError(
