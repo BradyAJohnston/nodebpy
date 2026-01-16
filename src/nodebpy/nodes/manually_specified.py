@@ -10,7 +10,6 @@ from typing import Iterable, Literal
 
 from ..builder import (
     NodeBuilder,
-    NodeSocket,
     source_socket,
     SocketLinker,
 )

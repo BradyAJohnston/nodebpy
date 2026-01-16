@@ -8,7 +8,6 @@ if TYPE_CHECKING:
 import arrangebpy
 import bpy
 from bpy.types import (
-    GeometryNode,
     GeometryNodeTree,
     Node,
     Nodes,
@@ -16,6 +15,7 @@ from bpy.types import (
 )
 
 from .nodes.types import (
+    LINKABLE,
     SOCKET_COMPATIBILITY,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
@@ -37,13 +37,6 @@ GEO_NODE_NAMES = (
         "PointsToVertices",
     )
 )
-
-
-# POSSIBLE_NODE_NAMES = "GeometryNode"
-LINKABLE = "Node | NodeSocket | NodeBuilder"
-TYPE_INPUT_VECTOR = "NodeSocketVector | Vector | NodeBuilder | list[float] | tuple[float, float, float] | None"
-TYPE_INPUT_ROTATION = "NodeSocketRotation | Quaternion | NodeBuilder | list[float] | tuple[float, float, float, float] | None"
-TYPE_INPUT_BOOLEAN = "NodeSocketBool | bool | NodeBuilder | None"
 
 
 def normalize_name(name: str) -> str:

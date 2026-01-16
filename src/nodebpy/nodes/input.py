@@ -17,9 +17,15 @@ KNOWN LIMITATIONS:
 from __future__ import annotations
 
 import bpy
+from mathutils import Euler
 
-from ..builder import NodeBuilder, NodeSocket, SocketLinker
-from .types import LINKABLE, TYPE_INPUT_BOOLEAN
+from ..builder import NodeBuilder, SocketLinker
+from .types import (
+    LINKABLE,
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_STRING,
+    TYPE_INPUT_VALUE,
+)
 
 
 class Boolean(NodeBuilder):
@@ -28,11 +34,9 @@ class Boolean(NodeBuilder):
     name = "FunctionNodeInputBool"
     node: bpy.types.FunctionNodeInputBool
 
-    def __init__(self, boolean: bool = False, **kwargs):
+    def __init__(self, boolean: bool = False):
         super().__init__()
-        key_args = kwargs
         self.boolean = boolean
-        self._establish_links(**key_args)
 
     @property
     def o_boolean(self) -> SocketLinker:
@@ -54,11 +58,11 @@ class Color(NodeBuilder):
     name = "FunctionNodeInputColor"
     node: bpy.types.FunctionNodeInputColor
 
-    def __init__(self, value: float = 0.0, **kwargs):
+    def __init__(
+        self, value: tuple[float, float, float, float] = (1.0, 0.0, 1.0, 1.0), **kwargs
+    ):
         super().__init__()
-        key_args = kwargs
         self.value = value
-        self._establish_links(**key_args)
 
     @property
     def o_color(self) -> SocketLinker:
@@ -66,11 +70,11 @@ class Color(NodeBuilder):
         return self._output("Color")
 
     @property
-    def value(self) -> float:
-        return self.node.value
+    def value(self) -> tuple[float, float, float, float]:
+        return self.node.value  # type: ignore
 
     @value.setter
-    def value(self, value: float):
+    def value(self, value: tuple[float, float, float, float]):
         self.node.value = value
 
 
@@ -80,11 +84,9 @@ class Integer(NodeBuilder):
     name = "FunctionNodeInputInt"
     node: bpy.types.FunctionNodeInputInt
 
-    def __init__(self, integer: int = 1, **kwargs):
+    def __init__(self, integer: int = 1):
         super().__init__()
-        key_args = kwargs
         self.integer = integer
-        self._establish_links(**key_args)
 
     @property
     def o_integer(self) -> SocketLinker:
@@ -106,11 +108,16 @@ class Rotation(NodeBuilder):
     name = "FunctionNodeInputRotation"
     node: bpy.types.FunctionNodeInputRotation
 
-    def __init__(self, rotation_euler: float = 0.0, **kwargs):
+    def __init__(
+        self,
+        rotation_euler: tuple[float, float, float] | Euler = (
+            0,
+            0,
+            0,
+        ),
+    ):
         super().__init__()
-        key_args = kwargs
         self.rotation_euler = rotation_euler
-        self._establish_links(**key_args)
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -118,11 +125,13 @@ class Rotation(NodeBuilder):
         return self._output("Rotation")
 
     @property
-    def rotation_euler(self) -> float:
+    def rotation_euler(
+        self,
+    ) -> tuple[float, float, float] | Euler:
         return self.node.rotation_euler
 
     @rotation_euler.setter
-    def rotation_euler(self, value: float):
+    def rotation_euler(self, value: tuple[float, float, float] | Euler):
         self.node.rotation_euler = value
 
 
@@ -131,12 +140,6 @@ class SpecialCharacters(NodeBuilder):
 
     name = "FunctionNodeInputSpecialCharacters"
     node: bpy.types.FunctionNodeInputSpecialCharacters
-
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
 
     @property
     def o_line_break(self) -> SocketLinker:
@@ -155,11 +158,9 @@ class String(NodeBuilder):
     name = "FunctionNodeInputString"
     node: bpy.types.FunctionNodeInputString
 
-    def __init__(self, string: str = "", **kwargs):
+    def __init__(self, string: str = ""):
         super().__init__()
-        key_args = kwargs
         self.string = string
-        self._establish_links(**key_args)
 
     @property
     def o_string(self) -> SocketLinker:
@@ -226,12 +227,6 @@ class ActiveCamera(NodeBuilder):
     name = "GeometryNodeInputActiveCamera"
     node: bpy.types.GeometryNodeInputActiveCamera
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_active_camera(self) -> SocketLinker:
         """Output socket: Active Camera"""
@@ -244,11 +239,17 @@ class Collection(NodeBuilder):
     name = "GeometryNodeInputCollection"
     node: bpy.types.GeometryNodeInputCollection
 
-    def __init__(self, **kwargs):
+    def __init__(self, collection: bpy.types.Collection | None = None):
         super().__init__()
-        key_args = kwargs
+        self.collection = collection
 
-        self._establish_links(**key_args)
+    @property
+    def collection(self) -> bpy.types.Collection | None:
+        return self.node.collection
+
+    @collection.setter
+    def collection(self, value: bpy.types.Collection | None):
+        self.node.collection = value
 
     @property
     def o_collection(self) -> SocketLinker:
@@ -262,12 +263,6 @@ class IsEdgeSmooth(NodeBuilder):
     name = "GeometryNodeInputEdgeSmooth"
     node: bpy.types.GeometryNodeInputEdgeSmooth
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_smooth(self) -> SocketLinker:
         """Output socket: Smooth"""
@@ -279,12 +274,6 @@ class ID(NodeBuilder):
 
     name = "GeometryNodeInputID"
     node: bpy.types.GeometryNodeInputID
-
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
 
     @property
     def o_id(self) -> SocketLinker:
@@ -298,11 +287,18 @@ class Image(NodeBuilder):
     name = "GeometryNodeInputImage"
     node: bpy.types.GeometryNodeInputImage
 
-    def __init__(self, **kwargs):
+    def __init__(self, image: bpy.types.Image | None = None):
         super().__init__()
-        key_args = kwargs
+        self.image = image
 
-        self._establish_links(**key_args)
+    @property
+    def image(self) -> bpy.types.Image | None:
+        """Input socket: Image"""
+        return self.node.image
+
+    @image.setter
+    def image(self, value: bpy.types.Image | None):
+        self.node.image = value
 
     @property
     def o_image(self) -> SocketLinker:
@@ -316,12 +312,6 @@ class Index(NodeBuilder):
     name = "GeometryNodeInputIndex"
     node: bpy.types.GeometryNodeInputIndex
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_index(self) -> SocketLinker:
         """Output socket: Index"""
@@ -334,11 +324,9 @@ class InstanceBounds(NodeBuilder):
     name = "GeometryNodeInputInstanceBounds"
     node: bpy.types.GeometryNodeInputInstanceBounds
 
-    def __init__(self, use_radius: TYPE_INPUT_BOOLEAN = True, **kwargs):
+    def __init__(self, use_radius: TYPE_INPUT_BOOLEAN = True):
         super().__init__()
         key_args = {"Use Radius": use_radius}
-        key_args.update(kwargs)
-
         self._establish_links(**key_args)
 
     @property
@@ -363,12 +351,6 @@ class InstanceRotation(NodeBuilder):
     name = "GeometryNodeInputInstanceRotation"
     node: bpy.types.GeometryNodeInputInstanceRotation
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_rotation(self) -> SocketLinker:
         """Output socket: Rotation"""
@@ -380,12 +362,6 @@ class InstanceScale(NodeBuilder):
 
     name = "GeometryNodeInputInstanceScale"
     node: bpy.types.GeometryNodeInputInstanceScale
-
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
 
     @property
     def o_scale(self) -> SocketLinker:
@@ -399,11 +375,18 @@ class Material(NodeBuilder):
     name = "GeometryNodeInputMaterial"
     node: bpy.types.GeometryNodeInputMaterial
 
-    def __init__(self, **kwargs):
+    def __init__(self, material: bpy.types.Material | None = None):
         super().__init__()
-        key_args = kwargs
+        self.material = material
 
-        self._establish_links(**key_args)
+    @property
+    def material(self) -> bpy.types.Material | None:
+        """Input socket: Material"""
+        return self.node.material
+
+    @material.setter
+    def material(self, value: bpy.types.Material | None):
+        self.node.material
 
     @property
     def o_material(self) -> SocketLinker:
@@ -417,12 +400,6 @@ class MaterialIndex(NodeBuilder):
     name = "GeometryNodeInputMaterialIndex"
     node: bpy.types.GeometryNodeInputMaterialIndex
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_material_index(self) -> SocketLinker:
         """Output socket: Material Index"""
@@ -435,11 +412,9 @@ class NamedLayerSelection(NodeBuilder):
     name = "GeometryNodeInputNamedLayerSelection"
     node: bpy.types.GeometryNodeInputNamedLayerSelection
 
-    def __init__(self, name: str | LINKABLE | None = "", **kwargs):
+    def __init__(self, name: TYPE_INPUT_STRING = ""):
         super().__init__()
         key_args = {"Name": name}
-        key_args.update(kwargs)
-
         self._establish_links(**key_args)
 
     @property
@@ -458,12 +433,6 @@ class Normal(NodeBuilder):
 
     name = "GeometryNodeInputNormal"
     node: bpy.types.GeometryNodeInputNormal
-
-    def __init__(self, legacy_corner_normals: bool = False, **kwargs):
-        super().__init__()
-        key_args = kwargs
-        self.legacy_corner_normals = legacy_corner_normals
-        self._establish_links(**key_args)
 
     @property
     def o_normal(self) -> SocketLinker:
@@ -490,11 +459,17 @@ class Object(NodeBuilder):
     name = "GeometryNodeInputObject"
     node: bpy.types.GeometryNodeInputObject
 
-    def __init__(self, **kwargs):
+    def __init__(self, object: bpy.types.Object | None = None):
         super().__init__()
-        key_args = kwargs
+        self.node.object = object
 
-        self._establish_links(**key_args)
+    @property
+    def object(self) -> bpy.types.Object | None:
+        return self.node.object
+
+    @object.setter
+    def object(self, value: bpy.types.Object | None):
+        self.node.object = value
 
     @property
     def o_object(self) -> SocketLinker:
@@ -508,12 +483,6 @@ class Position(NodeBuilder):
     name = "GeometryNodeInputPosition"
     node: bpy.types.GeometryNodeInputPosition
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_position(self) -> SocketLinker:
         """Output socket: Position"""
@@ -526,12 +495,6 @@ class Radius(NodeBuilder):
     name = "GeometryNodeInputRadius"
     node: bpy.types.GeometryNodeInputRadius
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_radius(self) -> SocketLinker:
         """Output socket: Radius"""
@@ -543,12 +506,6 @@ class SceneTime(NodeBuilder):
 
     name = "GeometryNodeInputSceneTime"
     node: bpy.types.GeometryNodeInputSceneTime
-
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
 
     @property
     def o_seconds(self) -> SocketLinker:
@@ -567,12 +524,6 @@ class IsFaceSmooth(NodeBuilder):
     name = "GeometryNodeInputShadeSmooth"
     node: bpy.types.GeometryNodeInputShadeSmooth
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_smooth(self) -> SocketLinker:
         """Output socket: Smooth"""
@@ -587,8 +538,8 @@ class ShortestEdgePaths(NodeBuilder):
 
     def __init__(
         self,
-        end_vertex: TYPE_INPUT_BOOLEAN = False,
-        edge_cost: float | LINKABLE | None = 1.0,
+        end_vertex: TYPE_INPUT_BOOLEAN = None,
+        edge_cost: TYPE_INPUT_VALUE = None,
         **kwargs,
     ):
         super().__init__()
@@ -624,12 +575,6 @@ class IsSplineCyclic(NodeBuilder):
     name = "GeometryNodeInputSplineCyclic"
     node: bpy.types.GeometryNodeInputSplineCyclic
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_cyclic(self) -> SocketLinker:
         """Output socket: Cyclic"""
@@ -642,12 +587,6 @@ class SplineResolution(NodeBuilder):
     name = "GeometryNodeInputSplineResolution"
     node: bpy.types.GeometryNodeInputSplineResolution
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
-
     @property
     def o_resolution(self) -> SocketLinker:
         """Output socket: Resolution"""
@@ -659,12 +598,6 @@ class CurveTangent(NodeBuilder):
 
     name = "GeometryNodeInputTangent"
     node: bpy.types.GeometryNodeInputTangent
-
-    def __init__(self, **kwargs):
-        super().__init__()
-        key_args = kwargs
-
-        self._establish_links(**key_args)
 
     @property
     def o_tangent(self) -> SocketLinker:
@@ -726,11 +659,20 @@ class Value(NodeBuilder):
     name = "ShaderNodeValue"
     node: bpy.types.ShaderNodeValue
 
-    def __init__(self, **kwargs):
+    def __init__(self, value: float = 0.0):
         super().__init__()
-        key_args = kwargs
+        self.value = value
 
-        self._establish_links(**key_args)
+    @property
+    def value(self) -> float:
+        """Input socket: Value"""
+        # this node is a strange one because it doesn't have a value property,
+        # instead we directly access and change the sockets default output
+        return self.node.outputs[0].default_value  # type: ignore
+
+    @value.setter
+    def value(self, value: float):
+        self.node.outputs[0].default_value = value  # type: ignore
 
     @property
     def o_value(self) -> SocketLinker:
