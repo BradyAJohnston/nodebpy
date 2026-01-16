@@ -1,17 +1,46 @@
+from __future__ import annotations
+
 import typing
 
-# Type aliases for node inputs
-LINKABLE = "NodeSocket | NodeBuilder | SocketLinker | Any"
-TYPE_INPUT_VECTOR = (
-    "tuple[float, float, float] | NodeSocket | NodeBuilder | SocketLinker | None"
-)
-TYPE_INPUT_ROTATION = (
-    "tuple[float, float, float, float] | NodeSocket | NodeBuilder | SocketLinker | None"
-)
-TYPE_INPUT_BOOLEAN = "bool | NodeSocket | NodeBuilder | SocketLinker | None "
-TYPE_INPUT_ROTATION = "Quaternion | Euler |tuple[float, float, float, float] | NodeSocket | NodeBuilder | SocketLinker | None"
-TYPE_INPUT_VALUE = "float | int | NodeSocket | NodeBuilder | SocketLinker | None"
-TYPE_INPUT_INT = "int | NodeSocket | NodeBuilder | SocketLinker | None"
+if typing.TYPE_CHECKING:
+    from mathutils import Euler, Quaternion
+    from bpy.types import NodeSocket
+    from ..builder import NodeBuilder, SocketLinker
+
+
+# Type aliases for node inputs using typing.Union for runtime compatibility
+LINKABLE = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_VECTOR = typing.Union[
+    typing.Tuple[float, float, float], "NodeSocket", "NodeBuilder", "SocketLinker", None
+]
+TYPE_INPUT_ROTATION = typing.Union[
+    typing.Tuple[float, float, float, float],
+    "Quaternion",
+    "Euler",
+    "NodeSocket",
+    "NodeBuilder",
+    "SocketLinker",
+    None,
+]
+TYPE_INPUT_BOOLEAN = typing.Union[
+    bool, "NodeSocket", "NodeBuilder", "SocketLinker", None
+]
+TYPE_INPUT_VALUE = typing.Union[
+    float, int, "NodeSocket", "NodeBuilder", "SocketLinker", None
+]
+TYPE_INPUT_INT = typing.Union[int, "NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_STRING = typing.Union[str, "NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_COLOR = typing.Union[
+    typing.Tuple[float, float, float, float],
+    "NodeSocket",
+    "NodeBuilder",
+    "SocketLinker",
+    None,
+]
+TYPE_INPUT_OBJECT = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_MATERIAL = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_IMAGE = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_COLLECTION = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
 
 _AttributeDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
