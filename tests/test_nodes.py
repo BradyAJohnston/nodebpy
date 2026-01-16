@@ -56,7 +56,7 @@ class TestMathOperators:
     def test_math_operators(self, operator, input):
         with TreeBuilder("TestMathOperators"):
             set_pos = n.SetPosition()
-            n.Position()
+            pos = n.Position()
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 
