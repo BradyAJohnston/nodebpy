@@ -36,7 +36,7 @@ def test_join_geometry():
 
 
 def test_socket_selection():
-    with TreeBuilder("AnotherTree") as tree:
+    with TreeBuilder("AnotherTree"):
         pos = n.SetPosition()
         vec = n.Vector()
 
@@ -54,9 +54,9 @@ class TestMathOperators:
         "operator,input", itertools.product(["+", "-", "*", "/"], [n.Vector, n.Value])
     )
     def test_math_operators(self, operator, input):
-        with TreeBuilder("TestMathOperators") as tree:
+        with TreeBuilder("TestMathOperators"):
             set_pos = n.SetPosition()
-            pos = n.Position()
+            n.Position()
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 

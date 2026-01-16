@@ -438,7 +438,8 @@ def generate_mermaid_diagram(tree) -> str:
                         ):
                             formatted = ",".join(f"{v:.1g}" for v in value)
                             key_params.append(f"({formatted})")
-                except:
+                except Exception as e:
+                    print(f"Error processing node: {e}")
                     pass
 
         # Build minimal node label

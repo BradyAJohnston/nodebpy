@@ -62,7 +62,6 @@ class TestTreeBuilder:
             s.SocketFloat("Scale", 2.5, min_value=0.0, max_value=10.0)
         with tree.outputs:
             s.SocketGeometry("Geometry")
-        
 
         # Find the selection input
         selection_socket = None
@@ -141,13 +140,14 @@ class TestOperatorChaining:
         # Check that links were created
         assert len(tree.tree.links) >= 3
 
+
 class TestExamples:
     """Tests that replicate the original example functions."""
 
     def test_example_basic(self):
         """Test the basic example from example.py."""
         tree = TreeBuilder("ExampleTree")
-        
+
         with tree.inputs:
             i_geo = s.SocketGeometry()
             selection = s.SocketBoolean("Selection", True)
@@ -158,7 +158,9 @@ class TestExamples:
         with tree:
             _ = (
                 i_geo
-                >> n.SetPosition(selection=selection, position=n.Position() * 2.0, offset=offset)
+                >> n.SetPosition(
+                    selection=selection, position=n.Position() * 2.0, offset=offset
+                )
                 >> n.TransformGeometry(translation=(0, 0, 1))
                 >> o_geo
             )
@@ -171,22 +173,20 @@ class TestExamples:
     def test_example_multi_socket(self):
         """Test the multi-socket example from example.py."""
         tree = TreeBuilder("MultiSocketExample")
-        
+
         with tree.inputs:
             i_geo = s.SocketGeometry("Geometry")
             selection = s.SocketBoolean("Selection", True)
-        
+
         with tree.outputs:
             o_geo = s.SocketGeometry("Geometry")
             count = s.SocketInt("Count")
-
 
         with tree:
             # Access multiple named sockets
             pos = i_geo >> n.SetPosition(selection=selection)
             _ = pos >> n.DomainSize() >> count
             _ = pos >> o_geo
-            
 
         # Verify tree structure
         assert tree.tree is not None
@@ -310,7 +310,6 @@ def create_tree_chain():
     with tree.outputs:
         result = s.SocketFloat("Result")
 
-
     with tree:
         _ = (
             value
@@ -326,13 +325,11 @@ def create_tree():
     tree = TreeBuilder("MathTest")
     with tree.inputs:
         value = s.SocketFloat()
-    
+
     with tree.outputs:
         result = s.SocketFloat("Result")
     with tree:
-        final = n.VectorMath.multiply(
-            n.Math.add(value, 0.1), (2.0, 2.0, 2.0)
-        )
+        final = n.VectorMath.multiply(n.Math.add(value, 0.1), (2.0, 2.0, 2.0))
 
         final >> result
 
@@ -357,9 +354,7 @@ def test_math_nodes(maker):
     assert len(node_input.outputs["Value"].links) == 1
     assert len(tree.tree.nodes.get("Group Output").inputs["Result"].links) == 1
 
-    assert (
-        tree.tree.nodes["Math"].inputs[0].links[0].from_node == tree._input_node()
-    )
+    assert tree.tree.nodes["Math"].inputs[0].links[0].from_node == tree._input_node()
 
 
 def test_nodes():
@@ -382,7 +377,6 @@ def test_mix_node():
         count = s.SocketInt("Count", 50, min_value=0, max_value=100)
     with tree.outputs:
         output = s.SocketGeometry("Instances")
-
 
     with tree:
         rotation = n.Mix.rotation(
@@ -437,7 +431,6 @@ def test_readme_tree():
             count = s.SocketInt("Count")
         with tree.outputs:
             instances = s.SocketGeometry("Instances")
-        
 
         rotation = (
             n.RandomValue.vector(min=(-1, -1, -1), seed=2)

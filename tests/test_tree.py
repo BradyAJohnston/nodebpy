@@ -10,7 +10,6 @@ def test_create_tree_and_save():
         with tree.outputs:
             instances = s.SocketGeometry("Instances")
 
-
         rotation = (
             n.RandomValue.vector(min=(-1, -1, -1), seed=2)
             >> n.AlignRotationToVector()
