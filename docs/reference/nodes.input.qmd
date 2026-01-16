@@ -55,7 +55,7 @@ KNOWN LIMITATIONS:
 ### ActiveCamera { #nodebpy.nodes.input.ActiveCamera }
 
 ```python
-nodes.input.ActiveCamera(**kwargs)
+nodes.input.ActiveCamera()
 ```
 
 Retrieve the scene's active camera
@@ -69,7 +69,7 @@ Retrieve the scene's active camera
 ### Boolean { #nodebpy.nodes.input.Boolean }
 
 ```python
-nodes.input.Boolean(boolean=False, **kwargs)
+nodes.input.Boolean(boolean=False)
 ```
 
 Provide a True/False value that can be connected to other nodes in the tree
@@ -83,7 +83,7 @@ Provide a True/False value that can be connected to other nodes in the tree
 ### Collection { #nodebpy.nodes.input.Collection }
 
 ```python
-nodes.input.Collection(**kwargs)
+nodes.input.Collection(collection=None)
 ```
 
 Output a single collection
@@ -97,7 +97,7 @@ Output a single collection
 ### Color { #nodebpy.nodes.input.Color }
 
 ```python
-nodes.input.Color(value=0.0, **kwargs)
+nodes.input.Color(value=(1.0, 0.0, 1.0, 1.0), **kwargs)
 ```
 
 Output a color value chosen with the color picker widget
@@ -111,7 +111,7 @@ Output a color value chosen with the color picker widget
 ### CurveTangent { #nodebpy.nodes.input.CurveTangent }
 
 ```python
-nodes.input.CurveTangent(**kwargs)
+nodes.input.CurveTangent()
 ```
 
 Retrieve the direction of curves at each control point
@@ -148,7 +148,7 @@ For Each Geometry Element Input node
 ### ID { #nodebpy.nodes.input.ID }
 
 ```python
-nodes.input.ID(**kwargs)
+nodes.input.ID()
 ```
 
 Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist
@@ -162,7 +162,7 @@ Retrieve a stable random identifier value from the "id" attribute on the point d
 ### Image { #nodebpy.nodes.input.Image }
 
 ```python
-nodes.input.Image(**kwargs)
+nodes.input.Image(image=None)
 ```
 
 Input an image data-block
@@ -171,12 +171,13 @@ Input an image data-block
 
 | Name | Description |
 | --- | --- |
+| [image](#nodebpy.nodes.input.Image.image) | Input socket: Image |
 | [o_image](#nodebpy.nodes.input.Image.o_image) | Output socket: Image |
 
 ### Index { #nodebpy.nodes.input.Index }
 
 ```python
-nodes.input.Index(**kwargs)
+nodes.input.Index()
 ```
 
 Retrieve an integer value indicating the position of each element in the list, starting at zero
@@ -190,7 +191,7 @@ Retrieve an integer value indicating the position of each element in the list, s
 ### InstanceBounds { #nodebpy.nodes.input.InstanceBounds }
 
 ```python
-nodes.input.InstanceBounds(use_radius=True, **kwargs)
+nodes.input.InstanceBounds(use_radius=True)
 ```
 
 Calculate position bounds of each instance's geometry set
@@ -206,7 +207,7 @@ Calculate position bounds of each instance's geometry set
 ### InstanceRotation { #nodebpy.nodes.input.InstanceRotation }
 
 ```python
-nodes.input.InstanceRotation(**kwargs)
+nodes.input.InstanceRotation()
 ```
 
 Retrieve the rotation of each instance in the geometry
@@ -220,7 +221,7 @@ Retrieve the rotation of each instance in the geometry
 ### InstanceScale { #nodebpy.nodes.input.InstanceScale }
 
 ```python
-nodes.input.InstanceScale(**kwargs)
+nodes.input.InstanceScale()
 ```
 
 Retrieve the scale of each instance in the geometry
@@ -234,7 +235,7 @@ Retrieve the scale of each instance in the geometry
 ### Integer { #nodebpy.nodes.input.Integer }
 
 ```python
-nodes.input.Integer(integer=1, **kwargs)
+nodes.input.Integer(integer=1)
 ```
 
 Provide an integer value that can be connected to other nodes in the tree
@@ -248,7 +249,7 @@ Provide an integer value that can be connected to other nodes in the tree
 ### IsEdgeSmooth { #nodebpy.nodes.input.IsEdgeSmooth }
 
 ```python
-nodes.input.IsEdgeSmooth(**kwargs)
+nodes.input.IsEdgeSmooth()
 ```
 
 Retrieve whether each edge is marked for smooth or split normals
@@ -262,7 +263,7 @@ Retrieve whether each edge is marked for smooth or split normals
 ### IsFaceSmooth { #nodebpy.nodes.input.IsFaceSmooth }
 
 ```python
-nodes.input.IsFaceSmooth(**kwargs)
+nodes.input.IsFaceSmooth()
 ```
 
 Retrieve whether each face is marked for smooth or sharp normals
@@ -276,7 +277,7 @@ Retrieve whether each face is marked for smooth or sharp normals
 ### IsSplineCyclic { #nodebpy.nodes.input.IsSplineCyclic }
 
 ```python
-nodes.input.IsSplineCyclic(**kwargs)
+nodes.input.IsSplineCyclic()
 ```
 
 Retrieve whether each spline endpoint connects to the beginning
@@ -290,7 +291,7 @@ Retrieve whether each spline endpoint connects to the beginning
 ### Material { #nodebpy.nodes.input.Material }
 
 ```python
-nodes.input.Material(**kwargs)
+nodes.input.Material(material=None)
 ```
 
 Output a single material
@@ -299,12 +300,13 @@ Output a single material
 
 | Name | Description |
 | --- | --- |
+| [material](#nodebpy.nodes.input.Material.material) | Input socket: Material |
 | [o_material](#nodebpy.nodes.input.Material.o_material) | Output socket: Material |
 
 ### MaterialIndex { #nodebpy.nodes.input.MaterialIndex }
 
 ```python
-nodes.input.MaterialIndex(**kwargs)
+nodes.input.MaterialIndex()
 ```
 
 Retrieve the index of the material used for each element in the geometry's list of materials
@@ -318,7 +320,7 @@ Retrieve the index of the material used for each element in the geometry's list 
 ### NamedLayerSelection { #nodebpy.nodes.input.NamedLayerSelection }
 
 ```python
-nodes.input.NamedLayerSelection(name='', **kwargs)
+nodes.input.NamedLayerSelection(name='')
 ```
 
 Output a selection of a Grease Pencil layer
@@ -333,7 +335,7 @@ Output a selection of a Grease Pencil layer
 ### Normal { #nodebpy.nodes.input.Normal }
 
 ```python
-nodes.input.Normal(legacy_corner_normals=False, **kwargs)
+nodes.input.Normal()
 ```
 
 Retrieve a unit length vector indicating the direction pointing away from the geometry at each element
@@ -348,7 +350,7 @@ Retrieve a unit length vector indicating the direction pointing away from the ge
 ### Object { #nodebpy.nodes.input.Object }
 
 ```python
-nodes.input.Object(**kwargs)
+nodes.input.Object(object=None)
 ```
 
 Output a single object
@@ -362,7 +364,7 @@ Output a single object
 ### Position { #nodebpy.nodes.input.Position }
 
 ```python
-nodes.input.Position(**kwargs)
+nodes.input.Position()
 ```
 
 Retrieve a vector indicating the location of each element
@@ -376,7 +378,7 @@ Retrieve a vector indicating the location of each element
 ### Radius { #nodebpy.nodes.input.Radius }
 
 ```python
-nodes.input.Radius(**kwargs)
+nodes.input.Radius()
 ```
 
 Retrieve the radius at each point on curve or point cloud geometry
@@ -390,7 +392,7 @@ Retrieve the radius at each point on curve or point cloud geometry
 ### Rotation { #nodebpy.nodes.input.Rotation }
 
 ```python
-nodes.input.Rotation(rotation_euler=0.0, **kwargs)
+nodes.input.Rotation(rotation_euler=(0, 0, 0))
 ```
 
 Provide a rotation value that can be connected to other nodes in the tree
@@ -404,7 +406,7 @@ Provide a rotation value that can be connected to other nodes in the tree
 ### SceneTime { #nodebpy.nodes.input.SceneTime }
 
 ```python
-nodes.input.SceneTime(**kwargs)
+nodes.input.SceneTime()
 ```
 
 Retrieve the current time in the scene's animation in units of seconds or frames
@@ -419,7 +421,7 @@ Retrieve the current time in the scene's animation in units of seconds or frames
 ### ShortestEdgePaths { #nodebpy.nodes.input.ShortestEdgePaths }
 
 ```python
-nodes.input.ShortestEdgePaths(end_vertex=False, edge_cost=1.0, **kwargs)
+nodes.input.ShortestEdgePaths(end_vertex=None, edge_cost=None, **kwargs)
 ```
 
 Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge
@@ -436,7 +438,7 @@ Find the shortest paths along mesh edges to selected end vertices, with customiz
 ### SpecialCharacters { #nodebpy.nodes.input.SpecialCharacters }
 
 ```python
-nodes.input.SpecialCharacters(**kwargs)
+nodes.input.SpecialCharacters()
 ```
 
 Output string characters that cannot be typed directly with the keyboard
@@ -451,7 +453,7 @@ Output string characters that cannot be typed directly with the keyboard
 ### SplineResolution { #nodebpy.nodes.input.SplineResolution }
 
 ```python
-nodes.input.SplineResolution(**kwargs)
+nodes.input.SplineResolution()
 ```
 
 Retrieve the number of evaluated points that will be generated for every control point on curves
@@ -465,7 +467,7 @@ Retrieve the number of evaluated points that will be generated for every control
 ### String { #nodebpy.nodes.input.String }
 
 ```python
-nodes.input.String(string='', **kwargs)
+nodes.input.String(string='')
 ```
 
 Provide a string value that can be connected to other nodes in the tree
@@ -479,7 +481,7 @@ Provide a string value that can be connected to other nodes in the tree
 ### Value { #nodebpy.nodes.input.Value }
 
 ```python
-nodes.input.Value(**kwargs)
+nodes.input.Value(value=0.0)
 ```
 
 Input numerical values to other nodes in the tree
@@ -489,6 +491,7 @@ Input numerical values to other nodes in the tree
 | Name | Description |
 | --- | --- |
 | [o_value](#nodebpy.nodes.input.Value.o_value) | Output socket: Value |
+| [value](#nodebpy.nodes.input.Value.value) | Input socket: Value |
 
 ### VoxelIndex { #nodebpy.nodes.input.VoxelIndex }
 
