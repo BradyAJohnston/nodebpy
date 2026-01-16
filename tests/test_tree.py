@@ -1,6 +1,7 @@
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
 from nodebpy import sockets as s
+import nodebpy.nodes.converter
 import nodebpy.nodes.input
 
 
@@ -13,9 +14,10 @@ def test_create_tree_and_save():
 
         rotation = (
             n.RandomValue.vector(min=(-1, -1, -1), seed=2)
-            >> n.AlignRotationToVector()
+            >> nodebpy.nodes.converter.AlignRotationToVector()
             >> n.RotateRotation(
-                rotate_by=n.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
+                rotate_by=nodebpy.nodes.converter.AxisAngleToRotation(angle=0.3),
+                rotation_space="LOCAL",
             )
         )
 

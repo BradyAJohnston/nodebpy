@@ -17,6 +17,7 @@ from bpy.types import (
 from .nodes.types import (
     LINKABLE,
     SOCKET_COMPATIBILITY,
+    SOCKET_TYPES,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
     StringInterfaceSubtypes,
@@ -55,7 +56,6 @@ def source_socket(node: LINKABLE) -> NodeSocket:
     elif isinstance(node, Node):
         return node.outputs[0]
     elif hasattr(node, "_default_output_socket"):
-        # NodeBuilder or SocketNodeBuilder
         return node._default_output_socket
     else:
         raise TypeError(f"Unsupported type: {type(node)}")
@@ -67,10 +67,61 @@ def target_socket(node: LINKABLE) -> NodeSocket:
     elif isinstance(node, Node):
         return node.inputs[0]
     elif hasattr(node, "_default_input_socket"):
-        # NodeBuilder or SocketNodeBuilder
         return node._default_input_socket
     else:
         raise TypeError(f"Unsupported type: {type(node)}")
+
+
+class SocketContext:
+    _direction: Literal["INPUT", "OUTPUT"] | None
+    _active_context: SocketContext | None = None
+
+    def __init__(self, tree_builder: TreeBuilder):
+        self.builder = tree_builder
+
+    @property
+    def tree(self) -> GeometryNodeTree:
+        tree = self.builder.tree
+        assert tree is not None and isinstance(tree, GeometryNodeTree)
+        return tree
+
+    @property
+    def interface(self) -> bpy.types.NodeTreeInterface:
+        interface = self.tree.interface
+        assert interface is not None
+        return interface
+
+    def _create_socket(
+        self, socket_def: SocketBase
+    ) -> bpy.types.NodeTreeInterfaceSocket:
+        """Create a socket from a socket definition."""
+        socket = self.interface.new_socket(
+            name=socket_def.name,
+            in_out=self._direction,
+            socket_type=socket_def._bl_socket_type,
+        )
+        socket.description = socket_def.description
+        return socket
+
+    def __enter__(self):
+        SocketContext._direction = self._direction
+        SocketContext._active_context = self
+        return self
+
+    def __exit__(self, *args):
+        SocketContext._direction = None
+        SocketContext._active_context = None
+        pass
+
+
+class InputInterfaceContext(SocketContext):
+    _direction = "INPUT"
+    _active_context = None
+
+
+class OutputInterfaceContext(SocketContext):
+    _direction = "OUTPUT"
+    _active_context = None
 
 
 class TreeBuilder:
@@ -171,58 +222,6 @@ class TreeBuilder:
         return self.just_added
 
 
-class SocketContext:
-    _direction: Literal["INPUT", "OUTPUT"] | None
-    _active_context: SocketContext | None = None
-
-    def __init__(self, tree_builder: TreeBuilder):
-        self.builder = tree_builder
-
-    @property
-    def tree(self) -> GeometryNodeTree:
-        tree = self.builder.tree
-        assert tree is not None and isinstance(tree, GeometryNodeTree)
-        return tree
-
-    @property
-    def interface(self) -> bpy.types.NodeTreeInterface:
-        interface = self.tree.interface
-        assert interface is not None
-        return interface
-
-    def _create_socket(
-        self, socket_def: SocketBase
-    ) -> bpy.types.NodeTreeInterfaceSocket:
-        """Create a socket from a socket definition."""
-        socket = self.interface.new_socket(
-            name=socket_def.name,
-            in_out=self._direction,
-            socket_type=socket_def._bl_socket_type,
-        )
-        socket.description = socket_def.description
-        return socket
-
-    def __enter__(self):
-        SocketContext._direction = self._direction
-        SocketContext._active_context = self
-        return self
-
-    def __exit__(self, *args):
-        SocketContext._direction = None
-        SocketContext._active_context = None
-        pass
-
-
-class InputInterfaceContext(SocketContext):
-    _direction = "INPUT"
-    _active_context = None
-
-
-class OutputInterfaceContext(SocketContext):
-    _direction = "OUTPUT"
-    _active_context = None
-
-
 class NodeBuilder:
     """Base class for all geometry node wrappers."""
 
@@ -245,9 +244,6 @@ class NodeBuilder:
                 f"      node = {self.__class__.__name__}()\n"
             )
 
-        self.inputs = InputInterfaceContext(tree)
-        self.outputs = OutputInterfaceContext(tree)
-
         self._tree = tree
         self._link_target = None
         if self.__class__.name is not None:
@@ -264,6 +260,10 @@ class NodeBuilder:
     @tree.setter
     def tree(self, value: "TreeBuilder"):
         self._tree = value
+
+    @property
+    def type(self) -> SOCKET_TYPES:
+        return self._default_output_socket.type  # type: ignore
 
     @property
     def _default_input_socket(self) -> NodeSocket:
@@ -389,7 +389,7 @@ class NodeBuilder:
 
             # we can also provide just a default value for the socket to take if we aren't
             # providing a socket to link with
-            elif isinstance(value, (NodeBuilder, SocketNodeBuilder, NodeSocket, Node)):
+            elif isinstance(value, (NodeBuilder, NodeSocket, Node)):
                 self.link_from(value, name)
             else:
                 if name in input_ids:
@@ -521,39 +521,12 @@ class SocketLinker(NodeBuilder):
         self._tree = TreeBuilder(socket.node.id_data)  # type: ignore
 
     @property
-    def type(self) -> str:
-        return self.socket.type
+    def type(self) -> SOCKET_TYPES:
+        return self.socket.type  # type: ignore
 
     @property
     def socket_name(self) -> str:
         return self.socket.name
-
-
-class SocketNodeBuilder(NodeBuilder):
-    """Special NodeBuilder for accessing specific sockets on input/output nodes."""
-
-    def __init__(self, node: Node, socket_name: str, direction: str):
-        # Don't call super().__init__ - we already have a node
-        self.node = node
-        self._tree = TreeBuilder(node.id_data)  # type: ignore
-        self._socket_name = socket_name
-        self._direction = direction
-
-    @property
-    def _default_output_socket(self) -> NodeSocket:
-        """Return the specific named output socket."""
-        if self._direction == "INPUT":
-            return self.node.outputs[self._socket_name]
-        else:
-            raise ValueError("Output nodes don't have outputs")
-
-    @property
-    def _default_input_socket(self) -> NodeSocket:
-        """Return the specific named input socket."""
-        if self._direction == "OUTPUT":
-            return self.node.inputs[self._socket_name]
-        else:
-            raise ValueError("Input nodes don't have inputs")
 
 
 class SocketBase(SocketLinker):

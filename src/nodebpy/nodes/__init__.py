@@ -1,38 +1,5 @@
 """Auto-generated geometry node classes."""
 
-from .zone import ForEachGeometryElementInput
-from .input import (
-    ID,
-    ActiveCamera,
-    Boolean,
-    Collection,
-    Color,
-    CurveTangent,
-    Image,
-    Index,
-    InstanceBounds,
-    InstanceRotation,
-    InstanceScale,
-    Integer,
-    IsEdgeSmooth,
-    IsFaceSmooth,
-    IsSplineCyclic,
-    Material,
-    MaterialIndex,
-    Normal,
-    NamedLayerSelection,
-    Object,
-    Position,
-    Radius,
-    Rotation,
-    SceneTime,
-    ShortestEdgePaths,
-    SpecialCharacters,
-    SplineResolution,
-    String,
-    Value,
-    VoxelIndex,
-)
 from . import attribute_auto, curve, mesh, utilities
 from .attribute_auto import (
     AttributeStatistic,
@@ -41,6 +8,21 @@ from .attribute_auto import (
     NamedAttribute,
     RemoveNamedAttribute,
     StoreNamedAttribute,
+)
+from .converter import (
+    AlignRotationToVector,
+    AxesToRotation,
+    AxisAngleToRotation,
+    BitMath,
+    CombineColor,
+    CombineMatrix,
+    CombineTransform,
+    Compare,
+    EulerToRotation,
+    FindInString,
+    FloatToInteger,
+    FormatString,
+    HashValue,
 )
 from .curve import (
     Arc,
@@ -216,6 +198,38 @@ from .geometry_auto import (
     VoxelizeGrid,
     Warning,
 )
+from .input import (
+    ID,
+    ActiveCamera,
+    Boolean,
+    Collection,
+    Color,
+    CurveTangent,
+    Image,
+    Index,
+    InstanceBounds,
+    InstanceRotation,
+    InstanceScale,
+    Integer,
+    IsEdgeSmooth,
+    IsFaceSmooth,
+    IsSplineCyclic,
+    Material,
+    MaterialIndex,
+    NamedLayerSelection,
+    Normal,
+    Object,
+    Position,
+    Radius,
+    Rotation,
+    SceneTime,
+    ShortestEdgePaths,
+    SpecialCharacters,
+    SplineResolution,
+    String,
+    Value,
+    VoxelIndex,
+)
 from .manually_specified import (
     BooleanMath,
     CaptureAttribute,
@@ -261,22 +275,8 @@ from .mesh import (
     VolumeToMesh,
 )
 from .utilities import (
-    AlignEulerToVector,
-    AlignRotationToVector,
-    AxesToRotation,
-    AxisAngleToRotation,
-    BitMath,
     Clamp,
-    CombineColor,
-    CombineMatrix,
-    CombineTransform,
-    Compare,
-    EulerToRotation,
-    FindInString,
-    FloatToInteger,
-    FormatString,
     Gamma,
-    HashValue,
     IntegerMath,
     InvertMatrix,
     InvertRotation,
@@ -304,6 +304,7 @@ from .utilities import (
     TransposeMatrix,
     ValueToString,
 )
+from .zone import ForEachGeometryElementInput
 
 __all__ = [
     # modules"
@@ -568,7 +569,6 @@ __all__ = [
     "VertexNeighbors",
     "VolumeToMesh",
     # From utilities
-    "AlignEulerToVector",
     "AlignRotationToVector",
     "AxesToRotation",
     "AxisAngleToRotation",

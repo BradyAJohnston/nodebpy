@@ -2,59 +2,134 @@ from __future__ import annotations
 
 import typing
 
+import bpy
+from arrangebpy.arrange.graph import Literal
+from bpy.types import (
+    NodeSocket,
+    NodeSocketBool,
+    NodeSocketCollection,
+    NodeSocketColor,
+    NodeSocketFloat,
+    NodeSocketImage,
+    NodeSocketInt,
+    NodeSocketMaterial,
+    NodeSocketMatrix,
+    NodeSocketObject,
+    NodeSocketString,
+    NodeSocketVector,
+)
+from mathutils import Euler
+
 if typing.TYPE_CHECKING:
-    from mathutils import Euler, Quaternion
-    from bpy.types import NodeSocket
     from ..builder import NodeBuilder, SocketLinker
 
 
 # Type aliases for node inputs using typing.Union for runtime compatibility
-LINKABLE = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
+LINKABLE = typing.Union["NodeBuilder", "SocketLinker", None]
 TYPE_INPUT_VECTOR = typing.Union[
-    typing.Tuple[float, float, float], "NodeSocket", "NodeBuilder", "SocketLinker", None
+    typing.Tuple[float, float, float],
+    LINKABLE,
+    NodeSocketVector,
+    NodeSocketInt,
+    NodeSocketFloat,
+    NodeSocketColor,
 ]
 TYPE_INPUT_ROTATION = typing.Union[
-    typing.Tuple[float, float, float, float],
-    "Quaternion",
-    "Euler",
+    tuple[float, float, float],
+    Euler,
     "NodeSocket",
     "NodeBuilder",
     "SocketLinker",
     None,
 ]
 TYPE_INPUT_BOOLEAN = typing.Union[
-    bool, "NodeSocket", "NodeBuilder", "SocketLinker", None
+    bool, LINKABLE, NodeSocketBool, NodeSocketInt, NodeSocketFloat, NodeSocketVector
 ]
-TYPE_INPUT_VALUE = typing.Union[
-    float, int, "NodeSocket", "NodeBuilder", "SocketLinker", None
+TYPE_INPUT_VALUE = typing.Union[float, int, LINKABLE, NodeSocketInt, NodeSocketFloat]
+TYPE_INPUT_INT = typing.Union[
+    int, LINKABLE, NodeSocketInt, NodeSocketInt, NodeSocketInt
 ]
-TYPE_INPUT_INT = typing.Union[int, "NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_STRING = typing.Union[str, "NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_STRING = typing.Union[str, LINKABLE, NodeSocketString]
 TYPE_INPUT_COLOR = typing.Union[
-    typing.Tuple[float, float, float, float],
-    "NodeSocket",
-    "NodeBuilder",
-    "SocketLinker",
-    None,
+    LINKABLE, tuple[float, float, float, float], NodeSocketColor
 ]
-TYPE_INPUT_OBJECT = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_MATERIAL = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_IMAGE = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_COLLECTION = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_OBJECT = typing.Union[LINKABLE, NodeSocketObject]
+TYPE_INPUT_MATERIAL = typing.Union[LINKABLE, NodeSocketMaterial]
+TYPE_INPUT_IMAGE = typing.Union[LINKABLE, NodeSocketImage]
+TYPE_INPUT_COLLECTION = typing.Union[LINKABLE, NodeSocketCollection]
+TYPE_INPUT_MATRIX = typing.Union[LINKABLE, NodeSocketMatrix]
 
 _AttributeDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
 ]
 
+SOCKET_TYPES = Literal[
+    "VALUE",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "MENU",
+    "OBJECT",
+    "GEOMETRY",
+    "COLLECTION",
+    "IMAGE",
+    "MATERIAL",
+    "BUNDLE",
+    "CLOSURE",
+]
+
 SOCKET_COMPATIBILITY = {
-    "VALUE": ("VALUE", "INT", "VECTOR", "BOOLEAN", "RGBA", "ROTATION"),
-    "INT": ("INT", "VALUE", "BOOLEAN", "VECTOR", "RGBA"),
-    "BOOLEAN": ("BOOLEAN", "INT", "VALUE", "VECTOR", "RGBA"),
-    "VECTOR": ("VECTOR", "RGBA", "ROTATION", "VALUE", "INT", "BOOLEAN"),
-    "RGBA": ("RGBA", "VECTOR", "VALUE", "INT", "BOOLEAN"),
-    "ROTATION": ("ROTATION", "MATRIX", "VECTOR"),
-    "MATRIX": ("MATRIX", "ROTATION"),
-    "STRING": ("STRING"),
+    "VALUE": (
+        "VALUE",
+        "INT",
+        "VECTOR",
+        "BOOLEAN",
+        "RGBA",
+        "ROTATION",
+    ),
+    "INT": (
+        "INT",
+        "VALUE",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+    ),
+    "BOOLEAN": (
+        "BOOLEAN",
+        "INT",
+        "VALUE",
+        "VECTOR",
+        "RGBA",
+    ),
+    "VECTOR": (
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+    ),
+    "RGBA": (
+        "RGBA",
+        "VECTOR",
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+    ),
+    "ROTATION": (
+        "ROTATION",
+        "MATRIX",
+        "VECTOR",
+    ),
+    "MATRIX": (
+        "MATRIX",
+        "ROTATION",
+    ),
+    "STRING": ("STRING",),
     "MENU": ("MENU",),
     "OBJECT": ("OBJECT",),
     "GEOMETRY": ("GEOMETRY",),

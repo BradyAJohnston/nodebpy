@@ -10,6 +10,7 @@ import pytest
 from numpy.testing import assert_allclose
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n, sockets as s
+import nodebpy.nodes.converter
 import nodebpy.nodes.input
 
 
@@ -437,9 +438,10 @@ def test_readme_tree():
 
         rotation = (
             n.RandomValue.vector(min=(-1, -1, -1), seed=2)
-            >> n.AlignRotationToVector()
+            >> nodebpy.nodes.converter.AlignRotationToVector()
             >> n.RotateRotation(
-                rotate_by=n.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
+                rotate_by=nodebpy.nodes.converter.AxisAngleToRotation(angle=0.3),
+                rotation_space="LOCAL",
             )
         )
 

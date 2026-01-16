@@ -2,9 +2,10 @@ import itertools
 
 import pytest
 
+import nodebpy.nodes.converter
+import nodebpy.nodes.input
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
-import nodebpy.nodes.input
 
 
 def test_capture_attribute():
@@ -65,3 +66,32 @@ class TestMathOperators:
         assert len(set_pos.i_offset.socket.links) == 0
         assert len(set_pos.i_geometry.socket.links) == 0
         assert len(set_pos.i_position.socket.links) == 1
+
+
+def test_format_string():
+    format_string = "Hello {x} friends, it is {y} hours and this is a {String}"
+    with TreeBuilder("TestFormatString"):
+        string = n.String("test")
+        x_int = n.Integer(5)
+        y_value = n.Value(12.50)
+        format = nodebpy.nodes.converter.FormatString(
+            string,
+            format=format_string,
+            x=x_int,
+            y=y_value,
+        )
+
+        assert len(format.node.format_items) == 3
+        assert format.node.inputs[0].default_value == format_string  # type: ignore
+        assert format.node.inputs[1].name == "x"
+        assert format.node.inputs[1].type == "INT"
+        assert format.node.inputs[1].default_value == 0  # type: ignore
+        assert format.node.inputs[2].name == "y"
+        assert format.node.inputs[2].type == "VALUE"
+        assert format.node.inputs[2].default_value == 0.0
+        assert format.node.inputs[3].name == "String"
+        assert format.node.inputs[3].type == "STRING"
+        assert format.node.inputs[3].default_value == ""
+        assert format.items["x"].socket == format.node.inputs[1]
+        assert format.items["y"].socket == format.node.inputs[2]
+        assert format.items["String"].socket == format.node.inputs[3]
