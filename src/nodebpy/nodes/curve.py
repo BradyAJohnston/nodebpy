@@ -15,8 +15,10 @@ KNOWN LIMITATIONS:
 """
 
 from __future__ import annotations
+
 import bpy
 from typing_extensions import Literal
+
 from ..builder import NodeBuilder, NodeSocket
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
 
@@ -222,7 +224,7 @@ class CurveOfPoint(NodeBuilder):
         return self._output("Index in Curve")
 
 
-class BézierSegment(NodeBuilder):
+class BezierSegment(NodeBuilder):
     """Generate a 2D Bézier spline from the given control points and handles"""
 
     name = "GeometryNodeCurvePrimitiveBezierSegment"
@@ -425,7 +427,7 @@ class Quadrilateral(NodeBuilder):
         self.node.mode = value
 
 
-class QuadraticBézier(NodeBuilder):
+class QuadraticBezier(NodeBuilder):
     """Generate a poly spline in a parabola shape with control points positions"""
 
     name = "GeometryNodeCurveQuadraticBezier"
