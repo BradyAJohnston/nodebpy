@@ -7,3 +7,8 @@ Functions to inspect docstrings.
 | | |
 | --- | --- |
 | [nodes.geometry](nodes.geometry.qmd#nodebpy.nodes.geometry) | Auto-generated Blender Geometry Node classes. |
+| [nodes.attribute](nodes.attribute.qmd#nodebpy.nodes.attribute) | Auto-generated Blender Geometry Node classes. |
+| [nodes.curve](nodes.curve.qmd#nodebpy.nodes.curve) | Auto-generated Blender Geometry Node classes. |
+| [nodes.input](nodes.input.qmd#nodebpy.nodes.input) | Auto-generated Blender Geometry Node classes. |
+| [nodes.mesh](nodes.mesh.qmd#nodebpy.nodes.mesh) | Auto-generated Blender Geometry Node classes. |
+| [nodes.utilities](nodes.utilities.qmd#nodebpy.nodes.utilities) | Auto-generated Blender Geometry Node classes. |

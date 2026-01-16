@@ -64,18 +64,17 @@ KNOWN LIMITATIONS:
 | [Group](#nodebpy.nodes.geometry.Group) | Group node |
 | [ImageInfo](#nodebpy.nodes.geometry.ImageInfo) | Retrieve information about an image |
 | [ImageTexture](#nodebpy.nodes.geometry.ImageTexture) | Sample values from an image texture |
-| [ImportCsv](#nodebpy.nodes.geometry.ImportCsv) | Import geometry from an CSV file |
-| [ImportObj](#nodebpy.nodes.geometry.ImportObj) | Import geometry from an OBJ file |
-| [ImportPly](#nodebpy.nodes.geometry.ImportPly) | Import a point cloud from a PLY file |
-| [ImportStl](#nodebpy.nodes.geometry.ImportStl) | Import a mesh from an STL file |
+| [ImportCSV](#nodebpy.nodes.geometry.ImportCSV) | Import geometry from an CSV file |
+| [ImportOBJ](#nodebpy.nodes.geometry.ImportOBJ) | Import geometry from an OBJ file |
+| [ImportPLY](#nodebpy.nodes.geometry.ImportPLY) | Import a point cloud from a PLY file |
+| [ImportSTL](#nodebpy.nodes.geometry.ImportSTL) | Import a mesh from an STL file |
 | [ImportText](#nodebpy.nodes.geometry.ImportText) | Import a string from a text file |
-| [ImportVdb](#nodebpy.nodes.geometry.ImportVdb) | Import volume data from a .vdb file |
+| [ImportVDB](#nodebpy.nodes.geometry.ImportVDB) | Import volume data from a .vdb file |
 | [IndexOfNearest](#nodebpy.nodes.geometry.IndexOfNearest) | Find the nearest element in a group. Similar to the "Sample Nearest" node |
 | [InstanceOnPoints](#nodebpy.nodes.geometry.InstanceOnPoints) | Generate a reference to geometry at each of the input points, without duplicating its underlying data |
 | [InstanceTransform](#nodebpy.nodes.geometry.InstanceTransform) | Retrieve the full transformation of each instance in the geometry |
 | [InstancesToPoints](#nodebpy.nodes.geometry.InstancesToPoints) | Generate points at the origins of instances. |
 | [IsViewport](#nodebpy.nodes.geometry.IsViewport) | Retrieve whether the nodes are being evaluated for the viewport rather than the final render |
-| [JoinGeometry](#nodebpy.nodes.geometry.JoinGeometry) | Merge separately generated geometries into a single one |
 | [JoinStrings](#nodebpy.nodes.geometry.JoinStrings) | Combine any number of input strings |
 | [LinearGizmo](#nodebpy.nodes.geometry.LinearGizmo) | Show a linear gizmo in the viewport for a value |
 | [List](#nodebpy.nodes.geometry.List) | Create a list of values |
@@ -86,9 +85,9 @@ KNOWN LIMITATIONS:
 | [MousePosition](#nodebpy.nodes.geometry.MousePosition) | Retrieve the position of the mouse cursor |
 | [ObjectInfo](#nodebpy.nodes.geometry.ObjectInfo) | Retrieve information from an object |
 | [OffsetCornerInFace](#nodebpy.nodes.geometry.OffsetCornerInFace) | Retrieve corners in the same face as another |
-| [PackUvIslands](#nodebpy.nodes.geometry.PackUvIslands) | Scale islands of a UV map and move them so they fill the UV space as much as possible |
+| [PackUVIslands](#nodebpy.nodes.geometry.PackUVIslands) | Scale islands of a UV map and move them so they fill the UV space as much as possible |
 | [Points](#nodebpy.nodes.geometry.Points) | Generate a point cloud with positions and radii defined by fields |
-| [PointsToSdfGrid](#nodebpy.nodes.geometry.PointsToSdfGrid) | Create a signed distance volume grid from points |
+| [PointsToSDFGrid](#nodebpy.nodes.geometry.PointsToSDFGrid) | Create a signed distance volume grid from points |
 | [PointsToVertices](#nodebpy.nodes.geometry.PointsToVertices) | Generate a mesh vertex for each point cloud point |
 | [PointsToVolume](#nodebpy.nodes.geometry.PointsToVolume) | Generate a fog volume sphere around every point |
 | [PruneGrid](#nodebpy.nodes.geometry.PruneGrid) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes |
@@ -96,21 +95,21 @@ KNOWN LIMITATIONS:
 | [RealizeInstances](#nodebpy.nodes.geometry.RealizeInstances) | Convert instances into real geometry data |
 | [ReplaceMaterial](#nodebpy.nodes.geometry.ReplaceMaterial) | Swap one material with another |
 | [RotateInstances](#nodebpy.nodes.geometry.RotateInstances) | Rotate geometry instances in local or global space |
+| [SDFGridBoolean](#nodebpy.nodes.geometry.SDFGridBoolean) | Cut, subtract, or join multiple SDF volume grid inputs |
+| [SDFGridFillet](#nodebpy.nodes.geometry.SDFGridFillet) | Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces |
+| [SDFGridLaplacian](#nodebpy.nodes.geometry.SDFGridLaplacian) | Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization |
+| [SDFGridMean](#nodebpy.nodes.geometry.SDFGridMean) | Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field |
+| [SDFGridMeanCurvature](#nodebpy.nodes.geometry.SDFGridMeanCurvature) | Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas |
+| [SDFGridMedian](#nodebpy.nodes.geometry.SDFGridMedian) | Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field |
+| [SDFGridOffset](#nodebpy.nodes.geometry.SDFGridOffset) | Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property |
 | [SampleGrid](#nodebpy.nodes.geometry.SampleGrid) | Retrieve values from the specified volume grid |
 | [SampleGridIndex](#nodebpy.nodes.geometry.SampleGridIndex) | Retrieve volume grid values at specific voxels |
 | [SampleIndex](#nodebpy.nodes.geometry.SampleIndex) | Retrieve values from specific geometry elements |
 | [SampleNearest](#nodebpy.nodes.geometry.SampleNearest) | Find the element of a geometry closest to a position. Similar to the "Index of Nearest" node |
 | [SampleNearestSurface](#nodebpy.nodes.geometry.SampleNearestSurface) | Calculate the interpolated value of a mesh attribute on the closest point of its surface |
-| [SampleUvSurface](#nodebpy.nodes.geometry.SampleUvSurface) | Calculate the interpolated values of a mesh attribute at a UV coordinate |
+| [SampleUVSurface](#nodebpy.nodes.geometry.SampleUVSurface) | Calculate the interpolated values of a mesh attribute at a UV coordinate |
 | [ScaleElements](#nodebpy.nodes.geometry.ScaleElements) | Scale groups of connected edges and faces |
 | [ScaleInstances](#nodebpy.nodes.geometry.ScaleInstances) | Scale geometry instances in local or global space |
-| [SdfGridBoolean](#nodebpy.nodes.geometry.SdfGridBoolean) | Cut, subtract, or join multiple SDF volume grid inputs |
-| [SdfGridFillet](#nodebpy.nodes.geometry.SdfGridFillet) | Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces |
-| [SdfGridLaplacian](#nodebpy.nodes.geometry.SdfGridLaplacian) | Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization |
-| [SdfGridMean](#nodebpy.nodes.geometry.SdfGridMean) | Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field |
-| [SdfGridMeanCurvature](#nodebpy.nodes.geometry.SdfGridMeanCurvature) | Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas |
-| [SdfGridMedian](#nodebpy.nodes.geometry.SdfGridMedian) | Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field |
-| [SdfGridOffset](#nodebpy.nodes.geometry.SdfGridOffset) | Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property |
 | [Selection](#nodebpy.nodes.geometry.Selection) | User selection of the edited geometry, for tool execution |
 | [SelfObject](#nodebpy.nodes.geometry.SelfObject) | Retrieve the object that contains the geometry nodes modifier currently being executed |
 | [SeparateComponents](#nodebpy.nodes.geometry.SeparateComponents) | Split a geometry into a separate output for each type of data in the geometry |
@@ -122,7 +121,7 @@ KNOWN LIMITATIONS:
 | [SetGreasePencilSoftness](#nodebpy.nodes.geometry.SetGreasePencilSoftness) | Set softness attribute on Grease Pencil geometry |
 | [SetGridBackground](#nodebpy.nodes.geometry.SetGridBackground) | Set the background value used for inactive voxels and tiles |
 | [SetGridTransform](#nodebpy.nodes.geometry.SetGridTransform) | Set the transform for the grid from index space into object space. |
-| [SetId](#nodebpy.nodes.geometry.SetId) | Set the id attribute on the input geometry, mainly used internally for randomizing |
+| [SetID](#nodebpy.nodes.geometry.SetID) | Set the id attribute on the input geometry, mainly used internally for randomizing |
 | [SetInstanceTransform](#nodebpy.nodes.geometry.SetInstanceTransform) | Set the transformation matrix of every instance |
 | [SetMaterial](#nodebpy.nodes.geometry.SetMaterial) | Assign a material to geometry elements |
 | [SetMaterialIndex](#nodebpy.nodes.geometry.SetMaterialIndex) | Set the material index for each selected geometry element |
@@ -144,8 +143,8 @@ KNOWN LIMITATIONS:
 | [TransformGizmo](#nodebpy.nodes.geometry.TransformGizmo) | Show a transform gizmo in the viewport |
 | [TranslateInstances](#nodebpy.nodes.geometry.TranslateInstances) | Move top-level geometry instances in local or global space |
 | [Triangulate](#nodebpy.nodes.geometry.Triangulate) | Convert all faces in a mesh to triangular faces |
-| [UvTangent](#nodebpy.nodes.geometry.UvTangent) | Generate tangent directions based on a UV map |
-| [UvUnwrap](#nodebpy.nodes.geometry.UvUnwrap) | Generate a UV map based on seam edges |
+| [UVTangent](#nodebpy.nodes.geometry.UVTangent) | Generate tangent directions based on a UV map |
+| [UVUnwrap](#nodebpy.nodes.geometry.UVUnwrap) | Generate a UV map based on seam edges |
 | [VertexOfCorner](#nodebpy.nodes.geometry.VertexOfCorner) | Retrieve the vertex each face corner is attached to |
 | [Viewer](#nodebpy.nodes.geometry.Viewer) | Display the input data in the Spreadsheet Editor |
 | [ViewportTransform](#nodebpy.nodes.geometry.ViewportTransform) | Retrieve the view direction and location of the 3D viewport |
@@ -1034,10 +1033,10 @@ Sample values from an image texture
 | [o_alpha](#nodebpy.nodes.geometry.ImageTexture.o_alpha) | Output socket: Alpha |
 | [o_color](#nodebpy.nodes.geometry.ImageTexture.o_color) | Output socket: Color |
 
-### ImportCsv { #nodebpy.nodes.geometry.ImportCsv }
+### ImportCSV { #nodebpy.nodes.geometry.ImportCSV }
 
 ```python
-nodes.geometry.ImportCsv(path='', delimiter=',', **kwargs)
+nodes.geometry.ImportCSV(path='', delimiter=',', **kwargs)
 ```
 
 Import geometry from an CSV file
@@ -1046,14 +1045,14 @@ Import geometry from an CSV file
 
 | Name | Description |
 | --- | --- |
-| [i_delimiter](#nodebpy.nodes.geometry.ImportCsv.i_delimiter) | Input socket: Delimiter |
-| [i_path](#nodebpy.nodes.geometry.ImportCsv.i_path) | Input socket: Path |
-| [o_point_cloud](#nodebpy.nodes.geometry.ImportCsv.o_point_cloud) | Output socket: Point Cloud |
+| [i_delimiter](#nodebpy.nodes.geometry.ImportCSV.i_delimiter) | Input socket: Delimiter |
+| [i_path](#nodebpy.nodes.geometry.ImportCSV.i_path) | Input socket: Path |
+| [o_point_cloud](#nodebpy.nodes.geometry.ImportCSV.o_point_cloud) | Output socket: Point Cloud |
 
-### ImportObj { #nodebpy.nodes.geometry.ImportObj }
+### ImportOBJ { #nodebpy.nodes.geometry.ImportOBJ }
 
 ```python
-nodes.geometry.ImportObj(path='', **kwargs)
+nodes.geometry.ImportOBJ(path='', **kwargs)
 ```
 
 Import geometry from an OBJ file
@@ -1062,13 +1061,13 @@ Import geometry from an OBJ file
 
 | Name | Description |
 | --- | --- |
-| [i_path](#nodebpy.nodes.geometry.ImportObj.i_path) | Input socket: Path |
-| [o_instances](#nodebpy.nodes.geometry.ImportObj.o_instances) | Output socket: Instances |
+| [i_path](#nodebpy.nodes.geometry.ImportOBJ.i_path) | Input socket: Path |
+| [o_instances](#nodebpy.nodes.geometry.ImportOBJ.o_instances) | Output socket: Instances |
 
-### ImportPly { #nodebpy.nodes.geometry.ImportPly }
+### ImportPLY { #nodebpy.nodes.geometry.ImportPLY }
 
 ```python
-nodes.geometry.ImportPly(path='', **kwargs)
+nodes.geometry.ImportPLY(path='', **kwargs)
 ```
 
 Import a point cloud from a PLY file
@@ -1077,13 +1076,13 @@ Import a point cloud from a PLY file
 
 | Name | Description |
 | --- | --- |
-| [i_path](#nodebpy.nodes.geometry.ImportPly.i_path) | Input socket: Path |
-| [o_mesh](#nodebpy.nodes.geometry.ImportPly.o_mesh) | Output socket: Mesh |
+| [i_path](#nodebpy.nodes.geometry.ImportPLY.i_path) | Input socket: Path |
+| [o_mesh](#nodebpy.nodes.geometry.ImportPLY.o_mesh) | Output socket: Mesh |
 
-### ImportStl { #nodebpy.nodes.geometry.ImportStl }
+### ImportSTL { #nodebpy.nodes.geometry.ImportSTL }
 
 ```python
-nodes.geometry.ImportStl(path='', **kwargs)
+nodes.geometry.ImportSTL(path='', **kwargs)
 ```
 
 Import a mesh from an STL file
@@ -1092,8 +1091,8 @@ Import a mesh from an STL file
 
 | Name | Description |
 | --- | --- |
-| [i_path](#nodebpy.nodes.geometry.ImportStl.i_path) | Input socket: Path |
-| [o_mesh](#nodebpy.nodes.geometry.ImportStl.o_mesh) | Output socket: Mesh |
+| [i_path](#nodebpy.nodes.geometry.ImportSTL.i_path) | Input socket: Path |
+| [o_mesh](#nodebpy.nodes.geometry.ImportSTL.o_mesh) | Output socket: Mesh |
 
 ### ImportText { #nodebpy.nodes.geometry.ImportText }
 
@@ -1110,10 +1109,10 @@ Import a string from a text file
 | [i_path](#nodebpy.nodes.geometry.ImportText.i_path) | Input socket: Path |
 | [o_string](#nodebpy.nodes.geometry.ImportText.o_string) | Output socket: String |
 
-### ImportVdb { #nodebpy.nodes.geometry.ImportVdb }
+### ImportVDB { #nodebpy.nodes.geometry.ImportVDB }
 
 ```python
-nodes.geometry.ImportVdb(path='', **kwargs)
+nodes.geometry.ImportVDB(path='', **kwargs)
 ```
 
 Import volume data from a .vdb file
@@ -1122,8 +1121,8 @@ Import volume data from a .vdb file
 
 | Name | Description |
 | --- | --- |
-| [i_path](#nodebpy.nodes.geometry.ImportVdb.i_path) | Input socket: Path |
-| [o_volume](#nodebpy.nodes.geometry.ImportVdb.o_volume) | Output socket: Volume |
+| [i_path](#nodebpy.nodes.geometry.ImportVDB.i_path) | Input socket: Path |
+| [o_volume](#nodebpy.nodes.geometry.ImportVDB.o_volume) | Output socket: Volume |
 
 ### IndexOfNearest { #nodebpy.nodes.geometry.IndexOfNearest }
 
@@ -1224,21 +1223,6 @@ Retrieve whether the nodes are being evaluated for the viewport rather than the 
 | Name | Description |
 | --- | --- |
 | [o_is_viewport](#nodebpy.nodes.geometry.IsViewport.o_is_viewport) | Output socket: Is Viewport |
-
-### JoinGeometry { #nodebpy.nodes.geometry.JoinGeometry }
-
-```python
-nodes.geometry.JoinGeometry(geometry=None, **kwargs)
-```
-
-Merge separately generated geometries into a single one
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_geometry](#nodebpy.nodes.geometry.JoinGeometry.i_geometry) | Input socket: Geometry |
-| [o_geometry](#nodebpy.nodes.geometry.JoinGeometry.o_geometry) | Output socket: Geometry |
 
 ### JoinStrings { #nodebpy.nodes.geometry.JoinStrings }
 
@@ -1429,10 +1413,10 @@ Retrieve corners in the same face as another
 | [i_offset](#nodebpy.nodes.geometry.OffsetCornerInFace.i_offset) | Input socket: Offset |
 | [o_corner_index](#nodebpy.nodes.geometry.OffsetCornerInFace.o_corner_index) | Output socket: Corner Index |
 
-### PackUvIslands { #nodebpy.nodes.geometry.PackUvIslands }
+### PackUVIslands { #nodebpy.nodes.geometry.PackUVIslands }
 
 ```python
-nodes.geometry.PackUvIslands(
+nodes.geometry.PackUVIslands(
     uv=[0.0, 0.0, 0.0],
     selection=True,
     margin=0.0010000000474974513,
@@ -1448,12 +1432,12 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 
 | Name | Description |
 | --- | --- |
-| [i_margin](#nodebpy.nodes.geometry.PackUvIslands.i_margin) | Input socket: Margin |
-| [i_method](#nodebpy.nodes.geometry.PackUvIslands.i_method) | Input socket: Method |
-| [i_rotate](#nodebpy.nodes.geometry.PackUvIslands.i_rotate) | Input socket: Rotate |
-| [i_selection](#nodebpy.nodes.geometry.PackUvIslands.i_selection) | Input socket: Selection |
-| [i_uv](#nodebpy.nodes.geometry.PackUvIslands.i_uv) | Input socket: UV |
-| [o_uv](#nodebpy.nodes.geometry.PackUvIslands.o_uv) | Output socket: UV |
+| [i_margin](#nodebpy.nodes.geometry.PackUVIslands.i_margin) | Input socket: Margin |
+| [i_method](#nodebpy.nodes.geometry.PackUVIslands.i_method) | Input socket: Method |
+| [i_rotate](#nodebpy.nodes.geometry.PackUVIslands.i_rotate) | Input socket: Rotate |
+| [i_selection](#nodebpy.nodes.geometry.PackUVIslands.i_selection) | Input socket: Selection |
+| [i_uv](#nodebpy.nodes.geometry.PackUVIslands.i_uv) | Input socket: UV |
+| [o_uv](#nodebpy.nodes.geometry.PackUVIslands.o_uv) | Output socket: UV |
 
 ### Points { #nodebpy.nodes.geometry.Points }
 
@@ -1477,10 +1461,10 @@ Generate a point cloud with positions and radii defined by fields
 | [i_radius](#nodebpy.nodes.geometry.Points.i_radius) | Input socket: Radius |
 | [o_points](#nodebpy.nodes.geometry.Points.o_points) | Output socket: Points |
 
-### PointsToSdfGrid { #nodebpy.nodes.geometry.PointsToSdfGrid }
+### PointsToSDFGrid { #nodebpy.nodes.geometry.PointsToSDFGrid }
 
 ```python
-nodes.geometry.PointsToSdfGrid(
+nodes.geometry.PointsToSDFGrid(
     points=None,
     radius=0.5,
     voxel_size=0.30000001192092896,
@@ -1494,10 +1478,10 @@ Create a signed distance volume grid from points
 
 | Name | Description |
 | --- | --- |
-| [i_points](#nodebpy.nodes.geometry.PointsToSdfGrid.i_points) | Input socket: Points |
-| [i_radius](#nodebpy.nodes.geometry.PointsToSdfGrid.i_radius) | Input socket: Radius |
-| [i_voxel_size](#nodebpy.nodes.geometry.PointsToSdfGrid.i_voxel_size) | Input socket: Voxel Size |
-| [o_sdf_grid](#nodebpy.nodes.geometry.PointsToSdfGrid.o_sdf_grid) | Output socket: SDF Grid |
+| [i_points](#nodebpy.nodes.geometry.PointsToSDFGrid.i_points) | Input socket: Points |
+| [i_radius](#nodebpy.nodes.geometry.PointsToSDFGrid.i_radius) | Input socket: Radius |
+| [i_voxel_size](#nodebpy.nodes.geometry.PointsToSDFGrid.i_voxel_size) | Input socket: Voxel Size |
+| [o_sdf_grid](#nodebpy.nodes.geometry.PointsToSDFGrid.o_sdf_grid) | Output socket: SDF Grid |
 
 ### PointsToVertices { #nodebpy.nodes.geometry.PointsToVertices }
 
@@ -1666,6 +1650,157 @@ Rotate geometry instances in local or global space
 | [i_selection](#nodebpy.nodes.geometry.RotateInstances.i_selection) | Input socket: Selection |
 | [o_instances](#nodebpy.nodes.geometry.RotateInstances.o_instances) | Output socket: Instances |
 
+### SDFGridBoolean { #nodebpy.nodes.geometry.SDFGridBoolean }
+
+```python
+nodes.geometry.SDFGridBoolean(
+    grid_1=0.0,
+    grid_2=0.0,
+    operation='DIFFERENCE',
+    **kwargs,
+)
+```
+
+Cut, subtract, or join multiple SDF volume grid inputs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid_1](#nodebpy.nodes.geometry.SDFGridBoolean.i_grid_1) | Input socket: Grid 1 |
+| [i_grid_2](#nodebpy.nodes.geometry.SDFGridBoolean.i_grid_2) | Input socket: Grid 2 |
+| [o_grid](#nodebpy.nodes.geometry.SDFGridBoolean.o_grid) | Output socket: Grid |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [difference](#nodebpy.nodes.geometry.SDFGridBoolean.difference) | Create SDF Grid Boolean with operation 'Difference'. |
+| [intersect](#nodebpy.nodes.geometry.SDFGridBoolean.intersect) | Create SDF Grid Boolean with operation 'Intersect'. |
+| [union](#nodebpy.nodes.geometry.SDFGridBoolean.union) | Create SDF Grid Boolean with operation 'Union'. |
+
+##### difference { #nodebpy.nodes.geometry.SDFGridBoolean.difference }
+
+```python
+nodes.geometry.SDFGridBoolean.difference(grid_1=0.0, grid_2=0.0)
+```
+
+Create SDF Grid Boolean with operation 'Difference'.
+
+##### intersect { #nodebpy.nodes.geometry.SDFGridBoolean.intersect }
+
+```python
+nodes.geometry.SDFGridBoolean.intersect(grid_1=0.0, grid_2=0.0)
+```
+
+Create SDF Grid Boolean with operation 'Intersect'.
+
+##### union { #nodebpy.nodes.geometry.SDFGridBoolean.union }
+
+```python
+nodes.geometry.SDFGridBoolean.union(grid_1=0.0, grid_2=0.0)
+```
+
+Create SDF Grid Boolean with operation 'Union'.
+
+### SDFGridFillet { #nodebpy.nodes.geometry.SDFGridFillet }
+
+```python
+nodes.geometry.SDFGridFillet(grid=0.0, iterations=1, **kwargs)
+```
+
+Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.geometry.SDFGridFillet.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.geometry.SDFGridFillet.i_iterations) | Input socket: Iterations |
+| [o_grid](#nodebpy.nodes.geometry.SDFGridFillet.o_grid) | Output socket: Grid |
+
+### SDFGridLaplacian { #nodebpy.nodes.geometry.SDFGridLaplacian }
+
+```python
+nodes.geometry.SDFGridLaplacian(grid=0.0, iterations=1, **kwargs)
+```
+
+Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.geometry.SDFGridLaplacian.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.geometry.SDFGridLaplacian.i_iterations) | Input socket: Iterations |
+| [o_grid](#nodebpy.nodes.geometry.SDFGridLaplacian.o_grid) | Output socket: Grid |
+
+### SDFGridMean { #nodebpy.nodes.geometry.SDFGridMean }
+
+```python
+nodes.geometry.SDFGridMean(grid=0.0, width=1, iterations=1, **kwargs)
+```
+
+Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.geometry.SDFGridMean.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.geometry.SDFGridMean.i_iterations) | Input socket: Iterations |
+| [i_width](#nodebpy.nodes.geometry.SDFGridMean.i_width) | Input socket: Width |
+| [o_grid](#nodebpy.nodes.geometry.SDFGridMean.o_grid) | Output socket: Grid |
+
+### SDFGridMeanCurvature { #nodebpy.nodes.geometry.SDFGridMeanCurvature }
+
+```python
+nodes.geometry.SDFGridMeanCurvature(grid=0.0, iterations=1, **kwargs)
+```
+
+Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.geometry.SDFGridMeanCurvature.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.geometry.SDFGridMeanCurvature.i_iterations) | Input socket: Iterations |
+| [o_grid](#nodebpy.nodes.geometry.SDFGridMeanCurvature.o_grid) | Output socket: Grid |
+
+### SDFGridMedian { #nodebpy.nodes.geometry.SDFGridMedian }
+
+```python
+nodes.geometry.SDFGridMedian(grid=0.0, width=1, iterations=1, **kwargs)
+```
+
+Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.geometry.SDFGridMedian.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.geometry.SDFGridMedian.i_iterations) | Input socket: Iterations |
+| [i_width](#nodebpy.nodes.geometry.SDFGridMedian.i_width) | Input socket: Width |
+| [o_grid](#nodebpy.nodes.geometry.SDFGridMedian.o_grid) | Output socket: Grid |
+
+### SDFGridOffset { #nodebpy.nodes.geometry.SDFGridOffset }
+
+```python
+nodes.geometry.SDFGridOffset(grid=0.0, distance=0.10000000149011612, **kwargs)
+```
+
+Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_distance](#nodebpy.nodes.geometry.SDFGridOffset.i_distance) | Input socket: Distance |
+| [i_grid](#nodebpy.nodes.geometry.SDFGridOffset.i_grid) | Input socket: Grid |
+| [o_grid](#nodebpy.nodes.geometry.SDFGridOffset.o_grid) | Output socket: Grid |
+
 ### SampleGrid { #nodebpy.nodes.geometry.SampleGrid }
 
 ```python
@@ -1788,10 +1923,10 @@ Calculate the interpolated value of a mesh attribute on the closest point of its
 | [o_is_valid](#nodebpy.nodes.geometry.SampleNearestSurface.o_is_valid) | Output socket: Is Valid |
 | [o_value](#nodebpy.nodes.geometry.SampleNearestSurface.o_value) | Output socket: Value |
 
-### SampleUvSurface { #nodebpy.nodes.geometry.SampleUvSurface }
+### SampleUVSurface { #nodebpy.nodes.geometry.SampleUVSurface }
 
 ```python
-nodes.geometry.SampleUvSurface(
+nodes.geometry.SampleUVSurface(
     mesh=None,
     value=0.0,
     source_uv_map=[0.0, 0.0, 0.0],
@@ -1807,12 +1942,12 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 
 | Name | Description |
 | --- | --- |
-| [i_mesh](#nodebpy.nodes.geometry.SampleUvSurface.i_mesh) | Input socket: Mesh |
-| [i_sample_uv](#nodebpy.nodes.geometry.SampleUvSurface.i_sample_uv) | Input socket: Sample UV |
-| [i_uv_map](#nodebpy.nodes.geometry.SampleUvSurface.i_uv_map) | Input socket: UV Map |
-| [i_value](#nodebpy.nodes.geometry.SampleUvSurface.i_value) | Input socket: Value |
-| [o_is_valid](#nodebpy.nodes.geometry.SampleUvSurface.o_is_valid) | Output socket: Is Valid |
-| [o_value](#nodebpy.nodes.geometry.SampleUvSurface.o_value) | Output socket: Value |
+| [i_mesh](#nodebpy.nodes.geometry.SampleUVSurface.i_mesh) | Input socket: Mesh |
+| [i_sample_uv](#nodebpy.nodes.geometry.SampleUVSurface.i_sample_uv) | Input socket: Sample UV |
+| [i_uv_map](#nodebpy.nodes.geometry.SampleUVSurface.i_uv_map) | Input socket: UV Map |
+| [i_value](#nodebpy.nodes.geometry.SampleUVSurface.i_value) | Input socket: Value |
+| [o_is_valid](#nodebpy.nodes.geometry.SampleUVSurface.o_is_valid) | Output socket: Is Valid |
+| [o_value](#nodebpy.nodes.geometry.SampleUVSurface.o_value) | Output socket: Value |
 
 ### ScaleElements { #nodebpy.nodes.geometry.ScaleElements }
 
@@ -1868,157 +2003,6 @@ Scale geometry instances in local or global space
 | [i_scale](#nodebpy.nodes.geometry.ScaleInstances.i_scale) | Input socket: Scale |
 | [i_selection](#nodebpy.nodes.geometry.ScaleInstances.i_selection) | Input socket: Selection |
 | [o_instances](#nodebpy.nodes.geometry.ScaleInstances.o_instances) | Output socket: Instances |
-
-### SdfGridBoolean { #nodebpy.nodes.geometry.SdfGridBoolean }
-
-```python
-nodes.geometry.SdfGridBoolean(
-    grid_1=0.0,
-    grid_2=0.0,
-    operation='DIFFERENCE',
-    **kwargs,
-)
-```
-
-Cut, subtract, or join multiple SDF volume grid inputs
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_grid_1](#nodebpy.nodes.geometry.SdfGridBoolean.i_grid_1) | Input socket: Grid 1 |
-| [i_grid_2](#nodebpy.nodes.geometry.SdfGridBoolean.i_grid_2) | Input socket: Grid 2 |
-| [o_grid](#nodebpy.nodes.geometry.SdfGridBoolean.o_grid) | Output socket: Grid |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [difference](#nodebpy.nodes.geometry.SdfGridBoolean.difference) | Create SDF Grid Boolean with operation 'Difference'. |
-| [intersect](#nodebpy.nodes.geometry.SdfGridBoolean.intersect) | Create SDF Grid Boolean with operation 'Intersect'. |
-| [union](#nodebpy.nodes.geometry.SdfGridBoolean.union) | Create SDF Grid Boolean with operation 'Union'. |
-
-##### difference { #nodebpy.nodes.geometry.SdfGridBoolean.difference }
-
-```python
-nodes.geometry.SdfGridBoolean.difference(grid_1=0.0, grid_2=0.0)
-```
-
-Create SDF Grid Boolean with operation 'Difference'.
-
-##### intersect { #nodebpy.nodes.geometry.SdfGridBoolean.intersect }
-
-```python
-nodes.geometry.SdfGridBoolean.intersect(grid_1=0.0, grid_2=0.0)
-```
-
-Create SDF Grid Boolean with operation 'Intersect'.
-
-##### union { #nodebpy.nodes.geometry.SdfGridBoolean.union }
-
-```python
-nodes.geometry.SdfGridBoolean.union(grid_1=0.0, grid_2=0.0)
-```
-
-Create SDF Grid Boolean with operation 'Union'.
-
-### SdfGridFillet { #nodebpy.nodes.geometry.SdfGridFillet }
-
-```python
-nodes.geometry.SdfGridFillet(grid=0.0, iterations=1, **kwargs)
-```
-
-Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_grid](#nodebpy.nodes.geometry.SdfGridFillet.i_grid) | Input socket: Grid |
-| [i_iterations](#nodebpy.nodes.geometry.SdfGridFillet.i_iterations) | Input socket: Iterations |
-| [o_grid](#nodebpy.nodes.geometry.SdfGridFillet.o_grid) | Output socket: Grid |
-
-### SdfGridLaplacian { #nodebpy.nodes.geometry.SdfGridLaplacian }
-
-```python
-nodes.geometry.SdfGridLaplacian(grid=0.0, iterations=1, **kwargs)
-```
-
-Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_grid](#nodebpy.nodes.geometry.SdfGridLaplacian.i_grid) | Input socket: Grid |
-| [i_iterations](#nodebpy.nodes.geometry.SdfGridLaplacian.i_iterations) | Input socket: Iterations |
-| [o_grid](#nodebpy.nodes.geometry.SdfGridLaplacian.o_grid) | Output socket: Grid |
-
-### SdfGridMean { #nodebpy.nodes.geometry.SdfGridMean }
-
-```python
-nodes.geometry.SdfGridMean(grid=0.0, width=1, iterations=1, **kwargs)
-```
-
-Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_grid](#nodebpy.nodes.geometry.SdfGridMean.i_grid) | Input socket: Grid |
-| [i_iterations](#nodebpy.nodes.geometry.SdfGridMean.i_iterations) | Input socket: Iterations |
-| [i_width](#nodebpy.nodes.geometry.SdfGridMean.i_width) | Input socket: Width |
-| [o_grid](#nodebpy.nodes.geometry.SdfGridMean.o_grid) | Output socket: Grid |
-
-### SdfGridMeanCurvature { #nodebpy.nodes.geometry.SdfGridMeanCurvature }
-
-```python
-nodes.geometry.SdfGridMeanCurvature(grid=0.0, iterations=1, **kwargs)
-```
-
-Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_grid](#nodebpy.nodes.geometry.SdfGridMeanCurvature.i_grid) | Input socket: Grid |
-| [i_iterations](#nodebpy.nodes.geometry.SdfGridMeanCurvature.i_iterations) | Input socket: Iterations |
-| [o_grid](#nodebpy.nodes.geometry.SdfGridMeanCurvature.o_grid) | Output socket: Grid |
-
-### SdfGridMedian { #nodebpy.nodes.geometry.SdfGridMedian }
-
-```python
-nodes.geometry.SdfGridMedian(grid=0.0, width=1, iterations=1, **kwargs)
-```
-
-Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_grid](#nodebpy.nodes.geometry.SdfGridMedian.i_grid) | Input socket: Grid |
-| [i_iterations](#nodebpy.nodes.geometry.SdfGridMedian.i_iterations) | Input socket: Iterations |
-| [i_width](#nodebpy.nodes.geometry.SdfGridMedian.i_width) | Input socket: Width |
-| [o_grid](#nodebpy.nodes.geometry.SdfGridMedian.o_grid) | Output socket: Grid |
-
-### SdfGridOffset { #nodebpy.nodes.geometry.SdfGridOffset }
-
-```python
-nodes.geometry.SdfGridOffset(grid=0.0, distance=0.10000000149011612, **kwargs)
-```
-
-Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_distance](#nodebpy.nodes.geometry.SdfGridOffset.i_distance) | Input socket: Distance |
-| [i_grid](#nodebpy.nodes.geometry.SdfGridOffset.i_grid) | Input socket: Grid |
-| [o_grid](#nodebpy.nodes.geometry.SdfGridOffset.o_grid) | Output socket: Grid |
 
 ### Selection { #nodebpy.nodes.geometry.Selection }
 
@@ -2233,10 +2217,10 @@ Set the transform for the grid from index space into object space.
 | [o_grid](#nodebpy.nodes.geometry.SetGridTransform.o_grid) | Output socket: Grid |
 | [o_is_valid](#nodebpy.nodes.geometry.SetGridTransform.o_is_valid) | Output socket: Is Valid |
 
-### SetId { #nodebpy.nodes.geometry.SetId }
+### SetID { #nodebpy.nodes.geometry.SetID }
 
 ```python
-nodes.geometry.SetId(geometry=None, selection=True, id=0, **kwargs)
+nodes.geometry.SetID(geometry=None, selection=True, id=0, **kwargs)
 ```
 
 Set the id attribute on the input geometry, mainly used internally for randomizing
@@ -2245,10 +2229,10 @@ Set the id attribute on the input geometry, mainly used internally for randomizi
 
 | Name | Description |
 | --- | --- |
-| [i_geometry](#nodebpy.nodes.geometry.SetId.i_geometry) | Input socket: Geometry |
-| [i_id](#nodebpy.nodes.geometry.SetId.i_id) | Input socket: ID |
-| [i_selection](#nodebpy.nodes.geometry.SetId.i_selection) | Input socket: Selection |
-| [o_geometry](#nodebpy.nodes.geometry.SetId.o_geometry) | Output socket: Geometry |
+| [i_geometry](#nodebpy.nodes.geometry.SetID.i_geometry) | Input socket: Geometry |
+| [i_id](#nodebpy.nodes.geometry.SetID.i_id) | Input socket: ID |
+| [i_selection](#nodebpy.nodes.geometry.SetID.i_selection) | Input socket: Selection |
+| [o_geometry](#nodebpy.nodes.geometry.SetID.o_geometry) | Output socket: Geometry |
 
 ### SetInstanceTransform { #nodebpy.nodes.geometry.SetInstanceTransform }
 
@@ -2730,10 +2714,10 @@ Convert all faces in a mesh to triangular faces
 | [i_selection](#nodebpy.nodes.geometry.Triangulate.i_selection) | Input socket: Selection |
 | [o_mesh](#nodebpy.nodes.geometry.Triangulate.o_mesh) | Output socket: Mesh |
 
-### UvTangent { #nodebpy.nodes.geometry.UvTangent }
+### UVTangent { #nodebpy.nodes.geometry.UVTangent }
 
 ```python
-nodes.geometry.UvTangent(method='Exact', uv=[0.0, 0.0], **kwargs)
+nodes.geometry.UVTangent(method='Exact', uv=[0.0, 0.0], **kwargs)
 ```
 
 Generate tangent directions based on a UV map
@@ -2742,14 +2726,14 @@ Generate tangent directions based on a UV map
 
 | Name | Description |
 | --- | --- |
-| [i_method](#nodebpy.nodes.geometry.UvTangent.i_method) | Input socket: Method |
-| [i_uv](#nodebpy.nodes.geometry.UvTangent.i_uv) | Input socket: UV |
-| [o_tangent](#nodebpy.nodes.geometry.UvTangent.o_tangent) | Output socket: Tangent |
+| [i_method](#nodebpy.nodes.geometry.UVTangent.i_method) | Input socket: Method |
+| [i_uv](#nodebpy.nodes.geometry.UVTangent.i_uv) | Input socket: UV |
+| [o_tangent](#nodebpy.nodes.geometry.UVTangent.o_tangent) | Output socket: Tangent |
 
-### UvUnwrap { #nodebpy.nodes.geometry.UvUnwrap }
+### UVUnwrap { #nodebpy.nodes.geometry.UVUnwrap }
 
 ```python
-nodes.geometry.UvUnwrap(
+nodes.geometry.UVUnwrap(
     selection=True,
     seam=False,
     margin=0.0010000000474974513,
@@ -2765,12 +2749,12 @@ Generate a UV map based on seam edges
 
 | Name | Description |
 | --- | --- |
-| [i_fill_holes](#nodebpy.nodes.geometry.UvUnwrap.i_fill_holes) | Input socket: Fill Holes |
-| [i_margin](#nodebpy.nodes.geometry.UvUnwrap.i_margin) | Input socket: Margin |
-| [i_method](#nodebpy.nodes.geometry.UvUnwrap.i_method) | Input socket: Method |
-| [i_seam](#nodebpy.nodes.geometry.UvUnwrap.i_seam) | Input socket: Seam |
-| [i_selection](#nodebpy.nodes.geometry.UvUnwrap.i_selection) | Input socket: Selection |
-| [o_uv](#nodebpy.nodes.geometry.UvUnwrap.o_uv) | Output socket: UV |
+| [i_fill_holes](#nodebpy.nodes.geometry.UVUnwrap.i_fill_holes) | Input socket: Fill Holes |
+| [i_margin](#nodebpy.nodes.geometry.UVUnwrap.i_margin) | Input socket: Margin |
+| [i_method](#nodebpy.nodes.geometry.UVUnwrap.i_method) | Input socket: Method |
+| [i_seam](#nodebpy.nodes.geometry.UVUnwrap.i_seam) | Input socket: Seam |
+| [i_selection](#nodebpy.nodes.geometry.UVUnwrap.i_selection) | Input socket: Selection |
+| [o_uv](#nodebpy.nodes.geometry.UVUnwrap.o_uv) | Output socket: UV |
 
 ### VertexOfCorner { #nodebpy.nodes.geometry.VertexOfCorner }
 

@@ -2661,7 +2661,7 @@ class ImageTexture(NodeBuilder):
         self.node.extension = value
 
 
-class ImportCsv(NodeBuilder):
+class ImportCSV(NodeBuilder):
     """Import geometry from an CSV file"""
 
     name = "GeometryNodeImportCSV"
@@ -2695,7 +2695,7 @@ class ImportCsv(NodeBuilder):
         return self._output("Point Cloud")
 
 
-class ImportObj(NodeBuilder):
+class ImportOBJ(NodeBuilder):
     """Import geometry from an OBJ file"""
 
     name = "GeometryNodeImportOBJ"
@@ -2719,7 +2719,7 @@ class ImportObj(NodeBuilder):
         return self._output("Instances")
 
 
-class ImportPly(NodeBuilder):
+class ImportPLY(NodeBuilder):
     """Import a point cloud from a PLY file"""
 
     name = "GeometryNodeImportPLY"
@@ -2743,7 +2743,7 @@ class ImportPly(NodeBuilder):
         return self._output("Mesh")
 
 
-class ImportStl(NodeBuilder):
+class ImportSTL(NodeBuilder):
     """Import a mesh from an STL file"""
 
     name = "GeometryNodeImportSTL"
@@ -2791,7 +2791,7 @@ class ImportText(NodeBuilder):
         return self._output("String")
 
 
-class ImportVdb(NodeBuilder):
+class ImportVDB(NodeBuilder):
     """Import volume data from a .vdb file"""
 
     name = "GeometryNodeImportVDB"
@@ -3578,7 +3578,7 @@ class Points(NodeBuilder):
         return self._output("Geometry")
 
 
-class PointsToSdfGrid(NodeBuilder):
+class PointsToSDFGrid(NodeBuilder):
     """Create a signed distance volume grid from points"""
 
     name = "GeometryNodePointsToSDFGrid"
@@ -4074,7 +4074,7 @@ class RotateInstances(NodeBuilder):
         return self._output("Instances")
 
 
-class SdfGridBoolean(NodeBuilder):
+class SDFGridBoolean(NodeBuilder):
     """Cut, subtract, or join multiple SDF volume grid inputs"""
 
     name = "GeometryNodeSDFGridBoolean"
@@ -4098,7 +4098,7 @@ class SdfGridBoolean(NodeBuilder):
         cls,
         grid_1: float | LINKABLE | None = 0.0,
         grid_2: float | LINKABLE | None = 0.0,
-    ) -> "SdfGridBoolean":
+    ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Intersect'."""
         return cls(operation="INTERSECT", grid_1=grid_1, grid_2=grid_2)
 
@@ -4107,7 +4107,7 @@ class SdfGridBoolean(NodeBuilder):
         cls,
         grid_1: float | LINKABLE | None = 0.0,
         grid_2: float | LINKABLE | None = 0.0,
-    ) -> "SdfGridBoolean":
+    ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Union'."""
         return cls(operation="UNION", grid_1=grid_1, grid_2=grid_2)
 
@@ -4116,7 +4116,7 @@ class SdfGridBoolean(NodeBuilder):
         cls,
         grid_1: float | LINKABLE | None = 0.0,
         grid_2: float | LINKABLE | None = 0.0,
-    ) -> "SdfGridBoolean":
+    ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         return cls(operation="DIFFERENCE", grid_1=grid_1, grid_2=grid_2)
 
@@ -4144,7 +4144,7 @@ class SdfGridBoolean(NodeBuilder):
         self.node.operation = value
 
 
-class SdfGridFillet(NodeBuilder):
+class SDFGridFillet(NodeBuilder):
     """Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces"""
 
     name = "GeometryNodeSDFGridFillet"
@@ -4178,7 +4178,7 @@ class SdfGridFillet(NodeBuilder):
         return self._output("Grid")
 
 
-class SdfGridLaplacian(NodeBuilder):
+class SDFGridLaplacian(NodeBuilder):
     """Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization"""
 
     name = "GeometryNodeSDFGridLaplacian"
@@ -4212,7 +4212,7 @@ class SdfGridLaplacian(NodeBuilder):
         return self._output("Grid")
 
 
-class SdfGridMean(NodeBuilder):
+class SDFGridMean(NodeBuilder):
     """Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field"""
 
     name = "GeometryNodeSDFGridMean"
@@ -4252,7 +4252,7 @@ class SdfGridMean(NodeBuilder):
         return self._output("Grid")
 
 
-class SdfGridMeanCurvature(NodeBuilder):
+class SDFGridMeanCurvature(NodeBuilder):
     """Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas"""
 
     name = "GeometryNodeSDFGridMeanCurvature"
@@ -4286,7 +4286,7 @@ class SdfGridMeanCurvature(NodeBuilder):
         return self._output("Grid")
 
 
-class SdfGridMedian(NodeBuilder):
+class SDFGridMedian(NodeBuilder):
     """Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field"""
 
     name = "GeometryNodeSDFGridMedian"
@@ -4326,7 +4326,7 @@ class SdfGridMedian(NodeBuilder):
         return self._output("Grid")
 
 
-class SdfGridOffset(NodeBuilder):
+class SDFGridOffset(NodeBuilder):
     """Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property"""
 
     name = "GeometryNodeSDFGridOffset"
@@ -4873,7 +4873,7 @@ class SampleNearestSurface(NodeBuilder):
         self.node.data_type = value
 
 
-class SampleUvSurface(NodeBuilder):
+class SampleUVSurface(NodeBuilder):
     """Calculate the interpolated values of a mesh attribute at a UV coordinate"""
 
     name = "GeometryNodeSampleUVSurface"
@@ -5628,7 +5628,7 @@ class SetGridTransform(NodeBuilder):
         self.node.data_type = value
 
 
-class SetId(NodeBuilder):
+class SetID(NodeBuilder):
     """Set the id attribute on the input geometry, mainly used internally for randomizing"""
 
     name = "GeometryNodeSetID"
@@ -6926,7 +6926,7 @@ class Triangulate(NodeBuilder):
         return self._output("Mesh")
 
 
-class PackUvIslands(NodeBuilder):
+class PackUVIslands(NodeBuilder):
     """Scale islands of a UV map and move them so they fill the UV space as much as possible"""
 
     name = "GeometryNodeUVPackIslands"
@@ -6984,7 +6984,7 @@ class PackUvIslands(NodeBuilder):
         return self._output("UV")
 
 
-class UvTangent(NodeBuilder):
+class UVTangent(NodeBuilder):
     """Generate tangent directions based on a UV map"""
 
     name = "GeometryNodeUVTangent"
@@ -7018,7 +7018,7 @@ class UvTangent(NodeBuilder):
         return self._output("Tangent")
 
 
-class UvUnwrap(NodeBuilder):
+class UVUnwrap(NodeBuilder):
     """Generate a UV map based on seam edges"""
 
     name = "GeometryNodeUVUnwrap"

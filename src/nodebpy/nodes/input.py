@@ -15,7 +15,9 @@ KNOWN LIMITATIONS:
 """
 
 from __future__ import annotations
+
 import bpy
+
 from ..builder import NodeBuilder, NodeSocket
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN
 
@@ -272,7 +274,7 @@ class IsEdgeSmooth(NodeBuilder):
         return self._output("Smooth")
 
 
-class Id(NodeBuilder):
+class ID(NodeBuilder):
     """Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist"""
 
     name = "GeometryNodeInputID"

@@ -26,7 +26,7 @@ def test_capture_attribute():
 
 def test_join_geometry():
     with TreeBuilder("TestJoinGeometry") as tree:
-        items = [n.Cube(), n.UvSphere(), n.Cone(), n.Cylinder(), n.Grid()]
+        items = [n.Cube(), n.UVSphere(), n.Cone(), n.Cylinder(), n.Grid()]
         join = n.JoinGeometry(geometry=items)
 
     assert "Join Geometry" in tree.nodes
