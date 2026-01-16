@@ -38,4 +38,9 @@ quartodoc:
     - title: Some functions
       desc: Functions to inspect docstrings.
       contents:
-        - name: nodes.geometry
+        - nodes.geometry
+        - nodes.attribute
+        - nodes.curve
+        - nodes.input
+        - nodes.mesh
+        - nodes.utilities

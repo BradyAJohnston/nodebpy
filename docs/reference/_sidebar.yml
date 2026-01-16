@@ -4,6 +4,11 @@ website:
     - reference/index.qmd
     - contents:
       - reference/nodes.geometry.qmd
+      - reference/nodes.attribute.qmd
+      - reference/nodes.curve.qmd
+      - reference/nodes.input.qmd
+      - reference/nodes.mesh.qmd
+      - reference/nodes.utilities.qmd
       section: Some functions
     id: reference
   - id: dummy-sidebar

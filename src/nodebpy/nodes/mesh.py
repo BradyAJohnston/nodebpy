@@ -15,8 +15,10 @@ KNOWN LIMITATIONS:
 """
 
 from __future__ import annotations
+
 import bpy
 from typing_extensions import Literal
+
 from ..builder import NodeBuilder, NodeSocket
 from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
 
@@ -1092,7 +1094,7 @@ class MeshToPoints(NodeBuilder):
         self.node.mode = value
 
 
-class MeshToSdfGrid(NodeBuilder):
+class MeshToSDFGrid(NodeBuilder):
     """Create a signed distance volume grid from a mesh"""
 
     name = "GeometryNodeMeshToSDFGrid"
@@ -1197,7 +1199,7 @@ class MeshToVolume(NodeBuilder):
         return self._output("Volume")
 
 
-class UvSphere(NodeBuilder):
+class UVSphere(NodeBuilder):
     """Generate a spherical mesh with quads, except for triangles at the top and bottom"""
 
     name = "GeometryNodeMeshUVSphere"
