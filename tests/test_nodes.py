@@ -103,21 +103,21 @@ def test_format_string():
 
 def test_field_to_grid():
     with TreeBuilder() as tree:
-        inputs = [
-            n.Vector(),
-            n.Value(),
-            n.Boolean(),
-            n.Integer(),
-        ]
+        # the rotation value should add a vector item as the next available compatible data type
+        inputs = [n.Vector(), n.Value(), n.Boolean(), n.Integer(), n.Rotation()]
+        math = n.Math.add()
 
-        ftg = nodebpy.nodes.grid.FieldToGrid(*inputs, test=n.Value())
-        _ = ftg.output_sockets["test"] >> n.Math.add()
+        ftg = n.FieldToGrid(*inputs, test=n.Value())
+        _ = ftg.output_sockets["test"] >> math
 
-    assert len(tree.nodes) == 7
-    assert len(ftg.node.grid_items) == 5
-    assert ftg.node.grid_items[4].name == "test"
+    assert len(tree.nodes) == 8
+    assert len(ftg.node.grid_items) == 6
+    assert ftg.node.grid_items[5].name == "test"
+    assert ftg.output_sockets["test"].socket.links[0].to_socket.node == math.node
     assert all(
         [i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs]
     )
-    for i, item in enumerate(ftg.node.grid_items):
-        assert item.data_type == ["VECTOR", "FLOAT", "BOOLEAN", "INT", "FLOAT"][i]
+    for item, type in zip(
+        ftg.node.grid_items, ["VECTOR", "FLOAT", "BOOLEAN", "INT", "VECTOR", "FLOAT"]
+    ):
+        assert item.data_type == type

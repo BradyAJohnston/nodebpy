@@ -1,18 +1,17 @@
+import bpy
+from typing_extensions import Literal
+
 from nodebpy.builder import NodeBuilder, SocketLinker
 
-
-import bpy
 from .types import (
+    LINKABLE,
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_GEOMETRY,
+    TYPE_INPUT_INT,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_GEOMETRY,
     _GridDataTypes,
-    LINKABLE,
 )
-
-
-from typing_extensions import Literal
 
 
 class DistributePointsInGrid(NodeBuilder):
@@ -147,7 +146,24 @@ class DistributePointsInVolume(NodeBuilder):
 
 
 class FieldToGrid(NodeBuilder):
-    """Create new grids by evaluating new values on an existing volume grid topology"""
+    """Create new grids by evaluating new values on an existing volume grid topology
+
+    New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
+
+    Data types are inferred automatically from the closest compatible data type.
+
+    Inputs:
+    -------
+    topology: LINKABLE
+        The grid which contains the topology to evaluate the different fields on.
+    data_type: _GridDataTypes = "FLOAT"
+        The data type of the grid to evaluate on. Possible values are "FLOAT", "INT", "VECTOR", "BOOLEAN".
+    *args: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_BOOLEAN
+        The fields to evaluate on the grid.
+    **kwargs: dict[str, TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_GEOMETRY]
+        The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.
+
+    """
 
     name = "GeometryNodeFieldToGrid"
     node: bpy.types.GeometryNodeFieldToGrid
@@ -155,10 +171,16 @@ class FieldToGrid(NodeBuilder):
 
     def __init__(
         self,
-        *args,
+        *args: TYPE_INPUT_VALUE
+        | TYPE_INPUT_VECTOR
+        | TYPE_INPUT_INT
+        | TYPE_INPUT_BOOLEAN,
         topology: LINKABLE = None,
         data_type: _GridDataTypes = "FLOAT",
-        **kwargs,
+        **kwargs: dict[
+            str,
+            TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_BOOLEAN,
+        ],
     ):
         super().__init__()
         self.data_type = data_type
