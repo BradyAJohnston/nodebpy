@@ -121,3 +121,14 @@ def test_field_to_grid():
         ftg.node.grid_items, ["VECTOR", "FLOAT", "BOOLEAN", "INT", "VECTOR", "FLOAT"]
     ):
         assert item.data_type == type
+
+
+def test_geometry_to_instance():
+    with TreeBuilder() as tree:
+        inputs = [n.Cube(), n.UVSphere(), n.IcoSphere(), n.Cone()]
+        gti = nodebpy.nodes.geometry.GeometryToInstance(*inputs)
+
+    assert len(tree.nodes) == 5
+    assert len(gti.node.inputs[0].links) == 4
+    assert gti._default_input_socket.links[2].from_node == inputs[2].node
+    assert gti._default_input_socket.links[1].from_node == inputs[1].node

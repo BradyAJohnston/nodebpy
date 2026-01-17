@@ -322,3 +322,54 @@ class DuplicateElements(NodeBuilder):
     @domain.setter
     def domain(self, value: _DuplicateElementsDomains):
         self.node.domain = value
+
+
+class FlipFaces(NodeBuilder):
+    """Reverse the order of the vertices and edges of selected faces, flipping their normal direction"""
+
+    name = "GeometryNodeFlipFaces"
+    node: bpy.types.GeometryNodeFlipFaces
+
+    def __init__(
+        self, mesh: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = None
+    ):
+        super().__init__()
+        key_args = {"Mesh": mesh, "Selection": selection}
+        self._establish_links(**key_args)
+
+    @property
+    def i_mesh(self) -> SocketLinker:
+        """Input socket: Mesh"""
+        return self._input("Mesh")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def o_mesh(self) -> SocketLinker:
+        """Output socket: Mesh"""
+        return self._output("Mesh")
+
+
+class GeometryToInstance(NodeBuilder):
+    """Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large"""
+
+    name = "GeometryNodeGeometryToInstance"
+    node: bpy.types.GeometryNodeGeometryToInstance
+
+    def __init__(self, *args: TYPE_INPUT_GEOMETRY):
+        super().__init__()
+        for arg in reversed(args):
+            self.link_from(arg, "Geometry")
+
+    @property
+    def i_geometry(self) -> SocketLinker:
+        """Input socket: Geometry"""
+        return self._input("Geometry")
+
+    @property
+    def o_instances(self) -> SocketLinker:
+        """Output socket: Instances"""
+        return self._output("Instances")

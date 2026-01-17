@@ -18,6 +18,7 @@ from .nodes.types import (
     LINKABLE,
     SOCKET_COMPATIBILITY,
     SOCKET_TYPES,
+    TYPE_INPUT_ALL,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
     StringInterfaceSubtypes,
@@ -50,7 +51,7 @@ def denormalize_name(attr_name: str) -> str:
     return attr_name.replace("_", " ").title()
 
 
-def source_socket(node: LINKABLE) -> NodeSocket:
+def source_socket(node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
     assert node
     if isinstance(node, NodeSocket):
         return node
@@ -62,7 +63,7 @@ def source_socket(node: LINKABLE) -> NodeSocket:
         raise TypeError(f"Unsupported type: {type(node)}")
 
 
-def target_socket(node: LINKABLE) -> NodeSocket:
+def target_socket(node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
     assert node
     if isinstance(node, NodeSocket):
         return node
@@ -346,13 +347,17 @@ class NodeBuilder:
         """Output socket: Vector"""
         return SocketLinker(self.node.outputs[self._output_idx(identifier)])
 
-    def link(self, source: LINKABLE, target: LINKABLE):
+    def link(self, source: LINKABLE | SocketLinker | NodeSocket, target: LINKABLE):
         self.tree.link(source_socket(source), target_socket(target))
 
     def link_to(self, target: LINKABLE):
         self.tree.link(self._default_output_socket, target_socket(target))
 
-    def link_from(self, source: LINKABLE, input: "LINKABLE | str"):
+    def link_from(
+        self,
+        source: LINKABLE | SocketLinker | NodeSocket,
+        input: LINKABLE | SocketLinker | str,
+    ):
         if isinstance(input, str):
             try:
                 self.link(source, self.node.inputs[input])
@@ -408,7 +413,7 @@ class NodeBuilder:
             f"Available input types: {available_types}"
         )
 
-    def _establish_links(self, **kwargs):
+    def _establish_links(self, **kwargs: TYPE_INPUT_ALL):
         input_ids = [input.identifier for input in self.node.inputs]
         for name, value in kwargs.items():
             if value is None:

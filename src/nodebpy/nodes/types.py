@@ -60,6 +60,19 @@ TYPE_INPUT_IMAGE = typing.Union[LINKABLE, NodeSocketImage]
 TYPE_INPUT_COLLECTION = typing.Union[LINKABLE, NodeSocketCollection]
 TYPE_INPUT_MATRIX = typing.Union[LINKABLE, NodeSocketMatrix]
 
+TYPE_INPUT_ALL = typing.Union[
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_STRING,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_GEOMETRY,
+    TYPE_INPUT_OBJECT,
+    TYPE_INPUT_MATERIAL,
+    TYPE_INPUT_IMAGE,
+    TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_MATRIX,
+]
+
 _AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
 
 _AttributeDomains = typing.Literal[

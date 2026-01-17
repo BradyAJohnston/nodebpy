@@ -6,6 +6,8 @@ from .geometry import (
     DeleteGeometry,
     DistributePointsOnFaces,
     DuplicateElements,
+    FlipFaces,
+    GeometryToInstance,
     JoinGeometry,
 )
 from . import (
@@ -106,10 +108,7 @@ from .geometry_auto import (
     DCursor3,
     DialGizmo,
     FaceSet,
-    FlipFaces,
-    ForEachGeometryElementOutput,
     GeometryProximity,
-    GeometryToInstance,
     GetListItem,
     GetNamedGrid,
     GridCurl,
@@ -315,7 +314,7 @@ from .utilities import (
     TransposeMatrix,
     ValueToString,
 )
-from .zone import ForEachGeometryElementInput
+from .zone import ForEachGeometryElementInput, ForEachGeometryElementOutput
 
 __all__ = [
     # modules"
