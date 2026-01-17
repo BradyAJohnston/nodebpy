@@ -460,7 +460,27 @@ class NodeBuilder:
             if other._link_target is not None:
                 socket_in = self._get_input_socket_by_name(other, other._link_target)
             else:
-                socket_in = self._find_best_compatible_socket(other, socket_out)
+                # First attempt: Try to link from our default output socket
+                try:
+                    socket_in = self._find_best_compatible_socket(other, socket_out)
+                except RuntimeError:
+                    # Second attempt: Try to find another output socket from our node that works
+                    found_compatible = False
+                    for output_socket in self.node.outputs:
+                        try:
+                            socket_in = self._find_best_compatible_socket(other, output_socket)
+                            socket_out = output_socket  # Update to use this output instead
+                            found_compatible = True
+                            break
+                        except RuntimeError:
+                            continue
+                    
+                    # If no compatible output found, raise the original error
+                    if not found_compatible:
+                        raise RuntimeError(
+                            f"Cannot link any output from {self.node.name} to any input of {other.node.name}. "
+                            f"No compatible socket types found."
+                        )
 
         self.tree.link(socket_out, socket_in)
         return other

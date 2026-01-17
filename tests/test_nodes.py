@@ -132,3 +132,14 @@ def test_geometry_to_instance():
     assert len(gti.node.inputs[0].links) == 4
     assert gti._default_input_socket.links[2].from_node == inputs[2].node
     assert gti._default_input_socket.links[1].from_node == inputs[1].node
+
+
+def test_get_named_grid(snapshot_tree):
+    with TreeBuilder() as tree:
+        ftg = (
+            n.VolumeCube()
+            >> n.GetNamedGrid(name="density")
+            >> n.FieldToGrid(n.Position(), n.Position() * 2 + 10)
+        )
+
+    assert snapshot_tree == tree

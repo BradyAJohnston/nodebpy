@@ -10,6 +10,7 @@ from .types import (
     TYPE_INPUT_INT,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
+    TYPE_INPUT_STRING,
     _GridDataTypes,
 )
 
@@ -168,6 +169,7 @@ class FieldToGrid(NodeBuilder):
     name = "GeometryNodeFieldToGrid"
     node: bpy.types.GeometryNodeFieldToGrid
     _socket_data_types = ("FLOAT", "VALUE", "INT", "VECTOR", "BOOLEAN")
+    _default_input_id = "Topology"
 
     def __init__(
         self,
@@ -231,6 +233,64 @@ class FieldToGrid(NodeBuilder):
     def i_topology(self) -> SocketLinker:
         """Input socket: Topology"""
         return self._input("Topology")
+
+    @property
+    def data_type(
+        self,
+    ) -> _GridDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _GridDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class GetNamedGrid(NodeBuilder):
+    """Get volume grid from a volume geometry with the specified name"""
+
+    name = "GeometryNodeGetNamedGrid"
+    node: bpy.types.GeometryNodeGetNamedGrid
+    _default_input_id = "Volume"
+
+    def __init__(
+        self,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        remove: TYPE_INPUT_BOOLEAN = True,
+        data_type: _GridDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Volume": volume, "Name": name, "Remove": remove}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_volume(self) -> SocketLinker:
+        """Input socket: Volume"""
+        return self._input("Volume")
+
+    @property
+    def i_name(self) -> SocketLinker:
+        """Input socket: Name"""
+        return self._input("Name")
+
+    @property
+    def i_remove(self) -> SocketLinker:
+        """Input socket: Remove"""
+        return self._input("Remove")
+
+    @property
+    def o_volume(self) -> SocketLinker:
+        """Output socket: Volume"""
+        return self._output("Volume")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
 
     @property
     def data_type(

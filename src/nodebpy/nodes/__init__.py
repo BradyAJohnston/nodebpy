@@ -1,6 +1,11 @@
 """Auto-generated geometry node classes."""
 
-from .grid import DistributePointsInGrid, DistributePointsInVolume, FieldToGrid
+from .grid import (
+    DistributePointsInGrid,
+    DistributePointsInVolume,
+    FieldToGrid,
+    GetNamedGrid,
+)
 from .geometry import (
     BoundingBox,
     DeleteGeometry,
@@ -110,7 +115,6 @@ from .geometry_auto import (
     FaceSet,
     GeometryProximity,
     GetListItem,
-    GetNamedGrid,
     GridCurl,
     GridDivergence,
     GridGradient,
