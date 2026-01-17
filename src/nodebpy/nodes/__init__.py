@@ -1,10 +1,21 @@
 """Auto-generated geometry node classes."""
 
+from .group import Group
+from .interface import DialGizmo, LinearGizmo, TransformGizmo
 from .grid import (
+    AdvectGrid,
     DistributePointsInGrid,
     DistributePointsInVolume,
     FieldToGrid,
+    PruneGrid,
     GetNamedGrid,
+    GridCurl,
+    GridDivergence,
+    GridGradient,
+    VolumeCube,
+    VoxelizeGrid,
+    GridInfo,
+    GridLaplacian,
 )
 from .geometry import (
     BoundingBox,
@@ -108,20 +119,11 @@ from .curve import (
 )
 from .geometry_auto import (
     ActiveElement,
-    AdvectGrid,
     Bake,
     DCursor3,
-    DialGizmo,
     FaceSet,
     GeometryProximity,
     GetListItem,
-    GridCurl,
-    GridDivergence,
-    GridGradient,
-    GridInfo,
-    GridLaplacian,
-    Group,
-    ImageInfo,
     ImageTexture,
     ImportCSV,
     ImportOBJ,
@@ -135,7 +137,6 @@ from .geometry_auto import (
     InstanceTransform,
     IsViewport,
     JoinStrings,
-    LinearGizmo,
     List,
     ListLength,
     MaterialSelection,
@@ -149,7 +150,6 @@ from .geometry_auto import (
     PointsToSDFGrid,
     PointsToVertices,
     PointsToVolume,
-    PruneGrid,
     Raycast,
     RealizeInstances,
     ReplaceMaterial,
@@ -199,16 +199,12 @@ from .geometry_auto import (
     SubdivisionSurface,
     Switch,
     TransformGeometry,
-    TransformGizmo,
     TranslateInstances,
     Triangulate,
     UVTangent,
     UVUnwrap,
-    VertexOfCorner,
     Viewer,
     ViewportTransform,
-    VolumeCube,
-    VoxelizeGrid,
     Warning,
 )
 from .input import (
@@ -228,6 +224,7 @@ from .input import (
     EdgesToFaceGroups,
     FaceOfCorner,
     Image,
+    ImageInfo,
     Index,
     InstanceBounds,
     InstanceRotation,
@@ -251,6 +248,7 @@ from .input import (
     String,
     Value,
     Vector,
+    VertexOfCorner,
     VoxelIndex,
 )
 from .manually_specified import (
@@ -539,6 +537,7 @@ __all__ = [
     "Object",
     "Position",
     "Radius",
+    "Group",
     "Rotation",
     "SceneTime",
     "ShortestEdgePaths",

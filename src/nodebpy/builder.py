@@ -281,14 +281,45 @@ class NodeBuilder:
             return self.node.outputs[self._output_idx(self._default_output_id)]
         return self.node.outputs[0]
 
+    def _find_compatible_output_socket(self, linkable: "NodeBuilder") -> NodeSocket:
+        """Find a compatible output socket from the linkable node that matches our accepted socket types."""
+        # First try the default output socket
+        default_output = linkable._default_output_socket
+        for comp in SOCKET_COMPATIBILITY[default_output.type]:
+            if comp in self._socket_data_types:
+                return default_output
+
+        # If default doesn't work, try all other output sockets
+        for output_socket in linkable.node.outputs:
+            for comp in SOCKET_COMPATIBILITY[output_socket.type]:
+                if comp in self._socket_data_types:
+                    return output_socket
+
+        # No compatible socket found
+        raise ValueError(
+            f"No compatible output socket found on {linkable.node.name} for {self.__class__.__name__}. "
+            f"Available output types: {[s.type for s in linkable.node.outputs]}, "
+            f"Accepted input types: {self._socket_data_types}"
+        )
+
     def _socket_type_from_linkable(self, linkable: LINKABLE):
         if linkable is None:
             raise ValueError("Linkable cannot be None")
+
+        # If it's a NodeBuilder, try to find a compatible output socket
+        if hasattr(linkable, "node") and hasattr(linkable, "_default_output_socket"):
+            compatible_socket = self._find_compatible_output_socket(linkable)
+            socket_type = compatible_socket.type
+            for comp in SOCKET_COMPATIBILITY[socket_type]:
+                if comp in self._socket_data_types:
+                    return comp if comp != "VALUE" else "FLOAT"
+
+        # Fallback to original logic for other types
         for comp in SOCKET_COMPATIBILITY[linkable.type]:
             if comp in self._socket_data_types:
                 return comp if comp != "VALUE" else "FLOAT"
         raise ValueError(
-            f"Unsupported socket type for linking to the FormatString: {linkable}, type: {linkable.type=}"
+            f"Unsupported socket type for linking: {linkable}, type: {linkable.type=}"
         )
 
     def _add_inputs(
@@ -304,13 +335,23 @@ class NodeBuilder:
                 items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, value in items.items():
-            type = self._socket_type_from_linkable(value)
-            socket = self._add_socket(name=key, type=type)
-            new_sockets[socket.name] = value
+            # For NodeBuilder objects, find the best compatible output socket
+            if hasattr(value, "node") and hasattr(value, "_default_output_socket"):
+                compatible_socket = self._find_compatible_output_socket(value)
+                # Create a SocketLinker to represent the specific socket we want to link from
+                # from . import SocketLinker
+                socket_linker = SocketLinker(compatible_socket)
+                type = self._socket_type_from_linkable(value)
+                socket = self._add_socket(name=key, type=type)
+                new_sockets[socket.name] = socket_linker
+            else:
+                type = self._socket_type_from_linkable(value)
+                socket = self._add_socket(name=key, type=type)
+                new_sockets[socket.name] = value
 
         return new_sockets
 
-    def _add_socket(self, name: str, type: str, default_value):
+    def _add_socket(self, name: str, type: str, default_value: Any | None = None):
         raise NotImplementedError
 
     def _input_idx(self, identifier: str) -> int:
@@ -355,8 +396,8 @@ class NodeBuilder:
 
     def link_from(
         self,
-        source: LINKABLE | SocketLinker | NodeSocket,
-        input: LINKABLE | SocketLinker | str,
+        source: LINKABLE,
+        input: LINKABLE | str,
     ):
         if isinstance(input, str):
             try:
@@ -460,27 +501,35 @@ class NodeBuilder:
             if other._link_target is not None:
                 socket_in = self._get_input_socket_by_name(other, other._link_target)
             else:
-                # First attempt: Try to link from our default output socket
+                # Use the smart socket finding logic similar to _add_inputs
                 try:
+                    # Try to find a compatible output socket from our node that works with the target
+                    compatible_output = other._find_compatible_output_socket(self)
+                    socket_out = compatible_output
                     socket_in = self._find_best_compatible_socket(other, socket_out)
-                except RuntimeError:
-                    # Second attempt: Try to find another output socket from our node that works
-                    found_compatible = False
-                    for output_socket in self.node.outputs:
-                        try:
-                            socket_in = self._find_best_compatible_socket(other, output_socket)
-                            socket_out = output_socket  # Update to use this output instead
-                            found_compatible = True
-                            break
-                        except RuntimeError:
-                            continue
-                    
-                    # If no compatible output found, raise the original error
-                    if not found_compatible:
-                        raise RuntimeError(
-                            f"Cannot link any output from {self.node.name} to any input of {other.node.name}. "
-                            f"No compatible socket types found."
-                        )
+                except (ValueError, RuntimeError):
+                    # If smart finding fails, fall back to original logic
+                    try:
+                        socket_in = self._find_best_compatible_socket(other, socket_out)
+                    except (ValueError, RuntimeError):
+                        # Last attempt: Try all our output sockets
+                        found_compatible = False
+                        for output_socket in self.node.outputs:
+                            try:
+                                socket_in = self._find_best_compatible_socket(
+                                    other, output_socket
+                                )
+                                socket_out = output_socket
+                                found_compatible = True
+                                break
+                            except (ValueError, RuntimeError):
+                                continue
+
+                        if not found_compatible:
+                            raise RuntimeError(
+                                f"Cannot link any output from {self.node.name} to any input of {other.node.name}. "
+                                f"No compatible socket types found."
+                            )
 
         self.tree.link(socket_out, socket_in)
         return other

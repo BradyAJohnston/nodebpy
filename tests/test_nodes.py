@@ -2,12 +2,7 @@ import itertools
 
 import pytest
 
-import nodebpy.nodes.converter
-import nodebpy.nodes.geometry
-import nodebpy.nodes.grid
-import nodebpy.nodes.input
-from nodebpy import TreeBuilder
-from nodebpy import nodes as n
+from nodebpy import TreeBuilder, nodes as n
 
 
 def test_capture_attribute():
@@ -19,7 +14,7 @@ def test_capture_attribute():
             cube
             >> cap
             >> n.SetPosition(offset=(0, 0, 10))
-            >> n.SetPosition(position=cap.capture(nodebpy.nodes.input.Position()))
+            >> n.SetPosition(position=cap.capture(n.Position()))
         )
 
     assert "Capture Attribute" in tree.nodes
@@ -31,7 +26,7 @@ def test_capture_attribute():
 def test_join_geometry():
     with TreeBuilder("TestJoinGeometry") as tree:
         items = [n.Cube(), n.UVSphere(), n.Cone(), n.Cylinder(), n.Grid()]
-        join = nodebpy.nodes.geometry.JoinGeometry(*items)
+        join = n.JoinGeometry(*items)
 
     assert "Join Geometry" in tree.nodes
     assert len(join.node.inputs["Geometry"].links) == 5
@@ -42,10 +37,10 @@ def test_join_geometry():
 def test_socket_selection():
     with TreeBuilder("AnotherTree"):
         pos = n.SetPosition()
-        vec = nodebpy.nodes.input.Vector()
+        vec = n.Vector()
 
         vec >> pos.i_offset
-        nodebpy.nodes.input.Position() * 1.0 >> pos.i_position
+        n.Position() * 1.0 >> pos.i_position
 
     assert pos.i_offset.socket_name == "Offset"
     assert vec.o_vector.socket.links[0].to_socket.node == pos.node
@@ -58,13 +53,13 @@ class TestMathOperators:
         "operator,input",
         itertools.product(
             ["+", "-", "*", "/"],
-            [nodebpy.nodes.input.Vector, nodebpy.nodes.input.Value],
+            [n.Vector, n.Value],
         ),
     )
     def test_math_operators(self, operator, input):
         with TreeBuilder("TestMathOperators"):
             set_pos = n.SetPosition()
-            pos = nodebpy.nodes.input.Position()  # noqa: F841
+            pos = n.Position()  # noqa: F841
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 
@@ -78,7 +73,7 @@ def test_format_string():
     with TreeBuilder("TestFormatString"):
         x_int = n.Integer(5)
         y_value = n.Value(12.50)
-        format = nodebpy.nodes.converter.FormatString(
+        format = n.FormatString(
             n.String("test"),
             format=format_string,
             x=x_int,
@@ -126,7 +121,7 @@ def test_field_to_grid():
 def test_geometry_to_instance():
     with TreeBuilder() as tree:
         inputs = [n.Cube(), n.UVSphere(), n.IcoSphere(), n.Cone()]
-        gti = nodebpy.nodes.geometry.GeometryToInstance(*inputs)
+        gti = n.GeometryToInstance(*inputs)
 
     assert len(tree.nodes) == 5
     assert len(gti.node.inputs[0].links) == 4
@@ -143,3 +138,20 @@ def test_get_named_grid(snapshot_tree):
         )
 
     assert snapshot_tree == tree
+
+
+def test_advect_grid(snapshot_tree):
+    with TreeBuilder() as tree:
+        grid = n.GetNamedGrid(n.VolumeCube(), name="density")
+        ftg = n.FieldToGrid(
+            n.Position(),
+            topology=grid,
+        )
+
+        ag = grid >> n.AdvectGrid(
+            velocity=ftg,
+            time_step=n.Value(0.1),
+        )
+
+    assert ftg.i_topology.socket.links[0].from_socket == grid.o_grid.socket
+    assert len(grid.o_volume.socket.links) == 0

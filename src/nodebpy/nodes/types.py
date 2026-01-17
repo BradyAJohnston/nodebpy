@@ -25,7 +25,7 @@ if typing.TYPE_CHECKING:
 
 
 # Type aliases for node inputs using typing.Union for runtime compatibility
-LINKABLE = typing.Union["NodeBuilder", "SocketLinker", None]
+LINKABLE = typing.Union["NodeBuilder", "SocketLinker", NodeSocket, None]
 TYPE_INPUT_VECTOR = typing.Union[
     typing.Tuple[float, float, float],
     LINKABLE,
@@ -49,6 +49,8 @@ TYPE_INPUT_VALUE = typing.Union[float, int, LINKABLE, NodeSocketInt, NodeSocketF
 TYPE_INPUT_INT = typing.Union[
     int, LINKABLE, NodeSocketInt, NodeSocketInt, NodeSocketInt
 ]
+
+
 TYPE_INPUT_STRING = typing.Union[str, LINKABLE, NodeSocketString]
 TYPE_INPUT_COLOR = typing.Union[
     LINKABLE, tuple[float, float, float, float], NodeSocketColor
@@ -59,6 +61,9 @@ TYPE_INPUT_MATERIAL = typing.Union[LINKABLE, NodeSocketMaterial]
 TYPE_INPUT_IMAGE = typing.Union[LINKABLE, NodeSocketImage]
 TYPE_INPUT_COLLECTION = typing.Union[LINKABLE, NodeSocketCollection]
 TYPE_INPUT_MATRIX = typing.Union[LINKABLE, NodeSocketMatrix]
+TYPE_INPUT_GRID = typing.Union[
+    TYPE_INPUT_VALUE, TYPE_INPUT_VECTOR, TYPE_INPUT_BOOLEAN, TYPE_INPUT_INT
+]
 
 TYPE_INPUT_ALL = typing.Union[
     TYPE_INPUT_VALUE,
@@ -71,6 +76,8 @@ TYPE_INPUT_ALL = typing.Union[
     TYPE_INPUT_IMAGE,
     TYPE_INPUT_COLLECTION,
     TYPE_INPUT_MATRIX,
+    TYPE_INPUT_VECTOR,
+    TYPE_INPUT_BOOLEAN,
 ]
 
 _AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
@@ -86,6 +93,14 @@ _GridDataTypes = Literal[
     "INT",
     "BOOLEAN",
     "VECTOR",
+]
+_AdvectGridIntegration = Literal[
+    "Semi-Lagrangian",
+    "Midpoint",
+    "Runge-Kutta 3",
+    "Runge-Kutta 4",
+    "MacCormack",
+    "BFECC",
 ]
 
 _DeleteGeoemtryModes = Literal["ALL", "EDGE_FACE", "ONLY_FACE"]

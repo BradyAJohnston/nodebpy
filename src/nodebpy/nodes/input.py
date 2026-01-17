@@ -11,6 +11,7 @@ from .types import (
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_INT,
+    TYPE_INPUT_IMAGE,
 )
 
 
@@ -1045,3 +1046,72 @@ class FaceOfCorner(NodeBuilder):
     def o_index_in_face(self) -> SocketLinker:
         """Output socket: Index in Face"""
         return self._output("Index in Face")
+
+
+class ImageInfo(NodeBuilder):
+    """Retrieve information about an image"""
+
+    name = "GeometryNodeImageInfo"
+    node: bpy.types.GeometryNodeImageInfo
+
+    def __init__(self, image: TYPE_INPUT_IMAGE = None, frame: TYPE_INPUT_INT = 0):
+        super().__init__()
+        key_args = {"Image": image, "Frame": frame}
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_frame(self) -> SocketLinker:
+        """Input socket: Frame"""
+        return self._input("Frame")
+
+    @property
+    def o_width(self) -> SocketLinker:
+        """Output socket: Width"""
+        return self._output("Width")
+
+    @property
+    def o_height(self) -> SocketLinker:
+        """Output socket: Height"""
+        return self._output("Height")
+
+    @property
+    def o_has_alpha(self) -> SocketLinker:
+        """Output socket: Has Alpha"""
+        return self._output("Has Alpha")
+
+    @property
+    def o_frame_count(self) -> SocketLinker:
+        """Output socket: Frame Count"""
+        return self._output("Frame Count")
+
+    @property
+    def o_fps(self) -> SocketLinker:
+        """Output socket: FPS"""
+        return self._output("FPS")
+
+
+class VertexOfCorner(NodeBuilder):
+    """Retrieve the vertex each face corner is attached to"""
+
+    name = "GeometryNodeVertexOfCorner"
+    node: bpy.types.GeometryNodeVertexOfCorner
+
+    def __init__(self, corner_index: TYPE_INPUT_INT = 0):
+        super().__init__()
+        key_args = {"Corner Index": corner_index}
+        self._establish_links(**key_args)
+
+    @property
+    def i_corner_index(self) -> SocketLinker:
+        """Input socket: Corner Index"""
+        return self._input("Corner Index")
+
+    @property
+    def o_vertex_index(self) -> SocketLinker:
+        """Output socket: Vertex Index"""
+        return self._output("Vertex Index")

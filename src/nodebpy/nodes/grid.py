@@ -7,10 +7,12 @@ from .types import (
     LINKABLE,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_GEOMETRY,
+    TYPE_INPUT_GRID,
     TYPE_INPUT_INT,
+    TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
-    TYPE_INPUT_STRING,
+    _AdvectGridIntegration,
     _GridDataTypes,
 )
 
@@ -173,16 +175,10 @@ class FieldToGrid(NodeBuilder):
 
     def __init__(
         self,
-        *args: TYPE_INPUT_VALUE
-        | TYPE_INPUT_VECTOR
-        | TYPE_INPUT_INT
-        | TYPE_INPUT_BOOLEAN,
-        topology: LINKABLE = None,
+        *args: TYPE_INPUT_GRID,
+        topology: TYPE_INPUT_GRID = None,
         data_type: _GridDataTypes = "FLOAT",
-        **kwargs: dict[
-            str,
-            TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_BOOLEAN,
-        ],
+        **kwargs: TYPE_INPUT_GRID,
     ):
         super().__init__()
         self.data_type = data_type
@@ -304,3 +300,366 @@ class GetNamedGrid(NodeBuilder):
         value: _GridDataTypes,
     ):
         self.node.data_type = value
+
+
+class AdvectGrid(NodeBuilder):
+    """Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs"""
+
+    name = "GeometryNodeGridAdvect"
+    node: bpy.types.GeometryNodeGridAdvect
+    _socket_data_types = ["FLOAT", "VALUE", "INT", "VECTOR"]
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = None,
+        velocity: TYPE_INPUT_VECTOR = None,
+        time_step: TYPE_INPUT_VALUE = 1.0,
+        *,
+        integration_scheme: _AdvectGridIntegration = "Runge-Kutta 3",
+        limiter: Literal["None", "Clamp", "Revert"] = "Clamp",
+        data_type: Literal["FLOAT", "INT", "VECTOR"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {
+            "Grid": grid,
+            "Velocity": velocity,
+            "Time Step": time_step,
+            "Integration Scheme": integration_scheme,
+            "Limiter": limiter,
+        }
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_velocity(self) -> SocketLinker:
+        """Input socket: Velocity"""
+        return self._input("Velocity")
+
+    @property
+    def i_time_step(self) -> SocketLinker:
+        """Input socket: Time Step"""
+        return self._input("Time Step")
+
+    @property
+    def i_integration_scheme(self) -> SocketLinker:
+        """Input socket: Integration Scheme"""
+        return self._input("Integration Scheme")
+
+    @property
+    def i_limiter(self) -> SocketLinker:
+        """Input socket: Limiter"""
+        return self._input("Limiter")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal["FLOAT", "INT", "VECTOR"]:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal["FLOAT", "INT", "VECTOR"],
+    ):
+        self.node.data_type = value
+
+
+class GridCurl(NodeBuilder):
+    """Calculate the magnitude and direction of circulation of a directional vector grid"""
+
+    name = "GeometryNodeGridCurl"
+    node: bpy.types.GeometryNodeGridCurl
+
+    def __init__(self, grid: TYPE_INPUT_VECTOR = None):
+        super().__init__()
+        key_args = {"Grid": grid}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def o_curl(self) -> SocketLinker:
+        """Output socket: Curl"""
+        return self._output("Curl")
+
+
+class GridDivergence(NodeBuilder):
+    """Calculate the flow into and out of each point of a directional vector grid"""
+
+    name = "GeometryNodeGridDivergence"
+    node: bpy.types.GeometryNodeGridDivergence
+
+    def __init__(self, grid: TYPE_INPUT_VECTOR = None):
+        super().__init__()
+        key_args = {"Grid": grid}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def o_divergence(self) -> SocketLinker:
+        """Output socket: Divergence"""
+        return self._output("Divergence")
+
+
+class GridGradient(NodeBuilder):
+    """Calculate the direction and magnitude of the change in values of a scalar grid"""
+
+    name = "GeometryNodeGridGradient"
+    node: bpy.types.GeometryNodeGridGradient
+
+    def __init__(self, grid: TYPE_INPUT_VALUE = None):
+        super().__init__()
+        key_args = {"Grid": grid}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def o_gradient(self) -> SocketLinker:
+        """Output socket: Gradient"""
+        return self._output("Gradient")
+
+
+class GridInfo(NodeBuilder):
+    """Retrieve information about a volume grid"""
+
+    name = "GeometryNodeGridInfo"
+    node: bpy.types.GeometryNodeGridInfo
+
+    def __init__(
+        self, grid: TYPE_INPUT_GRID = None, data_type: _GridDataTypes = "FLOAT"
+    ):
+        super().__init__()
+        key_args = {"Grid": grid}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def o_transform(self) -> SocketLinker:
+        """Output socket: Transform"""
+        return self._output("Transform")
+
+    @property
+    def o_background_value(self) -> SocketLinker:
+        """Output socket: Background Value"""
+        return self._output("Background Value")
+
+    @property
+    def data_type(
+        self,
+    ) -> _GridDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _GridDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class GridLaplacian(NodeBuilder):
+    """Compute the divergence of the gradient of the input grid"""
+
+    name = "GeometryNodeGridLaplacian"
+    node: bpy.types.GeometryNodeGridLaplacian
+
+    def __init__(self, grid: TYPE_INPUT_VALUE = None):
+        super().__init__()
+        key_args = {"Grid": grid}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def o_laplacian(self) -> SocketLinker:
+        """Output socket: Laplacian"""
+        return self._output("Laplacian")
+
+
+class PruneGrid(NodeBuilder):
+    """Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes"""
+
+    name = "GeometryNodeGridPrune"
+    node: bpy.types.GeometryNodeGridPrune
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_GRID = None,
+        *,
+        mode: Literal["Inactive", "Threshold", "SDF"] = "Threshold",
+        threshold: TYPE_INPUT_VALUE = 0.01,
+        data_type: _GridDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Mode": mode, "Threshold": threshold}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_mode(self) -> SocketLinker:
+        """Input socket: Mode"""
+        return self._input("Mode")
+
+    @property
+    def i_threshold(self) -> SocketLinker:
+        """Input socket: Threshold"""
+        return self._input("Threshold")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+    @property
+    def data_type(
+        self,
+    ) -> _GridDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _GridDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class VoxelizeGrid(NodeBuilder):
+    """Remove sparseness from a volume grid by making the active tiles into voxels"""
+
+    name = "GeometryNodeGridVoxelize"
+    node: bpy.types.GeometryNodeGridVoxelize
+
+    def __init__(
+        self, grid: TYPE_INPUT_GRID = None, data_type: _GridDataTypes = "FLOAT"
+    ):
+        super().__init__()
+        key_args = {"Grid": grid}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+    @property
+    def data_type(
+        self,
+    ) -> _GridDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _GridDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class VolumeCube(NodeBuilder):
+    """Generate a dense volume with a field that controls the density at each grid voxel based on its position"""
+
+    name = "GeometryNodeVolumeCube"
+    node: bpy.types.GeometryNodeVolumeCube
+
+    def __init__(
+        self,
+        density: TYPE_INPUT_VALUE = 1.0,
+        background: TYPE_INPUT_VALUE = 0.0,
+        min: TYPE_INPUT_VECTOR = (-1.0, -1.0, -1.0),
+        max: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
+        resolution_x: TYPE_INPUT_INT = 32,
+        resolution_y: TYPE_INPUT_INT = 32,
+        resolution_z: TYPE_INPUT_INT = 32,
+    ):
+        super().__init__()
+        key_args = {
+            "Density": density,
+            "Background": background,
+            "Min": min,
+            "Max": max,
+            "Resolution X": resolution_x,
+            "Resolution Y": resolution_y,
+            "Resolution Z": resolution_z,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_density(self) -> SocketLinker:
+        """Input socket: Density"""
+        return self._input("Density")
+
+    @property
+    def i_background(self) -> SocketLinker:
+        """Input socket: Background"""
+        return self._input("Background")
+
+    @property
+    def i_min(self) -> SocketLinker:
+        """Input socket: Min"""
+        return self._input("Min")
+
+    @property
+    def i_max(self) -> SocketLinker:
+        """Input socket: Max"""
+        return self._input("Max")
+
+    @property
+    def i_resolution_x(self) -> SocketLinker:
+        """Input socket: Resolution X"""
+        return self._input("Resolution X")
+
+    @property
+    def i_resolution_y(self) -> SocketLinker:
+        """Input socket: Resolution Y"""
+        return self._input("Resolution Y")
+
+    @property
+    def i_resolution_z(self) -> SocketLinker:
+        """Input socket: Resolution Z"""
+        return self._input("Resolution Z")
+
+    @property
+    def o_volume(self) -> SocketLinker:
+        """Output socket: Volume"""
+        return self._output("Volume")
