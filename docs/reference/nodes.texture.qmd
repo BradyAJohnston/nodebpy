@@ -2,3 +2,35 @@
 
 `nodes.texture`
 
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [ImageTexture](#nodebpy.nodes.texture.ImageTexture) | Sample values from an image texture |
+
+### ImageTexture { #nodebpy.nodes.texture.ImageTexture }
+
+```python
+nodes.texture.ImageTexture(
+    image=None,
+    vector=None,
+    frame=0,
+    interpolation='Linear',
+    extension='REPEAT',
+    **kwargs,
+)
+```
+
+Sample values from an image texture
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_frame](#nodebpy.nodes.texture.ImageTexture.i_frame) | Input socket: Frame |
+| [i_image](#nodebpy.nodes.texture.ImageTexture.i_image) | Input socket: Image |
+| [i_vector](#nodebpy.nodes.texture.ImageTexture.i_vector) | Input socket: Vector |
+| [o_alpha](#nodebpy.nodes.texture.ImageTexture.o_alpha) | Output socket: Alpha |
+| [o_color](#nodebpy.nodes.texture.ImageTexture.o_color) | Output socket: Color |

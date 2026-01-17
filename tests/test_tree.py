@@ -2,6 +2,7 @@ from nodebpy import TreeBuilder
 from nodebpy import nodes as n
 from nodebpy import sockets as s
 import nodebpy.nodes.converter
+import nodebpy.nodes.geometry
 import nodebpy.nodes.input
 
 
@@ -23,7 +24,7 @@ def test_create_tree_and_save():
 
         _ = (
             count
-            >> n.Points(
+            >> nodebpy.nodes.geometry.Points(
                 position=nodebpy.nodes.converter.RandomValue.vector(min=(-1, -1, -1))
             )
             >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)

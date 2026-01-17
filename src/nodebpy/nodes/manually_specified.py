@@ -13,6 +13,7 @@ from ..builder import (
 )
 from .types import (
     LINKABLE,
+    TYPE_INPUT_GEOMETRY,
     _AttributeDataTypes,
     _AttributeDomains,
 )
@@ -26,7 +27,7 @@ class CaptureAttribute(NodeBuilder):
 
     def __init__(
         self,
-        geometry: LINKABLE = None,
+        geometry: TYPE_INPUT_GEOMETRY = None,
         *args,
         domain: _AttributeDomains = "POINT",
         **kwargs,

@@ -20,7 +20,7 @@ import bpy
 from typing_extensions import Literal
 
 from ..builder import NodeBuilder, SocketLinker
-from .types import LINKABLE, TYPE_INPUT_BOOLEAN
+from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_GEOMETRY
 
 
 class DomainSize(NodeBuilder):
@@ -31,7 +31,7 @@ class DomainSize(NodeBuilder):
 
     def __init__(
         self,
-        geometry: LINKABLE = None,
+        geometry: TYPE_INPUT_GEOMETRY = None,
         component: Literal[
             "MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"
         ] = "MESH",
@@ -89,7 +89,7 @@ class AttributeStatistic(NodeBuilder):
 
     def __init__(
         self,
-        geometry: LINKABLE = None,
+        geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         attribute: float | LINKABLE | None = 0.0,
         data_type: Literal[
@@ -426,7 +426,7 @@ class RemoveNamedAttribute(NodeBuilder):
 
     def __init__(
         self,
-        geometry: LINKABLE = None,
+        geometry: TYPE_INPUT_GEOMETRY = None,
         pattern_mode: LINKABLE | None = "Exact",
         name: str | LINKABLE | None = "",
         **kwargs,
@@ -466,7 +466,7 @@ class StoreNamedAttribute(NodeBuilder):
 
     def __init__(
         self,
-        geometry: LINKABLE = None,
+        geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: str | LINKABLE | None = "",
         value: float | LINKABLE | None = 0.0,

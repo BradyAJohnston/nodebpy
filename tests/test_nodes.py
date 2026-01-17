@@ -2,7 +2,8 @@ import itertools
 
 import pytest
 
-from nodebpy import TreeBuilder, nodes as n
+from nodebpy import TreeBuilder
+from nodebpy import nodes as n
 
 
 def test_capture_attribute():
@@ -131,7 +132,7 @@ def test_geometry_to_instance():
 
 def test_get_named_grid(snapshot_tree):
     with TreeBuilder() as tree:
-        ftg = (
+        (
             n.VolumeCube()
             >> n.GetNamedGrid(name="density")
             >> n.FieldToGrid(n.Position(), n.Position() * 2 + 10)
@@ -141,7 +142,7 @@ def test_get_named_grid(snapshot_tree):
 
 
 def test_advect_grid(snapshot_tree):
-    with TreeBuilder() as tree:
+    with TreeBuilder():
         grid = n.GetNamedGrid(n.VolumeCube(), name="density")
         ftg = n.FieldToGrid(
             n.Position(),
@@ -149,9 +150,28 @@ def test_advect_grid(snapshot_tree):
         )
 
         ag = grid >> n.AdvectGrid(
-            velocity=ftg,
-            time_step=n.Value(0.1),
+            velocity=ftg, time_step=n.Value(0.1), integration_scheme="Midpoint"
         )
 
     assert ftg.i_topology.socket.links[0].from_socket == grid.o_grid.socket
     assert len(grid.o_volume.socket.links) == 0
+    assert ag.i_integration_scheme.socket.default_value == "Midpoint"
+
+
+def test_sdf_grid_boolean():
+    with TreeBuilder() as tree:
+        trio = [n.PointsToSDFGrid() for _ in range(3)]
+        bool1 = n.SDFGridBoolean.difference(
+            *trio,
+            grid_1=n.GetNamedGrid(n.VolumeCube(), name="density"),
+        )
+        bool2 = n.SDFGridBoolean.intersect(*trio)
+        bool3 = n.SDFGridBoolean.union(*trio)
+
+    assert len(tree.nodes) == 8
+    assert (
+        bool1.i_grid_1.socket.links[0].from_node.bl_idname == "GeometryNodeGetNamedGrid"
+    )
+    assert len(bool1.i_grid_2.socket.links) == 3
+    assert len(bool2.i_grid_2.socket.links) == 3
+    assert len(bool3.i_grid_2.socket.links) == 3

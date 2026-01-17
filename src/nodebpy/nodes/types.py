@@ -14,6 +14,7 @@ from bpy.types import (
     NodeSocketInt,
     NodeSocketMaterial,
     NodeSocketMatrix,
+    NodeSocketMenu,
     NodeSocketObject,
     NodeSocketString,
     NodeSocketVector,
@@ -64,6 +65,7 @@ TYPE_INPUT_MATRIX = typing.Union[LINKABLE, NodeSocketMatrix]
 TYPE_INPUT_GRID = typing.Union[
     TYPE_INPUT_VALUE, TYPE_INPUT_VECTOR, TYPE_INPUT_BOOLEAN, TYPE_INPUT_INT
 ]
+TYPE_INPUT_MENU = typing.Union[LINKABLE, NodeSocketMenu]
 
 TYPE_INPUT_ALL = typing.Union[
     TYPE_INPUT_VALUE,
@@ -78,6 +80,7 @@ TYPE_INPUT_ALL = typing.Union[
     TYPE_INPUT_MATRIX,
     TYPE_INPUT_VECTOR,
     TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_MENU,
 ]
 
 _AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
@@ -152,6 +155,13 @@ _MixColorBlendTypes = Literal[
     "VALUE",
 ]
 
+_RaycaseDataTypes = Literal[
+    "FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR", "FLOAT_COLOR", "QUATERNION", "FLOAT4X4"
+]
+_SampleIndexDataTypes = Literal[
+    "FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR", "FLOAT_COLOR", "QUATERNION", "FLOAT4X4"
+]
+
 _VectorMathOperations = Literal[
     "ADD",
     "SUBTRACT",
@@ -186,7 +196,7 @@ _VectorMathOperations = Literal[
 
 
 SOCKET_TYPES = Literal[
-    "VALUE",
+    "FLOAT",
     "INT",
     "BOOLEAN",
     "VECTOR",

@@ -371,7 +371,9 @@ def test_nodes():
 
     with tree:
         _ = (
-            n.Points(1_000, position=nodebpy.nodes.converter.RandomValue.vector())
+            nodebpy.nodes.geometry.Points(
+                1_000, position=nodebpy.nodes.converter.RandomValue.vector()
+            )
             >> n.PointsToCurves(
                 curve_group_id=nodebpy.nodes.converter.RandomValue.integer(
                     min=0, max=10
@@ -414,7 +416,9 @@ def test_mix_node():
         )
 
         _ = (
-            n.Points(count, position=nodebpy.nodes.converter.RandomValue.vector())
+            nodebpy.nodes.geometry.Points(
+                count, position=nodebpy.nodes.converter.RandomValue.vector()
+            )
             >> n.InstanceOnPoints(
                 selection=selection,
                 instance=n.Cube(),
@@ -462,7 +466,7 @@ def test_readme_tree():
 
         _ = (
             count
-            >> n.Points(
+            >> nodebpy.nodes.geometry.Points(
                 position=nodebpy.nodes.converter.RandomValue.vector(min=(-1, -1, -1))
             )
             >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)

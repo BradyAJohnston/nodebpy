@@ -40,7 +40,7 @@ class DistributePointsInGrid(NodeBuilder):
     @classmethod
     def grid(
         cls,
-        grid: TYPE_INPUT_VALUE,
+        grid: LINKABLE,
         spacing: TYPE_INPUT_VECTOR = (0.3, 0.3, 0.3),
         threshold: TYPE_INPUT_VALUE = 0.1,
     ) -> "DistributePointsInGrid":
@@ -49,7 +49,7 @@ class DistributePointsInGrid(NodeBuilder):
     @classmethod
     def random(
         cls,
-        grid: TYPE_INPUT_VALUE,
+        grid: LINKABLE,
         density: TYPE_INPUT_VALUE = 1.0,
         seed: TYPE_INPUT_INT = 0,
     ) -> "DistributePointsInGrid":
@@ -663,3 +663,529 @@ class VolumeCube(NodeBuilder):
     def o_volume(self) -> SocketLinker:
         """Output socket: Volume"""
         return self._output("Volume")
+
+
+class SDFGridBoolean(NodeBuilder):
+    """Cut, subtract, or join multiple SDF volume grid inputs"""
+
+    name = "GeometryNodeSDFGridBoolean"
+    node: bpy.types.GeometryNodeSDFGridBoolean
+
+    def __init__(
+        self, *, operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE"
+    ):
+        super().__init__()
+        self.operation = operation
+
+    @classmethod
+    def intersect(
+        cls,
+        *args: LINKABLE,
+    ) -> "SDFGridBoolean":
+        node = cls(operation="INTERSECT")
+        for arg in args:
+            if arg is None:
+                continue
+            node.link_from(arg, "Grid 2")
+        return node
+
+    @classmethod
+    def union(
+        cls,
+        *args: LINKABLE,
+    ) -> "SDFGridBoolean":
+        node = cls(operation="UNION")
+        for arg in args:
+            if arg is None:
+                continue
+            node.link_from(arg, "Grid 2")
+        return node
+
+    @classmethod
+    def difference(
+        cls,
+        *args: LINKABLE,
+        grid_1: LINKABLE,
+    ) -> "SDFGridBoolean":
+        """Create SDF Grid Boolean with operation 'Difference'."""
+        node = cls(operation="DIFFERENCE")
+        node.link_from(grid_1, "Grid 1")
+        for arg in args:
+            if arg is None:
+                continue
+            node.link_from(arg, "Grid 2")
+        return node
+
+    @property
+    def i_grid_1(self) -> SocketLinker:
+        """Input socket: Grid 1"""
+        return self._input("Grid 1")
+
+    @property
+    def i_grid_2(self) -> SocketLinker:
+        """Input socket: Grid 2"""
+        return self._input("Grid 2")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+    @property
+    def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
+        return self.node.operation
+
+    @operation.setter
+    def operation(self, value: Literal["INTERSECT", "UNION", "DIFFERENCE"]):
+        self.node.operation = value
+
+
+class SDFGridFillet(NodeBuilder):
+    """Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces"""
+
+    name = "GeometryNodeSDFGridFillet"
+    node: bpy.types.GeometryNodeSDFGridFillet
+
+    def __init__(self, grid: TYPE_INPUT_VALUE = None, iterations: TYPE_INPUT_INT = 1):
+        super().__init__()
+        key_args = {"Grid": grid, "Iterations": iterations}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_iterations(self) -> SocketLinker:
+        """Input socket: Iterations"""
+        return self._input("Iterations")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+
+class SDFGridLaplacian(NodeBuilder):
+    """Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization"""
+
+    name = "GeometryNodeSDFGridLaplacian"
+    node: bpy.types.GeometryNodeSDFGridLaplacian
+
+    def __init__(self, grid: TYPE_INPUT_VALUE = None, iterations: TYPE_INPUT_INT = 1):
+        super().__init__()
+        key_args = {"Grid": grid, "Iterations": iterations}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_iterations(self) -> SocketLinker:
+        """Input socket: Iterations"""
+        return self._input("Iterations")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+
+class SDFGridMean(NodeBuilder):
+    """Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field"""
+
+    name = "GeometryNodeSDFGridMean"
+    node: bpy.types.GeometryNodeSDFGridMean
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = None,
+        width: TYPE_INPUT_INT = 1,
+        iterations: TYPE_INPUT_INT = 1,
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Width": width, "Iterations": iterations}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_width(self) -> SocketLinker:
+        """Input socket: Width"""
+        return self._input("Width")
+
+    @property
+    def i_iterations(self) -> SocketLinker:
+        """Input socket: Iterations"""
+        return self._input("Iterations")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+
+class SDFGridMeanCurvature(NodeBuilder):
+    """Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas"""
+
+    name = "GeometryNodeSDFGridMeanCurvature"
+    node: bpy.types.GeometryNodeSDFGridMeanCurvature
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = None,
+        iterations: TYPE_INPUT_INT = 1,
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Iterations": iterations}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_iterations(self) -> SocketLinker:
+        """Input socket: Iterations"""
+        return self._input("Iterations")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+
+class SDFGridMedian(NodeBuilder):
+    """Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field"""
+
+    name = "GeometryNodeSDFGridMedian"
+    node: bpy.types.GeometryNodeSDFGridMedian
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = None,
+        width: TYPE_INPUT_INT = 1,
+        iterations: TYPE_INPUT_INT = 1,
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Width": width, "Iterations": iterations}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_width(self) -> SocketLinker:
+        """Input socket: Width"""
+        return self._input("Width")
+
+    @property
+    def i_iterations(self) -> SocketLinker:
+        """Input socket: Iterations"""
+        return self._input("Iterations")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+
+class SDFGridOffset(NodeBuilder):
+    """Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property"""
+
+    name = "GeometryNodeSDFGridOffset"
+    node: bpy.types.GeometryNodeSDFGridOffset
+
+    def __init__(self, grid: TYPE_INPUT_VALUE = 0.0, distance: TYPE_INPUT_VALUE = 0.1):
+        super().__init__()
+        key_args = {"Grid": grid, "Distance": distance}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_distance(self) -> SocketLinker:
+        """Input socket: Distance"""
+        return self._input("Distance")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+
+class SampleGrid(NodeBuilder):
+    """Retrieve values from the specified volume grid"""
+
+    name = "GeometryNodeSampleGrid"
+    node: bpy.types.GeometryNodeSampleGrid
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = None,
+        position: TYPE_INPUT_VECTOR = None,
+        interpolation: Literal["Trilinear", "Triquadratic", "Nearest Neighbor"]
+        | bpy.types.NodeSocketMenu = "Trilinear",
+        *,
+        data_type: _GridDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Position": position, "Interpolation": interpolation}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_position(self) -> SocketLinker:
+        """Input socket: Position"""
+        return self._input("Position")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def data_type(
+        self,
+    ) -> _GridDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _GridDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class SampleGridIndex(NodeBuilder):
+    """Retrieve volume grid values at specific voxels"""
+
+    name = "GeometryNodeSampleGridIndex"
+    node: bpy.types.GeometryNodeSampleGridIndex
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = None,
+        x: TYPE_INPUT_INT = 0,
+        y: TYPE_INPUT_INT = 0,
+        z: TYPE_INPUT_INT = 0,
+        *,
+        data_type: _GridDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "X": x, "Y": y, "Z": z}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_x(self) -> SocketLinker:
+        """Input socket: X"""
+        return self._input("X")
+
+    @property
+    def i_y(self) -> SocketLinker:
+        """Input socket: Y"""
+        return self._input("Y")
+
+    @property
+    def i_z(self) -> SocketLinker:
+        """Input socket: Z"""
+        return self._input("Z")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def data_type(
+        self,
+    ) -> _GridDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _GridDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class SetGridBackground(NodeBuilder):
+    """Set the background value used for inactive voxels and tiles"""
+
+    name = "GeometryNodeSetGridBackground"
+    node: bpy.types.GeometryNodeSetGridBackground
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        background: TYPE_INPUT_VALUE = 0.0,
+        *,
+        data_type: _GridDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Background": background}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_background(self) -> SocketLinker:
+        """Input socket: Background"""
+        return self._input("Background")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+    @property
+    def data_type(
+        self,
+    ) -> _GridDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _GridDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class SetGridTransform(NodeBuilder):
+    """Set the transform for the grid from index space into object space."""
+
+    name = "GeometryNodeSetGridTransform"
+    node: bpy.types.GeometryNodeSetGridTransform
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        transform: LINKABLE | None = None,
+        *,
+        data_type: _GridDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Transform": transform}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_transform(self) -> SocketLinker:
+        """Input socket: Transform"""
+        return self._input("Transform")
+
+    @property
+    def o_is_valid(self) -> SocketLinker:
+        """Output socket: Is Valid"""
+        return self._output("Is Valid")
+
+    @property
+    def o_grid(self) -> SocketLinker:
+        """Output socket: Grid"""
+        return self._output("Grid")
+
+    @property
+    def data_type(
+        self,
+    ) -> _GridDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _GridDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class StoreNamedGrid(NodeBuilder):
+    """Store grid data in a volume geometry with the specified name"""
+
+    name = "GeometryNodeStoreNamedGrid"
+    node: bpy.types.GeometryNodeStoreNamedGrid
+
+    def __init__(
+        self,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        grid: TYPE_INPUT_VALUE = 0.0,
+        *,
+        data_type: Literal["FLOAT", "VECTOR_FLOAT", "INT", "BOOLEAN"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Volume": volume, "Name": name, "Grid": grid}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_volume(self) -> SocketLinker:
+        """Input socket: Volume"""
+        return self._input("Volume")
+
+    @property
+    def i_name(self) -> SocketLinker:
+        """Input socket: Name"""
+        return self._input("Name")
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def o_volume(self) -> SocketLinker:
+        """Output socket: Volume"""
+        return self._output("Volume")
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal["FLOAT", "VECTOR_FLOAT", "INT", "BOOLEAN"]:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal["FLOAT", "VECTOR_FLOAT", "INT", "BOOLEAN"],
+    ):
+        self.node.data_type = value

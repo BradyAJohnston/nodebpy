@@ -3,7 +3,7 @@ from nodebpy.builder import NodeBuilder, SocketLinker
 
 import bpy
 
-from .types import LINKABLE, TYPE_INPUT_BOOLEAN, _AttributeDomains
+from .types import LINKABLE, TYPE_INPUT_BOOLEAN, _AttributeDomains, TYPE_INPUT_GEOMETRY
 
 
 class ForEachGeometryElementInput(NodeBuilder):
@@ -14,7 +14,7 @@ class ForEachGeometryElementInput(NodeBuilder):
 
     def __init__(
         self,
-        geometry: LINKABLE = None,
+        geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         extend: LINKABLE | None = None,
         **kwargs,

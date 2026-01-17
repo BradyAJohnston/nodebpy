@@ -37,7 +37,7 @@ def test_complex_tree_snapshot(snapshot_tree):
         with tree.outputs:
             output = sockets.SocketGeometry()
 
-        subdivide = nodes.SubdivisionSurface()
+        subdivide = nodebpy.nodes.geometry.SubdivisionSurface()
         transform1 = nodes.TransformGeometry(scale=scale)
         transform2 = nodes.TransformGeometry(scale=scale)
 

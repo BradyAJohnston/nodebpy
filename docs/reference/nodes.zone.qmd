@@ -9,6 +9,7 @@
 | Name | Description |
 | --- | --- |
 | [ForEachGeometryElementInput](#nodebpy.nodes.zone.ForEachGeometryElementInput) | For Each Geometry Element Input node |
+| [ForEachGeometryElementOutput](#nodebpy.nodes.zone.ForEachGeometryElementOutput) | For Each Geometry Element Output node |
 
 ### ForEachGeometryElementInput { #nodebpy.nodes.zone.ForEachGeometryElementInput }
 
@@ -32,3 +33,33 @@ For Each Geometry Element Input node
 | [i_selection](#nodebpy.nodes.zone.ForEachGeometryElementInput.i_selection) | Input socket: Selection |
 | [o_index](#nodebpy.nodes.zone.ForEachGeometryElementInput.o_index) | Output socket: Index |
 | [o_input_socket](#nodebpy.nodes.zone.ForEachGeometryElementInput.o_input_socket) | Output socket: |
+
+### ForEachGeometryElementOutput { #nodebpy.nodes.zone.ForEachGeometryElementOutput }
+
+```python
+nodes.zone.ForEachGeometryElementOutput(
+    extend_main=None,
+    generation_0=None,
+    extend_generation=None,
+    active_input_index=0,
+    active_generation_index=0,
+    active_main_index=0,
+    domain='POINT',
+    inspection_index=0,
+    **kwargs,
+)
+```
+
+For Each Geometry Element Output node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_extend_generation](#nodebpy.nodes.zone.ForEachGeometryElementOutput.i_extend_generation) | Input socket: |
+| [i_geometry](#nodebpy.nodes.zone.ForEachGeometryElementOutput.i_geometry) | Input socket: Geometry |
+| [i_input_socket](#nodebpy.nodes.zone.ForEachGeometryElementOutput.i_input_socket) | Input socket: |
+| [o_extend_generation](#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_extend_generation) | Output socket: |
+| [o_generation_0](#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_generation_0) | Output socket: Geometry |
+| [o_geometry](#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_geometry) | Output socket: Geometry |
+| [o_input_socket](#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_input_socket) | Output socket: |

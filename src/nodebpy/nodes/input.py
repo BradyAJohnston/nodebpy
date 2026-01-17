@@ -6,12 +6,13 @@ from nodebpy.builder import NodeBuilder, SocketLinker
 
 from .types import (
     TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_VECTOR,
     TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_IMAGE,
+    TYPE_INPUT_INT,
     TYPE_INPUT_OBJECT,
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_IMAGE,
 )
 
 
@@ -1115,3 +1116,466 @@ class VertexOfCorner(NodeBuilder):
     def o_vertex_index(self) -> SocketLinker:
         """Output socket: Vertex Index"""
         return self._output("Vertex Index")
+
+
+class ImportCSV(NodeBuilder):
+    """Import geometry from an CSV file"""
+
+    name = "GeometryNodeImportCSV"
+    node: bpy.types.GeometryNodeImportCSV
+
+    def __init__(
+        self, path: TYPE_INPUT_STRING = "", delimiter: TYPE_INPUT_STRING = ","
+    ):
+        super().__init__()
+        key_args = {"Path": path, "Delimiter": delimiter}
+        self._establish_links(**key_args)
+
+    @property
+    def i_path(self) -> SocketLinker:
+        """Input socket: Path"""
+        return self._input("Path")
+
+    @property
+    def i_delimiter(self) -> SocketLinker:
+        """Input socket: Delimiter"""
+        return self._input("Delimiter")
+
+    @property
+    def o_point_cloud(self) -> SocketLinker:
+        """Output socket: Point Cloud"""
+        return self._output("Point Cloud")
+
+
+class ImportOBJ(NodeBuilder):
+    """Import geometry from an OBJ file"""
+
+    name = "GeometryNodeImportOBJ"
+    node: bpy.types.GeometryNodeImportOBJ
+
+    def __init__(self, path: TYPE_INPUT_STRING = ""):
+        super().__init__()
+        key_args = {"Path": path}
+        self._establish_links(**key_args)
+
+    @property
+    def i_path(self) -> SocketLinker:
+        """Input socket: Path"""
+        return self._input("Path")
+
+    @property
+    def o_instances(self) -> SocketLinker:
+        """Output socket: Instances"""
+        return self._output("Instances")
+
+
+class ImportPLY(NodeBuilder):
+    """Import a point cloud from a PLY file"""
+
+    name = "GeometryNodeImportPLY"
+    node: bpy.types.GeometryNodeImportPLY
+
+    def __init__(self, path: TYPE_INPUT_STRING = ""):
+        super().__init__()
+        key_args = {"Path": path}
+        self._establish_links(**key_args)
+
+    @property
+    def i_path(self) -> SocketLinker:
+        """Input socket: Path"""
+        return self._input("Path")
+
+    @property
+    def o_mesh(self) -> SocketLinker:
+        """Output socket: Mesh"""
+        return self._output("Mesh")
+
+
+class ImportSTL(NodeBuilder):
+    """Import a mesh from an STL file"""
+
+    name = "GeometryNodeImportSTL"
+    node: bpy.types.GeometryNodeImportSTL
+
+    def __init__(self, path: TYPE_INPUT_STRING = ""):
+        super().__init__()
+        key_args = {"Path": path}
+        self._establish_links(**key_args)
+
+    @property
+    def i_path(self) -> SocketLinker:
+        """Input socket: Path"""
+        return self._input("Path")
+
+    @property
+    def o_mesh(self) -> SocketLinker:
+        """Output socket: Mesh"""
+        return self._output("Mesh")
+
+
+class ImportText(NodeBuilder):
+    """Import a string from a text file"""
+
+    name = "GeometryNodeImportText"
+    node: bpy.types.GeometryNodeImportText
+
+    def __init__(self, path: TYPE_INPUT_STRING = ""):
+        super().__init__()
+        key_args = {"Path": path}
+        self._establish_links(**key_args)
+
+    @property
+    def i_path(self) -> SocketLinker:
+        """Input socket: Path"""
+        return self._input("Path")
+
+    @property
+    def o_string(self) -> SocketLinker:
+        """Output socket: String"""
+        return self._output("String")
+
+
+class ImportVDB(NodeBuilder):
+    """Import volume data from a .vdb file"""
+
+    name = "GeometryNodeImportVDB"
+    node: bpy.types.GeometryNodeImportVDB
+
+    def __init__(self, path: TYPE_INPUT_STRING = ""):
+        super().__init__()
+        key_args = {"Path": path}
+        self._establish_links(**key_args)
+
+    @property
+    def i_path(self) -> SocketLinker:
+        """Input socket: Path"""
+        return self._input("Path")
+
+    @property
+    def o_volume(self) -> SocketLinker:
+        """Output socket: Volume"""
+        return self._output("Volume")
+
+
+class InstanceTransform(NodeBuilder):
+    """Retrieve the full transformation of each instance in the geometry"""
+
+    name = "GeometryNodeInstanceTransform"
+    node: bpy.types.GeometryNodeInstanceTransform
+
+    @property
+    def o_transform(self) -> SocketLinker:
+        """Output socket: Transform"""
+        return self._output("Transform")
+
+
+class IsViewport(NodeBuilder):
+    """Retrieve whether the nodes are being evaluated for the viewport rather than the final render"""
+
+    name = "GeometryNodeIsViewport"
+    node: bpy.types.GeometryNodeIsViewport
+
+    @property
+    def o_is_viewport(self) -> SocketLinker:
+        """Output socket: Is Viewport"""
+        return self._output("Is Viewport")
+
+
+class OffsetCornerInFace(NodeBuilder):
+    """Retrieve corners in the same face as another"""
+
+    name = "GeometryNodeOffsetCornerInFace"
+    node: bpy.types.GeometryNodeOffsetCornerInFace
+
+    def __init__(self, corner_index: TYPE_INPUT_INT = None, offset: TYPE_INPUT_INT = 0):
+        super().__init__()
+        key_args = {"Corner Index": corner_index, "Offset": offset}
+        self._establish_links(**key_args)
+
+    @property
+    def i_corner_index(self) -> SocketLinker:
+        """Input socket: Corner Index"""
+        return self._input("Corner Index")
+
+    @property
+    def i_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Offset")
+
+    @property
+    def o_corner_index(self) -> SocketLinker:
+        """Output socket: Corner Index"""
+        return self._output("Corner Index")
+
+
+class ObjectInfo(NodeBuilder):
+    """Retrieve information from an object"""
+
+    name = "GeometryNodeObjectInfo"
+    node: bpy.types.GeometryNodeObjectInfo
+
+    def __init__(
+        self,
+        object: TYPE_INPUT_OBJECT = None,
+        as_instance: TYPE_INPUT_BOOLEAN = False,
+        *,
+        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
+    ):
+        super().__init__()
+        key_args = {"Object": object, "As Instance": as_instance}
+        self.transform_space = transform_space
+        self._establish_links(**key_args)
+
+    @property
+    def i_object(self) -> SocketLinker:
+        """Input socket: Object"""
+        return self._input("Object")
+
+    @property
+    def i_as_instance(self) -> SocketLinker:
+        """Input socket: As Instance"""
+        return self._input("As Instance")
+
+    @property
+    def o_transform(self) -> SocketLinker:
+        """Output socket: Transform"""
+        return self._output("Transform")
+
+    @property
+    def o_location(self) -> SocketLinker:
+        """Output socket: Location"""
+        return self._output("Location")
+
+    @property
+    def o_rotation(self) -> SocketLinker:
+        """Output socket: Rotation"""
+        return self._output("Rotation")
+
+    @property
+    def o_scale(self) -> SocketLinker:
+        """Output socket: Scale"""
+        return self._output("Scale")
+
+    @property
+    def o_geometry(self) -> SocketLinker:
+        """Output socket: Geometry"""
+        return self._output("Geometry")
+
+    @property
+    def transform_space(self) -> Literal["ORIGINAL", "RELATIVE"]:
+        return self.node.transform_space
+
+    @transform_space.setter
+    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]):
+        self.node.transform_space = value
+
+
+class SelfObject(NodeBuilder):
+    """Retrieve the object that contains the geometry nodes modifier currently being executed"""
+
+    name = "GeometryNodeSelfObject"
+    node: bpy.types.GeometryNodeSelfObject
+
+    @property
+    def o_self_object(self) -> SocketLinker:
+        """Output socket: Self Object"""
+        return self._output("Self Object")
+
+
+class SplineLength(NodeBuilder):
+    """Retrieve the total length of each spline, as a distance or as a number of points"""
+
+    name = "GeometryNodeSplineLength"
+    node: bpy.types.GeometryNodeSplineLength
+
+    @property
+    def o_length(self) -> SocketLinker:
+        """Output socket: Length"""
+        return self._output("Length")
+
+    @property
+    def o_point_count(self) -> SocketLinker:
+        """Output socket: Point Count"""
+        return self._output("Point Count")
+
+
+class SplineParameter(NodeBuilder):
+    """Retrieve how far along each spline a control point is"""
+
+    name = "GeometryNodeSplineParameter"
+    node: bpy.types.GeometryNodeSplineParameter
+
+    @property
+    def o_factor(self) -> SocketLinker:
+        """Output socket: Factor"""
+        return self._output("Factor")
+
+    @property
+    def o_length(self) -> SocketLinker:
+        """Output socket: Length"""
+        return self._output("Length")
+
+    @property
+    def o_index(self) -> SocketLinker:
+        """Output socket: Index"""
+        return self._output("Index")
+
+
+class Cursor3D(NodeBuilder):
+    """The scene's 3D cursor location and rotation"""
+
+    name = "GeometryNodeTool3DCursor"
+    node: bpy.types.GeometryNodeTool3DCursor
+
+    @property
+    def o_location(self) -> SocketLinker:
+        """Output socket: Location"""
+        return self._output("Location")
+
+    @property
+    def o_rotation(self) -> SocketLinker:
+        """Output socket: Rotation"""
+        return self._output("Rotation")
+
+
+class ActiveElement(NodeBuilder):
+    """Active element indices of the edited geometry, for tool execution"""
+
+    name = "GeometryNodeToolActiveElement"
+    node: bpy.types.GeometryNodeToolActiveElement
+
+    def __init__(self, domain: Literal["POINT", "EDGE", "FACE", "LAYER"] = "POINT"):
+        super().__init__()
+        self.domain = domain
+
+    @property
+    def o_index(self) -> SocketLinker:
+        """Output socket: Index"""
+        return self._output("Index")
+
+    @property
+    def o_exists(self) -> SocketLinker:
+        """Output socket: Exists"""
+        return self._output("Exists")
+
+    @property
+    def domain(self) -> Literal["POINT", "EDGE", "FACE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(self, value: Literal["POINT", "EDGE", "FACE", "LAYER"]):
+        self.node.domain = value
+
+
+class FaceSet(NodeBuilder):
+    """Each face's sculpt face set value"""
+
+    name = "GeometryNodeToolFaceSet"
+    node: bpy.types.GeometryNodeToolFaceSet
+
+    @property
+    def o_face_set(self) -> SocketLinker:
+        """Output socket: Face Set"""
+        return self._output("Face Set")
+
+    @property
+    def o_exists(self) -> SocketLinker:
+        """Output socket: Exists"""
+        return self._output("Exists")
+
+
+class MousePosition(NodeBuilder):
+    """Retrieve the position of the mouse cursor"""
+
+    name = "GeometryNodeToolMousePosition"
+    node: bpy.types.GeometryNodeToolMousePosition
+
+    @property
+    def o_mouse_x(self) -> SocketLinker:
+        """Output socket: Mouse X"""
+        return self._output("Mouse X")
+
+    @property
+    def o_mouse_y(self) -> SocketLinker:
+        """Output socket: Mouse Y"""
+        return self._output("Mouse Y")
+
+    @property
+    def o_region_width(self) -> SocketLinker:
+        """Output socket: Region Width"""
+        return self._output("Region Width")
+
+    @property
+    def o_region_height(self) -> SocketLinker:
+        """Output socket: Region Height"""
+        return self._output("Region Height")
+
+
+class Selection(NodeBuilder):
+    """User selection of the edited geometry, for tool execution"""
+
+    name = "GeometryNodeToolSelection"
+    node: bpy.types.GeometryNodeToolSelection
+
+    @property
+    def o_boolean(self) -> SocketLinker:
+        """Output socket: Boolean"""
+        return self._output("Selection")
+
+    @property
+    def o_float(self) -> SocketLinker:
+        """Output socket: Float"""
+        return self._output("Float")
+
+
+class UVTangent(NodeBuilder):
+    """Generate tangent directions based on a UV map"""
+
+    name = "GeometryNodeUVTangent"
+    node: bpy.types.GeometryNodeUVTangent
+
+    def __init__(
+        self,
+        method: Literal["Exact", "Fast"] = "Exact",
+        uv: TYPE_INPUT_VECTOR = (0.0, 0.0),  # type: ignore
+    ):
+        super().__init__()
+        key_args = {"Method": method, "UV": uv}
+        self._establish_links(**key_args)
+
+    @property
+    def i_method(self) -> SocketLinker:
+        """Input socket: Method"""
+        return self._input("Method")
+
+    @property
+    def i_uv(self) -> SocketLinker:
+        """Input socket: UV"""
+        return self._input("UV")
+
+    @property
+    def o_tangent(self) -> SocketLinker:
+        """Output socket: Tangent"""
+        return self._output("Tangent")
+
+
+class ViewportTransform(NodeBuilder):
+    """Retrieve the view direction and location of the 3D viewport"""
+
+    name = "GeometryNodeViewportTransform"
+    node: bpy.types.GeometryNodeViewportTransform
+
+    @property
+    def o_projection(self) -> SocketLinker:
+        """Output socket: Projection"""
+        return self._output("Projection")
+
+    @property
+    def o_view(self) -> SocketLinker:
+        """Output socket: View"""
+        return self._output("View")
+
+    @property
+    def o_is_orthographic(self) -> SocketLinker:
+        """Output socket: Is Orthographic"""
+        return self._output("Is Orthographic")

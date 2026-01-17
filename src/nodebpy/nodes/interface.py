@@ -1,14 +1,15 @@
 from typing import Literal
 
 import bpy
-from typing_extensions import Literal
 
 from nodebpy.builder import NodeBuilder, SocketLinker
 
 from .types import (
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_MATRIX,
+    TYPE_INPUT_STRING,
     TYPE_INPUT_ROTATION,
+    LINKABLE,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
@@ -294,3 +295,106 @@ class TransformGizmo(NodeBuilder):
     @use_scale_z.setter
     def use_scale_z(self, value: bool):
         self.node.use_scale_z = value
+
+
+class Viewer(NodeBuilder):
+    """Display the input data in the Spreadsheet Editor"""
+
+    name = "GeometryNodeViewer"
+    node: bpy.types.GeometryNodeViewer
+
+    def __init__(
+        self,
+        extend: LINKABLE | None = None,
+        ui_shortcut: int = 0,
+        active_index: int = 0,
+        domain: Literal[
+            "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "AUTO",
+    ):
+        super().__init__()
+        key_args = {"__extend__": extend}
+        self.ui_shortcut = ui_shortcut
+        self.active_index = active_index
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_input_socket(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__")
+
+    @property
+    def ui_shortcut(self) -> int:
+        return self.node.ui_shortcut
+
+    @ui_shortcut.setter
+    def ui_shortcut(self, value: int):
+        self.node.ui_shortcut = value
+
+    @property
+    def active_index(self) -> int:
+        return self.node.active_index  # type: ignore
+
+    @active_index.setter
+    def active_index(self, value: int):
+        self.node.active_index = value
+
+    @property
+    def domain(
+        self,
+    ) -> Literal[
+        "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+    ]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal[
+            "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ],
+    ):
+        self.node.domain = value
+
+
+class Warning(NodeBuilder):
+    """Create custom warnings in node groups"""
+
+    name = "GeometryNodeWarning"
+    node: bpy.types.GeometryNodeWarning
+
+    def __init__(
+        self,
+        show: TYPE_INPUT_BOOLEAN = True,
+        message: TYPE_INPUT_STRING = "",
+        *,
+        warning_type: Literal["ERROR", "WARNING", "INFO"] = "ERROR",
+    ):
+        super().__init__()
+        key_args = {"Show": show, "Message": message}
+        self.warning_type = warning_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_show(self) -> SocketLinker:
+        """Input socket: Show"""
+        return self._input("Show")
+
+    @property
+    def i_message(self) -> SocketLinker:
+        """Input socket: Message"""
+        return self._input("Message")
+
+    @property
+    def o_show(self) -> SocketLinker:
+        """Output socket: Show"""
+        return self._output("Show")
+
+    @property
+    def warning_type(self) -> Literal["ERROR", "WARNING", "INFO"]:
+        return self.node.warning_type
+
+    @warning_type.setter
+    def warning_type(self, value: Literal["ERROR", "WARNING", "INFO"]):
+        self.node.warning_type = value

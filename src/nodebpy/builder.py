@@ -316,7 +316,7 @@ class NodeBuilder:
                 # Priority is the index in the compatibility list (0 = highest priority)
                 priority = compatible_types.index(output_socket.type)
                 compatible_sockets.append((priority, output_socket))
-        
+
         if not compatible_sockets:
             # No compatible socket found
             raise ValueError(
@@ -324,7 +324,7 @@ class NodeBuilder:
                 f"Available output types: {[s.type for s in source_node.node.outputs]}, "
                 f"Compatible types: {compatible_types}"
             )
-        
+
         # Sort by priority (lowest number = highest priority) and return the best match
         compatible_sockets.sort(key=lambda x: x[0])
         return compatible_sockets[0][1]
@@ -346,7 +346,7 @@ class NodeBuilder:
 
         # If defaults don't work, try all combinations with priority-based matching
         best_match = None
-        best_priority = float('inf')
+        best_priority = float("inf")
 
         for output_socket in self.node.outputs:
             output_compatibles = SOCKET_COMPATIBILITY.get(output_socket.type, ())
@@ -497,7 +497,9 @@ class NodeBuilder:
         if isinstance(source, NodeBuilder):
             # Search for compatible output sockets - don't try default first as it might be wrong type
             try:
-                compatible_output = self._find_compatible_source_socket(source, target_socket)
+                compatible_output = self._find_compatible_source_socket(
+                    source, target_socket
+                )
                 self.link(compatible_output, target_socket)
                 return
             except ValueError:
@@ -673,9 +675,7 @@ class NodeBuilder:
                     return (
                         vector_method(scalar_vector, self._default_output_socket)
                         if not reverse
-                        else vector_method(
-                            self._default_output_socket, scalar_vector
-                        )
+                        else vector_method(self._default_output_socket, scalar_vector)
                     )
                 elif (
                     isinstance(other, (list, tuple)) and len(other) == 3
@@ -689,6 +689,7 @@ class NodeBuilder:
         else:
             # Both operands are scalar types, use regular Math
             from .nodes.converter import Math
+
             return getattr(Math, operation)(*values)
 
     def __mul__(self, other: Any) -> "VectorMath | Math":

@@ -29,10 +29,15 @@
 | [FloatToInteger](#nodebpy.nodes.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
 | [FormatString](#nodebpy.nodes.converter.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
 | [HashValue](#nodebpy.nodes.converter.HashValue) | Generate a randomized integer using the given input value as a seed |
+| [IndexOfNearest](#nodebpy.nodes.converter.IndexOfNearest) | Find the nearest element in a group. Similar to the "Sample Nearest" node |
+| [JoinStrings](#nodebpy.nodes.converter.JoinStrings) | Combine any number of input strings |
 | [Math](#nodebpy.nodes.converter.Math) | Perform math operations |
 | [Mix](#nodebpy.nodes.converter.Mix) | Mix values by a factor |
+| [PackUVIslands](#nodebpy.nodes.converter.PackUVIslands) | Scale islands of a UV map and move them so they fill the UV space as much as possible |
 | [RandomValue](#nodebpy.nodes.converter.RandomValue) | Random Value node |
 | [SeparateXYZ](#nodebpy.nodes.converter.SeparateXYZ) | Split a vector into its X, Y, and Z components |
+| [Switch](#nodebpy.nodes.converter.Switch) | Switch between two inputs |
+| [UVUnwrap](#nodebpy.nodes.converter.UVUnwrap) | Generate a UV map based on seam edges |
 | [VectorMath](#nodebpy.nodes.converter.VectorMath) | Perform vector math operation |
 
 ### AccumulateField { #nodebpy.nodes.converter.AccumulateField }
@@ -638,6 +643,39 @@ Generate a randomized integer using the given input value as a seed
 | [i_value](#nodebpy.nodes.converter.HashValue.i_value) | Input socket: Value |
 | [o_hash](#nodebpy.nodes.converter.HashValue.o_hash) | Output socket: Hash |
 
+### IndexOfNearest { #nodebpy.nodes.converter.IndexOfNearest }
+
+```python
+nodes.converter.IndexOfNearest(position=None, group_id=None)
+```
+
+Find the nearest element in a group. Similar to the "Sample Nearest" node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_group_id](#nodebpy.nodes.converter.IndexOfNearest.i_group_id) | Input socket: Group ID |
+| [i_position](#nodebpy.nodes.converter.IndexOfNearest.i_position) | Input socket: Position |
+| [o_has_neighbor](#nodebpy.nodes.converter.IndexOfNearest.o_has_neighbor) | Output socket: Has Neighbor |
+| [o_index](#nodebpy.nodes.converter.IndexOfNearest.o_index) | Output socket: Index |
+
+### JoinStrings { #nodebpy.nodes.converter.JoinStrings }
+
+```python
+nodes.converter.JoinStrings(*args, delimiter='')
+```
+
+Combine any number of input strings
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_delimiter](#nodebpy.nodes.converter.JoinStrings.i_delimiter) | Input socket: Delimiter |
+| [i_strings](#nodebpy.nodes.converter.JoinStrings.i_strings) | Input socket: Strings |
+| [o_string](#nodebpy.nodes.converter.JoinStrings.o_string) | Output socket: String |
+
 ### Math { #nodebpy.nodes.converter.Math }
 
 ```python
@@ -653,7 +691,7 @@ Perform math operations
 | [absolute](#nodebpy.nodes.converter.Math.absolute) | Create Math with operation `abs(value)`. |
 | [add](#nodebpy.nodes.converter.Math.add) | Create Math with operation of `a + b`. |
 | [arccosine](#nodebpy.nodes.converter.Math.arccosine) | Create Math with operation 'arccos(value)'. |
-| [arcsine](#nodebpy.nodes.converter.Math.arcsine) | Create Math with operation `arcsin(value)'. |
+| [arcsine](#nodebpy.nodes.converter.Math.arcsine) | Create Math with operation `arcsin(value)`. |
 | [arctan2](#nodebpy.nodes.converter.Math.arctan2) | Create Math with operation 'arctan(a / b)'. |
 | [arctangent](#nodebpy.nodes.converter.Math.arctangent) | Create Math with operation 'arctan(value)'. |
 | [ceil](#nodebpy.nodes.converter.Math.ceil) | The smallest integer greater than or equal to `value` |
@@ -722,7 +760,7 @@ Create Math with operation 'arccos(value)'.
 nodes.converter.Math.arcsine(value=0.5)
 ```
 
-Create Math with operation `arcsin(value)'.
+Create Math with operation `arcsin(value)`.
 
 ##### arctan2 { #nodebpy.nodes.converter.Math.arctan2 }
 
@@ -1037,6 +1075,31 @@ Mix values by a factor
 | [i_value_b](#nodebpy.nodes.converter.Mix.i_value_b) | Input socket: Value B |
 | [o_result](#nodebpy.nodes.converter.Mix.o_result) | Output socket: Result |
 
+### PackUVIslands { #nodebpy.nodes.converter.PackUVIslands }
+
+```python
+nodes.converter.PackUVIslands(
+    uv=(0.0, 0.0, 0.0),
+    selection=True,
+    margin=0.001,
+    rotate=True,
+    method='Bounding Box',
+)
+```
+
+Scale islands of a UV map and move them so they fill the UV space as much as possible
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_margin](#nodebpy.nodes.converter.PackUVIslands.i_margin) | Input socket: Margin |
+| [i_method](#nodebpy.nodes.converter.PackUVIslands.i_method) | Input socket: Method |
+| [i_rotate](#nodebpy.nodes.converter.PackUVIslands.i_rotate) | Input socket: Rotate |
+| [i_selection](#nodebpy.nodes.converter.PackUVIslands.i_selection) | Input socket: Selection |
+| [i_uv](#nodebpy.nodes.converter.PackUVIslands.i_uv) | Input socket: UV |
+| [o_uv](#nodebpy.nodes.converter.PackUVIslands.o_uv) | Output socket: UV |
+
 ### RandomValue { #nodebpy.nodes.converter.RandomValue }
 
 ```python
@@ -1099,6 +1162,55 @@ Split a vector into its X, Y, and Z components
 | [o_x](#nodebpy.nodes.converter.SeparateXYZ.o_x) | Output socket: X |
 | [o_y](#nodebpy.nodes.converter.SeparateXYZ.o_y) | Output socket: Y |
 | [o_z](#nodebpy.nodes.converter.SeparateXYZ.o_z) | Output socket: Z |
+
+### Switch { #nodebpy.nodes.converter.Switch }
+
+```python
+nodes.converter.Switch(
+    switch=False,
+    false=None,
+    true=None,
+    *,
+    input_type='GEOMETRY',
+    **kwargs,
+)
+```
+
+Switch between two inputs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_false](#nodebpy.nodes.converter.Switch.i_false) | Input socket: False |
+| [i_switch](#nodebpy.nodes.converter.Switch.i_switch) | Input socket: Switch |
+| [i_true](#nodebpy.nodes.converter.Switch.i_true) | Input socket: True |
+| [o_output](#nodebpy.nodes.converter.Switch.o_output) | Output socket: Output |
+
+### UVUnwrap { #nodebpy.nodes.converter.UVUnwrap }
+
+```python
+nodes.converter.UVUnwrap(
+    selection=True,
+    seam=False,
+    margin=0.001,
+    fill_holes=True,
+    method='Angle Based',
+)
+```
+
+Generate a UV map based on seam edges
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_fill_holes](#nodebpy.nodes.converter.UVUnwrap.i_fill_holes) | Input socket: Fill Holes |
+| [i_margin](#nodebpy.nodes.converter.UVUnwrap.i_margin) | Input socket: Margin |
+| [i_method](#nodebpy.nodes.converter.UVUnwrap.i_method) | Input socket: Method |
+| [i_seam](#nodebpy.nodes.converter.UVUnwrap.i_seam) | Input socket: Seam |
+| [i_selection](#nodebpy.nodes.converter.UVUnwrap.i_selection) | Input socket: Selection |
+| [o_uv](#nodebpy.nodes.converter.UVUnwrap.o_uv) | Output socket: UV |
 
 ### VectorMath { #nodebpy.nodes.converter.VectorMath }
 

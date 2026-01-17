@@ -20,7 +20,7 @@ import bpy
 from typing_extensions import Literal
 
 from ..builder import NodeBuilder, SocketLinker
-from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
+from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR, TYPE_INPUT_GEOMETRY
 
 
 class Arc(NodeBuilder):
@@ -1065,7 +1065,7 @@ class InterpolateCurves(NodeBuilder):
         guide_curves: LINKABLE = None,
         guide_up: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         guide_group_id: int | LINKABLE | None = 0,
-        points: LINKABLE = None,
+        points: TYPE_INPUT_GEOMETRY = None,
         point_up: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
         point_group_id: int | LINKABLE | None = 0,
         max_neighbors: int | LINKABLE | None = 4,
@@ -1232,7 +1232,7 @@ class PointsToCurves(NodeBuilder):
 
     def __init__(
         self,
-        points: LINKABLE = None,
+        points: TYPE_INPUT_GEOMETRY = None,
         curve_group_id: int | LINKABLE | None = 0,
         weight: float | LINKABLE | None = 0.0,
         **kwargs,

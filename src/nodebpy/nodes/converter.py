@@ -14,6 +14,7 @@ from .types import (
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
+    SOCKET_TYPES,
     _VectorMathOperations,
     _RandomValueDataTypes,
     _MixDataTypes,
@@ -1264,7 +1265,7 @@ class Math(NodeBuilder):
         cls,
         value: float | LINKABLE = 0.5,
     ) -> "Math":
-        """Create Math with operation `arcsin(value)'."""
+        """Create Math with operation `arcsin(value)`."""
         return cls(operation="ARCSINE", Value=value)
 
     @classmethod
@@ -2497,3 +2498,230 @@ class FieldVariance(NodeBuilder):
         value: _AttributeDomains,
     ):
         self.node.domain = value
+
+
+class IndexOfNearest(NodeBuilder):
+    """Find the nearest element in a group. Similar to the "Sample Nearest" node"""
+
+    name = "GeometryNodeIndexOfNearest"
+    node: bpy.types.GeometryNodeIndexOfNearest
+
+    def __init__(
+        self, position: TYPE_INPUT_VECTOR = None, group_id: TYPE_INPUT_INT = None
+    ):
+        super().__init__()
+        key_args = {"Position": position, "Group ID": group_id}
+        self._establish_links(**key_args)
+
+    @property
+    def i_position(self) -> SocketLinker:
+        """Input socket: Position"""
+        return self._input("Position")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group ID")
+
+    @property
+    def o_index(self) -> SocketLinker:
+        """Output socket: Index"""
+        return self._output("Index")
+
+    @property
+    def o_has_neighbor(self) -> SocketLinker:
+        """Output socket: Has Neighbor"""
+        return self._output("Has Neighbor")
+
+
+class JoinStrings(NodeBuilder):
+    """Combine any number of input strings"""
+
+    name = "GeometryNodeStringJoin"
+    node: bpy.types.GeometryNodeStringJoin
+
+    def __init__(self, *args: LINKABLE, delimiter: TYPE_INPUT_STRING = ""):
+        super().__init__()
+
+        self._establish_links(Delimiter=delimiter)
+        for arg in args:
+            self.link_from(arg, "Strings")
+
+    @property
+    def i_delimiter(self) -> SocketLinker:
+        """Input socket: Delimiter"""
+        return self._input("Delimiter")
+
+    @property
+    def i_strings(self) -> SocketLinker:
+        """Input socket: Strings"""
+        return self._input("Strings")
+
+    @property
+    def o_string(self) -> SocketLinker:
+        """Output socket: String"""
+        return self._output("String")
+
+
+class Switch(NodeBuilder):
+    """Switch between two inputs"""
+
+    name = "GeometryNodeSwitch"
+    node: bpy.types.GeometryNodeSwitch
+
+    def __init__(
+        self,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: LINKABLE = None,
+        true: LINKABLE = None,
+        *,
+        input_type: SOCKET_TYPES = "GEOMETRY",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Switch": switch, "False": false, "True": true}
+        key_args.update(kwargs)
+        self._establish_links(**key_args)
+
+    @property
+    def i_switch(self) -> SocketLinker:
+        """Input socket: Switch"""
+        return self._input("Switch")
+
+    @property
+    def i_false(self) -> SocketLinker:
+        """Input socket: False"""
+        return self._input("False")
+
+    @property
+    def i_true(self) -> SocketLinker:
+        """Input socket: True"""
+        return self._input("True")
+
+    @property
+    def o_output(self) -> SocketLinker:
+        """Output socket: Output"""
+        return self._output("Output")
+
+    @property
+    def input_type(
+        self,
+    ) -> SOCKET_TYPES:
+        return self.node.input_type  # type: ignore
+
+    @input_type.setter
+    def input_type(
+        self,
+        value: SOCKET_TYPES,
+    ):
+        self.node.input_type = value
+
+
+class PackUVIslands(NodeBuilder):
+    """Scale islands of a UV map and move them so they fill the UV space as much as possible"""
+
+    name = "GeometryNodeUVPackIslands"
+    node: bpy.types.GeometryNodeUVPackIslands
+
+    def __init__(
+        self,
+        uv: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        selection: TYPE_INPUT_BOOLEAN = True,
+        margin: TYPE_INPUT_VALUE = 0.001,
+        rotate: TYPE_INPUT_BOOLEAN = True,
+        method: Literal["Bounding Box", "Convex Hull", "Exact Shape"] = "Bounding Box",
+    ):
+        super().__init__()
+        key_args = {
+            "UV": uv,
+            "Selection": selection,
+            "Margin": margin,
+            "Rotate": rotate,
+            "Method": method,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_uv(self) -> SocketLinker:
+        """Input socket: UV"""
+        return self._input("UV")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_margin(self) -> SocketLinker:
+        """Input socket: Margin"""
+        return self._input("Margin")
+
+    @property
+    def i_rotate(self) -> SocketLinker:
+        """Input socket: Rotate"""
+        return self._input("Rotate")
+
+    @property
+    def i_method(self) -> SocketLinker:
+        """Input socket: Method"""
+        return self._input("Method")
+
+    @property
+    def o_uv(self) -> SocketLinker:
+        """Output socket: UV"""
+        return self._output("UV")
+
+
+class UVUnwrap(NodeBuilder):
+    """Generate a UV map based on seam edges"""
+
+    name = "GeometryNodeUVUnwrap"
+    node: bpy.types.GeometryNodeUVUnwrap
+
+    def __init__(
+        self,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        seam: TYPE_INPUT_BOOLEAN = False,
+        margin: TYPE_INPUT_VALUE = 0.001,
+        fill_holes: TYPE_INPUT_BOOLEAN = True,
+        method: Literal["Angle Based", "Conformal"] = "Angle Based",
+    ):
+        super().__init__()
+        key_args = {
+            "Selection": selection,
+            "Seam": seam,
+            "Margin": margin,
+            "Fill Holes": fill_holes,
+            "Method": method,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_seam(self) -> SocketLinker:
+        """Input socket: Seam"""
+        return self._input("Seam")
+
+    @property
+    def i_margin(self) -> SocketLinker:
+        """Input socket: Margin"""
+        return self._input("Margin")
+
+    @property
+    def i_fill_holes(self) -> SocketLinker:
+        """Input socket: Fill Holes"""
+        return self._input("Fill Holes")
+
+    @property
+    def i_method(self) -> SocketLinker:
+        """Input socket: Method"""
+        return self._input("Method")
+
+    @property
+    def o_uv(self) -> SocketLinker:
+        """Output socket: UV"""
+        return self._output("UV")
