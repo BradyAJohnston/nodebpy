@@ -630,7 +630,7 @@ Insert values into a string using a Python and path template compatible formatti
 ### HashValue { #nodebpy.nodes.converter.HashValue }
 
 ```python
-nodes.converter.HashValue(value=None, seed=0, data_type='INT')
+nodes.converter.HashValue(value=None, seed=0, *, data_type='INT')
 ```
 
 Generate a randomized integer using the given input value as a seed

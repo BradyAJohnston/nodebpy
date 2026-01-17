@@ -217,8 +217,8 @@ SOCKET_TYPES = Literal[
 SOCKET_COMPATIBILITY = {
     "VALUE": (
         "VALUE",
-        "INT",
         "VECTOR",
+        "INT",
         "BOOLEAN",
         "RGBA",
         "ROTATION",

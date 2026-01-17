@@ -1,11 +1,12 @@
 from typing import Literal
+
 import bpy
 
 from ..builder import NodeBuilder, SocketLinker
-
 from . import types
 from .types import (
     LINKABLE,
+    SOCKET_TYPES,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_COLOR,
     TYPE_INPUT_INT,
@@ -14,14 +15,13 @@ from .types import (
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
-    SOCKET_TYPES,
-    _VectorMathOperations,
-    _RandomValueDataTypes,
-    _MixDataTypes,
-    _MixColorBlendTypes,
     _AccumulateFieldDataTypes,
     _AttributeDomains,
     _EvaluateAtIndexDataTypes,
+    _MixColorBlendTypes,
+    _MixDataTypes,
+    _RandomValueDataTypes,
+    _VectorMathOperations,
 )
 
 
@@ -875,6 +875,7 @@ class HashValue(NodeBuilder):
         | TYPE_INPUT_MATRIX
         | TYPE_INPUT_STRING = None,
         seed: TYPE_INPUT_INT = 0,
+        *,
         data_type: _HashValueDataTypes = "INT",
     ):
         super().__init__()
