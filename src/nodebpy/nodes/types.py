@@ -68,10 +68,33 @@ _AttributeDomains = typing.Literal[
 _DeleteGeometryDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
 ]
+_GridDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+]
 
 _DeleteGeoemtryModes = Literal["ALL", "EDGE_FACE", "ONLY_FACE"]
 _RandomValueDataTypes = Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
-
+_EvaluateAtIndexDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "FLOAT_VECTOR",
+    "FLOAT_COLOR",
+    "QUATERNION",
+    "FLOAT4X4",
+    "STRING",
+    "INT8",
+    "INT16_2D",
+    "INT32_2D",
+    "FLOAT2",
+    "BYTE_COLOR",
+]
+_DuplicateElementsDomains = Literal[
+    "POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"
+]
 
 _AttributeDataTypes = Literal[
     "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX"

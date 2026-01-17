@@ -11,6 +11,8 @@
 | [BoundingBox](#nodebpy.nodes.geometry.BoundingBox) | Calculate the limits of a geometry's positions and generate a box mesh with those dimensions |
 | [ConvexHull](#nodebpy.nodes.geometry.ConvexHull) | Create a mesh that encloses all points in the input geometry with the smallest number of points |
 | [DeleteGeometry](#nodebpy.nodes.geometry.DeleteGeometry) | Remove selected elements of a geometry |
+| [DistributePointsOnFaces](#nodebpy.nodes.geometry.DistributePointsOnFaces) | Generate points spread out on the surface of a mesh |
+| [DuplicateElements](#nodebpy.nodes.geometry.DuplicateElements) | Generate an arbitrary number copies of each selected input element |
 | [JoinGeometry](#nodebpy.nodes.geometry.JoinGeometry) | Merge separately generated geometries into a single one |
 
 ### BoundingBox { #nodebpy.nodes.geometry.BoundingBox }
@@ -66,6 +68,59 @@ Remove selected elements of a geometry
 | [i_geometry](#nodebpy.nodes.geometry.DeleteGeometry.i_geometry) | Input socket: Geometry |
 | [i_selection](#nodebpy.nodes.geometry.DeleteGeometry.i_selection) | Input socket: Selection |
 | [o_geometry](#nodebpy.nodes.geometry.DeleteGeometry.o_geometry) | Output socket: Geometry |
+
+### DistributePointsOnFaces { #nodebpy.nodes.geometry.DistributePointsOnFaces }
+
+```python
+nodes.geometry.DistributePointsOnFaces(
+    mesh=None,
+    selection=None,
+    density=10.0,
+    distance_min=10.0,
+    density_max=10.0,
+    density_factor=10.0,
+    distribute_method='RANDOM',
+    seed=0,
+    **kwargs,
+)
+```
+
+Generate points spread out on the surface of a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_density](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_density) | Input socket: Density |
+| [i_mesh](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_mesh) | Input socket: Mesh |
+| [i_seed](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_seed) | Input socket: Seed |
+| [i_selection](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_selection) | Input socket: Selection |
+| [o_normal](#nodebpy.nodes.geometry.DistributePointsOnFaces.o_normal) | Output socket: Normal |
+| [o_points](#nodebpy.nodes.geometry.DistributePointsOnFaces.o_points) | Output socket: Points |
+| [o_rotation](#nodebpy.nodes.geometry.DistributePointsOnFaces.o_rotation) | Output socket: Rotation |
+
+### DuplicateElements { #nodebpy.nodes.geometry.DuplicateElements }
+
+```python
+nodes.geometry.DuplicateElements(
+    geometry=None,
+    selection=True,
+    amount=1,
+    domain='POINT',
+)
+```
+
+Generate an arbitrary number copies of each selected input element
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_amount](#nodebpy.nodes.geometry.DuplicateElements.i_amount) | Input socket: Amount |
+| [i_geometry](#nodebpy.nodes.geometry.DuplicateElements.i_geometry) | Input socket: Geometry |
+| [i_selection](#nodebpy.nodes.geometry.DuplicateElements.i_selection) | Input socket: Selection |
+| [o_duplicate_index](#nodebpy.nodes.geometry.DuplicateElements.o_duplicate_index) | Output socket: Duplicate Index |
+| [o_geometry](#nodebpy.nodes.geometry.DuplicateElements.o_geometry) | Output socket: Geometry |
 
 ### JoinGeometry { #nodebpy.nodes.geometry.JoinGeometry }
 

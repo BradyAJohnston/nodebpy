@@ -22,10 +22,7 @@ from typing_extensions import Literal
 from ..builder import NodeBuilder, SocketLinker
 from .types import (
     LINKABLE,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_INT,
     TYPE_INPUT_ROTATION,
-    TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )

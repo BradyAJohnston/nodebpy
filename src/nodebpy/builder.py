@@ -234,6 +234,7 @@ class NodeBuilder:
     _from_socket: NodeSocket | None = None
     _default_input_id: str | None = None
     _default_output_id: str | None = None
+    _socket_data_types = tuple(SOCKET_COMPATIBILITY.keys())
 
     def __init__(self):
         # Get active tree from context manager
@@ -278,6 +279,38 @@ class NodeBuilder:
         if self._default_output_id is not None:
             return self.node.outputs[self._output_idx(self._default_output_id)]
         return self.node.outputs[0]
+
+    def _socket_type_from_linkable(self, linkable: LINKABLE):
+        if linkable is None:
+            raise ValueError("Linkable cannot be None")
+        for comp in SOCKET_COMPATIBILITY[linkable.type]:
+            if comp in self._socket_data_types:
+                return comp if comp != "VALUE" else "FLOAT"
+        raise ValueError(
+            f"Unsupported socket type for linking to the FormatString: {linkable}, type: {linkable.type=}"
+        )
+
+    def _add_inputs(
+        self, *args, **kwargs
+    ) -> dict[str, tuple[LINKABLE, bpy.types.NodeSocket]]:
+        """Dictionary with {new_socket.name: from_linkable} for link creation"""
+        new_sockets = {}
+        items = {}
+        for arg in args:
+            if isinstance(arg, bpy.types.NodeSocket):
+                items[arg.name] = arg
+            else:
+                items[arg._default_output_socket.name] = arg
+        items.update(kwargs)
+        for key, value in items.items():
+            type = self._socket_type_from_linkable(value)
+            socket = self._add_socket(name=key, type=type)
+            new_sockets[socket.name] = value
+
+        return new_sockets
+
+    def _add_socket(self, name: str, type: str, default_value):
+        raise NotImplementedError
 
     def _input_idx(self, identifier: str) -> int:
         # currently there is a Blender bug that is preventing the lookup of sockets from identifiers on some
@@ -484,6 +517,7 @@ class NodeBuilder:
                         )
             case "VALUE":
                 from .nodes.converter import Math
+
                 return getattr(Math, operation)(*values)
             case _:
                 raise TypeError(

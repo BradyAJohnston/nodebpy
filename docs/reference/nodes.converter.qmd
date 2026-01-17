@@ -20,6 +20,11 @@
 | [CombineXYZ](#nodebpy.nodes.converter.CombineXYZ) | Create a vector from X, Y, and Z components |
 | [Compare](#nodebpy.nodes.converter.Compare) | Perform a comparison operation on the two given inputs |
 | [EulerToRotation](#nodebpy.nodes.converter.EulerToRotation) | Build a rotation from separate angles around each axis |
+| [EvaluateAtIndex](#nodebpy.nodes.converter.EvaluateAtIndex) | Retrieve data of other elements in the context's geometry |
+| [EvaluateOnDomain](#nodebpy.nodes.converter.EvaluateOnDomain) | Retrieve values from a field on a different domain besides the domain from the context |
+| [FieldAverage](#nodebpy.nodes.converter.FieldAverage) | Calculate the mean and median of a given field |
+| [FieldMinMax](#nodebpy.nodes.converter.FieldMinMax) | Calculate the minimum and maximum of a given field |
+| [FieldVariance](#nodebpy.nodes.converter.FieldVariance) | Calculate the standard deviation and variance of a given field |
 | [FindInString](#nodebpy.nodes.converter.FindInString) | Find the number of times a given string occurs in another string and the position of the first match |
 | [FloatToInteger](#nodebpy.nodes.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
 | [FormatString](#nodebpy.nodes.converter.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
@@ -456,6 +461,118 @@ Build a rotation from separate angles around each axis
 | [i_euler](#nodebpy.nodes.converter.EulerToRotation.i_euler) | Input socket: Euler |
 | [o_rotation](#nodebpy.nodes.converter.EulerToRotation.o_rotation) | Output socket: Rotation |
 
+### EvaluateAtIndex { #nodebpy.nodes.converter.EvaluateAtIndex }
+
+```python
+nodes.converter.EvaluateAtIndex(
+    value=None,
+    index=0,
+    *,
+    domain='POINT',
+    data_type='FLOAT',
+    **kwargs,
+)
+```
+
+Retrieve data of other elements in the context's geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_index](#nodebpy.nodes.converter.EvaluateAtIndex.i_index) | Input socket: Index |
+| [i_value](#nodebpy.nodes.converter.EvaluateAtIndex.i_value) | Input socket: Value |
+| [o_value](#nodebpy.nodes.converter.EvaluateAtIndex.o_value) | Output socket: Value |
+
+### EvaluateOnDomain { #nodebpy.nodes.converter.EvaluateOnDomain }
+
+```python
+nodes.converter.EvaluateOnDomain(
+    value=None,
+    *,
+    domain='POINT',
+    data_type='FLOAT',
+)
+```
+
+Retrieve values from a field on a different domain besides the domain from the context
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_value](#nodebpy.nodes.converter.EvaluateOnDomain.i_value) | Input socket: Value |
+| [o_value](#nodebpy.nodes.converter.EvaluateOnDomain.o_value) | Output socket: Value |
+
+### FieldAverage { #nodebpy.nodes.converter.FieldAverage }
+
+```python
+nodes.converter.FieldAverage(
+    value=None,
+    group_index=0,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
+```
+
+Calculate the mean and median of a given field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_group_id](#nodebpy.nodes.converter.FieldAverage.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.converter.FieldAverage.i_value) | Input socket: Value |
+| [o_mean](#nodebpy.nodes.converter.FieldAverage.o_mean) | Output socket: Mean |
+| [o_median](#nodebpy.nodes.converter.FieldAverage.o_median) | Output socket: Median |
+
+### FieldMinMax { #nodebpy.nodes.converter.FieldMinMax }
+
+```python
+nodes.converter.FieldMinMax(
+    value=None,
+    group_index=None,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
+```
+
+Calculate the minimum and maximum of a given field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_group_id](#nodebpy.nodes.converter.FieldMinMax.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.converter.FieldMinMax.i_value) | Input socket: Value |
+| [o_max](#nodebpy.nodes.converter.FieldMinMax.o_max) | Output socket: Max |
+| [o_min](#nodebpy.nodes.converter.FieldMinMax.o_min) | Output socket: Min |
+
+### FieldVariance { #nodebpy.nodes.converter.FieldVariance }
+
+```python
+nodes.converter.FieldVariance(
+    value=None,
+    group_index=None,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
+```
+
+Calculate the standard deviation and variance of a given field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_group_id](#nodebpy.nodes.converter.FieldVariance.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.converter.FieldVariance.i_value) | Input socket: Value |
+| [o_standard_deviation](#nodebpy.nodes.converter.FieldVariance.o_standard_deviation) | Output socket: Standard Deviation |
+| [o_variance](#nodebpy.nodes.converter.FieldVariance.o_variance) | Output socket: Variance |
+
 ### FindInString { #nodebpy.nodes.converter.FindInString }
 
 ```python
@@ -504,20 +621,6 @@ Insert values into a string using a Python and path template compatible formatti
 | [i_input_socket](#nodebpy.nodes.converter.FormatString.i_input_socket) | Input socket: |
 | [items](#nodebpy.nodes.converter.FormatString.items) | Input sockets: |
 | [o_string](#nodebpy.nodes.converter.FormatString.o_string) | Output socket: String |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [add_inputs](#nodebpy.nodes.converter.FormatString.add_inputs) | Dictionary with {new_socket.name: from_linkable} for link creation |
-
-##### add_inputs { #nodebpy.nodes.converter.FormatString.add_inputs }
-
-```python
-nodes.converter.FormatString.add_inputs(*args, **kwargs)
-```
-
-Dictionary with {new_socket.name: from_linkable} for link creation
 
 ### HashValue { #nodebpy.nodes.converter.HashValue }
 

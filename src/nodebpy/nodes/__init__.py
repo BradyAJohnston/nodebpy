@@ -1,7 +1,13 @@
 """Auto-generated geometry node classes."""
 
-from .grid import DistributePointsInGrid
-from .geometry import BoundingBox, DeleteGeometry, JoinGeometry
+from .grid import DistributePointsInGrid, DistributePointsInVolume, FieldToGrid
+from .geometry import (
+    BoundingBox,
+    DeleteGeometry,
+    DistributePointsOnFaces,
+    DuplicateElements,
+    JoinGeometry,
+)
 from . import (
     attribute_auto,
     curve,
@@ -35,8 +41,13 @@ from .converter import (
     CombineMatrix,
     CombineTransform,
     CombineXYZ,
+    FieldVariance,
     Compare,
     EulerToRotation,
+    EvaluateAtIndex,
+    EvaluateOnDomain,
+    FieldAverage,
+    FieldMinMax,
     FindInString,
     FloatToInteger,
     FormatString,
@@ -94,21 +105,7 @@ from .geometry_auto import (
     Bake,
     DCursor3,
     DialGizmo,
-    DistributePointsInVolume,
-    DistributePointsOnFaces,
-    DuplicateElements,
-    EdgePathsToSelection,
-    EdgesOfCorner,
-    EdgesOfVertex,
-    EdgesToFaceGroups,
-    EvaluateAtIndex,
-    EvaluateOnDomain,
-    FaceOfCorner,
     FaceSet,
-    FieldAverage,
-    FieldMinMax,
-    FieldToGrid,
-    FieldVariance,
     FlipFaces,
     ForEachGeometryElementOutput,
     GeometryProximity,
@@ -222,6 +219,11 @@ from .input import (
     CornersOfFace,
     CornersOfVertex,
     CurveTangent,
+    EdgePathsToSelection,
+    EdgesOfCorner,
+    EdgesOfVertex,
+    EdgesToFaceGroups,
+    FaceOfCorner,
     Image,
     Index,
     InstanceBounds,

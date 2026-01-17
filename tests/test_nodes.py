@@ -4,6 +4,7 @@ import pytest
 
 import nodebpy.nodes.converter
 import nodebpy.nodes.geometry
+import nodebpy.nodes.grid
 import nodebpy.nodes.input
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
@@ -75,11 +76,10 @@ class TestMathOperators:
 def test_format_string():
     format_string = "Hello {x} friends, it is {y} hours and this is a {String}"
     with TreeBuilder("TestFormatString"):
-        string = n.String("test")
         x_int = n.Integer(5)
         y_value = n.Value(12.50)
         format = nodebpy.nodes.converter.FormatString(
-            string,
+            n.String("test"),
             format=format_string,
             x=x_int,
             y=y_value,
@@ -87,15 +87,37 @@ def test_format_string():
 
         assert len(format.node.format_items) == 3
         assert format.node.inputs[0].default_value == format_string  # type: ignore
-        assert format.node.inputs[1].name == "x"
-        assert format.node.inputs[1].type == "INT"
-        assert format.node.inputs[1].default_value == 0  # type: ignore
-        assert format.node.inputs[2].name == "y"
-        assert format.node.inputs[2].type == "VALUE"
-        assert format.node.inputs[2].default_value == 0.0
-        assert format.node.inputs[3].name == "String"
-        assert format.node.inputs[3].type == "STRING"
-        assert format.node.inputs[3].default_value == ""
-        assert format.items["x"].socket == format.node.inputs[1]
-        assert format.items["y"].socket == format.node.inputs[2]
-        assert format.items["String"].socket == format.node.inputs[3]
+        assert format.node.inputs[1].name == "String"
+        assert format.node.inputs[1].type == "STRING"
+        assert format.node.inputs[1].default_value == ""
+        assert format.node.inputs[2].name == "x"
+        assert format.node.inputs[2].type == "INT"
+        assert format.node.inputs[2].default_value == 0  # type: ignore
+        assert format.node.inputs[3].name == "y"
+        assert format.node.inputs[3].type == "VALUE"
+        assert format.node.inputs[3].default_value == 0.0
+        assert format.items["String"].socket == format.node.inputs[1]
+        assert format.items["x"].socket == format.node.inputs[2]
+        assert format.items["y"].socket == format.node.inputs[3]
+
+
+def test_field_to_grid():
+    with TreeBuilder() as tree:
+        inputs = [
+            n.Vector(),
+            n.Value(),
+            n.Boolean(),
+            n.Integer(),
+        ]
+
+        ftg = nodebpy.nodes.grid.FieldToGrid(*inputs, test=n.Value())
+        _ = ftg.output_sockets["test"] >> n.Math.add()
+
+    assert len(tree.nodes) == 7
+    assert len(ftg.node.grid_items) == 5
+    assert ftg.node.grid_items[4].name == "test"
+    assert all(
+        [i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs]
+    )
+    for i, item in enumerate(ftg.node.grid_items):
+        assert item.data_type == ["VECTOR", "FLOAT", "BOOLEAN", "INT", "FLOAT"][i]

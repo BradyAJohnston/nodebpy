@@ -18,6 +18,11 @@
 | [CornersOfFace](#nodebpy.nodes.input.CornersOfFace) | Retrieve corners that make up a face |
 | [CornersOfVertex](#nodebpy.nodes.input.CornersOfVertex) | Retrieve face corners connected to vertices |
 | [CurveTangent](#nodebpy.nodes.input.CurveTangent) | Retrieve the direction of curves at each control point |
+| [EdgePathsToSelection](#nodebpy.nodes.input.EdgePathsToSelection) | Output a selection of edges by following paths across mesh edges |
+| [EdgesOfCorner](#nodebpy.nodes.input.EdgesOfCorner) | Retrieve the edges on both sides of a face corner |
+| [EdgesOfVertex](#nodebpy.nodes.input.EdgesOfVertex) | Retrieve the edges connected to each vertex |
+| [EdgesToFaceGroups](#nodebpy.nodes.input.EdgesToFaceGroups) | Group faces into regions surrounded by the selected boundary edges |
+| [FaceOfCorner](#nodebpy.nodes.input.FaceOfCorner) | Retrieve the face each face corner is part of |
 | [ID](#nodebpy.nodes.input.ID) | Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist |
 | [Image](#nodebpy.nodes.input.Image) | Input an image data-block |
 | [Index](#nodebpy.nodes.input.Index) | Retrieve an integer value indicating the position of each element in the list, starting at zero |
@@ -213,6 +218,87 @@ Retrieve the direction of curves at each control point
 | Name | Description |
 | --- | --- |
 | [o_tangent](#nodebpy.nodes.input.CurveTangent.o_tangent) | Output socket: Tangent |
+
+### EdgePathsToSelection { #nodebpy.nodes.input.EdgePathsToSelection }
+
+```python
+nodes.input.EdgePathsToSelection(start_vertices=None, next_vertex_index=None)
+```
+
+Output a selection of edges by following paths across mesh edges
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_next_vertex_index](#nodebpy.nodes.input.EdgePathsToSelection.i_next_vertex_index) | Input socket: Next Vertex Index |
+| [i_start_vertices](#nodebpy.nodes.input.EdgePathsToSelection.i_start_vertices) | Input socket: Start Vertices |
+| [o_selection](#nodebpy.nodes.input.EdgePathsToSelection.o_selection) | Output socket: Selection |
+
+### EdgesOfCorner { #nodebpy.nodes.input.EdgesOfCorner }
+
+```python
+nodes.input.EdgesOfCorner(corner_index=None)
+```
+
+Retrieve the edges on both sides of a face corner
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_corner_index](#nodebpy.nodes.input.EdgesOfCorner.i_corner_index) | Input socket: Corner Index |
+| [o_next_edge_index](#nodebpy.nodes.input.EdgesOfCorner.o_next_edge_index) | Output socket: Next Edge Index |
+| [o_previous_edge_index](#nodebpy.nodes.input.EdgesOfCorner.o_previous_edge_index) | Output socket: Previous Edge Index |
+
+### EdgesOfVertex { #nodebpy.nodes.input.EdgesOfVertex }
+
+```python
+nodes.input.EdgesOfVertex(vertex_index=None, weights=None, sort_index=0)
+```
+
+Retrieve the edges connected to each vertex
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_sort_index](#nodebpy.nodes.input.EdgesOfVertex.i_sort_index) | Input socket: Sort Index |
+| [i_vertex_index](#nodebpy.nodes.input.EdgesOfVertex.i_vertex_index) | Input socket: Vertex Index |
+| [i_weights](#nodebpy.nodes.input.EdgesOfVertex.i_weights) | Input socket: Weights |
+| [o_edge_index](#nodebpy.nodes.input.EdgesOfVertex.o_edge_index) | Output socket: Edge Index |
+| [o_total](#nodebpy.nodes.input.EdgesOfVertex.o_total) | Output socket: Total |
+
+### EdgesToFaceGroups { #nodebpy.nodes.input.EdgesToFaceGroups }
+
+```python
+nodes.input.EdgesToFaceGroups(boundary_edges=None)
+```
+
+Group faces into regions surrounded by the selected boundary edges
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_boundary_edges](#nodebpy.nodes.input.EdgesToFaceGroups.i_boundary_edges) | Input socket: Boundary Edges |
+| [o_face_group_id](#nodebpy.nodes.input.EdgesToFaceGroups.o_face_group_id) | Output socket: Face Group ID |
+
+### FaceOfCorner { #nodebpy.nodes.input.FaceOfCorner }
+
+```python
+nodes.input.FaceOfCorner(corner_index=None)
+```
+
+Retrieve the face each face corner is part of
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_corner_index](#nodebpy.nodes.input.FaceOfCorner.i_corner_index) | Input socket: Corner Index |
+| [o_face_index](#nodebpy.nodes.input.FaceOfCorner.o_face_index) | Output socket: Face Index |
+| [o_index_in_face](#nodebpy.nodes.input.FaceOfCorner.o_index_in_face) | Output socket: Index in Face |
 
 ### ID { #nodebpy.nodes.input.ID }
 

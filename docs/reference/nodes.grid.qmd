@@ -9,11 +9,13 @@
 | Name | Description |
 | --- | --- |
 | [DistributePointsInGrid](#nodebpy.nodes.grid.DistributePointsInGrid) | Generate points inside a volume grid |
+| [DistributePointsInVolume](#nodebpy.nodes.grid.DistributePointsInVolume) | Generate points inside a volume |
+| [FieldToGrid](#nodebpy.nodes.grid.FieldToGrid) | Create new grids by evaluating new values on an existing volume grid topology |
 
 ### DistributePointsInGrid { #nodebpy.nodes.grid.DistributePointsInGrid }
 
 ```python
-nodes.grid.DistributePointsInGrid(grid=0.0, mode='DENSITY_RANDOM', **kwargs)
+nodes.grid.DistributePointsInGrid(grid=None, mode='DENSITY_RANDOM', **kwargs)
 ```
 
 Generate points inside a volume grid
@@ -26,3 +28,35 @@ Generate points inside a volume grid
 | [i_grid](#nodebpy.nodes.grid.DistributePointsInGrid.i_grid) | Input socket: Grid |
 | [i_seed](#nodebpy.nodes.grid.DistributePointsInGrid.i_seed) | Input socket: Seed |
 | [o_points](#nodebpy.nodes.grid.DistributePointsInGrid.o_points) | Output socket: Points |
+
+### DistributePointsInVolume { #nodebpy.nodes.grid.DistributePointsInVolume }
+
+```python
+nodes.grid.DistributePointsInVolume(volume=None, mode='Random', **kwargs)
+```
+
+Generate points inside a volume
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_density](#nodebpy.nodes.grid.DistributePointsInVolume.i_density) | Input socket: Density |
+| [i_seed](#nodebpy.nodes.grid.DistributePointsInVolume.i_seed) | Input socket: Seed |
+| [i_spacing](#nodebpy.nodes.grid.DistributePointsInVolume.i_spacing) | Input socket: Spacing |
+| [i_threshold](#nodebpy.nodes.grid.DistributePointsInVolume.i_threshold) | Input socket: Threshold |
+| [o_points](#nodebpy.nodes.grid.DistributePointsInVolume.o_points) | Output socket: Points |
+
+### FieldToGrid { #nodebpy.nodes.grid.FieldToGrid }
+
+```python
+nodes.grid.FieldToGrid(*args, topology=None, data_type='FLOAT', **kwargs)
+```
+
+Create new grids by evaluating new values on an existing volume grid topology
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_topology](#nodebpy.nodes.grid.FieldToGrid.i_topology) | Input socket: Topology |

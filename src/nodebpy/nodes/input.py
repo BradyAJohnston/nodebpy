@@ -889,3 +889,159 @@ class CornersOfFace(NodeBuilder):
     def o_total(self) -> SocketLinker:
         """Output socket: Total"""
         return self._output("Total")
+
+
+class EdgePathsToSelection(NodeBuilder):
+    """Output a selection of edges by following paths across mesh edges"""
+
+    name = "GeometryNodeEdgePathsToSelection"
+    node: bpy.types.GeometryNodeEdgePathsToSelection
+
+    def __init__(
+        self,
+        start_vertices: TYPE_INPUT_BOOLEAN = None,
+        next_vertex_index: TYPE_INPUT_INT = None,
+    ):
+        super().__init__()
+        key_args = {
+            "Start Vertices": start_vertices,
+            "Next Vertex Index": next_vertex_index,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_start_vertices(self) -> SocketLinker:
+        """Input socket: Start Vertices"""
+        return self._input("Start Vertices")
+
+    @property
+    def i_next_vertex_index(self) -> SocketLinker:
+        """Input socket: Next Vertex Index"""
+        return self._input("Next Vertex Index")
+
+    @property
+    def o_selection(self) -> SocketLinker:
+        """Output socket: Selection"""
+        return self._output("Selection")
+
+
+class EdgesOfCorner(NodeBuilder):
+    """Retrieve the edges on both sides of a face corner"""
+
+    name = "GeometryNodeEdgesOfCorner"
+    node: bpy.types.GeometryNodeEdgesOfCorner
+
+    def __init__(self, corner_index: TYPE_INPUT_INT = None):
+        super().__init__()
+        key_args = {"Corner Index": corner_index}
+        self._establish_links(**key_args)
+
+    @property
+    def i_corner_index(self) -> SocketLinker:
+        """Input socket: Corner Index"""
+        return self._input("Corner Index")
+
+    @property
+    def o_next_edge_index(self) -> SocketLinker:
+        """Output socket: Next Edge Index"""
+        return self._output("Next Edge Index")
+
+    @property
+    def o_previous_edge_index(self) -> SocketLinker:
+        """Output socket: Previous Edge Index"""
+        return self._output("Previous Edge Index")
+
+
+class EdgesOfVertex(NodeBuilder):
+    """Retrieve the edges connected to each vertex"""
+
+    name = "GeometryNodeEdgesOfVertex"
+    node: bpy.types.GeometryNodeEdgesOfVertex
+
+    def __init__(
+        self,
+        vertex_index: TYPE_INPUT_INT = None,
+        weights: TYPE_INPUT_VALUE = None,
+        sort_index: TYPE_INPUT_INT = 0,
+    ):
+        super().__init__()
+        key_args = {
+            "Vertex Index": vertex_index,
+            "Weights": weights,
+            "Sort Index": sort_index,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_vertex_index(self) -> SocketLinker:
+        """Input socket: Vertex Index"""
+        return self._input("Vertex Index")
+
+    @property
+    def i_weights(self) -> SocketLinker:
+        """Input socket: Weights"""
+        return self._input("Weights")
+
+    @property
+    def i_sort_index(self) -> SocketLinker:
+        """Input socket: Sort Index"""
+        return self._input("Sort Index")
+
+    @property
+    def o_edge_index(self) -> SocketLinker:
+        """Output socket: Edge Index"""
+        return self._output("Edge Index")
+
+    @property
+    def o_total(self) -> SocketLinker:
+        """Output socket: Total"""
+        return self._output("Total")
+
+
+class EdgesToFaceGroups(NodeBuilder):
+    """Group faces into regions surrounded by the selected boundary edges"""
+
+    name = "GeometryNodeEdgesToFaceGroups"
+    node: bpy.types.GeometryNodeEdgesToFaceGroups
+
+    def __init__(self, boundary_edges: TYPE_INPUT_BOOLEAN = None):
+        super().__init__()
+        key_args = {"Boundary Edges": boundary_edges}
+        self._establish_links(**key_args)
+
+    @property
+    def i_boundary_edges(self) -> SocketLinker:
+        """Input socket: Boundary Edges"""
+        return self._input("Boundary Edges")
+
+    @property
+    def o_face_group_id(self) -> SocketLinker:
+        """Output socket: Face Group ID"""
+        return self._output("Face Group ID")
+
+
+class FaceOfCorner(NodeBuilder):
+    """Retrieve the face each face corner is part of"""
+
+    name = "GeometryNodeFaceOfCorner"
+    node: bpy.types.GeometryNodeFaceOfCorner
+
+    def __init__(self, corner_index: TYPE_INPUT_INT = None):
+        super().__init__()
+        key_args = {"Corner Index": corner_index}
+        self._establish_links(**key_args)
+
+    @property
+    def i_corner_index(self) -> SocketLinker:
+        """Input socket: Corner Index"""
+        return self._input("Corner Index")
+
+    @property
+    def o_face_index(self) -> SocketLinker:
+        """Output socket: Face Index"""
+        return self._output("Face Index")
+
+    @property
+    def o_index_in_face(self) -> SocketLinker:
+        """Output socket: Index in Face"""
+        return self._output("Index in Face")

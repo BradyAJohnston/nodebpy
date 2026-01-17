@@ -1,13 +1,11 @@
 from typing import Literal
 import bpy
-from typing_extensions import Literal
 
 from ..builder import NodeBuilder, SocketLinker
 
 from . import types
 from .types import (
     LINKABLE,
-    SOCKET_COMPATIBILITY,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_COLOR,
     TYPE_INPUT_INT,
@@ -22,6 +20,7 @@ from .types import (
     _MixColorBlendTypes,
     _AccumulateFieldDataTypes,
     _AttributeDomains,
+    _EvaluateAtIndexDataTypes,
 )
 
 
@@ -797,6 +796,7 @@ class FormatString(NodeBuilder):
 
     name = "FunctionNodeFormatString"
     node: bpy.types.FunctionNodeFormatString
+    _socket_data_types = ("VALUE", "INT", "STRING")
 
     def __init__(
         self,
@@ -806,40 +806,10 @@ class FormatString(NodeBuilder):
     ):
         super().__init__()
         key_args = {"Format": format}
-        # key_args.update(kwargs)
-        key_args.update(self.add_inputs(*args, **kwargs))
+        key_args.update(self._add_inputs(*args, **kwargs))  # type: ignore
         self._establish_links(**key_args)
 
-    def _socket_type_from_linkable(self, linkable: LINKABLE):
-        if linkable is None:
-            raise ValueError("Linkable cannot be None")
-        for comp in SOCKET_COMPATIBILITY[linkable.type]:
-            if comp in ("VALUE", "INT", "STRING"):
-                return comp if comp != "VALUE" else "FLOAT"
-        raise ValueError(
-            f"Unsupported socket type for linking to the FormatString: {linkable}, type: {linkable.type=}"
-        )
-
-    def add_inputs(
-        self, *args, **kwargs
-    ) -> dict[str, tuple[LINKABLE, bpy.types.NodeSocket]]:
-        """Dictionary with {new_socket.name: from_linkable} for link creation"""
-        new_sockets = {}
-        # kwargs.update({arg.name: arg for arg in args})
-        for arg in args:
-            if isinstance(arg, bpy.types.NodeSocket):
-                kwargs[arg.name] = arg
-            else:
-                kwargs[arg._default_output_socket.name] = arg
-
-        for key, value in kwargs.items():
-            type = self._socket_type_from_linkable(value)
-            socket = self.add_socket(name=key, type=type)
-            new_sockets[socket.name] = value
-
-        return new_sockets
-
-    def add_socket(
+    def _add_socket(  # type: ignore
         self,
         name: str,
         type: Literal["FLOAT", "INT", "STRING"] = "FLOAT",
@@ -2207,6 +2177,312 @@ class AccumulateField(NodeBuilder):
 
     @data_type.setter
     def data_type(self, value: _AccumulateFieldDataTypes):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+
+class EvaluateAtIndex(NodeBuilder):
+    """Retrieve data of other elements in the context's geometry"""
+
+    name = "GeometryNodeFieldAtIndex"
+    node: bpy.types.GeometryNodeFieldAtIndex
+
+    def __init__(
+        self,
+        value: LINKABLE = None,
+        index: TYPE_INPUT_INT = 0,
+        *,
+        domain: _AttributeDomains = "POINT",
+        data_type: _EvaluateAtIndexDataTypes = "FLOAT",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Index": index}
+        key_args.update(kwargs)
+        self.domain = domain
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_index(self) -> SocketLinker:
+        """Input socket: Index"""
+        return self._input("Index")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+    @property
+    def data_type(
+        self,
+    ) -> _EvaluateAtIndexDataTypes:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _EvaluateAtIndexDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class FieldAverage(NodeBuilder):
+    """Calculate the mean and median of a given field"""
+
+    name = "GeometryNodeFieldAverage"
+    node: bpy.types.GeometryNodeFieldAverage
+
+    def __init__(
+        self,
+        value: LINKABLE = None,
+        group_index: TYPE_INPUT_INT = 0,
+        *,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group Index")
+
+    @property
+    def o_mean(self) -> SocketLinker:
+        """Output socket: Mean"""
+        return self._output("Mean")
+
+    @property
+    def o_median(self) -> SocketLinker:
+        """Output socket: Median"""
+        return self._output("Median")
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+
+class FieldMinMax(NodeBuilder):
+    """Calculate the minimum and maximum of a given field"""
+
+    name = "GeometryNodeFieldMinAndMax"
+    node: bpy.types.GeometryNodeFieldMinAndMax
+
+    def __init__(
+        self,
+        value: LINKABLE = None,
+        group_index: TYPE_INPUT_INT = None,
+        *,
+        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group Index")
+
+    @property
+    def o_min(self) -> SocketLinker:
+        """Output socket: Min"""
+        return self._output("Min")
+
+    @property
+    def o_max(self) -> SocketLinker:
+        """Output socket: Max"""
+        return self._output("Max")
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+
+class EvaluateOnDomain(NodeBuilder):
+    """Retrieve values from a field on a different domain besides the domain from the context"""
+
+    name = "GeometryNodeFieldOnDomain"
+    node: bpy.types.GeometryNodeFieldOnDomain
+
+    def __init__(
+        self,
+        value: LINKABLE = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+        data_type: _EvaluateAtIndexDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Value": value}
+        self.domain = domain
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+    @property
+    def data_type(
+        self,
+    ) -> _EvaluateAtIndexDataTypes:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _EvaluateAtIndexDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class FieldVariance(NodeBuilder):
+    """Calculate the standard deviation and variance of a given field"""
+
+    name = "GeometryNodeFieldVariance"
+    node: bpy.types.GeometryNodeFieldVariance
+
+    def __init__(
+        self,
+        value: LINKABLE = None,
+        group_index: TYPE_INPUT_INT = None,
+        *,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group Index")
+
+    @property
+    def o_standard_deviation(self) -> SocketLinker:
+        """Output socket: Standard Deviation"""
+        return self._output("Standard Deviation")
+
+    @property
+    def o_variance(self) -> SocketLinker:
+        """Output socket: Variance"""
+        return self._output("Variance")
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
         self.node.data_type = value
 
     @property
