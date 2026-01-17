@@ -2,3 +2,134 @@
 
 `nodes.attribute`
 
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [AttributeStatistic](#nodebpy.nodes.attribute.AttributeStatistic) | Calculate statistics about a data set from a field evaluated on a geometry |
+| [BlurAttribute](#nodebpy.nodes.attribute.BlurAttribute) | Mix attribute values of neighboring elements |
+| [DomainSize](#nodebpy.nodes.attribute.DomainSize) | Retrieve the number of elements in a geometry for each attribute domain |
+| [RemoveNamedAttribute](#nodebpy.nodes.attribute.RemoveNamedAttribute) | Delete an attribute with a specified name from a geometry. Typically used to optimize performance |
+| [StoreNamedAttribute](#nodebpy.nodes.attribute.StoreNamedAttribute) | Store the result of a field on a geometry as an attribute with the specified name |
+
+### AttributeStatistic { #nodebpy.nodes.attribute.AttributeStatistic }
+
+```python
+nodes.attribute.AttributeStatistic(
+    geometry=None,
+    selection=True,
+    attribute=None,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+    **kwargs,
+)
+```
+
+Calculate statistics about a data set from a field evaluated on a geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_attribute](#nodebpy.nodes.attribute.AttributeStatistic.i_attribute) | Input socket: Attribute |
+| [i_geometry](#nodebpy.nodes.attribute.AttributeStatistic.i_geometry) | Input socket: Geometry |
+| [i_selection](#nodebpy.nodes.attribute.AttributeStatistic.i_selection) | Input socket: Selection |
+| [o_max](#nodebpy.nodes.attribute.AttributeStatistic.o_max) | Output socket: Max |
+| [o_mean](#nodebpy.nodes.attribute.AttributeStatistic.o_mean) | Output socket: Mean |
+| [o_median](#nodebpy.nodes.attribute.AttributeStatistic.o_median) | Output socket: Median |
+| [o_min](#nodebpy.nodes.attribute.AttributeStatistic.o_min) | Output socket: Min |
+| [o_range](#nodebpy.nodes.attribute.AttributeStatistic.o_range) | Output socket: Range |
+| [o_standard_deviation](#nodebpy.nodes.attribute.AttributeStatistic.o_standard_deviation) | Output socket: Standard Deviation |
+| [o_sum](#nodebpy.nodes.attribute.AttributeStatistic.o_sum) | Output socket: Sum |
+| [o_variance](#nodebpy.nodes.attribute.AttributeStatistic.o_variance) | Output socket: Variance |
+
+### BlurAttribute { #nodebpy.nodes.attribute.BlurAttribute }
+
+```python
+nodes.attribute.BlurAttribute(
+    value=None,
+    iterations=1,
+    weight=1.0,
+    *,
+    data_type='FLOAT',
+)
+```
+
+Mix attribute values of neighboring elements
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_iterations](#nodebpy.nodes.attribute.BlurAttribute.i_iterations) | Input socket: Iterations |
+| [i_value](#nodebpy.nodes.attribute.BlurAttribute.i_value) | Input socket: Value |
+| [i_weight](#nodebpy.nodes.attribute.BlurAttribute.i_weight) | Input socket: Weight |
+| [o_value](#nodebpy.nodes.attribute.BlurAttribute.o_value) | Output socket: Value |
+
+### DomainSize { #nodebpy.nodes.attribute.DomainSize }
+
+```python
+nodes.attribute.DomainSize(geometry=None, *, component='MESH')
+```
+
+Retrieve the number of elements in a geometry for each attribute domain
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.attribute.DomainSize.i_geometry) | Input socket: Geometry |
+| [o_edge_count](#nodebpy.nodes.attribute.DomainSize.o_edge_count) | Output socket: Edge Count |
+| [o_face_corner_count](#nodebpy.nodes.attribute.DomainSize.o_face_corner_count) | Output socket: Face Corner Count |
+| [o_face_count](#nodebpy.nodes.attribute.DomainSize.o_face_count) | Output socket: Face Count |
+| [o_point_count](#nodebpy.nodes.attribute.DomainSize.o_point_count) | Output socket: Point Count |
+
+### RemoveNamedAttribute { #nodebpy.nodes.attribute.RemoveNamedAttribute }
+
+```python
+nodes.attribute.RemoveNamedAttribute(
+    geometry=None,
+    pattern_mode='Exact',
+    name='',
+)
+```
+
+Delete an attribute with a specified name from a geometry. Typically used to optimize performance
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.attribute.RemoveNamedAttribute.i_geometry) | Input socket: Geometry |
+| [i_name](#nodebpy.nodes.attribute.RemoveNamedAttribute.i_name) | Input socket: Name |
+| [i_pattern_mode](#nodebpy.nodes.attribute.RemoveNamedAttribute.i_pattern_mode) | Input socket: Pattern Mode |
+| [o_geometry](#nodebpy.nodes.attribute.RemoveNamedAttribute.o_geometry) | Output socket: Geometry |
+
+### StoreNamedAttribute { #nodebpy.nodes.attribute.StoreNamedAttribute }
+
+```python
+nodes.attribute.StoreNamedAttribute(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
+```
+
+Store the result of a field on a geometry as an attribute with the specified name
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.attribute.StoreNamedAttribute.i_geometry) | Input socket: Geometry |
+| [i_name](#nodebpy.nodes.attribute.StoreNamedAttribute.i_name) | Input socket: Name |
+| [i_selection](#nodebpy.nodes.attribute.StoreNamedAttribute.i_selection) | Input socket: Selection |
+| [i_value](#nodebpy.nodes.attribute.StoreNamedAttribute.i_value) | Input socket: Value |
+| [o_geometry](#nodebpy.nodes.attribute.StoreNamedAttribute.o_geometry) | Output socket: Geometry |

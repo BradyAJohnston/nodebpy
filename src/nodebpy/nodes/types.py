@@ -162,6 +162,20 @@ _SampleIndexDataTypes = Literal[
     "FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR", "FLOAT_COLOR", "QUATERNION", "FLOAT4X4"
 ]
 
+_StoreNamedAttributeTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "FLOAT_VECTOR",
+    "FLOAT_COLOR",
+    "QUATERNION",
+    "FLOAT4X4",
+    "STRING",
+    "INT8",
+    "FLOAT2",
+    "BYTE_COLOR",
+]
+
 _VectorMathOperations = Literal[
     "ADD",
     "SUBTRACT",

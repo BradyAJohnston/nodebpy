@@ -175,3 +175,19 @@ def test_sdf_grid_boolean():
     assert len(bool1.i_grid_2.socket.links) == 3
     assert len(bool2.i_grid_2.socket.links) == 3
     assert len(bool3.i_grid_2.socket.links) == 3
+
+
+@pytest.mark.parametrize(
+    "domain,output",
+    zip(
+        ["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"],
+        ["Point Count", "Point Count", "Point Count", "Instance Count", "Layer Count"],
+    ),
+)
+def test_domain_size(domain, output):
+    with TreeBuilder() as tree:
+        domain_size = n.DomainSize(n.Points(10), component=domain)
+        domain_size >> n.Points()
+
+    assert len(tree.nodes) == 3
+    assert len(domain_size.node.outputs[output].links) == 1

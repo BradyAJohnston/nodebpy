@@ -6,13 +6,14 @@ from nodebpy.builder import NodeBuilder, SocketLinker
 
 from .types import (
     TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_VECTOR,
     TYPE_INPUT_COLLECTION,
     TYPE_INPUT_IMAGE,
     TYPE_INPUT_INT,
     TYPE_INPUT_OBJECT,
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
+    TYPE_INPUT_VECTOR,
+    _SampleIndexDataTypes,
 )
 
 
@@ -1579,3 +1580,49 @@ class ViewportTransform(NodeBuilder):
     def o_is_orthographic(self) -> SocketLinker:
         """Output socket: Is Orthographic"""
         return self._output("Is Orthographic")
+
+
+class NamedAttribute(NodeBuilder):
+    """Retrieve the data of a specified attribute"""
+
+    name = "GeometryNodeInputNamedAttribute"
+    node: bpy.types.GeometryNodeInputNamedAttribute
+
+    def __init__(
+        self,
+        name: TYPE_INPUT_STRING = "",
+        *,
+        data_type: _SampleIndexDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Name": name}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_name(self) -> SocketLinker:
+        """Input socket: Name"""
+        return self._input("Name")
+
+    @property
+    def o_attribute(self) -> SocketLinker:
+        """Output socket: Attribute"""
+        return self._output("Attribute")
+
+    @property
+    def o_exists(self) -> SocketLinker:
+        """Output socket: Exists"""
+        return self._output("Exists")
+
+    @property
+    def data_type(
+        self,
+    ) -> _SampleIndexDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _SampleIndexDataTypes,
+    ):
+        self.node.data_type = value

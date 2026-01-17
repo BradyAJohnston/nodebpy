@@ -48,6 +48,7 @@
 | [Material](#nodebpy.nodes.input.Material) | Output a single material |
 | [MaterialIndex](#nodebpy.nodes.input.MaterialIndex) | Retrieve the index of the material used for each element in the geometry's list of materials |
 | [MousePosition](#nodebpy.nodes.input.MousePosition) | Retrieve the position of the mouse cursor |
+| [NamedAttribute](#nodebpy.nodes.input.NamedAttribute) | Retrieve the data of a specified attribute |
 | [NamedLayerSelection](#nodebpy.nodes.input.NamedLayerSelection) | Output a selection of a Grease Pencil layer |
 | [Normal](#nodebpy.nodes.input.Normal) | Retrieve a unit length vector indicating the direction pointing away from the geometry at each element |
 | [Object](#nodebpy.nodes.input.Object) | Output a single object |
@@ -694,6 +695,22 @@ Retrieve the position of the mouse cursor
 | [o_mouse_y](#nodebpy.nodes.input.MousePosition.o_mouse_y) | Output socket: Mouse Y |
 | [o_region_height](#nodebpy.nodes.input.MousePosition.o_region_height) | Output socket: Region Height |
 | [o_region_width](#nodebpy.nodes.input.MousePosition.o_region_width) | Output socket: Region Width |
+
+### NamedAttribute { #nodebpy.nodes.input.NamedAttribute }
+
+```python
+nodes.input.NamedAttribute(name='', *, data_type='FLOAT')
+```
+
+Retrieve the data of a specified attribute
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_name](#nodebpy.nodes.input.NamedAttribute.i_name) | Input socket: Name |
+| [o_attribute](#nodebpy.nodes.input.NamedAttribute.o_attribute) | Output socket: Attribute |
+| [o_exists](#nodebpy.nodes.input.NamedAttribute.o_exists) | Output socket: Exists |
 
 ### NamedLayerSelection { #nodebpy.nodes.input.NamedLayerSelection }
 
