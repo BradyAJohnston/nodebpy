@@ -15,6 +15,7 @@ from . import (
 from .attribute import (
     AttributeStatistic,
     BlurAttribute,
+    CaptureAttribute,
     DomainSize,
     RemoveNamedAttribute,
     StoreNamedAttribute,
@@ -243,9 +244,6 @@ from .input import (
     VoxelIndex,
 )
 from .interface import DialGizmo, LinearGizmo, TransformGizmo, Viewer, Warning
-from .manually_specified import (
-    CaptureAttribute,
-)
 from .mesh import (
     Cone,
     Cube,

@@ -212,14 +212,14 @@ class FieldToGrid(NodeBuilder):
         return [SocketLinker(x) for x in outputs.values()]
 
     @property
-    def output_sockets(self) -> dict[str, SocketLinker]:
+    def outputs(self) -> dict[str, SocketLinker]:
         return {
             item.name: SocketLinker(self.node.outputs[item.name])
             for item in self.node.grid_items
         }
 
     @property
-    def input_sockets(self) -> dict[str, SocketLinker]:
+    def inputs(self) -> dict[str, SocketLinker]:
         return {
             item.name: SocketLinker(self.node.inputs[item.name])
             for item in self.node.grid_items

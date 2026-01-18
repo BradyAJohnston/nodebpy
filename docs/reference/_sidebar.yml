@@ -8,11 +8,11 @@ website:
       - reference/nodes.color.qmd
       - reference/nodes.converter.qmd
       - reference/nodes.texture.qmd
-      - reference/nodes.vector.qmd
-      - reference/nodes.zone.qmd
       - reference/nodes.grid.qmd
       - reference/nodes.geometry.qmd
       - reference/nodes.attribute.qmd
+      - reference/nodes.vector.qmd
+      - reference/nodes.zone.qmd
       - reference/nodes.mesh.qmd
       - reference/nodes.utilities.qmd
       section: Some functions

@@ -396,9 +396,7 @@ class NodeBuilder:
             f"Unsupported socket type for linking: {linkable}, type: {linkable.type=}"
         )
 
-    def _add_inputs(
-        self, *args, **kwargs
-    ) -> dict[str, tuple[LINKABLE, bpy.types.NodeSocket]]:
+    def _add_inputs(self, *args, **kwargs) -> dict[str, TYPE_INPUT_ALL]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
         new_sockets = {}
         items = {}
@@ -425,7 +423,9 @@ class NodeBuilder:
 
         return new_sockets
 
-    def _add_socket(self, name: str, type: str, default_value: Any | None = None):
+    def _add_socket(
+        self, name: str, type: str, default_value: Any | None = None
+    ) -> NodeSocket:
         raise NotImplementedError
 
     def _input_idx(self, identifier: str) -> int:

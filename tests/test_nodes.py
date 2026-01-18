@@ -104,12 +104,12 @@ def test_field_to_grid():
         math = n.Math.add()
 
         ftg = n.FieldToGrid(*inputs, test=n.Value())
-        _ = ftg.output_sockets["test"] >> math
+        _ = ftg.outputs["test"] >> math
 
     assert len(tree.nodes) == 8
     assert len(ftg.node.grid_items) == 6
     assert ftg.node.grid_items[5].name == "test"
-    assert ftg.output_sockets["test"].socket.links[0].to_socket.node == math.node
+    assert ftg.outputs["test"].socket.links[0].to_socket.node == math.node
     assert all(
         [i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs]
     )
@@ -194,5 +194,20 @@ def test_domain_size(domain, output):
 
 
 def test_curve_handle():
-    with TreeBuilder() as tree:
+    with TreeBuilder():
         node = n.HandleTypeSelection(left=False, right=False)
+        assert node.left == False
+        assert node.right == False
+        node.left = True
+        assert node.left == True
+        node.right = True
+        assert node.right == True
+        node = n.HandleTypeSelection(left=False, right=True)
+        assert node.left == False
+        assert node.right == True
+        node = n.HandleTypeSelection(left=True, right=True)
+        assert node.left == True
+        assert node.right == True
+        node = n.HandleTypeSelection(left=True, right=False)
+        assert node.left == True
+        assert node.right == False

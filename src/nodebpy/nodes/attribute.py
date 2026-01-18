@@ -11,6 +11,7 @@ from .types import (
     TYPE_INPUT_MENU,
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
+    _AttributeDataTypes,
     _AttributeDomains,
     _StoreNamedAttributeTypes,
 )
@@ -369,6 +370,81 @@ class StoreNamedAttribute(NodeBuilder):
         value: _StoreNamedAttributeTypes,
     ):
         self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+
+class CaptureAttribute(NodeBuilder):
+    """Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation"""
+
+    name = "GeometryNodeCaptureAttribute"
+    node: bpy.types.GeometryNodeCaptureAttribute
+
+    def __init__(
+        self,
+        *args,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        domain: _AttributeDomains = "POINT",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry}
+        self.domain = domain
+        key_args.update(self._add_inputs(*args, **kwargs))  # type: ignore
+        self._establish_links(**key_args)
+
+    def _add_socket(self, name: str, type: _AttributeDataTypes):
+        item = self.node.capture_items.new(socket_type=type, name=name)
+        return self.node.inputs[item.name]
+
+    def capture(self, value: LINKABLE) -> SocketLinker:
+        """Capture the value to store in the attribute
+
+        Return the SocketLinker for the output socket
+        """
+        # the _add_inputs returns a dictionary but we only want the first key
+        # because we are adding a single input
+        input_dict = self._add_inputs(value)
+        return SocketLinker(self.node.outputs[next(iter(input_dict))])
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name])
+            for item in self.node.capture_items
+        }
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name])
+            for item in self.node.capture_items
+        }
+
+    @property
+    def _items(self) -> bpy.types.NodeGeometryCaptureAttributeItems:
+        return self.node.capture_items
+
+    @property
+    def i_geometry(self) -> SocketLinker:
+        """Input socket: Geometry"""
+        return self._input("Geometry")
+
+    @property
+    def o_geometry(self) -> SocketLinker:
+        """Output socket: Geometry"""
+        return self._output("Geometry")
 
     @property
     def domain(

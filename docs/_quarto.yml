@@ -48,11 +48,11 @@ quartodoc:
         - nodes.color
         - nodes.converter
         - nodes.texture
-        - nodes.vector
-        - nodes.zone
         - nodes.grid
         - nodes.geometry
         - nodes.attribute
         ####################
+        - nodes.vector
+        - nodes.zone
         - nodes.mesh
         - nodes.utilities

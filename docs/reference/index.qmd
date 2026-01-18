@@ -11,10 +11,10 @@ Functions to inspect docstrings.
 | [nodes.color](nodes.color.qmd#nodebpy.nodes.color) |  |
 | [nodes.converter](nodes.converter.qmd#nodebpy.nodes.converter) |  |
 | [nodes.texture](nodes.texture.qmd#nodebpy.nodes.texture) |  |
-| [nodes.vector](nodes.vector.qmd#nodebpy.nodes.vector) |  |
-| [nodes.zone](nodes.zone.qmd#nodebpy.nodes.zone) |  |
 | [nodes.grid](nodes.grid.qmd#nodebpy.nodes.grid) |  |
 | [nodes.geometry](nodes.geometry.qmd#nodebpy.nodes.geometry) |  |
 | [nodes.attribute](nodes.attribute.qmd#nodebpy.nodes.attribute) |  |
+| [nodes.vector](nodes.vector.qmd#nodebpy.nodes.vector) |  |
+| [nodes.zone](nodes.zone.qmd#nodebpy.nodes.zone) |  |
 | [nodes.mesh](nodes.mesh.qmd#nodebpy.nodes.mesh) | Auto-generated Blender Geometry Node classes. |
 | [nodes.utilities](nodes.utilities.qmd#nodebpy.nodes.utilities) | Auto-generated Blender Geometry Node classes. |
