@@ -8,28 +8,47 @@
 
 | Name | Description |
 | --- | --- |
+| [Arc](#nodebpy.nodes.geometry.Arc) | Generate a poly spline arc |
+| [BezierSegment](#nodebpy.nodes.geometry.BezierSegment) | Generate a 2D Bézier spline from the given control points and handles |
 | [BoundingBox](#nodebpy.nodes.geometry.BoundingBox) | Calculate the limits of a geometry's positions and generate a box mesh with those dimensions |
 | [ConvexHull](#nodebpy.nodes.geometry.ConvexHull) | Create a mesh that encloses all points in the input geometry with the smallest number of points |
+| [CurveCircle](#nodebpy.nodes.geometry.CurveCircle) | Generate a poly spline circle |
+| [CurveLength](#nodebpy.nodes.geometry.CurveLength) | Retrieve the length of all splines added together |
+| [CurveLine](#nodebpy.nodes.geometry.CurveLine) | Generate a poly spline line with two points |
+| [CurveToPoints](#nodebpy.nodes.geometry.CurveToPoints) | Generate a point cloud by sampling positions along curves |
+| [CurvesToGreasePencil](#nodebpy.nodes.geometry.CurvesToGreasePencil) | Convert the curves in each top-level instance into Grease Pencil layer |
+| [DeformCurvesOnSurface](#nodebpy.nodes.geometry.DeformCurvesOnSurface) | Translate and rotate curves based on changes between the object's original and evaluated surface mesh |
 | [DeleteGeometry](#nodebpy.nodes.geometry.DeleteGeometry) | Remove selected elements of a geometry |
 | [DistributePointsOnFaces](#nodebpy.nodes.geometry.DistributePointsOnFaces) | Generate points spread out on the surface of a mesh |
 | [DuplicateElements](#nodebpy.nodes.geometry.DuplicateElements) | Generate an arbitrary number copies of each selected input element |
+| [EdgePathsToCurves](#nodebpy.nodes.geometry.EdgePathsToCurves) | Output curves following paths across mesh edges |
+| [FillCurve](#nodebpy.nodes.geometry.FillCurve) | Generate a mesh on the XY plane with faces on the inside of input curves |
+| [FilletCurve](#nodebpy.nodes.geometry.FilletCurve) | Round corners by generating circular arcs on each control point |
 | [FlipFaces](#nodebpy.nodes.geometry.FlipFaces) | Reverse the order of the vertices and edges of selected faces, flipping their normal direction |
 | [GeometryProximity](#nodebpy.nodes.geometry.GeometryProximity) | Compute the closest location on the target geometry |
 | [GeometryToInstance](#nodebpy.nodes.geometry.GeometryToInstance) | Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large |
+| [GreasePencilToCurves](#nodebpy.nodes.geometry.GreasePencilToCurves) | Convert Grease Pencil layers into curve instances |
 | [InstanceOnPoints](#nodebpy.nodes.geometry.InstanceOnPoints) | Generate a reference to geometry at each of the input points, without duplicating its underlying data |
 | [InstancesToPoints](#nodebpy.nodes.geometry.InstancesToPoints) | Generate points at the origins of instances. |
+| [InterpolateCurves](#nodebpy.nodes.geometry.InterpolateCurves) | Generate new curves on points by interpolating between existing curves |
 | [JoinGeometry](#nodebpy.nodes.geometry.JoinGeometry) | Merge separately generated geometries into a single one |
 | [MaterialSelection](#nodebpy.nodes.geometry.MaterialSelection) | Provide a selection of faces that use the specified material |
 | [MergeByDistance](#nodebpy.nodes.geometry.MergeByDistance) | Merge vertices or points within a given distance |
 | [MergeLayers](#nodebpy.nodes.geometry.MergeLayers) | Join groups of Grease Pencil layers into one |
 | [Points](#nodebpy.nodes.geometry.Points) | Generate a point cloud with positions and radii defined by fields |
+| [PointsToCurves](#nodebpy.nodes.geometry.PointsToCurves) | Split all points to curve by its group ID and reorder by weight |
 | [PointsToSDFGrid](#nodebpy.nodes.geometry.PointsToSDFGrid) | Create a signed distance volume grid from points |
 | [PointsToVertices](#nodebpy.nodes.geometry.PointsToVertices) | Generate a mesh vertex for each point cloud point |
 | [PointsToVolume](#nodebpy.nodes.geometry.PointsToVolume) | Generate a fog volume sphere around every point |
+| [QuadraticBezier](#nodebpy.nodes.geometry.QuadraticBezier) | Generate a poly spline in a parabola shape with control points positions |
+| [Quadrilateral](#nodebpy.nodes.geometry.Quadrilateral) | Generate a polygon with four points |
 | [Raycast](#nodebpy.nodes.geometry.Raycast) | Cast rays from the context geometry onto a target geometry, and retrieve information from each hit point |
 | [RealizeInstances](#nodebpy.nodes.geometry.RealizeInstances) | Convert instances into real geometry data |
 | [ReplaceMaterial](#nodebpy.nodes.geometry.ReplaceMaterial) | Swap one material with another |
+| [ResampleCurve](#nodebpy.nodes.geometry.ResampleCurve) | Generate a poly spline for each input spline |
+| [ReverseCurve](#nodebpy.nodes.geometry.ReverseCurve) | Change the direction of curves by swapping their start and end data |
 | [RotateInstances](#nodebpy.nodes.geometry.RotateInstances) | Rotate geometry instances in local or global space |
+| [SampleCurve](#nodebpy.nodes.geometry.SampleCurve) | Retrieve data from a point on a curve at a certain distance from its start |
 | [SampleIndex](#nodebpy.nodes.geometry.SampleIndex) | Retrieve values from specific geometry elements |
 | [SampleNearest](#nodebpy.nodes.geometry.SampleNearest) | Find the element of a geometry closest to a position. Similar to the "Index of Nearest" node |
 | [SampleNearestSurface](#nodebpy.nodes.geometry.SampleNearestSurface) | Calculate the interpolated value of a mesh attribute on the closest point of its surface |
@@ -38,11 +57,16 @@
 | [ScaleInstances](#nodebpy.nodes.geometry.ScaleInstances) | Scale geometry instances in local or global space |
 | [SeparateComponents](#nodebpy.nodes.geometry.SeparateComponents) | Split a geometry into a separate output for each type of data in the geometry |
 | [SeparateGeometry](#nodebpy.nodes.geometry.SeparateGeometry) | Split a geometry into two geometry outputs based on a selection |
+| [SetCurveNormal](#nodebpy.nodes.geometry.SetCurveNormal) | Set the evaluation mode for curve normals |
+| [SetCurveRadius](#nodebpy.nodes.geometry.SetCurveRadius) | Set the radius of the curve at each control point |
+| [SetCurveTilt](#nodebpy.nodes.geometry.SetCurveTilt) | Set the tilt angle at each curve control point |
 | [SetFaceSet](#nodebpy.nodes.geometry.SetFaceSet) | Set sculpt face set values for faces |
 | [SetGeometryName](#nodebpy.nodes.geometry.SetGeometryName) | Set the name of a geometry for easier debugging |
 | [SetGreasePencilColor](#nodebpy.nodes.geometry.SetGreasePencilColor) | Set color and opacity attributes on Grease Pencil geometry |
 | [SetGreasePencilDepth](#nodebpy.nodes.geometry.SetGreasePencilDepth) | Set the Grease Pencil depth order to use |
 | [SetGreasePencilSoftness](#nodebpy.nodes.geometry.SetGreasePencilSoftness) | Set softness attribute on Grease Pencil geometry |
+| [SetHandlePositions](#nodebpy.nodes.geometry.SetHandlePositions) | Set the positions for the handles of Bézier curves |
+| [SetHandleType](#nodebpy.nodes.geometry.SetHandleType) | Set the handle type for the control points of a Bézier curve |
 | [SetID](#nodebpy.nodes.geometry.SetID) | Set the id attribute on the input geometry, mainly used internally for randomizing |
 | [SetInstanceTransform](#nodebpy.nodes.geometry.SetInstanceTransform) | Set the transformation matrix of every instance |
 | [SetMaterial](#nodebpy.nodes.geometry.SetMaterial) | Assign a material to geometry elements |
@@ -53,13 +77,72 @@
 | [SetShadeSmooth](#nodebpy.nodes.geometry.SetShadeSmooth) | Control the smoothness of mesh normals around each face by changing the "shade smooth" attribute |
 | [SetSplineCyclic](#nodebpy.nodes.geometry.SetSplineCyclic) | Control whether each spline loops back on itself by changing the "cyclic" attribute |
 | [SetSplineResolution](#nodebpy.nodes.geometry.SetSplineResolution) | Control how many evaluated points should be generated on every curve segment |
+| [SetSplineType](#nodebpy.nodes.geometry.SetSplineType) | Change the type of curves |
 | [SortElements](#nodebpy.nodes.geometry.SortElements) | Rearrange geometry elements, changing their indices |
+| [Spiral](#nodebpy.nodes.geometry.Spiral) | Generate a poly spline in a spiral shape |
 | [SplitEdges](#nodebpy.nodes.geometry.SplitEdges) | Duplicate mesh edges and break connections with the surrounding faces |
 | [SplitToInstances](#nodebpy.nodes.geometry.SplitToInstances) | Create separate geometries containing the elements from the same group |
+| [Star](#nodebpy.nodes.geometry.Star) | Generate a poly spline in a star pattern by connecting alternating points of two circles |
+| [StringToCurves](#nodebpy.nodes.geometry.StringToCurves) | Generate a paragraph of text with a specific font, using a curve instance to store each character |
+| [SubdivideCurve](#nodebpy.nodes.geometry.SubdivideCurve) | Dividing each curve segment into a specified number of pieces |
 | [SubdivisionSurface](#nodebpy.nodes.geometry.SubdivisionSurface) | Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision method |
 | [TransformGeometry](#nodebpy.nodes.geometry.TransformGeometry) | Translate, rotate or scale the geometry |
 | [TranslateInstances](#nodebpy.nodes.geometry.TranslateInstances) | Move top-level geometry instances in local or global space |
 | [Triangulate](#nodebpy.nodes.geometry.Triangulate) | Convert all faces in a mesh to triangular faces |
+| [TrimCurve](#nodebpy.nodes.geometry.TrimCurve) | Shorten curves by removing portions at the start or end |
+
+### Arc { #nodebpy.nodes.geometry.Arc }
+
+```python
+nodes.geometry.Arc(
+    connect_center=False,
+    invert_arc=False,
+    *,
+    mode='RADIUS',
+    **kwargs,
+)
+```
+
+Generate a poly spline arc
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_connect_center](#nodebpy.nodes.geometry.Arc.i_connect_center) | Input socket: Connect Center |
+| [i_invert_arc](#nodebpy.nodes.geometry.Arc.i_invert_arc) | Input socket: Invert Arc |
+| [i_radius](#nodebpy.nodes.geometry.Arc.i_radius) | Input socket: Radius |
+| [i_resolution](#nodebpy.nodes.geometry.Arc.i_resolution) | Input socket: Resolution |
+| [i_start_angle](#nodebpy.nodes.geometry.Arc.i_start_angle) | Input socket: Start Angle |
+| [i_sweep_angle](#nodebpy.nodes.geometry.Arc.i_sweep_angle) | Input socket: Sweep Angle |
+| [o_curve](#nodebpy.nodes.geometry.Arc.o_curve) | Output socket: Curve |
+
+### BezierSegment { #nodebpy.nodes.geometry.BezierSegment }
+
+```python
+nodes.geometry.BezierSegment(
+    resolution=16,
+    start=(-1.0, 0.0, 0.0),
+    start_handle=(-0.5, 0.5, 0.0),
+    end_handle=(0.0, 0.0, 0.0),
+    end=(1.0, 0.0, 0.0),
+    *,
+    mode='POSITION',
+)
+```
+
+Generate a 2D Bézier spline from the given control points and handles
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_end](#nodebpy.nodes.geometry.BezierSegment.i_end) | Input socket: End |
+| [i_end_handle](#nodebpy.nodes.geometry.BezierSegment.i_end_handle) | Input socket: End Handle |
+| [i_resolution](#nodebpy.nodes.geometry.BezierSegment.i_resolution) | Input socket: Resolution |
+| [i_start](#nodebpy.nodes.geometry.BezierSegment.i_start) | Input socket: Start |
+| [i_start_handle](#nodebpy.nodes.geometry.BezierSegment.i_start_handle) | Input socket: Start Handle |
+| [o_curve](#nodebpy.nodes.geometry.BezierSegment.o_curve) | Output socket: Curve |
 
 ### BoundingBox { #nodebpy.nodes.geometry.BoundingBox }
 
@@ -93,6 +176,108 @@ Create a mesh that encloses all points in the input geometry with the smallest n
 | --- | --- |
 | [i_geometry](#nodebpy.nodes.geometry.ConvexHull.i_geometry) | Input socket: Geometry |
 | [o_convex_hull](#nodebpy.nodes.geometry.ConvexHull.o_convex_hull) | Output socket: Convex Hull |
+
+### CurveCircle { #nodebpy.nodes.geometry.CurveCircle }
+
+```python
+nodes.geometry.CurveCircle(resolution=32, *, mode='RADIUS', **kwargs)
+```
+
+Generate a poly spline circle
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_radius](#nodebpy.nodes.geometry.CurveCircle.i_radius) | Input socket: Radius |
+| [i_resolution](#nodebpy.nodes.geometry.CurveCircle.i_resolution) | Input socket: Resolution |
+| [o_curve](#nodebpy.nodes.geometry.CurveCircle.o_curve) | Output socket: Curve |
+
+### CurveLength { #nodebpy.nodes.geometry.CurveLength }
+
+```python
+nodes.geometry.CurveLength(curve=None)
+```
+
+Retrieve the length of all splines added together
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.CurveLength.i_curve) | Input socket: Curve |
+| [o_length](#nodebpy.nodes.geometry.CurveLength.o_length) | Output socket: Length |
+
+### CurveLine { #nodebpy.nodes.geometry.CurveLine }
+
+```python
+nodes.geometry.CurveLine(start=(0.0, 0.0, 0.0), *, mode='POINTS', **kwargs)
+```
+
+Generate a poly spline line with two points
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_end](#nodebpy.nodes.geometry.CurveLine.i_end) | Input socket: End |
+| [i_start](#nodebpy.nodes.geometry.CurveLine.i_start) | Input socket: Start |
+| [o_curve](#nodebpy.nodes.geometry.CurveLine.o_curve) | Output socket: Curve |
+
+### CurveToPoints { #nodebpy.nodes.geometry.CurveToPoints }
+
+```python
+nodes.geometry.CurveToPoints(curve=None, *, mode='COUNT', **kwargs)
+```
+
+Generate a point cloud by sampling positions along curves
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_count](#nodebpy.nodes.geometry.CurveToPoints.i_count) | Input socket: Count |
+| [i_curve](#nodebpy.nodes.geometry.CurveToPoints.i_curve) | Input socket: Curve |
+| [o_normal](#nodebpy.nodes.geometry.CurveToPoints.o_normal) | Output socket: Normal |
+| [o_points](#nodebpy.nodes.geometry.CurveToPoints.o_points) | Output socket: Points |
+| [o_rotation](#nodebpy.nodes.geometry.CurveToPoints.o_rotation) | Output socket: Rotation |
+| [o_tangent](#nodebpy.nodes.geometry.CurveToPoints.o_tangent) | Output socket: Tangent |
+
+### CurvesToGreasePencil { #nodebpy.nodes.geometry.CurvesToGreasePencil }
+
+```python
+nodes.geometry.CurvesToGreasePencil(
+    curves=None,
+    selection=True,
+    instances_as_layers=True,
+)
+```
+
+Convert the curves in each top-level instance into Grease Pencil layer
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curves](#nodebpy.nodes.geometry.CurvesToGreasePencil.i_curves) | Input socket: Curves |
+| [i_instances_as_layers](#nodebpy.nodes.geometry.CurvesToGreasePencil.i_instances_as_layers) | Input socket: Instances as Layers |
+| [i_selection](#nodebpy.nodes.geometry.CurvesToGreasePencil.i_selection) | Input socket: Selection |
+| [o_grease_pencil](#nodebpy.nodes.geometry.CurvesToGreasePencil.o_grease_pencil) | Output socket: Grease Pencil |
+
+### DeformCurvesOnSurface { #nodebpy.nodes.geometry.DeformCurvesOnSurface }
+
+```python
+nodes.geometry.DeformCurvesOnSurface(curves=None)
+```
+
+Translate and rotate curves based on changes between the object's original and evaluated surface mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curves](#nodebpy.nodes.geometry.DeformCurvesOnSurface.i_curves) | Input socket: Curves |
+| [o_curves](#nodebpy.nodes.geometry.DeformCurvesOnSurface.o_curves) | Output socket: Curves |
 
 ### DeleteGeometry { #nodebpy.nodes.geometry.DeleteGeometry }
 
@@ -168,6 +353,69 @@ Generate an arbitrary number copies of each selected input element
 | [o_duplicate_index](#nodebpy.nodes.geometry.DuplicateElements.o_duplicate_index) | Output socket: Duplicate Index |
 | [o_geometry](#nodebpy.nodes.geometry.DuplicateElements.o_geometry) | Output socket: Geometry |
 
+### EdgePathsToCurves { #nodebpy.nodes.geometry.EdgePathsToCurves }
+
+```python
+nodes.geometry.EdgePathsToCurves(
+    mesh=None,
+    start_vertices=True,
+    next_vertex_index=-1,
+)
+```
+
+Output curves following paths across mesh edges
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_mesh](#nodebpy.nodes.geometry.EdgePathsToCurves.i_mesh) | Input socket: Mesh |
+| [i_next_vertex_index](#nodebpy.nodes.geometry.EdgePathsToCurves.i_next_vertex_index) | Input socket: Next Vertex Index |
+| [i_start_vertices](#nodebpy.nodes.geometry.EdgePathsToCurves.i_start_vertices) | Input socket: Start Vertices |
+| [o_curves](#nodebpy.nodes.geometry.EdgePathsToCurves.o_curves) | Output socket: Curves |
+
+### FillCurve { #nodebpy.nodes.geometry.FillCurve }
+
+```python
+nodes.geometry.FillCurve(curve=None, group_id=0, mode='Triangles')
+```
+
+Generate a mesh on the XY plane with faces on the inside of input curves
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.FillCurve.i_curve) | Input socket: Curve |
+| [i_group_id](#nodebpy.nodes.geometry.FillCurve.i_group_id) | Input socket: Group ID |
+| [i_mode](#nodebpy.nodes.geometry.FillCurve.i_mode) | Input socket: Mode |
+| [o_mesh](#nodebpy.nodes.geometry.FillCurve.o_mesh) | Output socket: Mesh |
+
+### FilletCurve { #nodebpy.nodes.geometry.FilletCurve }
+
+```python
+nodes.geometry.FilletCurve(
+    curve=None,
+    radius=0.25,
+    limit_radius=False,
+    mode='Bézier',
+    **kwargs,
+)
+```
+
+Round corners by generating circular arcs on each control point
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_count](#nodebpy.nodes.geometry.FilletCurve.i_count) | Input socket: Count |
+| [i_curve](#nodebpy.nodes.geometry.FilletCurve.i_curve) | Input socket: Curve |
+| [i_limit_radius](#nodebpy.nodes.geometry.FilletCurve.i_limit_radius) | Input socket: Limit Radius |
+| [i_mode](#nodebpy.nodes.geometry.FilletCurve.i_mode) | Input socket: Mode |
+| [i_radius](#nodebpy.nodes.geometry.FilletCurve.i_radius) | Input socket: Radius |
+| [o_curve](#nodebpy.nodes.geometry.FilletCurve.o_curve) | Output socket: Curve |
+
 ### FlipFaces { #nodebpy.nodes.geometry.FlipFaces }
 
 ```python
@@ -225,6 +473,27 @@ Convert each input geometry into an instance, which can be much faster than the 
 | [i_geometry](#nodebpy.nodes.geometry.GeometryToInstance.i_geometry) | Input socket: Geometry |
 | [o_instances](#nodebpy.nodes.geometry.GeometryToInstance.o_instances) | Output socket: Instances |
 
+### GreasePencilToCurves { #nodebpy.nodes.geometry.GreasePencilToCurves }
+
+```python
+nodes.geometry.GreasePencilToCurves(
+    grease_pencil=None,
+    selection=True,
+    layers_as_instances=True,
+)
+```
+
+Convert Grease Pencil layers into curve instances
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grease_pencil](#nodebpy.nodes.geometry.GreasePencilToCurves.i_grease_pencil) | Input socket: Grease Pencil |
+| [i_layers_as_instances](#nodebpy.nodes.geometry.GreasePencilToCurves.i_layers_as_instances) | Input socket: Layers as Instances |
+| [i_selection](#nodebpy.nodes.geometry.GreasePencilToCurves.i_selection) | Input socket: Selection |
+| [o_curves](#nodebpy.nodes.geometry.GreasePencilToCurves.o_curves) | Output socket: Curves |
+
 ### InstanceOnPoints { #nodebpy.nodes.geometry.InstanceOnPoints }
 
 ```python
@@ -277,6 +546,37 @@ Note: Nested instances are not affected by this node
 | [i_radius](#nodebpy.nodes.geometry.InstancesToPoints.i_radius) | Input socket: Radius |
 | [i_selection](#nodebpy.nodes.geometry.InstancesToPoints.i_selection) | Input socket: Selection |
 | [o_points](#nodebpy.nodes.geometry.InstancesToPoints.o_points) | Output socket: Points |
+
+### InterpolateCurves { #nodebpy.nodes.geometry.InterpolateCurves }
+
+```python
+nodes.geometry.InterpolateCurves(
+    guide_curves=None,
+    guide_up=None,
+    guide_group_id=None,
+    points=None,
+    point_up=None,
+    point_group_id=None,
+    max_neighbors=4,
+)
+```
+
+Generate new curves on points by interpolating between existing curves
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_guide_curves](#nodebpy.nodes.geometry.InterpolateCurves.i_guide_curves) | Input socket: Guide Curves |
+| [i_guide_group_id](#nodebpy.nodes.geometry.InterpolateCurves.i_guide_group_id) | Input socket: Guide Group ID |
+| [i_guide_up](#nodebpy.nodes.geometry.InterpolateCurves.i_guide_up) | Input socket: Guide Up |
+| [i_max_neighbors](#nodebpy.nodes.geometry.InterpolateCurves.i_max_neighbors) | Input socket: Max Neighbors |
+| [i_point_group_id](#nodebpy.nodes.geometry.InterpolateCurves.i_point_group_id) | Input socket: Point Group ID |
+| [i_point_up](#nodebpy.nodes.geometry.InterpolateCurves.i_point_up) | Input socket: Point Up |
+| [i_points](#nodebpy.nodes.geometry.InterpolateCurves.i_points) | Input socket: Points |
+| [o_closest_index](#nodebpy.nodes.geometry.InterpolateCurves.o_closest_index) | Output socket: Closest Index |
+| [o_closest_weight](#nodebpy.nodes.geometry.InterpolateCurves.o_closest_weight) | Output socket: Closest Weight |
+| [o_curves](#nodebpy.nodes.geometry.InterpolateCurves.o_curves) | Output socket: Curves |
 
 ### JoinGeometry { #nodebpy.nodes.geometry.JoinGeometry }
 
@@ -370,6 +670,23 @@ Generate a point cloud with positions and radii defined by fields
 | [i_radius](#nodebpy.nodes.geometry.Points.i_radius) | Input socket: Radius |
 | [o_points](#nodebpy.nodes.geometry.Points.o_points) | Output socket: Points |
 
+### PointsToCurves { #nodebpy.nodes.geometry.PointsToCurves }
+
+```python
+nodes.geometry.PointsToCurves(points=None, curve_group_id=None, weight=0.0)
+```
+
+Split all points to curve by its group ID and reorder by weight
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve_group_id](#nodebpy.nodes.geometry.PointsToCurves.i_curve_group_id) | Input socket: Curve Group ID |
+| [i_points](#nodebpy.nodes.geometry.PointsToCurves.i_points) | Input socket: Points |
+| [i_weight](#nodebpy.nodes.geometry.PointsToCurves.i_weight) | Input socket: Weight |
+| [o_curves](#nodebpy.nodes.geometry.PointsToCurves.o_curves) | Output socket: Curves |
+
 ### PointsToSDFGrid { #nodebpy.nodes.geometry.PointsToSDFGrid }
 
 ```python
@@ -430,6 +747,45 @@ Generate a fog volume sphere around every point
 | [i_voxel_amount](#nodebpy.nodes.geometry.PointsToVolume.i_voxel_amount) | Input socket: Voxel Amount |
 | [i_voxel_size](#nodebpy.nodes.geometry.PointsToVolume.i_voxel_size) | Input socket: Voxel Size |
 | [o_volume](#nodebpy.nodes.geometry.PointsToVolume.o_volume) | Output socket: Volume |
+
+### QuadraticBezier { #nodebpy.nodes.geometry.QuadraticBezier }
+
+```python
+nodes.geometry.QuadraticBezier(
+    resolution=16,
+    start=(-1.0, 0.0, 0.0),
+    middle=(0.0, 2.0, 0.0),
+    end=(1.0, 0.0, 0.0),
+)
+```
+
+Generate a poly spline in a parabola shape with control points positions
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_end](#nodebpy.nodes.geometry.QuadraticBezier.i_end) | Input socket: End |
+| [i_middle](#nodebpy.nodes.geometry.QuadraticBezier.i_middle) | Input socket: Middle |
+| [i_resolution](#nodebpy.nodes.geometry.QuadraticBezier.i_resolution) | Input socket: Resolution |
+| [i_start](#nodebpy.nodes.geometry.QuadraticBezier.i_start) | Input socket: Start |
+| [o_curve](#nodebpy.nodes.geometry.QuadraticBezier.o_curve) | Output socket: Curve |
+
+### Quadrilateral { #nodebpy.nodes.geometry.Quadrilateral }
+
+```python
+nodes.geometry.Quadrilateral(mode='RECTANGLE', **kwargs)
+```
+
+Generate a polygon with four points
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_height](#nodebpy.nodes.geometry.Quadrilateral.i_height) | Input socket: Height |
+| [i_width](#nodebpy.nodes.geometry.Quadrilateral.i_width) | Input socket: Width |
+| [o_curve](#nodebpy.nodes.geometry.Quadrilateral.o_curve) | Output socket: Curve |
 
 ### Raycast { #nodebpy.nodes.geometry.Raycast }
 
@@ -504,6 +860,48 @@ Swap one material with another
 | [i_old](#nodebpy.nodes.geometry.ReplaceMaterial.i_old) | Input socket: Old |
 | [o_geometry](#nodebpy.nodes.geometry.ReplaceMaterial.o_geometry) | Output socket: Geometry |
 
+### ResampleCurve { #nodebpy.nodes.geometry.ResampleCurve }
+
+```python
+nodes.geometry.ResampleCurve(
+    curve=None,
+    selection=True,
+    *,
+    mode='Count',
+    count=10,
+    length=0.1,
+)
+```
+
+Generate a poly spline for each input spline
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_count](#nodebpy.nodes.geometry.ResampleCurve.i_count) | Input socket: Count |
+| [i_curve](#nodebpy.nodes.geometry.ResampleCurve.i_curve) | Input socket: Curve |
+| [i_length](#nodebpy.nodes.geometry.ResampleCurve.i_length) | Input socket: Length |
+| [i_mode](#nodebpy.nodes.geometry.ResampleCurve.i_mode) | Input socket: Mode |
+| [i_selection](#nodebpy.nodes.geometry.ResampleCurve.i_selection) | Input socket: Selection |
+| [o_curve](#nodebpy.nodes.geometry.ResampleCurve.o_curve) | Output socket: Curve |
+
+### ReverseCurve { #nodebpy.nodes.geometry.ReverseCurve }
+
+```python
+nodes.geometry.ReverseCurve(curve=None, selection=True)
+```
+
+Change the direction of curves by swapping their start and end data
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.ReverseCurve.i_curve) | Input socket: Curve |
+| [i_selection](#nodebpy.nodes.geometry.ReverseCurve.i_selection) | Input socket: Selection |
+| [o_curve](#nodebpy.nodes.geometry.ReverseCurve.o_curve) | Output socket: Curve |
+
 ### RotateInstances { #nodebpy.nodes.geometry.RotateInstances }
 
 ```python
@@ -528,6 +926,36 @@ Rotate geometry instances in local or global space
 | [i_rotation](#nodebpy.nodes.geometry.RotateInstances.i_rotation) | Input socket: Rotation |
 | [i_selection](#nodebpy.nodes.geometry.RotateInstances.i_selection) | Input socket: Selection |
 | [o_instances](#nodebpy.nodes.geometry.RotateInstances.o_instances) | Output socket: Instances |
+
+### SampleCurve { #nodebpy.nodes.geometry.SampleCurve }
+
+```python
+nodes.geometry.SampleCurve(
+    curves=None,
+    value=0.0,
+    factor=0.0,
+    curve_index=0,
+    *,
+    mode='FACTOR',
+    data_type='FLOAT',
+    use_all_curves=False,
+)
+```
+
+Retrieve data from a point on a curve at a certain distance from its start
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve_index](#nodebpy.nodes.geometry.SampleCurve.i_curve_index) | Input socket: Curve Index |
+| [i_curves](#nodebpy.nodes.geometry.SampleCurve.i_curves) | Input socket: Curves |
+| [i_factor](#nodebpy.nodes.geometry.SampleCurve.i_factor) | Input socket: Factor |
+| [i_value](#nodebpy.nodes.geometry.SampleCurve.i_value) | Input socket: Value |
+| [o_normal](#nodebpy.nodes.geometry.SampleCurve.o_normal) | Output socket: Normal |
+| [o_position](#nodebpy.nodes.geometry.SampleCurve.o_position) | Output socket: Position |
+| [o_tangent](#nodebpy.nodes.geometry.SampleCurve.o_tangent) | Output socket: Tangent |
+| [o_value](#nodebpy.nodes.geometry.SampleCurve.o_value) | Output socket: Value |
 
 ### SampleIndex { #nodebpy.nodes.geometry.SampleIndex }
 
@@ -720,6 +1148,64 @@ Split a geometry into two geometry outputs based on a selection
 | [o_inverted](#nodebpy.nodes.geometry.SeparateGeometry.o_inverted) | Output socket: Inverted |
 | [o_selection](#nodebpy.nodes.geometry.SeparateGeometry.o_selection) | Output socket: Selection |
 
+### SetCurveNormal { #nodebpy.nodes.geometry.SetCurveNormal }
+
+```python
+nodes.geometry.SetCurveNormal(
+    curve=None,
+    selection=True,
+    *,
+    mode='Minimum Twist',
+    normal=(0.0, 0.0, 1.0),
+)
+```
+
+Set the evaluation mode for curve normals
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.SetCurveNormal.i_curve) | Input socket: Curve |
+| [i_mode](#nodebpy.nodes.geometry.SetCurveNormal.i_mode) | Input socket: Mode |
+| [i_normal](#nodebpy.nodes.geometry.SetCurveNormal.i_normal) | Input socket: Normal |
+| [i_selection](#nodebpy.nodes.geometry.SetCurveNormal.i_selection) | Input socket: Selection |
+| [o_curve](#nodebpy.nodes.geometry.SetCurveNormal.o_curve) | Output socket: Curve |
+
+### SetCurveRadius { #nodebpy.nodes.geometry.SetCurveRadius }
+
+```python
+nodes.geometry.SetCurveRadius(curve=None, selection=True, radius=0.005)
+```
+
+Set the radius of the curve at each control point
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.SetCurveRadius.i_curve) | Input socket: Curve |
+| [i_radius](#nodebpy.nodes.geometry.SetCurveRadius.i_radius) | Input socket: Radius |
+| [i_selection](#nodebpy.nodes.geometry.SetCurveRadius.i_selection) | Input socket: Selection |
+| [o_curve](#nodebpy.nodes.geometry.SetCurveRadius.o_curve) | Output socket: Curve |
+
+### SetCurveTilt { #nodebpy.nodes.geometry.SetCurveTilt }
+
+```python
+nodes.geometry.SetCurveTilt(curve=None, selection=True, tilt=0.0)
+```
+
+Set the tilt angle at each curve control point
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.SetCurveTilt.i_curve) | Input socket: Curve |
+| [i_selection](#nodebpy.nodes.geometry.SetCurveTilt.i_selection) | Input socket: Selection |
+| [i_tilt](#nodebpy.nodes.geometry.SetCurveTilt.i_tilt) | Input socket: Tilt |
+| [o_curve](#nodebpy.nodes.geometry.SetCurveTilt.o_curve) | Output socket: Curve |
+
 ### SetFaceSet { #nodebpy.nodes.geometry.SetFaceSet }
 
 ```python
@@ -813,6 +1299,53 @@ Set softness attribute on Grease Pencil geometry
 | [i_selection](#nodebpy.nodes.geometry.SetGreasePencilSoftness.i_selection) | Input socket: Selection |
 | [i_softness](#nodebpy.nodes.geometry.SetGreasePencilSoftness.i_softness) | Input socket: Softness |
 | [o_grease_pencil](#nodebpy.nodes.geometry.SetGreasePencilSoftness.o_grease_pencil) | Output socket: Grease Pencil |
+
+### SetHandlePositions { #nodebpy.nodes.geometry.SetHandlePositions }
+
+```python
+nodes.geometry.SetHandlePositions(
+    curve=None,
+    selection=True,
+    position=None,
+    offset=(0.0, 0.0, 0.0),
+    mode='LEFT',
+)
+```
+
+Set the positions for the handles of Bézier curves
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.SetHandlePositions.i_curve) | Input socket: Curve |
+| [i_offset](#nodebpy.nodes.geometry.SetHandlePositions.i_offset) | Input socket: Offset |
+| [i_position](#nodebpy.nodes.geometry.SetHandlePositions.i_position) | Input socket: Position |
+| [i_selection](#nodebpy.nodes.geometry.SetHandlePositions.i_selection) | Input socket: Selection |
+| [o_curve](#nodebpy.nodes.geometry.SetHandlePositions.o_curve) | Output socket: Curve |
+
+### SetHandleType { #nodebpy.nodes.geometry.SetHandleType }
+
+```python
+nodes.geometry.SetHandleType(
+    curve=None,
+    selection=True,
+    *,
+    left=False,
+    right=False,
+    handle_type='AUTO',
+)
+```
+
+Set the handle type for the control points of a Bézier curve
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.SetHandleType.i_curve) | Input socket: Curve |
+| [i_selection](#nodebpy.nodes.geometry.SetHandleType.i_selection) | Input socket: Selection |
+| [o_curve](#nodebpy.nodes.geometry.SetHandleType.o_curve) | Output socket: Curve |
 
 ### SetID { #nodebpy.nodes.geometry.SetID }
 
@@ -1006,6 +1539,22 @@ Control how many evaluated points should be generated on every curve segment
 | [i_selection](#nodebpy.nodes.geometry.SetSplineResolution.i_selection) | Input socket: Selection |
 | [o_curve](#nodebpy.nodes.geometry.SetSplineResolution.o_curve) | Output socket: Curve |
 
+### SetSplineType { #nodebpy.nodes.geometry.SetSplineType }
+
+```python
+nodes.geometry.SetSplineType(curve=None, selection=True, *, spline_type='POLY')
+```
+
+Change the type of curves
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.SetSplineType.i_curve) | Input socket: Curve |
+| [i_selection](#nodebpy.nodes.geometry.SetSplineType.i_selection) | Input socket: Selection |
+| [o_curve](#nodebpy.nodes.geometry.SetSplineType.o_curve) | Output socket: Curve |
+
 ### SortElements { #nodebpy.nodes.geometry.SortElements }
 
 ```python
@@ -1030,6 +1579,33 @@ Rearrange geometry elements, changing their indices
 | [i_selection](#nodebpy.nodes.geometry.SortElements.i_selection) | Input socket: Selection |
 | [i_sort_weight](#nodebpy.nodes.geometry.SortElements.i_sort_weight) | Input socket: Sort Weight |
 | [o_geometry](#nodebpy.nodes.geometry.SortElements.o_geometry) | Output socket: Geometry |
+
+### Spiral { #nodebpy.nodes.geometry.Spiral }
+
+```python
+nodes.geometry.Spiral(
+    resolution=32,
+    rotations=2.0,
+    start_radius=1.0,
+    end_radius=2.0,
+    height=2.0,
+    reverse=False,
+)
+```
+
+Generate a poly spline in a spiral shape
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_end_radius](#nodebpy.nodes.geometry.Spiral.i_end_radius) | Input socket: End Radius |
+| [i_height](#nodebpy.nodes.geometry.Spiral.i_height) | Input socket: Height |
+| [i_resolution](#nodebpy.nodes.geometry.Spiral.i_resolution) | Input socket: Resolution |
+| [i_reverse](#nodebpy.nodes.geometry.Spiral.i_reverse) | Input socket: Reverse |
+| [i_rotations](#nodebpy.nodes.geometry.Spiral.i_rotations) | Input socket: Rotations |
+| [i_start_radius](#nodebpy.nodes.geometry.Spiral.i_start_radius) | Input socket: Start Radius |
+| [o_curve](#nodebpy.nodes.geometry.Spiral.o_curve) | Output socket: Curve |
 
 ### SplitEdges { #nodebpy.nodes.geometry.SplitEdges }
 
@@ -1070,6 +1646,74 @@ Create separate geometries containing the elements from the same group
 | [i_selection](#nodebpy.nodes.geometry.SplitToInstances.i_selection) | Input socket: Selection |
 | [o_group_id](#nodebpy.nodes.geometry.SplitToInstances.o_group_id) | Output socket: Group ID |
 | [o_instances](#nodebpy.nodes.geometry.SplitToInstances.o_instances) | Output socket: Instances |
+
+### Star { #nodebpy.nodes.geometry.Star }
+
+```python
+nodes.geometry.Star(points=8, inner_radius=1.0, outer_radius=2.0, twist=0.0)
+```
+
+Generate a poly spline in a star pattern by connecting alternating points of two circles
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_inner_radius](#nodebpy.nodes.geometry.Star.i_inner_radius) | Input socket: Inner Radius |
+| [i_outer_radius](#nodebpy.nodes.geometry.Star.i_outer_radius) | Input socket: Outer Radius |
+| [i_points](#nodebpy.nodes.geometry.Star.i_points) | Input socket: Points |
+| [i_twist](#nodebpy.nodes.geometry.Star.i_twist) | Input socket: Twist |
+| [o_curve](#nodebpy.nodes.geometry.Star.o_curve) | Output socket: Curve |
+| [o_outer_points](#nodebpy.nodes.geometry.Star.o_outer_points) | Output socket: Outer Points |
+
+### StringToCurves { #nodebpy.nodes.geometry.StringToCurves }
+
+```python
+nodes.geometry.StringToCurves(
+    string='',
+    size=1.0,
+    character_spacing=1.0,
+    word_spacing=1.0,
+    line_spacing=1.0,
+    text_box_width=0.0,
+    overflow='OVERFLOW',
+    align_x='LEFT',
+    align_y='TOP_BASELINE',
+    pivot_mode='BOTTOM_LEFT',
+)
+```
+
+Generate a paragraph of text with a specific font, using a curve instance to store each character
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_character_spacing](#nodebpy.nodes.geometry.StringToCurves.i_character_spacing) | Input socket: Character Spacing |
+| [i_line_spacing](#nodebpy.nodes.geometry.StringToCurves.i_line_spacing) | Input socket: Line Spacing |
+| [i_size](#nodebpy.nodes.geometry.StringToCurves.i_size) | Input socket: Size |
+| [i_string](#nodebpy.nodes.geometry.StringToCurves.i_string) | Input socket: String |
+| [i_text_box_width](#nodebpy.nodes.geometry.StringToCurves.i_text_box_width) | Input socket: Text Box Width |
+| [i_word_spacing](#nodebpy.nodes.geometry.StringToCurves.i_word_spacing) | Input socket: Word Spacing |
+| [o_curve_instances](#nodebpy.nodes.geometry.StringToCurves.o_curve_instances) | Output socket: Curve Instances |
+| [o_line](#nodebpy.nodes.geometry.StringToCurves.o_line) | Output socket: Line |
+| [o_pivot_point](#nodebpy.nodes.geometry.StringToCurves.o_pivot_point) | Output socket: Pivot Point |
+
+### SubdivideCurve { #nodebpy.nodes.geometry.SubdivideCurve }
+
+```python
+nodes.geometry.SubdivideCurve(curve=None, cuts=1)
+```
+
+Dividing each curve segment into a specified number of pieces
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.SubdivideCurve.i_curve) | Input socket: Curve |
+| [i_cuts](#nodebpy.nodes.geometry.SubdivideCurve.i_cuts) | Input socket: Cuts |
+| [o_curve](#nodebpy.nodes.geometry.SubdivideCurve.o_curve) | Output socket: Curve |
 
 ### SubdivisionSurface { #nodebpy.nodes.geometry.SubdivisionSurface }
 
@@ -1173,3 +1817,27 @@ Convert all faces in a mesh to triangular faces
 | [i_quad_method](#nodebpy.nodes.geometry.Triangulate.i_quad_method) | Input socket: Quad Method |
 | [i_selection](#nodebpy.nodes.geometry.Triangulate.i_selection) | Input socket: Selection |
 | [o_mesh](#nodebpy.nodes.geometry.Triangulate.o_mesh) | Output socket: Mesh |
+
+### TrimCurve { #nodebpy.nodes.geometry.TrimCurve }
+
+```python
+nodes.geometry.TrimCurve(
+    curve=None,
+    selection=True,
+    start=0.0,
+    end=1.0,
+    mode='FACTOR',
+)
+```
+
+Shorten curves by removing portions at the start or end
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve](#nodebpy.nodes.geometry.TrimCurve.i_curve) | Input socket: Curve |
+| [i_end](#nodebpy.nodes.geometry.TrimCurve.i_end) | Input socket: End |
+| [i_selection](#nodebpy.nodes.geometry.TrimCurve.i_selection) | Input socket: Selection |
+| [i_start](#nodebpy.nodes.geometry.TrimCurve.i_start) | Input socket: Start |
+| [o_curve](#nodebpy.nodes.geometry.TrimCurve.o_curve) | Output socket: Curve |

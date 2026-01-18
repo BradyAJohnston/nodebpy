@@ -26,6 +26,7 @@
 | [FieldMinMax](#nodebpy.nodes.converter.FieldMinMax) | Calculate the minimum and maximum of a given field |
 | [FieldVariance](#nodebpy.nodes.converter.FieldVariance) | Calculate the standard deviation and variance of a given field |
 | [FindInString](#nodebpy.nodes.converter.FindInString) | Find the number of times a given string occurs in another string and the position of the first match |
+| [FloatCurve](#nodebpy.nodes.converter.FloatCurve) | Map an input float to a curve and outputs a float value |
 | [FloatToInteger](#nodebpy.nodes.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
 | [FormatString](#nodebpy.nodes.converter.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
 | [HashValue](#nodebpy.nodes.converter.HashValue) | Generate a randomized integer using the given input value as a seed |
@@ -594,6 +595,22 @@ Find the number of times a given string occurs in another string and the positio
 | [i_string](#nodebpy.nodes.converter.FindInString.i_string) | Input socket: String |
 | [o_count](#nodebpy.nodes.converter.FindInString.o_count) | Output socket: Count |
 | [o_first_found](#nodebpy.nodes.converter.FindInString.o_first_found) | Output socket: First Found |
+
+### FloatCurve { #nodebpy.nodes.converter.FloatCurve }
+
+```python
+nodes.converter.FloatCurve(factor=1.0, value=1.0)
+```
+
+Map an input float to a curve and outputs a float value
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_factor](#nodebpy.nodes.converter.FloatCurve.i_factor) | Input socket: Factor |
+| [i_value](#nodebpy.nodes.converter.FloatCurve.i_value) | Input socket: Value |
+| [o_value](#nodebpy.nodes.converter.FloatCurve.o_value) | Output socket: Value |
 
 ### FloatToInteger { #nodebpy.nodes.converter.FloatToInteger }
 

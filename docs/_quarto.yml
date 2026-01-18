@@ -8,23 +8,23 @@ website:
 
   navbar:
     left:
-    - href: index.qmd
-      text: Home
-    - href: introduction.qmd
-      text: Introduction
-    - href: reference/
-      text: Reference
+      - href: index.qmd
+        text: Home
+      - href: introduction.qmd
+        text: Introduction
+      - href: reference/
+        text: Reference
 
 # tell quarto to read the generated sidebar
 metadata-files:
-- reference/_sidebar.yml
+  - reference/_sidebar.yml
 
 # tell quarto to read the generated styles
 format:
   html:
     toc: true
     css:
-    - reference/_styles-quartodoc.css
+      - reference/_styles-quartodoc.css
 
 quartodoc:
   # the name used to import the package you want to create reference docs for
@@ -40,20 +40,19 @@ quartodoc:
     include_inherited: true
 
   sections:
-  - title: Some functions
-    desc: Functions to inspect docstrings.
-    contents:
-    - nodes.input
-    - nodes.attribute
-    - nodes.color
-    - nodes.converter
-    - nodes.texture
-    - nodes.vector
-    - nodes.zone
-    - nodes.grid
-    ####################
-    - nodes.geometry
-    - nodes.attribute
-    - nodes.curve
-    - nodes.mesh
-    - nodes.utilities
+    - title: Some functions
+      desc: Functions to inspect docstrings.
+      contents:
+        - nodes.input
+        - nodes.attribute
+        - nodes.color
+        - nodes.converter
+        - nodes.texture
+        - nodes.vector
+        - nodes.zone
+        - nodes.grid
+        - nodes.geometry
+        - nodes.attribute
+        ####################
+        - nodes.mesh
+        - nodes.utilities

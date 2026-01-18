@@ -2,3 +2,26 @@
 
 `nodes.color`
 
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [RGBCurves](#nodebpy.nodes.color.RGBCurves) | Apply color corrections for each color channel |
+
+### RGBCurves { #nodebpy.nodes.color.RGBCurves }
+
+```python
+nodes.color.RGBCurves(factor=1.0, color=(1.0, 1.0, 1.0, 1.0), **kwargs)
+```
+
+Apply color corrections for each color channel
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_color](#nodebpy.nodes.color.RGBCurves.i_color) | Input socket: Color |
+| [i_factor](#nodebpy.nodes.color.RGBCurves.i_factor) | Input socket: Factor |
+| [o_color](#nodebpy.nodes.color.RGBCurves.o_color) | Output socket: Color |

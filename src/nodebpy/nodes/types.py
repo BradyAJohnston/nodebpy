@@ -162,6 +162,8 @@ _SampleIndexDataTypes = Literal[
     "FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR", "FLOAT_COLOR", "QUATERNION", "FLOAT4X4"
 ]
 
+_EvaluateCurveModes = Literal["EVALUATED", "COUNT", "LENGTH"]
+
 _StoreNamedAttributeTypes = Literal[
     "FLOAT",
     "INT",

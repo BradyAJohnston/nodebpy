@@ -191,3 +191,8 @@ def test_domain_size(domain, output):
 
     assert len(tree.nodes) == 3
     assert len(domain_size.node.outputs[output].links) == 1
+
+
+def test_curve_handle():
+    with TreeBuilder() as tree:
+        node = n.HandleTypeSelection(left=False, right=False)

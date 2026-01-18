@@ -2726,3 +2726,32 @@ class UVUnwrap(NodeBuilder):
     def o_uv(self) -> SocketLinker:
         """Output socket: UV"""
         return self._output("UV")
+
+
+class FloatCurve(NodeBuilder):
+    """Map an input float to a curve and outputs a float value"""
+
+    # TODO: add support for custom curves
+
+    name = "ShaderNodeFloatCurve"
+    node: bpy.types.ShaderNodeFloatCurve
+
+    def __init__(self, factor: TYPE_INPUT_VALUE = 1.0, value: TYPE_INPUT_VALUE = 1.0):
+        super().__init__()
+        key_args = {"Factor": factor, "Value": value}
+        self._establish_links(**key_args)
+
+    @property
+    def i_factor(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Factor")
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")

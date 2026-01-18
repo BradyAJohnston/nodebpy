@@ -5,21 +5,23 @@ from ..builder import NodeBuilder, SocketLinker
 from .types import (
     LINKABLE,
     TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_COLOR,
     TYPE_INPUT_GEOMETRY,
-    TYPE_INPUT_STRING,
     TYPE_INPUT_INT,
     TYPE_INPUT_MATERIAL,
     TYPE_INPUT_MATRIX,
+    TYPE_INPUT_MENU,
     TYPE_INPUT_ROTATION,
+    TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_MENU,
+    _AttributeDomains,
     _DeleteGeoemtryModes,
     _DeleteGeometryDomains,
     _DuplicateElementsDomains,
+    _EvaluateCurveModes,
     _RaycaseDataTypes,
-    _AttributeDomains,
+    _SampleIndexDataTypes,
 )
 
 
@@ -2591,3 +2593,1837 @@ class Triangulate(NodeBuilder):
     def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
+
+
+class Arc(NodeBuilder):
+    """Generate a poly spline arc"""
+
+    name = "GeometryNodeCurveArc"
+    node: bpy.types.GeometryNodeCurveArc
+
+    def __init__(
+        self,
+        connect_center: TYPE_INPUT_BOOLEAN = False,
+        invert_arc: TYPE_INPUT_BOOLEAN = False,
+        *,
+        mode: Literal["POINTS", "RADIUS"] = "RADIUS",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {
+            "Connect Center": connect_center,
+            "Invert Arc": invert_arc,
+        }
+        key_args.update(kwargs)
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @classmethod
+    def points(
+        cls,
+        start: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        middle: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        end: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        offset_angle: TYPE_INPUT_VALUE = 0.0,
+        connect_center: TYPE_INPUT_BOOLEAN = False,
+        invert_arc: TYPE_INPUT_BOOLEAN = False,
+        *,
+        mode: Literal["POINTS", "RADIUS"] = "RADIUS",
+    ):
+        key_args = {
+            "Start": start,
+            "Middle": middle,
+            "End": end,
+            "Offset Angle": offset_angle,
+            "Connect Center": connect_center,
+            "Invert Arc": invert_arc,
+            "mode": mode,
+        }
+        return cls(**key_args)
+
+    @classmethod
+    def arc(
+        cls,
+        resolution: TYPE_INPUT_INT = 16,
+        start_angle: TYPE_INPUT_VALUE = 0.0,
+        sweep_angle: TYPE_INPUT_VALUE = 5.5,
+        connect_center: TYPE_INPUT_BOOLEAN = False,
+        invert_arc: TYPE_INPUT_BOOLEAN = False,
+        *,
+        mode: Literal["POINTS", "RADIUS"] = "RADIUS",
+    ):
+        key_args = {
+            "Resolution": resolution,
+            "Start Angle": start_angle,
+            "Sweep Angle": sweep_angle,
+            "Connect Center": connect_center,
+            "Invert Arc": invert_arc,
+            "mode": mode,
+        }
+        return cls(**key_args)
+
+    @property
+    def i_resolution(self) -> SocketLinker:
+        """Input socket: Resolution"""
+        return self._input("Resolution")
+
+    @property
+    def i_radius(self) -> SocketLinker:
+        """Input socket: Radius"""
+        return self._input("Radius")
+
+    @property
+    def i_start_angle(self) -> SocketLinker:
+        """Input socket: Start Angle"""
+        return self._input("Start Angle")
+
+    @property
+    def i_sweep_angle(self) -> SocketLinker:
+        """Input socket: Sweep Angle"""
+        return self._input("Sweep Angle")
+
+    @property
+    def i_connect_center(self) -> SocketLinker:
+        """Input socket: Connect Center"""
+        return self._input("Connect Center")
+
+    @property
+    def i_invert_arc(self) -> SocketLinker:
+        """Input socket: Invert Arc"""
+        return self._input("Invert Arc")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def mode(self) -> Literal["POINTS", "RADIUS"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["POINTS", "RADIUS"]):
+        self.node.mode = value
+
+
+class CurveLength(NodeBuilder):
+    """Retrieve the length of all splines added together"""
+
+    name = "GeometryNodeCurveLength"
+    node: bpy.types.GeometryNodeCurveLength
+
+    def __init__(self, curve: TYPE_INPUT_GEOMETRY = None):
+        super().__init__()
+        key_args = {"Curve": curve}
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def o_length(self) -> SocketLinker:
+        """Output socket: Length"""
+        return self._output("Length")
+
+
+class BezierSegment(NodeBuilder):
+    """Generate a 2D Bézier spline from the given control points and handles"""
+
+    name = "GeometryNodeCurvePrimitiveBezierSegment"
+    node: bpy.types.GeometryNodeCurvePrimitiveBezierSegment
+
+    def __init__(
+        self,
+        resolution: TYPE_INPUT_INT = 16,
+        start: TYPE_INPUT_VECTOR = (-1.0, 0.0, 0.0),
+        start_handle: TYPE_INPUT_VECTOR = (-0.5, 0.5, 0.0),
+        end_handle: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        end: TYPE_INPUT_VECTOR = (1.0, 0.0, 0.0),
+        *,
+        mode: Literal["POSITION", "OFFSET"] = "POSITION",
+    ):
+        super().__init__()
+        key_args = {
+            "Resolution": resolution,
+            "Start": start,
+            "Start Handle": start_handle,
+            "End Handle": end_handle,
+            "End": end,
+        }
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @property
+    def i_resolution(self) -> SocketLinker:
+        """Input socket: Resolution"""
+        return self._input("Resolution")
+
+    @property
+    def i_start(self) -> SocketLinker:
+        """Input socket: Start"""
+        return self._input("Start")
+
+    @property
+    def i_start_handle(self) -> SocketLinker:
+        """Input socket: Start Handle"""
+        return self._input("Start Handle")
+
+    @property
+    def i_end_handle(self) -> SocketLinker:
+        """Input socket: End Handle"""
+        return self._input("End Handle")
+
+    @property
+    def i_end(self) -> SocketLinker:
+        """Input socket: End"""
+        return self._input("End")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def mode(self) -> Literal["POSITION", "OFFSET"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["POSITION", "OFFSET"]):
+        self.node.mode = value
+
+
+class CurveCircle(NodeBuilder):
+    """Generate a poly spline circle"""
+
+    name = "GeometryNodeCurvePrimitiveCircle"
+    node: bpy.types.GeometryNodeCurvePrimitiveCircle
+
+    def __init__(
+        self,
+        resolution: TYPE_INPUT_INT = 32,
+        *,
+        mode: Literal["POINTS", "RADIUS"] = "RADIUS",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Resolution": resolution}
+        key_args.update(kwargs)
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @classmethod
+    def radius(cls, resolution: TYPE_INPUT_INT = 32, radius: TYPE_INPUT_VALUE = 1.0):
+        key_args = {"Resolution": resolution, "Radius": radius}
+        return cls(**key_args, mode="RADIUS")
+
+    @classmethod
+    def points(
+        cls,
+        resolution: TYPE_INPUT_INT = 32,
+        point_1: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        point_2: TYPE_INPUT_VECTOR = (1.0, 0.0, 0.0),
+        point_3: TYPE_INPUT_VECTOR = (0.0, 1.0, 0.0),
+    ):
+        key_args = {
+            "Resolution": resolution,
+            "Point 1": point_1,
+            "Point 2": point_2,
+            "Point 3": point_3,
+        }
+        return cls(**key_args, mode="POINTS")
+
+    @property
+    def i_resolution(self) -> SocketLinker:
+        """Input socket: Resolution"""
+        return self._input("Resolution")
+
+    @property
+    def i_radius(self) -> SocketLinker:
+        """Input socket: Radius"""
+        return self._input("Radius")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def mode(self) -> Literal["POINTS", "RADIUS"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["POINTS", "RADIUS"]):
+        self.node.mode = value
+
+
+class CurveLine(NodeBuilder):
+    """Generate a poly spline line with two points"""
+
+    name = "GeometryNodeCurvePrimitiveLine"
+    node: bpy.types.GeometryNodeCurvePrimitiveLine
+
+    def __init__(
+        self,
+        start: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        *,
+        mode: Literal["POINTS", "DIRECTION"] = "POINTS",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Start": start}
+        key_args.update(kwargs)
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @classmethod
+    def points(
+        cls,
+        start: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        end: TYPE_INPUT_VECTOR = (0.0, 0.0, 1.0),
+    ):
+        key_args = {"Start": start, "End": end}
+        return cls(**key_args, mode="POINTS")
+
+    @classmethod
+    def direction(
+        cls,
+        start: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        direction: TYPE_INPUT_VECTOR = (0.0, 0.0, 1.0),
+        length: TYPE_INPUT_VALUE = 1.0,
+    ):
+        key_args = {"Start": start, "Direction": direction, "Length": length}
+        return cls(**key_args, mode="DIRECTION")
+
+    @property
+    def i_start(self) -> SocketLinker:
+        """Input socket: Start"""
+        return self._input("Start")
+
+    @property
+    def i_end(self) -> SocketLinker:
+        """Input socket: End"""
+        return self._input("End")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def mode(self) -> Literal["POINTS", "DIRECTION"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["POINTS", "DIRECTION"]):
+        self.node.mode = value
+
+
+class Quadrilateral(NodeBuilder):
+    """Generate a polygon with four points"""
+
+    name = "GeometryNodeCurvePrimitiveQuadrilateral"
+    node: bpy.types.GeometryNodeCurvePrimitiveQuadrilateral
+
+    def __init__(
+        self,
+        *,
+        mode: Literal[
+            "RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"
+        ] = "RECTANGLE",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {}
+        key_args.update(kwargs)
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @classmethod
+    def points(
+        cls,
+        point_1: TYPE_INPUT_VECTOR = (-1, -1, 0),
+        point_2: TYPE_INPUT_VECTOR = (1, -1, 0),
+        point_3: TYPE_INPUT_VECTOR = (1, 1, 0),
+        point_4: TYPE_INPUT_VECTOR = (-1, 1, 0),
+    ):
+        key_args = {
+            "Point 1": point_1,
+            "Point 2": point_2,
+            "Point 3": point_3,
+            "Point 4": point_4,
+        }
+        return cls(**key_args, mode="POINTS")
+
+    @classmethod
+    def kite(
+        cls,
+        width: TYPE_INPUT_VALUE = 2.0,
+        bottom_height: TYPE_INPUT_VALUE = 3.0,
+        top_height: TYPE_INPUT_VALUE = 1.0,
+    ):
+        key_args = {
+            "Width": width,
+            "Bottom Height": bottom_height,
+            "Top Height": top_height,
+        }
+        return cls(**key_args, mode="KITE")
+
+    @classmethod
+    def rectangle(cls, width: TYPE_INPUT_VALUE = 2.0, height: TYPE_INPUT_VALUE = 2.0):
+        key_args = {
+            "Width": width,
+            "Height": height,
+        }
+        return cls(**key_args, mode="RECTANGLE")
+
+    @classmethod
+    def parallelogram(
+        cls,
+        width: TYPE_INPUT_VALUE = 2.0,
+        height: TYPE_INPUT_VALUE = 2.0,
+        offset: TYPE_INPUT_VALUE = 1.0,
+    ):
+        key_args = {
+            "Width": width,
+            "Height": height,
+            "Offset": offset,
+        }
+        return cls(**key_args, mode="PARALLELOGRAM")
+
+    @classmethod
+    def trapezoid(
+        cls,
+        height: TYPE_INPUT_VALUE = 2.0,
+        bottom_width: TYPE_INPUT_VALUE = 4.0,
+        top_width: TYPE_INPUT_VALUE = 2.0,
+        offset: TYPE_INPUT_VALUE = 1.0,
+    ):
+        key_args = {
+            "Height": height,
+            "Bottom Width": bottom_width,
+            "Top Width": top_width,
+            "Offset": offset,
+        }
+        return cls(**key_args, mode="TRAPEZOID")
+
+    @property
+    def i_width(self) -> SocketLinker:
+        """Input socket: Width"""
+        return self._input("Width")
+
+    @property
+    def i_height(self) -> SocketLinker:
+        """Input socket: Height"""
+        return self._input("Height")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def mode(
+        self,
+    ) -> Literal["RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(
+        self,
+        value: Literal["RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"],
+    ):
+        self.node.mode = value
+
+
+class QuadraticBezier(NodeBuilder):
+    """Generate a poly spline in a parabola shape with control points positions"""
+
+    name = "GeometryNodeCurveQuadraticBezier"
+    node: bpy.types.GeometryNodeCurveQuadraticBezier
+
+    def __init__(
+        self,
+        resolution: TYPE_INPUT_INT = 16,
+        start: TYPE_INPUT_VECTOR = (-1.0, 0.0, 0.0),
+        middle: TYPE_INPUT_VECTOR = (0.0, 2.0, 0.0),
+        end: TYPE_INPUT_VECTOR = (1.0, 0.0, 0.0),
+    ):
+        super().__init__()
+        key_args = {
+            "Resolution": resolution,
+            "Start": start,
+            "Middle": middle,
+            "End": end,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_resolution(self) -> SocketLinker:
+        """Input socket: Resolution"""
+        return self._input("Resolution")
+
+    @property
+    def i_start(self) -> SocketLinker:
+        """Input socket: Start"""
+        return self._input("Start")
+
+    @property
+    def i_middle(self) -> SocketLinker:
+        """Input socket: Middle"""
+        return self._input("Middle")
+
+    @property
+    def i_end(self) -> SocketLinker:
+        """Input socket: End"""
+        return self._input("End")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class SetHandleType(NodeBuilder):
+    """Set the handle type for the control points of a Bézier curve"""
+
+    name = "GeometryNodeCurveSetHandles"
+    node: bpy.types.GeometryNodeCurveSetHandles
+
+    def __init__(
+        self,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        *,
+        left: bool = False,
+        right: bool = False,
+        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
+    ):
+        super().__init__()
+        key_args = {"Curve": curve, "Selection": selection}
+        self.handle_type = handle_type
+        self.left = left
+        self.right = right
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
+        return self.node.handle_type
+
+    @handle_type.setter
+    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
+        self.node.handle_type = value
+
+    @property
+    def left(self) -> bool:
+        return "LEFT" in self.node.mode
+
+    @left.setter
+    def left(self, value: bool):
+        match value, self.right:
+            case True, True:
+                self.node.mode = {"LEFT", "RIGHT"}
+            case True, False:
+                self.node.mode = {"LEFT"}
+            case False, True:
+                self.node.mode = {"RIGHT"}
+            case False, False:
+                self.node.mode = set()
+
+    @property
+    def right(self) -> bool:
+        return "RIGHT" in self.node.mode
+
+    @right.setter
+    def right(self, value: bool):
+        match self.left, value:
+            case True, True:
+                self.node.mode = {"LEFT", "RIGHT"}
+            case True, False:
+                self.node.mode = {"LEFT"}
+            case False, True:
+                self.node.mode = {"RIGHT"}
+            case False, False:
+                self.node.mode = set()
+
+
+class Spiral(NodeBuilder):
+    """Generate a poly spline in a spiral shape"""
+
+    name = "GeometryNodeCurveSpiral"
+    node: bpy.types.GeometryNodeCurveSpiral
+
+    def __init__(
+        self,
+        resolution: TYPE_INPUT_INT = 32,
+        rotations: TYPE_INPUT_VALUE = 2.0,
+        start_radius: TYPE_INPUT_VALUE = 1.0,
+        end_radius: TYPE_INPUT_VALUE = 2.0,
+        height: TYPE_INPUT_VALUE = 2.0,
+        reverse: TYPE_INPUT_BOOLEAN = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Resolution": resolution,
+            "Rotations": rotations,
+            "Start Radius": start_radius,
+            "End Radius": end_radius,
+            "Height": height,
+            "Reverse": reverse,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_resolution(self) -> SocketLinker:
+        """Input socket: Resolution"""
+        return self._input("Resolution")
+
+    @property
+    def i_rotations(self) -> SocketLinker:
+        """Input socket: Rotations"""
+        return self._input("Rotations")
+
+    @property
+    def i_start_radius(self) -> SocketLinker:
+        """Input socket: Start Radius"""
+        return self._input("Start Radius")
+
+    @property
+    def i_end_radius(self) -> SocketLinker:
+        """Input socket: End Radius"""
+        return self._input("End Radius")
+
+    @property
+    def i_height(self) -> SocketLinker:
+        """Input socket: Height"""
+        return self._input("Height")
+
+    @property
+    def i_reverse(self) -> SocketLinker:
+        """Input socket: Reverse"""
+        return self._input("Reverse")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class SetSplineType(NodeBuilder):
+    """Change the type of curves"""
+
+    name = "GeometryNodeCurveSplineType"
+    node: bpy.types.GeometryNodeCurveSplineType
+
+    def __init__(
+        self,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        *,
+        spline_type: Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"] = "POLY",
+    ):
+        super().__init__()
+        key_args = {"Curve": curve, "Selection": selection}
+        self.spline_type = spline_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def spline_type(self) -> Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"]:
+        return self.node.spline_type
+
+    @spline_type.setter
+    def spline_type(self, value: Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"]):
+        self.node.spline_type = value
+
+
+class Star(NodeBuilder):
+    """Generate a poly spline in a star pattern by connecting alternating points of two circles"""
+
+    name = "GeometryNodeCurveStar"
+    node: bpy.types.GeometryNodeCurveStar
+
+    def __init__(
+        self,
+        points: TYPE_INPUT_INT = 8,
+        inner_radius: TYPE_INPUT_VALUE = 1.0,
+        outer_radius: TYPE_INPUT_VALUE = 2.0,
+        twist: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {
+            "Points": points,
+            "Inner Radius": inner_radius,
+            "Outer Radius": outer_radius,
+            "Twist": twist,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_points(self) -> SocketLinker:
+        """Input socket: Points"""
+        return self._input("Points")
+
+    @property
+    def i_inner_radius(self) -> SocketLinker:
+        """Input socket: Inner Radius"""
+        return self._input("Inner Radius")
+
+    @property
+    def i_outer_radius(self) -> SocketLinker:
+        """Input socket: Outer Radius"""
+        return self._input("Outer Radius")
+
+    @property
+    def i_twist(self) -> SocketLinker:
+        """Input socket: Twist"""
+        return self._input("Twist")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def o_outer_points(self) -> SocketLinker:
+        """Output socket: Outer Points"""
+        return self._output("Outer Points")
+
+
+class CurveToPoints(NodeBuilder):
+    """Generate a point cloud by sampling positions along curves"""
+
+    name = "GeometryNodeCurveToPoints"
+    node: bpy.types.GeometryNodeCurveToPoints
+
+    def __init__(
+        self,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        *,
+        mode: _EvaluateCurveModes = "COUNT",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Curve": curve}
+        key_args.update(kwargs)
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @classmethod
+    def m_count(cls, curve: TYPE_INPUT_GEOMETRY = None, count: TYPE_INPUT_INT = 10):
+        key_args = {"Curve": curve, "Count": count}
+        return cls(**key_args, mode="COUNT")
+
+    @classmethod
+    def m_length(
+        cls, curve: TYPE_INPUT_GEOMETRY = None, length: TYPE_INPUT_VALUE = None
+    ):
+        key_args = {"Curve": curve, "Length": length}
+        return cls(**key_args, mode="LENGTH")
+
+    @classmethod
+    def m_evaluated(cls, curve: TYPE_INPUT_GEOMETRY = None):
+        key_args = {"Curve": curve}
+        return cls(**key_args, mode="EVALUATED")
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_count(self) -> SocketLinker:
+        """Input socket: Count"""
+        return self._input("Count")
+
+    @property
+    def o_points(self) -> SocketLinker:
+        """Output socket: Points"""
+        return self._output("Points")
+
+    @property
+    def o_tangent(self) -> SocketLinker:
+        """Output socket: Tangent"""
+        return self._output("Tangent")
+
+    @property
+    def o_normal(self) -> SocketLinker:
+        """Output socket: Normal"""
+        return self._output("Normal")
+
+    @property
+    def o_rotation(self) -> SocketLinker:
+        """Output socket: Rotation"""
+        return self._output("Rotation")
+
+    @property
+    def mode(self) -> _EvaluateCurveModes:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: _EvaluateCurveModes):
+        self.node.mode = value
+
+
+class CurvesToGreasePencil(NodeBuilder):
+    """Convert the curves in each top-level instance into Grease Pencil layer"""
+
+    name = "GeometryNodeCurvesToGreasePencil"
+    node: bpy.types.GeometryNodeCurvesToGreasePencil
+
+    def __init__(
+        self,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        instances_as_layers: TYPE_INPUT_BOOLEAN = True,
+    ):
+        super().__init__()
+        key_args = {
+            "Curves": curves,
+            "Selection": selection,
+            "Instances as Layers": instances_as_layers,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_curves(self) -> SocketLinker:
+        """Input socket: Curves"""
+        return self._input("Curves")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_instances_as_layers(self) -> SocketLinker:
+        """Input socket: Instances as Layers"""
+        return self._input("Instances as Layers")
+
+    @property
+    def o_grease_pencil(self) -> SocketLinker:
+        """Output socket: Grease Pencil"""
+        return self._output("Grease Pencil")
+
+
+class DeformCurvesOnSurface(NodeBuilder):
+    """Translate and rotate curves based on changes between the object's original and evaluated surface mesh"""
+
+    name = "GeometryNodeDeformCurvesOnSurface"
+    node: bpy.types.GeometryNodeDeformCurvesOnSurface
+
+    def __init__(self, curves: TYPE_INPUT_GEOMETRY = None):
+        super().__init__()
+        key_args = {"Curves": curves}
+        self._establish_links(**key_args)
+
+    @property
+    def i_curves(self) -> SocketLinker:
+        """Input socket: Curves"""
+        return self._input("Curves")
+
+    @property
+    def o_curves(self) -> SocketLinker:
+        """Output socket: Curves"""
+        return self._output("Curves")
+
+
+class EdgePathsToCurves(NodeBuilder):
+    """Output curves following paths across mesh edges"""
+
+    name = "GeometryNodeEdgePathsToCurves"
+    node: bpy.types.GeometryNodeEdgePathsToCurves
+
+    def __init__(
+        self,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        start_vertices: TYPE_INPUT_BOOLEAN = True,
+        next_vertex_index: TYPE_INPUT_INT = -1,
+    ):
+        super().__init__()
+        key_args = {
+            "Mesh": mesh,
+            "Start Vertices": start_vertices,
+            "Next Vertex Index": next_vertex_index,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_mesh(self) -> SocketLinker:
+        """Input socket: Mesh"""
+        return self._input("Mesh")
+
+    @property
+    def i_start_vertices(self) -> SocketLinker:
+        """Input socket: Start Vertices"""
+        return self._input("Start Vertices")
+
+    @property
+    def i_next_vertex_index(self) -> SocketLinker:
+        """Input socket: Next Vertex Index"""
+        return self._input("Next Vertex Index")
+
+    @property
+    def o_curves(self) -> SocketLinker:
+        """Output socket: Curves"""
+        return self._output("Curves")
+
+
+class FillCurve(NodeBuilder):
+    """Generate a mesh on the XY plane with faces on the inside of input curves"""
+
+    name = "GeometryNodeFillCurve"
+    node: bpy.types.GeometryNodeFillCurve
+
+    def __init__(
+        self,
+        curve: LINKABLE = None,
+        group_id: TYPE_INPUT_INT = 0,
+        mode: Literal["Triangles", "N-gons"] | TYPE_INPUT_MENU = "Triangles",
+    ):
+        super().__init__()
+        key_args = {"Curve": curve, "Group ID": group_id, "Mode": mode}
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group ID")
+
+    @property
+    def i_mode(self) -> SocketLinker:
+        """Input socket: Mode"""
+        return self._input("Mode")
+
+    @property
+    def o_mesh(self) -> SocketLinker:
+        """Output socket: Mesh"""
+        return self._output("Mesh")
+
+
+class FilletCurve(NodeBuilder):
+    """Round corners by generating circular arcs on each control point"""
+
+    name = "GeometryNodeFilletCurve"
+    node: bpy.types.GeometryNodeFilletCurve
+
+    def __init__(
+        self,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        radius: TYPE_INPUT_VALUE = 0.25,
+        limit_radius: TYPE_INPUT_BOOLEAN = False,
+        mode: Literal["Bézier", "Poly"] | TYPE_INPUT_MENU = "Bézier",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {
+            "Curve": curve,
+            "Radius": radius,
+            "Limit Radius": limit_radius,
+            "Mode": mode,
+        }
+        key_args.update(kwargs)
+        self._establish_links(**key_args)
+
+    @classmethod
+    def m_bezier(
+        cls,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        radius: TYPE_INPUT_VALUE = 0.25,
+        limit_radius: TYPE_INPUT_BOOLEAN = False,
+    ):
+        key_args = {"Curve": curve, "Radius": radius, "Limit Radius": limit_radius}
+        return cls(**key_args, mode="Bézier")
+
+    @classmethod
+    def m_poly(
+        cls,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        radius: TYPE_INPUT_VALUE = 0.25,
+        limit_radius: TYPE_INPUT_BOOLEAN = False,
+        count: TYPE_INPUT_INT = 1,
+    ):
+        return cls(curve, radius, limit_radius, mode="Poly", count=count)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_radius(self) -> SocketLinker:
+        """Input socket: Radius"""
+        return self._input("Radius")
+
+    @property
+    def i_limit_radius(self) -> SocketLinker:
+        """Input socket: Limit Radius"""
+        return self._input("Limit Radius")
+
+    @property
+    def i_mode(self) -> SocketLinker:
+        """Input socket: Mode"""
+        return self._input("Mode")
+
+    @property
+    def i_count(self) -> SocketLinker:
+        """Input socket: Count"""
+        return self._input("Count")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class GreasePencilToCurves(NodeBuilder):
+    """Convert Grease Pencil layers into curve instances"""
+
+    name = "GeometryNodeGreasePencilToCurves"
+    node: bpy.types.GeometryNodeGreasePencilToCurves
+
+    def __init__(
+        self,
+        grease_pencil: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        layers_as_instances: TYPE_INPUT_BOOLEAN = True,
+    ):
+        super().__init__()
+        key_args = {
+            "Grease Pencil": grease_pencil,
+            "Selection": selection,
+            "Layers as Instances": layers_as_instances,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_grease_pencil(self) -> SocketLinker:
+        """Input socket: Grease Pencil"""
+        return self._input("Grease Pencil")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_layers_as_instances(self) -> SocketLinker:
+        """Input socket: Layers as Instances"""
+        return self._input("Layers as Instances")
+
+    @property
+    def o_curves(self) -> SocketLinker:
+        """Output socket: Curves"""
+        return self._output("Curves")
+
+
+class InterpolateCurves(NodeBuilder):
+    """Generate new curves on points by interpolating between existing curves"""
+
+    name = "GeometryNodeInterpolateCurves"
+    node: bpy.types.GeometryNodeInterpolateCurves
+
+    def __init__(
+        self,
+        guide_curves: TYPE_INPUT_GEOMETRY = None,
+        guide_up: TYPE_INPUT_VECTOR = None,
+        guide_group_id: TYPE_INPUT_INT = None,
+        points: TYPE_INPUT_GEOMETRY = None,
+        point_up: TYPE_INPUT_VECTOR = None,
+        point_group_id: TYPE_INPUT_INT = None,
+        max_neighbors: TYPE_INPUT_INT = 4,
+    ):
+        super().__init__()
+        key_args = {
+            "Guide Curves": guide_curves,
+            "Guide Up": guide_up,
+            "Guide Group ID": guide_group_id,
+            "Points": points,
+            "Point Up": point_up,
+            "Point Group ID": point_group_id,
+            "Max Neighbors": max_neighbors,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_guide_curves(self) -> SocketLinker:
+        """Input socket: Guide Curves"""
+        return self._input("Guide Curves")
+
+    @property
+    def i_guide_up(self) -> SocketLinker:
+        """Input socket: Guide Up"""
+        return self._input("Guide Up")
+
+    @property
+    def i_guide_group_id(self) -> SocketLinker:
+        """Input socket: Guide Group ID"""
+        return self._input("Guide Group ID")
+
+    @property
+    def i_points(self) -> SocketLinker:
+        """Input socket: Points"""
+        return self._input("Points")
+
+    @property
+    def i_point_up(self) -> SocketLinker:
+        """Input socket: Point Up"""
+        return self._input("Point Up")
+
+    @property
+    def i_point_group_id(self) -> SocketLinker:
+        """Input socket: Point Group ID"""
+        return self._input("Point Group ID")
+
+    @property
+    def i_max_neighbors(self) -> SocketLinker:
+        """Input socket: Max Neighbors"""
+        return self._input("Max Neighbors")
+
+    @property
+    def o_curves(self) -> SocketLinker:
+        """Output socket: Curves"""
+        return self._output("Curves")
+
+    @property
+    def o_closest_index(self) -> SocketLinker:
+        """Output socket: Closest Index"""
+        return self._output("Closest Index")
+
+    @property
+    def o_closest_weight(self) -> SocketLinker:
+        """Output socket: Closest Weight"""
+        return self._output("Closest Weight")
+
+
+class PointsToCurves(NodeBuilder):
+    """Split all points to curve by its group ID and reorder by weight"""
+
+    name = "GeometryNodePointsToCurves"
+    node: bpy.types.GeometryNodePointsToCurves
+
+    def __init__(
+        self,
+        points: TYPE_INPUT_GEOMETRY = None,
+        curve_group_id: TYPE_INPUT_INT = None,
+        weight: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {
+            "Points": points,
+            "Curve Group ID": curve_group_id,
+            "Weight": weight,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_points(self) -> SocketLinker:
+        """Input socket: Points"""
+        return self._input("Points")
+
+    @property
+    def i_curve_group_id(self) -> SocketLinker:
+        """Input socket: Curve Group ID"""
+        return self._input("Curve Group ID")
+
+    @property
+    def i_weight(self) -> SocketLinker:
+        """Input socket: Weight"""
+        return self._input("Weight")
+
+    @property
+    def o_curves(self) -> SocketLinker:
+        """Output socket: Curves"""
+        return self._output("Curves")
+
+
+class ResampleCurve(NodeBuilder):
+    """Generate a poly spline for each input spline"""
+
+    name = "GeometryNodeResampleCurve"
+    node: bpy.types.GeometryNodeResampleCurve
+
+    def __init__(
+        self,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        *,
+        mode: Literal["Count", "Length", "Evaluated"] = "Count",
+        count: TYPE_INPUT_INT = 10,
+        length: TYPE_INPUT_VALUE = 0.1,
+    ):
+        super().__init__()
+        key_args = {
+            "Curve": curve,
+            "Selection": selection,
+            "Mode": mode,
+            "Count": count,
+            "Length": length,
+        }
+        self._establish_links(**key_args)
+
+    @classmethod
+    def m_evaluated(
+        cls, curve: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ):
+        return cls(curve=curve, selection=selection, mode="Evaluated")
+
+    @classmethod
+    def m_count(
+        cls,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        count: TYPE_INPUT_INT = 10,
+    ):
+        return cls(curve=curve, selection=selection, mode="Count", count=count)
+
+    @classmethod
+    def m_length(
+        cls,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        length: TYPE_INPUT_VALUE = 0.1,
+    ):
+        return cls(curve=curve, selection=selection, mode="Length", length=length)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_mode(self) -> SocketLinker:
+        """Input socket: Mode"""
+        return self._input("Mode")
+
+    @property
+    def i_count(self) -> SocketLinker:
+        """Input socket: Count"""
+        return self._input("Count")
+
+    @property
+    def i_length(self) -> SocketLinker:
+        """Input socket: Length"""
+        return self._input("Length")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class ReverseCurve(NodeBuilder):
+    """Change the direction of curves by swapping their start and end data"""
+
+    name = "GeometryNodeReverseCurve"
+    node: bpy.types.GeometryNodeReverseCurve
+
+    def __init__(
+        self, curve: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ):
+        super().__init__()
+        key_args = {"Curve": curve, "Selection": selection}
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class SampleCurve(NodeBuilder):
+    """Retrieve data from a point on a curve at a certain distance from its start"""
+
+    name = "GeometryNodeSampleCurve"
+    node: bpy.types.GeometryNodeSampleCurve
+
+    def __init__(
+        self,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VALUE = 0.0,
+        factor: TYPE_INPUT_VALUE = 0.0,
+        curve_index: TYPE_INPUT_INT = 0,
+        *,
+        mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
+        data_type: _SampleIndexDataTypes = "FLOAT",
+        use_all_curves: bool = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Curves": curves,
+            "Value": value,
+            "Factor": factor,
+            "Curve Index": curve_index,
+        }
+        self.mode = mode
+        self.use_all_curves = use_all_curves
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_curves(self) -> SocketLinker:
+        """Input socket: Curves"""
+        return self._input("Curves")
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_factor(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Factor")
+
+    @property
+    def i_curve_index(self) -> SocketLinker:
+        """Input socket: Curve Index"""
+        return self._input("Curve Index")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def o_position(self) -> SocketLinker:
+        """Output socket: Position"""
+        return self._output("Position")
+
+    @property
+    def o_tangent(self) -> SocketLinker:
+        """Output socket: Tangent"""
+        return self._output("Tangent")
+
+    @property
+    def o_normal(self) -> SocketLinker:
+        """Output socket: Normal"""
+        return self._output("Normal")
+
+    @property
+    def mode(self) -> Literal["FACTOR", "LENGTH"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["FACTOR", "LENGTH"]):
+        self.node.mode = value
+
+    @property
+    def use_all_curves(self) -> bool:
+        return self.node.use_all_curves
+
+    @use_all_curves.setter
+    def use_all_curves(self, value: bool):
+        self.node.use_all_curves = value
+
+    @property
+    def data_type(
+        self,
+    ) -> _SampleIndexDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _SampleIndexDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class SetHandlePositions(NodeBuilder):
+    """Set the positions for the handles of Bézier curves"""
+
+    name = "GeometryNodeSetCurveHandlePositions"
+    node: bpy.types.GeometryNodeSetCurveHandlePositions
+
+    def __init__(
+        self,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        position: TYPE_INPUT_VECTOR = None,
+        offset: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        mode: Literal["LEFT", "RIGHT"] = "LEFT",
+    ):
+        super().__init__()
+        key_args = {
+            "Curve": curve,
+            "Selection": selection,
+            "Position": position,
+            "Offset": offset,
+        }
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_position(self) -> SocketLinker:
+        """Input socket: Position"""
+        return self._input("Position")
+
+    @property
+    def i_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Offset")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def mode(self) -> Literal["LEFT", "RIGHT"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["LEFT", "RIGHT"]):
+        self.node.mode = value
+
+
+class SetCurveNormal(NodeBuilder):
+    """Set the evaluation mode for curve normals"""
+
+    name = "GeometryNodeSetCurveNormal"
+    node: bpy.types.GeometryNodeSetCurveNormal
+
+    def __init__(
+        self,
+        curve: LINKABLE = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        *,
+        mode: Literal["Minimum Twist", "Free", "Z Up"] = "Minimum Twist",
+        normal: TYPE_INPUT_VECTOR = (0.0, 0.0, 1.0),
+    ):
+        super().__init__()
+        key_args = {
+            "Curve": curve,
+            "Selection": selection,
+            "Mode": mode,
+            "Normal": normal,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_mode(self) -> SocketLinker:
+        """Input socket: Mode"""
+        return self._input("Mode")
+
+    @property
+    def i_normal(self) -> SocketLinker:
+        """Input socket: Normal"""
+        return self._input("Normal")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class SetCurveRadius(NodeBuilder):
+    """Set the radius of the curve at each control point"""
+
+    name = "GeometryNodeSetCurveRadius"
+    node: bpy.types.GeometryNodeSetCurveRadius
+
+    def __init__(
+        self,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        radius: TYPE_INPUT_VALUE = 0.005,
+    ):
+        super().__init__()
+        key_args = {"Curve": curve, "Selection": selection, "Radius": radius}
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_radius(self) -> SocketLinker:
+        """Input socket: Radius"""
+        return self._input("Radius")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class SetCurveTilt(NodeBuilder):
+    """Set the tilt angle at each curve control point"""
+
+    name = "GeometryNodeSetCurveTilt"
+    node: bpy.types.GeometryNodeSetCurveTilt
+
+    def __init__(
+        self,
+        curve: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        tilt: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {"Curve": curve, "Selection": selection, "Tilt": tilt}
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_tilt(self) -> SocketLinker:
+        """Input socket: Tilt"""
+        return self._input("Tilt")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class StringToCurves(NodeBuilder):
+    """Generate a paragraph of text with a specific font, using a curve instance to store each character"""
+
+    name = "GeometryNodeStringToCurves"
+    node: bpy.types.GeometryNodeStringToCurves
+
+    def __init__(
+        self,
+        string: TYPE_INPUT_STRING = "",
+        size: TYPE_INPUT_VALUE = 1.0,
+        character_spacing: TYPE_INPUT_VALUE = 1.0,
+        word_spacing: TYPE_INPUT_VALUE = 1.0,
+        line_spacing: TYPE_INPUT_VALUE = 1.0,
+        text_box_width: TYPE_INPUT_VALUE = 0.0,
+        overflow: Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"] = "OVERFLOW",
+        align_x: Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"] = "LEFT",
+        align_y: Literal[
+            "TOP", "TOP_BASELINE", "MIDDLE", "BOTTOM_BASELINE", "BOTTOM"
+        ] = "TOP_BASELINE",
+        pivot_mode: Literal[
+            "MIDPOINT",
+            "TOP_LEFT",
+            "TOP_CENTER",
+            "TOP_RIGHT",
+            "BOTTOM_LEFT",
+            "BOTTOM_CENTER",
+            "BOTTOM_RIGHT",
+        ] = "BOTTOM_LEFT",
+    ):
+        super().__init__()
+        key_args = {
+            "String": string,
+            "Size": size,
+            "Character Spacing": character_spacing,
+            "Word Spacing": word_spacing,
+            "Line Spacing": line_spacing,
+            "Text Box Width": text_box_width,
+        }
+        self.overflow = overflow
+        self.align_x = align_x
+        self.align_y = align_y
+        self.pivot_mode = pivot_mode
+        self._establish_links(**key_args)
+
+    @property
+    def i_string(self) -> SocketLinker:
+        """Input socket: String"""
+        return self._input("String")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def i_character_spacing(self) -> SocketLinker:
+        """Input socket: Character Spacing"""
+        return self._input("Character Spacing")
+
+    @property
+    def i_word_spacing(self) -> SocketLinker:
+        """Input socket: Word Spacing"""
+        return self._input("Word Spacing")
+
+    @property
+    def i_line_spacing(self) -> SocketLinker:
+        """Input socket: Line Spacing"""
+        return self._input("Line Spacing")
+
+    @property
+    def i_text_box_width(self) -> SocketLinker:
+        """Input socket: Text Box Width"""
+        return self._input("Text Box Width")
+
+    @property
+    def o_curve_instances(self) -> SocketLinker:
+        """Output socket: Curve Instances"""
+        return self._output("Curve Instances")
+
+    @property
+    def o_line(self) -> SocketLinker:
+        """Output socket: Line"""
+        return self._output("Line")
+
+    @property
+    def o_pivot_point(self) -> SocketLinker:
+        """Output socket: Pivot Point"""
+        return self._output("Pivot Point")
+
+    @property
+    def overflow(self) -> Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"]:
+        return self.node.overflow
+
+    @overflow.setter
+    def overflow(self, value: Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"]):
+        self.node.overflow = value
+
+    @property
+    def align_x(self) -> Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"]:
+        return self.node.align_x
+
+    @align_x.setter
+    def align_x(self, value: Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"]):
+        self.node.align_x = value
+
+    @property
+    def align_y(
+        self,
+    ) -> Literal["TOP", "TOP_BASELINE", "MIDDLE", "BOTTOM_BASELINE", "BOTTOM"]:
+        return self.node.align_y
+
+    @align_y.setter
+    def align_y(
+        self,
+        value: Literal["TOP", "TOP_BASELINE", "MIDDLE", "BOTTOM_BASELINE", "BOTTOM"],
+    ):
+        self.node.align_y = value
+
+    @property
+    def pivot_mode(
+        self,
+    ) -> Literal[
+        "MIDPOINT",
+        "TOP_LEFT",
+        "TOP_CENTER",
+        "TOP_RIGHT",
+        "BOTTOM_LEFT",
+        "BOTTOM_CENTER",
+        "BOTTOM_RIGHT",
+    ]:
+        return self.node.pivot_mode
+
+    @pivot_mode.setter
+    def pivot_mode(
+        self,
+        value: Literal[
+            "MIDPOINT",
+            "TOP_LEFT",
+            "TOP_CENTER",
+            "TOP_RIGHT",
+            "BOTTOM_LEFT",
+            "BOTTOM_CENTER",
+            "BOTTOM_RIGHT",
+        ],
+    ):
+        self.node.pivot_mode = value
+
+
+class SubdivideCurve(NodeBuilder):
+    """Dividing each curve segment into a specified number of pieces"""
+
+    name = "GeometryNodeSubdivideCurve"
+    node: bpy.types.GeometryNodeSubdivideCurve
+
+    def __init__(self, curve: TYPE_INPUT_GEOMETRY = None, cuts: TYPE_INPUT_INT = 1):
+        super().__init__()
+        key_args = {"Curve": curve, "Cuts": cuts}
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_cuts(self) -> SocketLinker:
+        """Input socket: Cuts"""
+        return self._input("Cuts")
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+
+class TrimCurve(NodeBuilder):
+    """Shorten curves by removing portions at the start or end"""
+
+    name = "GeometryNodeTrimCurve"
+    node: bpy.types.GeometryNodeTrimCurve
+
+    def __init__(
+        self,
+        curve: LINKABLE = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        start: TYPE_INPUT_VALUE = 0.0,
+        end: TYPE_INPUT_VALUE = 1.0,
+        mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
+    ):
+        super().__init__()
+        match mode:
+            case "FACTOR":
+                key_args = {
+                    "Curve": curve,
+                    "Selection": selection,
+                    "Start": start,
+                    "End": end,
+                }
+            case "LENGTH":
+                key_args = {
+                    "Curve": curve,
+                    "Selection": selection,
+                    "Start_001": start,
+                    "End_001": end,
+                }
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @classmethod
+    def factor(
+        cls,
+        curve: LINKABLE = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        start: TYPE_INPUT_VALUE = 0.0,
+        end: TYPE_INPUT_VALUE = 1.0,
+    ):
+        return cls(
+            mode="FACTOR", curve=curve, selection=selection, start=start, end=end
+        )
+
+    @classmethod
+    def length(
+        cls,
+        curve: LINKABLE = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        start: TYPE_INPUT_VALUE = 0.0,
+        end: TYPE_INPUT_VALUE = 1.0,
+    ):
+        return cls(
+            mode="LENGTH", curve=curve, selection=selection, start=start, end=end
+        )
+
+    @property
+    def i_curve(self) -> SocketLinker:
+        """Input socket: Curve"""
+        return self._input("Curve")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_start(self) -> SocketLinker:
+        """Input socket: Start"""
+        suffix = "_001" if self.mode == "LENGTH" else ""
+        return self._input("Start" + suffix)
+
+    @property
+    def i_end(self) -> SocketLinker:
+        """Input socket: End"""
+        suffix = "_001" if self.mode == "LENGTH" else ""
+        return self._input("End" + suffix)
+
+    @property
+    def o_curve(self) -> SocketLinker:
+        """Output socket: Curve"""
+        return self._output("Curve")
+
+    @property
+    def mode(self) -> Literal["FACTOR", "LENGTH"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["FACTOR", "LENGTH"]):
+        self.node.mode = value

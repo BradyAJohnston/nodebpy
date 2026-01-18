@@ -1626,3 +1626,249 @@ class NamedAttribute(NodeBuilder):
         value: _SampleIndexDataTypes,
     ):
         self.node.data_type = value
+
+
+class EndpointSelection(NodeBuilder):
+    """Provide a selection for an arbitrary number of endpoints in each spline"""
+
+    name = "GeometryNodeCurveEndpointSelection"
+    node: bpy.types.GeometryNodeCurveEndpointSelection
+
+    def __init__(
+        self,
+        start_size: TYPE_INPUT_INT = 1,
+        end_size: TYPE_INPUT_INT = 1,
+    ):
+        super().__init__()
+        key_args = {"Start Size": start_size, "End Size": end_size}
+        self._establish_links(**key_args)
+
+    @property
+    def i_start_size(self) -> SocketLinker:
+        """Input socket: Start Size"""
+        return self._input("Start Size")
+
+    @property
+    def i_end_size(self) -> SocketLinker:
+        """Input socket: End Size"""
+        return self._input("End Size")
+
+    @property
+    def o_selection(self) -> SocketLinker:
+        """Output socket: Selection"""
+        return self._output("Selection")
+
+
+class HandleTypeSelection(NodeBuilder):
+    """Provide a selection based on the handle types of Bézier control points"""
+
+    name = "GeometryNodeCurveHandleTypeSelection"
+    node: bpy.types.GeometryNodeCurveHandleTypeSelection
+
+    def __init__(
+        self,
+        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
+        left: bool = True,
+        right: bool = True,
+    ):
+        super().__init__()
+        self.handle_type = handle_type
+        self.left = left
+        self.right = right
+
+    @property
+    def o_selection(self) -> SocketLinker:
+        """Output socket: Selection"""
+        return self._output("Selection")
+
+    @property
+    def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
+        return self.node.handle_type
+
+    @handle_type.setter
+    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
+        self.node.handle_type = value
+
+    @property
+    def left(self) -> bool:
+        return "LEFT" in self.node.mode
+
+    @left.setter
+    def left(self, value: bool):
+        match value, self.right:
+            case True, True:
+                self.node.mode = {"LEFT", "RIGHT"}
+            case True, False:
+                self.node.mode = {"LEFT"}
+            case False, True:
+                self.node.mode = {"RIGHT"}
+            case False, False:
+                self.node.mode = set()
+
+    @property
+    def right(self) -> bool:
+        return "RIGHT" in self.node.mode
+
+    @right.setter
+    def right(self, value: bool):
+        match self.left, value:
+            case True, True:
+                self.node.mode = {"LEFT", "RIGHT"}
+            case True, False:
+                self.node.mode = {"LEFT"}
+            case False, True:
+                self.node.mode = {"RIGHT"}
+            case False, False:
+                self.node.mode = set()
+
+    @property
+    def mode(self) -> set[Literal["LEFT", "RIGHT"]]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: set[Literal["LEFT", "RIGHT"]]):
+        self.node.mode = value
+
+
+class CurveOfPoint(NodeBuilder):
+    """Retrieve the curve a control point is part of"""
+
+    name = "GeometryNodeCurveOfPoint"
+    node: bpy.types.GeometryNodeCurveOfPoint
+
+    def __init__(self, point_index: TYPE_INPUT_INT = None):
+        super().__init__()
+        key_args = {"Point Index": point_index}
+        self._establish_links(**key_args)
+
+    @property
+    def i_point_index(self) -> SocketLinker:
+        """Input socket: Point Index"""
+        return self._input("Point Index")
+
+    @property
+    def o_curve_index(self) -> SocketLinker:
+        """Output socket: Curve Index"""
+        return self._output("Curve Index")
+
+    @property
+    def o_index_in_curve(self) -> SocketLinker:
+        """Output socket: Index in Curve"""
+        return self._output("Index in Curve")
+
+
+class CurveHandlePositions(NodeBuilder):
+    """Retrieve the position of each Bézier control point's handles"""
+
+    name = "GeometryNodeInputCurveHandlePositions"
+    node: bpy.types.GeometryNodeInputCurveHandlePositions
+
+    def __init__(self, relative: TYPE_INPUT_BOOLEAN = False):
+        super().__init__()
+        key_args = {"Relative": relative}
+        self._establish_links(**key_args)
+
+    @property
+    def i_relative(self) -> SocketLinker:
+        """Input socket: Relative"""
+        return self._input("Relative")
+
+    @property
+    def o_left(self) -> SocketLinker:
+        """Output socket: Left"""
+        return self._output("Left")
+
+    @property
+    def o_right(self) -> SocketLinker:
+        """Output socket: Right"""
+        return self._output("Right")
+
+
+class CurveTilt(NodeBuilder):
+    """Retrieve the angle at each control point used to twist the curve's normal around its tangent"""
+
+    name = "GeometryNodeInputCurveTilt"
+    node: bpy.types.GeometryNodeInputCurveTilt
+
+    @property
+    def o_tilt(self) -> SocketLinker:
+        """Output socket: Tilt"""
+        return self._output("Tilt")
+
+
+class OffsetPointInCurve(NodeBuilder):
+    """Offset a control point index within its curve"""
+
+    name = "GeometryNodeOffsetPointInCurve"
+    node: bpy.types.GeometryNodeOffsetPointInCurve
+
+    def __init__(self, point_index: TYPE_INPUT_INT = None, offset: TYPE_INPUT_INT = 0):
+        super().__init__()
+        key_args = {"Point Index": point_index, "Offset": offset}
+        self._establish_links(**key_args)
+
+    @property
+    def i_point_index(self) -> SocketLinker:
+        """Input socket: Point Index"""
+        return self._input("Point Index")
+
+    @property
+    def i_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Offset")
+
+    @property
+    def o_is_valid_offset(self) -> SocketLinker:
+        """Output socket: Is Valid Offset"""
+        return self._output("Is Valid Offset")
+
+    @property
+    def o_point_index(self) -> SocketLinker:
+        """Output socket: Point Index"""
+        return self._output("Point Index")
+
+
+class PointsOfCurve(NodeBuilder):
+    """Retrieve a point index within a curve"""
+
+    name = "GeometryNodePointsOfCurve"
+    node: bpy.types.GeometryNodePointsOfCurve
+
+    def __init__(
+        self,
+        curve_index: TYPE_INPUT_INT = None,
+        weights: TYPE_INPUT_VALUE = None,
+        sort_index: TYPE_INPUT_INT = 0,
+    ):
+        super().__init__()
+        key_args = {
+            "Curve Index": curve_index,
+            "Weights": weights,
+            "Sort Index": sort_index,
+        }
+        self._establish_links(**key_args)
+
+    @property
+    def i_curve_index(self) -> SocketLinker:
+        """Input socket: Curve Index"""
+        return self._input("Curve Index")
+
+    @property
+    def i_weights(self) -> SocketLinker:
+        """Input socket: Weights"""
+        return self._input("Weights")
+
+    @property
+    def i_sort_index(self) -> SocketLinker:
+        """Input socket: Sort Index"""
+        return self._input("Sort Index")
+
+    @property
+    def o_point_index(self) -> SocketLinker:
+        """Output socket: Point Index"""
+        return self._output("Point Index")
+
+    @property
+    def o_total(self) -> SocketLinker:
+        """Output socket: Total"""
+        return self._output("Total")

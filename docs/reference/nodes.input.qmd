@@ -19,13 +19,18 @@
 | [CornersOfFace](#nodebpy.nodes.input.CornersOfFace) | Retrieve corners that make up a face |
 | [CornersOfVertex](#nodebpy.nodes.input.CornersOfVertex) | Retrieve face corners connected to vertices |
 | [Cursor3D](#nodebpy.nodes.input.Cursor3D) | The scene's 3D cursor location and rotation |
+| [CurveHandlePositions](#nodebpy.nodes.input.CurveHandlePositions) | Retrieve the position of each Bézier control point's handles |
+| [CurveOfPoint](#nodebpy.nodes.input.CurveOfPoint) | Retrieve the curve a control point is part of |
 | [CurveTangent](#nodebpy.nodes.input.CurveTangent) | Retrieve the direction of curves at each control point |
+| [CurveTilt](#nodebpy.nodes.input.CurveTilt) | Retrieve the angle at each control point used to twist the curve's normal around its tangent |
 | [EdgePathsToSelection](#nodebpy.nodes.input.EdgePathsToSelection) | Output a selection of edges by following paths across mesh edges |
 | [EdgesOfCorner](#nodebpy.nodes.input.EdgesOfCorner) | Retrieve the edges on both sides of a face corner |
 | [EdgesOfVertex](#nodebpy.nodes.input.EdgesOfVertex) | Retrieve the edges connected to each vertex |
 | [EdgesToFaceGroups](#nodebpy.nodes.input.EdgesToFaceGroups) | Group faces into regions surrounded by the selected boundary edges |
+| [EndpointSelection](#nodebpy.nodes.input.EndpointSelection) | Provide a selection for an arbitrary number of endpoints in each spline |
 | [FaceOfCorner](#nodebpy.nodes.input.FaceOfCorner) | Retrieve the face each face corner is part of |
 | [FaceSet](#nodebpy.nodes.input.FaceSet) | Each face's sculpt face set value |
+| [HandleTypeSelection](#nodebpy.nodes.input.HandleTypeSelection) | Provide a selection based on the handle types of Bézier control points |
 | [ID](#nodebpy.nodes.input.ID) | Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist |
 | [Image](#nodebpy.nodes.input.Image) | Input an image data-block |
 | [ImageInfo](#nodebpy.nodes.input.ImageInfo) | Retrieve information about an image |
@@ -54,6 +59,8 @@
 | [Object](#nodebpy.nodes.input.Object) | Output a single object |
 | [ObjectInfo](#nodebpy.nodes.input.ObjectInfo) | Retrieve information from an object |
 | [OffsetCornerInFace](#nodebpy.nodes.input.OffsetCornerInFace) | Retrieve corners in the same face as another |
+| [OffsetPointInCurve](#nodebpy.nodes.input.OffsetPointInCurve) | Offset a control point index within its curve |
+| [PointsOfCurve](#nodebpy.nodes.input.PointsOfCurve) | Retrieve a point index within a curve |
 | [Position](#nodebpy.nodes.input.Position) | Retrieve a vector indicating the location of each element |
 | [Radius](#nodebpy.nodes.input.Radius) | Retrieve the radius at each point on curve or point cloud geometry |
 | [Rotation](#nodebpy.nodes.input.Rotation) | Provide a rotation value that can be connected to other nodes in the tree |
@@ -258,6 +265,38 @@ The scene's 3D cursor location and rotation
 | [o_location](#nodebpy.nodes.input.Cursor3D.o_location) | Output socket: Location |
 | [o_rotation](#nodebpy.nodes.input.Cursor3D.o_rotation) | Output socket: Rotation |
 
+### CurveHandlePositions { #nodebpy.nodes.input.CurveHandlePositions }
+
+```python
+nodes.input.CurveHandlePositions(relative=False)
+```
+
+Retrieve the position of each Bézier control point's handles
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_relative](#nodebpy.nodes.input.CurveHandlePositions.i_relative) | Input socket: Relative |
+| [o_left](#nodebpy.nodes.input.CurveHandlePositions.o_left) | Output socket: Left |
+| [o_right](#nodebpy.nodes.input.CurveHandlePositions.o_right) | Output socket: Right |
+
+### CurveOfPoint { #nodebpy.nodes.input.CurveOfPoint }
+
+```python
+nodes.input.CurveOfPoint(point_index=None)
+```
+
+Retrieve the curve a control point is part of
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_point_index](#nodebpy.nodes.input.CurveOfPoint.i_point_index) | Input socket: Point Index |
+| [o_curve_index](#nodebpy.nodes.input.CurveOfPoint.o_curve_index) | Output socket: Curve Index |
+| [o_index_in_curve](#nodebpy.nodes.input.CurveOfPoint.o_index_in_curve) | Output socket: Index in Curve |
+
 ### CurveTangent { #nodebpy.nodes.input.CurveTangent }
 
 ```python
@@ -271,6 +310,20 @@ Retrieve the direction of curves at each control point
 | Name | Description |
 | --- | --- |
 | [o_tangent](#nodebpy.nodes.input.CurveTangent.o_tangent) | Output socket: Tangent |
+
+### CurveTilt { #nodebpy.nodes.input.CurveTilt }
+
+```python
+nodes.input.CurveTilt()
+```
+
+Retrieve the angle at each control point used to twist the curve's normal around its tangent
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_tilt](#nodebpy.nodes.input.CurveTilt.o_tilt) | Output socket: Tilt |
 
 ### EdgePathsToSelection { #nodebpy.nodes.input.EdgePathsToSelection }
 
@@ -337,6 +390,22 @@ Group faces into regions surrounded by the selected boundary edges
 | [i_boundary_edges](#nodebpy.nodes.input.EdgesToFaceGroups.i_boundary_edges) | Input socket: Boundary Edges |
 | [o_face_group_id](#nodebpy.nodes.input.EdgesToFaceGroups.o_face_group_id) | Output socket: Face Group ID |
 
+### EndpointSelection { #nodebpy.nodes.input.EndpointSelection }
+
+```python
+nodes.input.EndpointSelection(start_size=1, end_size=1)
+```
+
+Provide a selection for an arbitrary number of endpoints in each spline
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_end_size](#nodebpy.nodes.input.EndpointSelection.i_end_size) | Input socket: End Size |
+| [i_start_size](#nodebpy.nodes.input.EndpointSelection.i_start_size) | Input socket: Start Size |
+| [o_selection](#nodebpy.nodes.input.EndpointSelection.o_selection) | Output socket: Selection |
+
 ### FaceOfCorner { #nodebpy.nodes.input.FaceOfCorner }
 
 ```python
@@ -367,6 +436,20 @@ Each face's sculpt face set value
 | --- | --- |
 | [o_exists](#nodebpy.nodes.input.FaceSet.o_exists) | Output socket: Exists |
 | [o_face_set](#nodebpy.nodes.input.FaceSet.o_face_set) | Output socket: Face Set |
+
+### HandleTypeSelection { #nodebpy.nodes.input.HandleTypeSelection }
+
+```python
+nodes.input.HandleTypeSelection(handle_type='AUTO', left=True, right=True)
+```
+
+Provide a selection based on the handle types of Bézier control points
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_selection](#nodebpy.nodes.input.HandleTypeSelection.o_selection) | Output socket: Selection |
 
 ### ID { #nodebpy.nodes.input.ID }
 
@@ -796,6 +879,41 @@ Retrieve corners in the same face as another
 | [i_corner_index](#nodebpy.nodes.input.OffsetCornerInFace.i_corner_index) | Input socket: Corner Index |
 | [i_offset](#nodebpy.nodes.input.OffsetCornerInFace.i_offset) | Input socket: Offset |
 | [o_corner_index](#nodebpy.nodes.input.OffsetCornerInFace.o_corner_index) | Output socket: Corner Index |
+
+### OffsetPointInCurve { #nodebpy.nodes.input.OffsetPointInCurve }
+
+```python
+nodes.input.OffsetPointInCurve(point_index=None, offset=0)
+```
+
+Offset a control point index within its curve
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_offset](#nodebpy.nodes.input.OffsetPointInCurve.i_offset) | Input socket: Offset |
+| [i_point_index](#nodebpy.nodes.input.OffsetPointInCurve.i_point_index) | Input socket: Point Index |
+| [o_is_valid_offset](#nodebpy.nodes.input.OffsetPointInCurve.o_is_valid_offset) | Output socket: Is Valid Offset |
+| [o_point_index](#nodebpy.nodes.input.OffsetPointInCurve.o_point_index) | Output socket: Point Index |
+
+### PointsOfCurve { #nodebpy.nodes.input.PointsOfCurve }
+
+```python
+nodes.input.PointsOfCurve(curve_index=None, weights=None, sort_index=0)
+```
+
+Retrieve a point index within a curve
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve_index](#nodebpy.nodes.input.PointsOfCurve.i_curve_index) | Input socket: Curve Index |
+| [i_sort_index](#nodebpy.nodes.input.PointsOfCurve.i_sort_index) | Input socket: Sort Index |
+| [i_weights](#nodebpy.nodes.input.PointsOfCurve.i_weights) | Input socket: Weights |
+| [o_point_index](#nodebpy.nodes.input.PointsOfCurve.o_point_index) | Output socket: Point Index |
+| [o_total](#nodebpy.nodes.input.PointsOfCurve.o_total) | Output socket: Total |
 
 ### Position { #nodebpy.nodes.input.Position }
 
