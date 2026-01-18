@@ -57,6 +57,7 @@ from .converter import (
 )
 from .geometry import (
     Arc,
+    Bake,
     BezierSegment,
     BoundingBox,
     ConvexHull,
@@ -138,9 +139,6 @@ from .geometry import (
     TranslateInstances,
     Triangulate,
     TrimCurve,
-)
-from .geometry_auto import (
-    Bake,
 )
 from .grid import (
     AdvectGrid,
@@ -311,10 +309,7 @@ from .zone import ForEachGeometryElementInput, ForEachGeometryElementOutput
 
 __all__ = [
     # modules"
-    "curve",
-    "geometry_auto",
     "input",
-    "manually_specified",
     "mesh",
     "utilities",
     "attribute",

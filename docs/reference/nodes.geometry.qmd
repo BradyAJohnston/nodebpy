@@ -9,6 +9,7 @@
 | Name | Description |
 | --- | --- |
 | [Arc](#nodebpy.nodes.geometry.Arc) | Generate a poly spline arc |
+| [Bake](#nodebpy.nodes.geometry.Bake) | Cache the incoming data so that it can be used without recomputation |
 | [BezierSegment](#nodebpy.nodes.geometry.BezierSegment) | Generate a 2D Bézier spline from the given control points and handles |
 | [BoundingBox](#nodebpy.nodes.geometry.BoundingBox) | Calculate the limits of a geometry's positions and generate a box mesh with those dimensions |
 | [ConvexHull](#nodebpy.nodes.geometry.ConvexHull) | Create a mesh that encloses all points in the input geometry with the smallest number of points |
@@ -116,6 +117,23 @@ Generate a poly spline arc
 | [i_start_angle](#nodebpy.nodes.geometry.Arc.i_start_angle) | Input socket: Start Angle |
 | [i_sweep_angle](#nodebpy.nodes.geometry.Arc.i_sweep_angle) | Input socket: Sweep Angle |
 | [o_curve](#nodebpy.nodes.geometry.Arc.o_curve) | Output socket: Curve |
+
+### Bake { #nodebpy.nodes.geometry.Bake }
+
+```python
+nodes.geometry.Bake(*args, **kwargs)
+```
+
+Cache the incoming data so that it can be used without recomputation
+
+TODO: properly handle Animation / Still bake opations and ability to bake to a file
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_input_socket](#nodebpy.nodes.geometry.Bake.i_input_socket) | Input socket: |
+| [o_input_socket](#nodebpy.nodes.geometry.Bake.o_input_socket) | Output socket: |
 
 ### BezierSegment { #nodebpy.nodes.geometry.BezierSegment }
 

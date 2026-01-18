@@ -91,6 +91,31 @@ _AttributeDomains = typing.Literal[
 _DeleteGeometryDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
 ]
+_BakedDataTypeValues = (
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "GEOMETRY",
+    "BUNDLE",
+)
+_BakeDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "GEOMETRY",
+    "BUNDLE",
+]
+
 _GridDataTypes = Literal[
     "FLOAT",
     "INT",

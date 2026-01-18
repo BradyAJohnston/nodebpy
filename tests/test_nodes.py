@@ -230,3 +230,18 @@ def test_curve_handle():
         node = n.HandleTypeSelection(left=True, right=False)
         assert node.left == True
         assert node.right == False
+
+
+def test_bake():
+    with TreeBuilder() as tree:
+        bake = n.Bake(
+            n.Points(10),
+            n.Position(),
+            n.Value() * n.Radius() + 10,
+        )
+        set_pos = bake >> n.SetPosition()
+
+    assert len(tree.nodes) == 8
+    assert len(bake.node.bake_items) == 3
+    assert set_pos.node.inputs[0].links[0].from_node == bake.node
+    assert set_pos.node.inputs[0].links[0].from_socket == bake.node.outputs[0]

@@ -1,5 +1,6 @@
+from typing import Any, Literal
+
 import bpy
-from typing_extensions import Literal
 
 from ..builder import NodeBuilder, SocketLinker
 from .types import (
@@ -16,6 +17,8 @@ from .types import (
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
     _AttributeDomains,
+    _BakeDataTypes,
+    _BakedDataTypeValues,
     _DeleteGeoemtryModes,
     _DeleteGeometryDomains,
     _DuplicateElementsDomains,
@@ -4427,3 +4430,48 @@ class TrimCurve(NodeBuilder):
     @mode.setter
     def mode(self, value: Literal["FACTOR", "LENGTH"]):
         self.node.mode = value
+
+
+class Bake(NodeBuilder):
+    """Cache the incoming data so that it can be used without recomputation
+
+    TODO: properly handle Animation / Still bake opations and ability to bake to a file
+    """
+
+    name = "GeometryNodeBake"
+    node: bpy.types.GeometryNodeBake
+    _socket_data_types = _BakedDataTypeValues
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self._establish_links(**self._add_inputs(*args, **kwargs))
+
+    def _add_socket(  # type: ignore
+        self, name: str, type: _BakeDataTypes, default_value: Any | None = None
+    ):
+        item = self.node.bake_items.new(socket_type=type, name=name)
+        return self.node.inputs[item.name]
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name])
+            for item in self.node.bake_items
+        }
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name])
+            for item in self.node.bake_items
+        }
+
+    @property
+    def i_input_socket(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__")
+
+    @property
+    def o_input_socket(self) -> SocketLinker:
+        """Output socket:"""
+        return self._output("__extend__")
