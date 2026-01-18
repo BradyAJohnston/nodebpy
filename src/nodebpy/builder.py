@@ -453,6 +453,114 @@ class NodeBuilder:
     ) -> NodeSocket:
         raise NotImplementedError
 
+    def _find_or_create_compatible_output_socket(self, target_type: str) -> NodeSocket | None:
+        """Find an existing compatible output socket or create a new one if this node supports it.
+        
+        Args:
+            target_type: The socket type needed for compatibility
+            
+        Returns:
+            Compatible output socket if found/created, None if not possible
+        """
+        if not hasattr(self, "_add_socket"):
+            return None
+            
+        # Check if we already have a compatible output socket
+        if hasattr(self, "outputs"):
+            for name, socket_linker in self.outputs.items():
+                socket_compatibles = SOCKET_COMPATIBILITY.get(socket_linker.socket.type, [])
+                if target_type in socket_compatibles:
+                    return socket_linker.socket
+        
+        # No existing compatible socket found, try to create one
+        try:
+            # Check if this node type supports the target socket type
+            # by examining the type signature of _add_socket
+            import inspect
+            sig = inspect.signature(self._add_socket)
+            type_param = sig.parameters.get('type')
+            
+            # If there's a type annotation that limits the allowed types, check it
+            if type_param and hasattr(type_param.annotation, '__args__'):
+                # This is a Literal type with specific allowed values
+                allowed_types = list(type_param.annotation.__args__)
+                if target_type not in allowed_types:
+                    # Try to find a compatible type that this node can create
+                    for allowed_type in allowed_types:
+                        if target_type in SOCKET_COMPATIBILITY.get(allowed_type, []):
+                            # Create the allowed type instead
+                            self._add_socket(name=allowed_type.title(), type=allowed_type)
+                            break
+                    else:
+                        # No compatible type found
+                        return None
+                else:
+                    # Target type is directly supported
+                    self._add_socket(name=target_type.title(), type=target_type)
+            else:
+                # No type restrictions, try to create the target type
+                self._add_socket(name=target_type.title(), type=target_type)
+            
+            # Find the newly created output socket
+            if hasattr(self, "outputs"):
+                for name, socket_linker in self.outputs.items():
+                    socket_compatibles = SOCKET_COMPATIBILITY.get(socket_linker.socket.type, [])
+                    if target_type in socket_compatibles:
+                        return socket_linker.socket
+                        
+            # Fallback: try to get the socket directly from the node
+            if hasattr(self.node, "outputs"):
+                for output_socket in self.node.outputs:
+                    socket_compatibles = SOCKET_COMPATIBILITY.get(output_socket.type, [])
+                    if target_type in socket_compatibles:
+                        return output_socket
+        except (NotImplementedError, AttributeError, RuntimeError):
+            # Node doesn't support dynamic socket creation or the type is not supported
+            pass
+            
+        return None
+
+    def _smart_link_to(self, target_node: "NodeBuilder") -> "NodeBuilder":
+        """Smart linking that creates compatible sockets when needed.
+        
+        This method checks if we have a compatible output socket for the target node's input,
+        and creates one if this node supports dynamic socket creation.
+        
+        Args:
+            target_node: The node to link to
+            
+        Returns:
+            The target node (for chaining)
+        """
+        if not hasattr(target_node, "_default_input_socket"):
+            # Fall back to regular linking
+            return target_node
+            
+        target_socket = target_node._default_input_socket
+        if not target_socket:
+            # Target has no input socket - can't link
+            return target_node
+            
+        # Check if our default output is compatible
+        source_socket = self._default_output_socket
+        if source_socket:
+            source_compatibles = SOCKET_COMPATIBILITY.get(source_socket.type, [])
+            if target_socket.type in source_compatibles:
+                # Compatible - use normal linking
+                self.tree.link(source_socket, target_socket)
+                return target_node
+        
+        # Not compatible - try to find/create a compatible output socket
+        compatible_socket = self._find_or_create_compatible_output_socket(target_socket.type)
+        if compatible_socket:
+            self.tree.link(compatible_socket, target_socket)
+            return target_node
+        
+        # Fall back to regular linking (may create reroute nodes)
+        if source_socket:
+            self.tree.link(source_socket, target_socket)
+        return target_node
+
     def _input_idx(self, identifier: str) -> int:
         # currently there is a Blender bug that is preventing the lookup of sockets from identifiers on some
         # nodes but not others
@@ -498,12 +606,15 @@ class NodeBuilder:
         source: LINKABLE,
         input: LINKABLE | str,
     ):
-        # Special handling for zone inputs that need auto-socket creation
-        if (hasattr(source, 'items_collection') and 
-            hasattr(source, '__rshift__') and 
+        # Special handling for dynamic socket nodes (zones, bake, capture attribute, etc.)
+        # These nodes have an 'outputs' property that returns a dict based on their items
+        if (hasattr(source, '_add_socket') and 
+            hasattr(source, '_smart_link_to') and 
+            hasattr(source.__class__, 'outputs') and
+            isinstance(getattr(source.__class__, 'outputs'), property) and
             not isinstance(input, str)):
-            # Use zone input's custom linking logic
-            return source >> input
+            # Use smart linking that can create compatible sockets
+            return source._smart_link_to(input)
             
         if isinstance(input, str):
             try:
@@ -637,7 +748,7 @@ class NodeBuilder:
             socket_in = other.socket
             other._from_socket = socket_out
         else:
-            # NodeBuilder linking - need to find compatible sockets
+            # Standard NodeBuilder linking - need to find compatible sockets
             if other._link_target is not None:
                 # Target socket is specified
                 socket_in = self._get_input_socket_by_name(other, other._link_target)

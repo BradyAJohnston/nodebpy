@@ -55,44 +55,9 @@ class BaseZoneInput(NodeBuilder, ABC):
             target_socket = other._add_socket(name=best_type.title(), type=best_type)
             self.tree.link(source_socket, target_socket)
             return other
-        elif hasattr(other, "_default_input_socket") and other._default_input_socket:
-            # Check if we need to create a compatible output socket
-            from ..builder import SOCKET_COMPATIBILITY
-            
-            source_socket = self._default_output_socket
-            target_socket = other._default_input_socket
-            source_type = source_socket.type
-            target_type = target_socket.type
-            
-            # Check if source is compatible with target
-            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [])
-            if target_type not in compatible_types:
-                # Check if we already have a compatible output socket
-                existing_socket = None
-                for name, socket_linker in self.outputs.items():
-                    socket_compatibles = SOCKET_COMPATIBILITY.get(socket_linker.socket.type, [])
-                    if target_type in socket_compatibles:
-                        existing_socket = socket_linker.socket
-                        break
-                
-                if existing_socket:
-                    # Use existing compatible socket
-                    self.tree.link(existing_socket, target_socket)
-                    return other
-                else:
-                    # Create new compatible output socket
-                    self._add_socket(name=target_type.title(), type=target_type)
-                    # Find the newly created output socket
-                    for name, socket_linker in self.outputs.items():
-                        if socket_linker.socket.type == target_type:
-                            self.tree.link(socket_linker.socket, target_socket)
-                            return other
-                        
-            # Normal linking - compatible sockets exist
-            return super().__rshift__(other)
         else:
-            # Normal linking
-            return super().__rshift__(other)
+            # Use the general smart linking approach
+            return self._smart_link_to(other)
 
     @property
     def outputs(self) -> dict[str, SocketLinker]:
