@@ -18,6 +18,7 @@
 | [GridGradient](#nodebpy.nodes.grid.GridGradient) | Calculate the direction and magnitude of the change in values of a scalar grid |
 | [GridInfo](#nodebpy.nodes.grid.GridInfo) | Retrieve information about a volume grid |
 | [GridLaplacian](#nodebpy.nodes.grid.GridLaplacian) | Compute the divergence of the gradient of the input grid |
+| [GridToMesh](#nodebpy.nodes.grid.GridToMesh) | Generate a mesh on the "surface" of a volume grid |
 | [PruneGrid](#nodebpy.nodes.grid.PruneGrid) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes |
 | [SDFGridBoolean](#nodebpy.nodes.grid.SDFGridBoolean) | Cut, subtract, or join multiple SDF volume grid inputs |
 | [SDFGridFillet](#nodebpy.nodes.grid.SDFGridFillet) | Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces |
@@ -218,6 +219,23 @@ Compute the divergence of the gradient of the input grid
 | --- | --- |
 | [i_grid](#nodebpy.nodes.grid.GridLaplacian.i_grid) | Input socket: Grid |
 | [o_laplacian](#nodebpy.nodes.grid.GridLaplacian.o_laplacian) | Output socket: Laplacian |
+
+### GridToMesh { #nodebpy.nodes.grid.GridToMesh }
+
+```python
+nodes.grid.GridToMesh(grid=0.0, threshold=0.1, adaptivity=0.0)
+```
+
+Generate a mesh on the "surface" of a volume grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_adaptivity](#nodebpy.nodes.grid.GridToMesh.i_adaptivity) | Input socket: Adaptivity |
+| [i_grid](#nodebpy.nodes.grid.GridToMesh.i_grid) | Input socket: Grid |
+| [i_threshold](#nodebpy.nodes.grid.GridToMesh.i_threshold) | Input socket: Threshold |
+| [o_mesh](#nodebpy.nodes.grid.GridToMesh.o_mesh) | Output socket: Mesh |
 
 ### PruneGrid { #nodebpy.nodes.grid.PruneGrid }
 

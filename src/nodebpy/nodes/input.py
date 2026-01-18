@@ -1872,3 +1872,166 @@ class PointsOfCurve(NodeBuilder):
     def o_total(self) -> SocketLinker:
         """Output socket: Total"""
         return self._output("Total")
+
+
+class EdgeAngle(NodeBuilder):
+    """The angle between the normals of connected manifold faces"""
+
+    name = "GeometryNodeInputMeshEdgeAngle"
+    node: bpy.types.GeometryNodeInputMeshEdgeAngle
+
+    @property
+    def o_unsigned_angle(self) -> SocketLinker:
+        """Output socket: Unsigned Angle"""
+        return self._output("Unsigned Angle")
+
+    @property
+    def o_signed_angle(self) -> SocketLinker:
+        """Output socket: Signed Angle"""
+        return self._output("Signed Angle")
+
+
+class EdgeNeighbors(NodeBuilder):
+    """Retrieve the number of faces that use each edge as one of their sides"""
+
+    name = "GeometryNodeInputMeshEdgeNeighbors"
+    node: bpy.types.GeometryNodeInputMeshEdgeNeighbors
+
+    @property
+    def o_face_count(self) -> SocketLinker:
+        """Output socket: Face Count"""
+        return self._output("Face Count")
+
+
+class EdgeVertices(NodeBuilder):
+    """Retrieve topology information relating to each edge of a mesh"""
+
+    name = "GeometryNodeInputMeshEdgeVertices"
+    node: bpy.types.GeometryNodeInputMeshEdgeVertices
+
+    @property
+    def o_vertex_index_1(self) -> SocketLinker:
+        """Output socket: Vertex Index 1"""
+        return self._output("Vertex Index 1")
+
+    @property
+    def o_vertex_index_2(self) -> SocketLinker:
+        """Output socket: Vertex Index 2"""
+        return self._output("Vertex Index 2")
+
+    @property
+    def o_position_1(self) -> SocketLinker:
+        """Output socket: Position 1"""
+        return self._output("Position 1")
+
+    @property
+    def o_position_2(self) -> SocketLinker:
+        """Output socket: Position 2"""
+        return self._output("Position 2")
+
+
+class FaceArea(NodeBuilder):
+    """Calculate the surface area of a mesh's faces"""
+
+    name = "GeometryNodeInputMeshFaceArea"
+    node: bpy.types.GeometryNodeInputMeshFaceArea
+
+    @property
+    def o_area(self) -> SocketLinker:
+        """Output socket: Area"""
+        return self._output("Area")
+
+
+class IsFacePlanar(NodeBuilder):
+    """Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal"""
+
+    name = "GeometryNodeInputMeshFaceIsPlanar"
+    node: bpy.types.GeometryNodeInputMeshFaceIsPlanar
+
+    def __init__(self, threshold: TYPE_INPUT_VALUE = 0.001):
+        super().__init__()
+        key_args = {"Threshold": threshold}
+        self._establish_links(**key_args)
+
+    @property
+    def i_threshold(self) -> SocketLinker:
+        """Input socket: Threshold"""
+        return self._input("Threshold")
+
+    @property
+    def o_planar(self) -> SocketLinker:
+        """Output socket: Planar"""
+        return self._output("Planar")
+
+
+class FaceNeighbors(NodeBuilder):
+    """Retrieve topology information relating to each face of a mesh"""
+
+    name = "GeometryNodeInputMeshFaceNeighbors"
+    node: bpy.types.GeometryNodeInputMeshFaceNeighbors
+
+    @property
+    def o_vertex_count(self) -> SocketLinker:
+        """Output socket: Vertex Count"""
+        return self._output("Vertex Count")
+
+    @property
+    def o_face_count(self) -> SocketLinker:
+        """Output socket: Face Count"""
+        return self._output("Face Count")
+
+
+class MeshIsland(NodeBuilder):
+    """Retrieve information about separate connected regions in a mesh"""
+
+    name = "GeometryNodeInputMeshIsland"
+    node: bpy.types.GeometryNodeInputMeshIsland
+
+    @property
+    def o_island_index(self) -> SocketLinker:
+        """Output socket: Island Index"""
+        return self._output("Island Index")
+
+    @property
+    def o_island_count(self) -> SocketLinker:
+        """Output socket: Island Count"""
+        return self._output("Island Count")
+
+
+class VertexNeighbors(NodeBuilder):
+    """Retrieve topology information relating to each vertex of a mesh"""
+
+    name = "GeometryNodeInputMeshVertexNeighbors"
+    node: bpy.types.GeometryNodeInputMeshVertexNeighbors
+
+    @property
+    def o_vertex_count(self) -> SocketLinker:
+        """Output socket: Vertex Count"""
+        return self._output("Vertex Count")
+
+    @property
+    def o_face_count(self) -> SocketLinker:
+        """Output socket: Face Count"""
+        return self._output("Face Count")
+
+
+class FaceGroupBoundaries(NodeBuilder):
+    """Find edges on the boundaries between groups of faces with the same ID value"""
+
+    name = "GeometryNodeMeshFaceSetBoundaries"
+    node: bpy.types.GeometryNodeMeshFaceSetBoundaries
+
+    def __init__(self, face_set: TYPE_INPUT_INT = 0):
+        super().__init__()
+        key_args = {"Face Set": face_set}
+        self._establish_links(**key_args)
+
+    @property
+    def i_face_group_id(self) -> SocketLinker:
+        """Input socket: Face Group ID"""
+        return self._input("Face Set")
+
+    @property
+    def o_boundary_edges(self) -> SocketLinker:
+        """Output socket: Boundary Edges"""
+        return self._output("Boundary Edges")

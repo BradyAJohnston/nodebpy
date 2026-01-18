@@ -13,7 +13,6 @@ website:
       - reference/nodes.attribute.qmd
       - reference/nodes.vector.qmd
       - reference/nodes.zone.qmd
-      - reference/nodes.mesh.qmd
       section: Some functions
     id: reference
   - id: dummy-sidebar

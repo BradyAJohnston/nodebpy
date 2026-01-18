@@ -1189,3 +1189,40 @@ class StoreNamedGrid(NodeBuilder):
         value: Literal["FLOAT", "VECTOR_FLOAT", "INT", "BOOLEAN"],
     ):
         self.node.data_type = value
+
+
+class GridToMesh(NodeBuilder):
+    """Generate a mesh on the "surface" of a volume grid"""
+
+    name = "GeometryNodeGridToMesh"
+    node: bpy.types.GeometryNodeGridToMesh
+
+    def __init__(
+        self,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        threshold: TYPE_INPUT_VALUE = 0.1,
+        adaptivity: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Threshold": threshold, "Adaptivity": adaptivity}
+        self._establish_links(**key_args)
+
+    @property
+    def i_grid(self) -> SocketLinker:
+        """Input socket: Grid"""
+        return self._input("Grid")
+
+    @property
+    def i_threshold(self) -> SocketLinker:
+        """Input socket: Threshold"""
+        return self._input("Threshold")
+
+    @property
+    def i_adaptivity(self) -> SocketLinker:
+        """Input socket: Adaptivity"""
+        return self._input("Adaptivity")
+
+    @property
+    def o_mesh(self) -> SocketLinker:
+        """Output socket: Mesh"""
+        return self._output("Mesh")

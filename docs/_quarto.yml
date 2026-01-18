@@ -54,4 +54,3 @@ quartodoc:
         ####################
         - nodes.vector
         - nodes.zone
-        - nodes.mesh

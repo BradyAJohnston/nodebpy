@@ -23,11 +23,17 @@
 | [CurveOfPoint](#nodebpy.nodes.input.CurveOfPoint) | Retrieve the curve a control point is part of |
 | [CurveTangent](#nodebpy.nodes.input.CurveTangent) | Retrieve the direction of curves at each control point |
 | [CurveTilt](#nodebpy.nodes.input.CurveTilt) | Retrieve the angle at each control point used to twist the curve's normal around its tangent |
+| [EdgeAngle](#nodebpy.nodes.input.EdgeAngle) | The angle between the normals of connected manifold faces |
+| [EdgeNeighbors](#nodebpy.nodes.input.EdgeNeighbors) | Retrieve the number of faces that use each edge as one of their sides |
 | [EdgePathsToSelection](#nodebpy.nodes.input.EdgePathsToSelection) | Output a selection of edges by following paths across mesh edges |
+| [EdgeVertices](#nodebpy.nodes.input.EdgeVertices) | Retrieve topology information relating to each edge of a mesh |
 | [EdgesOfCorner](#nodebpy.nodes.input.EdgesOfCorner) | Retrieve the edges on both sides of a face corner |
 | [EdgesOfVertex](#nodebpy.nodes.input.EdgesOfVertex) | Retrieve the edges connected to each vertex |
 | [EdgesToFaceGroups](#nodebpy.nodes.input.EdgesToFaceGroups) | Group faces into regions surrounded by the selected boundary edges |
 | [EndpointSelection](#nodebpy.nodes.input.EndpointSelection) | Provide a selection for an arbitrary number of endpoints in each spline |
+| [FaceArea](#nodebpy.nodes.input.FaceArea) | Calculate the surface area of a mesh's faces |
+| [FaceGroupBoundaries](#nodebpy.nodes.input.FaceGroupBoundaries) | Find edges on the boundaries between groups of faces with the same ID value |
+| [FaceNeighbors](#nodebpy.nodes.input.FaceNeighbors) | Retrieve topology information relating to each face of a mesh |
 | [FaceOfCorner](#nodebpy.nodes.input.FaceOfCorner) | Retrieve the face each face corner is part of |
 | [FaceSet](#nodebpy.nodes.input.FaceSet) | Each face's sculpt face set value |
 | [HandleTypeSelection](#nodebpy.nodes.input.HandleTypeSelection) | Provide a selection based on the handle types of Bézier control points |
@@ -47,11 +53,13 @@
 | [InstanceTransform](#nodebpy.nodes.input.InstanceTransform) | Retrieve the full transformation of each instance in the geometry |
 | [Integer](#nodebpy.nodes.input.Integer) | Provide an integer value that can be connected to other nodes in the tree |
 | [IsEdgeSmooth](#nodebpy.nodes.input.IsEdgeSmooth) | Retrieve whether each edge is marked for smooth or split normals |
+| [IsFacePlanar](#nodebpy.nodes.input.IsFacePlanar) | Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal |
 | [IsFaceSmooth](#nodebpy.nodes.input.IsFaceSmooth) | Retrieve whether each face is marked for smooth or sharp normals |
 | [IsSplineCyclic](#nodebpy.nodes.input.IsSplineCyclic) | Retrieve whether each spline endpoint connects to the beginning |
 | [IsViewport](#nodebpy.nodes.input.IsViewport) | Retrieve whether the nodes are being evaluated for the viewport rather than the final render |
 | [Material](#nodebpy.nodes.input.Material) | Output a single material |
 | [MaterialIndex](#nodebpy.nodes.input.MaterialIndex) | Retrieve the index of the material used for each element in the geometry's list of materials |
+| [MeshIsland](#nodebpy.nodes.input.MeshIsland) | Retrieve information about separate connected regions in a mesh |
 | [MousePosition](#nodebpy.nodes.input.MousePosition) | Retrieve the position of the mouse cursor |
 | [NamedAttribute](#nodebpy.nodes.input.NamedAttribute) | Retrieve the data of a specified attribute |
 | [NamedLayerSelection](#nodebpy.nodes.input.NamedLayerSelection) | Output a selection of a Grease Pencil layer |
@@ -76,6 +84,7 @@
 | [UVTangent](#nodebpy.nodes.input.UVTangent) | Generate tangent directions based on a UV map |
 | [Value](#nodebpy.nodes.input.Value) | Input numerical values to other nodes in the tree |
 | [Vector](#nodebpy.nodes.input.Vector) | Provide a vector value that can be connected to other nodes in the tree |
+| [VertexNeighbors](#nodebpy.nodes.input.VertexNeighbors) | Retrieve topology information relating to each vertex of a mesh |
 | [VertexOfCorner](#nodebpy.nodes.input.VertexOfCorner) | Retrieve the vertex each face corner is attached to |
 | [ViewportTransform](#nodebpy.nodes.input.ViewportTransform) | Retrieve the view direction and location of the 3D viewport |
 | [VoxelIndex](#nodebpy.nodes.input.VoxelIndex) | Retrieve the integer coordinates of the voxel that the field is evaluated on |
@@ -325,6 +334,35 @@ Retrieve the angle at each control point used to twist the curve's normal around
 | --- | --- |
 | [o_tilt](#nodebpy.nodes.input.CurveTilt.o_tilt) | Output socket: Tilt |
 
+### EdgeAngle { #nodebpy.nodes.input.EdgeAngle }
+
+```python
+nodes.input.EdgeAngle()
+```
+
+The angle between the normals of connected manifold faces
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_signed_angle](#nodebpy.nodes.input.EdgeAngle.o_signed_angle) | Output socket: Signed Angle |
+| [o_unsigned_angle](#nodebpy.nodes.input.EdgeAngle.o_unsigned_angle) | Output socket: Unsigned Angle |
+
+### EdgeNeighbors { #nodebpy.nodes.input.EdgeNeighbors }
+
+```python
+nodes.input.EdgeNeighbors()
+```
+
+Retrieve the number of faces that use each edge as one of their sides
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_face_count](#nodebpy.nodes.input.EdgeNeighbors.o_face_count) | Output socket: Face Count |
+
 ### EdgePathsToSelection { #nodebpy.nodes.input.EdgePathsToSelection }
 
 ```python
@@ -340,6 +378,23 @@ Output a selection of edges by following paths across mesh edges
 | [i_next_vertex_index](#nodebpy.nodes.input.EdgePathsToSelection.i_next_vertex_index) | Input socket: Next Vertex Index |
 | [i_start_vertices](#nodebpy.nodes.input.EdgePathsToSelection.i_start_vertices) | Input socket: Start Vertices |
 | [o_selection](#nodebpy.nodes.input.EdgePathsToSelection.o_selection) | Output socket: Selection |
+
+### EdgeVertices { #nodebpy.nodes.input.EdgeVertices }
+
+```python
+nodes.input.EdgeVertices()
+```
+
+Retrieve topology information relating to each edge of a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_position_1](#nodebpy.nodes.input.EdgeVertices.o_position_1) | Output socket: Position 1 |
+| [o_position_2](#nodebpy.nodes.input.EdgeVertices.o_position_2) | Output socket: Position 2 |
+| [o_vertex_index_1](#nodebpy.nodes.input.EdgeVertices.o_vertex_index_1) | Output socket: Vertex Index 1 |
+| [o_vertex_index_2](#nodebpy.nodes.input.EdgeVertices.o_vertex_index_2) | Output socket: Vertex Index 2 |
 
 ### EdgesOfCorner { #nodebpy.nodes.input.EdgesOfCorner }
 
@@ -405,6 +460,50 @@ Provide a selection for an arbitrary number of endpoints in each spline
 | [i_end_size](#nodebpy.nodes.input.EndpointSelection.i_end_size) | Input socket: End Size |
 | [i_start_size](#nodebpy.nodes.input.EndpointSelection.i_start_size) | Input socket: Start Size |
 | [o_selection](#nodebpy.nodes.input.EndpointSelection.o_selection) | Output socket: Selection |
+
+### FaceArea { #nodebpy.nodes.input.FaceArea }
+
+```python
+nodes.input.FaceArea()
+```
+
+Calculate the surface area of a mesh's faces
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_area](#nodebpy.nodes.input.FaceArea.o_area) | Output socket: Area |
+
+### FaceGroupBoundaries { #nodebpy.nodes.input.FaceGroupBoundaries }
+
+```python
+nodes.input.FaceGroupBoundaries(face_set=0)
+```
+
+Find edges on the boundaries between groups of faces with the same ID value
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_face_group_id](#nodebpy.nodes.input.FaceGroupBoundaries.i_face_group_id) | Input socket: Face Group ID |
+| [o_boundary_edges](#nodebpy.nodes.input.FaceGroupBoundaries.o_boundary_edges) | Output socket: Boundary Edges |
+
+### FaceNeighbors { #nodebpy.nodes.input.FaceNeighbors }
+
+```python
+nodes.input.FaceNeighbors()
+```
+
+Retrieve topology information relating to each face of a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_face_count](#nodebpy.nodes.input.FaceNeighbors.o_face_count) | Output socket: Face Count |
+| [o_vertex_count](#nodebpy.nodes.input.FaceNeighbors.o_vertex_count) | Output socket: Vertex Count |
 
 ### FaceOfCorner { #nodebpy.nodes.input.FaceOfCorner }
 
@@ -691,6 +790,21 @@ Retrieve whether each edge is marked for smooth or split normals
 | --- | --- |
 | [o_smooth](#nodebpy.nodes.input.IsEdgeSmooth.o_smooth) | Output socket: Smooth |
 
+### IsFacePlanar { #nodebpy.nodes.input.IsFacePlanar }
+
+```python
+nodes.input.IsFacePlanar(threshold=0.001)
+```
+
+Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_threshold](#nodebpy.nodes.input.IsFacePlanar.i_threshold) | Input socket: Threshold |
+| [o_planar](#nodebpy.nodes.input.IsFacePlanar.o_planar) | Output socket: Planar |
+
 ### IsFaceSmooth { #nodebpy.nodes.input.IsFaceSmooth }
 
 ```python
@@ -761,6 +875,21 @@ Retrieve the index of the material used for each element in the geometry's list 
 | Name | Description |
 | --- | --- |
 | [o_material_index](#nodebpy.nodes.input.MaterialIndex.o_material_index) | Output socket: Material Index |
+
+### MeshIsland { #nodebpy.nodes.input.MeshIsland }
+
+```python
+nodes.input.MeshIsland()
+```
+
+Retrieve information about separate connected regions in a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_island_count](#nodebpy.nodes.input.MeshIsland.o_island_count) | Output socket: Island Count |
+| [o_island_index](#nodebpy.nodes.input.MeshIsland.o_island_index) | Output socket: Island Index |
 
 ### MousePosition { #nodebpy.nodes.input.MousePosition }
 
@@ -1136,6 +1265,21 @@ Provide a vector value that can be connected to other nodes in the tree
 | Name | Description |
 | --- | --- |
 | [o_vector](#nodebpy.nodes.input.Vector.o_vector) | Output socket: Vector |
+
+### VertexNeighbors { #nodebpy.nodes.input.VertexNeighbors }
+
+```python
+nodes.input.VertexNeighbors()
+```
+
+Retrieve topology information relating to each vertex of a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_face_count](#nodebpy.nodes.input.VertexNeighbors.o_face_count) | Output socket: Face Count |
+| [o_vertex_count](#nodebpy.nodes.input.VertexNeighbors.o_vertex_count) | Output socket: Vertex Count |
 
 ### VertexOfCorner { #nodebpy.nodes.input.VertexOfCorner }
 
