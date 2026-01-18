@@ -301,8 +301,11 @@ from .texture import ImageTexture
 from .zone import (
     ForEachGeometryElementInput,
     ForEachGeometryElementOutput,
+    RepeatInput,
+    RepeatOutput,
     SimulationInput,
     SimulationOutput,
+    repeat_zone,
     simulation_zone,
 )
 
@@ -319,6 +322,9 @@ __all__ = [
     # from zone
     "SimulationInput",
     "SimulationOutput",
+    "RepeatInput",
+    "RepeatOutput",
+    "repeat_zone",
     "simulation_zone",
     # From attribute
     "AttributeStatistic",

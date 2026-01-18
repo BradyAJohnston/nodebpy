@@ -16,16 +16,4 @@ KNOWN LIMITATIONS:
 
 from __future__ import annotations
 
-import bpy
-from typing_extensions import Literal
 
-from ..builder import NodeBuilder, SocketLinker
-from .types import (
-    LINKABLE,
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_GEOMETRY,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
-)

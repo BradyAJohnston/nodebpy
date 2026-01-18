@@ -1,8 +1,6 @@
 import itertools
-from turtle import pos, position
 
 import pytest
-from bpy.types import OUTLINER_HT_header
 
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
@@ -216,21 +214,21 @@ def test_domain_size(domain, output):
 def test_curve_handle():
     with TreeBuilder():
         node = n.HandleTypeSelection(left=False, right=False)
-        assert node.left == False
-        assert node.right == False
+        assert not node.left
+        assert not node.right
         node.left = True
-        assert node.left == True
+        assert node.left
         node.right = True
-        assert node.right == True
+        assert node.right
         node = n.HandleTypeSelection(left=False, right=True)
-        assert node.left == False
-        assert node.right == True
+        assert not node.left
+        assert node.right
         node = n.HandleTypeSelection(left=True, right=True)
-        assert node.left == True
-        assert node.right == True
+        assert node.left
+        assert node.right
         node = n.HandleTypeSelection(left=True, right=False)
-        assert node.left == True
-        assert node.right == False
+        assert node.left
+        assert not node.right
 
 
 def test_bake():
@@ -263,5 +261,23 @@ def test_simulation(snapshot_tree):
         )
         _ = output >> n.SetPosition(position=output.outputs["Position"])
     assert len(output.node.inputs["Skip"].links) == 0
+    assert len(tree) == 13
+    assert snapshot_tree == tree
+
+
+def test_repeat(snapshot_tree):
+    with TreeBuilder() as tree:
+        cube = n.Cube()
+        input, output = n.repeat_zone(10, cube)
+        pos_math = input.capture(n.Position()) * n.Position()
+        _ = pos_math >> output
+        _ = (
+            input
+            >> n.SetPosition(
+                offset=input.o_iteration * n.Vector((0, 0, 0.1)) * pos_math
+            )
+            >> output
+        )
+        _ = output >> n.SetPosition(position=output.outputs["Position"])
     assert len(tree) == 13
     assert snapshot_tree == tree
