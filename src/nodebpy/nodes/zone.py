@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 import bpy
 from bpy.types import NodeSocket
 
@@ -13,6 +15,79 @@ from .types import (
 )
 
 
+class BaseZoneInput(NodeBuilder, ABC):
+    """Base class for zone input nodes"""
+
+    @property
+    @abstractmethod
+    def output_node(self):
+        """Return the paired output node"""
+        pass
+
+    @property
+    @abstractmethod
+    def items_collection(self):
+        """Return the items collection (state_items, repeat_items, etc.)"""
+        pass
+
+    def _add_socket(self, name: str, type: _BakeDataTypes):
+        """Add a socket to the zone"""
+        item = self.items_collection.new(type, name)
+        return self.output_node.inputs[item.name]
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        """Get all output sockets based on items collection"""
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name])
+            for item in self.items_collection
+        }
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        """Get all input sockets based on items collection"""
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name])
+            for item in self.items_collection
+        }
+
+
+class BaseZoneOutput(NodeBuilder, ABC):
+    """Base class for zone output nodes"""
+
+    @property
+    @abstractmethod
+    def items_collection(self):
+        """Return the items collection (state_items, repeat_items, etc.)"""
+        pass
+
+    def _add_socket(self, name: str, type: _BakeDataTypes):
+        """Add a socket to the zone"""
+        item = self.items_collection.new(type, name)
+        return self.node.inputs[item.name]
+
+    @property
+    def _default_input_socket(self) -> NodeSocket:
+        """Get default input socket, avoiding skip-type sockets"""
+        return next(iter(self.inputs.values())).socket
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        """Get all output sockets based on items collection"""
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name])
+            for item in self.items_collection
+        }
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        """Get all input sockets based on items collection"""
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name])
+            for item in self.items_collection
+        }
+
+
 def simulation_zone(*args: LINKABLE, **kwargs: LINKABLE):
     input = SimulationInput()
     output = SimulationOutput()
@@ -26,22 +101,16 @@ def simulation_zone(*args: LINKABLE, **kwargs: LINKABLE):
     return input, output
 
 
-class SimulationInput(NodeBuilder):
+class SimulationInput(BaseZoneInput):
     """Simulation Input node"""
 
     name = "GeometryNodeSimulationInput"
     node: bpy.types.GeometryNodeSimulationInput
 
-    def _add_socket(self, name: str, type: _BakeDataTypes):
-        item = self.output_node.state_items.new(type, name)
-        return self.output_node.inputs[item.name]
-
     def capture(
         self, value: LINKABLE, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
         """Capture something as an output to the simulation, optionally specifying the domain"""
-        # the _add_inputs returns a dictionary but we only want the first key
-        # because we are adding a single input
         input_dict = self._add_inputs(value)
         self._establish_links(**input_dict)
         name = next(iter(input_dict))
@@ -60,21 +129,12 @@ class SimulationInput(NodeBuilder):
         return zone_output  # type: ignore
 
     @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.output_node.state_items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.output_node.state_items
-        }
+    def items_collection(self):
+        """Return the state items collection"""
+        return self.output_node.state_items
 
 
-class SimulationOutput(NodeBuilder):
+class SimulationOutput(BaseZoneOutput):
     """Simulation Output node"""
 
     name = "GeometryNodeSimulationOutput"
@@ -84,37 +144,16 @@ class SimulationOutput(NodeBuilder):
         self, value: LINKABLE, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
         """Capture something as an output to the simulation, optionally specifying the domain"""
-        # the _add_inputs returns a dictionary but we only want the first key
-        # because we are adding a single input
         input_dict = self._add_inputs(value)
         self._establish_links(**input_dict)
         name = next(iter(input_dict))
         self.node.state_items[name].attribute_domain = domain
         return SocketLinker(self.node.inputs[name])
 
-    def _add_socket(self, name: str, type: _BakeDataTypes):
-        item = self.node.state_items.new(type, name)
-        return self.node.inputs[item.name]
-
     @property
-    def _default_input_socket(self) -> NodeSocket:
-        # we want the default input socket to not be the "skip" socket which is the first one
-        # and would otherwise potentially be picked
-        return next(iter(self.inputs.values())).socket
-
-    @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.node.state_items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.node.state_items
-        }
+    def items_collection(self):
+        """Return the state items collection"""
+        return self.node.state_items
 
     @property
     def i_skip(self) -> SocketLinker:
@@ -135,7 +174,7 @@ def repeat_zone(iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKA
     return input, output
 
 
-class RepeatInput(NodeBuilder):
+class RepeatInput(BaseZoneInput):
     """Repeat Input node"""
 
     name = "GeometryNodeRepeatInput"
@@ -146,14 +185,8 @@ class RepeatInput(NodeBuilder):
         key_args = {"Iterations": iterations}
         self._establish_links(**key_args)
 
-    def _add_socket(self, name: str, type: _BakeDataTypes):
-        item = self.output_node.repeat_items.new(type, name)
-        return self.output_node.inputs[item.name]
-
     def capture(self, value: LINKABLE) -> SocketLinker:
         """Capture something as an input to the simulation"""
-        # the _add_inputs returns a dictionary but we only want the first key
-        # because we are adding a single input
         self._establish_links(**self._add_inputs(value))
         return SocketLinker(self.node.outputs[-2])
 
@@ -169,21 +202,12 @@ class RepeatInput(NodeBuilder):
         return zone_output  # type: ignore
 
     @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.output_node.repeat_items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.output_node.repeat_items
-        }
+    def items_collection(self):
+        """Return the repeat items collection"""
+        return self.output_node.repeat_items
 
 
-class RepeatOutput(NodeBuilder):
+class RepeatOutput(BaseZoneOutput):
     """Repeat Output node"""
 
     name = "GeometryNodeRepeatOutput"
@@ -193,35 +217,14 @@ class RepeatOutput(NodeBuilder):
         self, value: LINKABLE, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
         """Capture something as an output to the simulation"""
-        # the _add_inputs returns a dictionary but we only want the first key
-        # because we are adding a single input
         input_dict = self._add_inputs(value)
         name = next(iter(input_dict))
         return SocketLinker(self.node.inputs[name])
 
-    def _add_socket(self, name: str, type: _BakeDataTypes):
-        item = self.node.repeat_items.new(type, name)
-        return self.node.inputs[item.name]
-
     @property
-    def _default_input_socket(self) -> NodeSocket:
-        # we want the default input socket to not be the "skip" socket which is the first one
-        # and would otherwise potentially be picked
-        return next(iter(self.inputs.values())).socket
-
-    @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.node.repeat_items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.node.repeat_items
-        }
+    def items_collection(self):
+        """Return the repeat items collection"""
+        return self.node.repeat_items
 
 
 class ForEachGeometryElementInput(NodeBuilder):
