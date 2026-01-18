@@ -232,7 +232,7 @@ Retrieve topology information relating to each edge of a mesh
 nodes.mesh.ExtrudeMesh(
     mesh=None,
     selection=True,
-    offset=[0.0, 0.0, 0.0],
+    offset=(0.0, 0.0, 0.0),
     offset_scale=1.0,
     individual=True,
     mode='FACES',
@@ -462,7 +462,7 @@ Retrieve information about separate connected regions in a mesh
 ```python
 nodes.mesh.MeshLine(
     count=10,
-    start_location=[0.0, 0.0, 0.0],
+    start_location=(0.0, 0.0, 0.0),
     offset=[0.0, 0.0, 1.0],
     mode='OFFSET',
     count_mode='TOTAL',
@@ -527,7 +527,7 @@ Create a filled volume grid from a mesh
 nodes.mesh.MeshToPoints(
     mesh=None,
     selection=True,
-    position=[0.0, 0.0, 0.0],
+    position=(0.0, 0.0, 0.0),
     radius=0.05000000074505806,
     mode='VERTICES',
     **kwargs,
