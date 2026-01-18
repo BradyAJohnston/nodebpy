@@ -345,12 +345,29 @@ class NodeBuilder:
         default_output = self._default_output_socket
         default_input = target_node._default_input_socket
 
-        # Check if default sockets are compatible
-        output_compatibles = SOCKET_COMPATIBILITY.get(default_output.type, ())
-        if default_input.type in output_compatibles and (
-            not default_input.links or default_input.is_multi_input
-        ):
+        # Handle zone outputs that don't have inputs yet
+        if default_input is None and hasattr(target_node, "_add_socket"):
+            # Target is a zone without inputs - create compatible socket
+            source_type = default_output.type
+            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [source_type])
+            best_type = compatible_types[0] if compatible_types else source_type
+
+            # Create socket on target zone
+            default_input = target_node._add_socket(
+                name=best_type.title(), type=best_type
+            )
             return default_output, default_input
+
+
+
+
+        # Check if default sockets are compatible
+        if default_input is not None:
+            output_compatibles = SOCKET_COMPATIBILITY.get(default_output.type, ())
+            if default_input.type in output_compatibles and (
+                not default_input.links or default_input.is_multi_input
+            ):
+                return default_output, default_input
 
         # If defaults don't work, try all combinations with priority-based matching
         best_match = None
@@ -481,6 +498,13 @@ class NodeBuilder:
         source: LINKABLE,
         input: LINKABLE | str,
     ):
+        # Special handling for zone inputs that need auto-socket creation
+        if (hasattr(source, 'items_collection') and 
+            hasattr(source, '__rshift__') and 
+            not isinstance(input, str)):
+            # Use zone input's custom linking logic
+            return source >> input
+            
         if isinstance(input, str):
             try:
                 self.link(source, self.node.inputs[input])
@@ -765,8 +789,6 @@ class SocketBase(SocketLinker):
             if value is None:
                 continue
             setattr(self.interface_socket, key, value)
-
-
 
 
 class SocketGeometry(SocketBase):

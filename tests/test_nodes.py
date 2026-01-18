@@ -268,16 +268,24 @@ def test_simulation(snapshot_tree):
 def test_repeat(snapshot_tree):
     with TreeBuilder() as tree:
         cube = n.Cube()
-        input, output = n.repeat_zone(10, cube)
-        pos_math = input.capture(n.Position()) * n.Position()
-        _ = pos_math >> output
-        _ = (
-            input
-            >> n.SetPosition(
-                offset=input.o_iteration * n.Vector((0, 0, 0.1)) * pos_math
+        for i, input, output in n.repeat_zone(10, cube):
+            pos_math = input.capture(n.Position()) * n.Position()
+            _ = pos_math >> output
+            _ = (
+                input
+                >> n.SetPosition(offset=i * n.Vector((0, 0, 0.1)) * pos_math)
+                >> output
             )
-            >> output
-        )
-        _ = output >> n.SetPosition(position=output.outputs["Position"])
+            _ = output >> n.SetPosition(position=output.outputs["Position"])
     assert len(tree) == 13
+    assert len(input.items_collection) == 2
+    assert snapshot_tree == tree
+
+    with TreeBuilder() as tree:
+        for i, input, output in n.repeat_zone(5):
+            join = n.JoinGeometry(input)
+            n.Points(i, position=n.RandomValue.vector(min=-1, seed=i)) >> join >> output
+            # input >> join
+
+    assert len(tree) == 7
     assert snapshot_tree == tree

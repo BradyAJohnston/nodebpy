@@ -35,6 +35,65 @@ class BaseZoneInput(NodeBuilder, ABC):
         item = self.items_collection.new(type, name)
         return self.output_node.inputs[item.name]
 
+    def __rshift__(self, other):
+        """Custom zone input linking that creates sockets as needed"""
+        # Check if target is a zone output without inputs
+        if (
+            hasattr(other, "_default_input_socket")
+            and other._default_input_socket is None
+        ):
+            # Target zone needs a socket - create one based on our output
+            from ..builder import SOCKET_COMPATIBILITY
+
+            source_socket = self._default_output_socket
+            source_type = source_socket.type
+
+            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [source_type])
+            best_type = compatible_types[0] if compatible_types else source_type
+
+            # Create socket on target zone
+            target_socket = other._add_socket(name=best_type.title(), type=best_type)
+            self.tree.link(source_socket, target_socket)
+            return other
+        elif hasattr(other, "_default_input_socket") and other._default_input_socket:
+            # Check if we need to create a compatible output socket
+            from ..builder import SOCKET_COMPATIBILITY
+            
+            source_socket = self._default_output_socket
+            target_socket = other._default_input_socket
+            source_type = source_socket.type
+            target_type = target_socket.type
+            
+            # Check if source is compatible with target
+            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [])
+            if target_type not in compatible_types:
+                # Check if we already have a compatible output socket
+                existing_socket = None
+                for name, socket_linker in self.outputs.items():
+                    socket_compatibles = SOCKET_COMPATIBILITY.get(socket_linker.socket.type, [])
+                    if target_type in socket_compatibles:
+                        existing_socket = socket_linker.socket
+                        break
+                
+                if existing_socket:
+                    # Use existing compatible socket
+                    self.tree.link(existing_socket, target_socket)
+                    return other
+                else:
+                    # Create new compatible output socket
+                    self._add_socket(name=target_type.title(), type=target_type)
+                    # Find the newly created output socket
+                    for name, socket_linker in self.outputs.items():
+                        if socket_linker.socket.type == target_type:
+                            self.tree.link(socket_linker.socket, target_socket)
+                            return other
+                        
+            # Normal linking - compatible sockets exist
+            return super().__rshift__(other)
+        else:
+            # Normal linking
+            return super().__rshift__(other)
+
     @property
     def outputs(self) -> dict[str, SocketLinker]:
         """Get all output sockets based on items collection"""
@@ -52,6 +111,7 @@ class BaseZoneInput(NodeBuilder, ABC):
         }
 
 
+
 class BaseZoneOutput(NodeBuilder, ABC):
     """Base class for zone output nodes"""
 
@@ -66,10 +126,41 @@ class BaseZoneOutput(NodeBuilder, ABC):
         item = self.items_collection.new(type, name)
         return self.node.inputs[item.name]
 
+    def __rshift__(self, other):
+        """Custom zone output linking that creates sockets as needed"""
+        from ..builder import SOCKET_COMPATIBILITY
+
+        # Get the source socket type
+        source_socket = self._default_output_socket
+        source_type = source_socket.type
+
+        # Check if target has compatible inputs
+        if hasattr(other, "_default_input_socket") and other._default_input_socket:
+            # Normal linking
+            return super().__rshift__(other)
+        elif hasattr(other, "_add_socket"):
+            # Target is also a zone - create compatible socket
+            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [source_type])
+            best_type = compatible_types[0] if compatible_types else source_type
+
+            # Create socket on target zone
+            target_socket = other._add_socket(name=best_type.title(), type=best_type)
+            self.tree.link(source_socket, target_socket)
+            return other
+        else:
+            # Normal NodeBuilder
+            return super().__rshift__(other)
+
     @property
     def _default_input_socket(self) -> NodeSocket:
         """Get default input socket, avoiding skip-type sockets"""
-        return next(iter(self.inputs.values())).socket
+        inputs = list(self.inputs.values())
+        if inputs:
+            return inputs[0].socket
+        else:
+            # No socket exists - this should be handled by zone-specific __rshift__ logic
+            # Return None to signal that a socket needs to be created
+            return None
 
     @property
     def outputs(self) -> dict[str, SocketLinker]:
@@ -89,6 +180,45 @@ class BaseZoneOutput(NodeBuilder, ABC):
 
 
 def simulation_zone(*args: LINKABLE, **kwargs: LINKABLE):
+    """Create a simulation zone for iterative geometry processing over time
+
+    Simulation zones allow geometry to evolve over multiple frames, with state
+    persisting between Blender frames.
+
+    Args:
+        *args: Initial geometry or data to pass into the simulation
+        **kwargs: Named inputs to the simulation zone
+
+    Returns:
+        tuple[SimulationInput, SimulationOutput]: Input and output nodes for the simulation
+
+    Usage:
+        ```python
+        with TreeBuilder() as tree:
+            cube = n.Cube()
+            input, output = n.simulation_zone(cube)
+
+            # Capture position for feedback
+            pos_math = input.capture(n.Position()) * n.Position()
+            pos_math >> output
+
+            # Move geometry based on delta time
+            input >> n.SetPosition(
+                offset=input.o_delta_time * n.Vector((0, 0, 0.1)) * pos_math
+            ) >> output
+
+            # Output final position
+            output >> n.SetPosition(position=output.outputs["Position"])
+        ```
+
+    The simulation input provides:
+        - o_delta_time: Time elapsed since last iteration
+        - capture(): Method to capture values for state persistence
+
+    The simulation output provides:
+        - i_skip: Boolean input to skip simulation frames
+        - outputs: Dictionary of captured state outputs
+    """
     input = SimulationInput()
     output = SimulationOutput()
     input.node.pair_with_output(output.node)
@@ -161,17 +291,83 @@ class SimulationOutput(BaseZoneOutput):
         return self._input("Skip")
 
 
+class RepeatZone:
+    """Wrapper that supports both direct unpacking and iteration"""
+
+    def __init__(
+        self, iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKABLE
+    ):
+        self.input = RepeatInput(iterations)
+        self.output = RepeatOutput()
+        self.input.node.pair_with_output(self.output.node)
+
+        self.output.node.repeat_items.clear()
+        socket_lookup = self.output._add_inputs(*args, **kwargs)
+        for name, source in socket_lookup.items():
+            self.input.link_from(source, name)
+
+    def __iter__(self):
+        """Support for loop: for i, input, output in repeat_zone(...)"""
+        yield self.input.o_iteration, self.input, self.output
+
+    def __getitem__(self, index):
+        """Support direct unpacking: i, input, output = repeat_zone(...)"""
+        if index == 0:
+            return self.input.o_iteration
+        elif index == 1:
+            return self.input
+        elif index == 2:
+            return self.output
+        else:
+            raise IndexError("repeat_zone returns (iteration, input, output)")
+
+    def __len__(self):
+        """Support unpacking"""
+        return 3
+
+
 def repeat_zone(iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKABLE):
-    input = RepeatInput(iterations)
-    output = RepeatOutput()
-    input.node.pair_with_output(output.node)
+    """Create a repeat zone for iterative geometry operations
 
-    output.node.repeat_items.clear()
-    socket_lookup = output._add_inputs(*args, **kwargs)
-    for name, source in socket_lookup.items():
-        input.link_from(source, name)
+    Repeat zones execute their contents a specified number of times, useful for
+    procedural generation, iterations, and repetitive operations. The zone provides
+    access to the current iteration index. Zones iterate linearly unless the zone can
+    detect that it isn't dependent on the inputs from previous iterations in which
+    case they can run in parallel.
 
-    return input, output
+    Args:
+        iterations: Number of times to repeat (can be int or node outputting int)
+        *args: Initial geometry or data to pass into the repeat zone
+        **kwargs: Named inputs to the repeat zone
+
+    Returns:
+        RepeatZone: Object supporting both direct unpacking and iteration
+
+    Usage:
+        ```python
+        # Direct unpacking - gets iteration socket, input node, output node
+        i, input, output = repeat_zone(10, cube)
+        pos_math = input.capture(n.Position()) * n.Position()
+        pos_math >> output
+        input >> n.SetPosition(offset=i * n.Vector((0, 0, 0.1)) * pos_math) >> output
+        output >> n.SetPosition(position=output.outputs["Position"])
+
+        # For loop syntax - same functionality, more explicit
+        for i, input, output in repeat_zone(5):
+            join = n.JoinGeometry()
+            # i is the iteration socket, can be used in math operations
+            n.Points(i, position=n.RandomValue.vector(min=-1, seed=i)) >> join >> output
+            input >> join
+        ```
+
+    The repeat input provides:
+        - o_iteration: Current iteration index (0-based)
+        - capture(): Method to capture values between iterations
+
+    The repeat output automatically creates sockets as needed when connected to.
+    Sockets are created based on the type compatibility of the connecting node.
+    """
+    return RepeatZone(iterations, *args, **kwargs)
 
 
 class RepeatInput(BaseZoneInput):
