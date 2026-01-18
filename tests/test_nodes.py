@@ -1,4 +1,5 @@
 import itertools
+from turtle import position
 
 import pytest
 
@@ -22,6 +23,24 @@ def test_capture_attribute():
     assert len(cap._items) == 1
     assert cap.node.outputs[1].name == "Position"
     assert cap.node.outputs[1].type == "VECTOR"
+
+    with TreeBuilder() as tree:
+        cap = n.Points(
+            count=10, position=n.RandomValue.vector(), radius=n.RandomValue.float()
+        ) >> n.CaptureAttribute(
+            n.Position(),
+            n.Radius(),
+            normal=n.Normal(),
+        )
+        assert len(cap.node.capture_items) == 3
+        assert (
+            cap.inputs["normal"].socket.links[0].from_node.bl_idname
+            == "GeometryNodeInputNormal"
+        )
+        assert (
+            cap.inputs["Position"].socket.links[0].from_node.bl_idname
+            == "GeometryNodeInputPosition"
+        )
 
 
 def test_join_geometry():
