@@ -81,6 +81,7 @@ TYPE_INPUT_ALL = typing.Union[
     TYPE_INPUT_VECTOR,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_MENU,
+    TYPE_INPUT_ROTATION,
 ]
 
 _AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
@@ -103,6 +104,26 @@ _BakedDataTypeValues = (
     "GEOMETRY",
     "BUNDLE",
 )
+_IntegerMathOperations = Literal[
+    "ADD",
+    "SUBTRACT",
+    "MULTIPLY",
+    "DIVIDE",
+    "MULTIPLY_ADD",
+    "ABSOLUTE",
+    "NEGATE",
+    "POWER",
+    "MINIMUM",
+    "MAXIMUM",
+    "SIGN",
+    "DIVIDE_ROUND",
+    "DIVIDE_FLOOR",
+    "DIVIDE_CEIL",
+    "FLOORED_MODULO",
+    "MODULO",
+    "GCD",
+    "LCM",
+]
 _BakeDataTypes = Literal[
     "FLOAT",
     "INT",

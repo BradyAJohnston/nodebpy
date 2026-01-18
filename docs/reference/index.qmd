@@ -17,4 +17,3 @@ Functions to inspect docstrings.
 | [nodes.vector](nodes.vector.qmd#nodebpy.nodes.vector) |  |
 | [nodes.zone](nodes.zone.qmd#nodebpy.nodes.zone) |  |
 | [nodes.mesh](nodes.mesh.qmd#nodebpy.nodes.mesh) | Auto-generated Blender Geometry Node classes. |
-| [nodes.utilities](nodes.utilities.qmd#nodebpy.nodes.utilities) | Auto-generated Blender Geometry Node classes. |

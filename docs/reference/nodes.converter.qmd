@@ -14,6 +14,7 @@
 | [AxisAngleToRotation](#nodebpy.nodes.converter.AxisAngleToRotation) | Build a rotation from an axis and a rotation around that axis |
 | [BitMath](#nodebpy.nodes.converter.BitMath) | Perform bitwise operations on 32-bit integers |
 | [BooleanMath](#nodebpy.nodes.converter.BooleanMath) | Boolean Math node |
+| [Clamp](#nodebpy.nodes.converter.Clamp) | Clamp a value between a minimum and a maximum |
 | [CombineColor](#nodebpy.nodes.converter.CombineColor) | Combine four channels into a single color, based on a particular color model |
 | [CombineMatrix](#nodebpy.nodes.converter.CombineMatrix) | Construct a 4x4 matrix from its individual values |
 | [CombineTransform](#nodebpy.nodes.converter.CombineTransform) | Combine a translation vector, a rotation, and a scale vector into a transformation matrix |
@@ -31,14 +32,40 @@
 | [FormatString](#nodebpy.nodes.converter.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
 | [HashValue](#nodebpy.nodes.converter.HashValue) | Generate a randomized integer using the given input value as a seed |
 | [IndexOfNearest](#nodebpy.nodes.converter.IndexOfNearest) | Find the nearest element in a group. Similar to the "Sample Nearest" node |
+| [IntegerMath](#nodebpy.nodes.converter.IntegerMath) | Perform various math operations on the given integer inputs |
+| [InvertMatrix](#nodebpy.nodes.converter.InvertMatrix) | Compute the inverse of the given matrix, if one exists |
+| [InvertRotation](#nodebpy.nodes.converter.InvertRotation) | Compute the inverse of the given rotation |
 | [JoinStrings](#nodebpy.nodes.converter.JoinStrings) | Combine any number of input strings |
+| [MapRange](#nodebpy.nodes.converter.MapRange) | Remap a value from a range to a target range |
+| [MatchString](#nodebpy.nodes.converter.MatchString) | Check if a given string exists within another string |
 | [Math](#nodebpy.nodes.converter.Math) | Perform math operations |
+| [MatrixDeterminant](#nodebpy.nodes.converter.MatrixDeterminant) | Compute the determinant of the given matrix |
 | [Mix](#nodebpy.nodes.converter.Mix) | Mix values by a factor |
+| [MultiplyMatrices](#nodebpy.nodes.converter.MultiplyMatrices) | Perform a matrix multiplication on two input matrices |
 | [PackUVIslands](#nodebpy.nodes.converter.PackUVIslands) | Scale islands of a UV map and move them so they fill the UV space as much as possible |
+| [ProjectPoint](#nodebpy.nodes.converter.ProjectPoint) | Project a point using a matrix, using location, rotation, scale, and perspective divide |
+| [QuaternionToRotation](#nodebpy.nodes.converter.QuaternionToRotation) | Build a rotation from quaternion components |
 | [RandomValue](#nodebpy.nodes.converter.RandomValue) | Random Value node |
+| [ReplaceString](#nodebpy.nodes.converter.ReplaceString) | Replace a given string segment with another |
+| [RotateEuler](#nodebpy.nodes.converter.RotateEuler) | Apply a secondary Euler rotation to a given Euler rotation |
+| [RotateRotation](#nodebpy.nodes.converter.RotateRotation) | Apply a secondary rotation to a given rotation value |
+| [RotateVector](#nodebpy.nodes.converter.RotateVector) | Apply a rotation to a given vector |
+| [RotationToAxisAngle](#nodebpy.nodes.converter.RotationToAxisAngle) | Convert a rotation to axis angle components |
+| [RotationToEuler](#nodebpy.nodes.converter.RotationToEuler) | Convert a standard rotation value to an Euler rotation |
+| [RotationToQuaternion](#nodebpy.nodes.converter.RotationToQuaternion) | Retrieve the quaternion components representing a rotation |
+| [SeparateColor](#nodebpy.nodes.converter.SeparateColor) | Split a color into separate channels, based on a particular color model |
+| [SeparateMatrix](#nodebpy.nodes.converter.SeparateMatrix) | Split a 4x4 matrix into its individual values |
+| [SeparateTransform](#nodebpy.nodes.converter.SeparateTransform) | Split a transformation matrix into a translation vector, a rotation, and a scale vector |
 | [SeparateXYZ](#nodebpy.nodes.converter.SeparateXYZ) | Split a vector into its X, Y, and Z components |
+| [SliceString](#nodebpy.nodes.converter.SliceString) | Extract a string segment from a larger string |
+| [StringLength](#nodebpy.nodes.converter.StringLength) | Output the number of characters in the given string |
+| [StringToValue](#nodebpy.nodes.converter.StringToValue) | Derive a numeric value from a given string representation |
 | [Switch](#nodebpy.nodes.converter.Switch) | Switch between two inputs |
+| [TransformDirection](#nodebpy.nodes.converter.TransformDirection) | Apply a transformation matrix (excluding translation) to the given vector |
+| [TransformPoint](#nodebpy.nodes.converter.TransformPoint) | Apply a transformation matrix to the given vector |
+| [TransposeMatrix](#nodebpy.nodes.converter.TransposeMatrix) | Flip a matrix over its diagonal, turning columns into rows and vice-versa |
 | [UVUnwrap](#nodebpy.nodes.converter.UVUnwrap) | Generate a UV map based on seam edges |
+| [ValueToString](#nodebpy.nodes.converter.ValueToString) | Generate a string representation of the given input value |
 | [VectorMath](#nodebpy.nodes.converter.VectorMath) | Perform vector math operation |
 
 ### AccumulateField { #nodebpy.nodes.converter.AccumulateField }
@@ -295,6 +322,23 @@ nodes.converter.BooleanMath.l_subtract(boolean=False, boolean_001=False)
 ```
 
 Create Boolean Math with operation 'NIMPLY'.
+
+### Clamp { #nodebpy.nodes.converter.Clamp }
+
+```python
+nodes.converter.Clamp(value=1.0, min=0.0, max=1.0, *, clamp_type='MINMAX')
+```
+
+Clamp a value between a minimum and a maximum
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_max](#nodebpy.nodes.converter.Clamp.i_max) | Input socket: Max |
+| [i_min](#nodebpy.nodes.converter.Clamp.i_min) | Input socket: Min |
+| [i_value](#nodebpy.nodes.converter.Clamp.i_value) | Input socket: Value |
+| [o_result](#nodebpy.nodes.converter.Clamp.o_result) | Output socket: Result |
 
 ### CombineColor { #nodebpy.nodes.converter.CombineColor }
 
@@ -677,6 +721,221 @@ Find the nearest element in a group. Similar to the "Sample Nearest" node
 | [o_has_neighbor](#nodebpy.nodes.converter.IndexOfNearest.o_has_neighbor) | Output socket: Has Neighbor |
 | [o_index](#nodebpy.nodes.converter.IndexOfNearest.o_index) | Output socket: Index |
 
+### IntegerMath { #nodebpy.nodes.converter.IntegerMath }
+
+```python
+nodes.converter.IntegerMath(operation='ADD', **kwargs)
+```
+
+Perform various math operations on the given integer inputs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_value](#nodebpy.nodes.converter.IntegerMath.i_value) | Input socket: Value |
+| [i_value_001](#nodebpy.nodes.converter.IntegerMath.i_value_001) | Input socket: Value |
+| [i_value_002](#nodebpy.nodes.converter.IntegerMath.i_value_002) | Input socket: Value |
+| [o_value](#nodebpy.nodes.converter.IntegerMath.o_value) | Output socket: Value |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [absolute](#nodebpy.nodes.converter.IntegerMath.absolute) | Create Integer Math with operation 'Absolute'. |
+| [add](#nodebpy.nodes.converter.IntegerMath.add) | Create Integer Math with operation 'Add'. |
+| [divide](#nodebpy.nodes.converter.IntegerMath.divide) | Create Integer Math with operation 'Divide'. |
+| [divide_ceil](#nodebpy.nodes.converter.IntegerMath.divide_ceil) | Create Integer Math with operation 'Divide Ceiling'. |
+| [divide_floor](#nodebpy.nodes.converter.IntegerMath.divide_floor) | Create Integer Math with operation 'Divide Floor'. |
+| [divide_round](#nodebpy.nodes.converter.IntegerMath.divide_round) | Create Integer Math with operation 'Divide Round'. |
+| [floored_modulo](#nodebpy.nodes.converter.IntegerMath.floored_modulo) | Create Integer Math with operation 'Floored Modulo'. |
+| [greatest_common_divisor](#nodebpy.nodes.converter.IntegerMath.greatest_common_divisor) | Create Integer Math with operation 'Greatest Common Divisor'. |
+| [least_common_multiple](#nodebpy.nodes.converter.IntegerMath.least_common_multiple) | Create Integer Math with operation 'Least Common Multiple'. |
+| [maximum](#nodebpy.nodes.converter.IntegerMath.maximum) | Create Integer Math with operation 'Maximum'. |
+| [minimum](#nodebpy.nodes.converter.IntegerMath.minimum) | Create Integer Math with operation 'Minimum'. |
+| [modulo](#nodebpy.nodes.converter.IntegerMath.modulo) | Create Integer Math with operation 'Modulo'. |
+| [multiply](#nodebpy.nodes.converter.IntegerMath.multiply) | Create Integer Math with operation 'Multiply'. |
+| [multiplyadd](#nodebpy.nodes.converter.IntegerMath.multiplyadd) | Create Integer Math with operation 'Multiply Add'. |
+| [negate](#nodebpy.nodes.converter.IntegerMath.negate) | Create Integer Math with operation 'Negate'. |
+| [power](#nodebpy.nodes.converter.IntegerMath.power) | Create Integer Math with operation 'Power'. |
+| [sign](#nodebpy.nodes.converter.IntegerMath.sign) | Create Integer Math with operation 'Sign'. |
+| [subtract](#nodebpy.nodes.converter.IntegerMath.subtract) | Create Integer Math with operation 'Subtract'. |
+
+##### absolute { #nodebpy.nodes.converter.IntegerMath.absolute }
+
+```python
+nodes.converter.IntegerMath.absolute(value=0)
+```
+
+Create Integer Math with operation 'Absolute'.
+
+##### add { #nodebpy.nodes.converter.IntegerMath.add }
+
+```python
+nodes.converter.IntegerMath.add(a=0, b=0)
+```
+
+Create Integer Math with operation 'Add'.
+
+##### divide { #nodebpy.nodes.converter.IntegerMath.divide }
+
+```python
+nodes.converter.IntegerMath.divide(a=0, value_001=0)
+```
+
+Create Integer Math with operation 'Divide'.
+
+##### divide_ceil { #nodebpy.nodes.converter.IntegerMath.divide_ceil }
+
+```python
+nodes.converter.IntegerMath.divide_ceil(a=0, b=0)
+```
+
+Create Integer Math with operation 'Divide Ceiling'.
+
+##### divide_floor { #nodebpy.nodes.converter.IntegerMath.divide_floor }
+
+```python
+nodes.converter.IntegerMath.divide_floor(a=0, b=0)
+```
+
+Create Integer Math with operation 'Divide Floor'.
+
+##### divide_round { #nodebpy.nodes.converter.IntegerMath.divide_round }
+
+```python
+nodes.converter.IntegerMath.divide_round(a=0, b=0)
+```
+
+Create Integer Math with operation 'Divide Round'.
+
+##### floored_modulo { #nodebpy.nodes.converter.IntegerMath.floored_modulo }
+
+```python
+nodes.converter.IntegerMath.floored_modulo(a=0, b=0)
+```
+
+Create Integer Math with operation 'Floored Modulo'.
+
+##### greatest_common_divisor { #nodebpy.nodes.converter.IntegerMath.greatest_common_divisor }
+
+```python
+nodes.converter.IntegerMath.greatest_common_divisor(a=0, b=0)
+```
+
+Create Integer Math with operation 'Greatest Common Divisor'.
+
+##### least_common_multiple { #nodebpy.nodes.converter.IntegerMath.least_common_multiple }
+
+```python
+nodes.converter.IntegerMath.least_common_multiple(a=0, b=0)
+```
+
+Create Integer Math with operation 'Least Common Multiple'.
+
+##### maximum { #nodebpy.nodes.converter.IntegerMath.maximum }
+
+```python
+nodes.converter.IntegerMath.maximum(a=0, b=0)
+```
+
+Create Integer Math with operation 'Maximum'.
+
+##### minimum { #nodebpy.nodes.converter.IntegerMath.minimum }
+
+```python
+nodes.converter.IntegerMath.minimum(a=0, b=0)
+```
+
+Create Integer Math with operation 'Minimum'.
+
+##### modulo { #nodebpy.nodes.converter.IntegerMath.modulo }
+
+```python
+nodes.converter.IntegerMath.modulo(a=0, b=0)
+```
+
+Create Integer Math with operation 'Modulo'.
+
+##### multiply { #nodebpy.nodes.converter.IntegerMath.multiply }
+
+```python
+nodes.converter.IntegerMath.multiply(a=0, value_001=0)
+```
+
+Create Integer Math with operation 'Multiply'.
+
+##### multiplyadd { #nodebpy.nodes.converter.IntegerMath.multiplyadd }
+
+```python
+nodes.converter.IntegerMath.multiplyadd(value=0, multiplier=0, addend=0)
+```
+
+Create Integer Math with operation 'Multiply Add'.
+
+##### negate { #nodebpy.nodes.converter.IntegerMath.negate }
+
+```python
+nodes.converter.IntegerMath.negate(value=0)
+```
+
+Create Integer Math with operation 'Negate'.
+
+##### power { #nodebpy.nodes.converter.IntegerMath.power }
+
+```python
+nodes.converter.IntegerMath.power(base=0, exponent=0)
+```
+
+Create Integer Math with operation 'Power'.
+
+##### sign { #nodebpy.nodes.converter.IntegerMath.sign }
+
+```python
+nodes.converter.IntegerMath.sign(value=0)
+```
+
+Create Integer Math with operation 'Sign'.
+
+##### subtract { #nodebpy.nodes.converter.IntegerMath.subtract }
+
+```python
+nodes.converter.IntegerMath.subtract(a=0, b=0)
+```
+
+Create Integer Math with operation 'Subtract'.
+
+### InvertMatrix { #nodebpy.nodes.converter.InvertMatrix }
+
+```python
+nodes.converter.InvertMatrix(matrix=None)
+```
+
+Compute the inverse of the given matrix, if one exists
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_matrix](#nodebpy.nodes.converter.InvertMatrix.i_matrix) | Input socket: Matrix |
+| [o_invertible](#nodebpy.nodes.converter.InvertMatrix.o_invertible) | Output socket: Invertible |
+| [o_matrix](#nodebpy.nodes.converter.InvertMatrix.o_matrix) | Output socket: Matrix |
+
+### InvertRotation { #nodebpy.nodes.converter.InvertRotation }
+
+```python
+nodes.converter.InvertRotation(rotation=(0.0, 0.0, 0.0))
+```
+
+Compute the inverse of the given rotation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_rotation](#nodebpy.nodes.converter.InvertRotation.i_rotation) | Input socket: Rotation |
+| [o_rotation](#nodebpy.nodes.converter.InvertRotation.o_rotation) | Output socket: Rotation |
+
 ### JoinStrings { #nodebpy.nodes.converter.JoinStrings }
 
 ```python
@@ -692,6 +951,48 @@ Combine any number of input strings
 | [i_delimiter](#nodebpy.nodes.converter.JoinStrings.i_delimiter) | Input socket: Delimiter |
 | [i_strings](#nodebpy.nodes.converter.JoinStrings.i_strings) | Input socket: Strings |
 | [o_string](#nodebpy.nodes.converter.JoinStrings.o_string) | Output socket: String |
+
+### MapRange { #nodebpy.nodes.converter.MapRange }
+
+```python
+nodes.converter.MapRange(
+    interpolation_type='LINEAR',
+    data_type='FLOAT',
+    clamp=False,
+    **kwargs,
+)
+```
+
+Remap a value from a range to a target range
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_from_max](#nodebpy.nodes.converter.MapRange.i_from_max) | Input socket: From Max |
+| [i_from_min](#nodebpy.nodes.converter.MapRange.i_from_min) | Input socket: From Min |
+| [i_steps](#nodebpy.nodes.converter.MapRange.i_steps) | Input socket: Steps |
+| [i_to_max](#nodebpy.nodes.converter.MapRange.i_to_max) | Input socket: To Max |
+| [i_to_min](#nodebpy.nodes.converter.MapRange.i_to_min) | Input socket: To Min |
+| [i_value](#nodebpy.nodes.converter.MapRange.i_value) | Input socket: Value |
+| [o_result](#nodebpy.nodes.converter.MapRange.o_result) | Output socket: Result |
+
+### MatchString { #nodebpy.nodes.converter.MatchString }
+
+```python
+nodes.converter.MatchString(string='', operation='Starts With', key='')
+```
+
+Check if a given string exists within another string
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_key](#nodebpy.nodes.converter.MatchString.i_key) | Input socket: Key |
+| [i_operation](#nodebpy.nodes.converter.MatchString.i_operation) | Input socket: Operation |
+| [i_string](#nodebpy.nodes.converter.MatchString.i_string) | Input socket: String |
+| [o_result](#nodebpy.nodes.converter.MatchString.o_result) | Output socket: Result |
 
 ### Math { #nodebpy.nodes.converter.Math }
 
@@ -1075,6 +1376,21 @@ nodes.converter.Math.wrap(value=0.5, max=0.5, min=0.5)
 
 Wrap value to range, wrap(value, max, min)
 
+### MatrixDeterminant { #nodebpy.nodes.converter.MatrixDeterminant }
+
+```python
+nodes.converter.MatrixDeterminant(matrix=None)
+```
+
+Compute the determinant of the given matrix
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_matrix](#nodebpy.nodes.converter.MatrixDeterminant.i_matrix) | Input socket: Matrix |
+| [o_determinant](#nodebpy.nodes.converter.MatrixDeterminant.o_determinant) | Output socket: Determinant |
+
 ### Mix { #nodebpy.nodes.converter.Mix }
 
 ```python
@@ -1091,6 +1407,22 @@ Mix values by a factor
 | [i_value_a](#nodebpy.nodes.converter.Mix.i_value_a) | Input socket: Value A |
 | [i_value_b](#nodebpy.nodes.converter.Mix.i_value_b) | Input socket: Value B |
 | [o_result](#nodebpy.nodes.converter.Mix.o_result) | Output socket: Result |
+
+### MultiplyMatrices { #nodebpy.nodes.converter.MultiplyMatrices }
+
+```python
+nodes.converter.MultiplyMatrices(matrix=None, matrix_001=None)
+```
+
+Perform a matrix multiplication on two input matrices
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_matrix](#nodebpy.nodes.converter.MultiplyMatrices.i_matrix) | Input socket: Matrix |
+| [i_matrix_001](#nodebpy.nodes.converter.MultiplyMatrices.i_matrix_001) | Input socket: Matrix |
+| [o_matrix](#nodebpy.nodes.converter.MultiplyMatrices.o_matrix) | Output socket: Matrix |
 
 ### PackUVIslands { #nodebpy.nodes.converter.PackUVIslands }
 
@@ -1116,6 +1448,40 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 | [i_selection](#nodebpy.nodes.converter.PackUVIslands.i_selection) | Input socket: Selection |
 | [i_uv](#nodebpy.nodes.converter.PackUVIslands.i_uv) | Input socket: UV |
 | [o_uv](#nodebpy.nodes.converter.PackUVIslands.o_uv) | Output socket: UV |
+
+### ProjectPoint { #nodebpy.nodes.converter.ProjectPoint }
+
+```python
+nodes.converter.ProjectPoint(vector=(0.0, 0.0, 0.0), transform=None)
+```
+
+Project a point using a matrix, using location, rotation, scale, and perspective divide
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_transform](#nodebpy.nodes.converter.ProjectPoint.i_transform) | Input socket: Transform |
+| [i_vector](#nodebpy.nodes.converter.ProjectPoint.i_vector) | Input socket: Vector |
+| [o_vector](#nodebpy.nodes.converter.ProjectPoint.o_vector) | Output socket: Vector |
+
+### QuaternionToRotation { #nodebpy.nodes.converter.QuaternionToRotation }
+
+```python
+nodes.converter.QuaternionToRotation(w=1.0, x=0.0, y=0.0, z=0.0)
+```
+
+Build a rotation from quaternion components
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_w](#nodebpy.nodes.converter.QuaternionToRotation.i_w) | Input socket: W |
+| [i_x](#nodebpy.nodes.converter.QuaternionToRotation.i_x) | Input socket: X |
+| [i_y](#nodebpy.nodes.converter.QuaternionToRotation.i_y) | Input socket: Y |
+| [i_z](#nodebpy.nodes.converter.QuaternionToRotation.i_z) | Input socket: Z |
+| [o_rotation](#nodebpy.nodes.converter.QuaternionToRotation.o_rotation) | Output socket: Rotation |
 
 ### RandomValue { #nodebpy.nodes.converter.RandomValue }
 
@@ -1163,6 +1529,196 @@ nodes.converter.RandomValue.i_probability()
 
 Input socket: Probability
 
+### ReplaceString { #nodebpy.nodes.converter.ReplaceString }
+
+```python
+nodes.converter.ReplaceString(string='', find='', replace='')
+```
+
+Replace a given string segment with another
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_find](#nodebpy.nodes.converter.ReplaceString.i_find) | Input socket: Find |
+| [i_replace](#nodebpy.nodes.converter.ReplaceString.i_replace) | Input socket: Replace |
+| [i_string](#nodebpy.nodes.converter.ReplaceString.i_string) | Input socket: String |
+| [o_string](#nodebpy.nodes.converter.ReplaceString.o_string) | Output socket: String |
+
+### RotateEuler { #nodebpy.nodes.converter.RotateEuler }
+
+```python
+nodes.converter.RotateEuler(
+    rotation=(0.0, 0.0, 0.0),
+    rotate_by=(0.0, 0.0, 0.0),
+    *,
+    rotation_type='EULER',
+    space='OBJECT',
+)
+```
+
+Apply a secondary Euler rotation to a given Euler rotation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_rotate_by](#nodebpy.nodes.converter.RotateEuler.i_rotate_by) | Input socket: Rotate By |
+| [i_rotation](#nodebpy.nodes.converter.RotateEuler.i_rotation) | Input socket: Rotation |
+| [o_rotation](#nodebpy.nodes.converter.RotateEuler.o_rotation) | Output socket: Rotation |
+
+### RotateRotation { #nodebpy.nodes.converter.RotateRotation }
+
+```python
+nodes.converter.RotateRotation(
+    rotation=(0.0, 0.0, 0.0),
+    rotate_by=(0.0, 0.0, 0.0),
+    *,
+    rotation_space='GLOBAL',
+)
+```
+
+Apply a secondary rotation to a given rotation value
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_rotate_by](#nodebpy.nodes.converter.RotateRotation.i_rotate_by) | Input socket: Rotate By |
+| [i_rotation](#nodebpy.nodes.converter.RotateRotation.i_rotation) | Input socket: Rotation |
+| [o_rotation](#nodebpy.nodes.converter.RotateRotation.o_rotation) | Output socket: Rotation |
+
+### RotateVector { #nodebpy.nodes.converter.RotateVector }
+
+```python
+nodes.converter.RotateVector(vector=(0.0, 0.0, 0.0), rotation=(0.0, 0.0, 0.0))
+```
+
+Apply a rotation to a given vector
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_rotation](#nodebpy.nodes.converter.RotateVector.i_rotation) | Input socket: Rotation |
+| [i_vector](#nodebpy.nodes.converter.RotateVector.i_vector) | Input socket: Vector |
+| [o_vector](#nodebpy.nodes.converter.RotateVector.o_vector) | Output socket: Vector |
+
+### RotationToAxisAngle { #nodebpy.nodes.converter.RotationToAxisAngle }
+
+```python
+nodes.converter.RotationToAxisAngle(rotation=(0.0, 0.0, 0.0))
+```
+
+Convert a rotation to axis angle components
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_rotation](#nodebpy.nodes.converter.RotationToAxisAngle.i_rotation) | Input socket: Rotation |
+| [o_angle](#nodebpy.nodes.converter.RotationToAxisAngle.o_angle) | Output socket: Angle |
+| [o_axis](#nodebpy.nodes.converter.RotationToAxisAngle.o_axis) | Output socket: Axis |
+
+### RotationToEuler { #nodebpy.nodes.converter.RotationToEuler }
+
+```python
+nodes.converter.RotationToEuler(rotation=(0.0, 0.0, 0.0))
+```
+
+Convert a standard rotation value to an Euler rotation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_rotation](#nodebpy.nodes.converter.RotationToEuler.i_rotation) | Input socket: Rotation |
+| [o_euler](#nodebpy.nodes.converter.RotationToEuler.o_euler) | Output socket: Euler |
+
+### RotationToQuaternion { #nodebpy.nodes.converter.RotationToQuaternion }
+
+```python
+nodes.converter.RotationToQuaternion(rotation=(0.0, 0.0, 0.0))
+```
+
+Retrieve the quaternion components representing a rotation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_rotation](#nodebpy.nodes.converter.RotationToQuaternion.i_rotation) | Input socket: Rotation |
+| [o_w](#nodebpy.nodes.converter.RotationToQuaternion.o_w) | Output socket: W |
+| [o_x](#nodebpy.nodes.converter.RotationToQuaternion.o_x) | Output socket: X |
+| [o_y](#nodebpy.nodes.converter.RotationToQuaternion.o_y) | Output socket: Y |
+| [o_z](#nodebpy.nodes.converter.RotationToQuaternion.o_z) | Output socket: Z |
+
+### SeparateColor { #nodebpy.nodes.converter.SeparateColor }
+
+```python
+nodes.converter.SeparateColor(color=(1.0, 1.0, 1.0, 1.0), *, mode='RGB')
+```
+
+Split a color into separate channels, based on a particular color model
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_color](#nodebpy.nodes.converter.SeparateColor.i_color) | Input socket: Color |
+| [o_alpha](#nodebpy.nodes.converter.SeparateColor.o_alpha) | Output socket: Alpha |
+| [o_blue](#nodebpy.nodes.converter.SeparateColor.o_blue) | Output socket: Blue |
+| [o_green](#nodebpy.nodes.converter.SeparateColor.o_green) | Output socket: Green |
+| [o_red](#nodebpy.nodes.converter.SeparateColor.o_red) | Output socket: Red |
+
+### SeparateMatrix { #nodebpy.nodes.converter.SeparateMatrix }
+
+```python
+nodes.converter.SeparateMatrix(matrix=None)
+```
+
+Split a 4x4 matrix into its individual values
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_matrix](#nodebpy.nodes.converter.SeparateMatrix.i_matrix) | Input socket: Matrix |
+| [o_column_1_row_1](#nodebpy.nodes.converter.SeparateMatrix.o_column_1_row_1) | Output socket: Column 1 Row 1 |
+| [o_column_1_row_2](#nodebpy.nodes.converter.SeparateMatrix.o_column_1_row_2) | Output socket: Column 1 Row 2 |
+| [o_column_1_row_3](#nodebpy.nodes.converter.SeparateMatrix.o_column_1_row_3) | Output socket: Column 1 Row 3 |
+| [o_column_1_row_4](#nodebpy.nodes.converter.SeparateMatrix.o_column_1_row_4) | Output socket: Column 1 Row 4 |
+| [o_column_2_row_1](#nodebpy.nodes.converter.SeparateMatrix.o_column_2_row_1) | Output socket: Column 2 Row 1 |
+| [o_column_2_row_2](#nodebpy.nodes.converter.SeparateMatrix.o_column_2_row_2) | Output socket: Column 2 Row 2 |
+| [o_column_2_row_3](#nodebpy.nodes.converter.SeparateMatrix.o_column_2_row_3) | Output socket: Column 2 Row 3 |
+| [o_column_2_row_4](#nodebpy.nodes.converter.SeparateMatrix.o_column_2_row_4) | Output socket: Column 2 Row 4 |
+| [o_column_3_row_1](#nodebpy.nodes.converter.SeparateMatrix.o_column_3_row_1) | Output socket: Column 3 Row 1 |
+| [o_column_3_row_2](#nodebpy.nodes.converter.SeparateMatrix.o_column_3_row_2) | Output socket: Column 3 Row 2 |
+| [o_column_3_row_3](#nodebpy.nodes.converter.SeparateMatrix.o_column_3_row_3) | Output socket: Column 3 Row 3 |
+| [o_column_3_row_4](#nodebpy.nodes.converter.SeparateMatrix.o_column_3_row_4) | Output socket: Column 3 Row 4 |
+| [o_column_4_row_1](#nodebpy.nodes.converter.SeparateMatrix.o_column_4_row_1) | Output socket: Column 4 Row 1 |
+| [o_column_4_row_2](#nodebpy.nodes.converter.SeparateMatrix.o_column_4_row_2) | Output socket: Column 4 Row 2 |
+| [o_column_4_row_3](#nodebpy.nodes.converter.SeparateMatrix.o_column_4_row_3) | Output socket: Column 4 Row 3 |
+| [o_column_4_row_4](#nodebpy.nodes.converter.SeparateMatrix.o_column_4_row_4) | Output socket: Column 4 Row 4 |
+
+### SeparateTransform { #nodebpy.nodes.converter.SeparateTransform }
+
+```python
+nodes.converter.SeparateTransform(transform)
+```
+
+Split a transformation matrix into a translation vector, a rotation, and a scale vector
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_transform](#nodebpy.nodes.converter.SeparateTransform.i_transform) | Input socket: Transform |
+| [o_rotation](#nodebpy.nodes.converter.SeparateTransform.o_rotation) | Output socket: Rotation |
+| [o_scale](#nodebpy.nodes.converter.SeparateTransform.o_scale) | Output socket: Scale |
+| [o_translation](#nodebpy.nodes.converter.SeparateTransform.o_translation) | Output socket: Translation |
+
 ### SeparateXYZ { #nodebpy.nodes.converter.SeparateXYZ }
 
 ```python
@@ -1179,6 +1735,54 @@ Split a vector into its X, Y, and Z components
 | [o_x](#nodebpy.nodes.converter.SeparateXYZ.o_x) | Output socket: X |
 | [o_y](#nodebpy.nodes.converter.SeparateXYZ.o_y) | Output socket: Y |
 | [o_z](#nodebpy.nodes.converter.SeparateXYZ.o_z) | Output socket: Z |
+
+### SliceString { #nodebpy.nodes.converter.SliceString }
+
+```python
+nodes.converter.SliceString(string='', position=0, length=10)
+```
+
+Extract a string segment from a larger string
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_length](#nodebpy.nodes.converter.SliceString.i_length) | Input socket: Length |
+| [i_position](#nodebpy.nodes.converter.SliceString.i_position) | Input socket: Position |
+| [i_string](#nodebpy.nodes.converter.SliceString.i_string) | Input socket: String |
+| [o_string](#nodebpy.nodes.converter.SliceString.o_string) | Output socket: String |
+
+### StringLength { #nodebpy.nodes.converter.StringLength }
+
+```python
+nodes.converter.StringLength(string='')
+```
+
+Output the number of characters in the given string
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_string](#nodebpy.nodes.converter.StringLength.i_string) | Input socket: String |
+| [o_length](#nodebpy.nodes.converter.StringLength.o_length) | Output socket: Length |
+
+### StringToValue { #nodebpy.nodes.converter.StringToValue }
+
+```python
+nodes.converter.StringToValue(string='', *, data_type='FLOAT')
+```
+
+Derive a numeric value from a given string representation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_string](#nodebpy.nodes.converter.StringToValue.i_string) | Input socket: String |
+| [o_length](#nodebpy.nodes.converter.StringToValue.o_length) | Output socket: Length |
+| [o_value](#nodebpy.nodes.converter.StringToValue.o_value) | Output socket: Value |
 
 ### Switch { #nodebpy.nodes.converter.Switch }
 
@@ -1204,6 +1808,53 @@ Switch between two inputs
 | [i_true](#nodebpy.nodes.converter.Switch.i_true) | Input socket: True |
 | [o_output](#nodebpy.nodes.converter.Switch.o_output) | Output socket: Output |
 
+### TransformDirection { #nodebpy.nodes.converter.TransformDirection }
+
+```python
+nodes.converter.TransformDirection(direction=(0.0, 0.0, 0.0), transform=None)
+```
+
+Apply a transformation matrix (excluding translation) to the given vector
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_direction](#nodebpy.nodes.converter.TransformDirection.i_direction) | Input socket: Direction |
+| [i_transform](#nodebpy.nodes.converter.TransformDirection.i_transform) | Input socket: Transform |
+| [o_direction](#nodebpy.nodes.converter.TransformDirection.o_direction) | Output socket: Direction |
+
+### TransformPoint { #nodebpy.nodes.converter.TransformPoint }
+
+```python
+nodes.converter.TransformPoint(vector=(0.0, 0.0, 0.0), transform=None)
+```
+
+Apply a transformation matrix to the given vector
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_transform](#nodebpy.nodes.converter.TransformPoint.i_transform) | Input socket: Transform |
+| [i_vector](#nodebpy.nodes.converter.TransformPoint.i_vector) | Input socket: Vector |
+| [o_vector](#nodebpy.nodes.converter.TransformPoint.o_vector) | Output socket: Vector |
+
+### TransposeMatrix { #nodebpy.nodes.converter.TransposeMatrix }
+
+```python
+nodes.converter.TransposeMatrix(matrix=None)
+```
+
+Flip a matrix over its diagonal, turning columns into rows and vice-versa
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_matrix](#nodebpy.nodes.converter.TransposeMatrix.i_matrix) | Input socket: Matrix |
+| [o_matrix](#nodebpy.nodes.converter.TransposeMatrix.o_matrix) | Output socket: Matrix |
+
 ### UVUnwrap { #nodebpy.nodes.converter.UVUnwrap }
 
 ```python
@@ -1228,6 +1879,22 @@ Generate a UV map based on seam edges
 | [i_seam](#nodebpy.nodes.converter.UVUnwrap.i_seam) | Input socket: Seam |
 | [i_selection](#nodebpy.nodes.converter.UVUnwrap.i_selection) | Input socket: Selection |
 | [o_uv](#nodebpy.nodes.converter.UVUnwrap.o_uv) | Output socket: UV |
+
+### ValueToString { #nodebpy.nodes.converter.ValueToString }
+
+```python
+nodes.converter.ValueToString(value=0.0, decimals=0, *, data_type='FLOAT')
+```
+
+Generate a string representation of the given input value
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_decimals](#nodebpy.nodes.converter.ValueToString.i_decimals) | Input socket: Decimals |
+| [i_value](#nodebpy.nodes.converter.ValueToString.i_value) | Input socket: Value |
+| [o_string](#nodebpy.nodes.converter.ValueToString.o_string) | Output socket: String |
 
 ### VectorMath { #nodebpy.nodes.converter.VectorMath }
 
