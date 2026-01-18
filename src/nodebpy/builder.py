@@ -117,14 +117,19 @@ class SocketContext:
         pass
 
 
-class InputInterfaceContext(SocketContext):
+class DirectionalContext(SocketContext):
+    """Base class for directional socket contexts"""
+
+    _direction: Literal["INPUT", "OUTPUT"] = "INPUT"
+    _active_context = None
+
+
+class InputInterfaceContext(DirectionalContext):
     _direction = "INPUT"
-    _active_context = None
 
 
-class OutputInterfaceContext(SocketContext):
+class OutputInterfaceContext(DirectionalContext):
     _direction = "OUTPUT"
-    _active_context = None
 
 
 class TreeBuilder:
@@ -762,6 +767,8 @@ class SocketBase(SocketLinker):
             setattr(self.interface_socket, key, value)
 
 
+
+
 class SocketGeometry(SocketBase):
     """Geometry socket - holds mesh, curve, point cloud, or volume data."""
 
@@ -846,10 +853,10 @@ class SocketVector(SocketBase):
         default_attribute: str | None = None,
         attribute_domain: _AttributeDomains = "POINT",
     ):
-        super().__init__(name, description)
         assert len(default_value) == dimensions, (
             "Default value length must match dimensions"
         )
+        super().__init__(name, description)
         self._set_values(
             dimensions=dimensions,
             default_value=default_value,
@@ -907,8 +914,8 @@ class SocketColor(SocketBase):
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
-        super().__init__(name, description)
         assert len(default_value) == 4, "Default color must be RGBA tuple"
+        super().__init__(name, description)
         self._set_values(
             default_value=default_value,
             hide_value=hide_value,
@@ -934,7 +941,6 @@ class SocketRotation(SocketBase):
         default_attribute: str | None = None,
     ):
         super().__init__(name, description)
-        assert len(default_value) == 4, "Default rotation must be quaternion tuple"
         self._set_values(
             default_value=default_value,
             hide_value=hide_value,
