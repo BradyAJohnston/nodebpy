@@ -1,9 +1,119 @@
+import bpy
+from bpy.types import NodeSocket
+
 from nodebpy.builder import NodeBuilder, SocketLinker
 
+from .types import (
+    LINKABLE,
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_GEOMETRY,
+    _AttributeDomains,
+    _BakeDataTypes,
+    _BakedDataTypeValues,
+)
 
-import bpy
 
-from .types import LINKABLE, TYPE_INPUT_BOOLEAN, _AttributeDomains, TYPE_INPUT_GEOMETRY
+def simulation_zone(*args: LINKABLE, **kwargs: LINKABLE):
+    input = SimulationInput()
+    output = SimulationOutput()
+    input.node.pair_with_output(output.node)
+
+    output.node.state_items.clear()
+    socket_lookup = output._add_inputs(*args, **kwargs)
+    for name, source in socket_lookup.items():
+        input.link_from(source, name)
+
+    return input, output
+
+
+class SimulationInput(NodeBuilder):
+    """Simulation Input node"""
+
+    name = "GeometryNodeSimulationInput"
+    node: bpy.types.GeometryNodeSimulationInput
+
+    def _add_socket(self, name: str, type: _BakeDataTypes):
+        item = self.output_node.state_items.new(type, name)
+        return self.output_node.inputs[item.name]
+
+    def capture(self, value: LINKABLE) -> SocketLinker:
+        """Capture something as an input to the simulation"""
+        # the _add_inputs returns a dictionary but we only want the first key
+        # because we are adding a single input
+        self._establish_links(**self._add_inputs(value))
+        return SocketLinker(self.node.outputs[-2])
+
+    @property
+    def o_delta_time(self) -> SocketLinker:
+        """Output socket: Delta Time"""
+        return self._output("Delta Time")
+
+    @property
+    def output_node(self) -> bpy.types.GeometryNodeSimulationOutput:
+        zone_output = self.node.paired_output  # type: ignore
+        assert zone_output is not None
+        return zone_output  # type: ignore
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name])
+            for item in self.output_node.state_items
+        }
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name])
+            for item in self.output_node.state_items
+        }
+
+
+class SimulationOutput(NodeBuilder):
+    """Simulation Output node"""
+
+    name = "GeometryNodeSimulationOutput"
+    node: bpy.types.GeometryNodeSimulationOutput
+
+    def capture(
+        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
+    ) -> SocketLinker:
+        """Capture something as an output to the simulation, optionally specifying the domain"""
+        # the _add_inputs returns a dictionary but we only want the first key
+        # because we are adding a single input
+        input_dict = self._add_inputs(value)
+        name = next(iter(input_dict))
+        self.node.state_items[name].attribute_domain = domain
+        return SocketLinker(self.node.inputs[name])
+
+    def _add_socket(self, name: str, type: _BakeDataTypes):
+        item = self.node.state_items.new(type, name)
+        return self.node.inputs[item.name]
+
+    @property
+    def _default_input_socket(self) -> NodeSocket:
+        # we want the default input socket to not be the "skip" socket which is the first one
+        # and would otherwise potentially be picked
+        return next(iter(self.inputs.values())).socket
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name])
+            for item in self.node.state_items
+        }
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name])
+            for item in self.node.state_items
+        }
+
+    @property
+    def i_skip(self) -> SocketLinker:
+        """Input socket: Skip simluation frame"""
+        return self._input("Skip")
 
 
 class ForEachGeometryElementInput(NodeBuilder):

@@ -393,7 +393,7 @@ class CaptureAttribute(NodeBuilder):
 
     def __init__(
         self,
-        *args,
+        *args: LINKABLE,
         geometry: TYPE_INPUT_GEOMETRY = None,
         domain: _AttributeDomains = "POINT",
         **kwargs,

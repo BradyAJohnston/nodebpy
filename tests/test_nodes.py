@@ -1,7 +1,8 @@
 import itertools
-from turtle import position
+from turtle import pos, position
 
 import pytest
+from bpy.types import OUTLINER_HT_header
 
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
@@ -125,7 +126,7 @@ def test_field_to_grid():
         ftg = n.FieldToGrid(*inputs, test=n.Value())
         _ = ftg.outputs["test"] >> math
 
-    assert len(tree.nodes) == 8
+    assert len(tree) == 8
     assert len(ftg.node.grid_items) == 6
     assert ftg.node.grid_items[5].name == "test"
     assert ftg.outputs["test"].socket.links[0].to_socket.node == math.node
@@ -143,7 +144,7 @@ def test_geometry_to_instance():
         inputs = [n.Cube(), n.UVSphere(), n.IcoSphere(), n.Cone()]
         gti = n.GeometryToInstance(*inputs)
 
-    assert len(tree.nodes) == 5
+    assert len(tree) == 5
     assert len(gti.node.inputs[0].links) == 4
     assert gti._default_input_socket.links[2].from_node == inputs[2].node
     assert gti._default_input_socket.links[1].from_node == inputs[1].node
@@ -187,7 +188,7 @@ def test_sdf_grid_boolean():
         bool2 = n.SDFGridBoolean.intersect(*trio)
         bool3 = n.SDFGridBoolean.union(*trio)
 
-    assert len(tree.nodes) == 8
+    assert len(tree) == 8
     assert (
         bool1.i_grid_1.socket.links[0].from_node.bl_idname == "GeometryNodeGetNamedGrid"
     )
@@ -208,7 +209,7 @@ def test_domain_size(domain, output):
         domain_size = n.DomainSize(n.Points(10), component=domain)
         domain_size >> n.Points()
 
-    assert len(tree.nodes) == 3
+    assert len(tree) == 3
     assert len(domain_size.node.outputs[output].links) == 1
 
 
@@ -241,7 +242,26 @@ def test_bake():
         )
         set_pos = bake >> n.SetPosition()
 
-    assert len(tree.nodes) == 8
+    assert len(tree) == 8
     assert len(bake.node.bake_items) == 3
     assert set_pos.node.inputs[0].links[0].from_node == bake.node
     assert set_pos.node.inputs[0].links[0].from_socket == bake.node.outputs[0]
+
+
+def test_simulation(snapshot_tree):
+    with TreeBuilder() as tree:
+        cube = n.Cube()
+        input, output = n.simulation_zone(cube)
+        pos_math = input.capture(n.Position()) * n.Position()
+        _ = pos_math >> output
+        _ = (
+            input
+            >> n.SetPosition(
+                offset=input.o_delta_time * n.Vector((0, 0, 0.1)) * pos_math
+            )
+            >> output
+        )
+        _ = output >> n.SetPosition(position=output.outputs["Position"])
+    assert len(output.node.inputs["Skip"].links) == 0
+    assert len(tree) == 13
+    assert snapshot_tree == tree

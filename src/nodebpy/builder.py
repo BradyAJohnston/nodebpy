@@ -165,6 +165,9 @@ class TreeBuilder:
     def nodes(self) -> Nodes:
         return self.tree.nodes
 
+    def __len__(self) -> int:
+        return len(self.nodes)
+
     def arrange(self):
         settings = arrangebpy.LayoutSettings(
             horizontal_spacing=200, vertical_spacing=200, align_top_layer=True
@@ -396,7 +399,7 @@ class NodeBuilder:
             f"Unsupported socket type for linking: {linkable}, type: {linkable.type=}"
         )
 
-    def _add_inputs(self, *args, **kwargs) -> dict[str, TYPE_INPUT_ALL]:
+    def _add_inputs(self, *args, **kwargs) -> dict[str, LINKABLE]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
         new_sockets = {}
         items = {}

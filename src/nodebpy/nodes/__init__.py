@@ -298,7 +298,13 @@ from .input import (
 )
 from .interface import DialGizmo, LinearGizmo, TransformGizmo, Viewer, Warning
 from .texture import ImageTexture
-from .zone import ForEachGeometryElementInput, ForEachGeometryElementOutput
+from .zone import (
+    ForEachGeometryElementInput,
+    ForEachGeometryElementOutput,
+    SimulationInput,
+    SimulationOutput,
+    simulation_zone,
+)
 
 __all__ = [
     # modules"
@@ -310,6 +316,10 @@ __all__ = [
     "grid",
     "vector",
     "zone",
+    # from zone
+    "SimulationInput",
+    "SimulationOutput",
+    "simulation_zone",
     # From attribute
     "AttributeStatistic",
     "BlurAttribute",

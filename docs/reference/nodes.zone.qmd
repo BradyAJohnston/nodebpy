@@ -10,6 +10,8 @@
 | --- | --- |
 | [ForEachGeometryElementInput](#nodebpy.nodes.zone.ForEachGeometryElementInput) | For Each Geometry Element Input node |
 | [ForEachGeometryElementOutput](#nodebpy.nodes.zone.ForEachGeometryElementOutput) | For Each Geometry Element Output node |
+| [SimulationInput](#nodebpy.nodes.zone.SimulationInput) | Simulation Input node |
+| [SimulationOutput](#nodebpy.nodes.zone.SimulationOutput) | Simulation Output node |
 
 ### ForEachGeometryElementInput { #nodebpy.nodes.zone.ForEachGeometryElementInput }
 
@@ -63,3 +65,59 @@ For Each Geometry Element Output node
 | [o_generation_0](#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_generation_0) | Output socket: Geometry |
 | [o_geometry](#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_geometry) | Output socket: Geometry |
 | [o_input_socket](#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_input_socket) | Output socket: |
+
+### SimulationInput { #nodebpy.nodes.zone.SimulationInput }
+
+```python
+nodes.zone.SimulationInput()
+```
+
+Simulation Input node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [o_delta_time](#nodebpy.nodes.zone.SimulationInput.o_delta_time) | Output socket: Delta Time |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.zone.SimulationInput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.zone.SimulationInput.capture }
+
+```python
+nodes.zone.SimulationInput.capture(value)
+```
+
+Capture something as an input to the simulation
+
+### SimulationOutput { #nodebpy.nodes.zone.SimulationOutput }
+
+```python
+nodes.zone.SimulationOutput()
+```
+
+Simulation Output node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_skip](#nodebpy.nodes.zone.SimulationOutput.i_skip) | Input socket: Skip simluation frame |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.zone.SimulationOutput.capture) | Capture something as an output to the simulation, optionally specifying the domain |
+
+##### capture { #nodebpy.nodes.zone.SimulationOutput.capture }
+
+```python
+nodes.zone.SimulationOutput.capture(value, domain='POINT')
+```
+
+Capture something as an output to the simulation, optionally specifying the domain
