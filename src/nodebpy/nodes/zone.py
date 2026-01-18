@@ -36,12 +36,17 @@ class SimulationInput(NodeBuilder):
         item = self.output_node.state_items.new(type, name)
         return self.output_node.inputs[item.name]
 
-    def capture(self, value: LINKABLE) -> SocketLinker:
-        """Capture something as an input to the simulation"""
+    def capture(
+        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
+    ) -> SocketLinker:
+        """Capture something as an output to the simulation, optionally specifying the domain"""
         # the _add_inputs returns a dictionary but we only want the first key
         # because we are adding a single input
-        self._establish_links(**self._add_inputs(value))
-        return SocketLinker(self.node.outputs[-2])
+        input_dict = self._add_inputs(value)
+        self._establish_links(**input_dict)
+        name = next(iter(input_dict))
+        self.output_node.state_items[name].attribute_domain = domain
+        return SocketLinker(self.node.inputs[name])
 
     @property
     def o_delta_time(self) -> SocketLinker:
@@ -82,6 +87,7 @@ class SimulationOutput(NodeBuilder):
         # the _add_inputs returns a dictionary but we only want the first key
         # because we are adding a single input
         input_dict = self._add_inputs(value)
+        self._establish_links(**input_dict)
         name = next(iter(input_dict))
         self.node.state_items[name].attribute_domain = domain
         return SocketLinker(self.node.inputs[name])
@@ -186,7 +192,7 @@ class RepeatOutput(NodeBuilder):
     def capture(
         self, value: LINKABLE, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
-        """Capture something as an output to the simulation, optionally specifying the domain"""
+        """Capture something as an output to the simulation"""
         # the _add_inputs returns a dictionary but we only want the first key
         # because we are adding a single input
         input_dict = self._add_inputs(value)
