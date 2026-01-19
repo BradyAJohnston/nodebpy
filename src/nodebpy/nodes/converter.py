@@ -1,12 +1,17 @@
 from typing import Literal
 
 import bpy
+from arrangebpy.arrange.ranking import TYPE_CHECKING
+from mathutils import Euler
+from numpy.ma.extras import isin
 
 from ..builder import NodeBuilder, SocketLinker
 from . import types
 from .types import (
     LINKABLE,
+    SOCKET_COMPATIBILITY,
     SOCKET_TYPES,
+    TYPE_INPUT_ALL,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_COLOR,
     TYPE_INPUT_INT,
@@ -20,6 +25,7 @@ from .types import (
     _AttributeDomains,
     _EvaluateAtIndexDataTypes,
     _IntegerMathOperations,
+    _is_default_value,
     _MixColorBlendTypes,
     _MixDataTypes,
     _RandomValueDataTypes,
@@ -3995,4 +4001,133 @@ class MapRange(NodeBuilder):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+
+class IndexSwitch(NodeBuilder):
+    """Node builder for the Index Switch node"""
+
+    name = "GeometryNodeIndexSwitch"
+    node: bpy.types.GeometryNodeIndexSwitch
+
+    def __init__(
+        self,
+        *args: TYPE_INPUT_ALL,
+        index: TYPE_INPUT_INT = 0,
+        data_type: SOCKET_TYPES = "FLOAT",
+    ):
+        super().__init__()
+        self.data_type = data_type
+        key_args: dict[str, TYPE_INPUT_ALL] = {"Index": index}
+        self.node.index_switch_items.clear()
+        for i, arg in enumerate(args):
+            self.node.index_switch_items.new()
+            key_args[str(i)] = arg
+        self._establish_links(**key_args)
+
+    @property
+    def inputs(self) -> list[SocketLinker]:
+        """Input sockets"""
+        return [
+            SocketLinker(self.node.inputs[i + 1])
+            for i in range(len(self.node.index_switch_items))
+        ]
+
+    @property
+    def i_index(self) -> SocketLinker:
+        """Input socket: Index"""
+        return self._input("Index")
+
+    @property
+    def o_output(self) -> SocketLinker:
+        """Output socket: Output"""
+        return self._output("Output")
+
+    @property
+    def data_type(self) -> SOCKET_TYPES:
+        """Input socket: Data Type"""
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(self, value: SOCKET_TYPES):
+        """Input socket: Data Type"""
+        self.node.data_type = value
+
+
+class MenuSwitch(NodeBuilder):
+    """Node builder for the Index Switch node"""
+
+    name = "GeometryNodeMenuSwitch"
+    node: bpy.types.GeometryNodeMenuSwitch
+
+    def __init__(
+        self,
+        *args: TYPE_INPUT_ALL,
+        menu: TYPE_INPUT_MENU = None,
+        data_type: SOCKET_TYPES = "FLOAT",
+        **kwargs: TYPE_INPUT_ALL,
+    ):
+        super().__init__()
+        self.data_type = data_type
+        self.node.enum_items.clear()
+        key_args = {"Menu": menu}
+        self._link_args(*args, **kwargs)
+        self._establish_links(**key_args)
+
+    def _link_args(self, *args: TYPE_INPUT_ALL, **kwargs: TYPE_INPUT_ALL):
+        for arg in args:
+            if _is_default_value(arg):
+                socket = self._create_socket(f"Item_{len(self.node.enum_items)}")
+                socket.default_value = arg
+            else:
+                source = self._source_socket(arg)
+                self.tree.link(source, self.node.inputs["__extend__"])
+
+        for key, value in kwargs.items():
+            if _is_default_value(value):
+                socket = self._create_socket(key)
+                socket.default_value = value
+            else:
+                source = self._source_socket(value)  # type: ignore
+                self.link(source, self.node.inputs["__extend__"])
+                self.node.enum_items[-1].name = key
+
+    def _create_socket(self, name: str) -> bpy.types.NodeSocket:
+        item = self.node.enum_items.new(name)
+        return self.node.inputs[item.name]
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        """Input sockets"""
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name])
+            for item in self.node.enum_items
+        }
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        """Input sockets"""
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name])
+            for item in self.node.enum_items
+        }
+
+    @property
+    def i_menu(self) -> SocketLinker:
+        """Input socket: Menu"""
+        return self._input("Menu")
+
+    @property
+    def o_output(self) -> SocketLinker:
+        """Output socket: Output"""
+        return self._output("Output")
+
+    @property
+    def data_type(self) -> SOCKET_TYPES:
+        """Input socket: Data Type"""
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(self, value: SOCKET_TYPES):
+        """Input socket: Data Type"""
         self.node.data_type = value

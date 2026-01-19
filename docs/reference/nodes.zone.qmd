@@ -8,12 +8,75 @@
 
 | Name | Description |
 | --- | --- |
+| [BaseZoneInput](#nodebpy.nodes.zone.BaseZoneInput) | Base class for zone input nodes |
+| [BaseZoneOutput](#nodebpy.nodes.zone.BaseZoneOutput) | Base class for zone output nodes |
 | [ForEachGeometryElementInput](#nodebpy.nodes.zone.ForEachGeometryElementInput) | For Each Geometry Element Input node |
 | [ForEachGeometryElementOutput](#nodebpy.nodes.zone.ForEachGeometryElementOutput) | For Each Geometry Element Output node |
 | [RepeatInput](#nodebpy.nodes.zone.RepeatInput) | Repeat Input node |
 | [RepeatOutput](#nodebpy.nodes.zone.RepeatOutput) | Repeat Output node |
+| [RepeatZone](#nodebpy.nodes.zone.RepeatZone) | Wrapper that supports both direct unpacking and iteration |
 | [SimulationInput](#nodebpy.nodes.zone.SimulationInput) | Simulation Input node |
 | [SimulationOutput](#nodebpy.nodes.zone.SimulationOutput) | Simulation Output node |
+
+### BaseZoneInput { #nodebpy.nodes.zone.BaseZoneInput }
+
+```python
+nodes.zone.BaseZoneInput()
+```
+
+Base class for zone input nodes
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.zone.BaseZoneInput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.zone.BaseZoneInput.items) | Return the items collection |
+| [outputs](#nodebpy.nodes.zone.BaseZoneInput.outputs) | Get all output sockets based on items collection |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.zone.BaseZoneInput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.zone.BaseZoneInput.capture }
+
+```python
+nodes.zone.BaseZoneInput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### BaseZoneOutput { #nodebpy.nodes.zone.BaseZoneOutput }
+
+```python
+nodes.zone.BaseZoneOutput()
+```
+
+Base class for zone output nodes
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.zone.BaseZoneOutput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.zone.BaseZoneOutput.items) | Return the items collection |
+| [outputs](#nodebpy.nodes.zone.BaseZoneOutput.outputs) | Get all output sockets based on items collection |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.zone.BaseZoneOutput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.zone.BaseZoneOutput.capture }
+
+```python
+nodes.zone.BaseZoneOutput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
 
 ### ForEachGeometryElementInput { #nodebpy.nodes.zone.ForEachGeometryElementInput }
 
@@ -80,7 +143,9 @@ Repeat Input node
 
 | Name | Description |
 | --- | --- |
+| [inputs](#nodebpy.nodes.zone.RepeatInput.inputs) | Get all input sockets based on items collection |
 | [o_iteration](#nodebpy.nodes.zone.RepeatInput.o_iteration) | Output socket: Iteration |
+| [outputs](#nodebpy.nodes.zone.RepeatInput.outputs) | Get all output sockets based on items collection |
 
 #### Methods
 
@@ -91,7 +156,7 @@ Repeat Input node
 ##### capture { #nodebpy.nodes.zone.RepeatInput.capture }
 
 ```python
-nodes.zone.RepeatInput.capture(value)
+nodes.zone.RepeatInput.capture(value, domain='POINT')
 ```
 
 Capture something as an input to the simulation
@@ -104,11 +169,18 @@ nodes.zone.RepeatOutput()
 
 Repeat Output node
 
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.zone.RepeatOutput.inputs) | Get all input sockets based on items collection |
+| [outputs](#nodebpy.nodes.zone.RepeatOutput.outputs) | Get all output sockets based on items collection |
+
 #### Methods
 
 | Name | Description |
 | --- | --- |
-| [capture](#nodebpy.nodes.zone.RepeatOutput.capture) | Capture something as an output to the simulation, optionally specifying the domain |
+| [capture](#nodebpy.nodes.zone.RepeatOutput.capture) | Capture something as an input to the simulation |
 
 ##### capture { #nodebpy.nodes.zone.RepeatOutput.capture }
 
@@ -116,7 +188,21 @@ Repeat Output node
 nodes.zone.RepeatOutput.capture(value, domain='POINT')
 ```
 
-Capture something as an output to the simulation, optionally specifying the domain
+Capture something as an input to the simulation
+
+### RepeatZone { #nodebpy.nodes.zone.RepeatZone }
+
+```python
+nodes.zone.RepeatZone(iterations=1, *args, **kwargs)
+```
+
+Wrapper that supports both direct unpacking and iteration
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i](#nodebpy.nodes.zone.RepeatZone.i) | Input socket: Skip simluation frame |
 
 ### SimulationInput { #nodebpy.nodes.zone.SimulationInput }
 
@@ -130,7 +216,9 @@ Simulation Input node
 
 | Name | Description |
 | --- | --- |
+| [inputs](#nodebpy.nodes.zone.SimulationInput.inputs) | Get all input sockets based on items collection |
 | [o_delta_time](#nodebpy.nodes.zone.SimulationInput.o_delta_time) | Output socket: Delta Time |
+| [outputs](#nodebpy.nodes.zone.SimulationInput.outputs) | Get all output sockets based on items collection |
 
 #### Methods
 
@@ -141,7 +229,7 @@ Simulation Input node
 ##### capture { #nodebpy.nodes.zone.SimulationInput.capture }
 
 ```python
-nodes.zone.SimulationInput.capture(value)
+nodes.zone.SimulationInput.capture(value, domain='POINT')
 ```
 
 Capture something as an input to the simulation
@@ -159,12 +247,14 @@ Simulation Output node
 | Name | Description |
 | --- | --- |
 | [i_skip](#nodebpy.nodes.zone.SimulationOutput.i_skip) | Input socket: Skip simluation frame |
+| [inputs](#nodebpy.nodes.zone.SimulationOutput.inputs) | Get all input sockets based on items collection |
+| [outputs](#nodebpy.nodes.zone.SimulationOutput.outputs) | Get all output sockets based on items collection |
 
 #### Methods
 
 | Name | Description |
 | --- | --- |
-| [capture](#nodebpy.nodes.zone.SimulationOutput.capture) | Capture something as an output to the simulation, optionally specifying the domain |
+| [capture](#nodebpy.nodes.zone.SimulationOutput.capture) | Capture something as an input to the simulation |
 
 ##### capture { #nodebpy.nodes.zone.SimulationOutput.capture }
 
@@ -172,4 +262,4 @@ Simulation Output node
 nodes.zone.SimulationOutput.capture(value, domain='POINT')
 ```
 
-Capture something as an output to the simulation, optionally specifying the domain
+Capture something as an input to the simulation

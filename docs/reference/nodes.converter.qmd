@@ -32,6 +32,7 @@
 | [FormatString](#nodebpy.nodes.converter.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
 | [HashValue](#nodebpy.nodes.converter.HashValue) | Generate a randomized integer using the given input value as a seed |
 | [IndexOfNearest](#nodebpy.nodes.converter.IndexOfNearest) | Find the nearest element in a group. Similar to the "Sample Nearest" node |
+| [IndexSwitch](#nodebpy.nodes.converter.IndexSwitch) | Node builder for the Index Switch node |
 | [IntegerMath](#nodebpy.nodes.converter.IntegerMath) | Perform various math operations on the given integer inputs |
 | [InvertMatrix](#nodebpy.nodes.converter.InvertMatrix) | Compute the inverse of the given matrix, if one exists |
 | [InvertRotation](#nodebpy.nodes.converter.InvertRotation) | Compute the inverse of the given rotation |
@@ -40,6 +41,7 @@
 | [MatchString](#nodebpy.nodes.converter.MatchString) | Check if a given string exists within another string |
 | [Math](#nodebpy.nodes.converter.Math) | Perform math operations |
 | [MatrixDeterminant](#nodebpy.nodes.converter.MatrixDeterminant) | Compute the determinant of the given matrix |
+| [MenuSwitch](#nodebpy.nodes.converter.MenuSwitch) | Node builder for the Index Switch node |
 | [Mix](#nodebpy.nodes.converter.Mix) | Mix values by a factor |
 | [MultiplyMatrices](#nodebpy.nodes.converter.MultiplyMatrices) | Perform a matrix multiplication on two input matrices |
 | [PackUVIslands](#nodebpy.nodes.converter.PackUVIslands) | Scale islands of a UV map and move them so they fill the UV space as much as possible |
@@ -721,6 +723,23 @@ Find the nearest element in a group. Similar to the "Sample Nearest" node
 | [o_has_neighbor](#nodebpy.nodes.converter.IndexOfNearest.o_has_neighbor) | Output socket: Has Neighbor |
 | [o_index](#nodebpy.nodes.converter.IndexOfNearest.o_index) | Output socket: Index |
 
+### IndexSwitch { #nodebpy.nodes.converter.IndexSwitch }
+
+```python
+nodes.converter.IndexSwitch(*args, index=0, data_type='FLOAT')
+```
+
+Node builder for the Index Switch node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.converter.IndexSwitch.data_type) | Input socket: Data Type |
+| [i_index](#nodebpy.nodes.converter.IndexSwitch.i_index) | Input socket: Index |
+| [inputs](#nodebpy.nodes.converter.IndexSwitch.inputs) | Input sockets |
+| [o_output](#nodebpy.nodes.converter.IndexSwitch.o_output) | Output socket: Output |
+
 ### IntegerMath { #nodebpy.nodes.converter.IntegerMath }
 
 ```python
@@ -1390,6 +1409,24 @@ Compute the determinant of the given matrix
 | --- | --- |
 | [i_matrix](#nodebpy.nodes.converter.MatrixDeterminant.i_matrix) | Input socket: Matrix |
 | [o_determinant](#nodebpy.nodes.converter.MatrixDeterminant.o_determinant) | Output socket: Determinant |
+
+### MenuSwitch { #nodebpy.nodes.converter.MenuSwitch }
+
+```python
+nodes.converter.MenuSwitch(*args, menu=None, data_type='FLOAT', **kwargs)
+```
+
+Node builder for the Index Switch node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.converter.MenuSwitch.data_type) | Input socket: Data Type |
+| [i_menu](#nodebpy.nodes.converter.MenuSwitch.i_menu) | Input socket: Menu |
+| [inputs](#nodebpy.nodes.converter.MenuSwitch.inputs) | Input sockets |
+| [o_output](#nodebpy.nodes.converter.MenuSwitch.o_output) | Output socket: Output |
+| [outputs](#nodebpy.nodes.converter.MenuSwitch.outputs) | Input sockets |
 
 ### Mix { #nodebpy.nodes.converter.Mix }
 

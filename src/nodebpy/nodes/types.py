@@ -25,23 +25,14 @@ if typing.TYPE_CHECKING:
     from ..builder import NodeBuilder, SocketLinker
 
 
+def _is_default_value(value: TYPE_INPUT_ALL):
+    return isinstance(value, (int, float, str, bool, tuple, list, Euler))
+
+
 # Type aliases for node inputs using typing.Union for runtime compatibility
 LINKABLE = typing.Union["NodeBuilder", "SocketLinker", NodeSocket, None]
-TYPE_INPUT_VECTOR = typing.Union[
-    typing.Tuple[float, float, float],
-    LINKABLE,
-    NodeSocketVector,
-    NodeSocketInt,
-    NodeSocketFloat,
-    NodeSocketColor,
-]
 TYPE_INPUT_ROTATION = typing.Union[
-    tuple[float, float, float],
-    Euler,
-    "NodeSocket",
-    "NodeBuilder",
-    "SocketLinker",
-    None,
+    tuple[float, float, float], float, int, Euler, LINKABLE
 ]
 TYPE_INPUT_BOOLEAN = typing.Union[
     bool, LINKABLE, NodeSocketBool, NodeSocketInt, NodeSocketFloat, NodeSocketVector
@@ -50,12 +41,22 @@ TYPE_INPUT_VALUE = typing.Union[float, int, LINKABLE, NodeSocketInt, NodeSocketF
 TYPE_INPUT_INT = typing.Union[
     int, LINKABLE, NodeSocketInt, NodeSocketInt, NodeSocketInt
 ]
+TYPE_INPUT_VECTOR = typing.Union[
+    typing.Tuple[float, float, float],
+    LINKABLE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_BOOLEAN,
+    NodeSocketVector,
+    NodeSocketColor,
+    TYPE_INPUT_ROTATION,
+]
 
 
-TYPE_INPUT_STRING = typing.Union[str, LINKABLE, NodeSocketString]
 TYPE_INPUT_COLOR = typing.Union[
     LINKABLE, tuple[float, float, float, float], NodeSocketColor
 ]
+TYPE_INPUT_STRING = typing.Union[str, LINKABLE, NodeSocketString]
 TYPE_INPUT_GEOMETRY = typing.Union[LINKABLE, NodeSocketGeometry]
 TYPE_INPUT_OBJECT = typing.Union[LINKABLE, NodeSocketObject]
 TYPE_INPUT_MATERIAL = typing.Union[LINKABLE, NodeSocketMaterial]

@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from ntpath import getatime
+from typing import Literal
 
 import bpy
 from bpy.types import NodeSocket
@@ -15,25 +17,70 @@ from .types import (
 )
 
 
-class BaseZoneInput(NodeBuilder, ABC):
+class BaseZone(NodeBuilder, ABC):
+    _items_attribute: Literal["state_items", "repeat_items"]
+
+    @property
+    @abstractmethod
+    def _items_node(
+        self,
+    ) -> bpy.types.GeometryNodeRepeatOutput | bpy.types.GeometryNodeSimulationOutput:
+        """Return the items node (state_node, repeat_node, etc.)"""
+        pass
+
+    @property
+    @abstractmethod
+    def items(
+        self,
+    ) -> (
+        bpy.types.NodeGeometryRepeatOutputItems
+        | bpy.types.NodeGeometrySimulationOutputItems
+    ):
+        """Return the items collection"""
+        pass
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        """Get all output sockets based on items collection"""
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name]) for item in self.items
+        }
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        """Get all input sockets based on items collection"""
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name]) for item in self.items
+        }
+
+    def capture(
+        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
+    ) -> SocketLinker:
+        """Capture something as an input to the simulation"""
+        item_dict = self._add_inputs(value)
+        self._establish_links(**item_dict)
+        return SocketLinker(self.node.outputs[-2])
+
+
+class BaseZoneInput(BaseZone, NodeBuilder, ABC):
     """Base class for zone input nodes"""
 
-    @property
-    @abstractmethod
-    def output_node(self):
-        """Return the paired output node"""
-        pass
+    node: bpy.types.GeometryNodeSimulationInput | bpy.types.GeometryNodeRepeatInput
 
     @property
-    @abstractmethod
-    def items_collection(self):
-        """Return the items collection (state_items, repeat_items, etc.)"""
-        pass
+    def _items_node(self):  # type: ignore
+        return self.node.paired_output
+
+    @property
+    def output(
+        self,
+    ) -> bpy.types.GeometryNodeSimulationOutput | bpy.types.GeometryNodeRepeatOutput:
+        return self.node.paired_output  # type: ignore
 
     def _add_socket(self, name: str, type: _BakeDataTypes):
         """Add a socket to the zone"""
-        item = self.items_collection.new(type, name)
-        return self.output_node.inputs[item.name]
+        item = self.items.new(type, name)
+        return self.inputs[item.name]
 
     def __rshift__(self, other):
         """Custom zone input linking that creates sockets as needed"""
@@ -59,36 +106,21 @@ class BaseZoneInput(NodeBuilder, ABC):
             # Use the general smart linking approach
             return self._smart_link_to(other)
 
-    @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        """Get all output sockets based on items collection"""
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.items_collection
-        }
 
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        """Get all input sockets based on items collection"""
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.items_collection
-        }
-
-
-
-class BaseZoneOutput(NodeBuilder, ABC):
+class BaseZoneOutput(BaseZone, NodeBuilder, ABC):
     """Base class for zone output nodes"""
 
+    node: bpy.types.GeometryNodeSimulationOutput | bpy.types.GeometryNodeRepeatOutput
+
     @property
-    @abstractmethod
-    def items_collection(self):
-        """Return the items collection (state_items, repeat_items, etc.)"""
-        pass
+    def _items_node(
+        self,
+    ) -> bpy.types.GeometryNodeRepeatOutput | bpy.types.GeometryNodeSimulationOutput:
+        return self.node
 
     def _add_socket(self, name: str, type: _BakeDataTypes):
         """Add a socket to the zone"""
-        item = self.items_collection.new(type, name)
+        item = self.items.new(type, name)
         return self.node.inputs[item.name]
 
     def __rshift__(self, other):
@@ -127,128 +159,56 @@ class BaseZoneOutput(NodeBuilder, ABC):
             # Return None to signal that a socket needs to be created
             return None
 
-    @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        """Get all output sockets based on items collection"""
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.items_collection
-        }
+
+class SimulationZone:
+    def __init__(self, *args: LINKABLE, **kwargs: LINKABLE):
+        self.input = SimulationInput()
+        self.output = SimulationOutput()
+        self.input.node.pair_with_output(self.output.node)
+
+        self.output.node.state_items.clear()
+        socket_lookup = self.output._add_inputs(*args, **kwargs)
+        for name, source in socket_lookup.items():
+            self.input.link_from(source, name)
+
+    def delta_time(self) -> SocketLinker:
+        return self.input.o_delta_time
+
+    def __getitem__(self, index: int):
+        match index:
+            case 0:
+                return self.input
+            case 1:
+                return self.output
+            case _:
+                raise IndexError("SimulationZone has only two items")
+
+
+class BaseSimulationZone(BaseZone):
+    _items_attribute = "state_items"
 
     @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        """Get all input sockets based on items collection"""
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.items_collection
-        }
+    def items(self) -> bpy.types.NodeGeometrySimulationOutputItems:
+        return self._items_node.state_items  # type: ignore
 
 
-def simulation_zone(*args: LINKABLE, **kwargs: LINKABLE):
-    """Create a simulation zone for iterative geometry processing over time
-
-    Simulation zones allow geometry to evolve over multiple frames, with state
-    persisting between Blender frames.
-
-    Args:
-        *args: Initial geometry or data to pass into the simulation
-        **kwargs: Named inputs to the simulation zone
-
-    Returns:
-        tuple[SimulationInput, SimulationOutput]: Input and output nodes for the simulation
-
-    Usage:
-        ```python
-        with TreeBuilder() as tree:
-            cube = n.Cube()
-            input, output = n.simulation_zone(cube)
-
-            # Capture position for feedback
-            pos_math = input.capture(n.Position()) * n.Position()
-            pos_math >> output
-
-            # Move geometry based on delta time
-            input >> n.SetPosition(
-                offset=input.o_delta_time * n.Vector((0, 0, 0.1)) * pos_math
-            ) >> output
-
-            # Output final position
-            output >> n.SetPosition(position=output.outputs["Position"])
-        ```
-
-    The simulation input provides:
-        - o_delta_time: Time elapsed since last iteration
-        - capture(): Method to capture values for state persistence
-
-    The simulation output provides:
-        - i_skip: Boolean input to skip simulation frames
-        - outputs: Dictionary of captured state outputs
-    """
-    input = SimulationInput()
-    output = SimulationOutput()
-    input.node.pair_with_output(output.node)
-
-    output.node.state_items.clear()
-    socket_lookup = output._add_inputs(*args, **kwargs)
-    for name, source in socket_lookup.items():
-        input.link_from(source, name)
-
-    return input, output
-
-
-class SimulationInput(BaseZoneInput):
+class SimulationInput(BaseSimulationZone, BaseZoneInput):
     """Simulation Input node"""
 
     name = "GeometryNodeSimulationInput"
     node: bpy.types.GeometryNodeSimulationInput
-
-    def capture(
-        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
-    ) -> SocketLinker:
-        """Capture something as an output to the simulation, optionally specifying the domain"""
-        input_dict = self._add_inputs(value)
-        self._establish_links(**input_dict)
-        name = next(iter(input_dict))
-        self.output_node.state_items[name].attribute_domain = domain
-        return SocketLinker(self.node.inputs[name])
 
     @property
     def o_delta_time(self) -> SocketLinker:
         """Output socket: Delta Time"""
         return self._output("Delta Time")
 
-    @property
-    def output_node(self) -> bpy.types.GeometryNodeSimulationOutput:
-        zone_output = self.node.paired_output  # type: ignore
-        assert zone_output is not None
-        return zone_output  # type: ignore
 
-    @property
-    def items_collection(self):
-        """Return the state items collection"""
-        return self.output_node.state_items
-
-
-class SimulationOutput(BaseZoneOutput):
+class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
     """Simulation Output node"""
 
     name = "GeometryNodeSimulationOutput"
     node: bpy.types.GeometryNodeSimulationOutput
-
-    def capture(
-        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
-    ) -> SocketLinker:
-        """Capture something as an output to the simulation, optionally specifying the domain"""
-        input_dict = self._add_inputs(value)
-        self._establish_links(**input_dict)
-        name = next(iter(input_dict))
-        self.node.state_items[name].attribute_domain = domain
-        return SocketLinker(self.node.inputs[name])
-
-    @property
-    def items_collection(self):
-        """Return the state items collection"""
-        return self.node.state_items
 
     @property
     def i_skip(self) -> SocketLinker:
@@ -267,75 +227,35 @@ class RepeatZone:
         self.input.node.pair_with_output(self.output.node)
 
         self.output.node.repeat_items.clear()
-        socket_lookup = self.output._add_inputs(*args, **kwargs)
-        for name, source in socket_lookup.items():
-            self.input.link_from(source, name)
+        self.input._establish_links(**self.input._add_inputs(*args, **kwargs))
+
+    @property
+    def i(self) -> SocketLinker:
+        """Input socket: Skip simluation frame"""
+        return self.input.o_iteration
 
     def __iter__(self):
-        """Support for loop: for i, input, output in repeat_zone(...)"""
-        yield self.input.o_iteration, self.input, self.output
+        """Support for loop: for i, input, output in RepeatZone(...)"""
+        self._index = 0
+        return self
 
-    def __getitem__(self, index):
-        """Support direct unpacking: i, input, output = repeat_zone(...)"""
-        if index == 0:
-            return self.input.o_iteration
-        elif index == 1:
-            return self.input
-        elif index == 2:
-            return self.output
-        else:
-            raise IndexError("repeat_zone returns (iteration, input, output)")
-
-    def __len__(self):
-        """Support unpacking"""
-        return 3
+    def __next__(self):
+        """Support for iteration: next(RepeatZone)"""
+        if self._index > 0:
+            raise StopIteration
+        self._index += 1
+        return self.i, self.input, self.output
 
 
-def repeat_zone(iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKABLE):
-    """Create a repeat zone for iterative geometry operations
+class BaseRepeatZone(BaseZone):
+    _items_attribute = "repeat_items"
 
-    Repeat zones execute their contents a specified number of times, useful for
-    procedural generation, iterations, and repetitive operations. The zone provides
-    access to the current iteration index. Zones iterate linearly unless the zone can
-    detect that it isn't dependent on the inputs from previous iterations in which
-    case they can run in parallel.
-
-    Args:
-        iterations: Number of times to repeat (can be int or node outputting int)
-        *args: Initial geometry or data to pass into the repeat zone
-        **kwargs: Named inputs to the repeat zone
-
-    Returns:
-        RepeatZone: Object supporting both direct unpacking and iteration
-
-    Usage:
-        ```python
-        # Direct unpacking - gets iteration socket, input node, output node
-        i, input, output = repeat_zone(10, cube)
-        pos_math = input.capture(n.Position()) * n.Position()
-        pos_math >> output
-        input >> n.SetPosition(offset=i * n.Vector((0, 0, 0.1)) * pos_math) >> output
-        output >> n.SetPosition(position=output.outputs["Position"])
-
-        # For loop syntax - same functionality, more explicit
-        for i, input, output in repeat_zone(5):
-            join = n.JoinGeometry()
-            # i is the iteration socket, can be used in math operations
-            n.Points(i, position=n.RandomValue.vector(min=-1, seed=i)) >> join >> output
-            input >> join
-        ```
-
-    The repeat input provides:
-        - o_iteration: Current iteration index (0-based)
-        - capture(): Method to capture values between iterations
-
-    The repeat output automatically creates sockets as needed when connected to.
-    Sockets are created based on the type compatibility of the connecting node.
-    """
-    return RepeatZone(iterations, *args, **kwargs)
+    @property
+    def items(self) -> bpy.types.NodeGeometryRepeatOutputItems:
+        return self._items_node.repeat_items  # type: ignore
 
 
-class RepeatInput(BaseZoneInput):
+class RepeatInput(BaseRepeatZone, BaseZoneInput):
     """Repeat Input node"""
 
     name = "GeometryNodeRepeatInput"
@@ -345,11 +265,6 @@ class RepeatInput(BaseZoneInput):
         super().__init__()
         key_args = {"Iterations": iterations}
         self._establish_links(**key_args)
-
-    def capture(self, value: LINKABLE) -> SocketLinker:
-        """Capture something as an input to the simulation"""
-        self._establish_links(**self._add_inputs(value))
-        return SocketLinker(self.node.outputs[-2])
 
     @property
     def o_iteration(self) -> SocketLinker:
@@ -362,30 +277,12 @@ class RepeatInput(BaseZoneInput):
         assert zone_output is not None
         return zone_output  # type: ignore
 
-    @property
-    def items_collection(self):
-        """Return the repeat items collection"""
-        return self.output_node.repeat_items
 
-
-class RepeatOutput(BaseZoneOutput):
+class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
     """Repeat Output node"""
 
     name = "GeometryNodeRepeatOutput"
     node: bpy.types.GeometryNodeRepeatOutput
-
-    def capture(
-        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
-    ) -> SocketLinker:
-        """Capture something as an output to the simulation"""
-        input_dict = self._add_inputs(value)
-        name = next(iter(input_dict))
-        return SocketLinker(self.node.inputs[name])
-
-    @property
-    def items_collection(self):
-        """Return the repeat items collection"""
-        return self.node.repeat_items
 
 
 class ForEachGeometryElementInput(NodeBuilder):

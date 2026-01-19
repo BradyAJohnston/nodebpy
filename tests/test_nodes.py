@@ -1,9 +1,11 @@
 import itertools
+from decimal import DefaultContext
 
 import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
+from nodebpy import sockets as s
 
 
 def test_capture_attribute():
@@ -249,7 +251,7 @@ def test_bake():
 def test_simulation(snapshot_tree):
     with TreeBuilder() as tree:
         cube = n.Cube()
-        input, output = n.simulation_zone(cube)
+        input, output = n.SimulationZone(cube)
         pos_math = input.capture(n.Position()) * n.Position()
         _ = pos_math >> output
         _ = (
@@ -268,7 +270,7 @@ def test_simulation(snapshot_tree):
 def test_repeat(snapshot_tree):
     with TreeBuilder() as tree:
         cube = n.Cube()
-        for i, input, output in n.repeat_zone(10, cube):
+        for i, input, output in n.RepeatZone(10, cube):
             pos_math = input.capture(n.Position()) * n.Position()
             _ = pos_math >> output
             _ = (
@@ -278,14 +280,79 @@ def test_repeat(snapshot_tree):
             )
             _ = output >> n.SetPosition(position=output.outputs["Position"])
     assert len(tree) == 13
-    assert len(input.items_collection) == 2
+    assert len(input.items) == 2
     assert snapshot_tree == tree
 
     with TreeBuilder() as tree:
-        for i, input, output in n.repeat_zone(5):
-            join = n.JoinGeometry(input)
-            n.Points(i, position=n.RandomValue.vector(min=-1, seed=i)) >> join >> output
-            # input >> join
+        zone = n.RepeatZone(5)
+        # for i, input, output in n.RepeatZone(5):
+        join = n.JoinGeometry(zone.input)
+        _ = (
+            n.Points(zone.i, position=n.RandomValue.vector(min=-1, seed=zone.i))
+            >> join
+            >> zone.output
+        )
+        # input >> join
 
     assert len(tree) == 7
     assert snapshot_tree == tree
+
+
+def test_index_switch(snapshot_tree):
+    with TreeBuilder() as tree:
+        items = (n.Cube(), n.UVSphere(), n.Cube(), n.Cube())
+        index = n.IndexSwitch(*items, index=5, data_type="GEOMETRY")
+
+    assert len(index.node.index_switch_items) == 4
+    assert len(tree) == 5
+    assert index.i_index.socket.default_value == 5
+
+
+def test_menu_switch():
+    with TreeBuilder() as tree:
+        items = (
+            n.Cube(),
+            n.UVSphere(),
+            n.Cube(),
+            n.Cube(),
+        )
+        switch = n.MenuSwitch(*items, custom=n.Cone(), data_type="GEOMETRY")
+        with tree.inputs:
+            menu = s.SocketMenu()
+        menu >> switch
+        menu.socket.default_value = "Mesh"
+
+    assert switch.i_menu.socket.links[0].from_socket == menu.socket
+    assert len(switch.node.enum_items) == 5
+
+    with TreeBuilder() as tree:
+        switch = n.MenuSwitch(*range(10), data_type="FLOAT")
+
+    assert len(switch.node.enum_items) == 10
+    assert switch.inputs["Item_5"].socket.default_value == 5
+
+
+def test_multi_menu():
+    with TreeBuilder() as tree:
+        items = (n.Cube(), n.IcoSphere(), n.Grid())
+
+        menu = n.MenuSwitch(test=0, another=1, again=2, data_type="INT")
+        switch1 = n.IndexSwitch(*items, index=menu, data_type="GEOMETRY")
+        switch2 = n.IndexSwitch(*reversed(items), index=menu, data_type="GEOMETRY")
+
+        with tree.inputs:
+            menu_input = s.SocketMenu()
+            menu_input >> menu
+            menu_input.default_value = "test"
+
+        with tree.outputs:
+            n.JoinGeometry(switch1, switch2) >> s.SocketGeometry("Output")
+
+
+def test_multi_zone():
+    with TreeBuilder() as tree:
+        items = (n.Cube(), n.IcoSphere(), n.Grid())
+
+        for i, input, output in n.RepeatZone(3):
+            switch = n.IndexSwitch(*reversed(items), index=i, data_type="GEOMETRY")
+            n.JoinGeometry(input, switch) >> output

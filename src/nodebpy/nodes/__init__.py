@@ -44,6 +44,7 @@ from .converter import (
     FormatString,
     HashValue,
     IndexOfNearest,
+    IndexSwitch,
     IntegerMath,
     InvertMatrix,
     InvertRotation,
@@ -52,6 +53,7 @@ from .converter import (
     MatchString,
     Math,
     MatrixDeterminant,
+    MenuSwitch,
     Mix,
     MultiplyMatrices,
     PackUVIslands,
@@ -303,10 +305,10 @@ from .zone import (
     ForEachGeometryElementOutput,
     RepeatInput,
     RepeatOutput,
+    RepeatZone,
     SimulationInput,
     SimulationOutput,
-    repeat_zone,
-    simulation_zone,
+    SimulationZone,
 )
 
 __all__ = [
@@ -324,8 +326,8 @@ __all__ = [
     "SimulationOutput",
     "RepeatInput",
     "RepeatOutput",
-    "repeat_zone",
-    "simulation_zone",
+    "RepeatZone",
+    "SimulationZone",
     # From attribute
     "AttributeStatistic",
     "BlurAttribute",
@@ -369,6 +371,8 @@ __all__ = [
     "SetHandleType",
     "SetSplineType",
     "Spiral",
+    "IndexSwitch",
+    "MenuSwitch",
     "Star",
     "StringToCurves",
     "SubdivideCurve",
