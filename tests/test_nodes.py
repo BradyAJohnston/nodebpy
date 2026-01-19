@@ -349,10 +349,15 @@ def test_multi_menu():
             n.JoinGeometry(switch1, switch2) >> s.SocketGeometry("Output")
 
 
-def test_multi_zone():
+def test_switch_repeatzone(snapshot_tree):
     with TreeBuilder() as tree:
         items = (n.Cube(), n.IcoSphere(), n.Grid())
 
         for i, input, output in n.RepeatZone(3):
             switch = n.IndexSwitch(*reversed(items), index=i, data_type="GEOMETRY")
-            n.JoinGeometry(input, switch) >> output
+            join = n.JoinGeometry(input, switch)
+            _ = join >> output
+
+    assert len(output.items) == 1
+    assert output.inputs["Geometry"].socket.links[0].from_node == join.node
+    assert snapshot_tree == tree
