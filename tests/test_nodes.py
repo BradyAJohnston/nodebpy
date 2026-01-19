@@ -2,6 +2,8 @@ import itertools
 from decimal import DefaultContext
 
 import pytest
+from bpy import data
+from bpy.types import NodeGroup, NodeTree
 
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
@@ -351,13 +353,46 @@ def test_multi_menu():
 
 def test_switch_repeatzone(snapshot_tree):
     with TreeBuilder() as tree:
+        with tree.inputs:
+            input = s.SocketGeometry()
+        with tree.outputs:
+            output = s.SocketGeometry()
+
         items = (n.Cube(), n.IcoSphere(), n.Grid())
+        zone = n.RepeatZone(5, input)
+        switch = n.IndexSwitch(*items, index=zone.i, data_type="GEOMETRY")
+        join = n.JoinGeometry(zone.input, switch)
+        join >> zone.output >> output
 
-        for i, input, output in n.RepeatZone(3):
-            switch = n.IndexSwitch(*reversed(items), index=i, data_type="GEOMETRY")
-            join = n.JoinGeometry(input, switch)
-            _ = join >> output
-
-    assert len(output.items) == 1
-    assert output.inputs["Geometry"].socket.links[0].from_node == join.node
+    assert len(zone.output.items) == 1
+    assert zone.output.inputs["Geometry"].socket.links[0].from_node == join.node
     assert snapshot_tree == tree
+
+
+def test_generate_select_group():
+    with TreeBuilder() as tree:
+        with tree.inputs:
+            switch = n.IndexSwitch(
+                *[s.SocketBoolean(str(i)) for i in range(20)],
+                index=n.NamedAttribute("chain_id", data_type="INT"),
+                data_type="BOOLEAN",
+            )
+        with tree.outputs:
+            switch >> s.SocketBoolean("Selection")
+
+    assert len(switch.node.index_switch_items) == 20
+    assert len(tree) == 4
+
+
+def create_selection_group(*args: str) -> NodeTree:
+    with TreeBuilder() as tree:
+        with tree.inputs:
+            switch = n.IndexSwitch(
+                *[s.SocketBoolean(str(i)) for i in range(20)],
+                index=n.NamedAttribute("chain_id", data_type="INT"),
+                data_type="BOOLEAN",
+            )
+        with tree.outputs:
+            switch >> s.SocketBoolean("Selection")
+
+    return tree.tree

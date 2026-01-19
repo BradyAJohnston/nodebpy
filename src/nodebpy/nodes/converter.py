@@ -1,9 +1,7 @@
-from typing import Literal
+from typing import Any, Literal
 
 import bpy
-from arrangebpy.arrange.ranking import TYPE_CHECKING
-from mathutils import Euler
-from numpy.ma.extras import isin
+from bpy.types import NodeSocket
 
 from ..builder import NodeBuilder, SocketLinker
 from . import types
@@ -4020,10 +4018,21 @@ class IndexSwitch(NodeBuilder):
         self.data_type = data_type
         key_args: dict[str, TYPE_INPUT_ALL] = {"Index": index}
         self.node.index_switch_items.clear()
-        for i, arg in enumerate(args):
-            self.node.index_switch_items.new()
-            key_args[str(i)] = arg
+        self._link_args(*args)
         self._establish_links(**key_args)
+
+    def _create_socket(self) -> NodeSocket:
+        item = self.node.index_switch_items.new()
+        return self.node.inputs[item.identifier]
+
+    def _link_args(self, *args: TYPE_INPUT_ALL):
+        for arg in args:
+            if _is_default_value(arg):
+                socket = self._create_socket()
+                socket.default_value = arg
+            else:
+                source = self._source_socket(arg)
+                self.tree.link(source, self.node.inputs["__extend__"])
 
     @property
     def inputs(self) -> list[SocketLinker]:
