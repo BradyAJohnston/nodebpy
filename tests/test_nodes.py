@@ -3,7 +3,6 @@ from decimal import DefaultContext
 
 import pytest
 from bpy import data
-from bpy.types import NodeGroup, NodeTree
 
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
@@ -382,17 +381,3 @@ def test_generate_select_group():
 
     assert len(switch.node.index_switch_items) == 20
     assert len(tree) == 4
-
-
-def create_selection_group(*args: str) -> NodeTree:
-    with TreeBuilder() as tree:
-        with tree.inputs:
-            switch = n.IndexSwitch(
-                *[s.SocketBoolean(str(i)) for i in range(20)],
-                index=n.NamedAttribute("chain_id", data_type="INT"),
-                data_type="BOOLEAN",
-            )
-        with tree.outputs:
-            switch >> s.SocketBoolean("Selection")
-
-    return tree.tree
