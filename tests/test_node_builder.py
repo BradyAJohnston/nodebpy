@@ -4,15 +4,19 @@ Tests for the node builder API.
 Tests the TreeBuilder, NodeBuilder, and the >> operator chaining system.
 """
 
+import re
 from math import pi
+
 import bpy
 import pytest
 from numpy.testing import assert_allclose
-from nodebpy import TreeBuilder
-from nodebpy import nodes as n, sockets as s
+
 import nodebpy.nodes.converter
 import nodebpy.nodes.geometry
 import nodebpy.nodes.input
+from nodebpy import TreeBuilder
+from nodebpy import nodes as n
+from nodebpy import sockets as s
 
 
 class TestTreeBuilder:
@@ -478,3 +482,10 @@ def test_readme_tree():
             >> n.InstanceOnPoints(n.Cube(), instance=...)
             >> instances
         )
+
+
+def test_add_all_nodes():
+    with TreeBuilder() as tree:
+        for name in dir(n):
+            if re.match(r"^[A-Z]", name):
+                getattr(n, name)()

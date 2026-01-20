@@ -3868,7 +3868,7 @@ class SeparateTransform(NodeBuilder):
     name = "FunctionNodeSeparateTransform"
     node: bpy.types.FunctionNodeSeparateTransform
 
-    def __init__(self, transform: TYPE_INPUT_MATRIX):
+    def __init__(self, transform: TYPE_INPUT_MATRIX = None):
         super().__init__()
         key_args = {"Transform": transform}
         self._establish_links(**key_args)
