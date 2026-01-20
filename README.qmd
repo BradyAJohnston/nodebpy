@@ -4,7 +4,7 @@ format: gfm
 
 # nodebpy
 
-[![Run Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml) [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy) 
+[![Run Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml) [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy)
 
 A package to help build node trees in blender more elegantly with python code.
 
@@ -44,7 +44,7 @@ with TreeBuilder("AnotherTree") as tree:
 
     _ = (
         count
-        >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
+        >> n.Points(position=n.RandomValue.vector(min=-1))
         >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
         >> n.SetPosition(
             position=n.Position() * 2.0 + (0, 0.2, 0.3),
