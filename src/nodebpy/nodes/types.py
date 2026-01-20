@@ -1,60 +1,320 @@
 from __future__ import annotations
 
 import typing
+from typing import Literal
+
+from bpy.types import (
+    NodeSocket,
+    NodeSocketBool,
+    NodeSocketCollection,
+    NodeSocketColor,
+    NodeSocketFloat,
+    NodeSocketGeometry,
+    NodeSocketImage,
+    NodeSocketInt,
+    NodeSocketMaterial,
+    NodeSocketMatrix,
+    NodeSocketMenu,
+    NodeSocketObject,
+    NodeSocketString,
+    NodeSocketVector,
+)
+from mathutils import Euler
 
 if typing.TYPE_CHECKING:
-    from mathutils import Euler, Quaternion
-    from bpy.types import NodeSocket
     from ..builder import NodeBuilder, SocketLinker
 
 
+def _is_default_value(value: TYPE_INPUT_ALL):
+    return isinstance(value, (int, float, str, bool, tuple, list, Euler))
+
+
 # Type aliases for node inputs using typing.Union for runtime compatibility
-LINKABLE = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_VECTOR = typing.Union[
-    typing.Tuple[float, float, float], "NodeSocket", "NodeBuilder", "SocketLinker", None
-]
+LINKABLE = typing.Union["NodeBuilder", "SocketLinker", NodeSocket, None]
 TYPE_INPUT_ROTATION = typing.Union[
-    typing.Tuple[float, float, float, float],
-    "Quaternion",
-    "Euler",
-    "NodeSocket",
-    "NodeBuilder",
-    "SocketLinker",
-    None,
+    tuple[float, float, float], float, int, Euler, LINKABLE
 ]
 TYPE_INPUT_BOOLEAN = typing.Union[
-    bool, "NodeSocket", "NodeBuilder", "SocketLinker", None
+    bool, LINKABLE, NodeSocketBool, NodeSocketInt, NodeSocketFloat, NodeSocketVector
 ]
-TYPE_INPUT_VALUE = typing.Union[
-    float, int, "NodeSocket", "NodeBuilder", "SocketLinker", None
+TYPE_INPUT_VALUE = typing.Union[float, int, LINKABLE, NodeSocketInt, NodeSocketFloat]
+TYPE_INPUT_INT = typing.Union[
+    int, LINKABLE, NodeSocketInt, NodeSocketInt, NodeSocketInt
 ]
-TYPE_INPUT_INT = typing.Union[int, "NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_STRING = typing.Union[str, "NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_VECTOR = typing.Union[
+    typing.Tuple[float, float, float],
+    LINKABLE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_BOOLEAN,
+    NodeSocketVector,
+    NodeSocketColor,
+    TYPE_INPUT_ROTATION,
+]
+
+
 TYPE_INPUT_COLOR = typing.Union[
-    typing.Tuple[float, float, float, float],
-    "NodeSocket",
-    "NodeBuilder",
-    "SocketLinker",
-    None,
+    LINKABLE, tuple[float, float, float, float], NodeSocketColor
 ]
-TYPE_INPUT_OBJECT = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_MATERIAL = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_IMAGE = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
-TYPE_INPUT_COLLECTION = typing.Union["NodeSocket", "NodeBuilder", "SocketLinker", None]
+TYPE_INPUT_STRING = typing.Union[str, LINKABLE, NodeSocketString]
+TYPE_INPUT_GEOMETRY = typing.Union[LINKABLE, NodeSocketGeometry]
+TYPE_INPUT_OBJECT = typing.Union[LINKABLE, NodeSocketObject]
+TYPE_INPUT_MATERIAL = typing.Union[LINKABLE, NodeSocketMaterial]
+TYPE_INPUT_IMAGE = typing.Union[LINKABLE, NodeSocketImage]
+TYPE_INPUT_COLLECTION = typing.Union[LINKABLE, NodeSocketCollection]
+TYPE_INPUT_MATRIX = typing.Union[LINKABLE, NodeSocketMatrix]
+TYPE_INPUT_GRID = typing.Union[
+    TYPE_INPUT_VALUE, TYPE_INPUT_VECTOR, TYPE_INPUT_BOOLEAN, TYPE_INPUT_INT
+]
+TYPE_INPUT_MENU = typing.Union[LINKABLE, NodeSocketMenu]
+
+TYPE_INPUT_ALL = typing.Union[
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_STRING,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_GEOMETRY,
+    TYPE_INPUT_OBJECT,
+    TYPE_INPUT_MATERIAL,
+    TYPE_INPUT_IMAGE,
+    TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_MATRIX,
+    TYPE_INPUT_VECTOR,
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_ROTATION,
+]
+
+_AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
 
 _AttributeDomains = typing.Literal[
     "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
 ]
+_DeleteGeometryDomains = typing.Literal[
+    "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
+]
+_BakedDataTypeValues = (
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "GEOMETRY",
+    "BUNDLE",
+)
+_IntegerMathOperations = Literal[
+    "ADD",
+    "SUBTRACT",
+    "MULTIPLY",
+    "DIVIDE",
+    "MULTIPLY_ADD",
+    "ABSOLUTE",
+    "NEGATE",
+    "POWER",
+    "MINIMUM",
+    "MAXIMUM",
+    "SIGN",
+    "DIVIDE_ROUND",
+    "DIVIDE_FLOOR",
+    "DIVIDE_CEIL",
+    "FLOORED_MODULO",
+    "MODULO",
+    "GCD",
+    "LCM",
+]
+_BakeDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "GEOMETRY",
+    "BUNDLE",
+]
+
+_GridDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+]
+_AdvectGridIntegration = Literal[
+    "Semi-Lagrangian",
+    "Midpoint",
+    "Runge-Kutta 3",
+    "Runge-Kutta 4",
+    "MacCormack",
+    "BFECC",
+]
+
+_DeleteGeoemtryModes = Literal["ALL", "EDGE_FACE", "ONLY_FACE"]
+_RandomValueDataTypes = Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
+_EvaluateAtIndexDataTypes = Literal[
+    "FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR", "FLOAT_COLOR", "QUATERNION", "FLOAT4X4"
+]
+_DuplicateElementsDomains = Literal[
+    "POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"
+]
+
+_AttributeDataTypes = Literal[
+    "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX"
+]
+_MixDataTypes = Literal["FLOAT", "VECTOR", "COLOR", "ROTATION"]
+
+
+_MixColorBlendTypes = Literal[
+    "MIX",
+    "DARKEN",
+    "MULTIPLY",
+    "BURN",
+    "LIGHTEN",
+    "SCREEN",
+    "DODGE",
+    "ADD",
+    "OVERLAY",
+    "SOFT_LIGHT",
+    "LINEAR_LIGHT",
+    "DIFFERENCE",
+    "EXCLUSION",
+    "SUBTRACT",
+    "DIVIDE",
+    "HUE",
+    "SATURATION",
+    "COLOR",
+    "VALUE",
+]
+
+_RaycaseDataTypes = Literal[
+    "FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR", "FLOAT_COLOR", "QUATERNION", "FLOAT4X4"
+]
+_SampleIndexDataTypes = Literal[
+    "FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR", "FLOAT_COLOR", "QUATERNION", "FLOAT4X4"
+]
+
+_EvaluateCurveModes = Literal["EVALUATED", "COUNT", "LENGTH"]
+
+_StoreNamedAttributeTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "FLOAT_VECTOR",
+    "FLOAT_COLOR",
+    "QUATERNION",
+    "FLOAT4X4",
+    "STRING",
+    "INT8",
+    "FLOAT2",
+    "BYTE_COLOR",
+]
+
+_SocketShapeStructureType = Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "SINGLE"]
+
+_VectorMathOperations = Literal[
+    "ADD",
+    "SUBTRACT",
+    "MULTIPLY",
+    "DIVIDE",
+    "MULTIPLY_ADD",
+    "CROSS_PRODUCT",
+    "PROJECT",
+    "REFLECT",
+    "REFRACT",
+    "FACEFORWARD",
+    "DOT_PRODUCT",
+    "DISTANCE",
+    "LENGTH",
+    "SCALE",
+    "NORMALIZE",
+    "ABSOLUTE",
+    "POWER",
+    "SIGN",
+    "MINIMUM",
+    "MAXIMUM",
+    "FLOOR",
+    "CEIL",
+    "FRACTION",
+    "MODULO",
+    "WRAP",
+    "SNAP",
+    "SINE",
+    "COSINE",
+    "TANGENT",
+]
+
+
+SOCKET_TYPES = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "MENU",
+    "OBJECT",
+    "GEOMETRY",
+    "COLLECTION",
+    "IMAGE",
+    "MATERIAL",
+    "BUNDLE",
+    "CLOSURE",
+]
 
 SOCKET_COMPATIBILITY = {
-    "VALUE": ("VALUE", "INT", "VECTOR", "BOOLEAN", "RGBA", "ROTATION"),
-    "INT": ("INT", "VALUE", "BOOLEAN", "VECTOR", "RGBA"),
-    "BOOLEAN": ("BOOLEAN", "INT", "VALUE", "VECTOR", "RGBA"),
-    "VECTOR": ("VECTOR", "RGBA", "ROTATION", "VALUE", "INT", "BOOLEAN"),
-    "RGBA": ("RGBA", "VECTOR", "VALUE", "INT", "BOOLEAN"),
-    "ROTATION": ("ROTATION", "MATRIX", "VECTOR"),
-    "MATRIX": ("MATRIX", "ROTATION"),
-    "STRING": ("STRING"),
+    "VALUE": (
+        "VALUE",
+        "VECTOR",
+        "INT",
+        "BOOLEAN",
+        "RGBA",
+        "ROTATION",
+    ),
+    "INT": (
+        "INT",
+        "VALUE",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+    ),
+    "BOOLEAN": (
+        "BOOLEAN",
+        "INT",
+        "VALUE",
+        "VECTOR",
+        "RGBA",
+    ),
+    "VECTOR": (
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+    ),
+    "RGBA": (
+        "RGBA",
+        "VECTOR",
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+    ),
+    "ROTATION": (
+        "ROTATION",
+        "MATRIX",
+        "VECTOR",
+    ),
+    "MATRIX": (
+        "MATRIX",
+        "ROTATION",
+    ),
+    "STRING": ("STRING",),
     "MENU": ("MENU",),
     "OBJECT": ("OBJECT",),
     "GEOMETRY": ("GEOMETRY",),

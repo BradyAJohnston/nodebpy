@@ -1,0 +1,52 @@
+# nodes.color { #nodebpy.nodes.color }
+
+`nodes.color`
+
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [Gamma](#nodebpy.nodes.color.Gamma) | Apply a gamma correction |
+| [RGBCurves](#nodebpy.nodes.color.RGBCurves) | Apply color corrections for each color channel |
+
+### Gamma { #nodebpy.nodes.color.Gamma }
+
+```python
+nodes.color.Gamma(color=(1.0, 1.0, 1.0, 1.0), gamma=1.0)
+```
+
+Apply a gamma correction
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_color](#nodebpy.nodes.color.Gamma.i_color) | Input socket: Color |
+| [i_gamma](#nodebpy.nodes.color.Gamma.i_gamma) | Input socket: Gamma |
+| [name](#nodebpy.nodes.color.Gamma.name) |  |
+| [node](#nodebpy.nodes.color.Gamma.node) |  |
+| [o_color](#nodebpy.nodes.color.Gamma.o_color) | Output socket: Color |
+| [tree](#nodebpy.nodes.color.Gamma.tree) |  |
+| [type](#nodebpy.nodes.color.Gamma.type) |  |
+
+### RGBCurves { #nodebpy.nodes.color.RGBCurves }
+
+```python
+nodes.color.RGBCurves(factor=1.0, color=(1.0, 1.0, 1.0, 1.0), **kwargs)
+```
+
+Apply color corrections for each color channel
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_color](#nodebpy.nodes.color.RGBCurves.i_color) | Input socket: Color |
+| [i_factor](#nodebpy.nodes.color.RGBCurves.i_factor) | Input socket: Factor |
+| [name](#nodebpy.nodes.color.RGBCurves.name) |  |
+| [node](#nodebpy.nodes.color.RGBCurves.node) |  |
+| [o_color](#nodebpy.nodes.color.RGBCurves.o_color) | Output socket: Color |
+| [tree](#nodebpy.nodes.color.RGBCurves.tree) |  |
+| [type](#nodebpy.nodes.color.RGBCurves.type) |  |
