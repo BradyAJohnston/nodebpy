@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>nodes.attribute – nodebpy</title>
+<title>nodes.texture – nodebpy</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.color.html" rel="next">
-<link href="../reference/nodes.input.html" rel="prev">
+<link href="../reference/nodes.grid.html" rel="next">
+<link href="../reference/nodes.converter.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -150,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.attribute.html">nodes.attribute</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.texture.html">nodes.texture</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -185,7 +185,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.attribute</span></a>
   </div>
 </li>
@@ -203,7 +203,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.texture.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/nodes.texture.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">nodes.texture</span></a>
   </div>
 </li>
@@ -249,30 +249,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.nodes.attribute" id="toc-nodebpy.nodes.attribute" class="nav-link active" data-scroll-target="#nodebpy.nodes.attribute">nodes.attribute</a>
+  <li><a href="#nodebpy.nodes.texture" id="toc-nodebpy.nodes.texture" class="nav-link active" data-scroll-target="#nodebpy.nodes.texture">nodes.texture</a>
   <ul class="collapse">
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
-  <li><a href="#nodebpy.nodes.attribute.AttributeStatistic" id="toc-nodebpy.nodes.attribute.AttributeStatistic" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.AttributeStatistic">AttributeStatistic</a></li>
-  <li><a href="#nodebpy.nodes.attribute.BlurAttribute" id="toc-nodebpy.nodes.attribute.BlurAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.BlurAttribute">BlurAttribute</a></li>
-  <li><a href="#nodebpy.nodes.attribute.CaptureAttribute" id="toc-nodebpy.nodes.attribute.CaptureAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.CaptureAttribute">CaptureAttribute</a></li>
-  <li><a href="#nodebpy.nodes.attribute.DomainSize" id="toc-nodebpy.nodes.attribute.DomainSize" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.DomainSize">DomainSize</a></li>
-  <li><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute" id="toc-nodebpy.nodes.attribute.RemoveNamedAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.RemoveNamedAttribute">RemoveNamedAttribute</a></li>
-  <li><a href="#nodebpy.nodes.attribute.StoreNamedAttribute" id="toc-nodebpy.nodes.attribute.StoreNamedAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.StoreNamedAttribute">StoreNamedAttribute</a></li>
+  <li><a href="#nodebpy.nodes.texture.ImageTexture" id="toc-nodebpy.nodes.texture.ImageTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.ImageTexture">ImageTexture</a></li>
   </ul></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.attribute.html">nodes.attribute</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.texture.html">nodes.texture</a></li></ol></nav></header>
 
 
 
 
-<section id="nodebpy.nodes.attribute" class="level1">
-<h1>nodes.attribute</h1>
-<p><code>nodes.attribute</code></p>
+<section id="nodebpy.nodes.texture" class="level1">
+<h1>nodes.texture</h1>
+<p><code>nodes.texture</code></p>
 <section id="classes" class="level2">
 <h2 class="anchored" data-anchor-id="classes">Classes</h2>
 <table class="caption-top table">
@@ -284,43 +279,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic">AttributeStatistic</a></td>
-<td>Calculate statistics about a data set from a field evaluated on a geometry</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute">BlurAttribute</a></td>
-<td>Mix attribute values of neighboring elements</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute">CaptureAttribute</a></td>
-<td>Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.DomainSize">DomainSize</a></td>
-<td>Retrieve the number of elements in a geometry for each attribute domain</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute">RemoveNamedAttribute</a></td>
-<td>Delete an attribute with a specified name from a geometry. Typically used to optimize performance</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute">StoreNamedAttribute</a></td>
-<td>Store the result of a field on a geometry as an attribute with the specified name</td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture">ImageTexture</a></td>
+<td>Sample values from an image texture</td>
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.attribute.AttributeStatistic" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.AttributeStatistic">AttributeStatistic</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.AttributeStatistic(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    attribute<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Calculate statistics about a data set from a field evaluated on a geometry</p>
+<section id="nodebpy.nodes.texture.ImageTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.ImageTexture">ImageTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.ImageTexture(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    frame<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Linear'</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    extension<span class="op">=</span><span class="st">'REPEAT'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sample values from an image texture</p>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -332,418 +306,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.extension">extension</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.domain">domain</a></td>
-<td></td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.i_frame">i_frame</a></td>
+<td>Input socket: Frame</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.i_attribute">i_attribute</a></td>
-<td>Input socket: Attribute</td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.i_image">i_image</a></td>
+<td>Input socket: Image</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.i_geometry">i_geometry</a></td>
-<td>Input socket: Geometry</td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.i_vector">i_vector</a></td>
+<td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.i_selection">i_selection</a></td>
-<td>Input socket: Selection</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.name">name</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.node">node</a></td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.interpolation">interpolation</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_max">o_max</a></td>
-<td>Output socket: Max</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_mean">o_mean</a></td>
-<td>Output socket: Mean</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_median">o_median</a></td>
-<td>Output socket: Median</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_min">o_min</a></td>
-<td>Output socket: Min</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_range">o_range</a></td>
-<td>Output socket: Range</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_standard_deviation">o_standard_deviation</a></td>
-<td>Output socket: Standard Deviation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_sum">o_sum</a></td>
-<td>Output socket: Sum</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_variance">o_variance</a></td>
-<td>Output socket: Variance</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.attribute.BlurAttribute" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.BlurAttribute">BlurAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.BlurAttribute(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    iterations<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Mix attribute values of neighboring elements</p>
-<section id="attributes-1" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.i_iterations">i_iterations</a></td>
-<td>Input socket: Iterations</td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.o_alpha">o_alpha</a></td>
+<td>Output socket: Alpha</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.i_value">i_value</a></td>
-<td>Input socket: Value</td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.o_color">o_color</a></td>
+<td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.i_weight">i_weight</a></td>
-<td>Input socket: Weight</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.name">name</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.node">node</a></td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.o_value">o_value</a></td>
-<td>Output socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.BlurAttribute.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.attribute.CaptureAttribute" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.CaptureAttribute">CaptureAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.CaptureAttribute(<span class="op">*</span>args, geometry<span class="op">=</span><span class="va">None</span>, domain<span class="op">=</span><span class="st">'POINT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation</p>
-<section id="attributes-2" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.corner">corner</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.curve">curve</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.domain">domain</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.edge">edge</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.face">face</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.i_geometry">i_geometry</a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.instance">instance</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.layer">layer</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.name">name</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.node">node</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.o_geometry">o_geometry</a></td>
-<td>Output socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.point">point</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="methods" class="level4">
-<h4 class="anchored" data-anchor-id="methods">Methods</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.capture">capture</a></td>
-<td>Capture the value to store in the attribute</td>
-</tr>
-</tbody>
-</table>
-<section id="nodebpy.nodes.attribute.CaptureAttribute.capture" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.CaptureAttribute.capture">capture</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.CaptureAttribute.capture(value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Capture the value to store in the attribute</p>
-<p>Return the SocketLinker for the output socket</p>
-</section>
-</section>
-</section>
-<section id="nodebpy.nodes.attribute.DomainSize" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.DomainSize">DomainSize</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.DomainSize(geometry<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, component<span class="op">=</span><span class="st">'MESH'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Retrieve the number of elements in a geometry for each attribute domain</p>
-<section id="attributes-3" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.component">component</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.i_geometry">i_geometry</a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.name">name</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.node">node</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.o_edge_count">o_edge_count</a></td>
-<td>Output socket: Edge Count</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.o_face_corner_count">o_face_corner_count</a></td>
-<td>Output socket: Face Corner Count</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.o_face_count">o_face_count</a></td>
-<td>Output socket: Face Count</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.o_point_count">o_point_count</a></td>
-<td>Output socket: Point Count</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.DomainSize.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.attribute.RemoveNamedAttribute" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.RemoveNamedAttribute">RemoveNamedAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.RemoveNamedAttribute(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    pattern_mode<span class="op">=</span><span class="st">'Exact'</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Delete an attribute with a specified name from a geometry. Typically used to optimize performance</p>
-<section id="attributes-4" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute.i_geometry">i_geometry</a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute.i_name">i_name</a></td>
-<td>Input socket: Name</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute.i_pattern_mode">i_pattern_mode</a></td>
-<td>Input socket: Pattern Mode</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute.name">name</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute.node">node</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute.o_geometry">o_geometry</a></td>
-<td>Output socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.attribute.StoreNamedAttribute" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute">StoreNamedAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Store the result of a field on a geometry as an attribute with the specified name</p>
-<section id="attributes-5" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.data_type">data_type</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.domain">domain</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.i_geometry">i_geometry</a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.i_name">i_name</a></td>
-<td>Input socket: Name</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.i_selection">i_selection</a></td>
-<td>Input socket: Selection</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.i_value">i_value</a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.name">name</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.node">node</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.o_geometry">o_geometry</a></td>
-<td>Output socket: Geometry</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.type">type</a></td>
+<td><a href="#nodebpy.nodes.texture.ImageTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1158,13 +761,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/nodes.input.html" class="pagination-link" aria-label="nodes.input">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.input</span>
+      <a href="../reference/nodes.converter.html" class="pagination-link" aria-label="nodes.converter">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.converter</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.color.html" class="pagination-link" aria-label="nodes.color">
-        <span class="nav-page-text">nodes.color</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.grid.html" class="pagination-link" aria-label="nodes.grid">
+        <span class="nav-page-text">nodes.grid</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

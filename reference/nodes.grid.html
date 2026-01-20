@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>nodes.grid – nodebpy</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../reference/nodes.geometry.html" rel="next">
+<link href="../reference/nodes.texture.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8fd1faf6fd93e4e6d207ae0f9db51d78.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">nodebpy</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../introduction.html"> 
+<span class="menu-text">Introduction</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.grid.html">nodes.grid</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Function reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Some functions</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.input.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.input</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.color.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.color</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.converter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.converter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.texture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.texture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.grid.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">nodes.grid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.vector.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.zone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.zone</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#nodebpy.nodes.grid" id="toc-nodebpy.nodes.grid" class="nav-link active" data-scroll-target="#nodebpy.nodes.grid">nodes.grid</a>
+  <ul class="collapse">
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <ul class="collapse">
+  <li><a href="#nodebpy.nodes.grid.AdvectGrid" id="toc-nodebpy.nodes.grid.AdvectGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.AdvectGrid">AdvectGrid</a></li>
+  <li><a href="#nodebpy.nodes.grid.DistributePointsInGrid" id="toc-nodebpy.nodes.grid.DistributePointsInGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.DistributePointsInGrid">DistributePointsInGrid</a></li>
+  <li><a href="#nodebpy.nodes.grid.DistributePointsInVolume" id="toc-nodebpy.nodes.grid.DistributePointsInVolume" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.DistributePointsInVolume">DistributePointsInVolume</a></li>
+  <li><a href="#nodebpy.nodes.grid.FieldToGrid" id="toc-nodebpy.nodes.grid.FieldToGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.FieldToGrid">FieldToGrid</a></li>
+  <li><a href="#nodebpy.nodes.grid.GetNamedGrid" id="toc-nodebpy.nodes.grid.GetNamedGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.GetNamedGrid">GetNamedGrid</a></li>
+  <li><a href="#nodebpy.nodes.grid.GridCurl" id="toc-nodebpy.nodes.grid.GridCurl" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.GridCurl">GridCurl</a></li>
+  <li><a href="#nodebpy.nodes.grid.GridDivergence" id="toc-nodebpy.nodes.grid.GridDivergence" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.GridDivergence">GridDivergence</a></li>
+  <li><a href="#nodebpy.nodes.grid.GridGradient" id="toc-nodebpy.nodes.grid.GridGradient" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.GridGradient">GridGradient</a></li>
+  <li><a href="#nodebpy.nodes.grid.GridInfo" id="toc-nodebpy.nodes.grid.GridInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.GridInfo">GridInfo</a></li>
+  <li><a href="#nodebpy.nodes.grid.GridLaplacian" id="toc-nodebpy.nodes.grid.GridLaplacian" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.GridLaplacian">GridLaplacian</a></li>
+  <li><a href="#nodebpy.nodes.grid.GridToMesh" id="toc-nodebpy.nodes.grid.GridToMesh" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.GridToMesh">GridToMesh</a></li>
+  <li><a href="#nodebpy.nodes.grid.PruneGrid" id="toc-nodebpy.nodes.grid.PruneGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.PruneGrid">PruneGrid</a></li>
+  <li><a href="#nodebpy.nodes.grid.SDFGridBoolean" id="toc-nodebpy.nodes.grid.SDFGridBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SDFGridBoolean">SDFGridBoolean</a></li>
+  <li><a href="#nodebpy.nodes.grid.SDFGridFillet" id="toc-nodebpy.nodes.grid.SDFGridFillet" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SDFGridFillet">SDFGridFillet</a></li>
+  <li><a href="#nodebpy.nodes.grid.SDFGridLaplacian" id="toc-nodebpy.nodes.grid.SDFGridLaplacian" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SDFGridLaplacian">SDFGridLaplacian</a></li>
+  <li><a href="#nodebpy.nodes.grid.SDFGridMean" id="toc-nodebpy.nodes.grid.SDFGridMean" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SDFGridMean">SDFGridMean</a></li>
+  <li><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature" id="toc-nodebpy.nodes.grid.SDFGridMeanCurvature" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SDFGridMeanCurvature">SDFGridMeanCurvature</a></li>
+  <li><a href="#nodebpy.nodes.grid.SDFGridMedian" id="toc-nodebpy.nodes.grid.SDFGridMedian" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SDFGridMedian">SDFGridMedian</a></li>
+  <li><a href="#nodebpy.nodes.grid.SDFGridOffset" id="toc-nodebpy.nodes.grid.SDFGridOffset" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SDFGridOffset">SDFGridOffset</a></li>
+  <li><a href="#nodebpy.nodes.grid.SampleGrid" id="toc-nodebpy.nodes.grid.SampleGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SampleGrid">SampleGrid</a></li>
+  <li><a href="#nodebpy.nodes.grid.SampleGridIndex" id="toc-nodebpy.nodes.grid.SampleGridIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SampleGridIndex">SampleGridIndex</a></li>
+  <li><a href="#nodebpy.nodes.grid.SetGridBackground" id="toc-nodebpy.nodes.grid.SetGridBackground" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SetGridBackground">SetGridBackground</a></li>
+  <li><a href="#nodebpy.nodes.grid.SetGridTransform" id="toc-nodebpy.nodes.grid.SetGridTransform" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.SetGridTransform">SetGridTransform</a></li>
+  <li><a href="#nodebpy.nodes.grid.StoreNamedGrid" id="toc-nodebpy.nodes.grid.StoreNamedGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.StoreNamedGrid">StoreNamedGrid</a></li>
+  <li><a href="#nodebpy.nodes.grid.VolumeCube" id="toc-nodebpy.nodes.grid.VolumeCube" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.VolumeCube">VolumeCube</a></li>
+  <li><a href="#nodebpy.nodes.grid.VoxelizeGrid" id="toc-nodebpy.nodes.grid.VoxelizeGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.grid.VoxelizeGrid">VoxelizeGrid</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.grid.html">nodes.grid</a></li></ol></nav></header>
+
+
+
+
+<section id="nodebpy.nodes.grid" class="level1">
+<h1>nodes.grid</h1>
+<p><code>nodes.grid</code></p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid">AdvectGrid</a></td>
+<td>Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid">DistributePointsInGrid</a></td>
+<td>Generate points inside a volume grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume">DistributePointsInVolume</a></td>
+<td>Generate points inside a volume</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid">FieldToGrid</a></td>
+<td>Create new grids by evaluating new values on an existing volume grid topology</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid">GetNamedGrid</a></td>
+<td>Get volume grid from a volume geometry with the specified name</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridCurl">GridCurl</a></td>
+<td>Calculate the magnitude and direction of circulation of a directional vector grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridDivergence">GridDivergence</a></td>
+<td>Calculate the flow into and out of each point of a directional vector grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridGradient">GridGradient</a></td>
+<td>Calculate the direction and magnitude of the change in values of a scalar grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridInfo">GridInfo</a></td>
+<td>Retrieve information about a volume grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridLaplacian">GridLaplacian</a></td>
+<td>Compute the divergence of the gradient of the input grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridToMesh">GridToMesh</a></td>
+<td>Generate a mesh on the “surface” of a volume grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.PruneGrid">PruneGrid</a></td>
+<td>Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean">SDFGridBoolean</a></td>
+<td>Cut, subtract, or join multiple SDF volume grid inputs</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridFillet">SDFGridFillet</a></td>
+<td>Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridLaplacian">SDFGridLaplacian</a></td>
+<td>Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean">SDFGridMean</a></td>
+<td>Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature">SDFGridMeanCurvature</a></td>
+<td>Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian">SDFGridMedian</a></td>
+<td>Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridOffset">SDFGridOffset</a></td>
+<td>Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGrid">SampleGrid</a></td>
+<td>Retrieve values from the specified volume grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex">SampleGridIndex</a></td>
+<td>Retrieve volume grid values at specific voxels</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground">SetGridBackground</a></td>
+<td>Set the background value used for inactive voxels and tiles</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform">SetGridTransform</a></td>
+<td>Set the transform for the grid from index space into object space.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid">StoreNamedGrid</a></td>
+<td>Store grid data in a volume geometry with the specified name</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VolumeCube">VolumeCube</a></td>
+<td>Generate a dense volume with a field that controls the density at each grid voxel based on its position</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VoxelizeGrid">VoxelizeGrid</a></td>
+<td>Remove sparseness from a volume grid by making the active tiles into voxels</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.grid.AdvectGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.AdvectGrid">AdvectGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.AdvectGrid(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    velocity<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    time_step<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    integration_scheme<span class="op">=</span><span class="st">'Runge-Kutta 3'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    limiter<span class="op">=</span><span class="st">'Clamp'</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.i_integration_scheme">i_integration_scheme</a></td>
+<td>Input socket: Integration Scheme</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.i_limiter">i_limiter</a></td>
+<td>Input socket: Limiter</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.i_time_step">i_time_step</a></td>
+<td>Input socket: Time Step</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.i_velocity">i_velocity</a></td>
+<td>Input socket: Velocity</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.AdvectGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.DistributePointsInGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.DistributePointsInGrid">DistributePointsInGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.DistributePointsInGrid(grid<span class="op">=</span><span class="va">None</span>, mode<span class="op">=</span><span class="st">'DENSITY_RANDOM'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate points inside a volume grid</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.i_density">i_density</a></td>
+<td>Input socket: Density</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.i_seed">i_seed</a></td>
+<td>Input socket: Seed</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.mode">mode</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.o_points">o_points</a></td>
+<td>Output socket: Points</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.grid">grid</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInGrid.random">random</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.grid.DistributePointsInGrid.grid" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.grid.DistributePointsInGrid.grid">grid</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.DistributePointsInGrid.grid(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    grid,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    spacing<span class="op">=</span>(<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.grid.DistributePointsInGrid.random" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.grid.DistributePointsInGrid.random">random</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.DistributePointsInGrid.random(grid, density<span class="op">=</span><span class="fl">1.0</span>, seed<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.DistributePointsInVolume" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.DistributePointsInVolume">DistributePointsInVolume</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.DistributePointsInVolume(volume<span class="op">=</span><span class="va">None</span>, mode<span class="op">=</span><span class="st">'Random'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate points inside a volume</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.i_density">i_density</a></td>
+<td>Input socket: Density</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.i_seed">i_seed</a></td>
+<td>Input socket: Seed</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.i_spacing">i_spacing</a></td>
+<td>Input socket: Spacing</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.i_threshold">i_threshold</a></td>
+<td>Input socket: Threshold</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.o_points">o_points</a></td>
+<td>Output socket: Points</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.grid">grid</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.DistributePointsInVolume.random">random</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.grid.DistributePointsInVolume.grid" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.grid.DistributePointsInVolume.grid">grid</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.DistributePointsInVolume.grid(volume<span class="op">=</span><span class="va">None</span>, density<span class="op">=</span><span class="fl">1.0</span>, seed<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.grid.DistributePointsInVolume.random" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.grid.DistributePointsInVolume.random">random</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.DistributePointsInVolume.random(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    spacing<span class="op">=</span>(<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.FieldToGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.FieldToGrid">FieldToGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.FieldToGrid(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create new grids by evaluating new values on an existing volume grid topology</p>
+<p>New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.</p>
+<p>Data types are inferred automatically from the closest compatible data type.</p>
+<section id="inputs" class="level4 doc-section doc-section-inputs">
+<h4 class="doc-section doc-section-inputs anchored" data-anchor-id="inputs">Inputs:</h4>
+<p>topology: LINKABLE The grid which contains the topology to evaluate the different fields on. data_type: _GridDataTypes = “FLOAT” The data type of the grid to evaluate on. Possible values are “FLOAT”, “INT”, “VECTOR”, “BOOLEAN”. *args: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_BOOLEAN The fields to evaluate on the grid. **kwargs: dict[str, TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_GEOMETRY] The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.</p>
+</section>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.i_topology">i_topology</a></td>
+<td>Input socket: Topology</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.inputs">inputs</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.outputs">outputs</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-2" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.FieldToGrid.capture">capture</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.grid.FieldToGrid.capture" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.grid.FieldToGrid.capture">capture</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.FieldToGrid.capture(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.GetNamedGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.GetNamedGrid">GetNamedGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.GetNamedGrid(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Get volume grid from a volume geometry with the specified name</p>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.i_name">i_name</a></td>
+<td>Input socket: Name</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.i_remove">i_remove</a></td>
+<td>Input socket: Remove</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.i_volume">i_volume</a></td>
+<td>Input socket: Volume</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.o_volume">o_volume</a></td>
+<td>Output socket: Volume</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GetNamedGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.GridCurl" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.GridCurl">GridCurl</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.GridCurl(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the magnitude and direction of circulation of a directional vector grid</p>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridCurl.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridCurl.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridCurl.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridCurl.o_curl">o_curl</a></td>
+<td>Output socket: Curl</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridCurl.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridCurl.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.GridDivergence" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.GridDivergence">GridDivergence</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.GridDivergence(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the flow into and out of each point of a directional vector grid</p>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridDivergence.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridDivergence.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridDivergence.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridDivergence.o_divergence">o_divergence</a></td>
+<td>Output socket: Divergence</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridDivergence.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridDivergence.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.GridGradient" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.GridGradient">GridGradient</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.GridGradient(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the direction and magnitude of the change in values of a scalar grid</p>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridGradient.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridGradient.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridGradient.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridGradient.o_gradient">o_gradient</a></td>
+<td>Output socket: Gradient</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridGradient.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridGradient.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.GridInfo" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.GridInfo">GridInfo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.GridInfo(grid<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve information about a volume grid</p>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridInfo.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridInfo.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridInfo.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridInfo.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridInfo.o_background_value">o_background_value</a></td>
+<td>Output socket: Background Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridInfo.o_transform">o_transform</a></td>
+<td>Output socket: Transform</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridInfo.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridInfo.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.GridLaplacian" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.GridLaplacian">GridLaplacian</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.GridLaplacian(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Compute the divergence of the gradient of the input grid</p>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridLaplacian.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridLaplacian.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridLaplacian.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridLaplacian.o_laplacian">o_laplacian</a></td>
+<td>Output socket: Laplacian</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridLaplacian.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridLaplacian.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.GridToMesh" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.GridToMesh">GridToMesh</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.GridToMesh(grid<span class="op">=</span><span class="fl">0.0</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, adaptivity<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a mesh on the “surface” of a volume grid</p>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridToMesh.i_adaptivity">i_adaptivity</a></td>
+<td>Input socket: Adaptivity</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridToMesh.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridToMesh.i_threshold">i_threshold</a></td>
+<td>Input socket: Threshold</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridToMesh.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridToMesh.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridToMesh.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.GridToMesh.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.GridToMesh.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.PruneGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.PruneGrid">PruneGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.PruneGrid(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'Threshold'</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.01</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes</p>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.i_mode">i_mode</a></td>
+<td>Input socket: Mode</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.i_threshold">i_threshold</a></td>
+<td>Input socket: Threshold</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.PruneGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridBoolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridBoolean">SDFGridBoolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cut, subtract, or join multiple SDF volume grid inputs</p>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.i_grid_1">i_grid_1</a></td>
+<td>Input socket: Grid 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.i_grid_2">i_grid_2</a></td>
+<td>Input socket: Grid 2</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.operation">operation</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-3" class="level4">
+<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.difference">difference</a></td>
+<td>Create SDF Grid Boolean with operation ‘Difference’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.intersect">intersect</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridBoolean.union">union</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.grid.SDFGridBoolean.difference" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridBoolean.difference">difference</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridBoolean.difference(<span class="op">*</span>args, grid_1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create SDF Grid Boolean with operation ‘Difference’.</p>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridBoolean.intersect" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridBoolean.intersect">intersect</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridBoolean.intersect(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridBoolean.union" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridBoolean.union">union</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridBoolean.union(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridFillet" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridFillet">SDFGridFillet</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridFillet(grid<span class="op">=</span><span class="va">None</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces</p>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridFillet.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridFillet.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridFillet.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridFillet.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridFillet.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridFillet.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridFillet.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridLaplacian" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridLaplacian">SDFGridLaplacian</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridLaplacian(grid<span class="op">=</span><span class="va">None</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization</p>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridLaplacian.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridLaplacian.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridLaplacian.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridLaplacian.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridLaplacian.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridLaplacian.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridLaplacian.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridMean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridMean">SDFGridMean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridMean(grid<span class="op">=</span><span class="va">None</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field</p>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean.i_width">i_width</a></td>
+<td>Input socket: Width</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMean.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridMeanCurvature" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridMeanCurvature">SDFGridMeanCurvature</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridMeanCurvature(grid<span class="op">=</span><span class="va">None</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas</p>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMeanCurvature.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridMedian" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridMedian">SDFGridMedian</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridMedian(grid<span class="op">=</span><span class="va">None</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field</p>
+<section id="attributes-17" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian.i_iterations">i_iterations</a></td>
+<td>Input socket: Iterations</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian.i_width">i_width</a></td>
+<td>Input socket: Width</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridMedian.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SDFGridOffset" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SDFGridOffset">SDFGridOffset</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SDFGridOffset(grid<span class="op">=</span><span class="fl">0.0</span>, distance<span class="op">=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property</p>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridOffset.i_distance">i_distance</a></td>
+<td>Input socket: Distance</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridOffset.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridOffset.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridOffset.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridOffset.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SDFGridOffset.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SDFGridOffset.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SampleGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SampleGrid">SampleGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SampleGrid(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    position<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Trilinear'</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve values from the specified volume grid</p>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.i_interpolation">i_interpolation</a></td>
+<td>Input socket: Interpolation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.i_position">i_position</a></td>
+<td>Input socket: Position</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.o_value">o_value</a></td>
+<td>Output socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SampleGridIndex" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SampleGridIndex">SampleGridIndex</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SampleGridIndex(grid<span class="op">=</span><span class="va">None</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve volume grid values at specific voxels</p>
+<section id="attributes-20" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.i_x">i_x</a></td>
+<td>Input socket: X</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.i_y">i_y</a></td>
+<td>Input socket: Y</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.i_z">i_z</a></td>
+<td>Input socket: Z</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.o_value">o_value</a></td>
+<td>Output socket: Value</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SampleGridIndex.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SetGridBackground" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SetGridBackground">SetGridBackground</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SetGridBackground(grid<span class="op">=</span><span class="fl">0.0</span>, background<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Set the background value used for inactive voxels and tiles</p>
+<section id="attributes-21" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground.i_background">i_background</a></td>
+<td>Input socket: Background</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridBackground.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.SetGridTransform" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.SetGridTransform">SetGridTransform</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.SetGridTransform(grid<span class="op">=</span><span class="fl">0.0</span>, transform<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Set the transform for the grid from index space into object space.</p>
+<section id="attributes-22" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.i_transform">i_transform</a></td>
+<td>Input socket: Transform</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.o_is_valid">o_is_valid</a></td>
+<td>Output socket: Is Valid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.SetGridTransform.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.StoreNamedGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.StoreNamedGrid">StoreNamedGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.StoreNamedGrid(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Store grid data in a volume geometry with the specified name</p>
+<section id="attributes-23" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.i_name">i_name</a></td>
+<td>Input socket: Name</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.i_volume">i_volume</a></td>
+<td>Input socket: Volume</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.o_volume">o_volume</a></td>
+<td>Output socket: Volume</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.StoreNamedGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.VolumeCube" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.VolumeCube">VolumeCube</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.VolumeCube(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    background<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">min</span><span class="op">=</span>(<span class="op">-</span><span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>),</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    resolution_x<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    resolution_y<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    resolution_z<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a dense volume with a field that controls the density at each grid voxel based on its position</p>
+<section id="attributes-24" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.i_background">i_background</a></td>
+<td>Input socket: Background</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.i_density">i_density</a></td>
+<td>Input socket: Density</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.i_max">i_max</a></td>
+<td>Input socket: Max</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.i_min">i_min</a></td>
+<td>Input socket: Min</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.i_resolution_x">i_resolution_x</a></td>
+<td>Input socket: Resolution X</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.i_resolution_y">i_resolution_y</a></td>
+<td>Input socket: Resolution Y</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.i_resolution_z">i_resolution_z</a></td>
+<td>Input socket: Resolution Z</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.o_volume">o_volume</a></td>
+<td>Output socket: Volume</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VolumeCube.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.grid.VoxelizeGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.grid.VoxelizeGrid">VoxelizeGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>nodes.grid.VoxelizeGrid(grid<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Remove sparseness from a volume grid by making the active tiles into voxels</p>
+<section id="attributes-25" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VoxelizeGrid.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VoxelizeGrid.i_grid">i_grid</a></td>
+<td>Input socket: Grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VoxelizeGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VoxelizeGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VoxelizeGrid.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.grid.VoxelizeGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.grid.VoxelizeGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../reference/nodes.texture.html" class="pagination-link" aria-label="nodes.texture">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.texture</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../reference/nodes.geometry.html" class="pagination-link" aria-label="nodes.geometry">
+        <span class="nav-page-text">nodes.geometry</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

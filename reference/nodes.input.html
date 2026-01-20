@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.mesh.html" rel="next">
-<link href="../reference/nodes.curve.html" rel="prev">
+<link href="../reference/nodes.attribute.html" rel="next">
+<link href="../reference/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -150,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.geometry.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.input.html">nodes.input</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.input.html">nodes.input</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -179,6 +179,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.input.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">nodes.input</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.color.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.color</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.converter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.converter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.texture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.texture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.grid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.grid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/nodes.geometry.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.geometry</span></a>
   </div>
@@ -191,26 +227,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.curve.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.curve</span></a>
+  <a href="../reference/nodes.vector.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.vector</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.input.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">nodes.input</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.mesh.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.mesh</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.utilities.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.utilities</span></a>
+  <a href="../reference/nodes.zone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.zone</span></a>
   </div>
 </li>
       </ul>
@@ -230,35 +254,84 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
   <li><a href="#nodebpy.nodes.input.ActiveCamera" id="toc-nodebpy.nodes.input.ActiveCamera" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ActiveCamera">ActiveCamera</a></li>
+  <li><a href="#nodebpy.nodes.input.ActiveElement" id="toc-nodebpy.nodes.input.ActiveElement" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ActiveElement">ActiveElement</a></li>
   <li><a href="#nodebpy.nodes.input.Boolean" id="toc-nodebpy.nodes.input.Boolean" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Boolean">Boolean</a></li>
+  <li><a href="#nodebpy.nodes.input.CameraInfo" id="toc-nodebpy.nodes.input.CameraInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CameraInfo">CameraInfo</a></li>
   <li><a href="#nodebpy.nodes.input.Collection" id="toc-nodebpy.nodes.input.Collection" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Collection">Collection</a></li>
+  <li><a href="#nodebpy.nodes.input.CollectionInfo" id="toc-nodebpy.nodes.input.CollectionInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CollectionInfo">CollectionInfo</a></li>
   <li><a href="#nodebpy.nodes.input.Color" id="toc-nodebpy.nodes.input.Color" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Color">Color</a></li>
+  <li><a href="#nodebpy.nodes.input.CornersOfEdge" id="toc-nodebpy.nodes.input.CornersOfEdge" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CornersOfEdge">CornersOfEdge</a></li>
+  <li><a href="#nodebpy.nodes.input.CornersOfFace" id="toc-nodebpy.nodes.input.CornersOfFace" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CornersOfFace">CornersOfFace</a></li>
+  <li><a href="#nodebpy.nodes.input.CornersOfVertex" id="toc-nodebpy.nodes.input.CornersOfVertex" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CornersOfVertex">CornersOfVertex</a></li>
+  <li><a href="#nodebpy.nodes.input.Cursor3D" id="toc-nodebpy.nodes.input.Cursor3D" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Cursor3D">Cursor3D</a></li>
+  <li><a href="#nodebpy.nodes.input.CurveHandlePositions" id="toc-nodebpy.nodes.input.CurveHandlePositions" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CurveHandlePositions">CurveHandlePositions</a></li>
+  <li><a href="#nodebpy.nodes.input.CurveOfPoint" id="toc-nodebpy.nodes.input.CurveOfPoint" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CurveOfPoint">CurveOfPoint</a></li>
   <li><a href="#nodebpy.nodes.input.CurveTangent" id="toc-nodebpy.nodes.input.CurveTangent" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CurveTangent">CurveTangent</a></li>
-  <li><a href="#nodebpy.nodes.input.ForEachGeometryElementInput" id="toc-nodebpy.nodes.input.ForEachGeometryElementInput" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ForEachGeometryElementInput">ForEachGeometryElementInput</a></li>
+  <li><a href="#nodebpy.nodes.input.CurveTilt" id="toc-nodebpy.nodes.input.CurveTilt" class="nav-link" data-scroll-target="#nodebpy.nodes.input.CurveTilt">CurveTilt</a></li>
+  <li><a href="#nodebpy.nodes.input.EdgeAngle" id="toc-nodebpy.nodes.input.EdgeAngle" class="nav-link" data-scroll-target="#nodebpy.nodes.input.EdgeAngle">EdgeAngle</a></li>
+  <li><a href="#nodebpy.nodes.input.EdgeNeighbors" id="toc-nodebpy.nodes.input.EdgeNeighbors" class="nav-link" data-scroll-target="#nodebpy.nodes.input.EdgeNeighbors">EdgeNeighbors</a></li>
+  <li><a href="#nodebpy.nodes.input.EdgePathsToSelection" id="toc-nodebpy.nodes.input.EdgePathsToSelection" class="nav-link" data-scroll-target="#nodebpy.nodes.input.EdgePathsToSelection">EdgePathsToSelection</a></li>
+  <li><a href="#nodebpy.nodes.input.EdgeVertices" id="toc-nodebpy.nodes.input.EdgeVertices" class="nav-link" data-scroll-target="#nodebpy.nodes.input.EdgeVertices">EdgeVertices</a></li>
+  <li><a href="#nodebpy.nodes.input.EdgesOfCorner" id="toc-nodebpy.nodes.input.EdgesOfCorner" class="nav-link" data-scroll-target="#nodebpy.nodes.input.EdgesOfCorner">EdgesOfCorner</a></li>
+  <li><a href="#nodebpy.nodes.input.EdgesOfVertex" id="toc-nodebpy.nodes.input.EdgesOfVertex" class="nav-link" data-scroll-target="#nodebpy.nodes.input.EdgesOfVertex">EdgesOfVertex</a></li>
+  <li><a href="#nodebpy.nodes.input.EdgesToFaceGroups" id="toc-nodebpy.nodes.input.EdgesToFaceGroups" class="nav-link" data-scroll-target="#nodebpy.nodes.input.EdgesToFaceGroups">EdgesToFaceGroups</a></li>
+  <li><a href="#nodebpy.nodes.input.EndpointSelection" id="toc-nodebpy.nodes.input.EndpointSelection" class="nav-link" data-scroll-target="#nodebpy.nodes.input.EndpointSelection">EndpointSelection</a></li>
+  <li><a href="#nodebpy.nodes.input.FaceArea" id="toc-nodebpy.nodes.input.FaceArea" class="nav-link" data-scroll-target="#nodebpy.nodes.input.FaceArea">FaceArea</a></li>
+  <li><a href="#nodebpy.nodes.input.FaceGroupBoundaries" id="toc-nodebpy.nodes.input.FaceGroupBoundaries" class="nav-link" data-scroll-target="#nodebpy.nodes.input.FaceGroupBoundaries">FaceGroupBoundaries</a></li>
+  <li><a href="#nodebpy.nodes.input.FaceNeighbors" id="toc-nodebpy.nodes.input.FaceNeighbors" class="nav-link" data-scroll-target="#nodebpy.nodes.input.FaceNeighbors">FaceNeighbors</a></li>
+  <li><a href="#nodebpy.nodes.input.FaceOfCorner" id="toc-nodebpy.nodes.input.FaceOfCorner" class="nav-link" data-scroll-target="#nodebpy.nodes.input.FaceOfCorner">FaceOfCorner</a></li>
+  <li><a href="#nodebpy.nodes.input.FaceSet" id="toc-nodebpy.nodes.input.FaceSet" class="nav-link" data-scroll-target="#nodebpy.nodes.input.FaceSet">FaceSet</a></li>
+  <li><a href="#nodebpy.nodes.input.HandleTypeSelection" id="toc-nodebpy.nodes.input.HandleTypeSelection" class="nav-link" data-scroll-target="#nodebpy.nodes.input.HandleTypeSelection">HandleTypeSelection</a></li>
   <li><a href="#nodebpy.nodes.input.ID" id="toc-nodebpy.nodes.input.ID" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ID">ID</a></li>
   <li><a href="#nodebpy.nodes.input.Image" id="toc-nodebpy.nodes.input.Image" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Image">Image</a></li>
+  <li><a href="#nodebpy.nodes.input.ImageInfo" id="toc-nodebpy.nodes.input.ImageInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ImageInfo">ImageInfo</a></li>
+  <li><a href="#nodebpy.nodes.input.ImportCSV" id="toc-nodebpy.nodes.input.ImportCSV" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ImportCSV">ImportCSV</a></li>
+  <li><a href="#nodebpy.nodes.input.ImportOBJ" id="toc-nodebpy.nodes.input.ImportOBJ" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ImportOBJ">ImportOBJ</a></li>
+  <li><a href="#nodebpy.nodes.input.ImportPLY" id="toc-nodebpy.nodes.input.ImportPLY" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ImportPLY">ImportPLY</a></li>
+  <li><a href="#nodebpy.nodes.input.ImportSTL" id="toc-nodebpy.nodes.input.ImportSTL" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ImportSTL">ImportSTL</a></li>
+  <li><a href="#nodebpy.nodes.input.ImportText" id="toc-nodebpy.nodes.input.ImportText" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ImportText">ImportText</a></li>
+  <li><a href="#nodebpy.nodes.input.ImportVDB" id="toc-nodebpy.nodes.input.ImportVDB" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ImportVDB">ImportVDB</a></li>
   <li><a href="#nodebpy.nodes.input.Index" id="toc-nodebpy.nodes.input.Index" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Index">Index</a></li>
   <li><a href="#nodebpy.nodes.input.InstanceBounds" id="toc-nodebpy.nodes.input.InstanceBounds" class="nav-link" data-scroll-target="#nodebpy.nodes.input.InstanceBounds">InstanceBounds</a></li>
   <li><a href="#nodebpy.nodes.input.InstanceRotation" id="toc-nodebpy.nodes.input.InstanceRotation" class="nav-link" data-scroll-target="#nodebpy.nodes.input.InstanceRotation">InstanceRotation</a></li>
   <li><a href="#nodebpy.nodes.input.InstanceScale" id="toc-nodebpy.nodes.input.InstanceScale" class="nav-link" data-scroll-target="#nodebpy.nodes.input.InstanceScale">InstanceScale</a></li>
+  <li><a href="#nodebpy.nodes.input.InstanceTransform" id="toc-nodebpy.nodes.input.InstanceTransform" class="nav-link" data-scroll-target="#nodebpy.nodes.input.InstanceTransform">InstanceTransform</a></li>
   <li><a href="#nodebpy.nodes.input.Integer" id="toc-nodebpy.nodes.input.Integer" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Integer">Integer</a></li>
   <li><a href="#nodebpy.nodes.input.IsEdgeSmooth" id="toc-nodebpy.nodes.input.IsEdgeSmooth" class="nav-link" data-scroll-target="#nodebpy.nodes.input.IsEdgeSmooth">IsEdgeSmooth</a></li>
+  <li><a href="#nodebpy.nodes.input.IsFacePlanar" id="toc-nodebpy.nodes.input.IsFacePlanar" class="nav-link" data-scroll-target="#nodebpy.nodes.input.IsFacePlanar">IsFacePlanar</a></li>
   <li><a href="#nodebpy.nodes.input.IsFaceSmooth" id="toc-nodebpy.nodes.input.IsFaceSmooth" class="nav-link" data-scroll-target="#nodebpy.nodes.input.IsFaceSmooth">IsFaceSmooth</a></li>
   <li><a href="#nodebpy.nodes.input.IsSplineCyclic" id="toc-nodebpy.nodes.input.IsSplineCyclic" class="nav-link" data-scroll-target="#nodebpy.nodes.input.IsSplineCyclic">IsSplineCyclic</a></li>
+  <li><a href="#nodebpy.nodes.input.IsViewport" id="toc-nodebpy.nodes.input.IsViewport" class="nav-link" data-scroll-target="#nodebpy.nodes.input.IsViewport">IsViewport</a></li>
   <li><a href="#nodebpy.nodes.input.Material" id="toc-nodebpy.nodes.input.Material" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Material">Material</a></li>
   <li><a href="#nodebpy.nodes.input.MaterialIndex" id="toc-nodebpy.nodes.input.MaterialIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.input.MaterialIndex">MaterialIndex</a></li>
+  <li><a href="#nodebpy.nodes.input.MeshIsland" id="toc-nodebpy.nodes.input.MeshIsland" class="nav-link" data-scroll-target="#nodebpy.nodes.input.MeshIsland">MeshIsland</a></li>
+  <li><a href="#nodebpy.nodes.input.MousePosition" id="toc-nodebpy.nodes.input.MousePosition" class="nav-link" data-scroll-target="#nodebpy.nodes.input.MousePosition">MousePosition</a></li>
+  <li><a href="#nodebpy.nodes.input.NamedAttribute" id="toc-nodebpy.nodes.input.NamedAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.input.NamedAttribute">NamedAttribute</a></li>
   <li><a href="#nodebpy.nodes.input.NamedLayerSelection" id="toc-nodebpy.nodes.input.NamedLayerSelection" class="nav-link" data-scroll-target="#nodebpy.nodes.input.NamedLayerSelection">NamedLayerSelection</a></li>
   <li><a href="#nodebpy.nodes.input.Normal" id="toc-nodebpy.nodes.input.Normal" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Normal">Normal</a></li>
   <li><a href="#nodebpy.nodes.input.Object" id="toc-nodebpy.nodes.input.Object" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Object">Object</a></li>
+  <li><a href="#nodebpy.nodes.input.ObjectInfo" id="toc-nodebpy.nodes.input.ObjectInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ObjectInfo">ObjectInfo</a></li>
+  <li><a href="#nodebpy.nodes.input.OffsetCornerInFace" id="toc-nodebpy.nodes.input.OffsetCornerInFace" class="nav-link" data-scroll-target="#nodebpy.nodes.input.OffsetCornerInFace">OffsetCornerInFace</a></li>
+  <li><a href="#nodebpy.nodes.input.OffsetPointInCurve" id="toc-nodebpy.nodes.input.OffsetPointInCurve" class="nav-link" data-scroll-target="#nodebpy.nodes.input.OffsetPointInCurve">OffsetPointInCurve</a></li>
+  <li><a href="#nodebpy.nodes.input.PointsOfCurve" id="toc-nodebpy.nodes.input.PointsOfCurve" class="nav-link" data-scroll-target="#nodebpy.nodes.input.PointsOfCurve">PointsOfCurve</a></li>
   <li><a href="#nodebpy.nodes.input.Position" id="toc-nodebpy.nodes.input.Position" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Position">Position</a></li>
   <li><a href="#nodebpy.nodes.input.Radius" id="toc-nodebpy.nodes.input.Radius" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Radius">Radius</a></li>
   <li><a href="#nodebpy.nodes.input.Rotation" id="toc-nodebpy.nodes.input.Rotation" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Rotation">Rotation</a></li>
   <li><a href="#nodebpy.nodes.input.SceneTime" id="toc-nodebpy.nodes.input.SceneTime" class="nav-link" data-scroll-target="#nodebpy.nodes.input.SceneTime">SceneTime</a></li>
+  <li><a href="#nodebpy.nodes.input.Selection" id="toc-nodebpy.nodes.input.Selection" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Selection">Selection</a></li>
+  <li><a href="#nodebpy.nodes.input.SelfObject" id="toc-nodebpy.nodes.input.SelfObject" class="nav-link" data-scroll-target="#nodebpy.nodes.input.SelfObject">SelfObject</a></li>
   <li><a href="#nodebpy.nodes.input.ShortestEdgePaths" id="toc-nodebpy.nodes.input.ShortestEdgePaths" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ShortestEdgePaths">ShortestEdgePaths</a></li>
   <li><a href="#nodebpy.nodes.input.SpecialCharacters" id="toc-nodebpy.nodes.input.SpecialCharacters" class="nav-link" data-scroll-target="#nodebpy.nodes.input.SpecialCharacters">SpecialCharacters</a></li>
+  <li><a href="#nodebpy.nodes.input.SplineLength" id="toc-nodebpy.nodes.input.SplineLength" class="nav-link" data-scroll-target="#nodebpy.nodes.input.SplineLength">SplineLength</a></li>
+  <li><a href="#nodebpy.nodes.input.SplineParameter" id="toc-nodebpy.nodes.input.SplineParameter" class="nav-link" data-scroll-target="#nodebpy.nodes.input.SplineParameter">SplineParameter</a></li>
   <li><a href="#nodebpy.nodes.input.SplineResolution" id="toc-nodebpy.nodes.input.SplineResolution" class="nav-link" data-scroll-target="#nodebpy.nodes.input.SplineResolution">SplineResolution</a></li>
   <li><a href="#nodebpy.nodes.input.String" id="toc-nodebpy.nodes.input.String" class="nav-link" data-scroll-target="#nodebpy.nodes.input.String">String</a></li>
+  <li><a href="#nodebpy.nodes.input.UVTangent" id="toc-nodebpy.nodes.input.UVTangent" class="nav-link" data-scroll-target="#nodebpy.nodes.input.UVTangent">UVTangent</a></li>
   <li><a href="#nodebpy.nodes.input.Value" id="toc-nodebpy.nodes.input.Value" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Value">Value</a></li>
+  <li><a href="#nodebpy.nodes.input.Vector" id="toc-nodebpy.nodes.input.Vector" class="nav-link" data-scroll-target="#nodebpy.nodes.input.Vector">Vector</a></li>
+  <li><a href="#nodebpy.nodes.input.VertexNeighbors" id="toc-nodebpy.nodes.input.VertexNeighbors" class="nav-link" data-scroll-target="#nodebpy.nodes.input.VertexNeighbors">VertexNeighbors</a></li>
+  <li><a href="#nodebpy.nodes.input.VertexOfCorner" id="toc-nodebpy.nodes.input.VertexOfCorner" class="nav-link" data-scroll-target="#nodebpy.nodes.input.VertexOfCorner">VertexOfCorner</a></li>
+  <li><a href="#nodebpy.nodes.input.ViewportTransform" id="toc-nodebpy.nodes.input.ViewportTransform" class="nav-link" data-scroll-target="#nodebpy.nodes.input.ViewportTransform">ViewportTransform</a></li>
   <li><a href="#nodebpy.nodes.input.VoxelIndex" id="toc-nodebpy.nodes.input.VoxelIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.input.VoxelIndex">VoxelIndex</a></li>
   </ul></li>
   </ul></li>
@@ -266,7 +339,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.geometry.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.input.html">nodes.input</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.input.html">nodes.input</a></li></ol></nav></header>
 
 
 
@@ -274,10 +347,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.input" class="level1">
 <h1>nodes.input</h1>
 <p><code>nodes.input</code></p>
-<p>Auto-generated Blender Geometry Node classes.</p>
-<p>DO NOT EDIT THIS FILE MANUALLY. This file is generated by molecularnodes/nodes/generator.py</p>
-<p>To regenerate: Run generator.py from within Blender</p>
-<p>KNOWN LIMITATIONS: - Dynamic multi-input/output sockets are not yet supported (these are the unnamed sockets that appear in the UI for nodes like “Evaluate Closure”, “Join Geometry”, etc. that allow dragging in multiple connections) - TODO: Add support for dynamic socket creation</p>
 <section id="classes" class="level2">
 <h2 class="anchored" data-anchor-id="classes">Classes</h2>
 <table class="caption-top table">
@@ -293,32 +362,152 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Retrieve the scene’s active camera</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.input.ActiveElement">ActiveElement</a></td>
+<td>Active element indices of the edited geometry, for tool execution</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Boolean">Boolean</a></td>
 <td>Provide a True/False value that can be connected to other nodes in the tree</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CameraInfo">CameraInfo</a></td>
+<td>Retrieve information from a camera object</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.Collection">Collection</a></td>
 <td>Output a single collection</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.input.CollectionInfo">CollectionInfo</a></td>
+<td>Retrieve geometry instances from a collection</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Color">Color</a></td>
 <td>Output a color value chosen with the color picker widget</td>
 </tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge">CornersOfEdge</a></td>
+<td>Retrieve face corners connected to edges</td>
+</tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfFace">CornersOfFace</a></td>
+<td>Retrieve corners that make up a face</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex">CornersOfVertex</a></td>
+<td>Retrieve face corners connected to vertices</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Cursor3D">Cursor3D</a></td>
+<td>The scene’s 3D cursor location and rotation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveHandlePositions">CurveHandlePositions</a></td>
+<td>Retrieve the position of each Bézier control point’s handles</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveOfPoint">CurveOfPoint</a></td>
+<td>Retrieve the curve a control point is part of</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.CurveTangent">CurveTangent</a></td>
 <td>Retrieve the direction of curves at each control point</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveTilt">CurveTilt</a></td>
+<td>Retrieve the angle at each control point used to twist the curve’s normal around its tangent</td>
+</tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.input.ForEachGeometryElementInput">ForEachGeometryElementInput</a></td>
-<td>For Each Geometry Element Input node</td>
+<td><a href="#nodebpy.nodes.input.EdgeAngle">EdgeAngle</a></td>
+<td>The angle between the normals of connected manifold faces</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeNeighbors">EdgeNeighbors</a></td>
+<td>Retrieve the number of faces that use each edge as one of their sides</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgePathsToSelection">EdgePathsToSelection</a></td>
+<td>Output a selection of edges by following paths across mesh edges</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeVertices">EdgeVertices</a></td>
+<td>Retrieve topology information relating to each edge of a mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesOfCorner">EdgesOfCorner</a></td>
+<td>Retrieve the edges on both sides of a face corner</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex">EdgesOfVertex</a></td>
+<td>Retrieve the edges connected to each vertex</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesToFaceGroups">EdgesToFaceGroups</a></td>
+<td>Group faces into regions surrounded by the selected boundary edges</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EndpointSelection">EndpointSelection</a></td>
+<td>Provide a selection for an arbitrary number of endpoints in each spline</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceArea">FaceArea</a></td>
+<td>Calculate the surface area of a mesh’s faces</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceGroupBoundaries">FaceGroupBoundaries</a></td>
+<td>Find edges on the boundaries between groups of faces with the same ID value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceNeighbors">FaceNeighbors</a></td>
+<td>Retrieve topology information relating to each face of a mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceOfCorner">FaceOfCorner</a></td>
+<td>Retrieve the face each face corner is part of</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceSet">FaceSet</a></td>
+<td>Each face’s sculpt face set value</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection">HandleTypeSelection</a></td>
+<td>Provide a selection based on the handle types of Bézier control points</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.ID">ID</a></td>
 <td>Retrieve a stable random identifier value from the “id” attribute on the point domain, or the index if the attribute does not exist</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Image">Image</a></td>
 <td>Input an image data-block</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImageInfo">ImageInfo</a></td>
+<td>Retrieve information about an image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportCSV">ImportCSV</a></td>
+<td>Import geometry from an CSV file</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportOBJ">ImportOBJ</a></td>
+<td>Import geometry from an OBJ file</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportPLY">ImportPLY</a></td>
+<td>Import a point cloud from a PLY file</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportSTL">ImportSTL</a></td>
+<td>Import a mesh from an STL file</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportText">ImportText</a></td>
+<td>Import a string from a text file</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportVDB">ImportVDB</a></td>
+<td>Import volume data from a .vdb file</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.Index">Index</a></td>
@@ -337,12 +526,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Retrieve the scale of each instance in the geometry</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceTransform">InstanceTransform</a></td>
+<td>Retrieve the full transformation of each instance in the geometry</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.Integer">Integer</a></td>
 <td>Provide an integer value that can be connected to other nodes in the tree</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.IsEdgeSmooth">IsEdgeSmooth</a></td>
 <td>Retrieve whether each edge is marked for smooth or split normals</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsFacePlanar">IsFacePlanar</a></td>
+<td>Retrieve whether all triangles in a face are on the same plane, i.e.&nbsp;whether they have the same normal</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.IsFaceSmooth">IsFaceSmooth</a></td>
@@ -353,12 +550,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Retrieve whether each spline endpoint connects to the beginning</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsViewport">IsViewport</a></td>
+<td>Retrieve whether the nodes are being evaluated for the viewport rather than the final render</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.Material">Material</a></td>
 <td>Output a single material</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.MaterialIndex">MaterialIndex</a></td>
 <td>Retrieve the index of the material used for each element in the geometry’s list of materials</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MeshIsland">MeshIsland</a></td>
+<td>Retrieve information about separate connected regions in a mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MousePosition">MousePosition</a></td>
+<td>Retrieve the position of the mouse cursor</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedAttribute">NamedAttribute</a></td>
+<td>Retrieve the data of a specified attribute</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.NamedLayerSelection">NamedLayerSelection</a></td>
@@ -371,6 +584,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.Object">Object</a></td>
 <td>Output a single object</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ObjectInfo">ObjectInfo</a></td>
+<td>Retrieve information from an object</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetCornerInFace">OffsetCornerInFace</a></td>
+<td>Retrieve corners in the same face as another</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve">OffsetPointInCurve</a></td>
+<td>Offset a control point index within its curve</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve">PointsOfCurve</a></td>
+<td>Retrieve a point index within a curve</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.input.Position">Position</a></td>
@@ -389,12 +618,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Retrieve the current time in the scene’s animation in units of seconds or frames</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.input.Selection">Selection</a></td>
+<td>User selection of the edited geometry, for tool execution</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SelfObject">SelfObject</a></td>
+<td>Retrieve the object that contains the geometry nodes modifier currently being executed</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.ShortestEdgePaths">ShortestEdgePaths</a></td>
 <td>Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.SpecialCharacters">SpecialCharacters</a></td>
 <td>Output string characters that cannot be typed directly with the keyboard</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineLength">SplineLength</a></td>
+<td>Retrieve the total length of each spline, as a distance or as a number of points</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineParameter">SplineParameter</a></td>
+<td>Retrieve how far along each spline a control point is</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.input.SplineResolution">SplineResolution</a></td>
@@ -405,10 +650,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Provide a string value that can be connected to other nodes in the tree</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.input.UVTangent">UVTangent</a></td>
+<td>Generate tangent directions based on a UV map</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Value">Value</a></td>
 <td>Input numerical values to other nodes in the tree</td>
 </tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Vector">Vector</a></td>
+<td>Provide a vector value that can be connected to other nodes in the tree</td>
+</tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.VertexNeighbors">VertexNeighbors</a></td>
+<td>Retrieve topology information relating to each vertex of a mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VertexOfCorner">VertexOfCorner</a></td>
+<td>Retrieve the vertex each face corner is attached to</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ViewportTransform">ViewportTransform</a></td>
+<td>Retrieve the view direction and location of the 3D viewport</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.VoxelIndex">VoxelIndex</a></td>
 <td>Retrieve the integer coordinates of the voxel that the field is evaluated on</td>
 </tr>
@@ -429,17 +694,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.ActiveCamera.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ActiveCamera.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.ActiveCamera.o_active_camera">o_active_camera</a></td>
 <td>Output socket: Active Camera</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ActiveCamera.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ActiveCamera.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.Boolean" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Boolean">Boolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Boolean(boolean<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Provide a True/False value that can be connected to other nodes in the tree</p>
+<section id="nodebpy.nodes.input.ActiveElement" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ActiveElement">ActiveElement</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ActiveElement(domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Active element indices of the edited geometry, for tool execution</p>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -451,17 +732,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.input.Boolean.o_boolean">o_boolean</a></td>
-<td>Output socket: Boolean</td>
+<td><a href="#nodebpy.nodes.input.ActiveElement.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ActiveElement.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ActiveElement.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ActiveElement.o_exists">o_exists</a></td>
+<td>Output socket: Exists</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ActiveElement.o_index">o_index</a></td>
+<td>Output socket: Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ActiveElement.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ActiveElement.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.Collection" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Collection">Collection</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Collection(collection<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Output a single collection</p>
+<section id="nodebpy.nodes.input.Boolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Boolean">Boolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Boolean(boolean<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Provide a True/False value that can be connected to other nodes in the tree</p>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
@@ -473,17 +778,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.input.Collection.o_collection">o_collection</a></td>
-<td>Output socket: Collection</td>
+<td><a href="#nodebpy.nodes.input.Boolean.boolean">boolean</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Boolean.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Boolean.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Boolean.o_boolean">o_boolean</a></td>
+<td>Output socket: Boolean</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Boolean.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Boolean.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.Color" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Color">Color</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Color(value<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Output a color value chosen with the color picker widget</p>
+<section id="nodebpy.nodes.input.CameraInfo" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CameraInfo">CameraInfo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CameraInfo(camera<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve information from a camera object</p>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
@@ -495,17 +820,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.input.Color.o_color">o_color</a></td>
-<td>Output socket: Color</td>
+<td><a href="#nodebpy.nodes.input.CameraInfo.i_camera">i_camera</a></td>
+<td>Input socket: Camera</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CameraInfo.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CameraInfo.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_clip_end">o_clip_end</a></td>
+<td>Output socket: Clip End</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_clip_start">o_clip_start</a></td>
+<td>Output socket: Clip Start</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_focal_length">o_focal_length</a></td>
+<td>Output socket: Focal Length</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_focus_distance">o_focus_distance</a></td>
+<td>Output socket: Focus Distance</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_is_orthographic">o_is_orthographic</a></td>
+<td>Output socket: Is Orthographic</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_orthographic_scale">o_orthographic_scale</a></td>
+<td>Output socket: Orthographic Scale</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_projection_matrix">o_projection_matrix</a></td>
+<td>Output socket: Projection Matrix</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_sensor">o_sensor</a></td>
+<td>Output socket: Sensor</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CameraInfo.o_shift">o_shift</a></td>
+<td>Output socket: Shift</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CameraInfo.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CameraInfo.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.CurveTangent" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CurveTangent">CurveTangent</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CurveTangent()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Retrieve the direction of curves at each control point</p>
+<section id="nodebpy.nodes.input.Collection" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Collection">Collection</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Collection(collection<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Output a single collection</p>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
@@ -517,22 +894,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.input.CurveTangent.o_tangent">o_tangent</a></td>
-<td>Output socket: Tangent</td>
+<td><a href="#nodebpy.nodes.input.Collection.collection">collection</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Collection.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Collection.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Collection.o_collection">o_collection</a></td>
+<td>Output socket: Collection</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Collection.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Collection.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.ForEachGeometryElementInput" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ForEachGeometryElementInput">ForEachGeometryElementInput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ForEachGeometryElementInput(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    extend<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<section id="nodebpy.nodes.input.CollectionInfo" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CollectionInfo">CollectionInfo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CollectionInfo(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    collection<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    separate_children<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    reset_children<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    transform_space<span class="op">=</span><span class="st">'ORIGINAL'</span>,</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For Each Geometry Element Input node</p>
+<p>Retrieve geometry instances from a collection</p>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
@@ -544,33 +941,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.input.ForEachGeometryElementInput.i_geometry">i_geometry</a></td>
-<td>Input socket: Geometry</td>
+<td><a href="#nodebpy.nodes.input.CollectionInfo.i_collection">i_collection</a></td>
+<td>Input socket: Collection</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.input.ForEachGeometryElementInput.i_input_socket">i_input_socket</a></td>
-<td>Input socket:</td>
+<td><a href="#nodebpy.nodes.input.CollectionInfo.i_reset_children">i_reset_children</a></td>
+<td>Input socket: Reset Children</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.input.ForEachGeometryElementInput.i_selection">i_selection</a></td>
-<td>Input socket: Selection</td>
+<td><a href="#nodebpy.nodes.input.CollectionInfo.i_separate_children">i_separate_children</a></td>
+<td>Input socket: Separate Children</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.input.ForEachGeometryElementInput.o_index">o_index</a></td>
-<td>Output socket: Index</td>
+<td><a href="#nodebpy.nodes.input.CollectionInfo.name">name</a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.input.ForEachGeometryElementInput.o_input_socket">o_input_socket</a></td>
-<td>Output socket:</td>
+<td><a href="#nodebpy.nodes.input.CollectionInfo.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CollectionInfo.o_instances">o_instances</a></td>
+<td>Output socket: Instances</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CollectionInfo.transform_space">transform_space</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CollectionInfo.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CollectionInfo.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.ID" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ID">ID</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ID()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Retrieve a stable random identifier value from the “id” attribute on the point domain, or the index if the attribute does not exist</p>
+<section id="nodebpy.nodes.input.Color" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Color">Color</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Color(value<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Output a color value chosen with the color picker widget</p>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
@@ -582,8 +995,1066 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.Color.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Color.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Color.o_color">o_color</a></td>
+<td>Output socket: Color</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Color.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Color.type">type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Color.value">value</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.CornersOfEdge" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CornersOfEdge">CornersOfEdge</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CornersOfEdge(edge_index<span class="op">=</span><span class="va">None</span>, weights<span class="op">=</span><span class="va">None</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve face corners connected to edges</p>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.i_edge_index">i_edge_index</a></td>
+<td>Input socket: Edge Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.i_sort_index">i_sort_index</a></td>
+<td>Input socket: Sort Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.i_weights">i_weights</a></td>
+<td>Input socket: Weights</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.o_corner_index">o_corner_index</a></td>
+<td>Output socket: Corner Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.o_total">o_total</a></td>
+<td>Output socket: Total</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfEdge.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.CornersOfFace" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CornersOfFace">CornersOfFace</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CornersOfFace(face_index<span class="op">=</span><span class="va">None</span>, weights<span class="op">=</span><span class="va">None</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve corners that make up a face</p>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.i_face_index">i_face_index</a></td>
+<td>Input socket: Face Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.i_sort_index">i_sort_index</a></td>
+<td>Input socket: Sort Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.i_weights">i_weights</a></td>
+<td>Input socket: Weights</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.o_corner_index">o_corner_index</a></td>
+<td>Output socket: Corner Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.o_total">o_total</a></td>
+<td>Output socket: Total</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfFace.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.CornersOfVertex" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CornersOfVertex">CornersOfVertex</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CornersOfVertex(vertex_index<span class="op">=</span><span class="va">None</span>, weights<span class="op">=</span><span class="va">None</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve face corners connected to vertices</p>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.i_sort_index">i_sort_index</a></td>
+<td>Input socket: Sort Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.i_vertex_index">i_vertex_index</a></td>
+<td>Input socket: Vertex Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.i_weights">i_weights</a></td>
+<td>Input socket: Weights</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.o_corner_index">o_corner_index</a></td>
+<td>Output socket: Corner Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.o_total">o_total</a></td>
+<td>Output socket: Total</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CornersOfVertex.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.Cursor3D" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Cursor3D">Cursor3D</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Cursor3D()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The scene’s 3D cursor location and rotation</p>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Cursor3D.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Cursor3D.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Cursor3D.o_location">o_location</a></td>
+<td>Output socket: Location</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Cursor3D.o_rotation">o_rotation</a></td>
+<td>Output socket: Rotation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Cursor3D.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Cursor3D.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.CurveHandlePositions" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CurveHandlePositions">CurveHandlePositions</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CurveHandlePositions(relative<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the position of each Bézier control point’s handles</p>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveHandlePositions.i_relative">i_relative</a></td>
+<td>Input socket: Relative</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveHandlePositions.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveHandlePositions.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveHandlePositions.o_left">o_left</a></td>
+<td>Output socket: Left</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveHandlePositions.o_right">o_right</a></td>
+<td>Output socket: Right</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveHandlePositions.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveHandlePositions.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.CurveOfPoint" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CurveOfPoint">CurveOfPoint</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CurveOfPoint(point_index<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the curve a control point is part of</p>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveOfPoint.i_point_index">i_point_index</a></td>
+<td>Input socket: Point Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveOfPoint.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveOfPoint.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveOfPoint.o_curve_index">o_curve_index</a></td>
+<td>Output socket: Curve Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveOfPoint.o_index_in_curve">o_index_in_curve</a></td>
+<td>Output socket: Index in Curve</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveOfPoint.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveOfPoint.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.CurveTangent" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CurveTangent">CurveTangent</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CurveTangent()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the direction of curves at each control point</p>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveTangent.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveTangent.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveTangent.o_tangent">o_tangent</a></td>
+<td>Output socket: Tangent</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveTangent.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveTangent.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.CurveTilt" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.CurveTilt">CurveTilt</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.CurveTilt()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the angle at each control point used to twist the curve’s normal around its tangent</p>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveTilt.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveTilt.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveTilt.o_tilt">o_tilt</a></td>
+<td>Output socket: Tilt</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.CurveTilt.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.CurveTilt.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.EdgeAngle" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.EdgeAngle">EdgeAngle</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.EdgeAngle()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The angle between the normals of connected manifold faces</p>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeAngle.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeAngle.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeAngle.o_signed_angle">o_signed_angle</a></td>
+<td>Output socket: Signed Angle</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeAngle.o_unsigned_angle">o_unsigned_angle</a></td>
+<td>Output socket: Unsigned Angle</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeAngle.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeAngle.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.EdgeNeighbors" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.EdgeNeighbors">EdgeNeighbors</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.EdgeNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the number of faces that use each edge as one of their sides</p>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeNeighbors.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeNeighbors.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeNeighbors.o_face_count">o_face_count</a></td>
+<td>Output socket: Face Count</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeNeighbors.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeNeighbors.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.EdgePathsToSelection" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.EdgePathsToSelection">EdgePathsToSelection</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.EdgePathsToSelection(start_vertices<span class="op">=</span><span class="va">None</span>, next_vertex_index<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Output a selection of edges by following paths across mesh edges</p>
+<section id="attributes-17" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgePathsToSelection.i_next_vertex_index">i_next_vertex_index</a></td>
+<td>Input socket: Next Vertex Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgePathsToSelection.i_start_vertices">i_start_vertices</a></td>
+<td>Input socket: Start Vertices</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgePathsToSelection.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgePathsToSelection.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgePathsToSelection.o_selection">o_selection</a></td>
+<td>Output socket: Selection</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgePathsToSelection.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgePathsToSelection.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.EdgeVertices" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.EdgeVertices">EdgeVertices</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.EdgeVertices()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve topology information relating to each edge of a mesh</p>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeVertices.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeVertices.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeVertices.o_position_1">o_position_1</a></td>
+<td>Output socket: Position 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeVertices.o_position_2">o_position_2</a></td>
+<td>Output socket: Position 2</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeVertices.o_vertex_index_1">o_vertex_index_1</a></td>
+<td>Output socket: Vertex Index 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeVertices.o_vertex_index_2">o_vertex_index_2</a></td>
+<td>Output socket: Vertex Index 2</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgeVertices.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgeVertices.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.EdgesOfCorner" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.EdgesOfCorner">EdgesOfCorner</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.EdgesOfCorner(corner_index<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the edges on both sides of a face corner</p>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfCorner.i_corner_index">i_corner_index</a></td>
+<td>Input socket: Corner Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesOfCorner.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfCorner.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesOfCorner.o_next_edge_index">o_next_edge_index</a></td>
+<td>Output socket: Next Edge Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfCorner.o_previous_edge_index">o_previous_edge_index</a></td>
+<td>Output socket: Previous Edge Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesOfCorner.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfCorner.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.EdgesOfVertex" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.EdgesOfVertex">EdgesOfVertex</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.EdgesOfVertex(vertex_index<span class="op">=</span><span class="va">None</span>, weights<span class="op">=</span><span class="va">None</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the edges connected to each vertex</p>
+<section id="attributes-20" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.i_sort_index">i_sort_index</a></td>
+<td>Input socket: Sort Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.i_vertex_index">i_vertex_index</a></td>
+<td>Input socket: Vertex Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.i_weights">i_weights</a></td>
+<td>Input socket: Weights</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.o_edge_index">o_edge_index</a></td>
+<td>Output socket: Edge Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.o_total">o_total</a></td>
+<td>Output socket: Total</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesOfVertex.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.EdgesToFaceGroups" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.EdgesToFaceGroups">EdgesToFaceGroups</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.EdgesToFaceGroups(boundary_edges<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Group faces into regions surrounded by the selected boundary edges</p>
+<section id="attributes-21" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesToFaceGroups.i_boundary_edges">i_boundary_edges</a></td>
+<td>Input socket: Boundary Edges</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesToFaceGroups.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesToFaceGroups.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesToFaceGroups.o_face_group_id">o_face_group_id</a></td>
+<td>Output socket: Face Group ID</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EdgesToFaceGroups.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EdgesToFaceGroups.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.EndpointSelection" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.EndpointSelection">EndpointSelection</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.EndpointSelection(start_size<span class="op">=</span><span class="dv">1</span>, end_size<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Provide a selection for an arbitrary number of endpoints in each spline</p>
+<section id="attributes-22" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EndpointSelection.i_end_size">i_end_size</a></td>
+<td>Input socket: End Size</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EndpointSelection.i_start_size">i_start_size</a></td>
+<td>Input socket: Start Size</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EndpointSelection.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EndpointSelection.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EndpointSelection.o_selection">o_selection</a></td>
+<td>Output socket: Selection</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.EndpointSelection.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.EndpointSelection.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.FaceArea" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.FaceArea">FaceArea</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.FaceArea()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the surface area of a mesh’s faces</p>
+<section id="attributes-23" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceArea.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceArea.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceArea.o_area">o_area</a></td>
+<td>Output socket: Area</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceArea.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceArea.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.FaceGroupBoundaries" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.FaceGroupBoundaries">FaceGroupBoundaries</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.FaceGroupBoundaries(face_set<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Find edges on the boundaries between groups of faces with the same ID value</p>
+<section id="attributes-24" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceGroupBoundaries.i_face_group_id">i_face_group_id</a></td>
+<td>Input socket: Face Group ID</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceGroupBoundaries.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceGroupBoundaries.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceGroupBoundaries.o_boundary_edges">o_boundary_edges</a></td>
+<td>Output socket: Boundary Edges</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceGroupBoundaries.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceGroupBoundaries.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.FaceNeighbors" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.FaceNeighbors">FaceNeighbors</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.FaceNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve topology information relating to each face of a mesh</p>
+<section id="attributes-25" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceNeighbors.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceNeighbors.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceNeighbors.o_face_count">o_face_count</a></td>
+<td>Output socket: Face Count</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceNeighbors.o_vertex_count">o_vertex_count</a></td>
+<td>Output socket: Vertex Count</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceNeighbors.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceNeighbors.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.FaceOfCorner" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.FaceOfCorner">FaceOfCorner</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.FaceOfCorner(corner_index<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the face each face corner is part of</p>
+<section id="attributes-26" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceOfCorner.i_corner_index">i_corner_index</a></td>
+<td>Input socket: Corner Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceOfCorner.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceOfCorner.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceOfCorner.o_face_index">o_face_index</a></td>
+<td>Output socket: Face Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceOfCorner.o_index_in_face">o_index_in_face</a></td>
+<td>Output socket: Index in Face</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceOfCorner.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceOfCorner.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.FaceSet" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.FaceSet">FaceSet</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.FaceSet()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each face’s sculpt face set value</p>
+<section id="attributes-27" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceSet.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceSet.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceSet.o_exists">o_exists</a></td>
+<td>Output socket: Exists</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceSet.o_face_set">o_face_set</a></td>
+<td>Output socket: Face Set</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.FaceSet.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.FaceSet.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.HandleTypeSelection" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.HandleTypeSelection">HandleTypeSelection</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.HandleTypeSelection(handle_type<span class="op">=</span><span class="st">'AUTO'</span>, left<span class="op">=</span><span class="va">True</span>, right<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Provide a selection based on the handle types of Bézier control points</p>
+<section id="attributes-28" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.handle_type">handle_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.left">left</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.mode">mode</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.o_selection">o_selection</a></td>
+<td>Output socket: Selection</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.right">right</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.HandleTypeSelection.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ID" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ID">ID</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ID()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve a stable random identifier value from the “id” attribute on the point domain, or the index if the attribute does not exist</p>
+<section id="attributes-29" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ID.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ID.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.ID.o_id">o_id</a></td>
 <td>Output socket: ID</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ID.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ID.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -591,10 +2062,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Image" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Image">Image</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Image(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Image(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input an image data-block</p>
-<section id="attributes-7" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<section id="attributes-30" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-30">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -608,19 +2079,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket: Image</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.input.Image.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Image.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.Image.o_image">o_image</a></td>
 <td>Output socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Image.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Image.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.Index" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Index">Index</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Retrieve an integer value indicating the position of each element in the list, starting at zero</p>
-<section id="attributes-8" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<section id="nodebpy.nodes.input.ImageInfo" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ImageInfo">ImageInfo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ImageInfo(image<span class="op">=</span><span class="va">None</span>, frame<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve information about an image</p>
+<section id="attributes-31" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-31">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -630,8 +2117,342 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImageInfo.i_frame">i_frame</a></td>
+<td>Input socket: Frame</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImageInfo.i_image">i_image</a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImageInfo.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImageInfo.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImageInfo.o_fps">o_fps</a></td>
+<td>Output socket: FPS</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImageInfo.o_frame_count">o_frame_count</a></td>
+<td>Output socket: Frame Count</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImageInfo.o_has_alpha">o_has_alpha</a></td>
+<td>Output socket: Has Alpha</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImageInfo.o_height">o_height</a></td>
+<td>Output socket: Height</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImageInfo.o_width">o_width</a></td>
+<td>Output socket: Width</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImageInfo.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImageInfo.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ImportCSV" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ImportCSV">ImportCSV</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ImportCSV(path<span class="op">=</span><span class="st">''</span>, delimiter<span class="op">=</span><span class="st">','</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Import geometry from an CSV file</p>
+<section id="attributes-32" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-32">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportCSV.i_delimiter">i_delimiter</a></td>
+<td>Input socket: Delimiter</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportCSV.i_path">i_path</a></td>
+<td>Input socket: Path</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportCSV.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportCSV.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportCSV.o_point_cloud">o_point_cloud</a></td>
+<td>Output socket: Point Cloud</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportCSV.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportCSV.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ImportOBJ" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ImportOBJ">ImportOBJ</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ImportOBJ(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Import geometry from an OBJ file</p>
+<section id="attributes-33" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-33">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportOBJ.i_path">i_path</a></td>
+<td>Input socket: Path</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportOBJ.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportOBJ.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportOBJ.o_instances">o_instances</a></td>
+<td>Output socket: Instances</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportOBJ.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportOBJ.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ImportPLY" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ImportPLY">ImportPLY</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ImportPLY(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Import a point cloud from a PLY file</p>
+<section id="attributes-34" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-34">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportPLY.i_path">i_path</a></td>
+<td>Input socket: Path</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportPLY.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportPLY.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportPLY.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportPLY.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportPLY.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ImportSTL" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ImportSTL">ImportSTL</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ImportSTL(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Import a mesh from an STL file</p>
+<section id="attributes-35" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-35">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportSTL.i_path">i_path</a></td>
+<td>Input socket: Path</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportSTL.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportSTL.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportSTL.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportSTL.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportSTL.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ImportText" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ImportText">ImportText</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ImportText(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Import a string from a text file</p>
+<section id="attributes-36" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-36">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportText.i_path">i_path</a></td>
+<td>Input socket: Path</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportText.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportText.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportText.o_string">o_string</a></td>
+<td>Output socket: String</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportText.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportText.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ImportVDB" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ImportVDB">ImportVDB</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ImportVDB(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Import volume data from a .vdb file</p>
+<section id="attributes-37" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-37">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportVDB.i_path">i_path</a></td>
+<td>Input socket: Path</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportVDB.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportVDB.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportVDB.o_volume">o_volume</a></td>
+<td>Output socket: Volume</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ImportVDB.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ImportVDB.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.Index" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Index">Index</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve an integer value indicating the position of each element in the list, starting at zero</p>
+<section id="attributes-38" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-38">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Index.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Index.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Index.o_index">o_index</a></td>
 <td>Output socket: Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Index.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Index.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -639,10 +2460,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.InstanceBounds" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.InstanceBounds">InstanceBounds</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.InstanceBounds(use_radius<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.InstanceBounds(use_radius<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate position bounds of each instance’s geometry set</p>
-<section id="attributes-9" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<section id="attributes-39" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-39">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -656,6 +2477,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket: Use Radius</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.input.InstanceBounds.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceBounds.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.InstanceBounds.o_max">o_max</a></td>
 <td>Output socket: Max</td>
 </tr>
@@ -663,16 +2492,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><a href="#nodebpy.nodes.input.InstanceBounds.o_min">o_min</a></td>
 <td>Output socket: Min</td>
 </tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.InstanceBounds.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceBounds.type">type</a></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 </section>
 </section>
 <section id="nodebpy.nodes.input.InstanceRotation" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.InstanceRotation">InstanceRotation</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.InstanceRotation()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.InstanceRotation()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the rotation of each instance in the geometry</p>
-<section id="attributes-10" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<section id="attributes-40" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-40">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -682,8 +2519,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceRotation.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.InstanceRotation.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.InstanceRotation.o_rotation">o_rotation</a></td>
 <td>Output socket: Rotation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.InstanceRotation.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceRotation.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -691,10 +2544,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.InstanceScale" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.InstanceScale">InstanceScale</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.InstanceScale()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.InstanceScale()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the scale of each instance in the geometry</p>
-<section id="attributes-11" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<section id="attributes-41" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-41">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -704,8 +2557,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceScale.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.InstanceScale.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.InstanceScale.o_scale">o_scale</a></td>
 <td>Output socket: Scale</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.InstanceScale.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceScale.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.InstanceTransform" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.InstanceTransform">InstanceTransform</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.InstanceTransform()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the full transformation of each instance in the geometry</p>
+<section id="attributes-42" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-42">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceTransform.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.InstanceTransform.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceTransform.o_transform">o_transform</a></td>
+<td>Output socket: Transform</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.InstanceTransform.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.InstanceTransform.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -713,10 +2620,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Integer" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Integer">Integer</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Integer(integer<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Integer(integer<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide an integer value that can be connected to other nodes in the tree</p>
-<section id="attributes-12" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<section id="attributes-43" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-43">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -726,8 +2633,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.Integer.integer">integer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Integer.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Integer.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.Integer.o_integer">o_integer</a></td>
 <td>Output socket: Integer</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Integer.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Integer.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -735,10 +2662,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.IsEdgeSmooth" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.IsEdgeSmooth">IsEdgeSmooth</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.IsEdgeSmooth()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.IsEdgeSmooth()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve whether each edge is marked for smooth or split normals</p>
-<section id="attributes-13" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<section id="attributes-44" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-44">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -748,8 +2675,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsEdgeSmooth.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsEdgeSmooth.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.IsEdgeSmooth.o_smooth">o_smooth</a></td>
 <td>Output socket: Smooth</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsEdgeSmooth.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsEdgeSmooth.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.IsFacePlanar" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.IsFacePlanar">IsFacePlanar</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.IsFacePlanar(threshold<span class="op">=</span><span class="fl">0.001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve whether all triangles in a face are on the same plane, i.e.&nbsp;whether they have the same normal</p>
+<section id="attributes-45" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-45">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsFacePlanar.i_threshold">i_threshold</a></td>
+<td>Input socket: Threshold</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsFacePlanar.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsFacePlanar.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsFacePlanar.o_planar">o_planar</a></td>
+<td>Output socket: Planar</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsFacePlanar.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsFacePlanar.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -757,10 +2742,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.IsFaceSmooth" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.IsFaceSmooth">IsFaceSmooth</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.IsFaceSmooth()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.IsFaceSmooth()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve whether each face is marked for smooth or sharp normals</p>
-<section id="attributes-14" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<section id="attributes-46" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-46">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -770,8 +2755,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsFaceSmooth.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsFaceSmooth.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.IsFaceSmooth.o_smooth">o_smooth</a></td>
 <td>Output socket: Smooth</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsFaceSmooth.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsFaceSmooth.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -779,10 +2780,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.IsSplineCyclic" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.IsSplineCyclic">IsSplineCyclic</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.IsSplineCyclic()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.IsSplineCyclic()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve whether each spline endpoint connects to the beginning</p>
-<section id="attributes-15" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<section id="attributes-47" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-47">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -792,8 +2793,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsSplineCyclic.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsSplineCyclic.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.IsSplineCyclic.o_cyclic">o_cyclic</a></td>
 <td>Output socket: Cyclic</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsSplineCyclic.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsSplineCyclic.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.IsViewport" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.IsViewport">IsViewport</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.IsViewport()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve whether the nodes are being evaluated for the viewport rather than the final render</p>
+<section id="attributes-48" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-48">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsViewport.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsViewport.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsViewport.o_is_viewport">o_is_viewport</a></td>
+<td>Output socket: Is Viewport</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.IsViewport.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.IsViewport.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -801,10 +2856,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Material" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Material">Material</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Material(material<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Material(material<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output a single material</p>
-<section id="attributes-16" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<section id="attributes-49" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-49">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -818,8 +2873,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket: Material</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.input.Material.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Material.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.Material.o_material">o_material</a></td>
 <td>Output socket: Material</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Material.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Material.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -827,10 +2898,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.MaterialIndex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.MaterialIndex">MaterialIndex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.MaterialIndex()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.MaterialIndex()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the index of the material used for each element in the geometry’s list of materials</p>
-<section id="attributes-17" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<section id="attributes-50" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-50">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -840,8 +2911,194 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.MaterialIndex.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MaterialIndex.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.MaterialIndex.o_material_index">o_material_index</a></td>
 <td>Output socket: Material Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MaterialIndex.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MaterialIndex.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.MeshIsland" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.MeshIsland">MeshIsland</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.MeshIsland()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve information about separate connected regions in a mesh</p>
+<section id="attributes-51" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-51">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MeshIsland.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MeshIsland.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MeshIsland.o_island_count">o_island_count</a></td>
+<td>Output socket: Island Count</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MeshIsland.o_island_index">o_island_index</a></td>
+<td>Output socket: Island Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MeshIsland.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MeshIsland.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.MousePosition" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.MousePosition">MousePosition</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.MousePosition()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the position of the mouse cursor</p>
+<section id="attributes-52" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-52">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MousePosition.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MousePosition.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MousePosition.o_mouse_x">o_mouse_x</a></td>
+<td>Output socket: Mouse X</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MousePosition.o_mouse_y">o_mouse_y</a></td>
+<td>Output socket: Mouse Y</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MousePosition.o_region_height">o_region_height</a></td>
+<td>Output socket: Region Height</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MousePosition.o_region_width">o_region_width</a></td>
+<td>Output socket: Region Width</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.MousePosition.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.MousePosition.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.NamedAttribute" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.NamedAttribute">NamedAttribute</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.NamedAttribute(name<span class="op">=</span><span class="st">''</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the data of a specified attribute</p>
+<section id="attributes-53" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-53">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.boolean">boolean</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.color">color</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.float">float</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.i_name">i_name</a></td>
+<td>Input socket: Name</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.integer">integer</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.matrix">matrix</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.o_attribute">o_attribute</a></td>
+<td>Output socket: Attribute</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.o_exists">o_exists</a></td>
+<td>Output socket: Exists</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.quaternion">quaternion</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.type">type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedAttribute.vector">vector</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -849,10 +3106,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.NamedLayerSelection" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.NamedLayerSelection">NamedLayerSelection</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.NamedLayerSelection(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.NamedLayerSelection(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output a selection of a Grease Pencil layer</p>
-<section id="attributes-18" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<section id="attributes-54" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-54">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -866,8 +3123,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket: Name</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedLayerSelection.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedLayerSelection.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.NamedLayerSelection.o_selection">o_selection</a></td>
 <td>Output socket: Selection</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.NamedLayerSelection.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.NamedLayerSelection.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -875,10 +3148,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Normal" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Normal">Normal</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Normal()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Normal()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a unit length vector indicating the direction pointing away from the geometry at each element</p>
-<section id="attributes-19" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<section id="attributes-55" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-55">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -888,12 +3161,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.Normal.legacy_corner_normals">legacy_corner_normals</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Normal.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Normal.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.input.Normal.o_normal">o_normal</a></td>
 <td>Output socket: Normal</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Normal.o_true_normal">o_true_normal</a></td>
 <td>Output socket: True Normal</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Normal.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Normal.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -901,10 +3194,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Object" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Object">Object</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Object(<span class="bu">object</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Object(<span class="bu">object</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output a single object</p>
-<section id="attributes-20" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<section id="attributes-56" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-56">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -914,8 +3207,249 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.Object.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Object.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Object.o_object">o_object</a></td>
 <td>Output socket: Object</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Object.object">object</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Object.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Object.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ObjectInfo" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ObjectInfo">ObjectInfo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ObjectInfo(</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">object</span><span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    as_instance<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>    transform_space<span class="op">=</span><span class="st">'ORIGINAL'</span>,</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve information from an object</p>
+<section id="attributes-57" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-57">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.i_as_instance">i_as_instance</a></td>
+<td>Input socket: As Instance</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.i_object">i_object</a></td>
+<td>Input socket: Object</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.o_geometry">o_geometry</a></td>
+<td>Output socket: Geometry</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.o_location">o_location</a></td>
+<td>Output socket: Location</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.o_rotation">o_rotation</a></td>
+<td>Output socket: Rotation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.o_scale">o_scale</a></td>
+<td>Output socket: Scale</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.o_transform">o_transform</a></td>
+<td>Output socket: Transform</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.transform_space">transform_space</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ObjectInfo.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.OffsetCornerInFace" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.OffsetCornerInFace">OffsetCornerInFace</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.OffsetCornerInFace(corner_index<span class="op">=</span><span class="va">None</span>, offset<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve corners in the same face as another</p>
+<section id="attributes-58" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-58">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetCornerInFace.i_corner_index">i_corner_index</a></td>
+<td>Input socket: Corner Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.OffsetCornerInFace.i_offset">i_offset</a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetCornerInFace.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.OffsetCornerInFace.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetCornerInFace.o_corner_index">o_corner_index</a></td>
+<td>Output socket: Corner Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.OffsetCornerInFace.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetCornerInFace.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.OffsetPointInCurve" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.OffsetPointInCurve">OffsetPointInCurve</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.OffsetPointInCurve(point_index<span class="op">=</span><span class="va">None</span>, offset<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Offset a control point index within its curve</p>
+<section id="attributes-59" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-59">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve.i_offset">i_offset</a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve.i_point_index">i_point_index</a></td>
+<td>Input socket: Point Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve.o_is_valid_offset">o_is_valid_offset</a></td>
+<td>Output socket: Is Valid Offset</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve.o_point_index">o_point_index</a></td>
+<td>Output socket: Point Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.OffsetPointInCurve.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.PointsOfCurve" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.PointsOfCurve">PointsOfCurve</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.PointsOfCurve(curve_index<span class="op">=</span><span class="va">None</span>, weights<span class="op">=</span><span class="va">None</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve a point index within a curve</p>
+<section id="attributes-60" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-60">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.i_curve_index">i_curve_index</a></td>
+<td>Input socket: Curve Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.i_sort_index">i_sort_index</a></td>
+<td>Input socket: Sort Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.i_weights">i_weights</a></td>
+<td>Input socket: Weights</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.o_point_index">o_point_index</a></td>
+<td>Output socket: Point Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.o_total">o_total</a></td>
+<td>Output socket: Total</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.PointsOfCurve.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -923,10 +3457,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Position" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Position">Position</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Position()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Position()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a vector indicating the location of each element</p>
-<section id="attributes-21" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<section id="attributes-61" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-61">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -936,8 +3470,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.Position.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Position.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Position.o_position">o_position</a></td>
 <td>Output socket: Position</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Position.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Position.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -945,10 +3495,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Radius" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Radius">Radius</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Radius()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Radius()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the radius at each point on curve or point cloud geometry</p>
-<section id="attributes-22" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
+<section id="attributes-62" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-62">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -958,8 +3508,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.Radius.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Radius.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Radius.o_radius">o_radius</a></td>
 <td>Output socket: Radius</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Radius.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Radius.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -967,10 +3533,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Rotation" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Rotation">Rotation</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Rotation(rotation_euler<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Rotation(rotation_euler<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide a rotation value that can be connected to other nodes in the tree</p>
-<section id="attributes-23" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
+<section id="attributes-63" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-63">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -980,8 +3546,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.Rotation.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Rotation.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Rotation.o_rotation">o_rotation</a></td>
 <td>Output socket: Rotation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Rotation.rotation_euler">rotation_euler</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Rotation.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Rotation.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -989,10 +3575,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.SceneTime" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.SceneTime">SceneTime</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SceneTime()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SceneTime()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the current time in the scene’s animation in units of seconds or frames</p>
-<section id="attributes-24" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
+<section id="attributes-64" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-64">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1001,6 +3587,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SceneTime.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SceneTime.node">node</a></td>
+<td></td>
+</tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.SceneTime.o_frame">o_frame</a></td>
 <td>Output socket: Frame</td>
@@ -1009,16 +3603,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><a href="#nodebpy.nodes.input.SceneTime.o_seconds">o_seconds</a></td>
 <td>Output socket: Seconds</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SceneTime.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SceneTime.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.Selection" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Selection">Selection</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Selection()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>User selection of the edited geometry, for tool execution</p>
+<section id="attributes-65" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-65">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Selection.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Selection.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Selection.o_boolean">o_boolean</a></td>
+<td>Output socket: Boolean</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Selection.o_float">o_float</a></td>
+<td>Output socket: Float</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Selection.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Selection.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.SelfObject" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.SelfObject">SelfObject</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SelfObject()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the object that contains the geometry nodes modifier currently being executed</p>
+<section id="attributes-66" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-66">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SelfObject.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SelfObject.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SelfObject.o_self_object">o_self_object</a></td>
+<td>Output socket: Self Object</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SelfObject.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SelfObject.type">type</a></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 </section>
 </section>
 <section id="nodebpy.nodes.input.ShortestEdgePaths" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ShortestEdgePaths">ShortestEdgePaths</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ShortestEdgePaths(end_vertex<span class="op">=</span><span class="va">None</span>, edge_cost<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ShortestEdgePaths(end_vertex<span class="op">=</span><span class="va">None</span>, edge_cost<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge</p>
-<section id="attributes-25" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
+<section id="attributes-67" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-67">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1036,6 +3718,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket: End Vertex</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.ShortestEdgePaths.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ShortestEdgePaths.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.ShortestEdgePaths.o_next_vertex_index">o_next_vertex_index</a></td>
 <td>Output socket: Next Vertex Index</td>
 </tr>
@@ -1043,16 +3733,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><a href="#nodebpy.nodes.input.ShortestEdgePaths.o_total_cost">o_total_cost</a></td>
 <td>Output socket: Total Cost</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ShortestEdgePaths.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ShortestEdgePaths.type">type</a></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 </section>
 </section>
 <section id="nodebpy.nodes.input.SpecialCharacters" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.SpecialCharacters">SpecialCharacters</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SpecialCharacters()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SpecialCharacters()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output string characters that cannot be typed directly with the keyboard</p>
-<section id="attributes-26" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
+<section id="attributes-68" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-68">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1061,6 +3759,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SpecialCharacters.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SpecialCharacters.node">node</a></td>
+<td></td>
+</tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.SpecialCharacters.o_line_break">o_line_break</a></td>
 <td>Output socket: Line Break</td>
@@ -1069,16 +3775,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><a href="#nodebpy.nodes.input.SpecialCharacters.o_tab">o_tab</a></td>
 <td>Output socket: Tab</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SpecialCharacters.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SpecialCharacters.type">type</a></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.SplineResolution" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.SplineResolution">SplineResolution</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SplineResolution()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Retrieve the number of evaluated points that will be generated for every control point on curves</p>
-<section id="attributes-27" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
+<section id="nodebpy.nodes.input.SplineLength" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.SplineLength">SplineLength</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SplineLength()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the total length of each spline, as a distance or as a number of points</p>
+<section id="attributes-69" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-69">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1088,8 +3802,112 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineLength.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineLength.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineLength.o_length">o_length</a></td>
+<td>Output socket: Length</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineLength.o_point_count">o_point_count</a></td>
+<td>Output socket: Point Count</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineLength.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineLength.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.SplineParameter" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.SplineParameter">SplineParameter</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SplineParameter()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve how far along each spline a control point is</p>
+<section id="attributes-70" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-70">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineParameter.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineParameter.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineParameter.o_factor">o_factor</a></td>
+<td>Output socket: Factor</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineParameter.o_index">o_index</a></td>
+<td>Output socket: Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineParameter.o_length">o_length</a></td>
+<td>Output socket: Length</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineParameter.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineParameter.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.SplineResolution" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.SplineResolution">SplineResolution</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.SplineResolution()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the number of evaluated points that will be generated for every control point on curves</p>
+<section id="attributes-71" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-71">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineResolution.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineResolution.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.SplineResolution.o_resolution">o_resolution</a></td>
 <td>Output socket: Resolution</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.SplineResolution.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.SplineResolution.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1097,10 +3915,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.String" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.String">String</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.String(string<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.String(string<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide a string value that can be connected to other nodes in the tree</p>
-<section id="attributes-28" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
+<section id="attributes-72" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-72">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1110,8 +3928,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.String.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.String.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.String.o_string">o_string</a></td>
 <td>Output socket: String</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.String.string">string</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.String.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.String.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.UVTangent" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.UVTangent">UVTangent</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.UVTangent(method<span class="op">=</span><span class="st">'Exact'</span>, uv<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate tangent directions based on a UV map</p>
+<section id="attributes-73" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-73">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.UVTangent.i_method">i_method</a></td>
+<td>Input socket: Method</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.UVTangent.i_uv">i_uv</a></td>
+<td>Input socket: UV</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.UVTangent.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.UVTangent.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.UVTangent.o_tangent">o_tangent</a></td>
+<td>Output socket: Tangent</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.UVTangent.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.UVTangent.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1119,10 +4003,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.input.Value" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Value">Value</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input numerical values to other nodes in the tree</p>
-<section id="attributes-29" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
+<section id="attributes-74" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-74">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1132,8 +4016,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.input.Value.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Value.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.input.Value.o_value">o_value</a></td>
 <td>Output socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Value.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Value.type">type</a></td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.input.Value.value">value</a></td>
@@ -1143,12 +4043,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.input.VoxelIndex" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.VoxelIndex">VoxelIndex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.VoxelIndex(<span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Retrieve the integer coordinates of the voxel that the field is evaluated on</p>
-<section id="attributes-30" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-30">Attributes</h4>
+<section id="nodebpy.nodes.input.Vector" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.Vector">Vector</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.Vector(vector<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Provide a vector value that can be connected to other nodes in the tree</p>
+<section id="attributes-75" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-75">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1157,6 +4057,186 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Vector.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Vector.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Vector.o_vector">o_vector</a></td>
+<td>Output socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Vector.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.Vector.type">type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.Vector.vector">vector</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.VertexNeighbors" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.VertexNeighbors">VertexNeighbors</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.VertexNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve topology information relating to each vertex of a mesh</p>
+<section id="attributes-76" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-76">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.VertexNeighbors.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VertexNeighbors.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.VertexNeighbors.o_face_count">o_face_count</a></td>
+<td>Output socket: Face Count</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VertexNeighbors.o_vertex_count">o_vertex_count</a></td>
+<td>Output socket: Vertex Count</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.VertexNeighbors.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VertexNeighbors.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.VertexOfCorner" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.VertexOfCorner">VertexOfCorner</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.VertexOfCorner(corner_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the vertex each face corner is attached to</p>
+<section id="attributes-77" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-77">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.VertexOfCorner.i_corner_index">i_corner_index</a></td>
+<td>Input socket: Corner Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VertexOfCorner.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.VertexOfCorner.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VertexOfCorner.o_vertex_index">o_vertex_index</a></td>
+<td>Output socket: Vertex Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.VertexOfCorner.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VertexOfCorner.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.ViewportTransform" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.ViewportTransform">ViewportTransform</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.ViewportTransform()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the view direction and location of the 3D viewport</p>
+<section id="attributes-78" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-78">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ViewportTransform.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ViewportTransform.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ViewportTransform.o_is_orthographic">o_is_orthographic</a></td>
+<td>Output socket: Is Orthographic</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ViewportTransform.o_projection">o_projection</a></td>
+<td>Output socket: Projection</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ViewportTransform.o_view">o_view</a></td>
+<td>Output socket: View</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.ViewportTransform.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.ViewportTransform.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.input.VoxelIndex" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.input.VoxelIndex">VoxelIndex</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>nodes.<span class="bu">input</span>.VoxelIndex()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve the integer coordinates of the voxel that the field is evaluated on</p>
+<section id="attributes-79" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-79">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.VoxelIndex.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VoxelIndex.node">node</a></td>
+<td></td>
+</tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.VoxelIndex.o_extent_x">o_extent_x</a></td>
 <td>Output socket: Extent X</td>
@@ -1184,6 +4264,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><a href="#nodebpy.nodes.input.VoxelIndex.o_z">o_z</a></td>
 <td>Output socket: Z</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.input.VoxelIndex.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.input.VoxelIndex.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1597,13 +4685,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/nodes.curve.html" class="pagination-link" aria-label="nodes.curve">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.curve</span>
+      <a href="../reference/index.html" class="pagination-link" aria-label="Function reference">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Function reference</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.mesh.html" class="pagination-link" aria-label="nodes.mesh">
-        <span class="nav-page-text">nodes.mesh</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.attribute.html" class="pagination-link" aria-label="nodes.attribute">
+        <span class="nav-page-text">nodes.attribute</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
