@@ -266,6 +266,51 @@ def collect_socket_info(
     return inputs
 
 
+def collect_property_info(node, node_type):
+    properties = []
+    props_to_ignore = {"active_index", "active_output"}
+    for base in node_type.__bases__:
+        if hasattr(base, "bl_rna"):
+            for prop in base.bl_rna.properties:
+                props_to_ignore.add(prop.identifier)
+
+    for prop in node_type.bl_rna.properties:
+        if prop.identifier in props_to_ignore:
+            continue
+
+        if prop.type == "ENUM":
+            enum_items = [(item.identifier, item.name) for item in prop.enum_items]
+            usable_values = []
+            default = getattr(node, prop.identifier)
+            for id, other in enum_items:
+                try:
+                    setattr(node, prop.identifier, id)
+                    usable_values.append((id, other))
+                except Exception:
+                    pass
+
+            properties.append(
+                PropertyInfo(
+                    identifier=prop.identifier,
+                    name=prop.name,
+                    prop_type="ENUM",
+                    enum_items=usable_values,
+                    default=default,
+                )
+            )
+        elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
+            properties.append(
+                PropertyInfo(
+                    identifier=prop.identifier,
+                    name=prop.name,
+                    prop_type=prop.type,
+                    subtype=prop.subtype,
+                    default=prop.default if not prop.type == "STRING" else "",
+                )
+            )
+    return properties
+
+
 def introspect_node(node_type: type) -> NodeInfo | None:
     """Introspect a Blender node type and extract all information."""
     try:
@@ -281,49 +326,9 @@ def introspect_node(node_type: type) -> NodeInfo | None:
 
         inputs = collect_socket_info(*node.inputs, hidden=True)
         outputs = collect_socket_info(*node.outputs, hidden=True)
+        properties = collect_property_info(node, node_type)
 
         # Extract properties (enum menus, boolean flags, etc.)
-        properties = []
-        props_to_ignore = {"active_index", "active_output"}
-        for base in node_type.__bases__:
-            if hasattr(base, "bl_rna"):
-                for prop in base.bl_rna.properties:
-                    props_to_ignore.add(prop.identifier)
-
-        for prop in node_type.bl_rna.properties:
-            if prop.identifier in props_to_ignore:
-                continue
-
-            if prop.type == "ENUM":
-                enum_items = [(item.identifier, item.name) for item in prop.enum_items]
-                usable_values = []
-                default = getattr(node, prop.identifier)
-                for id, other in enum_items:
-                    try:
-                        setattr(node, prop.identifier, id)
-                        usable_values.append((id, other))
-                    except Exception:
-                        pass
-
-                properties.append(
-                    PropertyInfo(
-                        identifier=prop.identifier,
-                        name=prop.name,
-                        prop_type="ENUM",
-                        enum_items=usable_values,
-                        default=default,
-                    )
-                )
-            elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
-                properties.append(
-                    PropertyInfo(
-                        identifier=prop.identifier,
-                        name=prop.name,
-                        prop_type=prop.type,
-                        subtype=prop.subtype,
-                        default=prop.default if not prop.type == "STRING" else "",
-                    )
-                )
 
         # Clean up
         bpy.data.node_groups.remove(temp_tree)
