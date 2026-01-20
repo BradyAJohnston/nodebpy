@@ -3,7 +3,7 @@ from pathlib import Path
 import bpy
 import pytest
 
-from nodebpy import TreeBuilder, nodes, sockets
+from nodebpy import TreeBuilder, sockets as s, nodes as n
 
 from .snapshots import TreeBuilderSnapshotExtension
 
@@ -32,16 +32,15 @@ def clean_and_save(request):
     mod: bpy.types.NodesModifier = bpy.data.objects["Cube"].modifiers["StoreTrees"]  # type: ignore
     with TreeBuilder("StoredTrees") as tree:
         with tree.inputs:
-            ing = sockets.SocketGeometry()
+            ing = s.SocketGeometry()
         with tree.outputs:
-            ong = sockets.SocketGeometry()
+            ong = s.SocketGeometry()
 
         _ = ing >> ong
 
         for i, name in enumerate(tree_names):
-            n = nodes.Group()
-            n.node.node_tree = bpy.data.node_groups[name]  # type: ignore
-            n.node.location = (0, 200 * i)
+            node = n.Group(name)
+            node.node.location = (0, 200 * i)
 
     mod.node_group = tree.tree
 

@@ -1,6 +1,7 @@
 """Example test showing how to use tree snapshots."""
 
 from nodebpy import TreeBuilder, nodes, sockets
+import nodebpy.nodes.geometry
 
 
 def test_simple_tree_snapshot(snapshot_tree):
@@ -36,28 +37,22 @@ def test_complex_tree_snapshot(snapshot_tree):
         with tree.outputs:
             output = sockets.SocketGeometry()
 
-        # Create nodes
-        subdivide = nodes.SubdivisionSurface()
+        subdivide = nodebpy.nodes.geometry.SubdivisionSurface()
         transform1 = nodes.TransformGeometry(scale=scale)
         transform2 = nodes.TransformGeometry(scale=scale)
 
-        # Set up the tree
         _ = (
-            nodes.JoinGeometry(
-                [
-                    input >> subdivide >> transform1,
-                    input >> transform2,
-                ]
+            nodebpy.nodes.geometry.JoinGeometry(
+                input >> subdivide >> transform1,
+                input >> transform2,
             )
             >> output
         )
 
-        # Set some specific values
         transform1.node.inputs["Translation"].default_value = (2.0, 0.0, 0.0)
         transform2.node.inputs["Translation"].default_value = (-2.0, 0.0, 0.0)
         subdivide.node.inputs["Level"].default_value = 2
 
-    # Snapshot the complex tree
     assert snapshot_tree == tree
 
 

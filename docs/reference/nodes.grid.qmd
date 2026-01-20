@@ -1,0 +1,729 @@
+# nodes.grid { #nodebpy.nodes.grid }
+
+`nodes.grid`
+
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [AdvectGrid](#nodebpy.nodes.grid.AdvectGrid) | Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs |
+| [DistributePointsInGrid](#nodebpy.nodes.grid.DistributePointsInGrid) | Generate points inside a volume grid |
+| [DistributePointsInVolume](#nodebpy.nodes.grid.DistributePointsInVolume) | Generate points inside a volume |
+| [FieldToGrid](#nodebpy.nodes.grid.FieldToGrid) | Create new grids by evaluating new values on an existing volume grid topology |
+| [GetNamedGrid](#nodebpy.nodes.grid.GetNamedGrid) | Get volume grid from a volume geometry with the specified name |
+| [GridCurl](#nodebpy.nodes.grid.GridCurl) | Calculate the magnitude and direction of circulation of a directional vector grid |
+| [GridDivergence](#nodebpy.nodes.grid.GridDivergence) | Calculate the flow into and out of each point of a directional vector grid |
+| [GridGradient](#nodebpy.nodes.grid.GridGradient) | Calculate the direction and magnitude of the change in values of a scalar grid |
+| [GridInfo](#nodebpy.nodes.grid.GridInfo) | Retrieve information about a volume grid |
+| [GridLaplacian](#nodebpy.nodes.grid.GridLaplacian) | Compute the divergence of the gradient of the input grid |
+| [GridToMesh](#nodebpy.nodes.grid.GridToMesh) | Generate a mesh on the "surface" of a volume grid |
+| [PruneGrid](#nodebpy.nodes.grid.PruneGrid) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes |
+| [SDFGridBoolean](#nodebpy.nodes.grid.SDFGridBoolean) | Cut, subtract, or join multiple SDF volume grid inputs |
+| [SDFGridFillet](#nodebpy.nodes.grid.SDFGridFillet) | Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces |
+| [SDFGridLaplacian](#nodebpy.nodes.grid.SDFGridLaplacian) | Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization |
+| [SDFGridMean](#nodebpy.nodes.grid.SDFGridMean) | Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field |
+| [SDFGridMeanCurvature](#nodebpy.nodes.grid.SDFGridMeanCurvature) | Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas |
+| [SDFGridMedian](#nodebpy.nodes.grid.SDFGridMedian) | Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field |
+| [SDFGridOffset](#nodebpy.nodes.grid.SDFGridOffset) | Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property |
+| [SampleGrid](#nodebpy.nodes.grid.SampleGrid) | Retrieve values from the specified volume grid |
+| [SampleGridIndex](#nodebpy.nodes.grid.SampleGridIndex) | Retrieve volume grid values at specific voxels |
+| [SetGridBackground](#nodebpy.nodes.grid.SetGridBackground) | Set the background value used for inactive voxels and tiles |
+| [SetGridTransform](#nodebpy.nodes.grid.SetGridTransform) | Set the transform for the grid from index space into object space. |
+| [StoreNamedGrid](#nodebpy.nodes.grid.StoreNamedGrid) | Store grid data in a volume geometry with the specified name |
+| [VolumeCube](#nodebpy.nodes.grid.VolumeCube) | Generate a dense volume with a field that controls the density at each grid voxel based on its position |
+| [VoxelizeGrid](#nodebpy.nodes.grid.VoxelizeGrid) | Remove sparseness from a volume grid by making the active tiles into voxels |
+
+### AdvectGrid { #nodebpy.nodes.grid.AdvectGrid }
+
+```python
+nodes.grid.AdvectGrid(
+    grid=None,
+    velocity=None,
+    time_step=1.0,
+    *,
+    integration_scheme='Runge-Kutta 3',
+    limiter='Clamp',
+    data_type='FLOAT',
+)
+```
+
+Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.AdvectGrid.data_type) |  |
+| [i_grid](#nodebpy.nodes.grid.AdvectGrid.i_grid) | Input socket: Grid |
+| [i_integration_scheme](#nodebpy.nodes.grid.AdvectGrid.i_integration_scheme) | Input socket: Integration Scheme |
+| [i_limiter](#nodebpy.nodes.grid.AdvectGrid.i_limiter) | Input socket: Limiter |
+| [i_time_step](#nodebpy.nodes.grid.AdvectGrid.i_time_step) | Input socket: Time Step |
+| [i_velocity](#nodebpy.nodes.grid.AdvectGrid.i_velocity) | Input socket: Velocity |
+| [name](#nodebpy.nodes.grid.AdvectGrid.name) |  |
+| [node](#nodebpy.nodes.grid.AdvectGrid.node) |  |
+| [o_grid](#nodebpy.nodes.grid.AdvectGrid.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.AdvectGrid.tree) |  |
+| [type](#nodebpy.nodes.grid.AdvectGrid.type) |  |
+
+### DistributePointsInGrid { #nodebpy.nodes.grid.DistributePointsInGrid }
+
+```python
+nodes.grid.DistributePointsInGrid(grid=None, mode='DENSITY_RANDOM', **kwargs)
+```
+
+Generate points inside a volume grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_density](#nodebpy.nodes.grid.DistributePointsInGrid.i_density) | Input socket: Density |
+| [i_grid](#nodebpy.nodes.grid.DistributePointsInGrid.i_grid) | Input socket: Grid |
+| [i_seed](#nodebpy.nodes.grid.DistributePointsInGrid.i_seed) | Input socket: Seed |
+| [mode](#nodebpy.nodes.grid.DistributePointsInGrid.mode) |  |
+| [name](#nodebpy.nodes.grid.DistributePointsInGrid.name) |  |
+| [node](#nodebpy.nodes.grid.DistributePointsInGrid.node) |  |
+| [o_points](#nodebpy.nodes.grid.DistributePointsInGrid.o_points) | Output socket: Points |
+| [tree](#nodebpy.nodes.grid.DistributePointsInGrid.tree) |  |
+| [type](#nodebpy.nodes.grid.DistributePointsInGrid.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [grid](#nodebpy.nodes.grid.DistributePointsInGrid.grid) |  |
+| [random](#nodebpy.nodes.grid.DistributePointsInGrid.random) |  |
+
+##### grid { #nodebpy.nodes.grid.DistributePointsInGrid.grid }
+
+```python
+nodes.grid.DistributePointsInGrid.grid(
+    grid,
+    spacing=(0.3, 0.3, 0.3),
+    threshold=0.1,
+)
+```
+
+
+
+##### random { #nodebpy.nodes.grid.DistributePointsInGrid.random }
+
+```python
+nodes.grid.DistributePointsInGrid.random(grid, density=1.0, seed=0)
+```
+
+
+
+### DistributePointsInVolume { #nodebpy.nodes.grid.DistributePointsInVolume }
+
+```python
+nodes.grid.DistributePointsInVolume(volume=None, mode='Random', **kwargs)
+```
+
+Generate points inside a volume
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_density](#nodebpy.nodes.grid.DistributePointsInVolume.i_density) | Input socket: Density |
+| [i_seed](#nodebpy.nodes.grid.DistributePointsInVolume.i_seed) | Input socket: Seed |
+| [i_spacing](#nodebpy.nodes.grid.DistributePointsInVolume.i_spacing) | Input socket: Spacing |
+| [i_threshold](#nodebpy.nodes.grid.DistributePointsInVolume.i_threshold) | Input socket: Threshold |
+| [name](#nodebpy.nodes.grid.DistributePointsInVolume.name) |  |
+| [node](#nodebpy.nodes.grid.DistributePointsInVolume.node) |  |
+| [o_points](#nodebpy.nodes.grid.DistributePointsInVolume.o_points) | Output socket: Points |
+| [tree](#nodebpy.nodes.grid.DistributePointsInVolume.tree) |  |
+| [type](#nodebpy.nodes.grid.DistributePointsInVolume.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [grid](#nodebpy.nodes.grid.DistributePointsInVolume.grid) |  |
+| [random](#nodebpy.nodes.grid.DistributePointsInVolume.random) |  |
+
+##### grid { #nodebpy.nodes.grid.DistributePointsInVolume.grid }
+
+```python
+nodes.grid.DistributePointsInVolume.grid(volume=None, density=1.0, seed=0)
+```
+
+
+
+##### random { #nodebpy.nodes.grid.DistributePointsInVolume.random }
+
+```python
+nodes.grid.DistributePointsInVolume.random(
+    volume=None,
+    spacing=(0.3, 0.3, 0.3),
+    threshold=0.1,
+)
+```
+
+
+
+### FieldToGrid { #nodebpy.nodes.grid.FieldToGrid }
+
+```python
+nodes.grid.FieldToGrid(*args, topology=None, data_type='FLOAT', **kwargs)
+```
+
+Create new grids by evaluating new values on an existing volume grid topology
+
+New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
+
+Data types are inferred automatically from the closest compatible data type.
+
+#### Inputs: {.doc-section .doc-section-inputs}
+
+topology: LINKABLE
+    The grid which contains the topology to evaluate the different fields on.
+data_type: _GridDataTypes = "FLOAT"
+    The data type of the grid to evaluate on. Possible values are "FLOAT", "INT", "VECTOR", "BOOLEAN".
+*args: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_BOOLEAN
+    The fields to evaluate on the grid.
+**kwargs: dict[str, TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_GEOMETRY]
+    The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.FieldToGrid.data_type) |  |
+| [i_topology](#nodebpy.nodes.grid.FieldToGrid.i_topology) | Input socket: Topology |
+| [inputs](#nodebpy.nodes.grid.FieldToGrid.inputs) |  |
+| [name](#nodebpy.nodes.grid.FieldToGrid.name) |  |
+| [node](#nodebpy.nodes.grid.FieldToGrid.node) |  |
+| [outputs](#nodebpy.nodes.grid.FieldToGrid.outputs) |  |
+| [tree](#nodebpy.nodes.grid.FieldToGrid.tree) |  |
+| [type](#nodebpy.nodes.grid.FieldToGrid.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.grid.FieldToGrid.capture) |  |
+
+##### capture { #nodebpy.nodes.grid.FieldToGrid.capture }
+
+```python
+nodes.grid.FieldToGrid.capture(*args, **kwargs)
+```
+
+
+
+### GetNamedGrid { #nodebpy.nodes.grid.GetNamedGrid }
+
+```python
+nodes.grid.GetNamedGrid(volume=None, name='', remove=True, data_type='FLOAT')
+```
+
+Get volume grid from a volume geometry with the specified name
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.GetNamedGrid.data_type) |  |
+| [i_name](#nodebpy.nodes.grid.GetNamedGrid.i_name) | Input socket: Name |
+| [i_remove](#nodebpy.nodes.grid.GetNamedGrid.i_remove) | Input socket: Remove |
+| [i_volume](#nodebpy.nodes.grid.GetNamedGrid.i_volume) | Input socket: Volume |
+| [name](#nodebpy.nodes.grid.GetNamedGrid.name) |  |
+| [node](#nodebpy.nodes.grid.GetNamedGrid.node) |  |
+| [o_grid](#nodebpy.nodes.grid.GetNamedGrid.o_grid) | Output socket: Grid |
+| [o_volume](#nodebpy.nodes.grid.GetNamedGrid.o_volume) | Output socket: Volume |
+| [tree](#nodebpy.nodes.grid.GetNamedGrid.tree) |  |
+| [type](#nodebpy.nodes.grid.GetNamedGrid.type) |  |
+
+### GridCurl { #nodebpy.nodes.grid.GridCurl }
+
+```python
+nodes.grid.GridCurl(grid=None)
+```
+
+Calculate the magnitude and direction of circulation of a directional vector grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.GridCurl.i_grid) | Input socket: Grid |
+| [name](#nodebpy.nodes.grid.GridCurl.name) |  |
+| [node](#nodebpy.nodes.grid.GridCurl.node) |  |
+| [o_curl](#nodebpy.nodes.grid.GridCurl.o_curl) | Output socket: Curl |
+| [tree](#nodebpy.nodes.grid.GridCurl.tree) |  |
+| [type](#nodebpy.nodes.grid.GridCurl.type) |  |
+
+### GridDivergence { #nodebpy.nodes.grid.GridDivergence }
+
+```python
+nodes.grid.GridDivergence(grid=None)
+```
+
+Calculate the flow into and out of each point of a directional vector grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.GridDivergence.i_grid) | Input socket: Grid |
+| [name](#nodebpy.nodes.grid.GridDivergence.name) |  |
+| [node](#nodebpy.nodes.grid.GridDivergence.node) |  |
+| [o_divergence](#nodebpy.nodes.grid.GridDivergence.o_divergence) | Output socket: Divergence |
+| [tree](#nodebpy.nodes.grid.GridDivergence.tree) |  |
+| [type](#nodebpy.nodes.grid.GridDivergence.type) |  |
+
+### GridGradient { #nodebpy.nodes.grid.GridGradient }
+
+```python
+nodes.grid.GridGradient(grid=None)
+```
+
+Calculate the direction and magnitude of the change in values of a scalar grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.GridGradient.i_grid) | Input socket: Grid |
+| [name](#nodebpy.nodes.grid.GridGradient.name) |  |
+| [node](#nodebpy.nodes.grid.GridGradient.node) |  |
+| [o_gradient](#nodebpy.nodes.grid.GridGradient.o_gradient) | Output socket: Gradient |
+| [tree](#nodebpy.nodes.grid.GridGradient.tree) |  |
+| [type](#nodebpy.nodes.grid.GridGradient.type) |  |
+
+### GridInfo { #nodebpy.nodes.grid.GridInfo }
+
+```python
+nodes.grid.GridInfo(grid=None, data_type='FLOAT')
+```
+
+Retrieve information about a volume grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.GridInfo.data_type) |  |
+| [i_grid](#nodebpy.nodes.grid.GridInfo.i_grid) | Input socket: Grid |
+| [name](#nodebpy.nodes.grid.GridInfo.name) |  |
+| [node](#nodebpy.nodes.grid.GridInfo.node) |  |
+| [o_background_value](#nodebpy.nodes.grid.GridInfo.o_background_value) | Output socket: Background Value |
+| [o_transform](#nodebpy.nodes.grid.GridInfo.o_transform) | Output socket: Transform |
+| [tree](#nodebpy.nodes.grid.GridInfo.tree) |  |
+| [type](#nodebpy.nodes.grid.GridInfo.type) |  |
+
+### GridLaplacian { #nodebpy.nodes.grid.GridLaplacian }
+
+```python
+nodes.grid.GridLaplacian(grid=None)
+```
+
+Compute the divergence of the gradient of the input grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.GridLaplacian.i_grid) | Input socket: Grid |
+| [name](#nodebpy.nodes.grid.GridLaplacian.name) |  |
+| [node](#nodebpy.nodes.grid.GridLaplacian.node) |  |
+| [o_laplacian](#nodebpy.nodes.grid.GridLaplacian.o_laplacian) | Output socket: Laplacian |
+| [tree](#nodebpy.nodes.grid.GridLaplacian.tree) |  |
+| [type](#nodebpy.nodes.grid.GridLaplacian.type) |  |
+
+### GridToMesh { #nodebpy.nodes.grid.GridToMesh }
+
+```python
+nodes.grid.GridToMesh(grid=0.0, threshold=0.1, adaptivity=0.0)
+```
+
+Generate a mesh on the "surface" of a volume grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_adaptivity](#nodebpy.nodes.grid.GridToMesh.i_adaptivity) | Input socket: Adaptivity |
+| [i_grid](#nodebpy.nodes.grid.GridToMesh.i_grid) | Input socket: Grid |
+| [i_threshold](#nodebpy.nodes.grid.GridToMesh.i_threshold) | Input socket: Threshold |
+| [name](#nodebpy.nodes.grid.GridToMesh.name) |  |
+| [node](#nodebpy.nodes.grid.GridToMesh.node) |  |
+| [o_mesh](#nodebpy.nodes.grid.GridToMesh.o_mesh) | Output socket: Mesh |
+| [tree](#nodebpy.nodes.grid.GridToMesh.tree) |  |
+| [type](#nodebpy.nodes.grid.GridToMesh.type) |  |
+
+### PruneGrid { #nodebpy.nodes.grid.PruneGrid }
+
+```python
+nodes.grid.PruneGrid(
+    grid=None,
+    *,
+    mode='Threshold',
+    threshold=0.01,
+    data_type='FLOAT',
+)
+```
+
+Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.PruneGrid.data_type) |  |
+| [i_grid](#nodebpy.nodes.grid.PruneGrid.i_grid) | Input socket: Grid |
+| [i_mode](#nodebpy.nodes.grid.PruneGrid.i_mode) | Input socket: Mode |
+| [i_threshold](#nodebpy.nodes.grid.PruneGrid.i_threshold) | Input socket: Threshold |
+| [name](#nodebpy.nodes.grid.PruneGrid.name) |  |
+| [node](#nodebpy.nodes.grid.PruneGrid.node) |  |
+| [o_grid](#nodebpy.nodes.grid.PruneGrid.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.PruneGrid.tree) |  |
+| [type](#nodebpy.nodes.grid.PruneGrid.type) |  |
+
+### SDFGridBoolean { #nodebpy.nodes.grid.SDFGridBoolean }
+
+```python
+nodes.grid.SDFGridBoolean(operation='DIFFERENCE')
+```
+
+Cut, subtract, or join multiple SDF volume grid inputs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid_1](#nodebpy.nodes.grid.SDFGridBoolean.i_grid_1) | Input socket: Grid 1 |
+| [i_grid_2](#nodebpy.nodes.grid.SDFGridBoolean.i_grid_2) | Input socket: Grid 2 |
+| [name](#nodebpy.nodes.grid.SDFGridBoolean.name) |  |
+| [node](#nodebpy.nodes.grid.SDFGridBoolean.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SDFGridBoolean.o_grid) | Output socket: Grid |
+| [operation](#nodebpy.nodes.grid.SDFGridBoolean.operation) |  |
+| [tree](#nodebpy.nodes.grid.SDFGridBoolean.tree) |  |
+| [type](#nodebpy.nodes.grid.SDFGridBoolean.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [difference](#nodebpy.nodes.grid.SDFGridBoolean.difference) | Create SDF Grid Boolean with operation 'Difference'. |
+| [intersect](#nodebpy.nodes.grid.SDFGridBoolean.intersect) |  |
+| [union](#nodebpy.nodes.grid.SDFGridBoolean.union) |  |
+
+##### difference { #nodebpy.nodes.grid.SDFGridBoolean.difference }
+
+```python
+nodes.grid.SDFGridBoolean.difference(*args, grid_1)
+```
+
+Create SDF Grid Boolean with operation 'Difference'.
+
+##### intersect { #nodebpy.nodes.grid.SDFGridBoolean.intersect }
+
+```python
+nodes.grid.SDFGridBoolean.intersect(*args)
+```
+
+
+
+##### union { #nodebpy.nodes.grid.SDFGridBoolean.union }
+
+```python
+nodes.grid.SDFGridBoolean.union(*args)
+```
+
+
+
+### SDFGridFillet { #nodebpy.nodes.grid.SDFGridFillet }
+
+```python
+nodes.grid.SDFGridFillet(grid=None, iterations=1)
+```
+
+Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.SDFGridFillet.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.grid.SDFGridFillet.i_iterations) | Input socket: Iterations |
+| [name](#nodebpy.nodes.grid.SDFGridFillet.name) |  |
+| [node](#nodebpy.nodes.grid.SDFGridFillet.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SDFGridFillet.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.SDFGridFillet.tree) |  |
+| [type](#nodebpy.nodes.grid.SDFGridFillet.type) |  |
+
+### SDFGridLaplacian { #nodebpy.nodes.grid.SDFGridLaplacian }
+
+```python
+nodes.grid.SDFGridLaplacian(grid=None, iterations=1)
+```
+
+Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.SDFGridLaplacian.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.grid.SDFGridLaplacian.i_iterations) | Input socket: Iterations |
+| [name](#nodebpy.nodes.grid.SDFGridLaplacian.name) |  |
+| [node](#nodebpy.nodes.grid.SDFGridLaplacian.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SDFGridLaplacian.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.SDFGridLaplacian.tree) |  |
+| [type](#nodebpy.nodes.grid.SDFGridLaplacian.type) |  |
+
+### SDFGridMean { #nodebpy.nodes.grid.SDFGridMean }
+
+```python
+nodes.grid.SDFGridMean(grid=None, width=1, iterations=1)
+```
+
+Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.SDFGridMean.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.grid.SDFGridMean.i_iterations) | Input socket: Iterations |
+| [i_width](#nodebpy.nodes.grid.SDFGridMean.i_width) | Input socket: Width |
+| [name](#nodebpy.nodes.grid.SDFGridMean.name) |  |
+| [node](#nodebpy.nodes.grid.SDFGridMean.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SDFGridMean.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.SDFGridMean.tree) |  |
+| [type](#nodebpy.nodes.grid.SDFGridMean.type) |  |
+
+### SDFGridMeanCurvature { #nodebpy.nodes.grid.SDFGridMeanCurvature }
+
+```python
+nodes.grid.SDFGridMeanCurvature(grid=None, iterations=1)
+```
+
+Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.SDFGridMeanCurvature.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.grid.SDFGridMeanCurvature.i_iterations) | Input socket: Iterations |
+| [name](#nodebpy.nodes.grid.SDFGridMeanCurvature.name) |  |
+| [node](#nodebpy.nodes.grid.SDFGridMeanCurvature.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SDFGridMeanCurvature.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.SDFGridMeanCurvature.tree) |  |
+| [type](#nodebpy.nodes.grid.SDFGridMeanCurvature.type) |  |
+
+### SDFGridMedian { #nodebpy.nodes.grid.SDFGridMedian }
+
+```python
+nodes.grid.SDFGridMedian(grid=None, width=1, iterations=1)
+```
+
+Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid](#nodebpy.nodes.grid.SDFGridMedian.i_grid) | Input socket: Grid |
+| [i_iterations](#nodebpy.nodes.grid.SDFGridMedian.i_iterations) | Input socket: Iterations |
+| [i_width](#nodebpy.nodes.grid.SDFGridMedian.i_width) | Input socket: Width |
+| [name](#nodebpy.nodes.grid.SDFGridMedian.name) |  |
+| [node](#nodebpy.nodes.grid.SDFGridMedian.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SDFGridMedian.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.SDFGridMedian.tree) |  |
+| [type](#nodebpy.nodes.grid.SDFGridMedian.type) |  |
+
+### SDFGridOffset { #nodebpy.nodes.grid.SDFGridOffset }
+
+```python
+nodes.grid.SDFGridOffset(grid=0.0, distance=0.1)
+```
+
+Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_distance](#nodebpy.nodes.grid.SDFGridOffset.i_distance) | Input socket: Distance |
+| [i_grid](#nodebpy.nodes.grid.SDFGridOffset.i_grid) | Input socket: Grid |
+| [name](#nodebpy.nodes.grid.SDFGridOffset.name) |  |
+| [node](#nodebpy.nodes.grid.SDFGridOffset.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SDFGridOffset.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.SDFGridOffset.tree) |  |
+| [type](#nodebpy.nodes.grid.SDFGridOffset.type) |  |
+
+### SampleGrid { #nodebpy.nodes.grid.SampleGrid }
+
+```python
+nodes.grid.SampleGrid(
+    grid=None,
+    position=None,
+    interpolation='Trilinear',
+    *,
+    data_type='FLOAT',
+)
+```
+
+Retrieve values from the specified volume grid
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.SampleGrid.data_type) |  |
+| [i_grid](#nodebpy.nodes.grid.SampleGrid.i_grid) | Input socket: Grid |
+| [i_interpolation](#nodebpy.nodes.grid.SampleGrid.i_interpolation) | Input socket: Interpolation |
+| [i_position](#nodebpy.nodes.grid.SampleGrid.i_position) | Input socket: Position |
+| [name](#nodebpy.nodes.grid.SampleGrid.name) |  |
+| [node](#nodebpy.nodes.grid.SampleGrid.node) |  |
+| [o_value](#nodebpy.nodes.grid.SampleGrid.o_value) | Output socket: Value |
+| [tree](#nodebpy.nodes.grid.SampleGrid.tree) |  |
+| [type](#nodebpy.nodes.grid.SampleGrid.type) |  |
+
+### SampleGridIndex { #nodebpy.nodes.grid.SampleGridIndex }
+
+```python
+nodes.grid.SampleGridIndex(grid=None, x=0, y=0, z=0, *, data_type='FLOAT')
+```
+
+Retrieve volume grid values at specific voxels
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.SampleGridIndex.data_type) |  |
+| [i_grid](#nodebpy.nodes.grid.SampleGridIndex.i_grid) | Input socket: Grid |
+| [i_x](#nodebpy.nodes.grid.SampleGridIndex.i_x) | Input socket: X |
+| [i_y](#nodebpy.nodes.grid.SampleGridIndex.i_y) | Input socket: Y |
+| [i_z](#nodebpy.nodes.grid.SampleGridIndex.i_z) | Input socket: Z |
+| [name](#nodebpy.nodes.grid.SampleGridIndex.name) |  |
+| [node](#nodebpy.nodes.grid.SampleGridIndex.node) |  |
+| [o_value](#nodebpy.nodes.grid.SampleGridIndex.o_value) | Output socket: Value |
+| [tree](#nodebpy.nodes.grid.SampleGridIndex.tree) |  |
+| [type](#nodebpy.nodes.grid.SampleGridIndex.type) |  |
+
+### SetGridBackground { #nodebpy.nodes.grid.SetGridBackground }
+
+```python
+nodes.grid.SetGridBackground(grid=0.0, background=0.0, *, data_type='FLOAT')
+```
+
+Set the background value used for inactive voxels and tiles
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.SetGridBackground.data_type) |  |
+| [i_background](#nodebpy.nodes.grid.SetGridBackground.i_background) | Input socket: Background |
+| [i_grid](#nodebpy.nodes.grid.SetGridBackground.i_grid) | Input socket: Grid |
+| [name](#nodebpy.nodes.grid.SetGridBackground.name) |  |
+| [node](#nodebpy.nodes.grid.SetGridBackground.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SetGridBackground.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.SetGridBackground.tree) |  |
+| [type](#nodebpy.nodes.grid.SetGridBackground.type) |  |
+
+### SetGridTransform { #nodebpy.nodes.grid.SetGridTransform }
+
+```python
+nodes.grid.SetGridTransform(grid=0.0, transform=None, *, data_type='FLOAT')
+```
+
+Set the transform for the grid from index space into object space.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.SetGridTransform.data_type) |  |
+| [i_grid](#nodebpy.nodes.grid.SetGridTransform.i_grid) | Input socket: Grid |
+| [i_transform](#nodebpy.nodes.grid.SetGridTransform.i_transform) | Input socket: Transform |
+| [name](#nodebpy.nodes.grid.SetGridTransform.name) |  |
+| [node](#nodebpy.nodes.grid.SetGridTransform.node) |  |
+| [o_grid](#nodebpy.nodes.grid.SetGridTransform.o_grid) | Output socket: Grid |
+| [o_is_valid](#nodebpy.nodes.grid.SetGridTransform.o_is_valid) | Output socket: Is Valid |
+| [tree](#nodebpy.nodes.grid.SetGridTransform.tree) |  |
+| [type](#nodebpy.nodes.grid.SetGridTransform.type) |  |
+
+### StoreNamedGrid { #nodebpy.nodes.grid.StoreNamedGrid }
+
+```python
+nodes.grid.StoreNamedGrid(volume=None, name='', grid=0.0, *, data_type='FLOAT')
+```
+
+Store grid data in a volume geometry with the specified name
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.StoreNamedGrid.data_type) |  |
+| [i_grid](#nodebpy.nodes.grid.StoreNamedGrid.i_grid) | Input socket: Grid |
+| [i_name](#nodebpy.nodes.grid.StoreNamedGrid.i_name) | Input socket: Name |
+| [i_volume](#nodebpy.nodes.grid.StoreNamedGrid.i_volume) | Input socket: Volume |
+| [name](#nodebpy.nodes.grid.StoreNamedGrid.name) |  |
+| [node](#nodebpy.nodes.grid.StoreNamedGrid.node) |  |
+| [o_volume](#nodebpy.nodes.grid.StoreNamedGrid.o_volume) | Output socket: Volume |
+| [tree](#nodebpy.nodes.grid.StoreNamedGrid.tree) |  |
+| [type](#nodebpy.nodes.grid.StoreNamedGrid.type) |  |
+
+### VolumeCube { #nodebpy.nodes.grid.VolumeCube }
+
+```python
+nodes.grid.VolumeCube(
+    density=1.0,
+    background=0.0,
+    min=(-1.0, -1.0, -1.0),
+    max=(1.0, 1.0, 1.0),
+    resolution_x=32,
+    resolution_y=32,
+    resolution_z=32,
+)
+```
+
+Generate a dense volume with a field that controls the density at each grid voxel based on its position
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_background](#nodebpy.nodes.grid.VolumeCube.i_background) | Input socket: Background |
+| [i_density](#nodebpy.nodes.grid.VolumeCube.i_density) | Input socket: Density |
+| [i_max](#nodebpy.nodes.grid.VolumeCube.i_max) | Input socket: Max |
+| [i_min](#nodebpy.nodes.grid.VolumeCube.i_min) | Input socket: Min |
+| [i_resolution_x](#nodebpy.nodes.grid.VolumeCube.i_resolution_x) | Input socket: Resolution X |
+| [i_resolution_y](#nodebpy.nodes.grid.VolumeCube.i_resolution_y) | Input socket: Resolution Y |
+| [i_resolution_z](#nodebpy.nodes.grid.VolumeCube.i_resolution_z) | Input socket: Resolution Z |
+| [name](#nodebpy.nodes.grid.VolumeCube.name) |  |
+| [node](#nodebpy.nodes.grid.VolumeCube.node) |  |
+| [o_volume](#nodebpy.nodes.grid.VolumeCube.o_volume) | Output socket: Volume |
+| [tree](#nodebpy.nodes.grid.VolumeCube.tree) |  |
+| [type](#nodebpy.nodes.grid.VolumeCube.type) |  |
+
+### VoxelizeGrid { #nodebpy.nodes.grid.VoxelizeGrid }
+
+```python
+nodes.grid.VoxelizeGrid(grid=None, data_type='FLOAT')
+```
+
+Remove sparseness from a volume grid by making the active tiles into voxels
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.grid.VoxelizeGrid.data_type) |  |
+| [i_grid](#nodebpy.nodes.grid.VoxelizeGrid.i_grid) | Input socket: Grid |
+| [name](#nodebpy.nodes.grid.VoxelizeGrid.name) |  |
+| [node](#nodebpy.nodes.grid.VoxelizeGrid.node) |  |
+| [o_grid](#nodebpy.nodes.grid.VoxelizeGrid.o_grid) | Output socket: Grid |
+| [tree](#nodebpy.nodes.grid.VoxelizeGrid.tree) |  |
+| [type](#nodebpy.nodes.grid.VoxelizeGrid.type) |  |

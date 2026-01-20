@@ -34,13 +34,24 @@ quartodoc:
   sidebar: reference/_sidebar.yml
   css: reference/_styles-quartodoc.css
 
+  options:
+    include_attributes: true
+    include_functions: true
+    include_inherited: true
+    include_empty: true
+
   sections:
     - title: Some functions
       desc: Functions to inspect docstrings.
       contents:
+        - nodes.input
+        - nodes.attribute
+        - nodes.color
+        - nodes.converter
+        - nodes.texture
+        - nodes.grid
         - nodes.geometry
         - nodes.attribute
-        - nodes.curve
-        - nodes.input
-        - nodes.mesh
-        - nodes.utilities
+        ####################
+        - nodes.vector
+        - nodes.zone

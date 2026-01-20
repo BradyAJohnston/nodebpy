@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 if TYPE_CHECKING:
-    from .nodes.manually_specified import Math, VectorMath
+    from .nodes.converter import Math, VectorMath
 
 import arrangebpy
 import bpy
@@ -17,11 +17,14 @@ from bpy.types import (
 from .nodes.types import (
     LINKABLE,
     SOCKET_COMPATIBILITY,
+    SOCKET_TYPES,
+    TYPE_INPUT_ALL,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
     StringInterfaceSubtypes,
     VectorInterfaceSubtypes,
     _AttributeDomains,
+    _SocketShapeStructureType,
 )
 
 # from .arrange import arrange_tree
@@ -49,28 +52,61 @@ def denormalize_name(attr_name: str) -> str:
     return attr_name.replace("_", " ").title()
 
 
-def source_socket(node: LINKABLE) -> NodeSocket:
-    if isinstance(node, NodeSocket):
-        return node
-    elif isinstance(node, Node):
-        return node.outputs[0]
-    elif hasattr(node, "_default_output_socket"):
-        # NodeBuilder or SocketNodeBuilder
-        return node._default_output_socket
-    else:
-        raise TypeError(f"Unsupported type: {type(node)}")
+class SocketContext:
+    _direction: Literal["INPUT", "OUTPUT"] | None
+    _active_context: SocketContext | None = None
+
+    def __init__(self, tree_builder: TreeBuilder):
+        self.builder = tree_builder
+
+    @property
+    def tree(self) -> GeometryNodeTree:
+        tree = self.builder.tree
+        assert tree is not None and isinstance(tree, GeometryNodeTree)
+        return tree
+
+    @property
+    def interface(self) -> bpy.types.NodeTreeInterface:
+        interface = self.tree.interface
+        assert interface is not None
+        return interface
+
+    def _create_socket(
+        self, socket_def: SocketBase, name: str
+    ) -> bpy.types.NodeTreeInterfaceSocket:
+        """Create a socket from a socket definition."""
+        socket = self.interface.new_socket(
+            name=name,
+            in_out=self._direction,
+            socket_type=socket_def._bl_socket_type,
+        )
+        socket.description = socket_def.description
+        return socket
+
+    def __enter__(self):
+        SocketContext._direction = self._direction
+        SocketContext._active_context = self
+        return self
+
+    def __exit__(self, *args):
+        SocketContext._direction = None
+        SocketContext._active_context = None
+        pass
 
 
-def target_socket(node: LINKABLE) -> NodeSocket:
-    if isinstance(node, NodeSocket):
-        return node
-    elif isinstance(node, Node):
-        return node.inputs[0]
-    elif hasattr(node, "_default_input_socket"):
-        # NodeBuilder or SocketNodeBuilder
-        return node._default_input_socket
-    else:
-        raise TypeError(f"Unsupported type: {type(node)}")
+class DirectionalContext(SocketContext):
+    """Base class for directional socket contexts"""
+
+    _direction: Literal["INPUT", "OUTPUT"] = "INPUT"
+    _active_context = None
+
+
+class InputInterfaceContext(DirectionalContext):
+    _direction = "INPUT"
+
+
+class OutputInterfaceContext(DirectionalContext):
+    _direction = "OUTPUT"
 
 
 class TreeBuilder:
@@ -111,6 +147,9 @@ class TreeBuilder:
     def nodes(self) -> Nodes:
         return self.tree.nodes
 
+    def __len__(self) -> int:
+        return len(self.nodes)
+
     def arrange(self):
         settings = arrangebpy.LayoutSettings(
             horizontal_spacing=200, vertical_spacing=200, align_top_layer=True
@@ -147,23 +186,29 @@ class TreeBuilder:
         except KeyError:
             return self.tree.nodes.new("NodeGroupOutput")  # type: ignore
 
-    def link(self, socket1: NodeSocket, socket2: NodeSocket):
+    def link(self, socket1: NodeSocket, socket2: NodeSocket) -> bpy.types.NodeLink:
         if isinstance(socket1, SocketLinker):
             socket1 = socket1.socket
         if isinstance(socket2, SocketLinker):
             socket2 = socket2.socket
 
-        self.tree.links.new(socket1, socket2)
+        link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
 
         if any(socket.is_inactive for socket in [socket1, socket2]):
             # the warning message should report which sockets from which nodes were linked and which were innactive
             for socket in [socket1, socket2]:
-                if socket.is_inactive:
+                # we want to be loud about it if we end up linking an inactive socket to a node that is not a switch
+                if socket.is_inactive and socket.node.bl_idname not in (
+                    "GeometryNodeIndexSwitch",
+                    "GeometryNodeMenuSwitch",
+                ):
                     message = f"Socket {socket.name} from node {socket.node.name} is inactive."
                     message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."
                     message += " This link will be created by Blender but ignored when evaluated."
                     message += f"Socket type: {socket.bl_idname}"
                     raise RuntimeError(message)
+
+        return link
 
     def add(self, name: str) -> Node:
         self.just_added = self.tree.nodes.new(name)  # type: ignore
@@ -171,68 +216,16 @@ class TreeBuilder:
         return self.just_added
 
 
-class SocketContext:
-    _direction: Literal["INPUT", "OUTPUT"] | None
-    _active_context: SocketContext | None = None
-
-    def __init__(self, tree_builder: TreeBuilder):
-        self.builder = tree_builder
-
-    @property
-    def tree(self) -> GeometryNodeTree:
-        tree = self.builder.tree
-        assert tree is not None and isinstance(tree, GeometryNodeTree)
-        return tree
-
-    @property
-    def interface(self) -> bpy.types.NodeTreeInterface:
-        interface = self.tree.interface
-        assert interface is not None
-        return interface
-
-    def _create_socket(
-        self, socket_def: SocketBase
-    ) -> bpy.types.NodeTreeInterfaceSocket:
-        """Create a socket from a socket definition."""
-        socket = self.interface.new_socket(
-            name=socket_def.name,
-            in_out=self._direction,
-            socket_type=socket_def._bl_socket_type,
-        )
-        socket.description = socket_def.description
-        return socket
-
-    def __enter__(self):
-        SocketContext._direction = self._direction
-        SocketContext._active_context = self
-        return self
-
-    def __exit__(self, *args):
-        SocketContext._direction = None
-        SocketContext._active_context = None
-        pass
-
-
-class InputInterfaceContext(SocketContext):
-    _direction = "INPUT"
-    _active_context = None
-
-
-class OutputInterfaceContext(SocketContext):
-    _direction = "OUTPUT"
-    _active_context = None
-
-
 class NodeBuilder:
     """Base class for all geometry node wrappers."""
 
     node: Any
-    name: str
     _tree: "TreeBuilder"
     _link_target: str | None = None
     _from_socket: NodeSocket | None = None
     _default_input_id: str | None = None
     _default_output_id: str | None = None
+    _socket_data_types = tuple(SOCKET_COMPATIBILITY.keys())
 
     def __init__(self):
         # Get active tree from context manager
@@ -244,9 +237,6 @@ class NodeBuilder:
                 f"  with tree:\n"
                 f"      node = {self.__class__.__name__}()\n"
             )
-
-        self.inputs = InputInterfaceContext(tree)
-        self.outputs = OutputInterfaceContext(tree)
 
         self._tree = tree
         self._link_target = None
@@ -266,6 +256,14 @@ class NodeBuilder:
         self._tree = value
 
     @property
+    def type(self) -> SOCKET_TYPES:
+        return self._default_output_socket.type  # type: ignore
+
+    @property
+    def name(self) -> str:
+        return str(self.node.name)
+
+    @property
     def _default_input_socket(self) -> NodeSocket:
         if self._default_input_id is not None:
             return self.node.inputs[self._input_idx(self._default_input_id)]
@@ -276,6 +274,309 @@ class NodeBuilder:
         if self._default_output_id is not None:
             return self.node.outputs[self._output_idx(self._default_output_id)]
         return self.node.outputs[0]
+
+    def _source_socket(self, node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
+        assert node
+        if isinstance(node, NodeSocket):
+            return node
+        elif isinstance(node, Node):
+            return node.outputs[0]
+        elif hasattr(node, "_default_output_socket"):
+            return node._default_output_socket
+        else:
+            raise TypeError(f"Unsupported type: {type(node)}")
+
+    def _target_socket(self, node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
+        assert node
+        if isinstance(node, NodeSocket):
+            return node
+        elif isinstance(node, Node):
+            return node.inputs[0]
+        elif hasattr(node, "_default_input_socket"):
+            return node._default_input_socket
+        else:
+            raise TypeError(f"Unsupported type: {type(node)}")
+
+    def _find_compatible_output_socket(self, linkable: "NodeBuilder") -> NodeSocket:
+        """Find a compatible output socket from the linkable node that matches our accepted socket types."""
+        # First try the default output socket
+        default_output = linkable._default_output_socket
+        for comp in SOCKET_COMPATIBILITY[default_output.type]:
+            if comp in self._socket_data_types:
+                return default_output
+
+        # If default doesn't work, try all other output sockets
+        for output_socket in linkable.node.outputs:
+            for comp in SOCKET_COMPATIBILITY[output_socket.type]:
+                if comp in self._socket_data_types:
+                    return output_socket
+
+        # No compatible socket found
+        raise ValueError(
+            f"No compatible output socket found on {linkable.node.name} for {self.__class__.__name__}. "
+            f"Available output types: {[s.type for s in linkable.node.outputs]}, "
+            f"Accepted input types: {self._socket_data_types}"
+        )
+
+    def _find_compatible_source_socket(
+        self, source_node: "NodeBuilder", target_socket: NodeSocket
+    ) -> NodeSocket:
+        """Find a compatible output socket from source node that can link to the target input socket."""
+        target_type = target_socket.type
+        compatible_types = SOCKET_COMPATIBILITY.get(target_type, ())
+
+        # Collect all compatible sockets with their compatibility priority
+        compatible_sockets = []
+        for output_socket in source_node.node.outputs:
+            if output_socket.type in compatible_types:
+                # Priority is the index in the compatibility list (0 = highest priority)
+                priority = compatible_types.index(output_socket.type)
+                compatible_sockets.append((priority, output_socket))
+
+        if not compatible_sockets:
+            # No compatible socket found
+            raise ValueError(
+                f"No compatible output socket found on {source_node.node.name} for target socket {target_socket.name} of type {target_type}. "
+                f"Available output types: {[s.type for s in source_node.node.outputs]}, "
+                f"Compatible types: {compatible_types}"
+            )
+
+        # Sort by priority (lowest number = highest priority) and return the best match
+        compatible_sockets.sort(key=lambda x: x[0])
+        return compatible_sockets[0][1]
+
+    def _find_best_socket_pair(
+        self, target_node: "NodeBuilder"
+    ) -> tuple[NodeSocket, NodeSocket]:
+        """Find the best compatible socket pair between this node (source) and target node."""
+        # First try to connect default output to default input
+        default_output = self._default_output_socket
+        default_input = target_node._default_input_socket
+
+        # Handle zone outputs that don't have inputs yet
+        if default_input is None and hasattr(target_node, "_add_socket"):
+            # Target is a zone without inputs - create compatible socket
+            source_type = default_output.type
+            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [source_type])
+            best_type = compatible_types[0] if compatible_types else source_type
+
+            # Create socket on target zone
+            default_input = target_node._add_socket(
+                name=best_type.title(), type=best_type
+            )
+            return default_output, default_input
+
+        # Check if default sockets are compatible
+        if default_input is not None:
+            output_compatibles = SOCKET_COMPATIBILITY.get(default_output.type, ())
+            if default_input.type in output_compatibles and (
+                not default_input.links or default_input.is_multi_input
+            ):
+                return default_output, default_input
+
+        # If defaults don't work, try all combinations with priority-based matching
+        best_match = None
+        best_priority = float("inf")
+
+        for output_socket in self.node.outputs:
+            output_compatibles = SOCKET_COMPATIBILITY.get(output_socket.type, ())
+            for input_socket in target_node.node.inputs:
+                # Skip if socket already has a link and isn't multi-input
+                if input_socket.links and not input_socket.is_multi_input:
+                    continue
+
+                if input_socket.type in output_compatibles:
+                    # Calculate priority as the index in the compatibility list
+                    priority = output_compatibles.index(input_socket.type)
+                    if priority < best_priority:
+                        best_priority = priority
+                        best_match = (output_socket, input_socket)
+
+        if best_match:
+            return best_match
+
+        # No compatible pair found
+        available_outputs = [s.type for s in self.node.outputs]
+        available_inputs = [
+            s.type for s in target_node.node.inputs if not s.links or s.is_multi_input
+        ]
+        raise RuntimeError(
+            f"Cannot link any output from {self.node.name} to any input of {target_node.node.name}. "
+            f"Available output types: {available_outputs}, "
+            f"Available input types: {available_inputs}"
+        )
+
+    def _socket_type_from_linkable(self, linkable: LINKABLE):
+        assert linkable, "Linkable cannot be None"
+        # If it's a NodeBuilder, try to find a compatible output socket
+        if hasattr(linkable, "node") and hasattr(linkable, "_default_output_socket"):
+            compatible_socket = self._find_compatible_output_socket(linkable)
+            socket_type = compatible_socket.type
+            for comp in SOCKET_COMPATIBILITY[socket_type]:
+                if comp in self._socket_data_types:
+                    return comp if comp != "VALUE" else "FLOAT"
+
+        # Fallback to original logic for other types
+        for comp in SOCKET_COMPATIBILITY[linkable.type]:
+            if comp in self._socket_data_types:
+                return comp if comp != "VALUE" else "FLOAT"
+        raise ValueError(
+            f"Unsupported socket type for linking: {linkable}, type: {linkable.type=}"
+        )
+
+    def _add_inputs(self, *args, **kwargs) -> dict[str, LINKABLE]:
+        """Dictionary with {new_socket.name: from_linkable} for link creation"""
+        new_sockets = {}
+        items = {}
+        for arg in args:
+            if isinstance(arg, bpy.types.NodeSocket):
+                name = arg.name
+                items[name] = arg
+            else:
+                items[arg._default_output_socket.name] = arg
+        items.update(kwargs)
+        for key, value in items.items():
+            # For NodeBuilder objects, find the best compatible output socket
+            if hasattr(value, "node") and hasattr(value, "_default_output_socket"):
+                compatible_socket = self._find_compatible_output_socket(value)
+                # Create a SocketLinker to represent the specific socket we want to link from
+                # from . import SocketLinker
+                socket_linker = SocketLinker(compatible_socket)
+                type = self._socket_type_from_linkable(value)
+                socket = self._add_socket(name=key, type=type)
+                new_sockets[socket.name] = socket_linker
+            else:
+                type = self._socket_type_from_linkable(value)
+                socket = self._add_socket(name=key, type=type)
+                new_sockets[socket.name] = value
+
+        return new_sockets
+
+    def _add_socket(
+        self, name: str, type: str, default_value: Any | None = None
+    ) -> NodeSocket:
+        raise NotImplementedError
+
+    def _find_or_create_compatible_output_socket(
+        self, target_type: str
+    ) -> NodeSocket | None:
+        """Find an existing compatible output socket or create a new one if this node supports it.
+
+        Args:
+            target_type: The socket type needed for compatibility
+
+        Returns:
+            Compatible output socket if found/created, None if not possible
+        """
+        if not hasattr(self, "_add_socket"):
+            return None
+
+        # Check if we already have a compatible output socket
+        if hasattr(self, "outputs"):
+            for name, socket_linker in self.outputs.items():
+                socket_compatibles = SOCKET_COMPATIBILITY.get(
+                    socket_linker.socket.type, []
+                )
+                if target_type in socket_compatibles:
+                    return socket_linker.socket
+
+        # No existing compatible socket found, try to create one
+        try:
+            # Check if this node type supports the target socket type
+            # by examining the type signature of _add_socket
+            import inspect
+
+            sig = inspect.signature(self._add_socket)
+            type_param = sig.parameters.get("type")
+
+            # If there's a type annotation that limits the allowed types, check it
+            if type_param and hasattr(type_param.annotation, "__args__"):
+                # This is a Literal type with specific allowed values
+                allowed_types = list(type_param.annotation.__args__)
+                if target_type not in allowed_types:
+                    # Try to find a compatible type that this node can create
+                    for allowed_type in allowed_types:
+                        if target_type in SOCKET_COMPATIBILITY.get(allowed_type, []):
+                            # Create the allowed type instead
+                            self._add_socket(
+                                name=allowed_type.title(), type=allowed_type
+                            )
+                            break
+                    else:
+                        # No compatible type found
+                        return None
+                else:
+                    # Target type is directly supported
+                    self._add_socket(name=target_type.title(), type=target_type)
+            else:
+                # No type restrictions, try to create the target type
+                self._add_socket(name=target_type.title(), type=target_type)
+
+            # Find the newly created output socket
+            if hasattr(self, "outputs"):
+                for name, socket_linker in self.outputs.items():
+                    socket_compatibles = SOCKET_COMPATIBILITY.get(
+                        socket_linker.socket.type, []
+                    )
+                    if target_type in socket_compatibles:
+                        return socket_linker.socket
+
+            # Fallback: try to get the socket directly from the node
+            if hasattr(self.node, "outputs"):
+                for output_socket in self.node.outputs:
+                    socket_compatibles = SOCKET_COMPATIBILITY.get(
+                        output_socket.type, []
+                    )
+                    if target_type in socket_compatibles:
+                        return output_socket
+        except (NotImplementedError, AttributeError, RuntimeError):
+            # Node doesn't support dynamic socket creation or the type is not supported
+            pass
+
+        return None
+
+    def _smart_link_to(self, target_node: "NodeBuilder") -> "NodeBuilder":
+        """Smart linking that creates compatible sockets when needed.
+
+        This method checks if we have a compatible output socket for the target node's input,
+        and creates one if this node supports dynamic socket creation.
+
+        Args:
+            target_node: The node to link to
+
+        Returns:
+            The target node (for chaining)
+        """
+        if not hasattr(target_node, "_default_input_socket"):
+            # Fall back to regular linking
+            return target_node
+
+        target_socket = target_node._default_input_socket
+        if not target_socket:
+            # Target has no input socket - can't link
+            return target_node
+
+        # Check if our default output is compatible
+        source_socket = self._default_output_socket
+        if source_socket:
+            source_compatibles = SOCKET_COMPATIBILITY.get(source_socket.type, [])
+            if target_socket.type in source_compatibles:
+                # Compatible - use normal linking
+                self.tree.link(source_socket, target_socket)
+                return target_node
+
+        # Not compatible - try to find/create a compatible output socket
+        compatible_socket = self._find_or_create_compatible_output_socket(
+            target_socket.type
+        )
+        if compatible_socket:
+            self.tree.link(compatible_socket, target_socket)
+            return target_node
+
+        # Fall back to regular linking (may create reroute nodes)
+        if source_socket:
+            self.tree.link(source_socket, target_socket)
+        return target_node
 
     def _input_idx(self, identifier: str) -> int:
         # currently there is a Blender bug that is preventing the lookup of sockets from identifiers on some
@@ -311,20 +612,71 @@ class NodeBuilder:
         """Output socket: Vector"""
         return SocketLinker(self.node.outputs[self._output_idx(identifier)])
 
-    def link(self, source: LINKABLE, target: LINKABLE):
-        self.tree.link(source_socket(source), target_socket(target))
+    def _link(
+        self, source: LINKABLE | SocketLinker | NodeSocket, target: LINKABLE
+    ) -> bpy.types.NodeLink:
+        return self.tree.link(self._source_socket(source), self._target_socket(target))
 
-    def link_to(self, target: LINKABLE):
-        self.tree.link(self._default_output_socket, target_socket(target))
+    def _link_to(self, target: LINKABLE) -> bpy.types.NodeLink:
+        return self.tree.link(self._default_output_socket, self._target_socket(target))
 
-    def link_from(self, source: LINKABLE, input: "LINKABLE | str"):
+    def _link_from(
+        self,
+        source: LINKABLE,
+        input: LINKABLE | str,
+    ):
+        # Special handling for dynamic socket nodes (zones, bake, capture attribute, etc.)
+        # These nodes have an 'outputs' property that returns a dict based on their items
+        if (
+            hasattr(source, "_add_socket")
+            and hasattr(source, "_smart_link_to")
+            and hasattr(source.__class__, "outputs")
+            and isinstance(getattr(source.__class__, "outputs"), property)
+            and not isinstance(input, str)
+        ):
+            # Use smart linking that can create compatible sockets
+            return source._smart_link_to(input)
+
         if isinstance(input, str):
             try:
-                self.link(source, self.node.inputs[input])
+                self._link(source, self.node.inputs[input])
             except KeyError:
-                self.link(source, self.node.inputs[self._input_idx(input)])
+                self._link(source, self.node.inputs[self._input_idx(input)])
         else:
-            self.link(source, input)
+            self._link(source, input)
+
+    def _smart_link_from(
+        self,
+        source: LINKABLE,
+        input_name: str,
+    ):
+        """Smart linking that finds compatible sockets when default fails."""
+        # Get the target input socket
+        try:
+            target_socket = self.node.inputs[input_name]
+        except KeyError:
+            target_socket = self.node.inputs[self._input_idx(input_name)]
+
+        # If source is a NodeBuilder, find the best compatible output socket
+        if isinstance(source, NodeBuilder):
+            # Search for compatible output sockets - don't try default first as it might be wrong type
+            try:
+                compatible_output = self._find_compatible_source_socket(
+                    source, target_socket
+                )
+                self._link(compatible_output, target_socket)
+                return
+            except ValueError:
+                # No compatible socket found - this is an error, don't fall back
+                raise ValueError(
+                    f"Cannot link {source.node.name} to {self.node.name}.{input_name}: "
+                    f"No compatible sockets. Available output types: {[s.type for s in source.node.outputs]}, "
+                    f"Target socket type: {target_socket.type}, "
+                    f"Compatible types: {SOCKET_COMPATIBILITY.get(target_socket.type, ())}"
+                )
+        else:
+            # For other types, use original link_from behavior
+            self._link_from(source, input_name)
 
     def _set_input_default_value(self, input, value):
         """Set the default value for an input socket, handling type conversions."""
@@ -342,38 +694,38 @@ class NodeBuilder:
     ) -> NodeSocket:
         """Find the best compatible input socket on target node for the given output socket."""
         output_type = output_socket.type
-        compatibility_order = SOCKET_COMPATIBILITY.get(output_type, ())
+        compatible_types = SOCKET_COMPATIBILITY.get(output_type, ())
 
-        # First, check if the default input socket is compatible and available
-        # If the default isn't available or compatible, search for a compatible socket
-        # and if none is found arise an informative error
-        default_socket = target_node._default_input_socket
-        if default_socket.type in compatibility_order and (
-            not default_socket.links or default_socket.is_multi_input
-        ):
-            return default_socket
+        # Collect all compatible input sockets with their priority
+        compatible_inputs = []
+        for input_socket in target_node.node.inputs:
+            # Skip if socket already has a link and isn't multi-input
+            if input_socket.links and not input_socket.is_multi_input:
+                continue
 
-        for compatible_type in compatibility_order:
-            for input_socket in target_node.node.inputs:
-                # Skip if socket already has a link and isn't multi-input
-                if input_socket.links and not input_socket.is_multi_input:
-                    continue
+            if input_socket.type in compatible_types:
+                # Priority is the index in the compatibility list (0 = highest priority)
+                priority = compatible_types.index(input_socket.type)
+                compatible_inputs.append((priority, input_socket))
 
-                if input_socket.type == compatible_type:
-                    return input_socket
+        if not compatible_inputs:
+            # No compatible socket found
+            available_types = [
+                socket.type
+                for socket in target_node.node.inputs
+                if not socket.links or socket.is_multi_input
+            ]
+            raise RuntimeError(
+                f"Cannot link {output_type} output to {target_node.node.name}. "
+                f"Compatible types: {compatible_types}, "
+                f"Available input types: {available_types}"
+            )
 
-        available_types = [
-            socket.type
-            for socket in target_node.node.inputs
-            if not socket.links or socket.is_multi_input
-        ]
-        raise RuntimeError(
-            f"Cannot link {output_type} output to {target_node.node.name}. "
-            f"Compatible types: {compatibility_order}, "
-            f"Available input types: {available_types}"
-        )
+        # Sort by priority (lowest number = highest priority) and return the best match
+        compatible_inputs.sort(key=lambda x: x[0])
+        return compatible_inputs[0][1]
 
-    def _establish_links(self, **kwargs):
+    def _establish_links(self, **kwargs: TYPE_INPUT_ALL):
         input_ids = [input.identifier for input in self.node.inputs]
         for name, value in kwargs.items():
             if value is None:
@@ -383,14 +735,16 @@ class NodeBuilder:
                 # Ellipsis indicates this input should receive links from >> operator
                 # which can potentially target multiple inputs on the new node
                 if self._from_socket is not None:
-                    self.link(
+                    self._link(
                         self._from_socket, self.node.inputs[self._input_idx(name)]
                     )
 
+            elif isinstance(value, SocketLinker):
+                self._link(value, self.node.inputs[self._input_idx(name)])
             # we can also provide just a default value for the socket to take if we aren't
             # providing a socket to link with
-            elif isinstance(value, (NodeBuilder, SocketNodeBuilder, NodeSocket, Node)):
-                self.link_from(value, name)
+            elif isinstance(value, (NodeBuilder, NodeSocket, Node)):
+                self._smart_link_from(value, name)
             else:
                 if name in input_ids:
                     input = self.node.inputs[input_ids.index(name)]
@@ -407,20 +761,34 @@ class NodeBuilder:
             tree.inputs.value >> Math.add(..., 0.1) >> tree.outputs.result
 
         If the target node has an ellipsis placeholder (...), links to that specific input.
-        Otherwise, finds the best compatible input socket based on type compatibility.
+        Otherwise, finds the best compatible socket pair based on type compatibility.
 
         Returns the right-hand node to enable continued chaining.
         """
-        socket_out = self.node.outputs.get("Geometry") or self._default_output_socket
-        other._from_socket = socket_out
-
         if isinstance(other, SocketLinker):
+            # Direct socket linking - use default output
+            socket_out = self._default_output_socket
             socket_in = other.socket
+            other._from_socket = socket_out
         else:
+            # Standard NodeBuilder linking - need to find compatible sockets
             if other._link_target is not None:
+                # Target socket is specified
                 socket_in = self._get_input_socket_by_name(other, other._link_target)
+                socket_out = self._default_output_socket
+
+                # Try to find a better source socket if default doesn't work
+                try:
+                    socket_out = self._find_compatible_source_socket(self, socket_in)
+                except ValueError:
+                    # If no compatible socket found, use default and let the link fail with a clear error
+                    pass
+
+                other._from_socket = socket_out
             else:
-                socket_in = self._find_best_compatible_socket(other, socket_out)
+                # No target specified - find best compatible socket pair
+                socket_out, socket_in = self._find_best_socket_pair(other)
+                other._from_socket = socket_out
 
         self.tree.link(socket_out, socket_in)
         return other
@@ -437,7 +805,7 @@ class NodeBuilder:
         self, other: Any, operation: str, reverse: bool = False
     ) -> "VectorMath | Math":
         """Apply a math operation with appropriate Math/VectorMath node."""
-        from .nodes import Math, VectorMath
+        from .nodes.converter import VectorMath
 
         values = (
             (self._default_output_socket, other)
@@ -445,47 +813,53 @@ class NodeBuilder:
             else (other, self._default_output_socket)
         )
 
-        match self._default_output_socket.type:
-            case "VECTOR":
-                if operation == "multiply":
-                    # Handle special cases for vector multiplication where we might scale instead
-                    # of using the multiply method
-                    if isinstance(other, (int, float)):
-                        return VectorMath.scale(self._default_output_socket, other)
-                    elif isinstance(other, (list, tuple)) and len(other) == 3:
-                        return VectorMath.multiply(*values)
-                    elif isinstance(other, NodeBuilder):
-                        return VectorMath.multiply(*values)
-                    else:
-                        raise TypeError(
-                            f"Unsupported type for {operation} with VECTOR socket: {type(other)}"
-                        )
-                else:
-                    vector_method = getattr(VectorMath, operation)
-                    if isinstance(other, (int, float)):
-                        scalar_vector = (other, other, other)
-                        return (
-                            vector_method(scalar_vector, self._default_output_socket)
-                            if not reverse
-                            else vector_method(
-                                self._default_output_socket, scalar_vector
-                            )
-                        )
-                    elif (
-                        isinstance(other, (list, tuple)) and len(other) == 3
-                    ) or isinstance(other, NodeBuilder):
-                        return vector_method(*values)
+        # Determine if either operand is a vector type
+        self_is_vector = self._default_output_socket.type == "VECTOR"
+        other_is_vector = False
+        if isinstance(other, NodeBuilder):
+            other_is_vector = other._default_output_socket.type == "VECTOR"
 
-                    else:
-                        raise TypeError(
-                            f"Unsupported type for {operation} with VECTOR socket: {type(other)}"
-                        )
-            case "VALUE":
+        # Use VectorMath if either operand is a vector
+        if self_is_vector or other_is_vector:
+            if operation == "multiply":
+                # Handle special cases for vector multiplication where we might scale instead
+                # of using the multiply method
+                if isinstance(other, (int, float)):
+                    return VectorMath.scale(self._default_output_socket, other)
+                elif isinstance(other, (list, tuple)) and len(other) == 3:
+                    return VectorMath.multiply(*values)
+                elif isinstance(other, NodeBuilder):
+                    return VectorMath.multiply(*values)
+                else:
+                    raise TypeError(
+                        f"Unsupported type for {operation} with VECTOR socket: {type(other)}"
+                    )
+            else:
+                vector_method = getattr(VectorMath, operation)
+                if isinstance(other, (int, float)):
+                    scalar_vector = (other, other, other)
+                    return (
+                        vector_method(scalar_vector, self._default_output_socket)
+                        if not reverse
+                        else vector_method(self._default_output_socket, scalar_vector)
+                    )
+                elif (
+                    isinstance(other, (list, tuple)) and len(other) == 3
+                ) or isinstance(other, NodeBuilder):
+                    return vector_method(*values)
+
+                else:
+                    raise TypeError(
+                        f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
+                    )
+        else:
+            # Both operands are scalar types, use regular Math
+            from .nodes.converter import IntegerMath, Math
+
+            if isinstance(other, int):
+                return getattr(IntegerMath, operation)(*values)
+            else:
                 return getattr(Math, operation)(*values)
-            case _:
-                raise TypeError(
-                    f"Unsupported socket type for {operation}: {self._default_output_socket.type}"
-                )
 
     def __mul__(self, other: Any) -> "VectorMath | Math":
         return self._apply_math_operation(other, "multiply")
@@ -521,39 +895,16 @@ class SocketLinker(NodeBuilder):
         self._tree = TreeBuilder(socket.node.id_data)  # type: ignore
 
     @property
-    def type(self) -> str:
-        return self.socket.type
+    def type(self) -> SOCKET_TYPES:
+        return self.socket.type  # type: ignore
 
     @property
     def socket_name(self) -> str:
         return self.socket.name
 
-
-class SocketNodeBuilder(NodeBuilder):
-    """Special NodeBuilder for accessing specific sockets on input/output nodes."""
-
-    def __init__(self, node: Node, socket_name: str, direction: str):
-        # Don't call super().__init__ - we already have a node
-        self.node = node
-        self._tree = TreeBuilder(node.id_data)  # type: ignore
-        self._socket_name = socket_name
-        self._direction = direction
-
     @property
-    def _default_output_socket(self) -> NodeSocket:
-        """Return the specific named output socket."""
-        if self._direction == "INPUT":
-            return self.node.outputs[self._socket_name]
-        else:
-            raise ValueError("Output nodes don't have outputs")
-
-    @property
-    def _default_input_socket(self) -> NodeSocket:
-        """Return the specific named input socket."""
-        if self._direction == "OUTPUT":
-            return self.node.inputs[self._socket_name]
-        else:
-            raise ValueError("Input nodes don't have inputs")
+    def name(self) -> str:
+        return str(self.socket.name)
 
 
 class SocketBase(SocketLinker):
@@ -562,11 +913,10 @@ class SocketBase(SocketLinker):
     _bl_socket_type: str = ""
 
     def __init__(self, name: str, description: str = ""):
-        self.name = name
         self.description = description
 
         self._socket_context: SocketContext = SocketContext._active_context
-        self.interface_socket = self._socket_context._create_socket(self)
+        self.interface_socket = self._socket_context._create_socket(self, name)
         self._tree = self._socket_context.builder
         if self._socket_context._direction == "INPUT":
             socket = self.tree._input_node().outputs[self.interface_socket.identifier]
@@ -580,40 +930,21 @@ class SocketBase(SocketLinker):
                 continue
             setattr(self.interface_socket, key, value)
 
+    @property
+    def default_value(self):
+        if not hasattr(self.interface_socket, "default_value"):
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute 'default_value'"
+            )
+        return self.interface_socket.default_value
 
-class SocketGeometry(SocketBase):
-    """Geometry socket - holds mesh, curve, point cloud, or volume data."""
-
-    _bl_socket_type: str = "NodeSocketGeometry"
-    socket: bpy.types.NodeTreeInterfaceSocketGeometry
-
-    def __init__(self, name: str = "Geometry", description: str = ""):
-        super().__init__(name, description)
-
-
-class SocketBoolean(SocketBase):
-    """Boolean socket - true/false value."""
-
-    _bl_socket_type: str = "NodeSocketBool"
-    socket: bpy.types.NodeTreeInterfaceSocketBool
-
-    def __init__(
-        self,
-        name: str = "Boolean",
-        default_value: bool = False,
-        *,
-        description: str = "",
-        hide_value: bool = False,
-        attribute_domain: _AttributeDomains = "POINT",
-        default_attribute: str | None = None,
-    ):
-        super().__init__(name, description)
-        self._set_values(
-            default_value=default_value,
-            hide_value=hide_value,
-            attribute_domain=attribute_domain,
-            default_attribute=default_attribute,
-        )
+    @default_value.setter
+    def default_value(self, value):
+        if not hasattr(self.interface_socket, "default_value"):
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute 'default_value'"
+            )
+        self.interface_socket.default_value = value
 
 
 class SocketFloat(SocketBase):
@@ -626,12 +957,15 @@ class SocketFloat(SocketBase):
         self,
         name: str = "Value",
         default_value: float = 0.0,
-        *,
         description: str = "",
+        *,
         min_value: float | None = None,
         max_value: float | None = None,
-        subtype: FloatInterfaceSubtypes = "NONE",
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        subtype: FloatInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
@@ -640,8 +974,81 @@ class SocketFloat(SocketBase):
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
-            subtype=subtype,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketInt(SocketBase):
+    _bl_socket_type: str = "NodeSocketInt"
+    socket: bpy.types.NodeTreeInterfaceSocketInt
+
+    def __init__(
+        self,
+        name: str = "Integer",
+        default_value: int = 0,
+        description: str = "",
+        *,
+        min_value: int = -2147483648,
+        max_value: int = 2147483647,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        default_input: Literal["INDEX", "VALUE", "ID_OR_INDEX"] = "VALUE",
+        subtype: IntegerInterfaceSubtypes = "NONE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketBoolean(SocketBase):
+    """Boolean socket - true/false value."""
+
+    _bl_socket_type: str = "NodeSocketBool"
+    socket: bpy.types.NodeTreeInterfaceSocketBool
+
+    def __init__(
+        self,
+        name: str = "Boolean",
+        default_value: bool = False,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        layer_selection_field: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            layer_selection_field=layer_selection_field,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
@@ -655,58 +1062,35 @@ class SocketVector(SocketBase):
         self,
         name: str = "Vector",
         default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
-        *,
         description: str = "",
+        *,
         dimensions: int = 3,
         min_value: float | None = None,
         max_value: float | None = None,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
         attribute_domain: _AttributeDomains = "POINT",
     ):
-        super().__init__(name, description)
         assert len(default_value) == dimensions, (
             "Default value length must match dimensions"
         )
+        super().__init__(name, description)
         self._set_values(
             dimensions=dimensions,
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
             subtype=subtype,
             default_attribute=default_attribute,
             attribute_domain=attribute_domain,
-        )
-
-
-class SocketInt(SocketBase):
-    _bl_socket_type: str = "NodeSocketInt"
-    socket: bpy.types.NodeTreeInterfaceSocketInt
-
-    def __init__(
-        self,
-        name: str = "Integer",
-        default_value: int = 0,
-        *,
-        description: str = "",
-        min_value: int = -2147483648,
-        max_value: int = 2147483647,
-        hide_value: bool = False,
-        subtype: IntegerInterfaceSubtypes = "NONE",
-        attribute_domain: _AttributeDomains = "POINT",
-        default_attribute: str | None = None,
-    ):
-        super().__init__(name, description)
-        self._set_values(
-            default_value=default_value,
-            min_value=min_value,
-            max_value=max_value,
-            hide_value=hide_value,
-            subtype=subtype,
-            attribute_domain=attribute_domain,
-            default_attribute=default_attribute,
         )
 
 
@@ -720,17 +1104,23 @@ class SocketColor(SocketBase):
         self,
         name: str = "Color",
         default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
-        super().__init__(name, description)
         assert len(default_value) == 4, "Default color must be RGBA tuple"
+        super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
@@ -746,17 +1136,22 @@ class SocketRotation(SocketBase):
         self,
         name: str = "Rotation",
         default_value: tuple[float, float, float] = (1.0, 0.0, 0.0),
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
         super().__init__(name, description)
-        assert len(default_value) == 4, "Default rotation must be quaternion tuple"
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
@@ -771,15 +1166,23 @@ class SocketMatrix(SocketBase):
     def __init__(
         self,
         name: str = "Matrix",
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        default_input: Literal["VALUE", "INSTANCE_TRANSFORM"] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
         super().__init__(name, description)
         self._set_values(
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
@@ -793,20 +1196,24 @@ class SocketString(SocketBase):
         self,
         name: str = "String",
         default_value: str = "",
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
         subtype: StringInterfaceSubtypes = "NONE",
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
             subtype=subtype,
         )
 
 
-class MenuSocket(SocketBase):
+class SocketMenu(SocketBase):
     """Menu socket - holds a selection from predefined items."""
 
     _bl_socket_type: str = "NodeSocketMenu"
@@ -816,16 +1223,22 @@ class MenuSocket(SocketBase):
         self,
         name: str = "Menu",
         default_value: str | None = None,
-        *,
         description: str = "",
+        *,
         expanded: bool = False,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
             menu_expanded=expanded,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
         )
 
 
@@ -839,14 +1252,41 @@ class SocketObject(SocketBase):
         self,
         name: str = "Object",
         default_value: bpy.types.Object | None = None,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+
+class SocketGeometry(SocketBase):
+    """Geometry socket - holds mesh, curve, point cloud, or volume data."""
+
+    _bl_socket_type: str = "NodeSocketGeometry"
+    socket: bpy.types.NodeTreeInterfaceSocketGeometry
+
+    def __init__(
+        self,
+        name: str = "Geometry",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -860,14 +1300,18 @@ class SocketCollection(SocketBase):
         self,
         name: str = "Collection",
         default_value: bpy.types.Collection | None = None,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -881,14 +1325,18 @@ class SocketImage(SocketBase):
         self,
         name: str = "Image",
         default_value: bpy.types.Image | None = None,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -902,14 +1350,18 @@ class SocketMaterial(SocketBase):
         self,
         name: str = "Material",
         default_value: bpy.types.Material | None = None,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -922,13 +1374,17 @@ class SocketBundle(SocketBase):
     def __init__(
         self,
         name: str = "Bundle",
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -941,11 +1397,15 @@ class SocketClosure(SocketBase):
     def __init__(
         self,
         name: str = "Closure",
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
