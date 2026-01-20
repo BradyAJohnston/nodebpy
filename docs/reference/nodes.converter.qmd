@@ -2350,7 +2350,7 @@ Split a 4x4 matrix into its individual values
 ### SeparateTransform { #nodebpy.nodes.converter.SeparateTransform }
 
 ```python
-nodes.converter.SeparateTransform(transform)
+nodes.converter.SeparateTransform(transform=None)
 ```
 
 Split a transformation matrix into a translation vector, a rotation, and a scale vector
