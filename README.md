@@ -52,7 +52,7 @@ with TreeBuilder("AnotherTree") as tree:
 
     _ = (
         count
-        >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
+        >> n.Points(position=n.RandomValue.vector(min=-1))
         >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
         >> n.SetPosition(
             position=n.Position() * 2.0 + (0, 0.2, 0.3),
