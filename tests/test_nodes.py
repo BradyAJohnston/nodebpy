@@ -1,8 +1,6 @@
 import itertools
-from decimal import DefaultContext
 
 import pytest
-from bpy import data
 
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
@@ -29,7 +27,7 @@ def test_capture_attribute():
     with TreeBuilder() as tree:
         cap = n.Points(
             count=10, position=n.RandomValue.vector(), radius=n.RandomValue.float()
-        ) >> n.CaptureAttribute(
+        ) >> n.CaptureAttribute.point(
             n.Position(),
             n.Radius(),
             normal=n.Normal(),
@@ -417,7 +415,7 @@ def test_edge_other_point(snapshot_tree):
         vert_1 = n.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
         vert_2 = n.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
         other_vertex = n.Switch.integer(
-            n.Compare.integer(v_index, vert_1, operation="EQUAL"), vert_1, vert_2
+            n.Compare.equal.integer(v_index, vert_1), vert_1, vert_2
         )
 
         with tree.outputs:

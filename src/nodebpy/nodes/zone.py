@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from ntpath import getatime
 from typing import Literal
 
 import bpy

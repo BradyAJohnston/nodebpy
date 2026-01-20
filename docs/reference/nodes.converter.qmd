@@ -573,12 +573,20 @@ Perform a comparison operation on the two given inputs
 
 | Name | Description |
 | --- | --- |
+| [brighter](#nodebpy.nodes.converter.Compare.brighter) |  |
+| [darker](#nodebpy.nodes.converter.Compare.darker) |  |
 | [data_type](#nodebpy.nodes.converter.Compare.data_type) |  |
+| [equal](#nodebpy.nodes.converter.Compare.equal) |  |
+| [greater_equal](#nodebpy.nodes.converter.Compare.greater_equal) |  |
+| [greater_than](#nodebpy.nodes.converter.Compare.greater_than) |  |
 | [i_a](#nodebpy.nodes.converter.Compare.i_a) | Input socket: A |
 | [i_b](#nodebpy.nodes.converter.Compare.i_b) | Input socket: B |
+| [less_equal](#nodebpy.nodes.converter.Compare.less_equal) |  |
+| [less_than](#nodebpy.nodes.converter.Compare.less_than) |  |
 | [mode](#nodebpy.nodes.converter.Compare.mode) |  |
 | [name](#nodebpy.nodes.converter.Compare.name) |  |
 | [node](#nodebpy.nodes.converter.Compare.node) |  |
+| [not_equal](#nodebpy.nodes.converter.Compare.not_equal) |  |
 | [o_result](#nodebpy.nodes.converter.Compare.o_result) | Output socket: Result |
 | [operation](#nodebpy.nodes.converter.Compare.operation) |  |
 | [tree](#nodebpy.nodes.converter.Compare.tree) |  |

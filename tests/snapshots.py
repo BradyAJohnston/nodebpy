@@ -3,13 +3,15 @@
 import base64
 import gzip
 import json
+
+from jsondiff import diff
 from syrupy.extensions.amber import AmberSnapshotExtension
 from syrupy.types import SerializableData, SerializedData
-from nodebpy import TreeBuilder
+from tree_clipper.common import MAGIC_STRING
 from tree_clipper.export_nodes import ExportIntermediate, ExportParameters
 from tree_clipper.specific_handlers import BUILT_IN_EXPORTER
-from tree_clipper.common import MAGIC_STRING
-from jsondiff import diff
+
+from nodebpy import TreeBuilder
 
 
 def _serialize_tree_builder(data: TreeBuilder) -> str:

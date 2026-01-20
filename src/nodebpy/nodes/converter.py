@@ -1,5 +1,4 @@
-from posix import stat
-from typing import Any, Literal
+from typing import Literal
 
 import bpy
 from bpy.types import NodeSocket
@@ -8,13 +7,11 @@ from ..builder import NodeBuilder, SocketLinker
 from . import types
 from .types import (
     LINKABLE,
-    SOCKET_COMPATIBILITY,
     SOCKET_TYPES,
     TYPE_INPUT_ALL,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_COLOR,
     TYPE_INPUT_INT,
-    TYPE_INPUT_MATERIAL,
     TYPE_INPUT_MATRIX,
     TYPE_INPUT_MENU,
     TYPE_INPUT_ROTATION,
@@ -538,11 +535,72 @@ _CompareVectorModes = Literal[
 ]
 
 
+def _compare_operation_method(operation: _CompareOperations):
+    """Create a factory for Compare with a specific operation"""
+
+    class CompareOperationFactory:
+        @staticmethod
+        def float(
+            a: TYPE_INPUT_VALUE = 0.0,
+            b: TYPE_INPUT_VALUE = 0.0,
+            *,
+            epsilon: TYPE_INPUT_VALUE = 0.0001,
+        ) -> "Compare":
+            return Compare.float(operation=operation, a=a, b=b, epsilon=epsilon)
+
+        @staticmethod
+        def integer(a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "Compare":
+            return Compare.integer(operation=operation, a=a, b=b)
+
+        @staticmethod
+        def vector(
+            a: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+            b: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+            *,
+            mode: _CompareVectorModes = "ELEMENT",
+            c: TYPE_INPUT_VALUE = None,
+            angle: TYPE_INPUT_VALUE = None,
+            epsilon: TYPE_INPUT_VALUE = None,
+        ) -> "Compare":
+            return Compare.vector(
+                operation=operation,
+                a=a,
+                b=b,
+                mode=mode,
+                c=c,
+                angle=angle,
+                epsilon=epsilon,
+            )
+
+        @staticmethod
+        def color(
+            a: TYPE_INPUT_COLOR = None,
+            b: TYPE_INPUT_COLOR = None,
+            epsilon: TYPE_INPUT_VALUE = None,
+        ) -> "Compare":
+            return Compare.color(operation=operation, a=a, b=b, epsilon=epsilon)
+
+        @staticmethod
+        def string(a: TYPE_INPUT_STRING = "", b: TYPE_INPUT_STRING = "") -> "Compare":
+            return Compare.string(operation=operation, a=a, b=b)
+
+    return CompareOperationFactory()
+
+
 class Compare(NodeBuilder):
     """Perform a comparison operation on the two given inputs"""
 
     name = "FunctionNodeCompare"
     node: bpy.types.FunctionNodeCompare
+
+    less_than = _compare_operation_method("LESS_THAN")
+    less_equal = _compare_operation_method("LESS_EQUAL")
+    greater_than = _compare_operation_method("GREATER_THAN")
+    greater_equal = _compare_operation_method("GREATER_EQUAL")
+    equal = _compare_operation_method("EQUAL")
+    not_equal = _compare_operation_method("NOT_EQUAL")
+    brighter = _compare_operation_method("BRIGHTER")
+    darker = _compare_operation_method("DARKER")
 
     def __init__(
         self,
@@ -2807,7 +2865,7 @@ class JoinStrings(NodeBuilder):
 def _switch_data_type_method(input_type: SOCKET_TYPES):
     @classmethod
     def method(
-        cls, switch: TYPE_INPUT_INT, false: LINKABLE, true: LINKABLE
+        cls, switch: TYPE_INPUT_BOOLEAN, false: LINKABLE, true: LINKABLE
     ) -> "Switch":
         """Create a NamedAttribute with specific data type."""
         return cls(switch=switch, false=false, true=true, input_type=input_type)
