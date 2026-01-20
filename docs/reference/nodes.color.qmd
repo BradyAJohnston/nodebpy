@@ -25,7 +25,11 @@ Apply a gamma correction
 | --- | --- |
 | [i_color](#nodebpy.nodes.color.Gamma.i_color) | Input socket: Color |
 | [i_gamma](#nodebpy.nodes.color.Gamma.i_gamma) | Input socket: Gamma |
+| [name](#nodebpy.nodes.color.Gamma.name) |  |
+| [node](#nodebpy.nodes.color.Gamma.node) |  |
 | [o_color](#nodebpy.nodes.color.Gamma.o_color) | Output socket: Color |
+| [tree](#nodebpy.nodes.color.Gamma.tree) |  |
+| [type](#nodebpy.nodes.color.Gamma.type) |  |
 
 ### RGBCurves { #nodebpy.nodes.color.RGBCurves }
 
@@ -41,4 +45,8 @@ Apply color corrections for each color channel
 | --- | --- |
 | [i_color](#nodebpy.nodes.color.RGBCurves.i_color) | Input socket: Color |
 | [i_factor](#nodebpy.nodes.color.RGBCurves.i_factor) | Input socket: Factor |
+| [name](#nodebpy.nodes.color.RGBCurves.name) |  |
+| [node](#nodebpy.nodes.color.RGBCurves.node) |  |
 | [o_color](#nodebpy.nodes.color.RGBCurves.o_color) | Output socket: Color |
+| [tree](#nodebpy.nodes.color.RGBCurves.tree) |  |
+| [type](#nodebpy.nodes.color.RGBCurves.type) |  |

@@ -169,7 +169,7 @@ class SimulationZone:
         self.output.node.state_items.clear()
         socket_lookup = self.output._add_inputs(*args, **kwargs)
         for name, source in socket_lookup.items():
-            self.input.link_from(source, name)
+            self.input._link_from(source, name)
 
     def delta_time(self) -> SocketLinker:
         return self.input.o_delta_time

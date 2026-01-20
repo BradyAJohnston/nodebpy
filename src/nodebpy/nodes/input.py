@@ -1582,11 +1582,27 @@ class ViewportTransform(NodeBuilder):
         return self._output("Is Orthographic")
 
 
+def _typed_named_attribute(data_type: str):
+    @classmethod
+    def method(cls, name: TYPE_INPUT_STRING) -> "NamedAttribute":
+        """Create a NamedAttribute with a non-default_data_type"""
+        return cls(name=name, data_type=data_type)
+
+    return method
+
+
 class NamedAttribute(NodeBuilder):
     """Retrieve the data of a specified attribute"""
 
     name = "GeometryNodeInputNamedAttribute"
     node: bpy.types.GeometryNodeInputNamedAttribute
+    float = _typed_named_attribute("FLOAT")
+    integer = _typed_named_attribute("INT")
+    boolean = _typed_named_attribute("BOOLEAN")
+    vector = _typed_named_attribute("FLOAT_VECTOR")
+    color = _typed_named_attribute("FLOAT_COLOR")
+    quaternion = _typed_named_attribute("QUATNERNION")
+    matrix = _typed_named_attribute("FLOAT4X4")
 
     def __init__(
         self,

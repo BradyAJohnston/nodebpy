@@ -686,7 +686,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node.link_from(arg, "Grid 2")
+            node._link_from(arg, "Grid 2")
         return node
 
     @classmethod
@@ -698,7 +698,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node.link_from(arg, "Grid 2")
+            node._link_from(arg, "Grid 2")
         return node
 
     @classmethod
@@ -709,11 +709,11 @@ class SDFGridBoolean(NodeBuilder):
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
-        node.link_from(grid_1, "Grid 1")
+        node._link_from(grid_1, "Grid 1")
         for arg in args:
             if arg is None:
                 continue
-            node.link_from(arg, "Grid 2")
+            node._link_from(arg, "Grid 2")
         return node
 
     @property

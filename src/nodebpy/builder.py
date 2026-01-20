@@ -611,15 +611,15 @@ class NodeBuilder:
         """Output socket: Vector"""
         return SocketLinker(self.node.outputs[self._output_idx(identifier)])
 
-    def link(
+    def _link(
         self, source: LINKABLE | SocketLinker | NodeSocket, target: LINKABLE
     ) -> bpy.types.NodeLink:
         return self.tree.link(self._source_socket(source), self._target_socket(target))
 
-    def link_to(self, target: LINKABLE) -> bpy.types.NodeLink:
+    def _link_to(self, target: LINKABLE) -> bpy.types.NodeLink:
         return self.tree.link(self._default_output_socket, self._target_socket(target))
 
-    def link_from(
+    def _link_from(
         self,
         source: LINKABLE,
         input: LINKABLE | str,
@@ -638,11 +638,11 @@ class NodeBuilder:
 
         if isinstance(input, str):
             try:
-                self.link(source, self.node.inputs[input])
+                self._link(source, self.node.inputs[input])
             except KeyError:
-                self.link(source, self.node.inputs[self._input_idx(input)])
+                self._link(source, self.node.inputs[self._input_idx(input)])
         else:
-            self.link(source, input)
+            self._link(source, input)
 
     def _smart_link_from(
         self,
@@ -663,7 +663,7 @@ class NodeBuilder:
                 compatible_output = self._find_compatible_source_socket(
                     source, target_socket
                 )
-                self.link(compatible_output, target_socket)
+                self._link(compatible_output, target_socket)
                 return
             except ValueError:
                 # No compatible socket found - this is an error, don't fall back
@@ -675,7 +675,7 @@ class NodeBuilder:
                 )
         else:
             # For other types, use original link_from behavior
-            self.link_from(source, input_name)
+            self._link_from(source, input_name)
 
     def _set_input_default_value(self, input, value):
         """Set the default value for an input socket, handling type conversions."""
@@ -734,10 +734,12 @@ class NodeBuilder:
                 # Ellipsis indicates this input should receive links from >> operator
                 # which can potentially target multiple inputs on the new node
                 if self._from_socket is not None:
-                    self.link(
+                    self._link(
                         self._from_socket, self.node.inputs[self._input_idx(name)]
                     )
 
+            elif isinstance(value, SocketLinker):
+                self._link(value, self.node.inputs[self._input_idx(name)])
             # we can also provide just a default value for the socket to take if we aren't
             # providing a socket to link with
             elif isinstance(value, (NodeBuilder, NodeSocket, Node)):
@@ -851,9 +853,12 @@ class NodeBuilder:
                     )
         else:
             # Both operands are scalar types, use regular Math
-            from .nodes.converter import Math
+            from .nodes.converter import IntegerMath, Math
 
-            return getattr(Math, operation)(*values)
+            if isinstance(other, int):
+                return getattr(IntegerMath, operation)(*values)
+            else:
+                return getattr(Math, operation)(*values)
 
     def __mul__(self, other: Any) -> "VectorMath | Math":
         return self._apply_math_operation(other, "multiply")

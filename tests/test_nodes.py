@@ -12,7 +12,7 @@ from nodebpy import sockets as s
 def test_capture_attribute():
     with TreeBuilder("TestCaptureAttribute") as tree:
         cube = n.Cube()
-        cap = n.CaptureAttribute(domain="POINT")
+        cap = n.CaptureAttribute.edge()
 
         _ = (
             cube
@@ -302,7 +302,7 @@ def test_repeat(snapshot_tree):
 def test_index_switch(snapshot_tree):
     with TreeBuilder() as tree:
         items = (n.Cube(), n.UVSphere(), n.Cube(), n.Cube())
-        index = n.IndexSwitch(*items, index=5, data_type="GEOMETRY")
+        index = n.IndexSwitch.geometry(*items, index=5)
 
     assert len(index.node.index_switch_items) == 4
     assert len(tree) == 5
@@ -317,7 +317,7 @@ def test_menu_switch():
             n.Cube(),
             n.Cube(),
         )
-        switch = n.MenuSwitch(*items, custom=n.Cone(), data_type="GEOMETRY")
+        switch = n.MenuSwitch.geometry(*items, custom=n.Cone())
         with tree.inputs:
             menu = s.SocketMenu()
         menu >> switch
@@ -327,7 +327,7 @@ def test_menu_switch():
     assert len(switch.node.enum_items) == 5
 
     with TreeBuilder() as tree:
-        switch = n.MenuSwitch(*range(10), data_type="FLOAT")
+        switch = n.MenuSwitch.float(*range(10))
 
     assert len(switch.node.enum_items) == 10
     assert switch.inputs["Item_5"].socket.default_value == 5
@@ -337,9 +337,9 @@ def test_multi_menu():
     with TreeBuilder() as tree:
         items = (n.Cube(), n.IcoSphere(), n.Grid())
 
-        menu = n.MenuSwitch(test=0, another=1, again=2, data_type="INT")
-        switch1 = n.IndexSwitch(*items, index=menu, data_type="GEOMETRY")
-        switch2 = n.IndexSwitch(*reversed(items), index=menu, data_type="GEOMETRY")
+        menu = n.MenuSwitch.integer(test=0, another=1, again=2)
+        switch1 = n.IndexSwitch.geometry(*items, index=menu)
+        switch2 = n.IndexSwitch.geometry(*reversed(items), index=menu)
 
         with tree.inputs:
             menu_input = s.SocketMenu()
@@ -359,7 +359,7 @@ def test_switch_repeatzone(snapshot_tree):
 
         items = (n.Cube(), n.IcoSphere(), n.Grid())
         zone = n.RepeatZone(5, input)
-        switch = n.IndexSwitch(*items, index=zone.i, data_type="GEOMETRY")
+        switch = n.IndexSwitch.geometry(*items, index=zone.i)
         join = n.JoinGeometry(zone.input, switch)
         join >> zone.output >> output
 
@@ -371,13 +371,34 @@ def test_switch_repeatzone(snapshot_tree):
 def test_generate_select_group():
     with TreeBuilder() as tree:
         with tree.inputs:
-            switch = n.IndexSwitch(
+            switch = n.IndexSwitch.boolean(
                 *[s.SocketBoolean(str(i)) for i in range(20)],
-                index=n.NamedAttribute("chain_id", data_type="INT"),
-                data_type="BOOLEAN",
+                index=n.NamedAttribute.integer("chain_id"),
             )
         with tree.outputs:
             switch >> s.SocketBoolean("Selection")
 
     assert len(switch.node.index_switch_items) == 20
     assert len(tree) == 4
+
+
+def test_accumulate_field():
+    with TreeBuilder() as tree:
+        cube = n.Cube()
+        aatr = n.AxisAngleToRotation(angle=1.0)
+        tran = n.AccumulateField.point.transform(
+            n.EvaluateAtIndex.point.rotation(aatr, n.Index() - int(1))
+        )
+        _ = cube >> n.SetPosition(
+            position=n.TransformPoint(n.Position(), tran.o_trailing),
+            offset=n.FieldAverage.edge.vector(n.Position()),
+        )
+
+        n.SetPosition(offset=n.FieldVariance.point.vector(n.Position()))
+
+    assert tree.nodes.get("Integer Math")
+    assert tree.nodes.get("Accumulate Field").outputs["Trailing"].links[
+        0
+    ].to_node == tree.nodes.get("Transform Point")
+    assert tree.nodes.get("Field Average").data_type == "FLOAT_VECTOR"
+    assert tree.nodes.get("Field Average").domain == "EDGE"

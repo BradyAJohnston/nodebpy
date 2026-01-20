@@ -1,5 +1,0 @@
-# nodes { #nodebpy.nodes }
-
-`nodes`
-
-Auto-generated geometry node classes.

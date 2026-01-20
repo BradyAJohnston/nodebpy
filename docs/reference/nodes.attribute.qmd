@@ -35,9 +35,13 @@ Calculate statistics about a data set from a field evaluated on a geometry
 
 | Name | Description |
 | --- | --- |
+| [data_type](#nodebpy.nodes.attribute.AttributeStatistic.data_type) |  |
+| [domain](#nodebpy.nodes.attribute.AttributeStatistic.domain) |  |
 | [i_attribute](#nodebpy.nodes.attribute.AttributeStatistic.i_attribute) | Input socket: Attribute |
 | [i_geometry](#nodebpy.nodes.attribute.AttributeStatistic.i_geometry) | Input socket: Geometry |
 | [i_selection](#nodebpy.nodes.attribute.AttributeStatistic.i_selection) | Input socket: Selection |
+| [name](#nodebpy.nodes.attribute.AttributeStatistic.name) |  |
+| [node](#nodebpy.nodes.attribute.AttributeStatistic.node) |  |
 | [o_max](#nodebpy.nodes.attribute.AttributeStatistic.o_max) | Output socket: Max |
 | [o_mean](#nodebpy.nodes.attribute.AttributeStatistic.o_mean) | Output socket: Mean |
 | [o_median](#nodebpy.nodes.attribute.AttributeStatistic.o_median) | Output socket: Median |
@@ -46,6 +50,8 @@ Calculate statistics about a data set from a field evaluated on a geometry
 | [o_standard_deviation](#nodebpy.nodes.attribute.AttributeStatistic.o_standard_deviation) | Output socket: Standard Deviation |
 | [o_sum](#nodebpy.nodes.attribute.AttributeStatistic.o_sum) | Output socket: Sum |
 | [o_variance](#nodebpy.nodes.attribute.AttributeStatistic.o_variance) | Output socket: Variance |
+| [tree](#nodebpy.nodes.attribute.AttributeStatistic.tree) |  |
+| [type](#nodebpy.nodes.attribute.AttributeStatistic.type) |  |
 
 ### BlurAttribute { #nodebpy.nodes.attribute.BlurAttribute }
 
@@ -65,10 +71,15 @@ Mix attribute values of neighboring elements
 
 | Name | Description |
 | --- | --- |
+| [data_type](#nodebpy.nodes.attribute.BlurAttribute.data_type) |  |
 | [i_iterations](#nodebpy.nodes.attribute.BlurAttribute.i_iterations) | Input socket: Iterations |
 | [i_value](#nodebpy.nodes.attribute.BlurAttribute.i_value) | Input socket: Value |
 | [i_weight](#nodebpy.nodes.attribute.BlurAttribute.i_weight) | Input socket: Weight |
+| [name](#nodebpy.nodes.attribute.BlurAttribute.name) |  |
+| [node](#nodebpy.nodes.attribute.BlurAttribute.node) |  |
 | [o_value](#nodebpy.nodes.attribute.BlurAttribute.o_value) | Output socket: Value |
+| [tree](#nodebpy.nodes.attribute.BlurAttribute.tree) |  |
+| [type](#nodebpy.nodes.attribute.BlurAttribute.type) |  |
 
 ### CaptureAttribute { #nodebpy.nodes.attribute.CaptureAttribute }
 
@@ -82,8 +93,22 @@ Store the result of a field on a geometry and output the data as a node socket. 
 
 | Name | Description |
 | --- | --- |
+| [corner](#nodebpy.nodes.attribute.CaptureAttribute.corner) |  |
+| [curve](#nodebpy.nodes.attribute.CaptureAttribute.curve) |  |
+| [domain](#nodebpy.nodes.attribute.CaptureAttribute.domain) |  |
+| [edge](#nodebpy.nodes.attribute.CaptureAttribute.edge) |  |
+| [face](#nodebpy.nodes.attribute.CaptureAttribute.face) |  |
 | [i_geometry](#nodebpy.nodes.attribute.CaptureAttribute.i_geometry) | Input socket: Geometry |
+| [inputs](#nodebpy.nodes.attribute.CaptureAttribute.inputs) |  |
+| [instance](#nodebpy.nodes.attribute.CaptureAttribute.instance) |  |
+| [layer](#nodebpy.nodes.attribute.CaptureAttribute.layer) |  |
+| [name](#nodebpy.nodes.attribute.CaptureAttribute.name) |  |
+| [node](#nodebpy.nodes.attribute.CaptureAttribute.node) |  |
 | [o_geometry](#nodebpy.nodes.attribute.CaptureAttribute.o_geometry) | Output socket: Geometry |
+| [outputs](#nodebpy.nodes.attribute.CaptureAttribute.outputs) |  |
+| [point](#nodebpy.nodes.attribute.CaptureAttribute.point) |  |
+| [tree](#nodebpy.nodes.attribute.CaptureAttribute.tree) |  |
+| [type](#nodebpy.nodes.attribute.CaptureAttribute.type) |  |
 
 #### Methods
 
@@ -113,11 +138,16 @@ Retrieve the number of elements in a geometry for each attribute domain
 
 | Name | Description |
 | --- | --- |
+| [component](#nodebpy.nodes.attribute.DomainSize.component) |  |
 | [i_geometry](#nodebpy.nodes.attribute.DomainSize.i_geometry) | Input socket: Geometry |
+| [name](#nodebpy.nodes.attribute.DomainSize.name) |  |
+| [node](#nodebpy.nodes.attribute.DomainSize.node) |  |
 | [o_edge_count](#nodebpy.nodes.attribute.DomainSize.o_edge_count) | Output socket: Edge Count |
 | [o_face_corner_count](#nodebpy.nodes.attribute.DomainSize.o_face_corner_count) | Output socket: Face Corner Count |
 | [o_face_count](#nodebpy.nodes.attribute.DomainSize.o_face_count) | Output socket: Face Count |
 | [o_point_count](#nodebpy.nodes.attribute.DomainSize.o_point_count) | Output socket: Point Count |
+| [tree](#nodebpy.nodes.attribute.DomainSize.tree) |  |
+| [type](#nodebpy.nodes.attribute.DomainSize.type) |  |
 
 ### RemoveNamedAttribute { #nodebpy.nodes.attribute.RemoveNamedAttribute }
 
@@ -138,7 +168,11 @@ Delete an attribute with a specified name from a geometry. Typically used to opt
 | [i_geometry](#nodebpy.nodes.attribute.RemoveNamedAttribute.i_geometry) | Input socket: Geometry |
 | [i_name](#nodebpy.nodes.attribute.RemoveNamedAttribute.i_name) | Input socket: Name |
 | [i_pattern_mode](#nodebpy.nodes.attribute.RemoveNamedAttribute.i_pattern_mode) | Input socket: Pattern Mode |
+| [name](#nodebpy.nodes.attribute.RemoveNamedAttribute.name) |  |
+| [node](#nodebpy.nodes.attribute.RemoveNamedAttribute.node) |  |
 | [o_geometry](#nodebpy.nodes.attribute.RemoveNamedAttribute.o_geometry) | Output socket: Geometry |
+| [tree](#nodebpy.nodes.attribute.RemoveNamedAttribute.tree) |  |
+| [type](#nodebpy.nodes.attribute.RemoveNamedAttribute.type) |  |
 
 ### StoreNamedAttribute { #nodebpy.nodes.attribute.StoreNamedAttribute }
 
@@ -160,8 +194,14 @@ Store the result of a field on a geometry as an attribute with the specified nam
 
 | Name | Description |
 | --- | --- |
+| [data_type](#nodebpy.nodes.attribute.StoreNamedAttribute.data_type) |  |
+| [domain](#nodebpy.nodes.attribute.StoreNamedAttribute.domain) |  |
 | [i_geometry](#nodebpy.nodes.attribute.StoreNamedAttribute.i_geometry) | Input socket: Geometry |
 | [i_name](#nodebpy.nodes.attribute.StoreNamedAttribute.i_name) | Input socket: Name |
 | [i_selection](#nodebpy.nodes.attribute.StoreNamedAttribute.i_selection) | Input socket: Selection |
 | [i_value](#nodebpy.nodes.attribute.StoreNamedAttribute.i_value) | Input socket: Value |
+| [name](#nodebpy.nodes.attribute.StoreNamedAttribute.name) |  |
+| [node](#nodebpy.nodes.attribute.StoreNamedAttribute.node) |  |
 | [o_geometry](#nodebpy.nodes.attribute.StoreNamedAttribute.o_geometry) | Output socket: Geometry |
+| [tree](#nodebpy.nodes.attribute.StoreNamedAttribute.tree) |  |
+| [type](#nodebpy.nodes.attribute.StoreNamedAttribute.type) |  |

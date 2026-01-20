@@ -385,11 +385,32 @@ class StoreNamedAttribute(NodeBuilder):
         self.node.domain = value
 
 
+def _domain_capture_attribute(domain: _AttributeDomains):
+    @classmethod
+    def method(
+        cls,
+        *args: LINKABLE,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        **kwargs,
+    ) -> "CaptureAttribute":
+        """Create an IndexSwitch node with a pre-set domain"""
+        return cls(*args, geometry=geometry, domain=domain, **kwargs)
+
+    return method
+
+
 class CaptureAttribute(NodeBuilder):
     """Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation"""
 
     name = "GeometryNodeCaptureAttribute"
     node: bpy.types.GeometryNodeCaptureAttribute
+    point = _domain_capture_attribute("POINT")
+    edge = _domain_capture_attribute("EDGE")
+    face = _domain_capture_attribute("FACE")
+    corner = _domain_capture_attribute("CORNER")
+    curve = _domain_capture_attribute("CURVE")
+    instance = _domain_capture_attribute("INSTANCE")
+    layer = _domain_capture_attribute("LAYER")
 
     def __init__(
         self,

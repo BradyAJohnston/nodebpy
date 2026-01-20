@@ -37,7 +37,7 @@ class JoinGeometry(NodeBuilder):
     def __init__(self, *args: LINKABLE):
         super().__init__()
         for source in reversed(args):
-            self.link_from(source, self)
+            self._link_from(source, self)
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -376,7 +376,7 @@ class GeometryToInstance(NodeBuilder):
     def __init__(self, *args: TYPE_INPUT_GEOMETRY):
         super().__init__()
         for arg in reversed(args):
-            self.link_from(arg, "Geometry")
+            self._link_from(arg, "Geometry")
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -4651,7 +4651,7 @@ class MeshBoolean(NodeBuilder):
         self.operation = operation
         self.solver = solver
         for arg in args:
-            self.link_from(arg, "Mesh 2")
+            self._link_from(arg, "Mesh 2")
         self._establish_links(**key_args)
 
     @classmethod

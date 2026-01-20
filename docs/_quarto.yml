@@ -38,6 +38,7 @@ quartodoc:
     include_attributes: true
     include_functions: true
     include_inherited: true
+    include_empty: true
 
   sections:
     - title: Some functions

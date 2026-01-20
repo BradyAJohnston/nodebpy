@@ -156,19 +156,7 @@ _AdvectGridIntegration = Literal[
 _DeleteGeoemtryModes = Literal["ALL", "EDGE_FACE", "ONLY_FACE"]
 _RandomValueDataTypes = Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
 _EvaluateAtIndexDataTypes = Literal[
-    "FLOAT",
-    "INT",
-    "BOOLEAN",
-    "FLOAT_VECTOR",
-    "FLOAT_COLOR",
-    "QUATERNION",
-    "FLOAT4X4",
-    "STRING",
-    "INT8",
-    "INT16_2D",
-    "INT32_2D",
-    "FLOAT2",
-    "BYTE_COLOR",
+    "FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR", "FLOAT_COLOR", "QUATERNION", "FLOAT4X4"
 ]
 _DuplicateElementsDomains = Literal[
     "POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"
