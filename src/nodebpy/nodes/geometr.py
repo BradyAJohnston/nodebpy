@@ -166,7 +166,7 @@ class BoundingBox(NodeBuilder):
         return self._output("Max")
 
 
-class BezierSegment(NodeBuilder):
+class BézierSegment(NodeBuilder):
     """Generate a 2D Bézier spline from the given control points and handles"""
 
     name = "GeometryNodeCurvePrimitiveBezierSegment"
@@ -1357,60 +1357,6 @@ class GreasePencilToCurves(NodeBuilder):
         return self._output("Curves")
 
 
-class Grid(NodeBuilder):
-    """Generate a planar mesh on the XY plane"""
-
-    name = "GeometryNodeMeshGrid"
-    node: bpy.types.GeometryNodeMeshGrid
-
-    def __init__(
-        self,
-        size_x: TYPE_INPUT_VALUE = 1.0,
-        size_y: TYPE_INPUT_VALUE = 1.0,
-        vertices_x: TYPE_INPUT_INT = 3,
-        vertices_y: TYPE_INPUT_INT = 3,
-    ):
-        super().__init__()
-        key_args = {
-            "Size X": size_x,
-            "Size Y": size_y,
-            "Vertices X": vertices_x,
-            "Vertices Y": vertices_y,
-        }
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_size_x(self) -> SocketLinker:
-        """Input socket: Size X"""
-        return self._input("Size X")
-
-    @property
-    def i_size_y(self) -> SocketLinker:
-        """Input socket: Size Y"""
-        return self._input("Size Y")
-
-    @property
-    def i_vertices_x(self) -> SocketLinker:
-        """Input socket: Vertices X"""
-        return self._input("Vertices X")
-
-    @property
-    def i_vertices_y(self) -> SocketLinker:
-        """Input socket: Vertices Y"""
-        return self._input("Vertices Y")
-
-    @property
-    def o_mesh(self) -> SocketLinker:
-        """Output socket: Mesh"""
-        return self._output("Mesh")
-
-    @property
-    def o_uv_map(self) -> SocketLinker:
-        """Output socket: UV Map"""
-        return self._output("UV Map")
-
-
 class IcoSphere(NodeBuilder):
     """Generate a spherical mesh that consists of equally sized triangles"""
 
@@ -2142,7 +2088,7 @@ class PointsToVertices(NodeBuilder):
         return self._output("Mesh")
 
 
-class QuadraticBezier(NodeBuilder):
+class QuadraticBézier(NodeBuilder):
     """Generate a poly spline in a parabola shape with control points positions"""
 
     name = "GeometryNodeCurveQuadraticBezier"
@@ -3772,7 +3718,7 @@ class SetHandleType(NodeBuilder):
         curve: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
-        mode: Literal["LEFT", "RIGHT"] = "{'LEFT', 'RIGHT'}",
+        mode: Literal["LEFT", "RIGHT"] = "{'RIGHT', 'LEFT'}",
     ):
         super().__init__()
         key_args = {"Curve": curve, "Selection": selection}
@@ -3812,7 +3758,7 @@ class SetHandleType(NodeBuilder):
         self.node.mode = value
 
 
-class SetID(NodeBuilder):
+class SetId(NodeBuilder):
     """Set the id attribute on the input geometry, mainly used internally for randomizing"""
 
     name = "GeometryNodeSetID"

@@ -1,20 +1,32 @@
 from typing import Literal
-from ..builder import NodeBuilder, SocketLinker
+
 import bpy
 
-from .types import TYPE_INPUT_INT, TYPE_INPUT_VALUE
+from ..builder import NodeBuilder, SocketLinker
+from .types import (
+    LINKABLE,
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_GEOMETRY,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_STRING,
+    TYPE_INPUT_ROTATION,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_VECTOR,
+)
 
 
-class List(NodeBuilder):
-    """Create a list of values"""
+class GetListItem(NodeBuilder):
+    """Retrieve a value from a list"""
 
-    name = "GeometryNodeList"
-    node: bpy.types.GeometryNodeList
+    name = "GeometryNodeListGetItem"
+    node: bpy.types.GeometryNodeListGetItem
 
     def __init__(
         self,
-        count: TYPE_INPUT_INT = 1,
-        value: TYPE_INPUT_VALUE = 0.0,
+        list: TYPE_INPUT_VALUE = 0.0,
+        index: TYPE_INPUT_INT = 0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -35,28 +47,26 @@ class List(NodeBuilder):
             "BUNDLE",
             "CLOSURE",
         ] = "FLOAT",
-        **kwargs,
     ):
         super().__init__()
-        key_args = {"Count": count, "Value": value}
-        key_args.update(kwargs)
+        key_args = {"List": list, "Index": index}
         self.data_type = data_type
         self._establish_links(**key_args)
 
     @property
-    def i_count(self) -> SocketLinker:
-        """Input socket: Count"""
-        return self._input("Count")
+    def i_list(self) -> SocketLinker:
+        """Input socket: List"""
+        return self._input("List")
 
     @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
+    def i_index(self) -> SocketLinker:
+        """Input socket: Index"""
+        return self._input("Index")
 
     @property
-    def o_list(self) -> SocketLinker:
-        """Output socket: List"""
-        return self._output("List")
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
 
     @property
     def data_type(
@@ -110,16 +120,16 @@ class List(NodeBuilder):
         self.node.data_type = value
 
 
-class GetListItem(NodeBuilder):
-    """Retrieve a value from a list"""
+class List(NodeBuilder):
+    """Create a list of values"""
 
-    name = "GeometryNodeListGetItem"
-    node: bpy.types.GeometryNodeListGetItem
+    name = "GeometryNodeList"
+    node: bpy.types.GeometryNodeList
 
     def __init__(
         self,
-        list: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        count: TYPE_INPUT_INT = 1,
+        value: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -140,28 +150,26 @@ class GetListItem(NodeBuilder):
             "BUNDLE",
             "CLOSURE",
         ] = "FLOAT",
-        **kwargs,
     ):
         super().__init__()
-        key_args = {"List": list, "Index": index}
-        key_args.update(kwargs)
+        key_args = {"Count": count, "Value": value}
         self.data_type = data_type
         self._establish_links(**key_args)
 
     @property
-    def i_list(self) -> SocketLinker:
-        """Input socket: List"""
-        return self._input("List")
+    def i_count(self) -> SocketLinker:
+        """Input socket: Count"""
+        return self._input("Count")
 
     @property
-    def i_index(self) -> SocketLinker:
-        """Input socket: Index"""
-        return self._input("Index")
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
 
     @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self._output("Value")
+    def o_list(self) -> SocketLinker:
+        """Output socket: List"""
+        return self._output("List")
 
     @property
     def data_type(
@@ -244,11 +252,9 @@ class ListLength(NodeBuilder):
             "BUNDLE",
             "CLOSURE",
         ] = "FLOAT",
-        **kwargs,
     ):
         super().__init__()
         key_args = {"List": list}
-        key_args.update(kwargs)
         self.data_type = data_type
         self._establish_links(**key_args)
 

@@ -10,75 +10,11 @@ from .types import (
     TYPE_INPUT_INT,
     TYPE_INPUT_MENU,
     TYPE_INPUT_STRING,
+    TYPE_INPUT_ROTATION,
+    TYPE_INPUT_COLOR,
     TYPE_INPUT_VALUE,
-    _AttributeDataTypes,
-    _AttributeDomains,
-    _StoreNamedAttributeTypes,
+    TYPE_INPUT_VECTOR,
 )
-
-
-class DomainSize(NodeBuilder):
-    """Retrieve the number of elements in a geometry for each attribute domain"""
-
-    name = "GeometryNodeAttributeDomainSize"
-    node: bpy.types.GeometryNodeAttributeDomainSize
-
-    def __init__(
-        self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        *,
-        component: Literal[
-            "MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"
-        ] = "MESH",
-    ):
-        super().__init__()
-        key_args = {"Geometry": geometry}
-        self.component = component
-        self._establish_links(**key_args)
-
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self._input("Geometry")
-
-    @property
-    def o_point_count(self) -> SocketLinker:
-        """Output socket: Point Count"""
-        return self._output("Point Count")
-
-    @property
-    def o_edge_count(self) -> SocketLinker:
-        """Output socket: Edge Count"""
-        return self._output("Edge Count")
-
-    @property
-    def o_face_count(self) -> SocketLinker:
-        """Output socket: Face Count"""
-        return self._output("Face Count")
-
-    @property
-    def o_face_corner_count(self) -> SocketLinker:
-        """Output socket: Face Corner Count"""
-        return self._output("Face Corner Count")
-
-    @property
-    def component(
-        self,
-    ) -> Literal["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"]:
-        return self.node.component
-
-    @component.setter
-    def component(
-        self, value: Literal["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"]
-    ):
-        match value:
-            case "MESH" | "POINTCLOUD" | "CURVE":
-                self._default_output_id = "Point Count"
-            case "INSTANCES":
-                self._default_output_id = "Instance Count"
-            case "GREASEPENCIL":
-                self._default_output_id = "Layer Count"
-        self.node.component = value
 
 
 class AttributeStatistic(NodeBuilder):
@@ -91,16 +27,25 @@ class AttributeStatistic(NodeBuilder):
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        attribute: LINKABLE = None,
-        *,
+        attribute: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
             "FLOAT",
+            "INT",
+            "BOOLEAN",
             "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+            "STRING",
+            "INT8",
+            "INT16_2D",
+            "INT32_2D",
+            "FLOAT2",
+            "BYTE_COLOR",
         ] = "FLOAT",
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ] = "POINT",
-        **kwargs,
     ):
         super().__init__()
         key_args = {
@@ -108,7 +53,6 @@ class AttributeStatistic(NodeBuilder):
             "Selection": selection,
             "Attribute": attribute,
         }
-        key_args.update(kwargs)
         self.data_type = data_type
         self.domain = domain
         self._establish_links(**key_args)
@@ -173,16 +117,38 @@ class AttributeStatistic(NodeBuilder):
         self,
     ) -> Literal[
         "FLOAT",
+        "INT",
+        "BOOLEAN",
         "FLOAT_VECTOR",
+        "FLOAT_COLOR",
+        "QUATERNION",
+        "FLOAT4X4",
+        "STRING",
+        "INT8",
+        "INT16_2D",
+        "INT32_2D",
+        "FLOAT2",
+        "BYTE_COLOR",
     ]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type
 
     @data_type.setter
     def data_type(
         self,
         value: Literal[
             "FLOAT",
+            "INT",
+            "BOOLEAN",
             "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+            "STRING",
+            "INT8",
+            "INT16_2D",
+            "INT32_2D",
+            "FLOAT2",
+            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
@@ -190,13 +156,13 @@ class AttributeStatistic(NodeBuilder):
     @property
     def domain(
         self,
-    ) -> _AttributeDomains:
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
         return self.node.domain
 
     @domain.setter
     def domain(
         self,
-        value: _AttributeDomains,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
     ):
         self.node.domain = value
 
@@ -209,15 +175,23 @@ class BlurAttribute(NodeBuilder):
 
     def __init__(
         self,
-        value: LINKABLE = None,
+        value: TYPE_INPUT_VALUE = 0.0,
         iterations: TYPE_INPUT_INT = 1,
         weight: TYPE_INPUT_VALUE = 1.0,
-        *,
         data_type: Literal[
             "FLOAT",
             "INT",
+            "BOOLEAN",
             "FLOAT_VECTOR",
             "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+            "STRING",
+            "INT8",
+            "INT16_2D",
+            "INT32_2D",
+            "FLOAT2",
+            "BYTE_COLOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -251,10 +225,19 @@ class BlurAttribute(NodeBuilder):
     ) -> Literal[
         "FLOAT",
         "INT",
+        "BOOLEAN",
         "FLOAT_VECTOR",
         "FLOAT_COLOR",
+        "QUATERNION",
+        "FLOAT4X4",
+        "STRING",
+        "INT8",
+        "INT16_2D",
+        "INT32_2D",
+        "FLOAT2",
+        "BYTE_COLOR",
     ]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type
 
     @data_type.setter
     def data_type(
@@ -262,11 +245,76 @@ class BlurAttribute(NodeBuilder):
         value: Literal[
             "FLOAT",
             "INT",
+            "BOOLEAN",
             "FLOAT_VECTOR",
             "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+            "STRING",
+            "INT8",
+            "INT16_2D",
+            "INT32_2D",
+            "FLOAT2",
+            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
+
+
+class DomainSize(NodeBuilder):
+    """Retrieve the number of elements in a geometry for each attribute domain"""
+
+    name = "GeometryNodeAttributeDomainSize"
+    node: bpy.types.GeometryNodeAttributeDomainSize
+
+    def __init__(
+        self,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        component: Literal[
+            "MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"
+        ] = "MESH",
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry}
+        self.component = component
+        self._establish_links(**key_args)
+
+    @property
+    def i_geometry(self) -> SocketLinker:
+        """Input socket: Geometry"""
+        return self._input("Geometry")
+
+    @property
+    def o_point_count(self) -> SocketLinker:
+        """Output socket: Point Count"""
+        return self._output("Point Count")
+
+    @property
+    def o_edge_count(self) -> SocketLinker:
+        """Output socket: Edge Count"""
+        return self._output("Edge Count")
+
+    @property
+    def o_face_count(self) -> SocketLinker:
+        """Output socket: Face Count"""
+        return self._output("Face Count")
+
+    @property
+    def o_face_corner_count(self) -> SocketLinker:
+        """Output socket: Face Corner Count"""
+        return self._output("Face Corner Count")
+
+    @property
+    def component(
+        self,
+    ) -> Literal["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"]:
+        return self.node.component
+
+    @component.setter
+    def component(
+        self, value: Literal["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"]
+    ):
+        self.node.component = value
 
 
 class RemoveNamedAttribute(NodeBuilder):
@@ -278,11 +326,12 @@ class RemoveNamedAttribute(NodeBuilder):
     def __init__(
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        pattern_mode: Literal["Exact", "Wildcard"] | TYPE_INPUT_MENU = "Exact",
+        pattern_mode: TYPE_INPUT_MENU = "Exact",
         name: TYPE_INPUT_STRING = "",
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Pattern Mode": pattern_mode, "Name": name}
+
         self._establish_links(**key_args)
 
     @property
@@ -317,10 +366,25 @@ class StoreNamedAttribute(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
-        value: LINKABLE = None,
-        *,
-        data_type: _StoreNamedAttributeTypes = "FLOAT",
-        domain: _AttributeDomains = "POINT",
+        value: TYPE_INPUT_VALUE = 0.0,
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+            "STRING",
+            "INT8",
+            "INT16_2D",
+            "INT32_2D",
+            "FLOAT2",
+            "BYTE_COLOR",
+        ] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
     ):
         super().__init__()
         key_args = {
@@ -361,121 +425,53 @@ class StoreNamedAttribute(NodeBuilder):
     @property
     def data_type(
         self,
-    ) -> _StoreNamedAttributeTypes:
-        return self.node.data_type  # type: ignore
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "FLOAT_VECTOR",
+        "FLOAT_COLOR",
+        "QUATERNION",
+        "FLOAT4X4",
+        "STRING",
+        "INT8",
+        "INT16_2D",
+        "INT32_2D",
+        "FLOAT2",
+        "BYTE_COLOR",
+    ]:
+        return self.node.data_type
 
     @data_type.setter
     def data_type(
         self,
-        value: _StoreNamedAttributeTypes,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+            "STRING",
+            "INT8",
+            "INT16_2D",
+            "INT32_2D",
+            "FLOAT2",
+            "BYTE_COLOR",
+        ],
     ):
         self.node.data_type = value
 
     @property
     def domain(
         self,
-    ) -> _AttributeDomains:
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
         return self.node.domain
 
     @domain.setter
     def domain(
         self,
-        value: _AttributeDomains,
-    ):
-        self.node.domain = value
-
-
-def _domain_capture_attribute(domain: _AttributeDomains):
-    @classmethod
-    def method(
-        cls,
-        *args: LINKABLE,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        **kwargs,
-    ) -> "CaptureAttribute":
-        """Create an IndexSwitch node with a pre-set domain"""
-        return cls(*args, geometry=geometry, domain=domain, **kwargs)
-
-    return method
-
-
-class CaptureAttribute(NodeBuilder):
-    """Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation"""
-
-    name = "GeometryNodeCaptureAttribute"
-    node: bpy.types.GeometryNodeCaptureAttribute
-    point = _domain_capture_attribute("POINT")
-    edge = _domain_capture_attribute("EDGE")
-    face = _domain_capture_attribute("FACE")
-    corner = _domain_capture_attribute("CORNER")
-    curve = _domain_capture_attribute("CURVE")
-    instance = _domain_capture_attribute("INSTANCE")
-    layer = _domain_capture_attribute("LAYER")
-
-    def __init__(
-        self,
-        *args: LINKABLE,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        domain: _AttributeDomains = "POINT",
-        **kwargs,
-    ):
-        super().__init__()
-        key_args = {"Geometry": geometry}
-        self.domain = domain
-        key_args.update(self._add_inputs(*args, **kwargs))  # type: ignore
-        self._establish_links(**key_args)
-
-    def _add_socket(self, name: str, type: _AttributeDataTypes):
-        item = self.node.capture_items.new(socket_type=type, name=name)
-        return self.node.inputs[item.name]
-
-    def capture(self, value: LINKABLE) -> SocketLinker:
-        """Capture the value to store in the attribute
-
-        Return the SocketLinker for the output socket
-        """
-        # the _add_inputs returns a dictionary but we only want the first key
-        # because we are adding a single input
-        input_dict = self._add_inputs(value)
-        return SocketLinker(self.node.outputs[next(iter(input_dict))])
-
-    @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.node.capture_items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.node.capture_items
-        }
-
-    @property
-    def _items(self) -> bpy.types.NodeGeometryCaptureAttributeItems:
-        return self.node.capture_items
-
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self._input("Geometry")
-
-    @property
-    def o_geometry(self) -> SocketLinker:
-        """Output socket: Geometry"""
-        return self._output("Geometry")
-
-    @property
-    def domain(
-        self,
-    ) -> _AttributeDomains:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self,
-        value: _AttributeDomains,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
     ):
         self.node.domain = value

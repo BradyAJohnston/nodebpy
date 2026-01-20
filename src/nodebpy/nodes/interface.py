@@ -2,14 +2,16 @@ from typing import Literal
 
 import bpy
 
-from nodebpy.builder import NodeBuilder, SocketLinker
-
+from ..builder import NodeBuilder, SocketLinker
 from .types import (
+    LINKABLE,
     TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_MATRIX,
+    TYPE_INPUT_GEOMETRY,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_MENU,
     TYPE_INPUT_STRING,
     TYPE_INPUT_ROTATION,
-    LINKABLE,
+    TYPE_INPUT_COLOR,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
@@ -24,12 +26,11 @@ class DialGizmo(NodeBuilder):
     def __init__(
         self,
         value: TYPE_INPUT_VALUE = 0.0,
-        position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-        up: TYPE_INPUT_VECTOR = (0.0, 0.0, 1.0),
+        position: TYPE_INPUT_VECTOR = None,
+        up: TYPE_INPUT_VECTOR = None,
         screen_space: TYPE_INPUT_BOOLEAN = True,
         radius: TYPE_INPUT_VALUE = 1.0,
         color_id: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"] = "PRIMARY",
-        pin_gizmo: bool = False,
     ):
         super().__init__()
         key_args = {
@@ -40,17 +41,7 @@ class DialGizmo(NodeBuilder):
             "Radius": radius,
         }
         self.color_id = color_id
-        self.pin_gizmo = pin_gizmo
         self._establish_links(**key_args)
-
-    @property
-    def pin_gizmo(self) -> bool:
-        """Pin the gizmo to the viewport"""
-        return self.node.inputs[0].pin_gizmo
-
-    @pin_gizmo.setter
-    def pin_gizmo(self, value: bool):
-        self.node.inputs[0].pin_gizmo = value
 
     @property
     def i_value(self) -> SocketLinker:
@@ -91,6 +82,313 @@ class DialGizmo(NodeBuilder):
         self.node.color_id = value
 
 
+class EnableOutput(NodeBuilder):
+    """Either pass through the input value or output the fallback value"""
+
+    name = "NodeEnableOutput"
+    node: bpy.types.Node
+
+    def __init__(
+        self,
+        enable: TYPE_INPUT_BOOLEAN = False,
+        value: TYPE_INPUT_VALUE = 0.0,
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "SHADER",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "TEXTURE",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+        ] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Enable": enable, "Value": value}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_enable(self) -> SocketLinker:
+        """Input socket: Enable"""
+        return self._input("Enable")
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "SHADER",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "TEXTURE",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+    ]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "SHADER",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "TEXTURE",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+        ],
+    ):
+        self.node.data_type = value
+
+
+class ForEachGeometryElementInput(NodeBuilder):
+    """For Each Geometry Element Input node"""
+
+    name = "GeometryNodeForeachGeometryElementInput"
+    node: bpy.types.GeometryNodeForeachGeometryElementInput
+
+    def __init__(
+        self,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        extend: None = None,
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry, "Selection": selection, "__extend__": extend}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_geometry(self) -> SocketLinker:
+        """Input socket: Geometry"""
+        return self._input("Geometry")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_input_socket(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__")
+
+    @property
+    def o_index(self) -> SocketLinker:
+        """Output socket: Index"""
+        return self._output("Index")
+
+    @property
+    def o_input_socket(self) -> SocketLinker:
+        """Output socket:"""
+        return self._output("__extend__")
+
+
+class ForEachGeometryElementOutput(NodeBuilder):
+    """For Each Geometry Element Output node"""
+
+    name = "GeometryNodeForeachGeometryElementOutput"
+    node: bpy.types.GeometryNodeForeachGeometryElementOutput
+
+    def __init__(
+        self,
+        extend_main: None = None,
+        generation_0: TYPE_INPUT_GEOMETRY = None,
+        extend_generation: None = None,
+        active_input_index: int = 0,
+        active_generation_index: int = 0,
+        active_main_index: int = 0,
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+        inspection_index: int = 0,
+    ):
+        super().__init__()
+        key_args = {
+            "__extend__main": extend_main,
+            "Generation_0": generation_0,
+            "__extend__generation": extend_generation,
+        }
+        self.active_input_index = active_input_index
+        self.active_generation_index = active_generation_index
+        self.active_main_index = active_main_index
+        self.domain = domain
+        self.inspection_index = inspection_index
+        self._establish_links(**key_args)
+
+    @property
+    def i_input_socket(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__main")
+
+    @property
+    def i_geometry(self) -> SocketLinker:
+        """Input socket: Geometry"""
+        return self._input("Generation_0")
+
+    @property
+    def i_extend_generation(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__generation")
+
+    @property
+    def o_geometry(self) -> SocketLinker:
+        """Output socket: Geometry"""
+        return self._output("Geometry")
+
+    @property
+    def o_input_socket(self) -> SocketLinker:
+        """Output socket:"""
+        return self._output("__extend__main")
+
+    @property
+    def o_generation_0(self) -> SocketLinker:
+        """Output socket: Geometry"""
+        return self._output("Generation_0")
+
+    @property
+    def o_extend_generation(self) -> SocketLinker:
+        """Output socket:"""
+        return self._output("__extend__generation")
+
+    @property
+    def active_input_index(self) -> int:
+        return self.node.active_input_index
+
+    @active_input_index.setter
+    def active_input_index(self, value: int):
+        self.node.active_input_index = value
+
+    @property
+    def active_generation_index(self) -> int:
+        return self.node.active_generation_index
+
+    @active_generation_index.setter
+    def active_generation_index(self, value: int):
+        self.node.active_generation_index = value
+
+    @property
+    def active_main_index(self) -> int:
+        return self.node.active_main_index
+
+    @active_main_index.setter
+    def active_main_index(self, value: int):
+        self.node.active_main_index = value
+
+    @property
+    def domain(
+        self,
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
+    ):
+        self.node.domain = value
+
+    @property
+    def inspection_index(self) -> int:
+        return self.node.inspection_index
+
+    @inspection_index.setter
+    def inspection_index(self, value: int):
+        self.node.inspection_index = value
+
+
+class GroupInput(NodeBuilder):
+    """Expose connected data from inside a node group as inputs to its interface"""
+
+    name = "NodeGroupInput"
+    node: bpy.types.Node
+
+    def __init__(self):
+        super().__init__()
+        key_args = kwargs
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_input_socket(self) -> SocketLinker:
+        """Output socket:"""
+        return self._output("__extend__")
+
+
+class GroupOutput(NodeBuilder):
+    """Output data from inside of a node group"""
+
+    name = "NodeGroupOutput"
+    node: bpy.types.Node
+
+    def __init__(
+        self,
+        extend: None = None,
+        is_active_output: bool = False,
+    ):
+        super().__init__()
+        key_args = {"__extend__": extend}
+        self.is_active_output = is_active_output
+        self._establish_links(**key_args)
+
+    @property
+    def i_input_socket(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__")
+
+    @property
+    def is_active_output(self) -> bool:
+        return self.node.is_active_output
+
+    @is_active_output.setter
+    def is_active_output(self, value: bool):
+        self.node.is_active_output = value
+
+
 class LinearGizmo(NodeBuilder):
     """Show a linear gizmo in the viewport for a value"""
 
@@ -100,27 +398,16 @@ class LinearGizmo(NodeBuilder):
     def __init__(
         self,
         value: TYPE_INPUT_VALUE = 0.0,
-        position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-        direction: TYPE_INPUT_VECTOR = (0.0, 0.0, 1.0),
+        position: TYPE_INPUT_VECTOR = None,
+        direction: TYPE_INPUT_VECTOR = None,
         color_id: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"] = "PRIMARY",
         draw_style: Literal["ARROW", "CROSS", "BOX"] = "ARROW",
-        pin_gizmo: bool = False,
     ):
         super().__init__()
         key_args = {"Value": value, "Position": position, "Direction": direction}
         self.color_id = color_id
         self.draw_style = draw_style
-        self.pin_gizmo = pin_gizmo
         self._establish_links(**key_args)
-
-    @property
-    def pin_gizmo(self) -> bool:
-        """Input socket: Pin Gizmo"""
-        return self.node.inputs[0].pin_gizmo
-
-    @pin_gizmo.setter
-    def pin_gizmo(self, value: bool):
-        self.node.inputs[0].pin_gizmo = value
 
     @property
     def i_value(self) -> SocketLinker:
@@ -168,23 +455,20 @@ class TransformGizmo(NodeBuilder):
     def __init__(
         self,
         value: TYPE_INPUT_MATRIX = None,
-        position: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-        rotation: TYPE_INPUT_ROTATION = (0.0, 0.0, 0.0),
-        *,
-        pin_gizmo: bool = False,
-        use_translation_x: bool = True,
-        use_translation_y: bool = True,
-        use_translation_z: bool = True,
-        use_rotation_x: bool = True,
-        use_rotation_y: bool = True,
-        use_rotation_z: bool = True,
-        use_scale_x: bool = True,
-        use_scale_y: bool = True,
-        use_scale_z: bool = True,
+        position: TYPE_INPUT_VECTOR = None,
+        rotation: TYPE_INPUT_ROTATION = None,
+        use_translation_x: bool = False,
+        use_translation_y: bool = False,
+        use_translation_z: bool = False,
+        use_rotation_x: bool = False,
+        use_rotation_y: bool = False,
+        use_rotation_z: bool = False,
+        use_scale_x: bool = False,
+        use_scale_y: bool = False,
+        use_scale_z: bool = False,
     ):
         super().__init__()
         key_args = {"Value": value, "Position": position, "Rotation": rotation}
-        self.pin_gizmo = pin_gizmo
         self.use_translation_x = use_translation_x
         self.use_translation_y = use_translation_y
         self.use_translation_z = use_translation_z
@@ -195,14 +479,6 @@ class TransformGizmo(NodeBuilder):
         self.use_scale_y = use_scale_y
         self.use_scale_z = use_scale_z
         self._establish_links(**key_args)
-
-    @property
-    def pin_gizmo(self) -> bool:
-        return self.node.inputs[0].pin_gizmo
-
-    @pin_gizmo.setter
-    def pin_gizmo(self, value: bool):
-        self.node.inputs[0].pin_gizmo = value
 
     @property
     def i_value(self) -> SocketLinker:
@@ -297,67 +573,6 @@ class TransformGizmo(NodeBuilder):
         self.node.use_scale_z = value
 
 
-class Viewer(NodeBuilder):
-    """Display the input data in the Spreadsheet Editor"""
-
-    name = "GeometryNodeViewer"
-    node: bpy.types.GeometryNodeViewer
-
-    def __init__(
-        self,
-        extend: LINKABLE | None = None,
-        ui_shortcut: int = 0,
-        active_index: int = 0,
-        domain: Literal[
-            "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "AUTO",
-    ):
-        super().__init__()
-        key_args = {"__extend__": extend}
-        self.ui_shortcut = ui_shortcut
-        self.active_index = active_index
-        self.domain = domain
-        self._establish_links(**key_args)
-
-    @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__")
-
-    @property
-    def ui_shortcut(self) -> int:
-        return self.node.ui_shortcut
-
-    @ui_shortcut.setter
-    def ui_shortcut(self, value: int):
-        self.node.ui_shortcut = value
-
-    @property
-    def active_index(self) -> int:
-        return self.node.active_index  # type: ignore
-
-    @active_index.setter
-    def active_index(self, value: int):
-        self.node.active_index = value
-
-    @property
-    def domain(
-        self,
-    ) -> Literal[
-        "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-    ]:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self,
-        value: Literal[
-            "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ],
-    ):
-        self.node.domain = value
-
-
 class Warning(NodeBuilder):
     """Create custom warnings in node groups"""
 
@@ -368,7 +583,6 @@ class Warning(NodeBuilder):
         self,
         show: TYPE_INPUT_BOOLEAN = True,
         message: TYPE_INPUT_STRING = "",
-        *,
         warning_type: Literal["ERROR", "WARNING", "INFO"] = "ERROR",
     ):
         super().__init__()
