@@ -28,21 +28,7 @@ class AttributeStatistic(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         attribute: TYPE_INPUT_VALUE = 0.0,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ] = "POINT",
@@ -113,44 +99,11 @@ class AttributeStatistic(NodeBuilder):
         return self._output("Variance")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "FLOAT_VECTOR",
-        "FLOAT_COLOR",
-        "QUATERNION",
-        "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
         self.node.data_type = value
 
     @property
@@ -178,21 +131,7 @@ class BlurAttribute(NodeBuilder):
         value: TYPE_INPUT_VALUE = 0.0,
         iterations: TYPE_INPUT_INT = 1,
         weight: TYPE_INPUT_VALUE = 1.0,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Value": value, "Iterations": iterations, "Weight": weight}
@@ -220,44 +159,11 @@ class BlurAttribute(NodeBuilder):
         return self._output("Value")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "FLOAT_VECTOR",
-        "FLOAT_COLOR",
-        "QUATERNION",
-        "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]):
         self.node.data_type = value
 
 
@@ -375,10 +281,7 @@ class StoreNamedAttribute(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
             "INT8",
-            "INT16_2D",
-            "INT32_2D",
             "FLOAT2",
             "BYTE_COLOR",
         ] = "FLOAT",
@@ -433,10 +336,7 @@ class StoreNamedAttribute(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
         "INT8",
-        "INT16_2D",
-        "INT32_2D",
         "FLOAT2",
         "BYTE_COLOR",
     ]:
@@ -453,10 +353,7 @@ class StoreNamedAttribute(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
             "INT8",
-            "INT16_2D",
-            "INT32_2D",
             "FLOAT2",
             "BYTE_COLOR",
         ],

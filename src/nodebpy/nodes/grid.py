@@ -30,26 +30,7 @@ class AdvectGrid(NodeBuilder):
         time_step: TYPE_INPUT_VALUE = 1.0,
         integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
         limiter: TYPE_INPUT_MENU = "Clamp",
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {
@@ -93,54 +74,11 @@ class AdvectGrid(NodeBuilder):
         return self._output("Grid")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -265,26 +203,7 @@ class FieldToGrid(NodeBuilder):
         topology: TYPE_INPUT_VALUE = 0.0,
         extend: None = None,
         active_index: int = 0,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Topology": topology, "__extend__": extend}
@@ -316,54 +235,11 @@ class FieldToGrid(NodeBuilder):
         self.node.active_index = value
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -378,26 +254,7 @@ class GetNamedGrid(NodeBuilder):
         volume: TYPE_INPUT_GEOMETRY = None,
         name: TYPE_INPUT_STRING = "",
         remove: TYPE_INPUT_BOOLEAN = True,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Volume": volume, "Name": name, "Remove": remove}
@@ -430,54 +287,11 @@ class GetNamedGrid(NodeBuilder):
         return self._output("Grid")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -559,26 +373,7 @@ class GridInfo(NodeBuilder):
     def __init__(
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Grid": grid}
@@ -601,54 +396,11 @@ class GridInfo(NodeBuilder):
         return self._output("Background Value")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -975,26 +727,7 @@ class PruneGrid(NodeBuilder):
         grid: TYPE_INPUT_VALUE = 0.0,
         mode: TYPE_INPUT_MENU = "Threshold",
         threshold: TYPE_INPUT_VALUE = 0.01,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Grid": grid, "Mode": mode, "Threshold": threshold}
@@ -1022,54 +755,11 @@ class PruneGrid(NodeBuilder):
         return self._output("Grid")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -1350,26 +1040,7 @@ class SampleGrid(NodeBuilder):
         grid: TYPE_INPUT_VALUE = 0.0,
         position: TYPE_INPUT_VECTOR = None,
         interpolation: TYPE_INPUT_MENU = "Trilinear",
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Grid": grid, "Position": position, "Interpolation": interpolation}
@@ -1397,54 +1068,11 @@ class SampleGrid(NodeBuilder):
         return self._output("Value")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -1460,26 +1088,7 @@ class SampleGridIndex(NodeBuilder):
         x: TYPE_INPUT_INT = 0,
         y: TYPE_INPUT_INT = 0,
         z: TYPE_INPUT_INT = 0,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Grid": grid, "X": x, "Y": y, "Z": z}
@@ -1512,54 +1121,11 @@ class SampleGridIndex(NodeBuilder):
         return self._output("Value")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -1573,26 +1139,7 @@ class SetGridBackground(NodeBuilder):
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
         background: TYPE_INPUT_VALUE = 0.0,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Grid": grid, "Background": background}
@@ -1615,54 +1162,11 @@ class SetGridBackground(NodeBuilder):
         return self._output("Grid")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -1676,26 +1180,7 @@ class SetGridTransform(NodeBuilder):
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
         transform: TYPE_INPUT_MATRIX = None,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Grid": grid, "Transform": transform}
@@ -1723,54 +1208,11 @@ class SetGridTransform(NodeBuilder):
         return self._output("Grid")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -1785,19 +1227,7 @@ class StoreNamedGrid(NodeBuilder):
         volume: TYPE_INPUT_GEOMETRY = None,
         name: TYPE_INPUT_STRING = "",
         grid: TYPE_INPUT_VALUE = 0.0,
-        data_type: Literal[
-            "BOOLEAN",
-            "FLOAT",
-            "DOUBLE",
-            "INT",
-            "INT64",
-            "MASK",
-            "VECTOR_FLOAT",
-            "VECTOR_DOUBLE",
-            "VECTOR_INT",
-            "POINTS",
-            "UNKNOWN",
-        ] = "FLOAT",
+        data_type: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Volume": volume, "Name": name, "Grid": grid}
@@ -1825,40 +1255,11 @@ class StoreNamedGrid(NodeBuilder):
         return self._output("Volume")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "BOOLEAN",
-        "FLOAT",
-        "DOUBLE",
-        "INT",
-        "INT64",
-        "MASK",
-        "VECTOR_FLOAT",
-        "VECTOR_DOUBLE",
-        "VECTOR_INT",
-        "POINTS",
-        "UNKNOWN",
-    ]:
+    def data_type(self) -> Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "BOOLEAN",
-            "FLOAT",
-            "DOUBLE",
-            "INT",
-            "INT64",
-            "MASK",
-            "VECTOR_FLOAT",
-            "VECTOR_DOUBLE",
-            "VECTOR_INT",
-            "POINTS",
-            "UNKNOWN",
-        ],
-    ):
+    def data_type(self, value: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]):
         self.node.data_type = value
 
 
@@ -2004,26 +1405,7 @@ class VoxelizeGrid(NodeBuilder):
     def __init__(
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Grid": grid}
@@ -2041,52 +1423,9 @@ class VoxelizeGrid(NodeBuilder):
         return self._output("Grid")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value

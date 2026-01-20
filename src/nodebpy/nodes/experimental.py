@@ -28,24 +28,7 @@ class GetListItem(NodeBuilder):
         list: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
         data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
+            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ] = "FLOAT",
     ):
         super().__init__()
@@ -72,24 +55,7 @@ class GetListItem(NodeBuilder):
     def data_type(
         self,
     ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
+        "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
     ]:
         return self.node.data_type
 
@@ -97,24 +63,7 @@ class GetListItem(NodeBuilder):
     def data_type(
         self,
         value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
+            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ],
     ):
         self.node.data_type = value
@@ -131,24 +80,7 @@ class List(NodeBuilder):
         count: TYPE_INPUT_INT = 1,
         value: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
+            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ] = "FLOAT",
     ):
         super().__init__()
@@ -175,24 +107,7 @@ class List(NodeBuilder):
     def data_type(
         self,
     ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
+        "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
     ]:
         return self.node.data_type
 
@@ -200,24 +115,7 @@ class List(NodeBuilder):
     def data_type(
         self,
         value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
+            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ],
     ):
         self.node.data_type = value
@@ -233,24 +131,7 @@ class ListLength(NodeBuilder):
         self,
         list: TYPE_INPUT_VALUE = 0.0,
         data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
+            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ] = "FLOAT",
     ):
         super().__init__()
@@ -272,24 +153,7 @@ class ListLength(NodeBuilder):
     def data_type(
         self,
     ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
+        "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
     ]:
         return self.node.data_type
 
@@ -297,24 +161,7 @@ class ListLength(NodeBuilder):
     def data_type(
         self,
         value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
+            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ],
     ):
         self.node.data_type = value

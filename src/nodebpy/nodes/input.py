@@ -860,45 +860,6 @@ class FaceOfCorner(NodeBuilder):
         return self._output("Index in Face")
 
 
-class HandleTypeSelection(NodeBuilder):
-    """Provide a selection based on the handle types of Bézier control points"""
-
-    name = "GeometryNodeCurveHandleTypeSelection"
-    node: bpy.types.GeometryNodeCurveHandleTypeSelection
-
-    def __init__(
-        self,
-        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
-        mode: Literal["LEFT", "RIGHT"] = "{'LEFT', 'RIGHT'}",
-    ):
-        super().__init__()
-        key_args = kwargs
-        self.handle_type = handle_type
-        self.mode = mode
-        self._establish_links(**key_args)
-
-    @property
-    def o_selection(self) -> SocketLinker:
-        """Output socket: Selection"""
-        return self._output("Selection")
-
-    @property
-    def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
-        return self.node.handle_type
-
-    @handle_type.setter
-    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
-        self.node.handle_type = value
-
-    @property
-    def mode(self) -> Literal["LEFT", "RIGHT"]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: Literal["LEFT", "RIGHT"]):
-        self.node.mode = value
-
-
 class ID(NodeBuilder):
     """Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist"""
 
@@ -1464,12 +1425,6 @@ class NamedAttribute(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -1503,12 +1458,6 @@ class NamedAttribute(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
     ]:
         return self.node.data_type
 
@@ -1523,12 +1472,6 @@ class NamedAttribute(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value

@@ -2261,12 +2261,6 @@ class Raycast(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -2347,12 +2341,6 @@ class Raycast(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
     ]:
         return self.node.data_type
 
@@ -2367,12 +2355,6 @@ class Raycast(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
@@ -2640,12 +2622,6 @@ class SampleCurve(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -2727,12 +2703,6 @@ class SampleCurve(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
     ]:
         return self.node.data_type
 
@@ -2747,12 +2717,6 @@ class SampleCurve(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
@@ -2777,12 +2741,6 @@ class SampleIndex(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ] = "FLOAT",
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
@@ -2827,12 +2785,6 @@ class SampleIndex(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
     ]:
         return self.node.data_type
 
@@ -2847,12 +2799,6 @@ class SampleIndex(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
@@ -2941,12 +2887,6 @@ class SampleNearestSurface(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -3006,12 +2946,6 @@ class SampleNearestSurface(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
     ]:
         return self.node.data_type
 
@@ -3026,12 +2960,6 @@ class SampleNearestSurface(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
@@ -3057,12 +2985,6 @@ class SampleUVSurface(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -3116,12 +3038,6 @@ class SampleUVSurface(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
     ]:
         return self.node.data_type
 
@@ -3136,12 +3052,6 @@ class SampleUVSurface(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
@@ -3751,57 +3661,6 @@ class SetHandlePositions(NodeBuilder):
     def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
-
-    @property
-    def mode(self) -> Literal["LEFT", "RIGHT"]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: Literal["LEFT", "RIGHT"]):
-        self.node.mode = value
-
-
-class SetHandleType(NodeBuilder):
-    """Set the handle type for the control points of a Bézier curve"""
-
-    name = "GeometryNodeCurveSetHandles"
-    node: bpy.types.GeometryNodeCurveSetHandles
-
-    def __init__(
-        self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
-        mode: Literal["LEFT", "RIGHT"] = "{'LEFT', 'RIGHT'}",
-    ):
-        super().__init__()
-        key_args = {"Curve": curve, "Selection": selection}
-        self.handle_type = handle_type
-        self.mode = mode
-        self._establish_links(**key_args)
-
-    @property
-    def i_curve(self) -> SocketLinker:
-        """Input socket: Curve"""
-        return self._input("Curve")
-
-    @property
-    def i_selection(self) -> SocketLinker:
-        """Input socket: Selection"""
-        return self._input("Selection")
-
-    @property
-    def o_curve(self) -> SocketLinker:
-        """Output socket: Curve"""
-        return self._output("Curve")
-
-    @property
-    def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
-        return self.node.handle_type
-
-    @handle_type.setter
-    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
-        self.node.handle_type = value
 
     @property
     def mode(self) -> Literal["LEFT", "RIGHT"]:

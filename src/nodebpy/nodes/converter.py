@@ -849,29 +849,8 @@ class Compare(NodeBuilder):
             "GREATER_EQUAL",
             "EQUAL",
             "NOT_EQUAL",
-            "BRIGHTER",
-            "DARKER",
         ] = "GREATER_THAN",
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "VECTOR", "RGBA", "STRING"] = "FLOAT",
         mode: Literal[
             "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
         ] = "ELEMENT",
@@ -923,18 +902,6 @@ class Compare(NodeBuilder):
         """Create Compare with operation 'Not Equal'."""
         return cls(operation="NOT_EQUAL", a=a, b=b)
 
-    @classmethod
-    def brighter(
-        cls, a: TYPE_INPUT_VALUE = 0.0, b: TYPE_INPUT_VALUE = 0.0
-    ) -> "Compare":
-        """Create Compare with operation 'Brighter'."""
-        return cls(operation="BRIGHTER", a=a, b=b)
-
-    @classmethod
-    def darker(cls, a: TYPE_INPUT_VALUE = 0.0, b: TYPE_INPUT_VALUE = 0.0) -> "Compare":
-        """Create Compare with operation 'Darker'."""
-        return cls(operation="DARKER", a=a, b=b)
-
     @property
     def i_a(self) -> SocketLinker:
         """Input socket: A"""
@@ -954,14 +921,7 @@ class Compare(NodeBuilder):
     def operation(
         self,
     ) -> Literal[
-        "LESS_THAN",
-        "LESS_EQUAL",
-        "GREATER_THAN",
-        "GREATER_EQUAL",
-        "EQUAL",
-        "NOT_EQUAL",
-        "BRIGHTER",
-        "DARKER",
+        "LESS_THAN", "LESS_EQUAL", "GREATER_THAN", "GREATER_EQUAL", "EQUAL", "NOT_EQUAL"
     ]:
         return self.node.operation
 
@@ -975,61 +935,16 @@ class Compare(NodeBuilder):
             "GREATER_EQUAL",
             "EQUAL",
             "NOT_EQUAL",
-            "BRIGHTER",
-            "DARKER",
         ],
     ):
         self.node.operation = value
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "VECTOR", "RGBA", "STRING"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR", "RGBA", "STRING"]):
         self.node.data_type = value
 
     @property
@@ -1089,12 +1004,6 @@ class EvaluateAtIndex(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -1142,12 +1051,6 @@ class EvaluateAtIndex(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
     ]:
         return self.node.data_type
 
@@ -1162,12 +1065,6 @@ class EvaluateAtIndex(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
@@ -1193,12 +1090,6 @@ class EvaluateOnDomain(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -1241,12 +1132,6 @@ class EvaluateOnDomain(NodeBuilder):
         "FLOAT_COLOR",
         "QUATERNION",
         "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
     ]:
         return self.node.data_type
 
@@ -1261,12 +1146,6 @@ class EvaluateOnDomain(NodeBuilder):
             "FLOAT_COLOR",
             "QUATERNION",
             "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
         ],
     ):
         self.node.data_type = value
@@ -1649,24 +1528,7 @@ class HashValue(NodeBuilder):
         value: TYPE_INPUT_INT = 0,
         seed: TYPE_INPUT_INT = 0,
         data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
+            "FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"
         ] = "INT",
     ):
         super().__init__()
@@ -1692,50 +1554,14 @@ class HashValue(NodeBuilder):
     @property
     def data_type(
         self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "SHADER",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "TEXTURE",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-    ]:
+    ) -> Literal["FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"]:
         return self.node.data_type
 
     @data_type.setter
     def data_type(
         self,
         value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "SHADER",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "TEXTURE",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
+            "FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"
         ],
     ):
         self.node.data_type = value
@@ -3230,21 +3056,7 @@ class RandomValue(NodeBuilder):
         max_001: TYPE_INPUT_VALUE = 1.0,
         id: TYPE_INPUT_INT = 0,
         seed: TYPE_INPUT_INT = 0,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
-        ] = "FLOAT",
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Min_001": min_001, "Max_001": max_001, "ID": id, "Seed": seed}
@@ -3277,44 +3089,11 @@ class RandomValue(NodeBuilder):
         return self._output("Value_001")
 
     @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "FLOAT_VECTOR",
-        "FLOAT_COLOR",
-        "QUATERNION",
-        "FLOAT4X4",
-        "STRING",
-        "INT8",
-        "INT16_2D",
-        "INT32_2D",
-        "FLOAT2",
-        "BYTE_COLOR",
-    ]:
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-            "STRING",
-            "INT8",
-            "INT16_2D",
-            "INT32_2D",
-            "FLOAT2",
-            "BYTE_COLOR",
-        ],
-    ):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]):
         self.node.data_type = value
 
 
@@ -3950,12 +3729,10 @@ class Switch(NodeBuilder):
             "MATRIX",
             "STRING",
             "MENU",
-            "SHADER",
             "OBJECT",
             "IMAGE",
             "GEOMETRY",
             "COLLECTION",
-            "TEXTURE",
             "MATERIAL",
             "BUNDLE",
             "CLOSURE",
@@ -3999,12 +3776,10 @@ class Switch(NodeBuilder):
         "MATRIX",
         "STRING",
         "MENU",
-        "SHADER",
         "OBJECT",
         "IMAGE",
         "GEOMETRY",
         "COLLECTION",
-        "TEXTURE",
         "MATERIAL",
         "BUNDLE",
         "CLOSURE",
@@ -4024,12 +3799,10 @@ class Switch(NodeBuilder):
             "MATRIX",
             "STRING",
             "MENU",
-            "SHADER",
             "OBJECT",
             "IMAGE",
             "GEOMETRY",
             "COLLECTION",
-            "TEXTURE",
             "MATERIAL",
             "BUNDLE",
             "CLOSURE",

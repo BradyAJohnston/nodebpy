@@ -12,7 +12,6 @@ Run this script from within Blender to generate node classes:
 from __future__ import annotations
 
 import re
-from ast import Return
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -147,6 +146,7 @@ def python_class_name(name: str) -> str:
         "ImportCsv": "ImportCSV",
         "ImportPly": "ImportPLY",
         "Vdb": "VDB",
+        "3DLocation": "Location3D",
     }
 
     # Apply replacements
@@ -232,15 +232,13 @@ def introspect_node(node_type: type) -> NodeInfo | None:
     try:
         # Create temporary node group to instantiate the node
         temp_tree = bpy.data.node_groups.new("temp", "GeometryNodeTree")
-        node = temp_tree.nodes.new(node_type.__name__)
+        node: bpy.types.Node = temp_tree.nodes.new(node_type.__name__)
 
         # Extract basic info
         bl_idname = node_type.__name__
         name = node_type.bl_rna.name
         description = node_type.bl_rna.description or f"{name} node"
-
-        # Extract color_tag if available
-        color_tag = getattr(node, "color_tag", "GEOMETRY")
+        color_tag = getattr(node, "color_tag", "UTILITY")
 
         # Extract input sockets
         inputs = []
@@ -301,13 +299,22 @@ def introspect_node(node_type: type) -> NodeInfo | None:
 
             if prop.type == "ENUM":
                 enum_items = [(item.identifier, item.name) for item in prop.enum_items]
+                usable_values = []
+                default = getattr(node, prop.identifier)
+                for id, other in enum_items:
+                    try:
+                        setattr(node, prop.identifier, id)
+                        usable_values.append((id, other))
+                    except Exception:
+                        pass
+
                 properties.append(
                     PropertyInfo(
                         identifier=prop.identifier,
                         name=prop.name,
                         prop_type="ENUM",
-                        enum_items=enum_items,
-                        default=getattr(node, prop.identifier),
+                        enum_items=usable_values,
+                        default=default,
                     )
                 )
             elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
