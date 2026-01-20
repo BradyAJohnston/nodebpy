@@ -24,7 +24,7 @@ from bpy.types import (
 from mathutils import Euler
 
 if typing.TYPE_CHECKING:
-    from ..builder import NodeBuilder, SocketLinker
+    from .builder import NodeBuilder, SocketLinker
 
 
 def _is_default_value(value: TYPE_INPUT_ALL):

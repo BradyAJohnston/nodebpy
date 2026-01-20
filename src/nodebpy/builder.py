@@ -14,7 +14,7 @@ from bpy.types import (
     NodeSocket,
 )
 
-from .nodes.types import (
+from .types import (
     LINKABLE,
     SOCKET_COMPATIBILITY,
     SOCKET_TYPES,
