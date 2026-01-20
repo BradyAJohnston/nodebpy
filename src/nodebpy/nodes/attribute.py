@@ -211,6 +211,21 @@ class DomainSize(NodeBuilder):
         return self._output("Face Corner Count")
 
     @property
+    def o_spline_count(self) -> SocketLinker:
+        """Output socket: Spline Count"""
+        return self._output("Spline Count")
+
+    @property
+    def o_instance_count(self) -> SocketLinker:
+        """Output socket: Instance Count"""
+        return self._output("Instance Count")
+
+    @property
+    def o_layer_count(self) -> SocketLinker:
+        """Output socket: Layer Count"""
+        return self._output("Layer Count")
+
+    @property
     def component(
         self,
     ) -> Literal["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"]:

@@ -123,13 +123,20 @@ class VectorRotate(NodeBuilder):
         center: TYPE_INPUT_VECTOR = None,
         axis: TYPE_INPUT_VECTOR = None,
         angle: TYPE_INPUT_VALUE = 0.0,
+        rotation: TYPE_INPUT_VECTOR = None,
         rotation_type: Literal[
             "AXIS_ANGLE", "X_AXIS", "Y_AXIS", "Z_AXIS", "EULER_XYZ"
         ] = "AXIS_ANGLE",
         invert: bool = False,
     ):
         super().__init__()
-        key_args = {"Vector": vector, "Center": center, "Axis": axis, "Angle": angle}
+        key_args = {
+            "Vector": vector,
+            "Center": center,
+            "Axis": axis,
+            "Angle": angle,
+            "Rotation": rotation,
+        }
         self.rotation_type = rotation_type
         self.invert = invert
         self._establish_links(**key_args)
@@ -153,6 +160,11 @@ class VectorRotate(NodeBuilder):
     def i_angle(self) -> SocketLinker:
         """Input socket: Angle"""
         return self._input("Angle")
+
+    @property
+    def i_rotation(self) -> SocketLinker:
+        """Input socket: Rotation"""
+        return self._input("Rotation")
 
     @property
     def o_vector(self) -> SocketLinker:

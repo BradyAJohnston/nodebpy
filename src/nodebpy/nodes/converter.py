@@ -235,42 +235,55 @@ class BitMath(NodeBuilder):
         self,
         a: TYPE_INPUT_INT = 0,
         b: TYPE_INPUT_INT = 0,
+        shift: TYPE_INPUT_INT = 0,
         operation: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"] = "AND",
     ):
         super().__init__()
-        key_args = {"A": a, "B": b}
+        key_args = {"A": a, "B": b, "Shift": shift}
         self.operation = operation
         self._establish_links(**key_args)
 
     @classmethod
-    def l_and(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def l_and(
+        cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0, shift: TYPE_INPUT_INT = 0
+    ) -> "BitMath":
         """Create Bit Math with operation 'And'."""
-        return cls(operation="AND", a=a, b=b)
+        return cls(operation="AND", a=a, b=b, shift=shift)
 
     @classmethod
-    def l_or(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def l_or(
+        cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0, shift: TYPE_INPUT_INT = 0
+    ) -> "BitMath":
         """Create Bit Math with operation 'Or'."""
-        return cls(operation="OR", a=a, b=b)
+        return cls(operation="OR", a=a, b=b, shift=shift)
 
     @classmethod
-    def xor(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def xor(
+        cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0, shift: TYPE_INPUT_INT = 0
+    ) -> "BitMath":
         """Create Bit Math with operation 'Exclusive Or'."""
-        return cls(operation="XOR", a=a, b=b)
+        return cls(operation="XOR", a=a, b=b, shift=shift)
 
     @classmethod
-    def l_not(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def l_not(
+        cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0, shift: TYPE_INPUT_INT = 0
+    ) -> "BitMath":
         """Create Bit Math with operation 'Not'."""
-        return cls(operation="NOT", a=a, b=b)
+        return cls(operation="NOT", a=a, b=b, shift=shift)
 
     @classmethod
-    def shift(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def shift(
+        cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0, shift: TYPE_INPUT_INT = 0
+    ) -> "BitMath":
         """Create Bit Math with operation 'Shift'."""
-        return cls(operation="SHIFT", a=a, b=b)
+        return cls(operation="SHIFT", a=a, b=b, shift=shift)
 
     @classmethod
-    def rotate(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def rotate(
+        cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0, shift: TYPE_INPUT_INT = 0
+    ) -> "BitMath":
         """Create Bit Math with operation 'Rotate'."""
-        return cls(operation="ROTATE", a=a, b=b)
+        return cls(operation="ROTATE", a=a, b=b, shift=shift)
 
     @property
     def i_a(self) -> SocketLinker:
@@ -281,6 +294,11 @@ class BitMath(NodeBuilder):
     def i_b(self) -> SocketLinker:
         """Input socket: B"""
         return self._input("B")
+
+    @property
+    def i_shift(self) -> SocketLinker:
+        """Input socket: Shift"""
+        return self._input("Shift")
 
     @property
     def o_value(self) -> SocketLinker:
@@ -534,12 +552,10 @@ class CombineBundle(NodeBuilder):
     def __init__(
         self,
         extend: None = None,
-        active_index: int = 0,
         define_signature: bool = False,
     ):
         super().__init__()
         key_args = {"__extend__": extend}
-        self.active_index = active_index
         self.define_signature = define_signature
         self._establish_links(**key_args)
 
@@ -552,14 +568,6 @@ class CombineBundle(NodeBuilder):
     def o_bundle(self) -> SocketLinker:
         """Output socket: Bundle"""
         return self._output("Bundle")
-
-    @property
-    def active_index(self) -> int:
-        return self.node.active_index
-
-    @active_index.setter
-    def active_index(self, value: int):
-        self.node.active_index = value
 
     @property
     def define_signature(self) -> bool:
@@ -842,6 +850,17 @@ class Compare(NodeBuilder):
         self,
         a: TYPE_INPUT_VALUE = 0.0,
         b: TYPE_INPUT_VALUE = 0.0,
+        a_int: TYPE_INPUT_INT = 0,
+        b_int: TYPE_INPUT_INT = 0,
+        a_vec3: TYPE_INPUT_VECTOR = None,
+        b_vec3: TYPE_INPUT_VECTOR = None,
+        a_col: TYPE_INPUT_COLOR = None,
+        b_col: TYPE_INPUT_COLOR = None,
+        a_str: TYPE_INPUT_STRING = "",
+        b_str: TYPE_INPUT_STRING = "",
+        c: TYPE_INPUT_VALUE = 0.9,
+        angle: TYPE_INPUT_VALUE = 0.0873,
+        epsilon: TYPE_INPUT_VALUE = 0.001,
         operation: Literal[
             "LESS_THAN",
             "LESS_EQUAL",
@@ -856,7 +875,21 @@ class Compare(NodeBuilder):
         ] = "ELEMENT",
     ):
         super().__init__()
-        key_args = {"A": a, "B": b}
+        key_args = {
+            "A": a,
+            "B": b,
+            "A_INT": a_int,
+            "B_INT": b_int,
+            "A_VEC3": a_vec3,
+            "B_VEC3": b_vec3,
+            "A_COL": a_col,
+            "B_COL": b_col,
+            "A_STR": a_str,
+            "B_STR": b_str,
+            "C": c,
+            "Angle": angle,
+            "Epsilon": epsilon,
+        }
         self.operation = operation
         self.data_type = data_type
         self.mode = mode
@@ -864,43 +897,213 @@ class Compare(NodeBuilder):
 
     @classmethod
     def lessthan(
-        cls, a: TYPE_INPUT_VALUE = 0.0, b: TYPE_INPUT_VALUE = 0.0
+        cls,
+        a: TYPE_INPUT_VALUE = 0.0,
+        b: TYPE_INPUT_VALUE = 0.0,
+        a_int: TYPE_INPUT_INT = 0,
+        b_int: TYPE_INPUT_INT = 0,
+        a_vec3: TYPE_INPUT_VECTOR = None,
+        b_vec3: TYPE_INPUT_VECTOR = None,
+        a_col: TYPE_INPUT_COLOR = None,
+        b_col: TYPE_INPUT_COLOR = None,
+        a_str: TYPE_INPUT_STRING = "",
+        b_str: TYPE_INPUT_STRING = "",
+        c: TYPE_INPUT_VALUE = 0.9,
+        angle: TYPE_INPUT_VALUE = 0.0873,
+        epsilon: TYPE_INPUT_VALUE = 0.001,
     ) -> "Compare":
         """Create Compare with operation 'Less Than'."""
-        return cls(operation="LESS_THAN", a=a, b=b)
+        return cls(
+            operation="LESS_THAN",
+            a=a,
+            b=b,
+            a_int=a_int,
+            b_int=b_int,
+            a_vec3=a_vec3,
+            b_vec3=b_vec3,
+            a_col=a_col,
+            b_col=b_col,
+            a_str=a_str,
+            b_str=b_str,
+            c=c,
+            angle=angle,
+            epsilon=epsilon,
+        )
 
     @classmethod
     def lessequal(
-        cls, a: TYPE_INPUT_VALUE = 0.0, b: TYPE_INPUT_VALUE = 0.0
+        cls,
+        a: TYPE_INPUT_VALUE = 0.0,
+        b: TYPE_INPUT_VALUE = 0.0,
+        a_int: TYPE_INPUT_INT = 0,
+        b_int: TYPE_INPUT_INT = 0,
+        a_vec3: TYPE_INPUT_VECTOR = None,
+        b_vec3: TYPE_INPUT_VECTOR = None,
+        a_col: TYPE_INPUT_COLOR = None,
+        b_col: TYPE_INPUT_COLOR = None,
+        a_str: TYPE_INPUT_STRING = "",
+        b_str: TYPE_INPUT_STRING = "",
+        c: TYPE_INPUT_VALUE = 0.9,
+        angle: TYPE_INPUT_VALUE = 0.0873,
+        epsilon: TYPE_INPUT_VALUE = 0.001,
     ) -> "Compare":
         """Create Compare with operation 'Less Than or Equal'."""
-        return cls(operation="LESS_EQUAL", a=a, b=b)
+        return cls(
+            operation="LESS_EQUAL",
+            a=a,
+            b=b,
+            a_int=a_int,
+            b_int=b_int,
+            a_vec3=a_vec3,
+            b_vec3=b_vec3,
+            a_col=a_col,
+            b_col=b_col,
+            a_str=a_str,
+            b_str=b_str,
+            c=c,
+            angle=angle,
+            epsilon=epsilon,
+        )
 
     @classmethod
     def greaterthan(
-        cls, a: TYPE_INPUT_VALUE = 0.0, b: TYPE_INPUT_VALUE = 0.0
+        cls,
+        a: TYPE_INPUT_VALUE = 0.0,
+        b: TYPE_INPUT_VALUE = 0.0,
+        a_int: TYPE_INPUT_INT = 0,
+        b_int: TYPE_INPUT_INT = 0,
+        a_vec3: TYPE_INPUT_VECTOR = None,
+        b_vec3: TYPE_INPUT_VECTOR = None,
+        a_col: TYPE_INPUT_COLOR = None,
+        b_col: TYPE_INPUT_COLOR = None,
+        a_str: TYPE_INPUT_STRING = "",
+        b_str: TYPE_INPUT_STRING = "",
+        c: TYPE_INPUT_VALUE = 0.9,
+        angle: TYPE_INPUT_VALUE = 0.0873,
+        epsilon: TYPE_INPUT_VALUE = 0.001,
     ) -> "Compare":
         """Create Compare with operation 'Greater Than'."""
-        return cls(operation="GREATER_THAN", a=a, b=b)
+        return cls(
+            operation="GREATER_THAN",
+            a=a,
+            b=b,
+            a_int=a_int,
+            b_int=b_int,
+            a_vec3=a_vec3,
+            b_vec3=b_vec3,
+            a_col=a_col,
+            b_col=b_col,
+            a_str=a_str,
+            b_str=b_str,
+            c=c,
+            angle=angle,
+            epsilon=epsilon,
+        )
 
     @classmethod
     def greaterequal(
-        cls, a: TYPE_INPUT_VALUE = 0.0, b: TYPE_INPUT_VALUE = 0.0
+        cls,
+        a: TYPE_INPUT_VALUE = 0.0,
+        b: TYPE_INPUT_VALUE = 0.0,
+        a_int: TYPE_INPUT_INT = 0,
+        b_int: TYPE_INPUT_INT = 0,
+        a_vec3: TYPE_INPUT_VECTOR = None,
+        b_vec3: TYPE_INPUT_VECTOR = None,
+        a_col: TYPE_INPUT_COLOR = None,
+        b_col: TYPE_INPUT_COLOR = None,
+        a_str: TYPE_INPUT_STRING = "",
+        b_str: TYPE_INPUT_STRING = "",
+        c: TYPE_INPUT_VALUE = 0.9,
+        angle: TYPE_INPUT_VALUE = 0.0873,
+        epsilon: TYPE_INPUT_VALUE = 0.001,
     ) -> "Compare":
         """Create Compare with operation 'Greater Than or Equal'."""
-        return cls(operation="GREATER_EQUAL", a=a, b=b)
+        return cls(
+            operation="GREATER_EQUAL",
+            a=a,
+            b=b,
+            a_int=a_int,
+            b_int=b_int,
+            a_vec3=a_vec3,
+            b_vec3=b_vec3,
+            a_col=a_col,
+            b_col=b_col,
+            a_str=a_str,
+            b_str=b_str,
+            c=c,
+            angle=angle,
+            epsilon=epsilon,
+        )
 
     @classmethod
-    def equal(cls, a: TYPE_INPUT_VALUE = 0.0, b: TYPE_INPUT_VALUE = 0.0) -> "Compare":
+    def equal(
+        cls,
+        a: TYPE_INPUT_VALUE = 0.0,
+        b: TYPE_INPUT_VALUE = 0.0,
+        a_int: TYPE_INPUT_INT = 0,
+        b_int: TYPE_INPUT_INT = 0,
+        a_vec3: TYPE_INPUT_VECTOR = None,
+        b_vec3: TYPE_INPUT_VECTOR = None,
+        a_col: TYPE_INPUT_COLOR = None,
+        b_col: TYPE_INPUT_COLOR = None,
+        a_str: TYPE_INPUT_STRING = "",
+        b_str: TYPE_INPUT_STRING = "",
+        c: TYPE_INPUT_VALUE = 0.9,
+        angle: TYPE_INPUT_VALUE = 0.0873,
+        epsilon: TYPE_INPUT_VALUE = 0.001,
+    ) -> "Compare":
         """Create Compare with operation 'Equal'."""
-        return cls(operation="EQUAL", a=a, b=b)
+        return cls(
+            operation="EQUAL",
+            a=a,
+            b=b,
+            a_int=a_int,
+            b_int=b_int,
+            a_vec3=a_vec3,
+            b_vec3=b_vec3,
+            a_col=a_col,
+            b_col=b_col,
+            a_str=a_str,
+            b_str=b_str,
+            c=c,
+            angle=angle,
+            epsilon=epsilon,
+        )
 
     @classmethod
     def notequal(
-        cls, a: TYPE_INPUT_VALUE = 0.0, b: TYPE_INPUT_VALUE = 0.0
+        cls,
+        a: TYPE_INPUT_VALUE = 0.0,
+        b: TYPE_INPUT_VALUE = 0.0,
+        a_int: TYPE_INPUT_INT = 0,
+        b_int: TYPE_INPUT_INT = 0,
+        a_vec3: TYPE_INPUT_VECTOR = None,
+        b_vec3: TYPE_INPUT_VECTOR = None,
+        a_col: TYPE_INPUT_COLOR = None,
+        b_col: TYPE_INPUT_COLOR = None,
+        a_str: TYPE_INPUT_STRING = "",
+        b_str: TYPE_INPUT_STRING = "",
+        c: TYPE_INPUT_VALUE = 0.9,
+        angle: TYPE_INPUT_VALUE = 0.0873,
+        epsilon: TYPE_INPUT_VALUE = 0.001,
     ) -> "Compare":
         """Create Compare with operation 'Not Equal'."""
-        return cls(operation="NOT_EQUAL", a=a, b=b)
+        return cls(
+            operation="NOT_EQUAL",
+            a=a,
+            b=b,
+            a_int=a_int,
+            b_int=b_int,
+            a_vec3=a_vec3,
+            b_vec3=b_vec3,
+            a_col=a_col,
+            b_col=b_col,
+            a_str=a_str,
+            b_str=b_str,
+            c=c,
+            angle=angle,
+            epsilon=epsilon,
+        )
 
     @property
     def i_a(self) -> SocketLinker:
@@ -911,6 +1114,61 @@ class Compare(NodeBuilder):
     def i_b(self) -> SocketLinker:
         """Input socket: B"""
         return self._input("B")
+
+    @property
+    def i_a_int(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input("A_INT")
+
+    @property
+    def i_b_int(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input("B_INT")
+
+    @property
+    def i_a_vec3(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input("A_VEC3")
+
+    @property
+    def i_b_vec3(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input("B_VEC3")
+
+    @property
+    def i_a_col(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input("A_COL")
+
+    @property
+    def i_b_col(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input("B_COL")
+
+    @property
+    def i_a_str(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input("A_STR")
+
+    @property
+    def i_b_str(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input("B_STR")
+
+    @property
+    def i_c(self) -> SocketLinker:
+        """Input socket: C"""
+        return self._input("C")
+
+    @property
+    def i_angle(self) -> SocketLinker:
+        """Input socket: Angle"""
+        return self._input("Angle")
+
+    @property
+    def i_epsilon(self) -> SocketLinker:
+        """Input socket: Epsilon"""
+        return self._input("Epsilon")
 
     @property
     def o_result(self) -> SocketLinker:
@@ -1454,11 +1712,10 @@ class FormatString(NodeBuilder):
         self,
         format: TYPE_INPUT_STRING = "",
         extend: None = None,
-        active_index: int = 0,
     ):
         super().__init__()
         key_args = {"Format": format, "__extend__": extend}
-        self.active_index = active_index
+
         self._establish_links(**key_args)
 
     @property
@@ -1475,14 +1732,6 @@ class FormatString(NodeBuilder):
     def o_string(self) -> SocketLinker:
         """Output socket: String"""
         return self._output("String")
-
-    @property
-    def active_index(self) -> int:
-        return self.node.active_index
-
-    @active_index.setter
-    def active_index(self, value: int):
-        self.node.active_index = value
 
 
 class Gamma(NodeBuilder):
@@ -1614,6 +1863,7 @@ class IntegerMath(NodeBuilder):
         self,
         value: TYPE_INPUT_INT = 0,
         value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
         operation: Literal[
             "ADD",
             "SUBTRACT",
@@ -1636,135 +1886,240 @@ class IntegerMath(NodeBuilder):
         ] = "ADD",
     ):
         super().__init__()
-        key_args = {"Value": value, "Value_001": value_001}
+        key_args = {"Value": value, "Value_001": value_001, "Value_002": value_002}
         self.operation = operation
         self._establish_links(**key_args)
 
     @classmethod
     def add(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Add'."""
-        return cls(operation="ADD", value=value, value_001=value_001)
+        return cls(
+            operation="ADD", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def subtract(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Subtract'."""
-        return cls(operation="SUBTRACT", value=value, value_001=value_001)
+        return cls(
+            operation="SUBTRACT", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def multiply(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Multiply'."""
-        return cls(operation="MULTIPLY", value=value, value_001=value_001)
+        return cls(
+            operation="MULTIPLY", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def divide(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Divide'."""
-        return cls(operation="DIVIDE", value=value, value_001=value_001)
+        return cls(
+            operation="DIVIDE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def multiplyadd(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Multiply Add'."""
-        return cls(operation="MULTIPLY_ADD", value=value, value_001=value_001)
+        return cls(
+            operation="MULTIPLY_ADD",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def absolute(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Absolute'."""
-        return cls(operation="ABSOLUTE", value=value, value_001=value_001)
+        return cls(
+            operation="ABSOLUTE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def negate(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Negate'."""
-        return cls(operation="NEGATE", value=value, value_001=value_001)
+        return cls(
+            operation="NEGATE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def power(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Power'."""
-        return cls(operation="POWER", value=value, value_001=value_001)
+        return cls(
+            operation="POWER", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def minimum(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Minimum'."""
-        return cls(operation="MINIMUM", value=value, value_001=value_001)
+        return cls(
+            operation="MINIMUM", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def maximum(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Maximum'."""
-        return cls(operation="MAXIMUM", value=value, value_001=value_001)
+        return cls(
+            operation="MAXIMUM", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def sign(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Sign'."""
-        return cls(operation="SIGN", value=value, value_001=value_001)
+        return cls(
+            operation="SIGN", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def divideround(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Divide Round'."""
-        return cls(operation="DIVIDE_ROUND", value=value, value_001=value_001)
+        return cls(
+            operation="DIVIDE_ROUND",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def dividefloor(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Divide Floor'."""
-        return cls(operation="DIVIDE_FLOOR", value=value, value_001=value_001)
+        return cls(
+            operation="DIVIDE_FLOOR",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def divideceil(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Divide Ceiling'."""
-        return cls(operation="DIVIDE_CEIL", value=value, value_001=value_001)
+        return cls(
+            operation="DIVIDE_CEIL",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def flooredmodulo(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Floored Modulo'."""
-        return cls(operation="FLOORED_MODULO", value=value, value_001=value_001)
+        return cls(
+            operation="FLOORED_MODULO",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def modulo(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Modulo'."""
-        return cls(operation="MODULO", value=value, value_001=value_001)
+        return cls(
+            operation="MODULO", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def gcd(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Greatest Common Divisor'."""
-        return cls(operation="GCD", value=value, value_001=value_001)
+        return cls(
+            operation="GCD", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def lcm(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Least Common Multiple'."""
-        return cls(operation="LCM", value=value, value_001=value_001)
+        return cls(
+            operation="LCM", value=value, value_001=value_001, value_002=value_002
+        )
 
     @property
     def i_value(self) -> SocketLinker:
@@ -1775,6 +2130,11 @@ class IntegerMath(NodeBuilder):
     def i_value_001(self) -> SocketLinker:
         """Input socket: Value"""
         return self._input("Value_001")
+
+    @property
+    def i_value_002(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value_002")
 
     @property
     def o_value(self) -> SocketLinker:
@@ -1952,6 +2312,13 @@ class MapRange(NodeBuilder):
         from_max: TYPE_INPUT_VALUE = 1.0,
         to_min: TYPE_INPUT_VALUE = 0.0,
         to_max: TYPE_INPUT_VALUE = 1.0,
+        steps: TYPE_INPUT_VALUE = 4.0,
+        vector: TYPE_INPUT_VECTOR = None,
+        from_min_float3: TYPE_INPUT_VECTOR = None,
+        from_max_float3: TYPE_INPUT_VECTOR = None,
+        to_min_float3: TYPE_INPUT_VECTOR = None,
+        to_max_float3: TYPE_INPUT_VECTOR = None,
+        steps_float3: TYPE_INPUT_VECTOR = None,
         clamp: bool = False,
         interpolation_type: Literal[
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
@@ -1965,6 +2332,13 @@ class MapRange(NodeBuilder):
             "From Max": from_max,
             "To Min": to_min,
             "To Max": to_max,
+            "Steps": steps,
+            "Vector": vector,
+            "From_Min_FLOAT3": from_min_float3,
+            "From_Max_FLOAT3": from_max_float3,
+            "To_Min_FLOAT3": to_min_float3,
+            "To_Max_FLOAT3": to_max_float3,
+            "Steps_FLOAT3": steps_float3,
         }
         self.clamp = clamp
         self.interpolation_type = interpolation_type
@@ -1997,9 +2371,49 @@ class MapRange(NodeBuilder):
         return self._input("To Max")
 
     @property
+    def i_steps(self) -> SocketLinker:
+        """Input socket: Steps"""
+        return self._input("Steps")
+
+    @property
+    def i_vector(self) -> SocketLinker:
+        """Input socket: Vector"""
+        return self._input("Vector")
+
+    @property
+    def i_from_min_float3(self) -> SocketLinker:
+        """Input socket: From Min"""
+        return self._input("From_Min_FLOAT3")
+
+    @property
+    def i_from_max_float3(self) -> SocketLinker:
+        """Input socket: From Max"""
+        return self._input("From_Max_FLOAT3")
+
+    @property
+    def i_to_min_float3(self) -> SocketLinker:
+        """Input socket: To Min"""
+        return self._input("To_Min_FLOAT3")
+
+    @property
+    def i_to_max_float3(self) -> SocketLinker:
+        """Input socket: To Max"""
+        return self._input("To_Max_FLOAT3")
+
+    @property
+    def i_steps_float3(self) -> SocketLinker:
+        """Input socket: Steps"""
+        return self._input("Steps_FLOAT3")
+
+    @property
     def o_result(self) -> SocketLinker:
         """Output socket: Result"""
         return self._output("Result")
+
+    @property
+    def o_vector(self) -> SocketLinker:
+        """Output socket: Vector"""
+        return self._output("Vector")
 
     @property
     def clamp(self) -> bool:
@@ -2078,6 +2492,7 @@ class Math(NodeBuilder):
         self,
         value: TYPE_INPUT_VALUE = 0.5,
         value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
         operation: Literal[
             "ADD",
             "SUBTRACT",
@@ -2124,297 +2539,523 @@ class Math(NodeBuilder):
         use_clamp: bool = False,
     ):
         super().__init__()
-        key_args = {"Value": value, "Value_001": value_001}
+        key_args = {"Value": value, "Value_001": value_001, "Value_002": value_002}
         self.operation = operation
         self.use_clamp = use_clamp
         self._establish_links(**key_args)
 
     @classmethod
     def add(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Add'."""
-        return cls(operation="ADD", value=value, value_001=value_001)
+        return cls(
+            operation="ADD", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def subtract(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Subtract'."""
-        return cls(operation="SUBTRACT", value=value, value_001=value_001)
+        return cls(
+            operation="SUBTRACT", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def multiply(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Multiply'."""
-        return cls(operation="MULTIPLY", value=value, value_001=value_001)
+        return cls(
+            operation="MULTIPLY", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def divide(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Divide'."""
-        return cls(operation="DIVIDE", value=value, value_001=value_001)
+        return cls(
+            operation="DIVIDE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def multiplyadd(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Multiply Add'."""
-        return cls(operation="MULTIPLY_ADD", value=value, value_001=value_001)
+        return cls(
+            operation="MULTIPLY_ADD",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def power(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Power'."""
-        return cls(operation="POWER", value=value, value_001=value_001)
+        return cls(
+            operation="POWER", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def logarithm(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Logarithm'."""
-        return cls(operation="LOGARITHM", value=value, value_001=value_001)
+        return cls(
+            operation="LOGARITHM", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def sqrt(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Square Root'."""
-        return cls(operation="SQRT", value=value, value_001=value_001)
+        return cls(
+            operation="SQRT", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def inversesqrt(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Inverse Square Root'."""
-        return cls(operation="INVERSE_SQRT", value=value, value_001=value_001)
+        return cls(
+            operation="INVERSE_SQRT",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def absolute(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Absolute'."""
-        return cls(operation="ABSOLUTE", value=value, value_001=value_001)
+        return cls(
+            operation="ABSOLUTE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def exponent(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Exponent'."""
-        return cls(operation="EXPONENT", value=value, value_001=value_001)
+        return cls(
+            operation="EXPONENT", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def minimum(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Minimum'."""
-        return cls(operation="MINIMUM", value=value, value_001=value_001)
+        return cls(
+            operation="MINIMUM", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def maximum(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Maximum'."""
-        return cls(operation="MAXIMUM", value=value, value_001=value_001)
+        return cls(
+            operation="MAXIMUM", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def lessthan(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Less Than'."""
-        return cls(operation="LESS_THAN", value=value, value_001=value_001)
+        return cls(
+            operation="LESS_THAN", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def greaterthan(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Greater Than'."""
-        return cls(operation="GREATER_THAN", value=value, value_001=value_001)
+        return cls(
+            operation="GREATER_THAN",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def sign(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Sign'."""
-        return cls(operation="SIGN", value=value, value_001=value_001)
+        return cls(
+            operation="SIGN", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def compare(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Compare'."""
-        return cls(operation="COMPARE", value=value, value_001=value_001)
+        return cls(
+            operation="COMPARE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def smoothmin(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Smooth Minimum'."""
-        return cls(operation="SMOOTH_MIN", value=value, value_001=value_001)
+        return cls(
+            operation="SMOOTH_MIN",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def smoothmax(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Smooth Maximum'."""
-        return cls(operation="SMOOTH_MAX", value=value, value_001=value_001)
+        return cls(
+            operation="SMOOTH_MAX",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def round(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Round'."""
-        return cls(operation="ROUND", value=value, value_001=value_001)
+        return cls(
+            operation="ROUND", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def floor(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Floor'."""
-        return cls(operation="FLOOR", value=value, value_001=value_001)
+        return cls(
+            operation="FLOOR", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def ceil(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Ceil'."""
-        return cls(operation="CEIL", value=value, value_001=value_001)
+        return cls(
+            operation="CEIL", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def trunc(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Truncate'."""
-        return cls(operation="TRUNC", value=value, value_001=value_001)
+        return cls(
+            operation="TRUNC", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def fract(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Fraction'."""
-        return cls(operation="FRACT", value=value, value_001=value_001)
+        return cls(
+            operation="FRACT", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def modulo(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Truncated Modulo'."""
-        return cls(operation="MODULO", value=value, value_001=value_001)
+        return cls(
+            operation="MODULO", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def flooredmodulo(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Floored Modulo'."""
-        return cls(operation="FLOORED_MODULO", value=value, value_001=value_001)
+        return cls(
+            operation="FLOORED_MODULO",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def wrap(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Wrap'."""
-        return cls(operation="WRAP", value=value, value_001=value_001)
+        return cls(
+            operation="WRAP", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def snap(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Snap'."""
-        return cls(operation="SNAP", value=value, value_001=value_001)
+        return cls(
+            operation="SNAP", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def pingpong(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Ping-Pong'."""
-        return cls(operation="PINGPONG", value=value, value_001=value_001)
+        return cls(
+            operation="PINGPONG", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def sine(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Sine'."""
-        return cls(operation="SINE", value=value, value_001=value_001)
+        return cls(
+            operation="SINE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def cosine(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Cosine'."""
-        return cls(operation="COSINE", value=value, value_001=value_001)
+        return cls(
+            operation="COSINE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def tangent(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Tangent'."""
-        return cls(operation="TANGENT", value=value, value_001=value_001)
+        return cls(
+            operation="TANGENT", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def arcsine(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Arcsine'."""
-        return cls(operation="ARCSINE", value=value, value_001=value_001)
+        return cls(
+            operation="ARCSINE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def arccosine(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Arccosine'."""
-        return cls(operation="ARCCOSINE", value=value, value_001=value_001)
+        return cls(
+            operation="ARCCOSINE", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def arctangent(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Arctangent'."""
-        return cls(operation="ARCTANGENT", value=value, value_001=value_001)
+        return cls(
+            operation="ARCTANGENT",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
 
     @classmethod
     def arctan2(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Arctan2'."""
-        return cls(operation="ARCTAN2", value=value, value_001=value_001)
+        return cls(
+            operation="ARCTAN2", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def sinh(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Hyperbolic Sine'."""
-        return cls(operation="SINH", value=value, value_001=value_001)
+        return cls(
+            operation="SINH", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def cosh(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Hyperbolic Cosine'."""
-        return cls(operation="COSH", value=value, value_001=value_001)
+        return cls(
+            operation="COSH", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def tanh(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'Hyperbolic Tangent'."""
-        return cls(operation="TANH", value=value, value_001=value_001)
+        return cls(
+            operation="TANH", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def radians(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'To Radians'."""
-        return cls(operation="RADIANS", value=value, value_001=value_001)
+        return cls(
+            operation="RADIANS", value=value, value_001=value_001, value_002=value_002
+        )
 
     @classmethod
     def degrees(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
     ) -> "Math":
         """Create Math with operation 'To Degrees'."""
-        return cls(operation="DEGREES", value=value, value_001=value_001)
+        return cls(
+            operation="DEGREES", value=value, value_001=value_001, value_002=value_002
+        )
 
     @property
     def i_value(self) -> SocketLinker:
@@ -2425,6 +3066,11 @@ class Math(NodeBuilder):
     def i_value_001(self) -> SocketLinker:
         """Input socket: Value"""
         return self._input("Value_001")
+
+    @property
+    def i_value_002(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value_002")
 
     @property
     def o_value(self) -> SocketLinker:
@@ -2569,8 +3215,15 @@ class Mix(NodeBuilder):
     def __init__(
         self,
         factor_float: TYPE_INPUT_VALUE = 0.5,
+        factor_vector: TYPE_INPUT_VECTOR = None,
         a_float: TYPE_INPUT_VALUE = 0.0,
         b_float: TYPE_INPUT_VALUE = 0.0,
+        a_vector: TYPE_INPUT_VECTOR = None,
+        b_vector: TYPE_INPUT_VECTOR = None,
+        a_color: TYPE_INPUT_COLOR = None,
+        b_color: TYPE_INPUT_COLOR = None,
+        a_rotation: TYPE_INPUT_ROTATION = None,
+        b_rotation: TYPE_INPUT_ROTATION = None,
         data_type: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"] = "FLOAT",
         factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
         blend_type: Literal[
@@ -2600,8 +3253,15 @@ class Mix(NodeBuilder):
         super().__init__()
         key_args = {
             "Factor_Float": factor_float,
+            "Factor_Vector": factor_vector,
             "A_Float": a_float,
             "B_Float": b_float,
+            "A_Vector": a_vector,
+            "B_Vector": b_vector,
+            "A_Color": a_color,
+            "B_Color": b_color,
+            "A_Rotation": a_rotation,
+            "B_Rotation": b_rotation,
         }
         self.data_type = data_type
         self.factor_mode = factor_mode
@@ -2616,6 +3276,11 @@ class Mix(NodeBuilder):
         return self._input("Factor_Float")
 
     @property
+    def i_factor_vector(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Factor_Vector")
+
+    @property
     def i_a(self) -> SocketLinker:
         """Input socket: A"""
         return self._input("A_Float")
@@ -2626,9 +3291,54 @@ class Mix(NodeBuilder):
         return self._input("B_Float")
 
     @property
+    def i_a_vector(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input("A_Vector")
+
+    @property
+    def i_b_vector(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input("B_Vector")
+
+    @property
+    def i_a_color(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input("A_Color")
+
+    @property
+    def i_b_color(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input("B_Color")
+
+    @property
+    def i_a_rotation(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input("A_Rotation")
+
+    @property
+    def i_b_rotation(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input("B_Rotation")
+
+    @property
     def o_result(self) -> SocketLinker:
         """Output socket: Result"""
         return self._output("Result_Float")
+
+    @property
+    def o_result_vector(self) -> SocketLinker:
+        """Output socket: Result"""
+        return self._output("Result_Vector")
+
+    @property
+    def o_result_color(self) -> SocketLinker:
+        """Output socket: Result"""
+        return self._output("Result_Color")
+
+    @property
+    def o_result_rotation(self) -> SocketLinker:
+        """Output socket: Result"""
+        return self._output("Result_Rotation")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]:
@@ -3052,26 +3762,66 @@ class RandomValue(NodeBuilder):
 
     def __init__(
         self,
+        min: TYPE_INPUT_VECTOR = None,
+        max: TYPE_INPUT_VECTOR = None,
         min_001: TYPE_INPUT_VALUE = 0.0,
         max_001: TYPE_INPUT_VALUE = 1.0,
+        min_002: TYPE_INPUT_INT = 0,
+        max_002: TYPE_INPUT_INT = 100,
+        probability: TYPE_INPUT_VALUE = 0.5,
         id: TYPE_INPUT_INT = 0,
         seed: TYPE_INPUT_INT = 0,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"] = "FLOAT",
     ):
         super().__init__()
-        key_args = {"Min_001": min_001, "Max_001": max_001, "ID": id, "Seed": seed}
+        key_args = {
+            "Min": min,
+            "Max": max,
+            "Min_001": min_001,
+            "Max_001": max_001,
+            "Min_002": min_002,
+            "Max_002": max_002,
+            "Probability": probability,
+            "ID": id,
+            "Seed": seed,
+        }
         self.data_type = data_type
         self._establish_links(**key_args)
 
     @property
     def i_min(self) -> SocketLinker:
         """Input socket: Min"""
-        return self._input("Min_001")
+        return self._input("Min")
 
     @property
     def i_max(self) -> SocketLinker:
         """Input socket: Max"""
+        return self._input("Max")
+
+    @property
+    def i_min_001(self) -> SocketLinker:
+        """Input socket: Min"""
+        return self._input("Min_001")
+
+    @property
+    def i_max_001(self) -> SocketLinker:
+        """Input socket: Max"""
         return self._input("Max_001")
+
+    @property
+    def i_min_002(self) -> SocketLinker:
+        """Input socket: Min"""
+        return self._input("Min_002")
+
+    @property
+    def i_max_002(self) -> SocketLinker:
+        """Input socket: Max"""
+        return self._input("Max_002")
+
+    @property
+    def i_probability(self) -> SocketLinker:
+        """Input socket: Probability"""
+        return self._input("Probability")
 
     @property
     def i_id(self) -> SocketLinker:
@@ -3086,7 +3836,22 @@ class RandomValue(NodeBuilder):
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def o_value_001(self) -> SocketLinker:
+        """Output socket: Value"""
         return self._output("Value_001")
+
+    @property
+    def o_value_002(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value_002")
+
+    @property
+    def o_value_003(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value_003")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]:
@@ -3145,11 +3910,18 @@ class RotateEuler(NodeBuilder):
         self,
         rotation: TYPE_INPUT_VECTOR = None,
         rotate_by: TYPE_INPUT_VECTOR = None,
+        axis: TYPE_INPUT_VECTOR = None,
+        angle: TYPE_INPUT_VALUE = 0.0,
         rotation_type: Literal["AXIS_ANGLE", "EULER"] = "EULER",
         space: Literal["OBJECT", "LOCAL"] = "OBJECT",
     ):
         super().__init__()
-        key_args = {"Rotation": rotation, "Rotate By": rotate_by}
+        key_args = {
+            "Rotation": rotation,
+            "Rotate By": rotate_by,
+            "Axis": axis,
+            "Angle": angle,
+        }
         self.rotation_type = rotation_type
         self.space = space
         self._establish_links(**key_args)
@@ -3163,6 +3935,16 @@ class RotateEuler(NodeBuilder):
     def i_rotate_by(self) -> SocketLinker:
         """Input socket: Rotate By"""
         return self._input("Rotate By")
+
+    @property
+    def i_axis(self) -> SocketLinker:
+        """Input socket: Axis"""
+        return self._input("Axis")
+
+    @property
+    def i_angle(self) -> SocketLinker:
+        """Input socket: Angle"""
+        return self._input("Angle")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -3357,12 +4139,10 @@ class SeparateBundle(NodeBuilder):
     def __init__(
         self,
         bundle: TYPE_INPUT_BUNDLE = None,
-        active_index: int = 0,
         define_signature: bool = False,
     ):
         super().__init__()
         key_args = {"Bundle": bundle}
-        self.active_index = active_index
         self.define_signature = define_signature
         self._establish_links(**key_args)
 
@@ -3375,14 +4155,6 @@ class SeparateBundle(NodeBuilder):
     def o_input_socket(self) -> SocketLinker:
         """Output socket:"""
         return self._output("__extend__")
-
-    @property
-    def active_index(self) -> int:
-        return self.node.active_index
-
-    @active_index.setter
-    def active_index(self, value: int):
-        self.node.active_index = value
 
     @property
     def define_signature(self) -> bool:

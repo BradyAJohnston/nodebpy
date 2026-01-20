@@ -26,9 +26,13 @@ class Arc(NodeBuilder):
     def __init__(
         self,
         resolution: TYPE_INPUT_INT = 16,
+        start: TYPE_INPUT_VECTOR = None,
+        middle: TYPE_INPUT_VECTOR = None,
+        end: TYPE_INPUT_VECTOR = None,
         radius: TYPE_INPUT_VALUE = 1.0,
         start_angle: TYPE_INPUT_VALUE = 0.0,
         sweep_angle: TYPE_INPUT_VALUE = 5.4978,
+        offset_angle: TYPE_INPUT_VALUE = 0.0,
         connect_center: TYPE_INPUT_BOOLEAN = False,
         invert_arc: TYPE_INPUT_BOOLEAN = False,
         mode: Literal["POINTS", "RADIUS"] = "RADIUS",
@@ -36,9 +40,13 @@ class Arc(NodeBuilder):
         super().__init__()
         key_args = {
             "Resolution": resolution,
+            "Start": start,
+            "Middle": middle,
+            "End": end,
             "Radius": radius,
             "Start Angle": start_angle,
             "Sweep Angle": sweep_angle,
+            "Offset Angle": offset_angle,
             "Connect Center": connect_center,
             "Invert Arc": invert_arc,
         }
@@ -49,6 +57,21 @@ class Arc(NodeBuilder):
     def i_resolution(self) -> SocketLinker:
         """Input socket: Resolution"""
         return self._input("Resolution")
+
+    @property
+    def i_start(self) -> SocketLinker:
+        """Input socket: Start"""
+        return self._input("Start")
+
+    @property
+    def i_middle(self) -> SocketLinker:
+        """Input socket: Middle"""
+        return self._input("Middle")
+
+    @property
+    def i_end(self) -> SocketLinker:
+        """Input socket: End"""
+        return self._input("End")
 
     @property
     def i_radius(self) -> SocketLinker:
@@ -66,6 +89,11 @@ class Arc(NodeBuilder):
         return self._input("Sweep Angle")
 
     @property
+    def i_offset_angle(self) -> SocketLinker:
+        """Input socket: Offset Angle"""
+        return self._input("Offset Angle")
+
+    @property
     def i_connect_center(self) -> SocketLinker:
         """Input socket: Connect Center"""
         return self._input("Connect Center")
@@ -79,6 +107,21 @@ class Arc(NodeBuilder):
     def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
+
+    @property
+    def o_center(self) -> SocketLinker:
+        """Output socket: Center"""
+        return self._output("Center")
+
+    @property
+    def o_normal(self) -> SocketLinker:
+        """Output socket: Normal"""
+        return self._output("Normal")
+
+    @property
+    def o_radius(self) -> SocketLinker:
+        """Output socket: Radius"""
+        return self._output("Radius")
 
     @property
     def mode(self) -> Literal["POINTS", "RADIUS"]:
@@ -95,14 +138,10 @@ class Bake(NodeBuilder):
     name = "GeometryNodeBake"
     node: bpy.types.GeometryNodeBake
 
-    def __init__(
-        self,
-        extend: None = None,
-        active_index: int = 0,
-    ):
+    def __init__(self, extend: None = None):
         super().__init__()
         key_args = {"__extend__": extend}
-        self.active_index = active_index
+
         self._establish_links(**key_args)
 
     @property
@@ -114,14 +153,6 @@ class Bake(NodeBuilder):
     def o_input_socket(self) -> SocketLinker:
         """Output socket:"""
         return self._output("__extend__")
-
-    @property
-    def active_index(self) -> int:
-        return self.node.active_index
-
-    @active_index.setter
-    def active_index(self, value: int):
-        self.node.active_index = value
 
 
 class BoundingBox(NodeBuilder):
@@ -409,11 +440,20 @@ class CurveCircle(NodeBuilder):
     def __init__(
         self,
         resolution: TYPE_INPUT_INT = 32,
+        point_1: TYPE_INPUT_VECTOR = None,
+        point_2: TYPE_INPUT_VECTOR = None,
+        point_3: TYPE_INPUT_VECTOR = None,
         radius: TYPE_INPUT_VALUE = 1.0,
         mode: Literal["POINTS", "RADIUS"] = "RADIUS",
     ):
         super().__init__()
-        key_args = {"Resolution": resolution, "Radius": radius}
+        key_args = {
+            "Resolution": resolution,
+            "Point 1": point_1,
+            "Point 2": point_2,
+            "Point 3": point_3,
+            "Radius": radius,
+        }
         self.mode = mode
         self._establish_links(**key_args)
 
@@ -421,6 +461,21 @@ class CurveCircle(NodeBuilder):
     def i_resolution(self) -> SocketLinker:
         """Input socket: Resolution"""
         return self._input("Resolution")
+
+    @property
+    def i_point_1(self) -> SocketLinker:
+        """Input socket: Point 1"""
+        return self._input("Point 1")
+
+    @property
+    def i_point_2(self) -> SocketLinker:
+        """Input socket: Point 2"""
+        return self._input("Point 2")
+
+    @property
+    def i_point_3(self) -> SocketLinker:
+        """Input socket: Point 3"""
+        return self._input("Point 3")
 
     @property
     def i_radius(self) -> SocketLinker:
@@ -431,6 +486,11 @@ class CurveCircle(NodeBuilder):
     def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Curve")
+
+    @property
+    def o_center(self) -> SocketLinker:
+        """Output socket: Center"""
+        return self._output("Center")
 
     @property
     def mode(self) -> Literal["POINTS", "RADIUS"]:
@@ -474,10 +534,17 @@ class CurveLine(NodeBuilder):
         self,
         start: TYPE_INPUT_VECTOR = None,
         end: TYPE_INPUT_VECTOR = None,
+        direction: TYPE_INPUT_VECTOR = None,
+        length: TYPE_INPUT_VALUE = 1.0,
         mode: Literal["POINTS", "DIRECTION"] = "POINTS",
     ):
         super().__init__()
-        key_args = {"Start": start, "End": end}
+        key_args = {
+            "Start": start,
+            "End": end,
+            "Direction": direction,
+            "Length": length,
+        }
         self.mode = mode
         self._establish_links(**key_args)
 
@@ -490,6 +557,16 @@ class CurveLine(NodeBuilder):
     def i_end(self) -> SocketLinker:
         """Input socket: End"""
         return self._input("End")
+
+    @property
+    def i_direction(self) -> SocketLinker:
+        """Input socket: Direction"""
+        return self._input("Direction")
+
+    @property
+    def i_length(self) -> SocketLinker:
+        """Input socket: Length"""
+        return self._input("Length")
 
     @property
     def o_curve(self) -> SocketLinker:
@@ -564,10 +641,11 @@ class CurveToPoints(NodeBuilder):
         self,
         curve: TYPE_INPUT_GEOMETRY = None,
         count: TYPE_INPUT_INT = 10,
+        length: TYPE_INPUT_VALUE = 0.1,
         mode: Literal["EVALUATED", "COUNT", "LENGTH"] = "COUNT",
     ):
         super().__init__()
-        key_args = {"Curve": curve, "Count": count}
+        key_args = {"Curve": curve, "Count": count, "Length": length}
         self.mode = mode
         self._establish_links(**key_args)
 
@@ -580,6 +658,11 @@ class CurveToPoints(NodeBuilder):
     def i_count(self) -> SocketLinker:
         """Input socket: Count"""
         return self._input("Count")
+
+    @property
+    def i_length(self) -> SocketLinker:
+        """Input socket: Length"""
+        return self._input("Length")
 
     @property
     def o_points(self) -> SocketLinker:
@@ -825,7 +908,10 @@ class DistributePointsOnFaces(NodeBuilder):
         self,
         mesh: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
+        distance_min: TYPE_INPUT_VALUE = 0.0,
+        density_max: TYPE_INPUT_VALUE = 10.0,
         density: TYPE_INPUT_VALUE = 10.0,
+        density_factor: TYPE_INPUT_VALUE = 1.0,
         seed: TYPE_INPUT_INT = 0,
         distribute_method: Literal["RANDOM", "POISSON"] = "RANDOM",
         use_legacy_normal: bool = False,
@@ -834,7 +920,10 @@ class DistributePointsOnFaces(NodeBuilder):
         key_args = {
             "Mesh": mesh,
             "Selection": selection,
+            "Distance Min": distance_min,
+            "Density Max": density_max,
             "Density": density,
+            "Density Factor": density_factor,
             "Seed": seed,
         }
         self.distribute_method = distribute_method
@@ -852,9 +941,24 @@ class DistributePointsOnFaces(NodeBuilder):
         return self._input("Selection")
 
     @property
+    def i_distance_min(self) -> SocketLinker:
+        """Input socket: Distance Min"""
+        return self._input("Distance Min")
+
+    @property
+    def i_density_max(self) -> SocketLinker:
+        """Input socket: Density Max"""
+        return self._input("Density Max")
+
+    @property
     def i_density(self) -> SocketLinker:
         """Input socket: Density"""
         return self._input("Density")
+
+    @property
+    def i_density_factor(self) -> SocketLinker:
+        """Input socket: Density Factor"""
+        return self._input("Density Factor")
 
     @property
     def i_seed(self) -> SocketLinker:
@@ -1681,10 +1785,15 @@ class MergeLayers(NodeBuilder):
         self,
         grease_pencil: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
         mode: Literal["MERGE_BY_NAME", "MERGE_BY_ID"] = "MERGE_BY_NAME",
     ):
         super().__init__()
-        key_args = {"Grease Pencil": grease_pencil, "Selection": selection}
+        key_args = {
+            "Grease Pencil": grease_pencil,
+            "Selection": selection,
+            "Group ID": group_id,
+        }
         self.mode = mode
         self._establish_links(**key_args)
 
@@ -1697,6 +1806,11 @@ class MergeLayers(NodeBuilder):
     def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
         return self._input("Selection")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group ID")
 
     @property
     def o_grease_pencil(self) -> SocketLinker:
@@ -1771,35 +1885,72 @@ class MeshBoolean(NodeBuilder):
         self,
         mesh_1: TYPE_INPUT_GEOMETRY = None,
         mesh_2: TYPE_INPUT_GEOMETRY = None,
+        self_intersection: TYPE_INPUT_BOOLEAN = False,
+        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
         operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ):
         super().__init__()
-        key_args = {"Mesh 1": mesh_1, "Mesh 2": mesh_2}
+        key_args = {
+            "Mesh 1": mesh_1,
+            "Mesh 2": mesh_2,
+            "Self Intersection": self_intersection,
+            "Hole Tolerant": hole_tolerant,
+        }
         self.operation = operation
         self.solver = solver
         self._establish_links(**key_args)
 
     @classmethod
     def intersect(
-        cls, mesh_1: TYPE_INPUT_GEOMETRY = None, mesh_2: TYPE_INPUT_GEOMETRY = None
+        cls,
+        mesh_1: TYPE_INPUT_GEOMETRY = None,
+        mesh_2: TYPE_INPUT_GEOMETRY = None,
+        self_intersection: TYPE_INPUT_BOOLEAN = False,
+        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
     ) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Intersect'."""
-        return cls(operation="INTERSECT", mesh_1=mesh_1, mesh_2=mesh_2)
+        return cls(
+            operation="INTERSECT",
+            mesh_1=mesh_1,
+            mesh_2=mesh_2,
+            self_intersection=self_intersection,
+            hole_tolerant=hole_tolerant,
+        )
 
     @classmethod
     def union(
-        cls, mesh_1: TYPE_INPUT_GEOMETRY = None, mesh_2: TYPE_INPUT_GEOMETRY = None
+        cls,
+        mesh_1: TYPE_INPUT_GEOMETRY = None,
+        mesh_2: TYPE_INPUT_GEOMETRY = None,
+        self_intersection: TYPE_INPUT_BOOLEAN = False,
+        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
     ) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Union'."""
-        return cls(operation="UNION", mesh_1=mesh_1, mesh_2=mesh_2)
+        return cls(
+            operation="UNION",
+            mesh_1=mesh_1,
+            mesh_2=mesh_2,
+            self_intersection=self_intersection,
+            hole_tolerant=hole_tolerant,
+        )
 
     @classmethod
     def difference(
-        cls, mesh_1: TYPE_INPUT_GEOMETRY = None, mesh_2: TYPE_INPUT_GEOMETRY = None
+        cls,
+        mesh_1: TYPE_INPUT_GEOMETRY = None,
+        mesh_2: TYPE_INPUT_GEOMETRY = None,
+        self_intersection: TYPE_INPUT_BOOLEAN = False,
+        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
     ) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Difference'."""
-        return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
+        return cls(
+            operation="DIFFERENCE",
+            mesh_1=mesh_1,
+            mesh_2=mesh_2,
+            self_intersection=self_intersection,
+            hole_tolerant=hole_tolerant,
+        )
 
     @property
     def i_mesh_1(self) -> SocketLinker:
@@ -1812,9 +1963,24 @@ class MeshBoolean(NodeBuilder):
         return self._input("Mesh 2")
 
     @property
+    def i_self_intersection(self) -> SocketLinker:
+        """Input socket: Self Intersection"""
+        return self._input("Self Intersection")
+
+    @property
+    def i_hole_tolerant(self) -> SocketLinker:
+        """Input socket: Hole Tolerant"""
+        return self._input("Hole Tolerant")
+
+    @property
     def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Mesh")
+
+    @property
+    def o_intersecting_edges(self) -> SocketLinker:
+        """Output socket: Intersecting Edges"""
+        return self._output("Intersecting Edges")
 
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
@@ -1883,13 +2049,19 @@ class MeshLine(NodeBuilder):
     def __init__(
         self,
         count: TYPE_INPUT_INT = 10,
+        resolution: TYPE_INPUT_VALUE = 1.0,
         start_location: TYPE_INPUT_VECTOR = None,
         offset: TYPE_INPUT_VECTOR = None,
         mode: Literal["OFFSET", "END_POINTS"] = "OFFSET",
         count_mode: Literal["TOTAL", "RESOLUTION"] = "TOTAL",
     ):
         super().__init__()
-        key_args = {"Count": count, "Start Location": start_location, "Offset": offset}
+        key_args = {
+            "Count": count,
+            "Resolution": resolution,
+            "Start Location": start_location,
+            "Offset": offset,
+        }
         self.mode = mode
         self.count_mode = count_mode
         self._establish_links(**key_args)
@@ -1898,6 +2070,11 @@ class MeshLine(NodeBuilder):
     def i_count(self) -> SocketLinker:
         """Input socket: Count"""
         return self._input("Count")
+
+    @property
+    def i_resolution(self) -> SocketLinker:
+        """Input socket: Resolution"""
+        return self._input("Resolution")
 
     @property
     def i_start_location(self) -> SocketLinker:
@@ -2201,12 +2378,33 @@ class Quadrilateral(NodeBuilder):
         self,
         width: TYPE_INPUT_VALUE = 2.0,
         height: TYPE_INPUT_VALUE = 2.0,
+        bottom_width: TYPE_INPUT_VALUE = 4.0,
+        top_width: TYPE_INPUT_VALUE = 2.0,
+        offset: TYPE_INPUT_VALUE = 1.0,
+        bottom_height: TYPE_INPUT_VALUE = 3.0,
+        top_height: TYPE_INPUT_VALUE = 1.0,
+        point_1: TYPE_INPUT_VECTOR = None,
+        point_2: TYPE_INPUT_VECTOR = None,
+        point_3: TYPE_INPUT_VECTOR = None,
+        point_4: TYPE_INPUT_VECTOR = None,
         mode: Literal[
             "RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"
         ] = "RECTANGLE",
     ):
         super().__init__()
-        key_args = {"Width": width, "Height": height}
+        key_args = {
+            "Width": width,
+            "Height": height,
+            "Bottom Width": bottom_width,
+            "Top Width": top_width,
+            "Offset": offset,
+            "Bottom Height": bottom_height,
+            "Top Height": top_height,
+            "Point 1": point_1,
+            "Point 2": point_2,
+            "Point 3": point_3,
+            "Point 4": point_4,
+        }
         self.mode = mode
         self._establish_links(**key_args)
 
@@ -2219,6 +2417,51 @@ class Quadrilateral(NodeBuilder):
     def i_height(self) -> SocketLinker:
         """Input socket: Height"""
         return self._input("Height")
+
+    @property
+    def i_bottom_width(self) -> SocketLinker:
+        """Input socket: Bottom Width"""
+        return self._input("Bottom Width")
+
+    @property
+    def i_top_width(self) -> SocketLinker:
+        """Input socket: Top Width"""
+        return self._input("Top Width")
+
+    @property
+    def i_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Offset")
+
+    @property
+    def i_bottom_height(self) -> SocketLinker:
+        """Input socket: Bottom Height"""
+        return self._input("Bottom Height")
+
+    @property
+    def i_top_height(self) -> SocketLinker:
+        """Input socket: Top Height"""
+        return self._input("Top Height")
+
+    @property
+    def i_point_1(self) -> SocketLinker:
+        """Input socket: Point 1"""
+        return self._input("Point 1")
+
+    @property
+    def i_point_2(self) -> SocketLinker:
+        """Input socket: Point 2"""
+        return self._input("Point 2")
+
+    @property
+    def i_point_3(self) -> SocketLinker:
+        """Input socket: Point 3"""
+        return self._input("Point 3")
+
+    @property
+    def i_point_4(self) -> SocketLinker:
+        """Input socket: Point 4"""
+        return self._input("Point 4")
 
     @property
     def o_curve(self) -> SocketLinker:
@@ -2611,6 +2854,7 @@ class SampleCurve(NodeBuilder):
         curves: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_VALUE = 0.0,
         factor: TYPE_INPUT_VALUE = 0.0,
+        length: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
         mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
         use_all_curves: bool = False,
@@ -2629,6 +2873,7 @@ class SampleCurve(NodeBuilder):
             "Curves": curves,
             "Value": value,
             "Factor": factor,
+            "Length": length,
             "Curve Index": curve_index,
         }
         self.mode = mode
@@ -2650,6 +2895,11 @@ class SampleCurve(NodeBuilder):
     def i_factor(self) -> SocketLinker:
         """Input socket: Factor"""
         return self._input("Factor")
+
+    @property
+    def i_length(self) -> SocketLinker:
+        """Input socket: Length"""
+        return self._input("Length")
 
     @property
     def i_curve_index(self) -> SocketLinker:
@@ -4486,6 +4736,7 @@ class StringToCurves(NodeBuilder):
         word_spacing: TYPE_INPUT_VALUE = 1.0,
         line_spacing: TYPE_INPUT_VALUE = 1.0,
         text_box_width: TYPE_INPUT_VALUE = 0.0,
+        text_box_height: TYPE_INPUT_VALUE = 0.0,
         overflow: Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"] = "OVERFLOW",
         align_x: Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"] = "LEFT",
         align_y: Literal[
@@ -4509,6 +4760,7 @@ class StringToCurves(NodeBuilder):
             "Word Spacing": word_spacing,
             "Line Spacing": line_spacing,
             "Text Box Width": text_box_width,
+            "Text Box Height": text_box_height,
         }
         self.overflow = overflow
         self.align_x = align_x
@@ -4547,9 +4799,19 @@ class StringToCurves(NodeBuilder):
         return self._input("Text Box Width")
 
     @property
+    def i_text_box_height(self) -> SocketLinker:
+        """Input socket: Text Box Height"""
+        return self._input("Text Box Height")
+
+    @property
     def o_curve_instances(self) -> SocketLinker:
         """Output socket: Curve Instances"""
         return self._output("Curve Instances")
+
+    @property
+    def o_remainder(self) -> SocketLinker:
+        """Output socket: Remainder"""
+        return self._output("Remainder")
 
     @property
     def o_line(self) -> SocketLinker:
@@ -4927,10 +5189,19 @@ class TrimCurve(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         start: TYPE_INPUT_VALUE = 0.0,
         end: TYPE_INPUT_VALUE = 1.0,
+        start_001: TYPE_INPUT_VALUE = 0.0,
+        end_001: TYPE_INPUT_VALUE = 1.0,
         mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
     ):
         super().__init__()
-        key_args = {"Curve": curve, "Selection": selection, "Start": start, "End": end}
+        key_args = {
+            "Curve": curve,
+            "Selection": selection,
+            "Start": start,
+            "End": end,
+            "Start_001": start_001,
+            "End_001": end_001,
+        }
         self.mode = mode
         self._establish_links(**key_args)
 
@@ -4953,6 +5224,16 @@ class TrimCurve(NodeBuilder):
     def i_end(self) -> SocketLinker:
         """Input socket: End"""
         return self._input("End")
+
+    @property
+    def i_start_001(self) -> SocketLinker:
+        """Input socket: Start"""
+        return self._input("Start_001")
+
+    @property
+    def i_end_001(self) -> SocketLinker:
+        """Input socket: End"""
+        return self._input("End_001")
 
     @property
     def o_curve(self) -> SocketLinker:

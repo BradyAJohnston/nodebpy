@@ -217,6 +217,11 @@ class ForEachGeometryElementInput(NodeBuilder):
         return self._output("Index")
 
     @property
+    def o_element(self) -> SocketLinker:
+        """Output socket: Element"""
+        return self._output("Element")
+
+    @property
     def o_input_socket(self) -> SocketLinker:
         """Output socket:"""
         return self._output("__extend__")

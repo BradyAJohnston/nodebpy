@@ -93,10 +93,18 @@ class DistributePointsInGrid(NodeBuilder):
         grid: TYPE_INPUT_VALUE = 0.0,
         density: TYPE_INPUT_VALUE = 1.0,
         seed: TYPE_INPUT_INT = 0,
+        spacing: TYPE_INPUT_VECTOR = None,
+        threshold: TYPE_INPUT_VALUE = 0.1,
         mode: Literal["DENSITY_RANDOM", "DENSITY_GRID"] = "DENSITY_RANDOM",
     ):
         super().__init__()
-        key_args = {"Grid": grid, "Density": density, "Seed": seed}
+        key_args = {
+            "Grid": grid,
+            "Density": density,
+            "Seed": seed,
+            "Spacing": spacing,
+            "Threshold": threshold,
+        }
         self.mode = mode
         self._establish_links(**key_args)
 
@@ -114,6 +122,16 @@ class DistributePointsInGrid(NodeBuilder):
     def i_seed(self) -> SocketLinker:
         """Input socket: Seed"""
         return self._input("Seed")
+
+    @property
+    def i_spacing(self) -> SocketLinker:
+        """Input socket: Spacing"""
+        return self._input("Spacing")
+
+    @property
+    def i_threshold(self) -> SocketLinker:
+        """Input socket: Threshold"""
+        return self._input("Threshold")
 
     @property
     def o_points(self) -> SocketLinker:
@@ -202,12 +220,10 @@ class FieldToGrid(NodeBuilder):
         self,
         topology: TYPE_INPUT_VALUE = 0.0,
         extend: None = None,
-        active_index: int = 0,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Topology": topology, "__extend__": extend}
-        self.active_index = active_index
         self.data_type = data_type
         self._establish_links(**key_args)
 
@@ -225,14 +241,6 @@ class FieldToGrid(NodeBuilder):
     def o_input_socket(self) -> SocketLinker:
         """Output socket:"""
         return self._output("__extend__")
-
-    @property
-    def active_index(self) -> int:
-        return self.node.active_index
-
-    @active_index.setter
-    def active_index(self, value: int):
-        self.node.active_index = value
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:

@@ -219,6 +219,7 @@ class GaborTexture(NodeBuilder):
         frequency: TYPE_INPUT_VALUE = 2.0,
         anisotropy: TYPE_INPUT_VALUE = 1.0,
         orientation_2d: TYPE_INPUT_VALUE = 0.7854,
+        orientation_3d: TYPE_INPUT_VECTOR = None,
         gabor_type: Literal["2D", "3D"] = "2D",
     ):
         super().__init__()
@@ -228,6 +229,7 @@ class GaborTexture(NodeBuilder):
             "Frequency": frequency,
             "Anisotropy": anisotropy,
             "Orientation 2D": orientation_2d,
+            "Orientation 3D": orientation_3d,
         }
         self.gabor_type = gabor_type
         self._establish_links(**key_args)
@@ -256,6 +258,11 @@ class GaborTexture(NodeBuilder):
     def i_orientation(self) -> SocketLinker:
         """Input socket: Orientation"""
         return self._input("Orientation 2D")
+
+    @property
+    def i_orientation_3d(self) -> SocketLinker:
+        """Input socket: Orientation"""
+        return self._input("Orientation 3D")
 
     @property
     def o_value(self) -> SocketLinker:
@@ -473,10 +480,13 @@ class NoiseTexture(NodeBuilder):
     def __init__(
         self,
         vector: TYPE_INPUT_VECTOR = None,
+        w: TYPE_INPUT_VALUE = 0.0,
         scale: TYPE_INPUT_VALUE = 5.0,
         detail: TYPE_INPUT_VALUE = 2.0,
         roughness: TYPE_INPUT_VALUE = 0.5,
         lacunarity: TYPE_INPUT_VALUE = 2.0,
+        offset: TYPE_INPUT_VALUE = 0.0,
+        gain: TYPE_INPUT_VALUE = 1.0,
         distortion: TYPE_INPUT_VALUE = 0.0,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
         noise_type: Literal[
@@ -491,10 +501,13 @@ class NoiseTexture(NodeBuilder):
         super().__init__()
         key_args = {
             "Vector": vector,
+            "W": w,
             "Scale": scale,
             "Detail": detail,
             "Roughness": roughness,
             "Lacunarity": lacunarity,
+            "Offset": offset,
+            "Gain": gain,
             "Distortion": distortion,
         }
         self.noise_dimensions = noise_dimensions
@@ -506,6 +519,11 @@ class NoiseTexture(NodeBuilder):
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
+
+    @property
+    def i_w(self) -> SocketLinker:
+        """Input socket: W"""
+        return self._input("W")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -526,6 +544,16 @@ class NoiseTexture(NodeBuilder):
     def i_lacunarity(self) -> SocketLinker:
         """Input socket: Lacunarity"""
         return self._input("Lacunarity")
+
+    @property
+    def i_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Offset")
+
+    @property
+    def i_gain(self) -> SocketLinker:
+        """Input socket: Gain"""
+        return self._input("Gain")
 
     @property
     def i_distortion(self) -> SocketLinker:
@@ -593,10 +621,13 @@ class VoronoiTexture(NodeBuilder):
     def __init__(
         self,
         vector: TYPE_INPUT_VECTOR = None,
+        w: TYPE_INPUT_VALUE = 0.0,
         scale: TYPE_INPUT_VALUE = 5.0,
         detail: TYPE_INPUT_VALUE = 0.0,
         roughness: TYPE_INPUT_VALUE = 0.5,
         lacunarity: TYPE_INPUT_VALUE = 2.0,
+        smoothness: TYPE_INPUT_VALUE = 1.0,
+        exponent: TYPE_INPUT_VALUE = 0.5,
         randomness: TYPE_INPUT_VALUE = 1.0,
         voronoi_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
         distance: Literal[
@@ -610,10 +641,13 @@ class VoronoiTexture(NodeBuilder):
         super().__init__()
         key_args = {
             "Vector": vector,
+            "W": w,
             "Scale": scale,
             "Detail": detail,
             "Roughness": roughness,
             "Lacunarity": lacunarity,
+            "Smoothness": smoothness,
+            "Exponent": exponent,
             "Randomness": randomness,
         }
         self.voronoi_dimensions = voronoi_dimensions
@@ -626,6 +660,11 @@ class VoronoiTexture(NodeBuilder):
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
+
+    @property
+    def i_w(self) -> SocketLinker:
+        """Input socket: W"""
+        return self._input("W")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -648,6 +687,16 @@ class VoronoiTexture(NodeBuilder):
         return self._input("Lacunarity")
 
     @property
+    def i_smoothness(self) -> SocketLinker:
+        """Input socket: Smoothness"""
+        return self._input("Smoothness")
+
+    @property
+    def i_exponent(self) -> SocketLinker:
+        """Input socket: Exponent"""
+        return self._input("Exponent")
+
+    @property
     def i_randomness(self) -> SocketLinker:
         """Input socket: Randomness"""
         return self._input("Randomness")
@@ -666,6 +715,16 @@ class VoronoiTexture(NodeBuilder):
     def o_position(self) -> SocketLinker:
         """Output socket: Position"""
         return self._output("Position")
+
+    @property
+    def o_w(self) -> SocketLinker:
+        """Output socket: W"""
+        return self._output("W")
+
+    @property
+    def o_radius(self) -> SocketLinker:
+        """Output socket: Radius"""
+        return self._output("Radius")
 
     @property
     def voronoi_dimensions(self) -> Literal["1D", "2D", "3D", "4D"]:
@@ -830,10 +889,11 @@ class WhiteNoiseTexture(NodeBuilder):
     def __init__(
         self,
         vector: TYPE_INPUT_VECTOR = None,
+        w: TYPE_INPUT_VALUE = 0.0,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
     ):
         super().__init__()
-        key_args = {"Vector": vector}
+        key_args = {"Vector": vector, "W": w}
         self.noise_dimensions = noise_dimensions
         self._establish_links(**key_args)
 
@@ -841,6 +901,11 @@ class WhiteNoiseTexture(NodeBuilder):
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
+
+    @property
+    def i_w(self) -> SocketLinker:
+        """Input socket: W"""
+        return self._input("W")
 
     @property
     def o_value(self) -> SocketLinker:

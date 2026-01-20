@@ -11,7 +11,6 @@ Run this script from within Blender to generate node classes:
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -49,6 +48,7 @@ class SocketInfo:
     default_value: Any = None
     min_value: Any = None
     max_value: Any = None
+    always_enabled: bool = True
 
 
 @dataclass
@@ -208,7 +208,7 @@ def format_python_value(value: Any) -> str:
     if value is None:
         return "None"
     elif isinstance(value, str):
-        return repr(value)
+        return repr(value) if value != "" else "''"
     elif isinstance(value, bool):
         return str(value)
     elif isinstance(value, int):
@@ -243,7 +243,9 @@ def introspect_node(node_type: type) -> NodeInfo | None:
         # Extract input sockets
         inputs = []
         for socket in node.inputs:
-            if not socket.enabled:
+            # if not socket.enabled:
+            #     continue
+            if socket.name == "__extend__":
                 continue
 
             socket_info = SocketInfo(
@@ -272,8 +274,10 @@ def introspect_node(node_type: type) -> NodeInfo | None:
         # Extract output sockets
         outputs = []
         for socket in node.outputs:
-            if not socket.enabled:
+            if socket.name == "__extend__":
                 continue
+            # if not socket.enabled:
+            #     continue
 
             socket_info = SocketInfo(
                 name=socket.name,
@@ -287,14 +291,14 @@ def introspect_node(node_type: type) -> NodeInfo | None:
 
         # Extract properties (enum menus, boolean flags, etc.)
         properties = []
-        parent_props = set()
+        props_to_ignore = {"active_index", "active_output"}
         for base in node_type.__bases__:
             if hasattr(base, "bl_rna"):
                 for prop in base.bl_rna.properties:
-                    parent_props.add(prop.identifier)
+                    props_to_ignore.add(prop.identifier)
 
         for prop in node_type.bl_rna.properties:
-            if prop.identifier in parent_props:
+            if prop.identifier in props_to_ignore:
                 continue
 
             if prop.type == "ENUM":
@@ -324,7 +328,7 @@ def introspect_node(node_type: type) -> NodeInfo | None:
                         name=prop.name,
                         prop_type=prop.type,
                         subtype=prop.subtype,
-                        default=prop.default,
+                        default=prop.default if not prop.type == "STRING" else "",
                     )
                 )
 
@@ -398,7 +402,7 @@ def generate_enum_class_methods(node_info: NodeInfo) -> str:
             ):
                 type_hint = get_socket_type_hint(socket)
                 input_params.append(
-                    f"{param_name}: {type_hint} = {socket.default_value}"
+                    f"{param_name}: {type_hint} = {format_python_value(socket.default_value)}"
                 )
                 # Use the same parameter name as in the constructor
                 call_params.append(f"{param_name}={param_name}")
@@ -587,7 +591,16 @@ def generate_node_class(node_info: NodeInfo) -> tuple[str, bool]:
                 case _:
                     raise ValueError(f"Unsupported property type: {prop.prop_type}")
             property_accessors.append(
-                f"    @property\n    def {prop_name}(self) -> {type}:\n        return self.node.{prop.identifier}\n\n    @{prop_name}.setter\n    def {prop_name}(self, value: {type}):\n        self.node.{prop.identifier} = value"
+                f"""\n
+    @property
+    def {prop_name}(self) -> {type}:
+        return self.node.{prop.identifier}
+
+    @{prop_name}.setter
+    def {prop_name}(self, value: {type}):
+        self.node.{prop.identifier} = value
+\n
+"""
             )
 
     # Generate enum convenience methods

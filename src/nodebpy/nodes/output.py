@@ -27,7 +27,6 @@ class Viewer(NodeBuilder):
         self,
         extend: None = None,
         ui_shortcut: int = 0,
-        active_index: int = 0,
         domain: Literal[
             "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ] = "AUTO",
@@ -35,7 +34,6 @@ class Viewer(NodeBuilder):
         super().__init__()
         key_args = {"__extend__": extend}
         self.ui_shortcut = ui_shortcut
-        self.active_index = active_index
         self.domain = domain
         self._establish_links(**key_args)
 
@@ -51,14 +49,6 @@ class Viewer(NodeBuilder):
     @ui_shortcut.setter
     def ui_shortcut(self, value: int):
         self.node.ui_shortcut = value
-
-    @property
-    def active_index(self) -> int:
-        return self.node.active_index
-
-    @active_index.setter
-    def active_index(self, value: int):
-        self.node.active_index = value
 
     @property
     def domain(
