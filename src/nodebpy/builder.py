@@ -24,6 +24,7 @@ from .nodes.types import (
     StringInterfaceSubtypes,
     VectorInterfaceSubtypes,
     _AttributeDomains,
+    _SocketShapeStructureType,
 )
 
 # from .arrange import arrange_tree
@@ -946,14 +947,78 @@ class SocketBase(SocketLinker):
         self.interface_socket.default_value = value
 
 
-class SocketGeometry(SocketBase):
-    """Geometry socket - holds mesh, curve, point cloud, or volume data."""
+class SocketFloat(SocketBase):
+    """Float socket"""
 
-    _bl_socket_type: str = "NodeSocketGeometry"
-    socket: bpy.types.NodeTreeInterfaceSocketGeometry
+    _bl_socket_type: str = "NodeSocketFloat"
+    socket: bpy.types.NodeTreeInterfaceSocketFloat
 
-    def __init__(self, name: str = "Geometry", description: str = ""):
+    def __init__(
+        self,
+        name: str = "Value",
+        default_value: float = 0.0,
+        description: str = "",
+        *,
+        min_value: float | None = None,
+        max_value: float | None = None,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        subtype: FloatInterfaceSubtypes = "NONE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
         super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+
+class SocketInt(SocketBase):
+    _bl_socket_type: str = "NodeSocketInt"
+    socket: bpy.types.NodeTreeInterfaceSocketInt
+
+    def __init__(
+        self,
+        name: str = "Integer",
+        default_value: int = 0,
+        description: str = "",
+        *,
+        min_value: int = -2147483648,
+        max_value: int = 2147483647,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        default_input: Literal["INDEX", "VALUE", "ID_OR_INDEX"] = "VALUE",
+        subtype: IntegerInterfaceSubtypes = "NONE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
 
 
 class SocketBoolean(SocketBase):
@@ -966,47 +1031,24 @@ class SocketBoolean(SocketBase):
         self,
         name: str = "Boolean",
         default_value: bool = False,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        layer_selection_field: bool = False,
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
-            attribute_domain=attribute_domain,
-            default_attribute=default_attribute,
-        )
-
-
-class SocketFloat(SocketBase):
-    """Float socket"""
-
-    _bl_socket_type: str = "NodeSocketFloat"
-    socket: bpy.types.NodeTreeInterfaceSocketFloat
-
-    def __init__(
-        self,
-        name: str = "Value",
-        default_value: float = 0.0,
-        *,
-        description: str = "",
-        min_value: float | None = None,
-        max_value: float | None = None,
-        subtype: FloatInterfaceSubtypes = "NONE",
-        hide_value: bool = False,
-        attribute_domain: _AttributeDomains = "POINT",
-        default_attribute: str | None = None,
-    ):
-        super().__init__(name, description)
-        self._set_values(
-            default_value=default_value,
-            min_value=min_value,
-            max_value=max_value,
-            subtype=subtype,
-            hide_value=hide_value,
+            layer_selection_field=layer_selection_field,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
@@ -1020,12 +1062,15 @@ class SocketVector(SocketBase):
         self,
         name: str = "Vector",
         default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
-        *,
         description: str = "",
+        *,
         dimensions: int = 3,
         min_value: float | None = None,
         max_value: float | None = None,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
         attribute_domain: _AttributeDomains = "POINT",
@@ -1039,39 +1084,13 @@ class SocketVector(SocketBase):
             default_value=default_value,
             min_value=min_value,
             max_value=max_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
             subtype=subtype,
             default_attribute=default_attribute,
             attribute_domain=attribute_domain,
-        )
-
-
-class SocketInt(SocketBase):
-    _bl_socket_type: str = "NodeSocketInt"
-    socket: bpy.types.NodeTreeInterfaceSocketInt
-
-    def __init__(
-        self,
-        name: str = "Integer",
-        default_value: int = 0,
-        *,
-        description: str = "",
-        min_value: int = -2147483648,
-        max_value: int = 2147483647,
-        hide_value: bool = False,
-        subtype: IntegerInterfaceSubtypes = "NONE",
-        attribute_domain: _AttributeDomains = "POINT",
-        default_attribute: str | None = None,
-    ):
-        super().__init__(name, description)
-        self._set_values(
-            default_value=default_value,
-            min_value=min_value,
-            max_value=max_value,
-            hide_value=hide_value,
-            subtype=subtype,
-            attribute_domain=attribute_domain,
-            default_attribute=default_attribute,
         )
 
 
@@ -1085,9 +1104,12 @@ class SocketColor(SocketBase):
         self,
         name: str = "Color",
         default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
@@ -1095,7 +1117,10 @@ class SocketColor(SocketBase):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
@@ -1111,16 +1136,22 @@ class SocketRotation(SocketBase):
         self,
         name: str = "Rotation",
         default_value: tuple[float, float, float] = (1.0, 0.0, 0.0),
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
@@ -1135,15 +1166,23 @@ class SocketMatrix(SocketBase):
     def __init__(
         self,
         name: str = "Matrix",
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        default_input: Literal["VALUE", "INSTANCE_TRANSFORM"] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ):
         super().__init__(name, description)
         self._set_values(
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
@@ -1157,15 +1196,19 @@ class SocketString(SocketBase):
         self,
         name: str = "String",
         default_value: str = "",
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
         subtype: StringInterfaceSubtypes = "NONE",
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
             subtype=subtype,
         )
 
@@ -1180,16 +1223,22 @@ class SocketMenu(SocketBase):
         self,
         name: str = "Menu",
         default_value: str | None = None,
-        *,
         description: str = "",
+        *,
         expanded: bool = False,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
             menu_expanded=expanded,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
         )
 
 
@@ -1203,14 +1252,41 @@ class SocketObject(SocketBase):
         self,
         name: str = "Object",
         default_value: bpy.types.Object | None = None,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+
+class SocketGeometry(SocketBase):
+    """Geometry socket - holds mesh, curve, point cloud, or volume data."""
+
+    _bl_socket_type: str = "NodeSocketGeometry"
+    socket: bpy.types.NodeTreeInterfaceSocketGeometry
+
+    def __init__(
+        self,
+        name: str = "Geometry",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -1224,14 +1300,18 @@ class SocketCollection(SocketBase):
         self,
         name: str = "Collection",
         default_value: bpy.types.Collection | None = None,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -1245,14 +1325,18 @@ class SocketImage(SocketBase):
         self,
         name: str = "Image",
         default_value: bpy.types.Image | None = None,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -1266,14 +1350,18 @@ class SocketMaterial(SocketBase):
         self,
         name: str = "Material",
         default_value: bpy.types.Material | None = None,
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
             default_value=default_value,
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -1286,13 +1374,17 @@ class SocketBundle(SocketBase):
     def __init__(
         self,
         name: str = "Bundle",
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )
 
 
@@ -1305,11 +1397,15 @@ class SocketClosure(SocketBase):
     def __init__(
         self,
         name: str = "Closure",
-        *,
         description: str = "",
+        *,
+        optional_label: bool = False,
         hide_value: bool = False,
+        hide_in_modifier: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
+            optional_label=optional_label,
             hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
         )

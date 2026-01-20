@@ -213,6 +213,8 @@ _StoreNamedAttributeTypes = Literal[
     "BYTE_COLOR",
 ]
 
+_SocketShapeStructureType = Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "SINGLE"]
+
 _VectorMathOperations = Literal[
     "ADD",
     "SUBTRACT",

@@ -2847,6 +2847,7 @@ class Switch(NodeBuilder):
         input_type: SOCKET_TYPES = "GEOMETRY",
     ):
         super().__init__()
+        self.input_type = input_type
         key_args = {"Switch": switch, "False": false, "True": true}
         self._establish_links(**key_args)
 
