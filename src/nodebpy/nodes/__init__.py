@@ -39,7 +39,6 @@ from .converter import (
     Math,
     MatrixDeterminant,
     Mix,
-    MixLegacy,
     MultiplyMatrices,
     PackUVIslands,
     ProjectPoint,
@@ -97,7 +96,6 @@ from .input import (
     FaceNeighbors,
     FaceSet,
     FaceOfCorner,
-    HandleTypeSelection,
     ID,
     Image,
     ImageInfo,
@@ -227,7 +225,6 @@ from .geometry import (
     SetGreasePencilDepth,
     SetGreasePencilSoftness,
     SetHandlePositions,
-    SetHandleType,
     SetID,
     SetInstanceTransform,
     SetMaterial,
@@ -315,7 +312,6 @@ from .texture import (
 )
 from .experimental import GetListItem, List, ListLength
 from .output import Viewer
-from .utilities.py import Frame, Reroute
 from .vector import RadialTiling, VectorCurves, VectorRotate
 
 __all__ = (
@@ -409,7 +405,6 @@ __all__ = (
     "ForEachGeometryElementInput",
     "ForEachGeometryElementOutput",
     "FormatString",
-    "Frame",
     "GaborTexture",
     "Gamma",
     "GeometryProximity",
@@ -428,7 +423,6 @@ __all__ = (
     "Group",
     "GroupInput",
     "GroupOutput",
-    "HandleTypeSelection",
     "HashValue",
     "ID",
     "IcoSphere",
@@ -484,7 +478,6 @@ __all__ = (
     "MeshToSDFGrid",
     "MeshToVolume",
     "Mix",
-    "MixLegacy",
     "MousePosition",
     "MultiplyMatrices",
     "NamedAttribute",
@@ -516,7 +509,6 @@ __all__ = (
     "RemoveNamedAttribute",
     "ReplaceMaterial",
     "ReplaceString",
-    "Reroute",
     "ResampleCurve",
     "ReverseCurve",
     "RgbCurves",
@@ -565,7 +557,6 @@ __all__ = (
     "SetGridBackground",
     "SetGridTransform",
     "SetHandlePositions",
-    "SetHandleType",
     "SetID",
     "SetInstanceTransform",
     "SetMaterial",

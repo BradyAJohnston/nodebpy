@@ -12,6 +12,13 @@ from .types import (
     TYPE_INPUT_STRING,
     TYPE_INPUT_ROTATION,
     TYPE_INPUT_COLOR,
+    TYPE_INPUT_MATRIX,
+    TYPE_INPUT_BUNDLE,
+    TYPE_INPUT_CLOSURE,
+    TYPE_INPUT_OBJECT,
+    TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_IMAGE,
+    TYPE_INPUT_MATERIAL,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
@@ -3424,138 +3431,6 @@ class Mix(NodeBuilder):
     @clamp_result.setter
     def clamp_result(self, value: bool):
         self.node.clamp_result = value
-
-
-class MixLegacy(NodeBuilder):
-    """Mix two input colors"""
-
-    name = "ShaderNodeMixRGB"
-    node: bpy.types.ShaderNodeMixRGB
-
-    def __init__(
-        self,
-        fac: TYPE_INPUT_VALUE = 0.5,
-        color1: TYPE_INPUT_COLOR = None,
-        color2: TYPE_INPUT_COLOR = None,
-        blend_type: Literal[
-            "MIX",
-            "DARKEN",
-            "MULTIPLY",
-            "BURN",
-            "LIGHTEN",
-            "SCREEN",
-            "DODGE",
-            "ADD",
-            "OVERLAY",
-            "SOFT_LIGHT",
-            "LINEAR_LIGHT",
-            "DIFFERENCE",
-            "EXCLUSION",
-            "SUBTRACT",
-            "DIVIDE",
-            "HUE",
-            "SATURATION",
-            "COLOR",
-            "VALUE",
-        ] = "MIX",
-        use_alpha: bool = False,
-        use_clamp: bool = False,
-    ):
-        super().__init__()
-        key_args = {"Fac": fac, "Color1": color1, "Color2": color2}
-        self.blend_type = blend_type
-        self.use_alpha = use_alpha
-        self.use_clamp = use_clamp
-        self._establish_links(**key_args)
-
-    @property
-    def i_factor(self) -> SocketLinker:
-        """Input socket: Factor"""
-        return self._input("Fac")
-
-    @property
-    def i_color1(self) -> SocketLinker:
-        """Input socket: Color1"""
-        return self._input("Color1")
-
-    @property
-    def i_color2(self) -> SocketLinker:
-        """Input socket: Color2"""
-        return self._input("Color2")
-
-    @property
-    def o_color(self) -> SocketLinker:
-        """Output socket: Color"""
-        return self._output("Color")
-
-    @property
-    def blend_type(
-        self,
-    ) -> Literal[
-        "MIX",
-        "DARKEN",
-        "MULTIPLY",
-        "BURN",
-        "LIGHTEN",
-        "SCREEN",
-        "DODGE",
-        "ADD",
-        "OVERLAY",
-        "SOFT_LIGHT",
-        "LINEAR_LIGHT",
-        "DIFFERENCE",
-        "EXCLUSION",
-        "SUBTRACT",
-        "DIVIDE",
-        "HUE",
-        "SATURATION",
-        "COLOR",
-        "VALUE",
-    ]:
-        return self.node.blend_type
-
-    @blend_type.setter
-    def blend_type(
-        self,
-        value: Literal[
-            "MIX",
-            "DARKEN",
-            "MULTIPLY",
-            "BURN",
-            "LIGHTEN",
-            "SCREEN",
-            "DODGE",
-            "ADD",
-            "OVERLAY",
-            "SOFT_LIGHT",
-            "LINEAR_LIGHT",
-            "DIFFERENCE",
-            "EXCLUSION",
-            "SUBTRACT",
-            "DIVIDE",
-            "HUE",
-            "SATURATION",
-            "COLOR",
-            "VALUE",
-        ],
-    ):
-        self.node.blend_type = value
-
-    @property
-    def use_alpha(self) -> bool:
-        return self.node.use_alpha
-
-    @use_alpha.setter
-    def use_alpha(self, value: bool):
-        self.node.use_alpha = value
-
-    @property
-    def use_clamp(self) -> bool:
-        return self.node.use_clamp
-
-    @use_clamp.setter
-    def use_clamp(self, value: bool):
-        self.node.use_clamp = value
 
 
 class MultiplyMatrices(NodeBuilder):

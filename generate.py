@@ -31,6 +31,10 @@ NODES_TO_SKIP = [
     "JoinGeometry",
     "AlignEulerToVector",
     "Legacy",
+    "HandleType",
+    "CurveSetHandles",
+    "Frame",
+    "Reroute",
 ]
 
 
@@ -74,6 +78,7 @@ class NodeInfo:
     inputs: list[SocketInfo]
     outputs: list[SocketInfo]
     properties: list[PropertyInfo]
+    domain_sockets: dict[str, list[SocketInfo]]
 
     @property
     def class_name(self):
@@ -227,6 +232,40 @@ def format_python_value(value: Any) -> str:
             return "None"
 
 
+def collect_socket_info(
+    *sockets: bpy.types.NodeSocket, hidden=False
+) -> list[SocketInfo]:
+    """Extract socket infos for a current node state"""
+    inputs = []
+    for socket in sockets:
+        if (not socket.enabled and not hidden) or socket.name == "__extend__":
+            continue
+
+        socket_info = SocketInfo(
+            name=socket.name,
+            identifier=socket.identifier,
+            label=getattr(socket, "label", ""),  # Capture socket label
+            bl_socket_type=type(socket).__name__,
+            socket_type=socket.type,
+            is_output=False,
+            is_multi_input=getattr(socket, "is_multi_input", False),
+        )
+
+        if hasattr(socket, "default_value"):
+            value = socket.default_value
+            if isinstance(value, (Euler, Vector, bpy_prop_array)):
+                value = list(value)
+            socket_info.default_value = value
+
+        if hasattr(socket, "min_value"):
+            socket_info.min_value = socket.min_value
+        if hasattr(socket, "max_value"):
+            socket_info.max_value = socket.max_value
+
+        inputs.append(socket_info)
+    return inputs
+
+
 def introspect_node(node_type: type) -> NodeInfo | None:
     """Introspect a Blender node type and extract all information."""
     try:
@@ -240,54 +279,8 @@ def introspect_node(node_type: type) -> NodeInfo | None:
         description = node_type.bl_rna.description or f"{name} node"
         color_tag = getattr(node, "color_tag", "UTILITY")
 
-        # Extract input sockets
-        inputs = []
-        for socket in node.inputs:
-            # if not socket.enabled:
-            #     continue
-            if socket.name == "__extend__":
-                continue
-
-            socket_info = SocketInfo(
-                name=socket.name,
-                identifier=socket.identifier,
-                label=getattr(socket, "label", ""),  # Capture socket label
-                bl_socket_type=type(socket).__name__,
-                socket_type=socket.type,
-                is_output=False,
-                is_multi_input=getattr(socket, "is_multi_input", False),
-            )
-
-            if hasattr(socket, "default_value"):
-                value = socket.default_value
-                if isinstance(value, (Euler, Vector, bpy_prop_array)):
-                    value = list(value)
-                socket_info.default_value = value
-
-            if hasattr(socket, "min_value"):
-                socket_info.min_value = socket.min_value
-            if hasattr(socket, "max_value"):
-                socket_info.max_value = socket.max_value
-
-            inputs.append(socket_info)
-
-        # Extract output sockets
-        outputs = []
-        for socket in node.outputs:
-            if socket.name == "__extend__":
-                continue
-            # if not socket.enabled:
-            #     continue
-
-            socket_info = SocketInfo(
-                name=socket.name,
-                identifier=socket.identifier,
-                label=getattr(socket, "label", ""),  # Capture socket label
-                bl_socket_type=type(socket).__name__,
-                socket_type=socket.type,
-                is_output=True,
-            )
-            outputs.append(socket_info)
+        inputs = collect_socket_info(*node.inputs, hidden=True)
+        outputs = collect_socket_info(*node.outputs, hidden=True)
 
         # Extract properties (enum menus, boolean flags, etc.)
         properties = []
@@ -343,6 +336,7 @@ def introspect_node(node_type: type) -> NodeInfo | None:
             inputs=inputs,
             outputs=outputs,
             properties=properties,
+            domain_sockets={},
         )
 
     except Exception as e:
@@ -666,6 +660,13 @@ from .types import (
     TYPE_INPUT_STRING,
     TYPE_INPUT_ROTATION,
     TYPE_INPUT_COLOR,
+    TYPE_INPUT_MATRIX,
+    TYPE_INPUT_BUNDLE,
+    TYPE_INPUT_CLOSURE,
+    TYPE_INPUT_OBJECT,
+    TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_IMAGE,
+    TYPE_INPUT_MATERIAL,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
@@ -810,7 +811,9 @@ def generate_all():
     skipped_count = 0
 
     for node_type in all_nodes:
-        if any([n in node_type.__name__ for n in NODES_TO_SKIP]):
+        if any([n in node_type.__name__ for n in NODES_TO_SKIP]) or any(
+            [n in node_type.bl_rna.name for n in NODES_TO_SKIP]
+        ):
             print(f"  Skipping manually specified node: {node_type.__name__}")
             skipped_count += 1
             continue
