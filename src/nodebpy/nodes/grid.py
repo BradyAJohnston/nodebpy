@@ -37,6 +37,7 @@ class AdvectGrid(NodeBuilder):
         time_step: TYPE_INPUT_VALUE = 1.0,
         integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
         limiter: TYPE_INPUT_MENU = "Clamp",
+        *,
         data_type: Literal["FLOAT", "INT", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
@@ -102,6 +103,7 @@ class DistributePointsInGrid(NodeBuilder):
         seed: TYPE_INPUT_INT = 0,
         spacing: TYPE_INPUT_VECTOR = None,
         threshold: TYPE_INPUT_VALUE = 0.1,
+        *,
         mode: Literal["DENSITY_RANDOM", "DENSITY_GRID"] = "DENSITY_RANDOM",
     ):
         super().__init__()
@@ -226,11 +228,11 @@ class FieldToGrid(NodeBuilder):
     def __init__(
         self,
         topology: TYPE_INPUT_VALUE = 0.0,
-        extend: None = None,
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
-        key_args = {"Topology": topology, "__extend__": extend}
+        key_args = {"Topology": topology}
         self.data_type = data_type
         self._establish_links(**key_args)
 
@@ -238,16 +240,6 @@ class FieldToGrid(NodeBuilder):
     def i_topology(self) -> SocketLinker:
         """Input socket: Topology"""
         return self._input("Topology")
-
-    @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__")
-
-    @property
-    def o_input_socket(self) -> SocketLinker:
-        """Output socket:"""
-        return self._output("__extend__")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -269,6 +261,7 @@ class GetNamedGrid(NodeBuilder):
         volume: TYPE_INPUT_GEOMETRY = None,
         name: TYPE_INPUT_STRING = "",
         remove: TYPE_INPUT_BOOLEAN = True,
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
@@ -388,6 +381,7 @@ class GridInfo(NodeBuilder):
     def __init__(
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
@@ -742,6 +736,7 @@ class PruneGrid(NodeBuilder):
         grid: TYPE_INPUT_VALUE = 0.0,
         mode: TYPE_INPUT_MENU = "Threshold",
         threshold: TYPE_INPUT_VALUE = 0.01,
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
@@ -788,6 +783,7 @@ class SDFGridBoolean(NodeBuilder):
         self,
         grid_1: TYPE_INPUT_VALUE = 0.0,
         grid_2: TYPE_INPUT_VALUE = 0.0,
+        *,
         operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
     ):
         super().__init__()
@@ -796,18 +792,14 @@ class SDFGridBoolean(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def intersect(
-        cls, grid_1: TYPE_INPUT_VALUE = 0.0, grid_2: TYPE_INPUT_VALUE = 0.0
-    ) -> "SDFGridBoolean":
+    def intersect(cls, grid_2: TYPE_INPUT_VALUE = 0.0) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Intersect'."""
-        return cls(operation="INTERSECT", grid_1=grid_1, grid_2=grid_2)
+        return cls(operation="INTERSECT", grid_2=grid_2)
 
     @classmethod
-    def union(
-        cls, grid_1: TYPE_INPUT_VALUE = 0.0, grid_2: TYPE_INPUT_VALUE = 0.0
-    ) -> "SDFGridBoolean":
+    def union(cls, grid_2: TYPE_INPUT_VALUE = 0.0) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Union'."""
-        return cls(operation="UNION", grid_1=grid_1, grid_2=grid_2)
+        return cls(operation="UNION", grid_2=grid_2)
 
     @classmethod
     def difference(
@@ -1055,6 +1047,7 @@ class SampleGrid(NodeBuilder):
         grid: TYPE_INPUT_VALUE = 0.0,
         position: TYPE_INPUT_VECTOR = None,
         interpolation: TYPE_INPUT_MENU = "Trilinear",
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
@@ -1103,6 +1096,7 @@ class SampleGridIndex(NodeBuilder):
         x: TYPE_INPUT_INT = 0,
         y: TYPE_INPUT_INT = 0,
         z: TYPE_INPUT_INT = 0,
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
@@ -1154,6 +1148,7 @@ class SetGridBackground(NodeBuilder):
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
         background: TYPE_INPUT_VALUE = 0.0,
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
@@ -1195,6 +1190,7 @@ class SetGridTransform(NodeBuilder):
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
         transform: TYPE_INPUT_MATRIX = None,
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
@@ -1242,6 +1238,7 @@ class StoreNamedGrid(NodeBuilder):
         volume: TYPE_INPUT_GEOMETRY = None,
         name: TYPE_INPUT_STRING = "",
         grid: TYPE_INPUT_VALUE = 0.0,
+        *,
         data_type: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"] = "FLOAT",
     ):
         super().__init__()
@@ -1420,6 +1417,7 @@ class VoxelizeGrid(NodeBuilder):
     def __init__(
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
+        *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()

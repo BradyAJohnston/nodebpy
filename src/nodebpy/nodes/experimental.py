@@ -34,6 +34,7 @@ class GetListItem(NodeBuilder):
         self,
         list: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
+        *,
         data_type: Literal[
             "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ] = "FLOAT",
@@ -86,6 +87,7 @@ class List(NodeBuilder):
         self,
         count: TYPE_INPUT_INT = 1,
         value: TYPE_INPUT_VALUE = 0.0,
+        *,
         data_type: Literal[
             "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ] = "FLOAT",
@@ -137,6 +139,7 @@ class ListLength(NodeBuilder):
     def __init__(
         self,
         list: TYPE_INPUT_VALUE = 0.0,
+        *,
         data_type: Literal[
             "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX", "MENU"
         ] = "FLOAT",

@@ -35,6 +35,7 @@ class AttributeStatistic(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         attribute: TYPE_INPUT_VALUE = 0.0,
+        *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
@@ -49,6 +50,93 @@ class AttributeStatistic(NodeBuilder):
         self.data_type = data_type
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        attribute: TYPE_INPUT_VECTOR = None,
+    ) -> "AttributeStatistic":
+        """Create Attribute Statistic with operation 'Point'."""
+        return cls(
+            domain="POINT", geometry=geometry, selection=selection, attribute=attribute
+        )
+
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        attribute: TYPE_INPUT_VECTOR = None,
+    ) -> "AttributeStatistic":
+        """Create Attribute Statistic with operation 'Edge'."""
+        return cls(
+            domain="EDGE", geometry=geometry, selection=selection, attribute=attribute
+        )
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        attribute: TYPE_INPUT_VECTOR = None,
+    ) -> "AttributeStatistic":
+        """Create Attribute Statistic with operation 'Face'."""
+        return cls(
+            domain="FACE", geometry=geometry, selection=selection, attribute=attribute
+        )
+
+    @classmethod
+    def corner(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        attribute: TYPE_INPUT_VECTOR = None,
+    ) -> "AttributeStatistic":
+        """Create Attribute Statistic with operation 'Face Corner'."""
+        return cls(
+            domain="CORNER", geometry=geometry, selection=selection, attribute=attribute
+        )
+
+    @classmethod
+    def curve(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        attribute: TYPE_INPUT_VECTOR = None,
+    ) -> "AttributeStatistic":
+        """Create Attribute Statistic with operation 'Spline'."""
+        return cls(
+            domain="CURVE", geometry=geometry, selection=selection, attribute=attribute
+        )
+
+    @classmethod
+    def instance(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        attribute: TYPE_INPUT_VECTOR = None,
+    ) -> "AttributeStatistic":
+        """Create Attribute Statistic with operation 'Instance'."""
+        return cls(
+            domain="INSTANCE",
+            geometry=geometry,
+            selection=selection,
+            attribute=attribute,
+        )
+
+    @classmethod
+    def layer(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        attribute: TYPE_INPUT_VECTOR = None,
+    ) -> "AttributeStatistic":
+        """Create Attribute Statistic with operation 'Layer'."""
+        return cls(
+            domain="LAYER", geometry=geometry, selection=selection, attribute=attribute
+        )
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -138,6 +226,7 @@ class BlurAttribute(NodeBuilder):
         value: TYPE_INPUT_VALUE = 0.0,
         iterations: TYPE_INPUT_INT = 1,
         weight: TYPE_INPUT_VALUE = 1.0,
+        *,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"] = "FLOAT",
     ):
         super().__init__()
@@ -183,6 +272,7 @@ class DomainSize(NodeBuilder):
     def __init__(
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
+        *,
         component: Literal[
             "MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"
         ] = "MESH",
@@ -295,6 +385,7 @@ class StoreNamedAttribute(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
         value: TYPE_INPUT_VALUE = 0.0,
+        *,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -321,6 +412,125 @@ class StoreNamedAttribute(NodeBuilder):
         self.data_type = data_type
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Point'."""
+        return cls(
+            domain="POINT",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Edge'."""
+        return cls(
+            domain="EDGE",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Face'."""
+        return cls(
+            domain="FACE",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def corner(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Face Corner'."""
+        return cls(
+            domain="CORNER",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def curve(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Spline'."""
+        return cls(
+            domain="CURVE",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def instance(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Instance'."""
+        return cls(
+            domain="INSTANCE",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def layer(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Layer'."""
+        return cls(
+            domain="LAYER",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
 
     @property
     def i_geometry(self) -> SocketLinker:

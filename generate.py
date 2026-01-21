@@ -24,10 +24,10 @@ NODES_TO_SKIP = [
     "Closure",
     "Simulation",
     "Repeat",
-    "ForEach",
-    "IndexSwitch",
-    "MenuSwitch",
-    "VectorMath",
+    "For Each",
+    "Index Switch",
+    "Menu Switch",
+    # "Math",
     "CaptureAttribute",
     "JoinGeometry",
     "AlignEulerToVector",
@@ -57,6 +57,25 @@ class SocketInfo:
     max_value: Any = None
     always_enabled: bool = True
 
+    def format_property(self) -> str:
+        """Generate the property string for this socket."""
+        prop_name = "{}_{}".format(
+            "o" if self.is_output else "i", normalize_name(self.identifier)
+        )
+        socket_type_annotation = get_socket_type_annotation(self)
+        description = "{} socket: {}".format(
+            "Output" if self.is_output else "Input", self.name
+        )
+        if self.description != "":
+            description += f"\n        {self.description}\n        "
+
+        return f'''
+    @property
+    def {prop_name}(self) -> {socket_type_annotation}:
+        """{description}"""
+        return self._{"output" if self.is_output else "input"}("{self.identifier}")
+'''
+
 
 @dataclass
 class EnumInfo:
@@ -79,18 +98,46 @@ class PropertyInfo:
     enum_items: list[EnumInfo] | None = None
     default: Any = None
 
+    def enum_values_to_literal(self) -> str:
+        if self.enum_items is None:
+            return ""
+        return (
+            f"Literal[{', '.join(repr(item.identifier) for item in self.enum_items)}]"
+        )
+
     def format_name(self) -> str:
         prop_name = normalize_name(self.identifier)
         if prop_name in ["primary_axis", "secondary_axis"]:
             prop_name = prop_name.replace("_axis", "")
         return prop_name
 
-    def format_propery_accessors(self) -> str:
+    def format_property_argument(self) -> str:
+        match self.prop_type:
+            case "ENUM":
+                type = self.enum_values_to_literal()
+                default = f'"{self.default}"'
+            case "BOOLEAN":
+                type = "bool"
+                default = self.default
+            case "INT":
+                type = "int"
+                default = self.default
+            case "FLOAT":
+                type = "float"
+                default = round(self.default, 3)
+            case "STRING":
+                type = "str"
+                default = f'"{self.default}"'
+            case _:
+                raise ValueError(f"Unsupported property type: {self.prop_type}")
+
+        return "{}: {} = {}".format(self.format_name(), type, default)
+
+    def format_property_accessors(self) -> str:
         prop_name = self.format_name()
         match self.prop_type:
             case "ENUM":
-                assert self.enum_items is not None
-                type = enum_values_to_literal(self.enum_items)
+                type = self.enum_values_to_literal()
             case "BOOLEAN":
                 type = "bool"
             case "INT":
@@ -137,6 +184,78 @@ class NodeInfo:
     def class_name(self):
         return python_class_name(self.name)
 
+    def generate_enum_class_methods(self) -> str:
+        """Generate @classmethod convenience methods for enum operations."""
+        methods = []
+
+        for prop in self.properties:
+            if not prop.identifier in ["operation", "domain"]:
+                continue
+
+            # assert operation_enum.enum_items
+            for enum in prop.enum_items:
+                # Handle special cases for better naming
+                method_name = enum.identifier.lower()
+                method_name = method_name.replace("_", "")
+                if method_name == "and":
+                    method_name = "l_and"
+                elif method_name == "or":
+                    method_name = "l_or"
+                elif method_name == "not":
+                    method_name = "l_not"
+                else:
+                    # Add underscore suffix to avoid Python keyword conflicts for others
+                    method_name = f"{method_name}"
+
+                # Skip invalid method names
+                if not method_name.replace("_", "").replace("l", "").isalnum():
+                    continue
+
+                # Generate method signature based on node inputs (excluding operation socket)
+                input_params = ["cls"]
+                call_params = []
+
+                all_labels = [socket.identifier for socket in enum.sockets]
+                sockets_use_same_name = all(
+                    label == all_labels[0] for label in all_labels
+                )
+                for socket in enum.sockets:
+                    # Use label-based parameter naming
+                    param_name = get_socket_param_name(socket, sockets_use_same_name)
+                    if (
+                        param_name
+                        and param_name != ""
+                        and param_name != normalize_name(prop.identifier)
+                    ):
+                        type_hint = get_socket_type_hint(socket)
+                        input_params.append(
+                            f"{param_name}: {type_hint} = {format_python_value(socket.default_value)}"
+                        )
+                        # Use the same parameter name as in the constructor
+                        call_params.append(f"{param_name}={param_name}")
+
+                params_str = ",\n        ".join(input_params)
+                call_params_str = ", ".join(call_params)
+
+                # Add operation parameter to call
+                operation_param = f'{prop.identifier}="{enum.identifier}"'
+                if call_params_str:
+                    call_params_str = f"{operation_param}, {call_params_str}"
+                else:
+                    call_params_str = operation_param
+
+                method = f'''
+    @classmethod
+    def {method_name}(
+        {params_str}
+    ) -> "{self.class_name}":
+        """Create {self.name} with operation '{enum.name}'."""
+        return cls({call_params_str})'''
+
+                methods.append(method)
+
+        return "".join(methods)
+
 
 def normalize_name(name: str) -> str:
     """Convert 'Geometry' or 'My Socket' to 'geometry' or 'my_socket'.
@@ -167,6 +286,7 @@ def get_socket_param_name(socket: SocketInfo, use_identifier: bool = False) -> s
     """Get the best parameter name for a socket, preferring label over name."""
     # Use label if available and non-empty, otherwise fallback to name
     # if sockets all use the same label name, we need to drop back to using the iden
+    return normalize_name(socket.identifier)
     if use_identifier:
         return normalize_name(socket.identifier)
     else:
@@ -293,7 +413,7 @@ def collect_socket_info(
     """Extract socket infos for a current node state"""
     inputs = []
     for socket in sockets:
-        if (socket.is_inactive and not hidden) or "__extend__" in socket.name:
+        if (socket.is_inactive and not hidden) or "__extend__" in socket.identifier:
             continue
 
         socket_info = SocketInfo(
@@ -419,127 +539,6 @@ def introspect_node(node_type: type) -> NodeInfo | None:
         return None
 
 
-def generate_enum_class_methods(node_info: NodeInfo) -> str:
-    """Generate @classmethod convenience methods for enum operations."""
-    methods = []
-
-    for prop in node_info.properties:
-        if not prop.identifier == "operation":
-            continue
-
-        # assert operation_enum.enum_items
-        for enum in prop.enum_items:
-            # Handle special cases for better naming
-            method_name = enum.identifier.lower()
-            method_name = method_name.replace("_", "")
-            if method_name == "and":
-                method_name = "l_and"
-            elif method_name == "or":
-                method_name = "l_or"
-            elif method_name == "not":
-                method_name = "l_not"
-            else:
-                # Add underscore suffix to avoid Python keyword conflicts for others
-                method_name = f"{method_name}"
-
-            # Skip invalid method names
-            if not method_name.replace("_", "").replace("l", "").isalnum():
-                continue
-
-            # Generate method signature based on node inputs (excluding operation socket)
-            input_params = ["cls"]
-            call_params = []
-
-            all_labels = [socket.label for socket in node_info.inputs]
-            sockets_use_same_name = all(label == all_labels[0] for label in all_labels)
-            for socket in node_info.inputs:
-                # Use label-based parameter naming
-                param_name = get_socket_param_name(socket, sockets_use_same_name)
-                if (
-                    param_name
-                    and param_name != ""
-                    and param_name != normalize_name(prop.identifier)
-                ):
-                    type_hint = get_socket_type_hint(socket)
-                    input_params.append(
-                        f"{param_name}: {type_hint} = {format_python_value(socket.default_value)}"
-                    )
-                    # Use the same parameter name as in the constructor
-                    call_params.append(f"{param_name}={param_name}")
-
-            params_str = ",\n        ".join(input_params)
-            call_params_str = ", ".join(call_params)
-
-            # Add operation parameter to call
-            operation_param = f'{prop.identifier}="{enum.identifier}"'
-            if call_params_str:
-                call_params_str = f"{operation_param}, {call_params_str}"
-            else:
-                call_params_str = operation_param
-
-            method = f'''
-    @classmethod
-    def {method_name}(
-        {params_str}
-    ) -> "{node_info.class_name}":
-        """Create {node_info.name} with operation '{enum.name}'."""
-        return cls({call_params_str})'''
-
-            methods.append(method)
-
-    return "".join(methods)
-
-
-def socket_to_string(socket: SocketInfo) -> str:
-    prop_name = "{}_{}".format(
-        "o" if socket.is_output else "i", normalize_name(socket.name)
-    )
-    socket_type_annotation = get_socket_type_annotation(socket)
-    description = "{} socket: {}".format(
-        "Output" if socket.is_output else "Input", socket.name
-    )
-    if socket.description != "":
-        description += f"\n        {socket.description}\n        "
-
-    return f'''
-    @property
-    def {prop_name}(self) -> {socket_type_annotation}:
-        """{description}"""
-        return self._{"output" if socket.is_output else "input"}("{socket.identifier}")
-'''
-
-
-def enum_values_to_literal(enum_items: list[EnumInfo]) -> str:
-    return f"Literal[{', '.join(repr(item.identifier) for item in enum_items)}]"
-
-
-def property_to_string_accessor(prop: PropertyInfo) -> str:
-    prop_name = prop.format_name()
-
-
-def property_to_string_argument(prop: PropertyInfo) -> str:
-    match prop.prop_type:
-        case "ENUM":
-            type = enum_values_to_literal(prop.enum_items) if prop.enum_items else ""
-            default = f'"{prop.default}"'
-        case "BOOLEAN":
-            type = "bool"
-            default = prop.default
-        case "INT":
-            type = "int"
-            default = prop.default
-        case "FLOAT":
-            type = "float"
-            default = round(prop.default, 3)
-        case "STRING":
-            type = "str"
-            default = f'"{prop.default}"'
-        case _:
-            raise ValueError(f"Unsupported property type: {prop.type}")
-
-    return "{}: {} = {}".format(prop.format_name(), type, default)
-
-
 def generate_node_class(node_info: NodeInfo) -> str:
     """Generate Python class code for a node.
 
@@ -568,9 +567,10 @@ def generate_node_class(node_info: NodeInfo) -> str:
     # Add properties as parameters
     for i, prop in enumerate(node_info.properties):
         if i == 0:
-            init_params.append("*")
+            if len(node_info.inputs) > 0:
+                init_params.append("*")
 
-        init_params.append(property_to_string_argument(prop))
+        init_params.append(prop.format_property_argument())
 
     # Format init signature
     if len(init_params) > 2:  # If more than just self
@@ -603,15 +603,15 @@ def generate_node_class(node_info: NodeInfo) -> str:
     property_setting = "\n".join(property_calls)
 
     # Generate input properties
-    input_properties = [socket_to_string(socket) for socket in node_info.inputs]
-    output_properties = [socket_to_string(socket) for socket in node_info.outputs]
+    input_properties = [socket.format_property() for socket in node_info.inputs]
+    output_properties = [socket.format_property() for socket in node_info.outputs]
     used_input_names = set()
     used_output_names = set()
 
     property_accessors = [
-        prop.format_propery_accessors() for prop in node_info.properties
+        prop.format_property_accessors() for prop in node_info.properties
     ]
-    enum_methods = generate_enum_class_methods(node_info)
+    enum_methods = node_info.generate_enum_class_methods()
 
     # Add node type annotation
     node_type_annotation = (

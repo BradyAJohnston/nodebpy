@@ -289,8 +289,6 @@ from .grid import (
 from .interface import (
     DialGizmo,
     EnableOutput,
-    ForEachGeometryElementInput,
-    ForEachGeometryElementOutput,
     GroupInput,
     GroupOutput,
     LinearGizmo,
@@ -312,7 +310,7 @@ from .texture import (
 )
 from .experimental import GetListItem, List, ListLength
 from .output import Viewer
-from .vector import RadialTiling, VectorCurves, VectorRotate
+from .vector import RadialTiling, VectorCurves, VectorMath, VectorRotate
 
 __all__ = (
     "AccumulateField",
@@ -402,8 +400,6 @@ __all__ = (
     "FlipFaces",
     "FloatCurve",
     "FloatToInteger",
-    "ForEachGeometryElementInput",
-    "ForEachGeometryElementOutput",
     "FormatString",
     "GaborTexture",
     "Gamma",
@@ -605,6 +601,7 @@ __all__ = (
     "ValueToString",
     "Vector",
     "VectorCurves",
+    "VectorMath",
     "VectorRotate",
     "VertexNeighbors",
     "VertexOfCorner",

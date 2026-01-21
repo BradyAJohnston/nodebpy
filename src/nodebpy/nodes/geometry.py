@@ -42,6 +42,7 @@ class Arc(NodeBuilder):
         offset_angle: TYPE_INPUT_VALUE = 0.0,
         connect_center: TYPE_INPUT_BOOLEAN = False,
         invert_arc: TYPE_INPUT_BOOLEAN = False,
+        *,
         mode: Literal["POINTS", "RADIUS"] = "RADIUS",
     ):
         super().__init__()
@@ -145,21 +146,11 @@ class Bake(NodeBuilder):
     name = "GeometryNodeBake"
     node: bpy.types.GeometryNodeBake
 
-    def __init__(self, extend: None = None):
+    def __init__(self):
         super().__init__()
-        key_args = {"__extend__": extend}
+        key_args = kwargs
 
         self._establish_links(**key_args)
-
-    @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__")
-
-    @property
-    def o_input_socket(self) -> SocketLinker:
-        """Output socket:"""
-        return self._output("__extend__")
 
 
 class BoundingBox(NodeBuilder):
@@ -217,6 +208,7 @@ class BezierSegment(NodeBuilder):
         start_handle: TYPE_INPUT_VECTOR = None,
         end_handle: TYPE_INPUT_VECTOR = None,
         end: TYPE_INPUT_VECTOR = None,
+        *,
         mode: Literal["POSITION", "OFFSET"] = "POSITION",
     ):
         super().__init__()
@@ -283,6 +275,7 @@ class Cone(NodeBuilder):
         radius_top: TYPE_INPUT_VALUE = 0.0,
         radius_bottom: TYPE_INPUT_VALUE = 1.0,
         depth: TYPE_INPUT_VALUE = 2.0,
+        *,
         fill_type: Literal["NONE", "NGON", "TRIANGLE_FAN"] = "NGON",
     ):
         super().__init__()
@@ -451,6 +444,7 @@ class CurveCircle(NodeBuilder):
         point_2: TYPE_INPUT_VECTOR = None,
         point_3: TYPE_INPUT_VECTOR = None,
         radius: TYPE_INPUT_VALUE = 1.0,
+        *,
         mode: Literal["POINTS", "RADIUS"] = "RADIUS",
     ):
         super().__init__()
@@ -543,6 +537,7 @@ class CurveLine(NodeBuilder):
         end: TYPE_INPUT_VECTOR = None,
         direction: TYPE_INPUT_VECTOR = None,
         length: TYPE_INPUT_VALUE = 1.0,
+        *,
         mode: Literal["POINTS", "DIRECTION"] = "POINTS",
     ):
         super().__init__()
@@ -649,6 +644,7 @@ class CurveToPoints(NodeBuilder):
         curve: TYPE_INPUT_GEOMETRY = None,
         count: TYPE_INPUT_INT = 10,
         length: TYPE_INPUT_VALUE = 0.1,
+        *,
         mode: Literal["EVALUATED", "COUNT", "LENGTH"] = "COUNT",
     ):
         super().__init__()
@@ -755,6 +751,7 @@ class Cylinder(NodeBuilder):
         fill_segments: TYPE_INPUT_INT = 1,
         radius: TYPE_INPUT_VALUE = 1.0,
         depth: TYPE_INPUT_VALUE = 2.0,
+        *,
         fill_type: Literal["NONE", "NGON", "TRIANGLE_FAN"] = "NGON",
     ):
         super().__init__()
@@ -860,6 +857,7 @@ class DeleteGeometry(NodeBuilder):
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
+        *,
         mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
         domain: Literal[
             "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
@@ -870,6 +868,48 @@ class DeleteGeometry(NodeBuilder):
         self.mode = mode
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'Point'."""
+        return cls(domain="POINT", geometry=geometry, selection=selection)
+
+    @classmethod
+    def edge(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'Edge'."""
+        return cls(domain="EDGE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def face(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'Face'."""
+        return cls(domain="FACE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def curve(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'Spline'."""
+        return cls(domain="CURVE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def instance(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'Instance'."""
+        return cls(domain="INSTANCE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def layer(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'Layer'."""
+        return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -920,6 +960,7 @@ class DistributePointsOnFaces(NodeBuilder):
         density: TYPE_INPUT_VALUE = 10.0,
         density_factor: TYPE_INPUT_VALUE = 1.0,
         seed: TYPE_INPUT_INT = 0,
+        *,
         distribute_method: Literal["RANDOM", "POISSON"] = "RANDOM",
         use_legacy_normal: bool = False,
     ):
@@ -1047,6 +1088,7 @@ class DuplicateElements(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         amount: TYPE_INPUT_INT = 1,
+        *,
         domain: Literal[
             "POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"
         ] = "POINT",
@@ -1055,6 +1097,74 @@ class DuplicateElements(NodeBuilder):
         key_args = {"Geometry": geometry, "Selection": selection, "Amount": amount}
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        amount: TYPE_INPUT_INT = 1,
+    ) -> "DuplicateElements":
+        """Create Duplicate Elements with operation 'Point'."""
+        return cls(
+            domain="POINT", geometry=geometry, selection=selection, amount=amount
+        )
+
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        amount: TYPE_INPUT_INT = 1,
+    ) -> "DuplicateElements":
+        """Create Duplicate Elements with operation 'Edge'."""
+        return cls(domain="EDGE", geometry=geometry, selection=selection, amount=amount)
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        amount: TYPE_INPUT_INT = 1,
+    ) -> "DuplicateElements":
+        """Create Duplicate Elements with operation 'Face'."""
+        return cls(domain="FACE", geometry=geometry, selection=selection, amount=amount)
+
+    @classmethod
+    def spline(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        amount: TYPE_INPUT_INT = 1,
+    ) -> "DuplicateElements":
+        """Create Duplicate Elements with operation 'Spline'."""
+        return cls(
+            domain="SPLINE", geometry=geometry, selection=selection, amount=amount
+        )
+
+    @classmethod
+    def layer(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        amount: TYPE_INPUT_INT = 1,
+    ) -> "DuplicateElements":
+        """Create Duplicate Elements with operation 'Layer'."""
+        return cls(
+            domain="LAYER", geometry=geometry, selection=selection, amount=amount
+        )
+
+    @classmethod
+    def instance(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        amount: TYPE_INPUT_INT = 1,
+    ) -> "DuplicateElements":
+        """Create Duplicate Elements with operation 'Instance'."""
+        return cls(
+            domain="INSTANCE", geometry=geometry, selection=selection, amount=amount
+        )
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -1147,6 +1257,7 @@ class ExtrudeMesh(NodeBuilder):
         offset: TYPE_INPUT_VECTOR = None,
         offset_scale: TYPE_INPUT_VALUE = 1.0,
         individual: TYPE_INPUT_BOOLEAN = True,
+        *,
         mode: Literal["VERTICES", "EDGES", "FACES"] = "FACES",
     ):
         super().__init__()
@@ -1347,6 +1458,7 @@ class GeometryProximity(NodeBuilder):
         group_id: TYPE_INPUT_INT = 0,
         source_position: TYPE_INPUT_VECTOR = None,
         sample_group_id: TYPE_INPUT_INT = 0,
+        *,
         target_element: Literal["POINTS", "EDGES", "FACES"] = "FACES",
     ):
         super().__init__()
@@ -1360,7 +1472,7 @@ class GeometryProximity(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_target(self) -> SocketLinker:
         """Input socket: Geometry"""
         return self._input("Target")
 
@@ -1370,7 +1482,7 @@ class GeometryProximity(NodeBuilder):
         return self._input("Group ID")
 
     @property
-    def i_sample_position(self) -> SocketLinker:
+    def i_source_position(self) -> SocketLinker:
         """Input socket: Sample Position"""
         return self._input("Source Position")
 
@@ -1793,6 +1905,7 @@ class MergeLayers(NodeBuilder):
         grease_pencil: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         group_id: TYPE_INPUT_INT = 0,
+        *,
         mode: Literal["MERGE_BY_NAME", "MERGE_BY_ID"] = "MERGE_BY_NAME",
     ):
         super().__init__()
@@ -1894,6 +2007,7 @@ class MeshBoolean(NodeBuilder):
         mesh_2: TYPE_INPUT_GEOMETRY = None,
         self_intersection: TYPE_INPUT_BOOLEAN = False,
         hole_tolerant: TYPE_INPUT_BOOLEAN = False,
+        *,
         operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ):
@@ -1909,55 +2023,21 @@ class MeshBoolean(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def intersect(
-        cls,
-        mesh_1: TYPE_INPUT_GEOMETRY = None,
-        mesh_2: TYPE_INPUT_GEOMETRY = None,
-        self_intersection: TYPE_INPUT_BOOLEAN = False,
-        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
-    ) -> "MeshBoolean":
+    def intersect(cls, mesh_2: TYPE_INPUT_GEOMETRY = None) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Intersect'."""
-        return cls(
-            operation="INTERSECT",
-            mesh_1=mesh_1,
-            mesh_2=mesh_2,
-            self_intersection=self_intersection,
-            hole_tolerant=hole_tolerant,
-        )
+        return cls(operation="INTERSECT", mesh_2=mesh_2)
 
     @classmethod
-    def union(
-        cls,
-        mesh_1: TYPE_INPUT_GEOMETRY = None,
-        mesh_2: TYPE_INPUT_GEOMETRY = None,
-        self_intersection: TYPE_INPUT_BOOLEAN = False,
-        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
-    ) -> "MeshBoolean":
+    def union(cls, mesh_2: TYPE_INPUT_GEOMETRY = None) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Union'."""
-        return cls(
-            operation="UNION",
-            mesh_1=mesh_1,
-            mesh_2=mesh_2,
-            self_intersection=self_intersection,
-            hole_tolerant=hole_tolerant,
-        )
+        return cls(operation="UNION", mesh_2=mesh_2)
 
     @classmethod
     def difference(
-        cls,
-        mesh_1: TYPE_INPUT_GEOMETRY = None,
-        mesh_2: TYPE_INPUT_GEOMETRY = None,
-        self_intersection: TYPE_INPUT_BOOLEAN = False,
-        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
+        cls, mesh_1: TYPE_INPUT_GEOMETRY = None, mesh_2: TYPE_INPUT_GEOMETRY = None
     ) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Difference'."""
-        return cls(
-            operation="DIFFERENCE",
-            mesh_1=mesh_1,
-            mesh_2=mesh_2,
-            self_intersection=self_intersection,
-            hole_tolerant=hole_tolerant,
-        )
+        return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
 
     @property
     def i_mesh_1(self) -> SocketLinker:
@@ -2016,6 +2096,7 @@ class MeshCircle(NodeBuilder):
         self,
         vertices: TYPE_INPUT_INT = 32,
         radius: TYPE_INPUT_VALUE = 1.0,
+        *,
         fill_type: Literal["NONE", "NGON", "TRIANGLE_FAN"] = "NONE",
     ):
         super().__init__()
@@ -2059,6 +2140,7 @@ class MeshLine(NodeBuilder):
         resolution: TYPE_INPUT_VALUE = 1.0,
         start_location: TYPE_INPUT_VECTOR = None,
         offset: TYPE_INPUT_VECTOR = None,
+        *,
         mode: Literal["OFFSET", "END_POINTS"] = "OFFSET",
         count_mode: Literal["TOTAL", "RESOLUTION"] = "TOTAL",
     ):
@@ -2125,6 +2207,7 @@ class MeshToCurve(NodeBuilder):
         self,
         mesh: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
+        *,
         mode: Literal["EDGES", "FACES"] = "EDGES",
     ):
         super().__init__()
@@ -2168,6 +2251,7 @@ class MeshToPoints(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         position: TYPE_INPUT_VECTOR = None,
         radius: TYPE_INPUT_VALUE = 0.05,
+        *,
         mode: Literal["VERTICES", "EDGES", "FACES", "CORNERS"] = "VERTICES",
     ):
         super().__init__()
@@ -2247,7 +2331,7 @@ class Points(NodeBuilder):
         return self._input("Radius")
 
     @property
-    def o_points(self) -> SocketLinker:
+    def o_geometry(self) -> SocketLinker:
         """Output socket: Points"""
         return self._output("Geometry")
 
@@ -2394,6 +2478,7 @@ class Quadrilateral(NodeBuilder):
         point_2: TYPE_INPUT_VECTOR = None,
         point_3: TYPE_INPUT_VECTOR = None,
         point_4: TYPE_INPUT_VECTOR = None,
+        *,
         mode: Literal[
             "RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"
         ] = "RECTANGLE",
@@ -2503,6 +2588,7 @@ class Raycast(NodeBuilder):
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
+        *,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -2710,6 +2796,7 @@ class ResampleCurve(NodeBuilder):
         mode: TYPE_INPUT_MENU = "Count",
         count: TYPE_INPUT_INT = 10,
         length: TYPE_INPUT_VALUE = 0.1,
+        *,
         keep_last_segment: bool = False,
     ):
         super().__init__()
@@ -2863,6 +2950,7 @@ class SampleCurve(NodeBuilder):
         factor: TYPE_INPUT_VALUE = 0.0,
         length: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
+        *,
         mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
         use_all_curves: bool = False,
         data_type: Literal[
@@ -2990,6 +3078,7 @@ class SampleIndex(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
+        *,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -3010,6 +3099,76 @@ class SampleIndex(NodeBuilder):
         self.domain = domain
         self.clamp = clamp
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Point'."""
+        return cls(domain="POINT", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Edge'."""
+        return cls(domain="EDGE", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Face'."""
+        return cls(domain="FACE", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def corner(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Face Corner'."""
+        return cls(domain="CORNER", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def curve(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Spline'."""
+        return cls(domain="CURVE", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def instance(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Instance'."""
+        return cls(domain="INSTANCE", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def layer(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Layer'."""
+        return cls(domain="LAYER", geometry=geometry, value=value, index=index)
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -3092,12 +3251,49 @@ class SampleNearest(NodeBuilder):
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
         sample_position: TYPE_INPUT_VECTOR = None,
+        *,
         domain: Literal["POINT", "EDGE", "FACE", "CORNER"] = "POINT",
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Sample Position": sample_position}
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        sample_position: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleNearest":
+        """Create Sample Nearest with operation 'Point'."""
+        return cls(domain="POINT", geometry=geometry, sample_position=sample_position)
+
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        sample_position: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleNearest":
+        """Create Sample Nearest with operation 'Edge'."""
+        return cls(domain="EDGE", geometry=geometry, sample_position=sample_position)
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        sample_position: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleNearest":
+        """Create Sample Nearest with operation 'Face'."""
+        return cls(domain="FACE", geometry=geometry, sample_position=sample_position)
+
+    @classmethod
+    def corner(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        sample_position: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleNearest":
+        """Create Sample Nearest with operation 'Face Corner'."""
+        return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -3136,6 +3332,7 @@ class SampleNearestSurface(NodeBuilder):
         group_id: TYPE_INPUT_INT = 0,
         sample_position: TYPE_INPUT_VECTOR = None,
         sample_group_id: TYPE_INPUT_INT = 0,
+        *,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -3234,6 +3431,7 @@ class SampleUVSurface(NodeBuilder):
         value: TYPE_INPUT_VALUE = 0.0,
         source_uv_map: TYPE_INPUT_VECTOR = None,
         sample_uv: TYPE_INPUT_VECTOR = None,
+        *,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -3265,7 +3463,7 @@ class SampleUVSurface(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_uv_map(self) -> SocketLinker:
+    def i_source_uv_map(self) -> SocketLinker:
         """Input socket: UV Map"""
         return self._input("Source UV Map")
 
@@ -3328,6 +3526,7 @@ class ScaleElements(NodeBuilder):
         center: TYPE_INPUT_VECTOR = None,
         scale_mode: TYPE_INPUT_MENU = "Uniform",
         axis: TYPE_INPUT_VECTOR = None,
+        *,
         domain: Literal["FACE", "EDGE"] = "FACE",
     ):
         super().__init__()
@@ -3341,6 +3540,44 @@ class ScaleElements(NodeBuilder):
         }
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        scale: TYPE_INPUT_VALUE = 1.0,
+        center: TYPE_INPUT_VECTOR = None,
+        scale_mode: TYPE_INPUT_MENU = "Uniform",
+    ) -> "ScaleElements":
+        """Create Scale Elements with operation 'Face'."""
+        return cls(
+            domain="FACE",
+            geometry=geometry,
+            selection=selection,
+            scale=scale,
+            center=center,
+            scale_mode=scale_mode,
+        )
+
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        scale: TYPE_INPUT_VALUE = 1.0,
+        center: TYPE_INPUT_VECTOR = None,
+        scale_mode: TYPE_INPUT_MENU = "Uniform",
+    ) -> "ScaleElements":
+        """Create Scale Elements with operation 'Edge'."""
+        return cls(
+            domain="EDGE",
+            geometry=geometry,
+            selection=selection,
+            scale=scale,
+            center=center,
+            scale_mode=scale_mode,
+        )
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -3500,6 +3737,7 @@ class SeparateGeometry(NodeBuilder):
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
+        *,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
         ] = "POINT",
@@ -3508,6 +3746,48 @@ class SeparateGeometry(NodeBuilder):
         key_args = {"Geometry": geometry, "Selection": selection}
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SeparateGeometry":
+        """Create Separate Geometry with operation 'Point'."""
+        return cls(domain="POINT", geometry=geometry, selection=selection)
+
+    @classmethod
+    def edge(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SeparateGeometry":
+        """Create Separate Geometry with operation 'Edge'."""
+        return cls(domain="EDGE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def face(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SeparateGeometry":
+        """Create Separate Geometry with operation 'Face'."""
+        return cls(domain="FACE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def curve(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SeparateGeometry":
+        """Create Separate Geometry with operation 'Spline'."""
+        return cls(domain="CURVE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def instance(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SeparateGeometry":
+        """Create Separate Geometry with operation 'Instance'."""
+        return cls(domain="INSTANCE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def layer(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SeparateGeometry":
+        """Create Separate Geometry with operation 'Layer'."""
+        return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -3747,6 +4027,7 @@ class SetGreasePencilColor(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         color: TYPE_INPUT_COLOR = None,
         opacity: TYPE_INPUT_VALUE = 1.0,
+        *,
         mode: Literal["STROKE", "FILL"] = "STROKE",
     ):
         super().__init__()
@@ -3802,6 +4083,7 @@ class SetGreasePencilDepth(NodeBuilder):
     def __init__(
         self,
         grease_pencil: TYPE_INPUT_GEOMETRY = None,
+        *,
         depth_order: Literal["2D", "3D"] = "2D",
     ):
         super().__init__()
@@ -3882,6 +4164,7 @@ class SetHandlePositions(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         position: TYPE_INPUT_VECTOR = None,
         offset: TYPE_INPUT_VECTOR = None,
+        *,
         mode: Literal["LEFT", "RIGHT"] = "LEFT",
     ):
         super().__init__()
@@ -4100,6 +4383,7 @@ class SetMeshNormal(NodeBuilder):
         remove_custom: TYPE_INPUT_BOOLEAN = True,
         edge_sharpness: TYPE_INPUT_BOOLEAN = False,
         face_sharpness: TYPE_INPUT_BOOLEAN = False,
+        *,
         mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
         domain: Literal["POINT", "FACE", "CORNER"] = "POINT",
     ):
@@ -4113,6 +4397,27 @@ class SetMeshNormal(NodeBuilder):
         self.mode = mode
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls, mesh: TYPE_INPUT_GEOMETRY = None, custom_normal: TYPE_INPUT_VECTOR = None
+    ) -> "SetMeshNormal":
+        """Create Set Mesh Normal with operation 'Point'."""
+        return cls(domain="POINT", mesh=mesh, custom_normal=custom_normal)
+
+    @classmethod
+    def face(
+        cls, mesh: TYPE_INPUT_GEOMETRY = None, custom_normal: TYPE_INPUT_VECTOR = None
+    ) -> "SetMeshNormal":
+        """Create Set Mesh Normal with operation 'Face'."""
+        return cls(domain="FACE", mesh=mesh, custom_normal=custom_normal)
+
+    @classmethod
+    def corner(
+        cls, mesh: TYPE_INPUT_GEOMETRY = None, custom_normal: TYPE_INPUT_VECTOR = None
+    ) -> "SetMeshNormal":
+        """Create Set Mesh Normal with operation 'Face Corner'."""
+        return cls(domain="CORNER", mesh=mesh, custom_normal=custom_normal)
 
     @property
     def i_mesh(self) -> SocketLinker:
@@ -4253,6 +4558,7 @@ class SetSelection(NodeBuilder):
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
+        *,
         domain: Literal["POINT", "EDGE", "FACE", "CURVE"] = "POINT",
         selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ):
@@ -4261,6 +4567,34 @@ class SetSelection(NodeBuilder):
         self.domain = domain
         self.selection_type = selection_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SetSelection":
+        """Create Set Selection with operation 'Point'."""
+        return cls(domain="POINT", geometry=geometry, selection=selection)
+
+    @classmethod
+    def edge(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SetSelection":
+        """Create Set Selection with operation 'Edge'."""
+        return cls(domain="EDGE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def face(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SetSelection":
+        """Create Set Selection with operation 'Face'."""
+        return cls(domain="FACE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def curve(
+        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+    ) -> "SetSelection":
+        """Create Set Selection with operation 'Spline'."""
+        return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -4305,6 +4639,7 @@ class SetShadeSmooth(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         shade_smooth: TYPE_INPUT_BOOLEAN = True,
+        *,
         domain: Literal["EDGE", "FACE"] = "FACE",
     ):
         super().__init__()
@@ -4316,8 +4651,38 @@ class SetShadeSmooth(NodeBuilder):
         self.domain = domain
         self._establish_links(**key_args)
 
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        shade_smooth: TYPE_INPUT_BOOLEAN = True,
+    ) -> "SetShadeSmooth":
+        """Create Set Shade Smooth with operation 'Edge'."""
+        return cls(
+            domain="EDGE",
+            geometry=geometry,
+            selection=selection,
+            shade_smooth=shade_smooth,
+        )
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        shade_smooth: TYPE_INPUT_BOOLEAN = True,
+    ) -> "SetShadeSmooth":
+        """Create Set Shade Smooth with operation 'Face'."""
+        return cls(
+            domain="FACE",
+            geometry=geometry,
+            selection=selection,
+            shade_smooth=shade_smooth,
+        )
+
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Mesh"""
         return self._input("Geometry")
 
@@ -4332,7 +4697,7 @@ class SetShadeSmooth(NodeBuilder):
         return self._input("Shade Smooth")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_geometry(self) -> SocketLinker:
         """Output socket: Mesh"""
         return self._output("Geometry")
 
@@ -4363,7 +4728,7 @@ class SetSplineCyclic(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Geometry")
 
@@ -4378,7 +4743,7 @@ class SetSplineCyclic(NodeBuilder):
         return self._input("Cyclic")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_geometry(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Geometry")
 
@@ -4405,7 +4770,7 @@ class SetSplineResolution(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_geometry(self) -> SocketLinker:
         """Input socket: Curve"""
         return self._input("Geometry")
 
@@ -4420,7 +4785,7 @@ class SetSplineResolution(NodeBuilder):
         return self._input("Resolution")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_geometry(self) -> SocketLinker:
         """Output socket: Curve"""
         return self._output("Geometry")
 
@@ -4435,6 +4800,7 @@ class SetSplineType(NodeBuilder):
         self,
         curve: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
+        *,
         spline_type: Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"] = "POLY",
     ):
         super().__init__()
@@ -4478,6 +4844,7 @@ class SortElements(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         group_id: TYPE_INPUT_INT = 0,
         sort_weight: TYPE_INPUT_VALUE = 0.0,
+        *,
         domain: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE"] = "POINT",
     ):
         super().__init__()
@@ -4489,6 +4856,91 @@ class SortElements(NodeBuilder):
         }
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+        sort_weight: TYPE_INPUT_VALUE = 0.0,
+    ) -> "SortElements":
+        """Create Sort Elements with operation 'Point'."""
+        return cls(
+            domain="POINT",
+            geometry=geometry,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+        sort_weight: TYPE_INPUT_VALUE = 0.0,
+    ) -> "SortElements":
+        """Create Sort Elements with operation 'Edge'."""
+        return cls(
+            domain="EDGE",
+            geometry=geometry,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+        sort_weight: TYPE_INPUT_VALUE = 0.0,
+    ) -> "SortElements":
+        """Create Sort Elements with operation 'Face'."""
+        return cls(
+            domain="FACE",
+            geometry=geometry,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def curve(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+        sort_weight: TYPE_INPUT_VALUE = 0.0,
+    ) -> "SortElements":
+        """Create Sort Elements with operation 'Spline'."""
+        return cls(
+            domain="CURVE",
+            geometry=geometry,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def instance(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+        sort_weight: TYPE_INPUT_VALUE = 0.0,
+    ) -> "SortElements":
+        """Create Sort Elements with operation 'Instance'."""
+        return cls(
+            domain="INSTANCE",
+            geometry=geometry,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -4630,6 +5082,7 @@ class SplitToInstances(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         group_id: TYPE_INPUT_INT = 0,
+        *,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
         ] = "POINT",
@@ -4638,6 +5091,78 @@ class SplitToInstances(NodeBuilder):
         key_args = {"Geometry": geometry, "Selection": selection, "Group ID": group_id}
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+    ) -> "SplitToInstances":
+        """Create Split to Instances with operation 'Point'."""
+        return cls(
+            domain="POINT", geometry=geometry, selection=selection, group_id=group_id
+        )
+
+    @classmethod
+    def edge(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+    ) -> "SplitToInstances":
+        """Create Split to Instances with operation 'Edge'."""
+        return cls(
+            domain="EDGE", geometry=geometry, selection=selection, group_id=group_id
+        )
+
+    @classmethod
+    def face(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+    ) -> "SplitToInstances":
+        """Create Split to Instances with operation 'Face'."""
+        return cls(
+            domain="FACE", geometry=geometry, selection=selection, group_id=group_id
+        )
+
+    @classmethod
+    def curve(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+    ) -> "SplitToInstances":
+        """Create Split to Instances with operation 'Spline'."""
+        return cls(
+            domain="CURVE", geometry=geometry, selection=selection, group_id=group_id
+        )
+
+    @classmethod
+    def instance(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+    ) -> "SplitToInstances":
+        """Create Split to Instances with operation 'Instance'."""
+        return cls(
+            domain="INSTANCE", geometry=geometry, selection=selection, group_id=group_id
+        )
+
+    @classmethod
+    def layer(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        group_id: TYPE_INPUT_INT = 0,
+    ) -> "SplitToInstances":
+        """Create Split to Instances with operation 'Layer'."""
+        return cls(
+            domain="LAYER", geometry=geometry, selection=selection, group_id=group_id
+        )
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -4744,6 +5269,7 @@ class StringToCurves(NodeBuilder):
         line_spacing: TYPE_INPUT_VALUE = 1.0,
         text_box_width: TYPE_INPUT_VALUE = 0.0,
         text_box_height: TYPE_INPUT_VALUE = 0.0,
+        *,
         overflow: Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"] = "OVERFLOW",
         align_x: Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"] = "LEFT",
         align_y: Literal[
@@ -5198,6 +5724,7 @@ class TrimCurve(NodeBuilder):
         end: TYPE_INPUT_VALUE = 1.0,
         start_001: TYPE_INPUT_VALUE = 0.0,
         end_001: TYPE_INPUT_VALUE = 1.0,
+        *,
         mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
     ):
         super().__init__()

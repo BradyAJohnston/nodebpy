@@ -42,6 +42,7 @@ class BrickTexture(NodeBuilder):
         bias: TYPE_INPUT_VALUE = 0.0,
         brick_width: TYPE_INPUT_VALUE = 0.5,
         row_height: TYPE_INPUT_VALUE = 0.25,
+        *,
         offset_frequency: int = 2,
         squash_frequency: int = 2,
         offset: float = 0.5,
@@ -122,7 +123,7 @@ class BrickTexture(NodeBuilder):
         return self._output("Color")
 
     @property
-    def o_factor(self) -> SocketLinker:
+    def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
         return self._output("Fac")
 
@@ -208,7 +209,7 @@ class CheckerTexture(NodeBuilder):
         return self._output("Color")
 
     @property
-    def o_factor(self) -> SocketLinker:
+    def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
         return self._output("Fac")
 
@@ -227,6 +228,7 @@ class GaborTexture(NodeBuilder):
         anisotropy: TYPE_INPUT_VALUE = 1.0,
         orientation_2d: TYPE_INPUT_VALUE = 0.7854,
         orientation_3d: TYPE_INPUT_VECTOR = None,
+        *,
         gabor_type: Literal["2D", "3D"] = "2D",
     ):
         super().__init__()
@@ -262,7 +264,7 @@ class GaborTexture(NodeBuilder):
         return self._input("Anisotropy")
 
     @property
-    def i_orientation(self) -> SocketLinker:
+    def i_orientation_2d(self) -> SocketLinker:
         """Input socket: Orientation"""
         return self._input("Orientation 2D")
 
@@ -304,6 +306,7 @@ class GradientTexture(NodeBuilder):
     def __init__(
         self,
         vector: TYPE_INPUT_VECTOR = None,
+        *,
         gradient_type: Literal[
             "LINEAR",
             "QUADRATIC",
@@ -330,7 +333,7 @@ class GradientTexture(NodeBuilder):
         return self._output("Color")
 
     @property
-    def o_factor(self) -> SocketLinker:
+    def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
         return self._output("Fac")
 
@@ -375,6 +378,7 @@ class ImageTexture(NodeBuilder):
         image: TYPE_INPUT_IMAGE = None,
         vector: TYPE_INPUT_VECTOR = None,
         frame: TYPE_INPUT_INT = 0,
+        *,
         interpolation: Literal["Linear", "Closest", "Cubic"] = "Linear",
         extension: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"] = "REPEAT",
     ):
@@ -437,6 +441,7 @@ class MagicTexture(NodeBuilder):
         vector: TYPE_INPUT_VECTOR = None,
         scale: TYPE_INPUT_VALUE = 5.0,
         distortion: TYPE_INPUT_VALUE = 1.0,
+        *,
         turbulence_depth: int = 0,
     ):
         super().__init__()
@@ -465,7 +470,7 @@ class MagicTexture(NodeBuilder):
         return self._output("Color")
 
     @property
-    def o_factor(self) -> SocketLinker:
+    def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
         return self._output("Fac")
 
@@ -495,6 +500,7 @@ class NoiseTexture(NodeBuilder):
         offset: TYPE_INPUT_VALUE = 0.0,
         gain: TYPE_INPUT_VALUE = 1.0,
         distortion: TYPE_INPUT_VALUE = 0.0,
+        *,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
         noise_type: Literal[
             "MULTIFRACTAL",
@@ -568,7 +574,7 @@ class NoiseTexture(NodeBuilder):
         return self._input("Distortion")
 
     @property
-    def o_factor(self) -> SocketLinker:
+    def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
         return self._output("Fac")
 
@@ -636,6 +642,7 @@ class VoronoiTexture(NodeBuilder):
         smoothness: TYPE_INPUT_VALUE = 1.0,
         exponent: TYPE_INPUT_VALUE = 0.5,
         randomness: TYPE_INPUT_VALUE = 1.0,
+        *,
         voronoi_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
         distance: Literal[
             "EUCLIDEAN", "MANHATTAN", "CHEBYCHEV", "MINKOWSKI"
@@ -788,6 +795,7 @@ class WaveTexture(NodeBuilder):
         detail_scale: TYPE_INPUT_VALUE = 1.0,
         detail_roughness: TYPE_INPUT_VALUE = 0.5,
         phase_offset: TYPE_INPUT_VALUE = 0.0,
+        *,
         wave_type: Literal["BANDS", "RINGS"] = "BANDS",
         bands_direction: Literal["X", "Y", "Z", "DIAGONAL"] = "X",
         rings_direction: Literal["X", "Y", "Z", "SPHERICAL"] = "X",
@@ -850,7 +858,7 @@ class WaveTexture(NodeBuilder):
         return self._output("Color")
 
     @property
-    def o_factor(self) -> SocketLinker:
+    def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
         return self._output("Fac")
 
@@ -897,6 +905,7 @@ class WhiteNoiseTexture(NodeBuilder):
         self,
         vector: TYPE_INPUT_VECTOR = None,
         w: TYPE_INPUT_VALUE = 0.0,
+        *,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
     ):
         super().__init__()

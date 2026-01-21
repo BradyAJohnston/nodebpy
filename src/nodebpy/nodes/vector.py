@@ -35,6 +35,7 @@ class RadialTiling(NodeBuilder):
         vector: TYPE_INPUT_VECTOR = None,
         sides: TYPE_INPUT_VALUE = 5.0,
         roundness: TYPE_INPUT_VALUE = 0.0,
+        *,
         normalize: bool = False,
     ):
         super().__init__()
@@ -103,7 +104,7 @@ class VectorCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_factor(self) -> SocketLinker:
+    def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
         return self._input("Fac")
 
@@ -116,6 +117,377 @@ class VectorCurves(NodeBuilder):
     def o_vector(self) -> SocketLinker:
         """Output socket: Vector"""
         return self._output("Vector")
+
+
+class VectorMath(NodeBuilder):
+    """Perform vector math operation"""
+
+    name = "ShaderNodeVectorMath"
+    node: bpy.types.ShaderNodeVectorMath
+
+    def __init__(
+        self,
+        vector: TYPE_INPUT_VECTOR = None,
+        vector_001: TYPE_INPUT_VECTOR = None,
+        vector_002: TYPE_INPUT_VECTOR = None,
+        scale: TYPE_INPUT_VALUE = 1.0,
+        *,
+        operation: Literal[
+            "ADD",
+            "SUBTRACT",
+            "MULTIPLY",
+            "DIVIDE",
+            "MULTIPLY_ADD",
+            "CROSS_PRODUCT",
+            "PROJECT",
+            "REFLECT",
+            "REFRACT",
+            "FACEFORWARD",
+            "DOT_PRODUCT",
+            "DISTANCE",
+            "LENGTH",
+            "SCALE",
+            "NORMALIZE",
+            "ABSOLUTE",
+            "POWER",
+            "SIGN",
+            "MINIMUM",
+            "MAXIMUM",
+            "FLOOR",
+            "CEIL",
+            "FRACTION",
+            "MODULO",
+            "WRAP",
+            "SNAP",
+            "SINE",
+            "COSINE",
+            "TANGENT",
+        ] = "ADD",
+    ):
+        super().__init__()
+        key_args = {
+            "Vector": vector,
+            "Vector_001": vector_001,
+            "Vector_002": vector_002,
+            "Scale": scale,
+        }
+        self.operation = operation
+        self._establish_links(**key_args)
+
+    @classmethod
+    def add(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Add'."""
+        return cls(operation="ADD", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def subtract(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Subtract'."""
+        return cls(operation="SUBTRACT", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def multiply(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Multiply'."""
+        return cls(operation="MULTIPLY", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def divide(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Divide'."""
+        return cls(operation="DIVIDE", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def multiplyadd(
+        cls,
+        vector: TYPE_INPUT_VECTOR = None,
+        vector_001: TYPE_INPUT_VECTOR = None,
+        vector_002: TYPE_INPUT_VECTOR = None,
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Multiply Add'."""
+        return cls(
+            operation="MULTIPLY_ADD",
+            vector=vector,
+            vector_001=vector_001,
+            vector_002=vector_002,
+        )
+
+    @classmethod
+    def crossproduct(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Cross Product'."""
+        return cls(operation="CROSS_PRODUCT", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def project(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Project'."""
+        return cls(operation="PROJECT", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def reflect(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Reflect'."""
+        return cls(operation="REFLECT", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def refract(
+        cls,
+        vector: TYPE_INPUT_VECTOR = None,
+        vector_001: TYPE_INPUT_VECTOR = None,
+        scale: TYPE_INPUT_VALUE = 1.0,
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Refract'."""
+        return cls(
+            operation="REFRACT", vector=vector, vector_001=vector_001, scale=scale
+        )
+
+    @classmethod
+    def faceforward(
+        cls,
+        vector: TYPE_INPUT_VECTOR = None,
+        vector_001: TYPE_INPUT_VECTOR = None,
+        vector_002: TYPE_INPUT_VECTOR = None,
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Faceforward'."""
+        return cls(
+            operation="FACEFORWARD",
+            vector=vector,
+            vector_001=vector_001,
+            vector_002=vector_002,
+        )
+
+    @classmethod
+    def dotproduct(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Dot Product'."""
+        return cls(operation="DOT_PRODUCT", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def distance(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Distance'."""
+        return cls(operation="DISTANCE", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def length(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Length'."""
+        return cls(operation="LENGTH", vector=vector)
+
+    @classmethod
+    def scale(
+        cls, vector: TYPE_INPUT_VECTOR = None, scale: TYPE_INPUT_VALUE = 1.0
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Scale'."""
+        return cls(operation="SCALE", vector=vector, scale=scale)
+
+    @classmethod
+    def normalize(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Normalize'."""
+        return cls(operation="NORMALIZE", vector=vector)
+
+    @classmethod
+    def absolute(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Absolute'."""
+        return cls(operation="ABSOLUTE", vector=vector)
+
+    @classmethod
+    def power(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Power'."""
+        return cls(operation="POWER", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def sign(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Sign'."""
+        return cls(operation="SIGN", vector=vector)
+
+    @classmethod
+    def minimum(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Minimum'."""
+        return cls(operation="MINIMUM", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def maximum(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Maximum'."""
+        return cls(operation="MAXIMUM", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def floor(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Floor'."""
+        return cls(operation="FLOOR", vector=vector)
+
+    @classmethod
+    def ceil(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Ceil'."""
+        return cls(operation="CEIL", vector=vector)
+
+    @classmethod
+    def fraction(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Fraction'."""
+        return cls(operation="FRACTION", vector=vector)
+
+    @classmethod
+    def modulo(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Modulo'."""
+        return cls(operation="MODULO", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def wrap(
+        cls,
+        vector: TYPE_INPUT_VECTOR = None,
+        vector_001: TYPE_INPUT_VECTOR = None,
+        vector_002: TYPE_INPUT_VECTOR = None,
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Wrap'."""
+        return cls(
+            operation="WRAP",
+            vector=vector,
+            vector_001=vector_001,
+            vector_002=vector_002,
+        )
+
+    @classmethod
+    def snap(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Snap'."""
+        return cls(operation="SNAP", vector=vector, vector_001=vector_001)
+
+    @classmethod
+    def sine(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Sine'."""
+        return cls(operation="SINE", vector=vector)
+
+    @classmethod
+    def cosine(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Cosine'."""
+        return cls(operation="COSINE", vector=vector)
+
+    @classmethod
+    def tangent(cls, vector: TYPE_INPUT_VECTOR = None) -> "VectorMath":
+        """Create Vector Math with operation 'Tangent'."""
+        return cls(operation="TANGENT", vector=vector)
+
+    @property
+    def i_vector(self) -> SocketLinker:
+        """Input socket: Vector"""
+        return self._input("Vector")
+
+    @property
+    def i_vector_001(self) -> SocketLinker:
+        """Input socket: Vector"""
+        return self._input("Vector_001")
+
+    @property
+    def i_vector_002(self) -> SocketLinker:
+        """Input socket: Vector"""
+        return self._input("Vector_002")
+
+    @property
+    def i_scale(self) -> SocketLinker:
+        """Input socket: Scale"""
+        return self._input("Scale")
+
+    @property
+    def o_vector(self) -> SocketLinker:
+        """Output socket: Vector"""
+        return self._output("Vector")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def operation(
+        self,
+    ) -> Literal[
+        "ADD",
+        "SUBTRACT",
+        "MULTIPLY",
+        "DIVIDE",
+        "MULTIPLY_ADD",
+        "CROSS_PRODUCT",
+        "PROJECT",
+        "REFLECT",
+        "REFRACT",
+        "FACEFORWARD",
+        "DOT_PRODUCT",
+        "DISTANCE",
+        "LENGTH",
+        "SCALE",
+        "NORMALIZE",
+        "ABSOLUTE",
+        "POWER",
+        "SIGN",
+        "MINIMUM",
+        "MAXIMUM",
+        "FLOOR",
+        "CEIL",
+        "FRACTION",
+        "MODULO",
+        "WRAP",
+        "SNAP",
+        "SINE",
+        "COSINE",
+        "TANGENT",
+    ]:
+        return self.node.operation
+
+    @operation.setter
+    def operation(
+        self,
+        value: Literal[
+            "ADD",
+            "SUBTRACT",
+            "MULTIPLY",
+            "DIVIDE",
+            "MULTIPLY_ADD",
+            "CROSS_PRODUCT",
+            "PROJECT",
+            "REFLECT",
+            "REFRACT",
+            "FACEFORWARD",
+            "DOT_PRODUCT",
+            "DISTANCE",
+            "LENGTH",
+            "SCALE",
+            "NORMALIZE",
+            "ABSOLUTE",
+            "POWER",
+            "SIGN",
+            "MINIMUM",
+            "MAXIMUM",
+            "FLOOR",
+            "CEIL",
+            "FRACTION",
+            "MODULO",
+            "WRAP",
+            "SNAP",
+            "SINE",
+            "COSINE",
+            "TANGENT",
+        ],
+    ):
+        self.node.operation = value
 
 
 class VectorRotate(NodeBuilder):
@@ -131,6 +503,7 @@ class VectorRotate(NodeBuilder):
         axis: TYPE_INPUT_VECTOR = None,
         angle: TYPE_INPUT_VALUE = 0.0,
         rotation: TYPE_INPUT_VECTOR = None,
+        *,
         rotation_type: Literal[
             "AXIS_ANGLE", "X_AXIS", "Y_AXIS", "Z_AXIS", "EULER_XYZ"
         ] = "AXIS_ANGLE",

@@ -77,6 +77,26 @@ class ActiveElement(NodeBuilder):
         self.domain = domain
         self._establish_links(**key_args)
 
+    @classmethod
+    def point(cls) -> "ActiveElement":
+        """Create Active Element with operation 'Point'."""
+        return cls(domain="POINT")
+
+    @classmethod
+    def edge(cls) -> "ActiveElement":
+        """Create Active Element with operation 'Edge'."""
+        return cls(domain="EDGE")
+
+    @classmethod
+    def face(cls) -> "ActiveElement":
+        """Create Active Element with operation 'Face'."""
+        return cls(domain="FACE")
+
+    @classmethod
+    def layer(cls) -> "ActiveElement":
+        """Create Active Element with operation 'Layer'."""
+        return cls(domain="LAYER")
+
     @property
     def o_index(self) -> SocketLinker:
         """Output socket: Index"""
@@ -214,6 +234,7 @@ class CollectionInfo(NodeBuilder):
         collection: TYPE_INPUT_COLLECTION = None,
         separate_children: TYPE_INPUT_BOOLEAN = False,
         reset_children: TYPE_INPUT_BOOLEAN = False,
+        *,
         transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
     ):
         super().__init__()
@@ -783,7 +804,7 @@ class FaceGroupBoundaries(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_face_group_id(self) -> SocketLinker:
+    def i_face_set(self) -> SocketLinker:
         """Input socket: Face Group ID"""
         return self._input("Face Set")
 
@@ -1424,6 +1445,7 @@ class NamedAttribute(NodeBuilder):
     def __init__(
         self,
         name: TYPE_INPUT_STRING = "",
+        *,
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -1566,6 +1588,7 @@ class ObjectInfo(NodeBuilder):
         self,
         object: TYPE_INPUT_OBJECT = None,
         as_instance: TYPE_INPUT_BOOLEAN = False,
+        *,
         transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
     ):
         super().__init__()
@@ -1831,7 +1854,7 @@ class Selection(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_boolean(self) -> SocketLinker:
+    def o_selection(self) -> SocketLinker:
         """Output socket: Boolean"""
         return self._output("Selection")
 

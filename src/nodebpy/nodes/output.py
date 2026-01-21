@@ -32,22 +32,56 @@ class Viewer(NodeBuilder):
 
     def __init__(
         self,
-        extend: None = None,
         ui_shortcut: int = 0,
         domain: Literal[
             "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ] = "AUTO",
     ):
         super().__init__()
-        key_args = {"__extend__": extend}
+        key_args = kwargs
         self.ui_shortcut = ui_shortcut
         self.domain = domain
         self._establish_links(**key_args)
 
-    @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__")
+    @classmethod
+    def auto(cls) -> "Viewer":
+        """Create Viewer with operation 'Auto'."""
+        return cls(domain="AUTO")
+
+    @classmethod
+    def point(cls) -> "Viewer":
+        """Create Viewer with operation 'Point'."""
+        return cls(domain="POINT")
+
+    @classmethod
+    def edge(cls) -> "Viewer":
+        """Create Viewer with operation 'Edge'."""
+        return cls(domain="EDGE")
+
+    @classmethod
+    def face(cls) -> "Viewer":
+        """Create Viewer with operation 'Face'."""
+        return cls(domain="FACE")
+
+    @classmethod
+    def corner(cls) -> "Viewer":
+        """Create Viewer with operation 'Face Corner'."""
+        return cls(domain="CORNER")
+
+    @classmethod
+    def curve(cls) -> "Viewer":
+        """Create Viewer with operation 'Spline'."""
+        return cls(domain="CURVE")
+
+    @classmethod
+    def instance(cls) -> "Viewer":
+        """Create Viewer with operation 'Instance'."""
+        return cls(domain="INSTANCE")
+
+    @classmethod
+    def layer(cls) -> "Viewer":
+        """Create Viewer with operation 'Layer'."""
+        return cls(domain="LAYER")
 
     @property
     def ui_shortcut(self) -> int:
