@@ -9,15 +9,16 @@ from nodebpy import sockets as s
 
 from .snapshots import TreeBuilderSnapshotExtension
 
-BLEND_DIR = Path(__file__).parent / "blend_files"
-JSON_DIR = Path(__file__).parent / "clippings"
+CURRENT = Path(__file__).parent
+BLEND_DIR = CURRENT / "blend_files"
+JSON_DIR = CURRENT / "clippings"
 
 
 @pytest.fixture(autouse=True, scope="function")
 def clean_and_save(request):
     """Cleans the Blender file before each test and saves it after."""
     # Before each test: load a clean home file
-    bpy.ops.wm.read_homefile()
+    bpy.ops.wm.read_homefile(filepath=str(CURRENT / "test_startup.blend"))
 
     yield
 
