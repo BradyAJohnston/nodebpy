@@ -128,8 +128,16 @@ class PropertyInfo:
                 type = "int"
                 default = self.default
             case "FLOAT":
-                type = "float"
-                default = round(self.default, 3)
+                match self.subtype:
+                    case "COLOR":
+                        type = "tuple[float, float, float, float]"
+                        default = self.default
+                    case "EULER" | "XYZ":
+                        type = "tuple[float, float, float]"
+                        default = self.default
+                    case _:
+                        type = "float"
+                        default = round(self.default, 3)
             case "STRING":
                 type = "str"
                 default = f'"{self.default}"'
@@ -149,10 +157,10 @@ class PropertyInfo:
                 type = "int"
             case "FLOAT":
                 match self.subtype:
-                    case "XYZ":
-                        type = "tuple[float, float, float]"
-                    case "COLOR_GAMMA":
+                    case "COLOR":
                         type = "tuple[float, float, float, float]"
+                    case "EULER" | "XYZ":
+                        type = "tuple[float, float, float]"
                     case _:
                         type = "float"
             case "STRING":
@@ -502,13 +510,18 @@ def collect_property_info(node, node_type):
                 )
             )
         elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
+            default = prop.default if not prop.type == "STRING" else ""
+            if prop.subtype == "COLOR":
+                default = (0.735, 0.735, 0.735, 1.0)
+            if prop.subtype in ["EULER", "XYZ"]:
+                default = (0.0, 0.0, 0.0)
             properties.append(
                 PropertyInfo(
                     identifier=prop.identifier,
                     name=prop.name,
                     prop_type=prop.type,
                     subtype=prop.subtype,
-                    default=prop.default if not prop.type == "STRING" else "",
+                    default=default,
                 )
             )
     return properties

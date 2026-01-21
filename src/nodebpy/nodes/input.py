@@ -281,7 +281,9 @@ class Color(NodeBuilder):
     name = "FunctionNodeInputColor"
     node: bpy.types.FunctionNodeInputColor
 
-    def __init__(self, value: float = 0.0):
+    def __init__(
+        self, value: tuple[float, float, float, float] = (0.735, 0.735, 0.735, 1.0)
+    ):
         super().__init__()
         key_args = {}
         self.value = value
@@ -293,11 +295,11 @@ class Color(NodeBuilder):
         return self._output("Color")
 
     @property
-    def value(self) -> float:
+    def value(self) -> tuple[float, float, float, float]:
         return self.node.value
 
     @value.setter
-    def value(self, value: float):
+    def value(self, value: tuple[float, float, float, float]):
         self.node.value = value
 
 
@@ -1828,7 +1830,7 @@ class Rotation(NodeBuilder):
     name = "FunctionNodeInputRotation"
     node: bpy.types.FunctionNodeInputRotation
 
-    def __init__(self, rotation_euler: float = 0.0):
+    def __init__(self, rotation_euler: tuple[float, float, float] = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {}
         self.rotation_euler = rotation_euler
@@ -1840,11 +1842,11 @@ class Rotation(NodeBuilder):
         return self._output("Rotation")
 
     @property
-    def rotation_euler(self) -> float:
+    def rotation_euler(self) -> tuple[float, float, float]:
         return self.node.rotation_euler
 
     @rotation_euler.setter
-    def rotation_euler(self, value: float):
+    def rotation_euler(self, value: tuple[float, float, float]):
         self.node.rotation_euler = value
 
 
@@ -2123,7 +2125,7 @@ class Vector(NodeBuilder):
     name = "FunctionNodeInputVector"
     node: bpy.types.FunctionNodeInputVector
 
-    def __init__(self, vector: float = 0.0):
+    def __init__(self, vector: tuple[float, float, float] = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {}
         self.vector = vector
