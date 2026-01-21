@@ -48,7 +48,6 @@ from .converter import (
     FindInString,
     FloatCurve,
     FloatToInteger,
-    Gamma,
     HashValue,
     IndexOfNearest,
     IntegerMath,
@@ -64,7 +63,6 @@ from .converter import (
     PackUVIslands,
     ProjectPoint,
     QuaternionToRotation,
-    RgbCurves,
     RandomValue,
     ReplaceString,
     RotateEuler,
@@ -325,6 +323,7 @@ from .texture import (
 )
 from .experimental import GetListItem, List, ListLength
 from .output import Viewer
+from .color import Gamma, RgbCurves
 from .vector import RadialTiling, VectorCurves, VectorMath, VectorRotate
 
 __all__ = (

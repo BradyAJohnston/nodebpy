@@ -9,7 +9,6 @@
 | Name | Description |
 | --- | --- |
 | [Arc](#nodebpy.nodes.geometry.Arc) | Generate a poly spline arc |
-| [Bake](#nodebpy.nodes.geometry.Bake) | Cache the incoming data so that it can be used without recomputation |
 | [BezierSegment](#nodebpy.nodes.geometry.BezierSegment) | Generate a 2D Bézier spline from the given control points and handles |
 | [BoundingBox](#nodebpy.nodes.geometry.BoundingBox) | Calculate the limits of a geometry's positions and generate a box mesh with those dimensions |
 | [Cone](#nodebpy.nodes.geometry.Cone) | Generate a cone mesh |
@@ -33,14 +32,12 @@
 | [FilletCurve](#nodebpy.nodes.geometry.FilletCurve) | Round corners by generating circular arcs on each control point |
 | [FlipFaces](#nodebpy.nodes.geometry.FlipFaces) | Reverse the order of the vertices and edges of selected faces, flipping their normal direction |
 | [GeometryProximity](#nodebpy.nodes.geometry.GeometryProximity) | Compute the closest location on the target geometry |
-| [GeometryToInstance](#nodebpy.nodes.geometry.GeometryToInstance) | Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large |
 | [GreasePencilToCurves](#nodebpy.nodes.geometry.GreasePencilToCurves) | Convert Grease Pencil layers into curve instances |
 | [Grid](#nodebpy.nodes.geometry.Grid) | Generate a planar mesh on the XY plane |
 | [IcoSphere](#nodebpy.nodes.geometry.IcoSphere) | Generate a spherical mesh that consists of equally sized triangles |
 | [InstanceOnPoints](#nodebpy.nodes.geometry.InstanceOnPoints) | Generate a reference to geometry at each of the input points, without duplicating its underlying data |
 | [InstancesToPoints](#nodebpy.nodes.geometry.InstancesToPoints) | Generate points at the origins of instances. |
 | [InterpolateCurves](#nodebpy.nodes.geometry.InterpolateCurves) | Generate new curves on points by interpolating between existing curves |
-| [JoinGeometry](#nodebpy.nodes.geometry.JoinGeometry) | Merge separately generated geometries into a single one |
 | [MaterialSelection](#nodebpy.nodes.geometry.MaterialSelection) | Provide a selection of faces that use the specified material |
 | [MergeByDistance](#nodebpy.nodes.geometry.MergeByDistance) | Merge vertices or points within a given distance |
 | [MergeLayers](#nodebpy.nodes.geometry.MergeLayers) | Join groups of Grease Pencil layers into one |
@@ -48,15 +45,10 @@
 | [MeshCircle](#nodebpy.nodes.geometry.MeshCircle) | Generate a circular ring of edges |
 | [MeshLine](#nodebpy.nodes.geometry.MeshLine) | Generate vertices in a line and connect them with edges |
 | [MeshToCurve](#nodebpy.nodes.geometry.MeshToCurve) | Generate a curve from a mesh |
-| [MeshToDensityGrid](#nodebpy.nodes.geometry.MeshToDensityGrid) | Create a filled volume grid from a mesh |
 | [MeshToPoints](#nodebpy.nodes.geometry.MeshToPoints) | Generate a point cloud from a mesh's vertices |
-| [MeshToSDFGrid](#nodebpy.nodes.geometry.MeshToSDFGrid) | Create a signed distance volume grid from a mesh |
-| [MeshToVolume](#nodebpy.nodes.geometry.MeshToVolume) | Create a fog volume with the shape of the input mesh's surface |
 | [Points](#nodebpy.nodes.geometry.Points) | Generate a point cloud with positions and radii defined by fields |
 | [PointsToCurves](#nodebpy.nodes.geometry.PointsToCurves) | Split all points to curve by its group ID and reorder by weight |
-| [PointsToSDFGrid](#nodebpy.nodes.geometry.PointsToSDFGrid) | Create a signed distance volume grid from points |
 | [PointsToVertices](#nodebpy.nodes.geometry.PointsToVertices) | Generate a mesh vertex for each point cloud point |
-| [PointsToVolume](#nodebpy.nodes.geometry.PointsToVolume) | Generate a fog volume sphere around every point |
 | [QuadraticBezier](#nodebpy.nodes.geometry.QuadraticBezier) | Generate a poly spline in a parabola shape with control points positions |
 | [Quadrilateral](#nodebpy.nodes.geometry.Quadrilateral) | Generate a polygon with four points |
 | [Raycast](#nodebpy.nodes.geometry.Raycast) | Cast rays from the context geometry onto a target geometry, and retrieve information from each hit point |
@@ -83,7 +75,6 @@
 | [SetGreasePencilDepth](#nodebpy.nodes.geometry.SetGreasePencilDepth) | Set the Grease Pencil depth order to use |
 | [SetGreasePencilSoftness](#nodebpy.nodes.geometry.SetGreasePencilSoftness) | Set softness attribute on Grease Pencil geometry |
 | [SetHandlePositions](#nodebpy.nodes.geometry.SetHandlePositions) | Set the positions for the handles of Bézier curves |
-| [SetHandleType](#nodebpy.nodes.geometry.SetHandleType) | Set the handle type for the control points of a Bézier curve |
 | [SetID](#nodebpy.nodes.geometry.SetID) | Set the id attribute on the input geometry, mainly used internally for randomizing |
 | [SetInstanceTransform](#nodebpy.nodes.geometry.SetInstanceTransform) | Set the transformation matrix of every instance |
 | [SetMaterial](#nodebpy.nodes.geometry.SetMaterial) | Assign a material to geometry elements |
@@ -110,17 +101,23 @@
 | [Triangulate](#nodebpy.nodes.geometry.Triangulate) | Convert all faces in a mesh to triangular faces |
 | [TrimCurve](#nodebpy.nodes.geometry.TrimCurve) | Shorten curves by removing portions at the start or end |
 | [UVSphere](#nodebpy.nodes.geometry.UVSphere) | Generate a spherical mesh with quads, except for triangles at the top and bottom |
-| [VolumeToMesh](#nodebpy.nodes.geometry.VolumeToMesh) | Generate a mesh on the "surface" of a volume |
 
 ### Arc { #nodebpy.nodes.geometry.Arc }
 
 ```python
 nodes.geometry.Arc(
+    resolution=16,
+    start=None,
+    middle=None,
+    end=None,
+    radius=1.0,
+    start_angle=0.0,
+    sweep_angle=5.4978,
+    offset_angle=0.0,
     connect_center=False,
     invert_arc=False,
     *,
     mode='RADIUS',
-    **kwargs,
 )
 ```
 
@@ -131,90 +128,34 @@ Generate a poly spline arc
 | Name | Description |
 | --- | --- |
 | [i_connect_center](#nodebpy.nodes.geometry.Arc.i_connect_center) | Input socket: Connect Center |
+| [i_end](#nodebpy.nodes.geometry.Arc.i_end) | Input socket: End |
 | [i_invert_arc](#nodebpy.nodes.geometry.Arc.i_invert_arc) | Input socket: Invert Arc |
+| [i_middle](#nodebpy.nodes.geometry.Arc.i_middle) | Input socket: Middle |
+| [i_offset_angle](#nodebpy.nodes.geometry.Arc.i_offset_angle) | Input socket: Offset Angle |
 | [i_radius](#nodebpy.nodes.geometry.Arc.i_radius) | Input socket: Radius |
 | [i_resolution](#nodebpy.nodes.geometry.Arc.i_resolution) | Input socket: Resolution |
+| [i_start](#nodebpy.nodes.geometry.Arc.i_start) | Input socket: Start |
 | [i_start_angle](#nodebpy.nodes.geometry.Arc.i_start_angle) | Input socket: Start Angle |
 | [i_sweep_angle](#nodebpy.nodes.geometry.Arc.i_sweep_angle) | Input socket: Sweep Angle |
 | [mode](#nodebpy.nodes.geometry.Arc.mode) |  |
 | [name](#nodebpy.nodes.geometry.Arc.name) |  |
 | [node](#nodebpy.nodes.geometry.Arc.node) |  |
+| [o_center](#nodebpy.nodes.geometry.Arc.o_center) | Output socket: Center |
 | [o_curve](#nodebpy.nodes.geometry.Arc.o_curve) | Output socket: Curve |
+| [o_normal](#nodebpy.nodes.geometry.Arc.o_normal) | Output socket: Normal |
+| [o_radius](#nodebpy.nodes.geometry.Arc.o_radius) | Output socket: Radius |
 | [tree](#nodebpy.nodes.geometry.Arc.tree) |  |
 | [type](#nodebpy.nodes.geometry.Arc.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [arc](#nodebpy.nodes.geometry.Arc.arc) |  |
-| [points](#nodebpy.nodes.geometry.Arc.points) |  |
-
-##### arc { #nodebpy.nodes.geometry.Arc.arc }
-
-```python
-nodes.geometry.Arc.arc(
-    resolution=16,
-    start_angle=0.0,
-    sweep_angle=5.5,
-    connect_center=False,
-    invert_arc=False,
-    *,
-    mode='RADIUS',
-)
-```
-
-
-
-##### points { #nodebpy.nodes.geometry.Arc.points }
-
-```python
-nodes.geometry.Arc.points(
-    start=(0.0, 0.0, 0.0),
-    middle=(0.0, 0.0, 0.0),
-    end=(0.0, 0.0, 0.0),
-    offset_angle=0.0,
-    connect_center=False,
-    invert_arc=False,
-    *,
-    mode='RADIUS',
-)
-```
-
-
-
-### Bake { #nodebpy.nodes.geometry.Bake }
-
-```python
-nodes.geometry.Bake(*args, **kwargs)
-```
-
-Cache the incoming data so that it can be used without recomputation
-
-TODO: properly handle Animation / Still bake opations and ability to bake to a file
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_input_socket](#nodebpy.nodes.geometry.Bake.i_input_socket) | Input socket: |
-| [inputs](#nodebpy.nodes.geometry.Bake.inputs) |  |
-| [name](#nodebpy.nodes.geometry.Bake.name) |  |
-| [node](#nodebpy.nodes.geometry.Bake.node) |  |
-| [o_input_socket](#nodebpy.nodes.geometry.Bake.o_input_socket) | Output socket: |
-| [outputs](#nodebpy.nodes.geometry.Bake.outputs) |  |
-| [tree](#nodebpy.nodes.geometry.Bake.tree) |  |
-| [type](#nodebpy.nodes.geometry.Bake.type) |  |
 
 ### BezierSegment { #nodebpy.nodes.geometry.BezierSegment }
 
 ```python
 nodes.geometry.BezierSegment(
     resolution=16,
-    start=(-1.0, 0.0, 0.0),
-    start_handle=(-0.5, 0.5, 0.0),
-    end_handle=(0.0, 0.0, 0.0),
-    end=(1.0, 0.0, 0.0),
+    start=None,
+    start_handle=None,
+    end_handle=None,
+    end=None,
     *,
     mode='POSITION',
 )
@@ -270,8 +211,8 @@ nodes.geometry.Cone(
     radius_top=0.0,
     radius_bottom=1.0,
     depth=2.0,
+    *,
     fill_type='NGON',
-    **kwargs,
 )
 ```
 
@@ -320,13 +261,7 @@ Create a mesh that encloses all points in the input geometry with the smallest n
 ### Cube { #nodebpy.nodes.geometry.Cube }
 
 ```python
-nodes.geometry.Cube(
-    size=[1.0, 1.0, 1.0],
-    vertices_x=2,
-    vertices_y=2,
-    vertices_z=2,
-    **kwargs,
-)
+nodes.geometry.Cube(size=None, vertices_x=2, vertices_y=2, vertices_z=2)
 ```
 
 Generate a cuboid mesh with variable side lengths and subdivisions
@@ -349,7 +284,15 @@ Generate a cuboid mesh with variable side lengths and subdivisions
 ### CurveCircle { #nodebpy.nodes.geometry.CurveCircle }
 
 ```python
-nodes.geometry.CurveCircle(resolution=32, *, mode='RADIUS', **kwargs)
+nodes.geometry.CurveCircle(
+    resolution=32,
+    point_1=None,
+    point_2=None,
+    point_3=None,
+    radius=1.0,
+    *,
+    mode='RADIUS',
+)
 ```
 
 Generate a poly spline circle
@@ -358,42 +301,18 @@ Generate a poly spline circle
 
 | Name | Description |
 | --- | --- |
+| [i_point_1](#nodebpy.nodes.geometry.CurveCircle.i_point_1) | Input socket: Point 1 |
+| [i_point_2](#nodebpy.nodes.geometry.CurveCircle.i_point_2) | Input socket: Point 2 |
+| [i_point_3](#nodebpy.nodes.geometry.CurveCircle.i_point_3) | Input socket: Point 3 |
 | [i_radius](#nodebpy.nodes.geometry.CurveCircle.i_radius) | Input socket: Radius |
 | [i_resolution](#nodebpy.nodes.geometry.CurveCircle.i_resolution) | Input socket: Resolution |
 | [mode](#nodebpy.nodes.geometry.CurveCircle.mode) |  |
 | [name](#nodebpy.nodes.geometry.CurveCircle.name) |  |
 | [node](#nodebpy.nodes.geometry.CurveCircle.node) |  |
+| [o_center](#nodebpy.nodes.geometry.CurveCircle.o_center) | Output socket: Center |
 | [o_curve](#nodebpy.nodes.geometry.CurveCircle.o_curve) | Output socket: Curve |
 | [tree](#nodebpy.nodes.geometry.CurveCircle.tree) |  |
 | [type](#nodebpy.nodes.geometry.CurveCircle.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [points](#nodebpy.nodes.geometry.CurveCircle.points) |  |
-| [radius](#nodebpy.nodes.geometry.CurveCircle.radius) |  |
-
-##### points { #nodebpy.nodes.geometry.CurveCircle.points }
-
-```python
-nodes.geometry.CurveCircle.points(
-    resolution=32,
-    point_1=(0.0, 0.0, 0.0),
-    point_2=(1.0, 0.0, 0.0),
-    point_3=(0.0, 1.0, 0.0),
-)
-```
-
-
-
-##### radius { #nodebpy.nodes.geometry.CurveCircle.radius }
-
-```python
-nodes.geometry.CurveCircle.radius(resolution=32, radius=1.0)
-```
-
-
 
 ### CurveLength { #nodebpy.nodes.geometry.CurveLength }
 
@@ -417,7 +336,14 @@ Retrieve the length of all splines added together
 ### CurveLine { #nodebpy.nodes.geometry.CurveLine }
 
 ```python
-nodes.geometry.CurveLine(start=(0.0, 0.0, 0.0), *, mode='POINTS', **kwargs)
+nodes.geometry.CurveLine(
+    start=None,
+    end=None,
+    direction=None,
+    length=1.0,
+    *,
+    mode='POINTS',
+)
 ```
 
 Generate a poly spline line with two points
@@ -426,7 +352,9 @@ Generate a poly spline line with two points
 
 | Name | Description |
 | --- | --- |
+| [i_direction](#nodebpy.nodes.geometry.CurveLine.i_direction) | Input socket: Direction |
 | [i_end](#nodebpy.nodes.geometry.CurveLine.i_end) | Input socket: End |
+| [i_length](#nodebpy.nodes.geometry.CurveLine.i_length) | Input socket: Length |
 | [i_start](#nodebpy.nodes.geometry.CurveLine.i_start) | Input socket: Start |
 | [mode](#nodebpy.nodes.geometry.CurveLine.mode) |  |
 | [name](#nodebpy.nodes.geometry.CurveLine.name) |  |
@@ -434,33 +362,6 @@ Generate a poly spline line with two points
 | [o_curve](#nodebpy.nodes.geometry.CurveLine.o_curve) | Output socket: Curve |
 | [tree](#nodebpy.nodes.geometry.CurveLine.tree) |  |
 | [type](#nodebpy.nodes.geometry.CurveLine.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [direction](#nodebpy.nodes.geometry.CurveLine.direction) |  |
-| [points](#nodebpy.nodes.geometry.CurveLine.points) |  |
-
-##### direction { #nodebpy.nodes.geometry.CurveLine.direction }
-
-```python
-nodes.geometry.CurveLine.direction(
-    start=(0.0, 0.0, 0.0),
-    direction=(0.0, 0.0, 1.0),
-    length=1.0,
-)
-```
-
-
-
-##### points { #nodebpy.nodes.geometry.CurveLine.points }
-
-```python
-nodes.geometry.CurveLine.points(start=(0.0, 0.0, 0.0), end=(0.0, 0.0, 1.0))
-```
-
-
 
 ### CurveToMesh { #nodebpy.nodes.geometry.CurveToMesh }
 
@@ -492,7 +393,7 @@ Convert curves into a mesh, optionally with a custom profile shape defined by cu
 ### CurveToPoints { #nodebpy.nodes.geometry.CurveToPoints }
 
 ```python
-nodes.geometry.CurveToPoints(curve=None, *, mode='COUNT', **kwargs)
+nodes.geometry.CurveToPoints(curve=None, count=10, length=0.1, *, mode='COUNT')
 ```
 
 Generate a point cloud by sampling positions along curves
@@ -503,6 +404,7 @@ Generate a point cloud by sampling positions along curves
 | --- | --- |
 | [i_count](#nodebpy.nodes.geometry.CurveToPoints.i_count) | Input socket: Count |
 | [i_curve](#nodebpy.nodes.geometry.CurveToPoints.i_curve) | Input socket: Curve |
+| [i_length](#nodebpy.nodes.geometry.CurveToPoints.i_length) | Input socket: Length |
 | [mode](#nodebpy.nodes.geometry.CurveToPoints.mode) |  |
 | [name](#nodebpy.nodes.geometry.CurveToPoints.name) |  |
 | [node](#nodebpy.nodes.geometry.CurveToPoints.node) |  |
@@ -512,38 +414,6 @@ Generate a point cloud by sampling positions along curves
 | [o_tangent](#nodebpy.nodes.geometry.CurveToPoints.o_tangent) | Output socket: Tangent |
 | [tree](#nodebpy.nodes.geometry.CurveToPoints.tree) |  |
 | [type](#nodebpy.nodes.geometry.CurveToPoints.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [m_count](#nodebpy.nodes.geometry.CurveToPoints.m_count) |  |
-| [m_evaluated](#nodebpy.nodes.geometry.CurveToPoints.m_evaluated) |  |
-| [m_length](#nodebpy.nodes.geometry.CurveToPoints.m_length) |  |
-
-##### m_count { #nodebpy.nodes.geometry.CurveToPoints.m_count }
-
-```python
-nodes.geometry.CurveToPoints.m_count(curve=None, count=10)
-```
-
-
-
-##### m_evaluated { #nodebpy.nodes.geometry.CurveToPoints.m_evaluated }
-
-```python
-nodes.geometry.CurveToPoints.m_evaluated(curve=None)
-```
-
-
-
-##### m_length { #nodebpy.nodes.geometry.CurveToPoints.m_length }
-
-```python
-nodes.geometry.CurveToPoints.m_length(curve=None, length=None)
-```
-
-
 
 ### CurvesToGreasePencil { #nodebpy.nodes.geometry.CurvesToGreasePencil }
 
@@ -631,6 +501,7 @@ Translate and rotate curves based on changes between the object's original and e
 nodes.geometry.DeleteGeometry(
     geometry=None,
     selection=True,
+    *,
     mode='ALL',
     domain='POINT',
 )
@@ -652,19 +523,79 @@ Remove selected elements of a geometry
 | [tree](#nodebpy.nodes.geometry.DeleteGeometry.tree) |  |
 | [type](#nodebpy.nodes.geometry.DeleteGeometry.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.DeleteGeometry.edge) | Create Delete Geometry with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.DeleteGeometry.face) | Create Delete Geometry with operation 'Face'. |
+| [instance](#nodebpy.nodes.geometry.DeleteGeometry.instance) | Create Delete Geometry with operation 'Instance'. |
+| [layer](#nodebpy.nodes.geometry.DeleteGeometry.layer) | Create Delete Geometry with operation 'Layer'. |
+| [point](#nodebpy.nodes.geometry.DeleteGeometry.point) | Create Delete Geometry with operation 'Point'. |
+| [spline](#nodebpy.nodes.geometry.DeleteGeometry.spline) | Create Delete Geometry with operation 'Spline'. |
+
+##### edge { #nodebpy.nodes.geometry.DeleteGeometry.edge }
+
+```python
+nodes.geometry.DeleteGeometry.edge(geometry=None, selection=True)
+```
+
+Create Delete Geometry with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.DeleteGeometry.face }
+
+```python
+nodes.geometry.DeleteGeometry.face(geometry=None, selection=True)
+```
+
+Create Delete Geometry with operation 'Face'.
+
+##### instance { #nodebpy.nodes.geometry.DeleteGeometry.instance }
+
+```python
+nodes.geometry.DeleteGeometry.instance(geometry=None, selection=True)
+```
+
+Create Delete Geometry with operation 'Instance'.
+
+##### layer { #nodebpy.nodes.geometry.DeleteGeometry.layer }
+
+```python
+nodes.geometry.DeleteGeometry.layer(geometry=None, selection=True)
+```
+
+Create Delete Geometry with operation 'Layer'.
+
+##### point { #nodebpy.nodes.geometry.DeleteGeometry.point }
+
+```python
+nodes.geometry.DeleteGeometry.point(geometry=None, selection=True)
+```
+
+Create Delete Geometry with operation 'Point'.
+
+##### spline { #nodebpy.nodes.geometry.DeleteGeometry.spline }
+
+```python
+nodes.geometry.DeleteGeometry.spline(geometry=None, selection=True)
+```
+
+Create Delete Geometry with operation 'Spline'.
+
 ### DistributePointsOnFaces { #nodebpy.nodes.geometry.DistributePointsOnFaces }
 
 ```python
 nodes.geometry.DistributePointsOnFaces(
     mesh=None,
-    selection=None,
-    density=10.0,
-    distance_min=10.0,
+    selection=True,
+    distance_min=0.0,
     density_max=10.0,
-    density_factor=10.0,
-    distribute_method='RANDOM',
+    density=10.0,
+    density_factor=1.0,
     seed=0,
-    **kwargs,
+    *,
+    distribute_method='RANDOM',
+    use_legacy_normal=False,
 )
 ```
 
@@ -676,6 +607,9 @@ Generate points spread out on the surface of a mesh
 | --- | --- |
 | [distribute_method](#nodebpy.nodes.geometry.DistributePointsOnFaces.distribute_method) |  |
 | [i_density](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_density) | Input socket: Density |
+| [i_density_factor](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_density_factor) | Input socket: Density Factor |
+| [i_density_max](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_density_max) | Input socket: Density Max |
+| [i_distance_min](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_distance_min) | Input socket: Distance Min |
 | [i_mesh](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_mesh) | Input socket: Mesh |
 | [i_seed](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_seed) | Input socket: Seed |
 | [i_selection](#nodebpy.nodes.geometry.DistributePointsOnFaces.i_selection) | Input socket: Selection |
@@ -687,41 +621,6 @@ Generate points spread out on the surface of a mesh
 | [tree](#nodebpy.nodes.geometry.DistributePointsOnFaces.tree) |  |
 | [type](#nodebpy.nodes.geometry.DistributePointsOnFaces.type) |  |
 | [use_legacy_normal](#nodebpy.nodes.geometry.DistributePointsOnFaces.use_legacy_normal) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [poisson](#nodebpy.nodes.geometry.DistributePointsOnFaces.poisson) |  |
-| [random](#nodebpy.nodes.geometry.DistributePointsOnFaces.random) |  |
-
-##### poisson { #nodebpy.nodes.geometry.DistributePointsOnFaces.poisson }
-
-```python
-nodes.geometry.DistributePointsOnFaces.poisson(
-    mesh=None,
-    selection=None,
-    distance_min=10.0,
-    density_max=10.0,
-    density_factor=10.0,
-    seed=0,
-)
-```
-
-
-
-##### random { #nodebpy.nodes.geometry.DistributePointsOnFaces.random }
-
-```python
-nodes.geometry.DistributePointsOnFaces.random(
-    mesh=None,
-    selection=None,
-    density=10.0,
-    seed=0,
-)
-```
-
-
 
 ### DualMesh { #nodebpy.nodes.geometry.DualMesh }
 
@@ -750,6 +649,7 @@ nodes.geometry.DuplicateElements(
     geometry=None,
     selection=True,
     amount=1,
+    *,
     domain='POINT',
 )
 ```
@@ -770,6 +670,69 @@ Generate an arbitrary number copies of each selected input element
 | [o_geometry](#nodebpy.nodes.geometry.DuplicateElements.o_geometry) | Output socket: Geometry |
 | [tree](#nodebpy.nodes.geometry.DuplicateElements.tree) |  |
 | [type](#nodebpy.nodes.geometry.DuplicateElements.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.DuplicateElements.edge) | Create Duplicate Elements with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.DuplicateElements.face) | Create Duplicate Elements with operation 'Face'. |
+| [instance](#nodebpy.nodes.geometry.DuplicateElements.instance) | Create Duplicate Elements with operation 'Instance'. |
+| [layer](#nodebpy.nodes.geometry.DuplicateElements.layer) | Create Duplicate Elements with operation 'Layer'. |
+| [point](#nodebpy.nodes.geometry.DuplicateElements.point) | Create Duplicate Elements with operation 'Point'. |
+| [spline](#nodebpy.nodes.geometry.DuplicateElements.spline) | Create Duplicate Elements with operation 'Spline'. |
+
+##### edge { #nodebpy.nodes.geometry.DuplicateElements.edge }
+
+```python
+nodes.geometry.DuplicateElements.edge(geometry=None, selection=True, amount=1)
+```
+
+Create Duplicate Elements with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.DuplicateElements.face }
+
+```python
+nodes.geometry.DuplicateElements.face(geometry=None, selection=True, amount=1)
+```
+
+Create Duplicate Elements with operation 'Face'.
+
+##### instance { #nodebpy.nodes.geometry.DuplicateElements.instance }
+
+```python
+nodes.geometry.DuplicateElements.instance(
+    geometry=None,
+    selection=True,
+    amount=1,
+)
+```
+
+Create Duplicate Elements with operation 'Instance'.
+
+##### layer { #nodebpy.nodes.geometry.DuplicateElements.layer }
+
+```python
+nodes.geometry.DuplicateElements.layer(geometry=None, selection=True, amount=1)
+```
+
+Create Duplicate Elements with operation 'Layer'.
+
+##### point { #nodebpy.nodes.geometry.DuplicateElements.point }
+
+```python
+nodes.geometry.DuplicateElements.point(geometry=None, selection=True, amount=1)
+```
+
+Create Duplicate Elements with operation 'Point'.
+
+##### spline { #nodebpy.nodes.geometry.DuplicateElements.spline }
+
+```python
+nodes.geometry.DuplicateElements.spline(geometry=None, selection=True, amount=1)
+```
+
+Create Duplicate Elements with operation 'Spline'.
 
 ### EdgePathsToCurves { #nodebpy.nodes.geometry.EdgePathsToCurves }
 
@@ -859,7 +822,7 @@ nodes.geometry.FilletCurve(
     radius=0.25,
     limit_radius=False,
     mode='Bézier',
-    **kwargs,
+    count=1,
 )
 ```
 
@@ -880,38 +843,10 @@ Round corners by generating circular arcs on each control point
 | [tree](#nodebpy.nodes.geometry.FilletCurve.tree) |  |
 | [type](#nodebpy.nodes.geometry.FilletCurve.type) |  |
 
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [m_bezier](#nodebpy.nodes.geometry.FilletCurve.m_bezier) |  |
-| [m_poly](#nodebpy.nodes.geometry.FilletCurve.m_poly) |  |
-
-##### m_bezier { #nodebpy.nodes.geometry.FilletCurve.m_bezier }
-
-```python
-nodes.geometry.FilletCurve.m_bezier(curve=None, radius=0.25, limit_radius=False)
-```
-
-
-
-##### m_poly { #nodebpy.nodes.geometry.FilletCurve.m_poly }
-
-```python
-nodes.geometry.FilletCurve.m_poly(
-    curve=None,
-    radius=0.25,
-    limit_radius=False,
-    count=1,
-)
-```
-
-
-
 ### FlipFaces { #nodebpy.nodes.geometry.FlipFaces }
 
 ```python
-nodes.geometry.FlipFaces(mesh=None, selection=None)
+nodes.geometry.FlipFaces(mesh=None, selection=True)
 ```
 
 Reverse the order of the vertices and edges of selected faces, flipping their normal direction
@@ -933,9 +868,10 @@ Reverse the order of the vertices and edges of selected faces, flipping their no
 ```python
 nodes.geometry.GeometryProximity(
     target=None,
-    group_id=None,
+    group_id=0,
     source_position=None,
-    sample_group_id=None,
+    sample_group_id=0,
+    *,
     target_element='FACES',
 )
 ```
@@ -946,10 +882,10 @@ Compute the closest location on the target geometry
 
 | Name | Description |
 | --- | --- |
-| [i_geometry](#nodebpy.nodes.geometry.GeometryProximity.i_geometry) | Input socket: Geometry |
 | [i_group_id](#nodebpy.nodes.geometry.GeometryProximity.i_group_id) | Input socket: Group ID |
 | [i_sample_group_id](#nodebpy.nodes.geometry.GeometryProximity.i_sample_group_id) | Input socket: Sample Group ID |
-| [i_sample_position](#nodebpy.nodes.geometry.GeometryProximity.i_sample_position) | Input socket: Sample Position |
+| [i_source_position](#nodebpy.nodes.geometry.GeometryProximity.i_source_position) | Input socket: Sample Position |
+| [i_target](#nodebpy.nodes.geometry.GeometryProximity.i_target) | Input socket: Geometry |
 | [name](#nodebpy.nodes.geometry.GeometryProximity.name) |  |
 | [node](#nodebpy.nodes.geometry.GeometryProximity.node) |  |
 | [o_distance](#nodebpy.nodes.geometry.GeometryProximity.o_distance) | Output socket: Distance |
@@ -958,25 +894,6 @@ Compute the closest location on the target geometry
 | [target_element](#nodebpy.nodes.geometry.GeometryProximity.target_element) |  |
 | [tree](#nodebpy.nodes.geometry.GeometryProximity.tree) |  |
 | [type](#nodebpy.nodes.geometry.GeometryProximity.type) |  |
-
-### GeometryToInstance { #nodebpy.nodes.geometry.GeometryToInstance }
-
-```python
-nodes.geometry.GeometryToInstance(*args)
-```
-
-Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_geometry](#nodebpy.nodes.geometry.GeometryToInstance.i_geometry) | Input socket: Geometry |
-| [name](#nodebpy.nodes.geometry.GeometryToInstance.name) |  |
-| [node](#nodebpy.nodes.geometry.GeometryToInstance.node) |  |
-| [o_instances](#nodebpy.nodes.geometry.GeometryToInstance.o_instances) | Output socket: Instances |
-| [tree](#nodebpy.nodes.geometry.GeometryToInstance.tree) |  |
-| [type](#nodebpy.nodes.geometry.GeometryToInstance.type) |  |
 
 ### GreasePencilToCurves { #nodebpy.nodes.geometry.GreasePencilToCurves }
 
@@ -1056,8 +973,8 @@ nodes.geometry.InstanceOnPoints(
     instance=None,
     pick_instance=False,
     instance_index=0,
-    rotation=(0.0, 0.0, 0.0),
-    scale=(1.0, 1.0, 1.0),
+    rotation=None,
+    scale=None,
 )
 ```
 
@@ -1085,7 +1002,7 @@ Generate a reference to geometry at each of the input points, without duplicatin
 ```python
 nodes.geometry.InstancesToPoints(
     instances=None,
-    selection=None,
+    selection=True,
     position=None,
     radius=0.05,
 )
@@ -1114,10 +1031,10 @@ Note: Nested instances are not affected by this node
 nodes.geometry.InterpolateCurves(
     guide_curves=None,
     guide_up=None,
-    guide_group_id=None,
+    guide_group_id=0,
     points=None,
     point_up=None,
-    point_group_id=None,
+    point_group_id=0,
     max_neighbors=4,
 )
 ```
@@ -1143,25 +1060,6 @@ Generate new curves on points by interpolating between existing curves
 | [tree](#nodebpy.nodes.geometry.InterpolateCurves.tree) |  |
 | [type](#nodebpy.nodes.geometry.InterpolateCurves.type) |  |
 
-### JoinGeometry { #nodebpy.nodes.geometry.JoinGeometry }
-
-```python
-nodes.geometry.JoinGeometry(*args)
-```
-
-Merge separately generated geometries into a single one
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_geometry](#nodebpy.nodes.geometry.JoinGeometry.i_geometry) | Input socket: Geometry |
-| [name](#nodebpy.nodes.geometry.JoinGeometry.name) |  |
-| [node](#nodebpy.nodes.geometry.JoinGeometry.node) |  |
-| [o_geometry](#nodebpy.nodes.geometry.JoinGeometry.o_geometry) | Output socket: Geometry |
-| [tree](#nodebpy.nodes.geometry.JoinGeometry.tree) |  |
-| [type](#nodebpy.nodes.geometry.JoinGeometry.type) |  |
-
 ### MaterialSelection { #nodebpy.nodes.geometry.MaterialSelection }
 
 ```python
@@ -1186,7 +1084,7 @@ Provide a selection of faces that use the specified material
 ```python
 nodes.geometry.MergeByDistance(
     geometry=None,
-    selection=None,
+    selection=True,
     mode='All',
     distance=0.001,
 )
@@ -1214,7 +1112,7 @@ Merge vertices or points within a given distance
 nodes.geometry.MergeLayers(
     grease_pencil=None,
     selection=True,
-    group_id=None,
+    group_id=0,
     *,
     mode='MERGE_BY_NAME',
 )
@@ -1227,7 +1125,7 @@ Join groups of Grease Pencil layers into one
 | Name | Description |
 | --- | --- |
 | [i_grease_pencil](#nodebpy.nodes.geometry.MergeLayers.i_grease_pencil) | Input socket: Grease Pencil |
-| [i_group_id](#nodebpy.nodes.geometry.MergeLayers.i_group_id) |  |
+| [i_group_id](#nodebpy.nodes.geometry.MergeLayers.i_group_id) | Input socket: Group ID |
 | [i_selection](#nodebpy.nodes.geometry.MergeLayers.i_selection) | Input socket: Selection |
 | [mode](#nodebpy.nodes.geometry.MergeLayers.mode) |  |
 | [name](#nodebpy.nodes.geometry.MergeLayers.name) |  |
@@ -1240,10 +1138,13 @@ Join groups of Grease Pencil layers into one
 
 ```python
 nodes.geometry.MeshBoolean(
-    *args,
+    mesh_1=None,
+    mesh_2=None,
+    self_intersection=False,
+    hole_tolerant=False,
+    *,
     operation='DIFFERENCE',
     solver='FLOAT',
-    **kwargs,
 )
 ```
 
@@ -1253,11 +1154,13 @@ Cut, subtract, or join multiple mesh inputs
 
 | Name | Description |
 | --- | --- |
+| [i_hole_tolerant](#nodebpy.nodes.geometry.MeshBoolean.i_hole_tolerant) | Input socket: Hole Tolerant |
 | [i_mesh_1](#nodebpy.nodes.geometry.MeshBoolean.i_mesh_1) | Input socket: Mesh 1 |
 | [i_mesh_2](#nodebpy.nodes.geometry.MeshBoolean.i_mesh_2) | Input socket: Mesh 2 |
+| [i_self_intersection](#nodebpy.nodes.geometry.MeshBoolean.i_self_intersection) | Input socket: Self Intersection |
 | [name](#nodebpy.nodes.geometry.MeshBoolean.name) |  |
 | [node](#nodebpy.nodes.geometry.MeshBoolean.node) |  |
-| [o_intersecting_edges](#nodebpy.nodes.geometry.MeshBoolean.o_intersecting_edges) | Output socket: Mesh |
+| [o_intersecting_edges](#nodebpy.nodes.geometry.MeshBoolean.o_intersecting_edges) | Output socket: Intersecting Edges |
 | [o_mesh](#nodebpy.nodes.geometry.MeshBoolean.o_mesh) | Output socket: Mesh |
 | [operation](#nodebpy.nodes.geometry.MeshBoolean.operation) |  |
 | [solver](#nodebpy.nodes.geometry.MeshBoolean.solver) |  |
@@ -1269,9 +1172,7 @@ Cut, subtract, or join multiple mesh inputs
 | Name | Description |
 | --- | --- |
 | [difference](#nodebpy.nodes.geometry.MeshBoolean.difference) | Create Mesh Boolean with operation 'Difference'. |
-| [intersect](#nodebpy.nodes.geometry.MeshBoolean.intersect) |  |
-| [m_difference](#nodebpy.nodes.geometry.MeshBoolean.m_difference) |  |
-| [m_union](#nodebpy.nodes.geometry.MeshBoolean.m_union) |  |
+| [intersect](#nodebpy.nodes.geometry.MeshBoolean.intersect) | Create Mesh Boolean with operation 'Intersect'. |
 | [union](#nodebpy.nodes.geometry.MeshBoolean.union) | Create Mesh Boolean with operation 'Union'. |
 
 ##### difference { #nodebpy.nodes.geometry.MeshBoolean.difference }
@@ -1285,47 +1186,15 @@ Create Mesh Boolean with operation 'Difference'.
 ##### intersect { #nodebpy.nodes.geometry.MeshBoolean.intersect }
 
 ```python
-nodes.geometry.MeshBoolean.intersect(
-    *args,
-    self_intersection=False,
-    hole_tolerant=False,
-    solver='FLOAT',
-)
+nodes.geometry.MeshBoolean.intersect(mesh_2=None)
 ```
 
-
-
-##### m_difference { #nodebpy.nodes.geometry.MeshBoolean.m_difference }
-
-```python
-nodes.geometry.MeshBoolean.m_difference(
-    *args,
-    mesh_1=None,
-    hole_tolerant=False,
-    self_intersection=False,
-    solver='FLOAT',
-)
-```
-
-
-
-##### m_union { #nodebpy.nodes.geometry.MeshBoolean.m_union }
-
-```python
-nodes.geometry.MeshBoolean.m_union(
-    *args,
-    hole_tolerant=False,
-    self_intersection=False,
-    solver='FLOAT',
-)
-```
-
-
+Create Mesh Boolean with operation 'Intersect'.
 
 ##### union { #nodebpy.nodes.geometry.MeshBoolean.union }
 
 ```python
-nodes.geometry.MeshBoolean.union(mesh_1=None, mesh_2=None)
+nodes.geometry.MeshBoolean.union(mesh_2=None)
 ```
 
 Create Mesh Boolean with operation 'Union'.
@@ -1354,7 +1223,15 @@ Generate a circular ring of edges
 ### MeshLine { #nodebpy.nodes.geometry.MeshLine }
 
 ```python
-nodes.geometry.MeshLine(mode='OFFSET', count_mode='TOTAL', **kwargs)
+nodes.geometry.MeshLine(
+    count=10,
+    resolution=1.0,
+    start_location=None,
+    offset=None,
+    *,
+    mode='OFFSET',
+    count_mode='TOTAL',
+)
 ```
 
 Generate vertices in a line and connect them with edges
@@ -1374,40 +1251,6 @@ Generate vertices in a line and connect them with edges
 | [o_mesh](#nodebpy.nodes.geometry.MeshLine.o_mesh) | Output socket: Mesh |
 | [tree](#nodebpy.nodes.geometry.MeshLine.tree) |  |
 | [type](#nodebpy.nodes.geometry.MeshLine.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [m_end_points](#nodebpy.nodes.geometry.MeshLine.m_end_points) |  |
-| [m_offset](#nodebpy.nodes.geometry.MeshLine.m_offset) |  |
-
-##### m_end_points { #nodebpy.nodes.geometry.MeshLine.m_end_points }
-
-```python
-nodes.geometry.MeshLine.m_end_points(
-    start_location=(0.0, 0.0, 0.0),
-    end_location=(0.0, 0.0, 1.0),
-    *,
-    count_mode='TOTAL',
-    count=10,
-    resolution=1.0,
-)
-```
-
-
-
-##### m_offset { #nodebpy.nodes.geometry.MeshLine.m_offset }
-
-```python
-nodes.geometry.MeshLine.m_offset(
-    count=10,
-    start_location=(0.0, 0.0, 0.0),
-    offset=(0.0, 0.0, 1.0),
-)
-```
-
-
 
 ### MeshToCurve { #nodebpy.nodes.geometry.MeshToCurve }
 
@@ -1430,41 +1273,15 @@ Generate a curve from a mesh
 | [tree](#nodebpy.nodes.geometry.MeshToCurve.tree) |  |
 | [type](#nodebpy.nodes.geometry.MeshToCurve.type) |  |
 
-### MeshToDensityGrid { #nodebpy.nodes.geometry.MeshToDensityGrid }
-
-```python
-nodes.geometry.MeshToDensityGrid(
-    mesh=None,
-    density=1.0,
-    voxel_size=0.3,
-    gradient_width=0.2,
-)
-```
-
-Create a filled volume grid from a mesh
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_density](#nodebpy.nodes.geometry.MeshToDensityGrid.i_density) | Input socket: Density |
-| [i_gradient_width](#nodebpy.nodes.geometry.MeshToDensityGrid.i_gradient_width) | Input socket: Gradient Width |
-| [i_mesh](#nodebpy.nodes.geometry.MeshToDensityGrid.i_mesh) | Input socket: Mesh |
-| [i_voxel_size](#nodebpy.nodes.geometry.MeshToDensityGrid.i_voxel_size) | Input socket: Voxel Size |
-| [name](#nodebpy.nodes.geometry.MeshToDensityGrid.name) |  |
-| [node](#nodebpy.nodes.geometry.MeshToDensityGrid.node) |  |
-| [o_density_grid](#nodebpy.nodes.geometry.MeshToDensityGrid.o_density_grid) | Output socket: Density Grid |
-| [tree](#nodebpy.nodes.geometry.MeshToDensityGrid.tree) |  |
-| [type](#nodebpy.nodes.geometry.MeshToDensityGrid.type) |  |
-
 ### MeshToPoints { #nodebpy.nodes.geometry.MeshToPoints }
 
 ```python
 nodes.geometry.MeshToPoints(
     mesh=None,
     selection=True,
-    position=(0.0, 0.0, 0.0),
+    position=None,
     radius=0.05,
+    *,
     mode='VERTICES',
 )
 ```
@@ -1486,63 +1303,10 @@ Generate a point cloud from a mesh's vertices
 | [tree](#nodebpy.nodes.geometry.MeshToPoints.tree) |  |
 | [type](#nodebpy.nodes.geometry.MeshToPoints.type) |  |
 
-### MeshToSDFGrid { #nodebpy.nodes.geometry.MeshToSDFGrid }
-
-```python
-nodes.geometry.MeshToSDFGrid(mesh=None, voxel_size=0.3, band_width=3)
-```
-
-Create a signed distance volume grid from a mesh
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_band_width](#nodebpy.nodes.geometry.MeshToSDFGrid.i_band_width) | Input socket: Band Width |
-| [i_mesh](#nodebpy.nodes.geometry.MeshToSDFGrid.i_mesh) | Input socket: Mesh |
-| [i_voxel_size](#nodebpy.nodes.geometry.MeshToSDFGrid.i_voxel_size) | Input socket: Voxel Size |
-| [name](#nodebpy.nodes.geometry.MeshToSDFGrid.name) |  |
-| [node](#nodebpy.nodes.geometry.MeshToSDFGrid.node) |  |
-| [o_sdf_grid](#nodebpy.nodes.geometry.MeshToSDFGrid.o_sdf_grid) | Output socket: SDF Grid |
-| [tree](#nodebpy.nodes.geometry.MeshToSDFGrid.tree) |  |
-| [type](#nodebpy.nodes.geometry.MeshToSDFGrid.type) |  |
-
-### MeshToVolume { #nodebpy.nodes.geometry.MeshToVolume }
-
-```python
-nodes.geometry.MeshToVolume(
-    mesh=None,
-    density=1.0,
-    interior_band_width=0.2,
-    *,
-    voxel_size=0.3,
-    voxel_amount=64.0,
-    resolution_mode='Amount',
-)
-```
-
-Create a fog volume with the shape of the input mesh's surface
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_density](#nodebpy.nodes.geometry.MeshToVolume.i_density) | Input socket: Density |
-| [i_interior_band_width](#nodebpy.nodes.geometry.MeshToVolume.i_interior_band_width) | Input socket: Interior Band Width |
-| [i_mesh](#nodebpy.nodes.geometry.MeshToVolume.i_mesh) | Input socket: Mesh |
-| [i_resolution_mode](#nodebpy.nodes.geometry.MeshToVolume.i_resolution_mode) | Input socket: Resolution Mode |
-| [i_voxel_amount](#nodebpy.nodes.geometry.MeshToVolume.i_voxel_amount) | Input socket: Voxel Amount |
-| [i_voxel_size](#nodebpy.nodes.geometry.MeshToVolume.i_voxel_size) | Input socket: Voxel Size |
-| [name](#nodebpy.nodes.geometry.MeshToVolume.name) |  |
-| [node](#nodebpy.nodes.geometry.MeshToVolume.node) |  |
-| [o_volume](#nodebpy.nodes.geometry.MeshToVolume.o_volume) | Output socket: Volume |
-| [tree](#nodebpy.nodes.geometry.MeshToVolume.tree) |  |
-| [type](#nodebpy.nodes.geometry.MeshToVolume.type) |  |
-
 ### Points { #nodebpy.nodes.geometry.Points }
 
 ```python
-nodes.geometry.Points(count=1, position=(0.0, 0.0, 0.0), radius=0.1)
+nodes.geometry.Points(count=1, position=None, radius=0.1)
 ```
 
 Generate a point cloud with positions and radii defined by fields
@@ -1556,14 +1320,14 @@ Generate a point cloud with positions and radii defined by fields
 | [i_radius](#nodebpy.nodes.geometry.Points.i_radius) | Input socket: Radius |
 | [name](#nodebpy.nodes.geometry.Points.name) |  |
 | [node](#nodebpy.nodes.geometry.Points.node) |  |
-| [o_points](#nodebpy.nodes.geometry.Points.o_points) | Output socket: Points |
+| [o_geometry](#nodebpy.nodes.geometry.Points.o_geometry) | Output socket: Points |
 | [tree](#nodebpy.nodes.geometry.Points.tree) |  |
 | [type](#nodebpy.nodes.geometry.Points.type) |  |
 
 ### PointsToCurves { #nodebpy.nodes.geometry.PointsToCurves }
 
 ```python
-nodes.geometry.PointsToCurves(points=None, curve_group_id=None, weight=0.0)
+nodes.geometry.PointsToCurves(points=None, curve_group_id=0, weight=0.0)
 ```
 
 Split all points to curve by its group ID and reorder by weight
@@ -1581,31 +1345,10 @@ Split all points to curve by its group ID and reorder by weight
 | [tree](#nodebpy.nodes.geometry.PointsToCurves.tree) |  |
 | [type](#nodebpy.nodes.geometry.PointsToCurves.type) |  |
 
-### PointsToSDFGrid { #nodebpy.nodes.geometry.PointsToSDFGrid }
-
-```python
-nodes.geometry.PointsToSDFGrid(points=None, radius=0.5, voxel_size=0.3)
-```
-
-Create a signed distance volume grid from points
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_points](#nodebpy.nodes.geometry.PointsToSDFGrid.i_points) | Input socket: Points |
-| [i_radius](#nodebpy.nodes.geometry.PointsToSDFGrid.i_radius) | Input socket: Radius |
-| [i_voxel_size](#nodebpy.nodes.geometry.PointsToSDFGrid.i_voxel_size) | Input socket: Voxel Size |
-| [name](#nodebpy.nodes.geometry.PointsToSDFGrid.name) |  |
-| [node](#nodebpy.nodes.geometry.PointsToSDFGrid.node) |  |
-| [o_sdf_grid](#nodebpy.nodes.geometry.PointsToSDFGrid.o_sdf_grid) | Output socket: SDF Grid |
-| [tree](#nodebpy.nodes.geometry.PointsToSDFGrid.tree) |  |
-| [type](#nodebpy.nodes.geometry.PointsToSDFGrid.type) |  |
-
 ### PointsToVertices { #nodebpy.nodes.geometry.PointsToVertices }
 
 ```python
-nodes.geometry.PointsToVertices(points=None, selection=None)
+nodes.geometry.PointsToVertices(points=None, selection=True)
 ```
 
 Generate a mesh vertex for each point cloud point
@@ -1622,47 +1365,10 @@ Generate a mesh vertex for each point cloud point
 | [tree](#nodebpy.nodes.geometry.PointsToVertices.tree) |  |
 | [type](#nodebpy.nodes.geometry.PointsToVertices.type) |  |
 
-### PointsToVolume { #nodebpy.nodes.geometry.PointsToVolume }
-
-```python
-nodes.geometry.PointsToVolume(
-    points=None,
-    density=1.0,
-    radius=0.5,
-    *,
-    resolution_mode='Amount',
-    voxel_size=0.3,
-    voxel_amount=64.0,
-)
-```
-
-Generate a fog volume sphere around every point
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_density](#nodebpy.nodes.geometry.PointsToVolume.i_density) | Input socket: Density |
-| [i_points](#nodebpy.nodes.geometry.PointsToVolume.i_points) | Input socket: Points |
-| [i_radius](#nodebpy.nodes.geometry.PointsToVolume.i_radius) | Input socket: Radius |
-| [i_resolution_mode](#nodebpy.nodes.geometry.PointsToVolume.i_resolution_mode) | Input socket: Resolution Mode |
-| [i_voxel_amount](#nodebpy.nodes.geometry.PointsToVolume.i_voxel_amount) | Input socket: Voxel Amount |
-| [i_voxel_size](#nodebpy.nodes.geometry.PointsToVolume.i_voxel_size) | Input socket: Voxel Size |
-| [name](#nodebpy.nodes.geometry.PointsToVolume.name) |  |
-| [node](#nodebpy.nodes.geometry.PointsToVolume.node) |  |
-| [o_volume](#nodebpy.nodes.geometry.PointsToVolume.o_volume) | Output socket: Volume |
-| [tree](#nodebpy.nodes.geometry.PointsToVolume.tree) |  |
-| [type](#nodebpy.nodes.geometry.PointsToVolume.type) |  |
-
 ### QuadraticBezier { #nodebpy.nodes.geometry.QuadraticBezier }
 
 ```python
-nodes.geometry.QuadraticBezier(
-    resolution=16,
-    start=(-1.0, 0.0, 0.0),
-    middle=(0.0, 2.0, 0.0),
-    end=(1.0, 0.0, 0.0),
-)
+nodes.geometry.QuadraticBezier(resolution=16, start=None, middle=None, end=None)
 ```
 
 Generate a poly spline in a parabola shape with control points positions
@@ -1684,7 +1390,21 @@ Generate a poly spline in a parabola shape with control points positions
 ### Quadrilateral { #nodebpy.nodes.geometry.Quadrilateral }
 
 ```python
-nodes.geometry.Quadrilateral(mode='RECTANGLE', **kwargs)
+nodes.geometry.Quadrilateral(
+    width=2.0,
+    height=2.0,
+    bottom_width=4.0,
+    top_width=2.0,
+    offset=1.0,
+    bottom_height=3.0,
+    top_height=1.0,
+    point_1=None,
+    point_2=None,
+    point_3=None,
+    point_4=None,
+    *,
+    mode='RECTANGLE',
+)
 ```
 
 Generate a polygon with four points
@@ -1693,7 +1413,16 @@ Generate a polygon with four points
 
 | Name | Description |
 | --- | --- |
+| [i_bottom_height](#nodebpy.nodes.geometry.Quadrilateral.i_bottom_height) | Input socket: Bottom Height |
+| [i_bottom_width](#nodebpy.nodes.geometry.Quadrilateral.i_bottom_width) | Input socket: Bottom Width |
 | [i_height](#nodebpy.nodes.geometry.Quadrilateral.i_height) | Input socket: Height |
+| [i_offset](#nodebpy.nodes.geometry.Quadrilateral.i_offset) | Input socket: Offset |
+| [i_point_1](#nodebpy.nodes.geometry.Quadrilateral.i_point_1) | Input socket: Point 1 |
+| [i_point_2](#nodebpy.nodes.geometry.Quadrilateral.i_point_2) | Input socket: Point 2 |
+| [i_point_3](#nodebpy.nodes.geometry.Quadrilateral.i_point_3) | Input socket: Point 3 |
+| [i_point_4](#nodebpy.nodes.geometry.Quadrilateral.i_point_4) | Input socket: Point 4 |
+| [i_top_height](#nodebpy.nodes.geometry.Quadrilateral.i_top_height) | Input socket: Top Height |
+| [i_top_width](#nodebpy.nodes.geometry.Quadrilateral.i_top_width) | Input socket: Top Width |
 | [i_width](#nodebpy.nodes.geometry.Quadrilateral.i_width) | Input socket: Width |
 | [mode](#nodebpy.nodes.geometry.Quadrilateral.mode) |  |
 | [name](#nodebpy.nodes.geometry.Quadrilateral.name) |  |
@@ -1702,75 +1431,15 @@ Generate a polygon with four points
 | [tree](#nodebpy.nodes.geometry.Quadrilateral.tree) |  |
 | [type](#nodebpy.nodes.geometry.Quadrilateral.type) |  |
 
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [kite](#nodebpy.nodes.geometry.Quadrilateral.kite) |  |
-| [parallelogram](#nodebpy.nodes.geometry.Quadrilateral.parallelogram) |  |
-| [points](#nodebpy.nodes.geometry.Quadrilateral.points) |  |
-| [rectangle](#nodebpy.nodes.geometry.Quadrilateral.rectangle) |  |
-| [trapezoid](#nodebpy.nodes.geometry.Quadrilateral.trapezoid) |  |
-
-##### kite { #nodebpy.nodes.geometry.Quadrilateral.kite }
-
-```python
-nodes.geometry.Quadrilateral.kite(width=2.0, bottom_height=3.0, top_height=1.0)
-```
-
-
-
-##### parallelogram { #nodebpy.nodes.geometry.Quadrilateral.parallelogram }
-
-```python
-nodes.geometry.Quadrilateral.parallelogram(width=2.0, height=2.0, offset=1.0)
-```
-
-
-
-##### points { #nodebpy.nodes.geometry.Quadrilateral.points }
-
-```python
-nodes.geometry.Quadrilateral.points(
-    point_1=(-1, -1, 0),
-    point_2=(1, -1, 0),
-    point_3=(1, 1, 0),
-    point_4=(-1, 1, 0),
-)
-```
-
-
-
-##### rectangle { #nodebpy.nodes.geometry.Quadrilateral.rectangle }
-
-```python
-nodes.geometry.Quadrilateral.rectangle(width=2.0, height=2.0)
-```
-
-
-
-##### trapezoid { #nodebpy.nodes.geometry.Quadrilateral.trapezoid }
-
-```python
-nodes.geometry.Quadrilateral.trapezoid(
-    height=2.0,
-    bottom_width=4.0,
-    top_width=2.0,
-    offset=1.0,
-)
-```
-
-
-
 ### Raycast { #nodebpy.nodes.geometry.Raycast }
 
 ```python
 nodes.geometry.Raycast(
     target_geometry=None,
-    attribute=None,
+    attribute=0.0,
     interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
-    ray_direction=(0.0, 0.0, -1.0),
+    source_position=None,
+    ray_direction=None,
     ray_length=100.0,
     *,
     data_type='FLOAT',
@@ -1800,12 +1469,113 @@ Cast rays from the context geometry onto a target geometry, and retrieve informa
 | [tree](#nodebpy.nodes.geometry.Raycast.tree) |  |
 | [type](#nodebpy.nodes.geometry.Raycast.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.geometry.Raycast.boolean) | Create Raycast with operation 'Boolean'. |
+| [color](#nodebpy.nodes.geometry.Raycast.color) | Create Raycast with operation 'Color'. |
+| [float](#nodebpy.nodes.geometry.Raycast.float) | Create Raycast with operation 'Float'. |
+| [integer](#nodebpy.nodes.geometry.Raycast.integer) | Create Raycast with operation 'Integer'. |
+| [quaternion](#nodebpy.nodes.geometry.Raycast.quaternion) | Create Raycast with operation 'Quaternion'. |
+| [vector](#nodebpy.nodes.geometry.Raycast.vector) | Create Raycast with operation 'Vector'. |
+
+##### boolean { #nodebpy.nodes.geometry.Raycast.boolean }
+
+```python
+nodes.geometry.Raycast.boolean(
+    target_geometry=None,
+    attribute=False,
+    interpolation='Interpolated',
+    source_position=None,
+    ray_direction=None,
+    ray_length=100.0,
+)
+```
+
+Create Raycast with operation 'Boolean'.
+
+##### color { #nodebpy.nodes.geometry.Raycast.color }
+
+```python
+nodes.geometry.Raycast.color(
+    target_geometry=None,
+    attribute=None,
+    interpolation='Interpolated',
+    source_position=None,
+    ray_direction=None,
+    ray_length=100.0,
+)
+```
+
+Create Raycast with operation 'Color'.
+
+##### float { #nodebpy.nodes.geometry.Raycast.float }
+
+```python
+nodes.geometry.Raycast.float(
+    target_geometry=None,
+    attribute=0.0,
+    interpolation='Interpolated',
+    source_position=None,
+    ray_direction=None,
+    ray_length=100.0,
+)
+```
+
+Create Raycast with operation 'Float'.
+
+##### integer { #nodebpy.nodes.geometry.Raycast.integer }
+
+```python
+nodes.geometry.Raycast.integer(
+    target_geometry=None,
+    attribute=0,
+    interpolation='Interpolated',
+    source_position=None,
+    ray_direction=None,
+    ray_length=100.0,
+)
+```
+
+Create Raycast with operation 'Integer'.
+
+##### quaternion { #nodebpy.nodes.geometry.Raycast.quaternion }
+
+```python
+nodes.geometry.Raycast.quaternion(
+    target_geometry=None,
+    attribute=None,
+    interpolation='Interpolated',
+    source_position=None,
+    ray_direction=None,
+    ray_length=100.0,
+)
+```
+
+Create Raycast with operation 'Quaternion'.
+
+##### vector { #nodebpy.nodes.geometry.Raycast.vector }
+
+```python
+nodes.geometry.Raycast.vector(
+    target_geometry=None,
+    attribute=None,
+    interpolation='Interpolated',
+    source_position=None,
+    ray_direction=None,
+    ray_length=100.0,
+)
+```
+
+Create Raycast with operation 'Vector'.
+
 ### RealizeInstances { #nodebpy.nodes.geometry.RealizeInstances }
 
 ```python
 nodes.geometry.RealizeInstances(
     geometry=None,
-    selection=None,
+    selection=True,
     realize_all=True,
     depth=0,
 )
@@ -1854,10 +1624,11 @@ Swap one material with another
 nodes.geometry.ResampleCurve(
     curve=None,
     selection=True,
-    *,
     mode='Count',
     count=10,
     length=0.1,
+    *,
+    keep_last_segment=False,
 )
 ```
 
@@ -1872,43 +1643,12 @@ Generate a poly spline for each input spline
 | [i_length](#nodebpy.nodes.geometry.ResampleCurve.i_length) | Input socket: Length |
 | [i_mode](#nodebpy.nodes.geometry.ResampleCurve.i_mode) | Input socket: Mode |
 | [i_selection](#nodebpy.nodes.geometry.ResampleCurve.i_selection) | Input socket: Selection |
+| [keep_last_segment](#nodebpy.nodes.geometry.ResampleCurve.keep_last_segment) |  |
 | [name](#nodebpy.nodes.geometry.ResampleCurve.name) |  |
 | [node](#nodebpy.nodes.geometry.ResampleCurve.node) |  |
 | [o_curve](#nodebpy.nodes.geometry.ResampleCurve.o_curve) | Output socket: Curve |
 | [tree](#nodebpy.nodes.geometry.ResampleCurve.tree) |  |
 | [type](#nodebpy.nodes.geometry.ResampleCurve.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [m_count](#nodebpy.nodes.geometry.ResampleCurve.m_count) |  |
-| [m_evaluated](#nodebpy.nodes.geometry.ResampleCurve.m_evaluated) |  |
-| [m_length](#nodebpy.nodes.geometry.ResampleCurve.m_length) |  |
-
-##### m_count { #nodebpy.nodes.geometry.ResampleCurve.m_count }
-
-```python
-nodes.geometry.ResampleCurve.m_count(curve=None, selection=True, count=10)
-```
-
-
-
-##### m_evaluated { #nodebpy.nodes.geometry.ResampleCurve.m_evaluated }
-
-```python
-nodes.geometry.ResampleCurve.m_evaluated(curve=None, selection=True)
-```
-
-
-
-##### m_length { #nodebpy.nodes.geometry.ResampleCurve.m_length }
-
-```python
-nodes.geometry.ResampleCurve.m_length(curve=None, selection=True, length=0.1)
-```
-
-
 
 ### ReverseCurve { #nodebpy.nodes.geometry.ReverseCurve }
 
@@ -1935,9 +1675,9 @@ Change the direction of curves by swapping their start and end data
 ```python
 nodes.geometry.RotateInstances(
     instances=None,
-    selection=None,
-    rotation=(0.0, 0.0, 0.0),
-    pivot_point=(0.0, 0.0, 0.0),
+    selection=True,
+    rotation=None,
+    pivot_point=None,
     local_space=True,
 )
 ```
@@ -1966,11 +1706,12 @@ nodes.geometry.SampleCurve(
     curves=None,
     value=0.0,
     factor=0.0,
+    length=0.0,
     curve_index=0,
     *,
     mode='FACTOR',
-    data_type='FLOAT',
     use_all_curves=False,
+    data_type='FLOAT',
 )
 ```
 
@@ -1984,6 +1725,7 @@ Retrieve data from a point on a curve at a certain distance from its start
 | [i_curve_index](#nodebpy.nodes.geometry.SampleCurve.i_curve_index) | Input socket: Curve Index |
 | [i_curves](#nodebpy.nodes.geometry.SampleCurve.i_curves) | Input socket: Curves |
 | [i_factor](#nodebpy.nodes.geometry.SampleCurve.i_factor) | Input socket: Factor |
+| [i_length](#nodebpy.nodes.geometry.SampleCurve.i_length) | Input socket: Length |
 | [i_value](#nodebpy.nodes.geometry.SampleCurve.i_value) | Input socket: Value |
 | [mode](#nodebpy.nodes.geometry.SampleCurve.mode) |  |
 | [name](#nodebpy.nodes.geometry.SampleCurve.name) |  |
@@ -1996,12 +1738,101 @@ Retrieve data from a point on a curve at a certain distance from its start
 | [type](#nodebpy.nodes.geometry.SampleCurve.type) |  |
 | [use_all_curves](#nodebpy.nodes.geometry.SampleCurve.use_all_curves) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.geometry.SampleCurve.boolean) | Create Sample Curve with operation 'Boolean'. |
+| [color](#nodebpy.nodes.geometry.SampleCurve.color) | Create Sample Curve with operation 'Color'. |
+| [float](#nodebpy.nodes.geometry.SampleCurve.float) | Create Sample Curve with operation 'Float'. |
+| [integer](#nodebpy.nodes.geometry.SampleCurve.integer) | Create Sample Curve with operation 'Integer'. |
+| [quaternion](#nodebpy.nodes.geometry.SampleCurve.quaternion) | Create Sample Curve with operation 'Quaternion'. |
+| [vector](#nodebpy.nodes.geometry.SampleCurve.vector) | Create Sample Curve with operation 'Vector'. |
+
+##### boolean { #nodebpy.nodes.geometry.SampleCurve.boolean }
+
+```python
+nodes.geometry.SampleCurve.boolean(
+    curves=None,
+    value=False,
+    length=0.0,
+    curve_index=0,
+)
+```
+
+Create Sample Curve with operation 'Boolean'.
+
+##### color { #nodebpy.nodes.geometry.SampleCurve.color }
+
+```python
+nodes.geometry.SampleCurve.color(
+    curves=None,
+    value=None,
+    length=0.0,
+    curve_index=0,
+)
+```
+
+Create Sample Curve with operation 'Color'.
+
+##### float { #nodebpy.nodes.geometry.SampleCurve.float }
+
+```python
+nodes.geometry.SampleCurve.float(
+    curves=None,
+    value=0.0,
+    length=0.0,
+    curve_index=0,
+)
+```
+
+Create Sample Curve with operation 'Float'.
+
+##### integer { #nodebpy.nodes.geometry.SampleCurve.integer }
+
+```python
+nodes.geometry.SampleCurve.integer(
+    curves=None,
+    value=0,
+    length=0.0,
+    curve_index=0,
+)
+```
+
+Create Sample Curve with operation 'Integer'.
+
+##### quaternion { #nodebpy.nodes.geometry.SampleCurve.quaternion }
+
+```python
+nodes.geometry.SampleCurve.quaternion(
+    curves=None,
+    value=None,
+    length=0.0,
+    curve_index=0,
+)
+```
+
+Create Sample Curve with operation 'Quaternion'.
+
+##### vector { #nodebpy.nodes.geometry.SampleCurve.vector }
+
+```python
+nodes.geometry.SampleCurve.vector(
+    curves=None,
+    value=None,
+    length=0.0,
+    curve_index=0,
+)
+```
+
+Create Sample Curve with operation 'Vector'.
+
 ### SampleIndex { #nodebpy.nodes.geometry.SampleIndex }
 
 ```python
 nodes.geometry.SampleIndex(
     geometry=None,
-    value=None,
+    value=0.0,
     index=0,
     *,
     data_type='FLOAT',
@@ -2028,12 +1859,126 @@ Retrieve values from specific geometry elements
 | [tree](#nodebpy.nodes.geometry.SampleIndex.tree) |  |
 | [type](#nodebpy.nodes.geometry.SampleIndex.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.geometry.SampleIndex.boolean) | Create Sample Index with operation 'Boolean'. |
+| [color](#nodebpy.nodes.geometry.SampleIndex.color) | Create Sample Index with operation 'Color'. |
+| [edge](#nodebpy.nodes.geometry.SampleIndex.edge) | Create Sample Index with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.SampleIndex.face) | Create Sample Index with operation 'Face'. |
+| [float](#nodebpy.nodes.geometry.SampleIndex.float) | Create Sample Index with operation 'Float'. |
+| [instance](#nodebpy.nodes.geometry.SampleIndex.instance) | Create Sample Index with operation 'Instance'. |
+| [integer](#nodebpy.nodes.geometry.SampleIndex.integer) | Create Sample Index with operation 'Integer'. |
+| [layer](#nodebpy.nodes.geometry.SampleIndex.layer) | Create Sample Index with operation 'Layer'. |
+| [point](#nodebpy.nodes.geometry.SampleIndex.point) | Create Sample Index with operation 'Point'. |
+| [quaternion](#nodebpy.nodes.geometry.SampleIndex.quaternion) | Create Sample Index with operation 'Quaternion'. |
+| [spline](#nodebpy.nodes.geometry.SampleIndex.spline) | Create Sample Index with operation 'Spline'. |
+| [vector](#nodebpy.nodes.geometry.SampleIndex.vector) | Create Sample Index with operation 'Vector'. |
+
+##### boolean { #nodebpy.nodes.geometry.SampleIndex.boolean }
+
+```python
+nodes.geometry.SampleIndex.boolean(geometry=None, value=False, index=0)
+```
+
+Create Sample Index with operation 'Boolean'.
+
+##### color { #nodebpy.nodes.geometry.SampleIndex.color }
+
+```python
+nodes.geometry.SampleIndex.color(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Color'.
+
+##### edge { #nodebpy.nodes.geometry.SampleIndex.edge }
+
+```python
+nodes.geometry.SampleIndex.edge(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.SampleIndex.face }
+
+```python
+nodes.geometry.SampleIndex.face(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Face'.
+
+##### float { #nodebpy.nodes.geometry.SampleIndex.float }
+
+```python
+nodes.geometry.SampleIndex.float(geometry=None, value=0.0, index=0)
+```
+
+Create Sample Index with operation 'Float'.
+
+##### instance { #nodebpy.nodes.geometry.SampleIndex.instance }
+
+```python
+nodes.geometry.SampleIndex.instance(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Instance'.
+
+##### integer { #nodebpy.nodes.geometry.SampleIndex.integer }
+
+```python
+nodes.geometry.SampleIndex.integer(geometry=None, value=0, index=0)
+```
+
+Create Sample Index with operation 'Integer'.
+
+##### layer { #nodebpy.nodes.geometry.SampleIndex.layer }
+
+```python
+nodes.geometry.SampleIndex.layer(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Layer'.
+
+##### point { #nodebpy.nodes.geometry.SampleIndex.point }
+
+```python
+nodes.geometry.SampleIndex.point(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Point'.
+
+##### quaternion { #nodebpy.nodes.geometry.SampleIndex.quaternion }
+
+```python
+nodes.geometry.SampleIndex.quaternion(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Quaternion'.
+
+##### spline { #nodebpy.nodes.geometry.SampleIndex.spline }
+
+```python
+nodes.geometry.SampleIndex.spline(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Spline'.
+
+##### vector { #nodebpy.nodes.geometry.SampleIndex.vector }
+
+```python
+nodes.geometry.SampleIndex.vector(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Vector'.
+
 ### SampleNearest { #nodebpy.nodes.geometry.SampleNearest }
 
 ```python
 nodes.geometry.SampleNearest(
     geometry=None,
     sample_position=None,
+    *,
     domain='POINT',
 )
 ```
@@ -2053,18 +1998,49 @@ Find the element of a geometry closest to a position. Similar to the "Index of N
 | [tree](#nodebpy.nodes.geometry.SampleNearest.tree) |  |
 | [type](#nodebpy.nodes.geometry.SampleNearest.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.SampleNearest.edge) | Create Sample Nearest with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.SampleNearest.face) | Create Sample Nearest with operation 'Face'. |
+| [point](#nodebpy.nodes.geometry.SampleNearest.point) | Create Sample Nearest with operation 'Point'. |
+
+##### edge { #nodebpy.nodes.geometry.SampleNearest.edge }
+
+```python
+nodes.geometry.SampleNearest.edge(geometry=None, sample_position=None)
+```
+
+Create Sample Nearest with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.SampleNearest.face }
+
+```python
+nodes.geometry.SampleNearest.face(geometry=None, sample_position=None)
+```
+
+Create Sample Nearest with operation 'Face'.
+
+##### point { #nodebpy.nodes.geometry.SampleNearest.point }
+
+```python
+nodes.geometry.SampleNearest.point(geometry=None, sample_position=None)
+```
+
+Create Sample Nearest with operation 'Point'.
+
 ### SampleNearestSurface { #nodebpy.nodes.geometry.SampleNearestSurface }
 
 ```python
 nodes.geometry.SampleNearestSurface(
     mesh=None,
-    value=None,
-    group_id=None,
+    value=0.0,
+    group_id=0,
     sample_position=None,
-    sample_group_id=None,
+    sample_group_id=0,
     *,
     data_type='FLOAT',
-    **kwargs,
 )
 ```
 
@@ -2087,14 +2063,109 @@ Calculate the interpolated value of a mesh attribute on the closest point of its
 | [tree](#nodebpy.nodes.geometry.SampleNearestSurface.tree) |  |
 | [type](#nodebpy.nodes.geometry.SampleNearestSurface.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.geometry.SampleNearestSurface.boolean) | Create Sample Nearest Surface with operation 'Boolean'. |
+| [color](#nodebpy.nodes.geometry.SampleNearestSurface.color) | Create Sample Nearest Surface with operation 'Color'. |
+| [float](#nodebpy.nodes.geometry.SampleNearestSurface.float) | Create Sample Nearest Surface with operation 'Float'. |
+| [integer](#nodebpy.nodes.geometry.SampleNearestSurface.integer) | Create Sample Nearest Surface with operation 'Integer'. |
+| [quaternion](#nodebpy.nodes.geometry.SampleNearestSurface.quaternion) | Create Sample Nearest Surface with operation 'Quaternion'. |
+| [vector](#nodebpy.nodes.geometry.SampleNearestSurface.vector) | Create Sample Nearest Surface with operation 'Vector'. |
+
+##### boolean { #nodebpy.nodes.geometry.SampleNearestSurface.boolean }
+
+```python
+nodes.geometry.SampleNearestSurface.boolean(
+    mesh=None,
+    value=False,
+    group_id=0,
+    sample_position=None,
+    sample_group_id=0,
+)
+```
+
+Create Sample Nearest Surface with operation 'Boolean'.
+
+##### color { #nodebpy.nodes.geometry.SampleNearestSurface.color }
+
+```python
+nodes.geometry.SampleNearestSurface.color(
+    mesh=None,
+    value=None,
+    group_id=0,
+    sample_position=None,
+    sample_group_id=0,
+)
+```
+
+Create Sample Nearest Surface with operation 'Color'.
+
+##### float { #nodebpy.nodes.geometry.SampleNearestSurface.float }
+
+```python
+nodes.geometry.SampleNearestSurface.float(
+    mesh=None,
+    value=0.0,
+    group_id=0,
+    sample_position=None,
+    sample_group_id=0,
+)
+```
+
+Create Sample Nearest Surface with operation 'Float'.
+
+##### integer { #nodebpy.nodes.geometry.SampleNearestSurface.integer }
+
+```python
+nodes.geometry.SampleNearestSurface.integer(
+    mesh=None,
+    value=0,
+    group_id=0,
+    sample_position=None,
+    sample_group_id=0,
+)
+```
+
+Create Sample Nearest Surface with operation 'Integer'.
+
+##### quaternion { #nodebpy.nodes.geometry.SampleNearestSurface.quaternion }
+
+```python
+nodes.geometry.SampleNearestSurface.quaternion(
+    mesh=None,
+    value=None,
+    group_id=0,
+    sample_position=None,
+    sample_group_id=0,
+)
+```
+
+Create Sample Nearest Surface with operation 'Quaternion'.
+
+##### vector { #nodebpy.nodes.geometry.SampleNearestSurface.vector }
+
+```python
+nodes.geometry.SampleNearestSurface.vector(
+    mesh=None,
+    value=None,
+    group_id=0,
+    sample_position=None,
+    sample_group_id=0,
+)
+```
+
+Create Sample Nearest Surface with operation 'Vector'.
+
 ### SampleUVSurface { #nodebpy.nodes.geometry.SampleUVSurface }
 
 ```python
 nodes.geometry.SampleUVSurface(
     mesh=None,
-    value=None,
+    value=0.0,
     source_uv_map=None,
-    sample_uv=(0.0, 0.0, 0.0),
+    sample_uv=None,
     *,
     data_type='FLOAT',
 )
@@ -2109,7 +2180,7 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 | [data_type](#nodebpy.nodes.geometry.SampleUVSurface.data_type) |  |
 | [i_mesh](#nodebpy.nodes.geometry.SampleUVSurface.i_mesh) | Input socket: Mesh |
 | [i_sample_uv](#nodebpy.nodes.geometry.SampleUVSurface.i_sample_uv) | Input socket: Sample UV |
-| [i_uv_map](#nodebpy.nodes.geometry.SampleUVSurface.i_uv_map) | Input socket: UV Map |
+| [i_source_uv_map](#nodebpy.nodes.geometry.SampleUVSurface.i_source_uv_map) | Input socket: UV Map |
 | [i_value](#nodebpy.nodes.geometry.SampleUVSurface.i_value) | Input socket: Value |
 | [name](#nodebpy.nodes.geometry.SampleUVSurface.name) |  |
 | [node](#nodebpy.nodes.geometry.SampleUVSurface.node) |  |
@@ -2118,16 +2189,105 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 | [tree](#nodebpy.nodes.geometry.SampleUVSurface.tree) |  |
 | [type](#nodebpy.nodes.geometry.SampleUVSurface.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.geometry.SampleUVSurface.boolean) | Create Sample UV Surface with operation 'Boolean'. |
+| [color](#nodebpy.nodes.geometry.SampleUVSurface.color) | Create Sample UV Surface with operation 'Color'. |
+| [float](#nodebpy.nodes.geometry.SampleUVSurface.float) | Create Sample UV Surface with operation 'Float'. |
+| [integer](#nodebpy.nodes.geometry.SampleUVSurface.integer) | Create Sample UV Surface with operation 'Integer'. |
+| [quaternion](#nodebpy.nodes.geometry.SampleUVSurface.quaternion) | Create Sample UV Surface with operation 'Quaternion'. |
+| [vector](#nodebpy.nodes.geometry.SampleUVSurface.vector) | Create Sample UV Surface with operation 'Vector'. |
+
+##### boolean { #nodebpy.nodes.geometry.SampleUVSurface.boolean }
+
+```python
+nodes.geometry.SampleUVSurface.boolean(
+    mesh=None,
+    value=False,
+    source_uv_map=None,
+    sample_uv=None,
+)
+```
+
+Create Sample UV Surface with operation 'Boolean'.
+
+##### color { #nodebpy.nodes.geometry.SampleUVSurface.color }
+
+```python
+nodes.geometry.SampleUVSurface.color(
+    mesh=None,
+    value=None,
+    source_uv_map=None,
+    sample_uv=None,
+)
+```
+
+Create Sample UV Surface with operation 'Color'.
+
+##### float { #nodebpy.nodes.geometry.SampleUVSurface.float }
+
+```python
+nodes.geometry.SampleUVSurface.float(
+    mesh=None,
+    value=0.0,
+    source_uv_map=None,
+    sample_uv=None,
+)
+```
+
+Create Sample UV Surface with operation 'Float'.
+
+##### integer { #nodebpy.nodes.geometry.SampleUVSurface.integer }
+
+```python
+nodes.geometry.SampleUVSurface.integer(
+    mesh=None,
+    value=0,
+    source_uv_map=None,
+    sample_uv=None,
+)
+```
+
+Create Sample UV Surface with operation 'Integer'.
+
+##### quaternion { #nodebpy.nodes.geometry.SampleUVSurface.quaternion }
+
+```python
+nodes.geometry.SampleUVSurface.quaternion(
+    mesh=None,
+    value=None,
+    source_uv_map=None,
+    sample_uv=None,
+)
+```
+
+Create Sample UV Surface with operation 'Quaternion'.
+
+##### vector { #nodebpy.nodes.geometry.SampleUVSurface.vector }
+
+```python
+nodes.geometry.SampleUVSurface.vector(
+    mesh=None,
+    value=None,
+    source_uv_map=None,
+    sample_uv=None,
+)
+```
+
+Create Sample UV Surface with operation 'Vector'.
+
 ### ScaleElements { #nodebpy.nodes.geometry.ScaleElements }
 
 ```python
 nodes.geometry.ScaleElements(
     geometry=None,
-    selection=None,
+    selection=True,
     scale=1.0,
     center=None,
     scale_mode='Uniform',
-    axis=(1.0, 0.0, 0.0),
+    axis=None,
     *,
     domain='FACE',
 )
@@ -2152,14 +2312,49 @@ Scale groups of connected edges and faces
 | [tree](#nodebpy.nodes.geometry.ScaleElements.tree) |  |
 | [type](#nodebpy.nodes.geometry.ScaleElements.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.ScaleElements.edge) | Create Scale Elements with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.ScaleElements.face) | Create Scale Elements with operation 'Face'. |
+
+##### edge { #nodebpy.nodes.geometry.ScaleElements.edge }
+
+```python
+nodes.geometry.ScaleElements.edge(
+    geometry=None,
+    selection=True,
+    scale=1.0,
+    center=None,
+    scale_mode='Uniform',
+)
+```
+
+Create Scale Elements with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.ScaleElements.face }
+
+```python
+nodes.geometry.ScaleElements.face(
+    geometry=None,
+    selection=True,
+    scale=1.0,
+    center=None,
+    scale_mode='Uniform',
+)
+```
+
+Create Scale Elements with operation 'Face'.
+
 ### ScaleInstances { #nodebpy.nodes.geometry.ScaleInstances }
 
 ```python
 nodes.geometry.ScaleInstances(
     instances=None,
     selection=True,
-    scale=(1.0, 1.0, 1.0),
-    center=(0.0, 0.0, 0.0),
+    scale=None,
+    center=None,
     local_space=True,
 )
 ```
@@ -2208,7 +2403,12 @@ Split a geometry into a separate output for each type of data in the geometry
 ### SeparateGeometry { #nodebpy.nodes.geometry.SeparateGeometry }
 
 ```python
-nodes.geometry.SeparateGeometry(geometry=None, selection=True, domain='POINT')
+nodes.geometry.SeparateGeometry(
+    geometry=None,
+    selection=True,
+    *,
+    domain='POINT',
+)
 ```
 
 Split a geometry into two geometry outputs based on a selection
@@ -2227,15 +2427,73 @@ Split a geometry into two geometry outputs based on a selection
 | [tree](#nodebpy.nodes.geometry.SeparateGeometry.tree) |  |
 | [type](#nodebpy.nodes.geometry.SeparateGeometry.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.SeparateGeometry.edge) | Create Separate Geometry with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.SeparateGeometry.face) | Create Separate Geometry with operation 'Face'. |
+| [instance](#nodebpy.nodes.geometry.SeparateGeometry.instance) | Create Separate Geometry with operation 'Instance'. |
+| [layer](#nodebpy.nodes.geometry.SeparateGeometry.layer) | Create Separate Geometry with operation 'Layer'. |
+| [point](#nodebpy.nodes.geometry.SeparateGeometry.point) | Create Separate Geometry with operation 'Point'. |
+| [spline](#nodebpy.nodes.geometry.SeparateGeometry.spline) | Create Separate Geometry with operation 'Spline'. |
+
+##### edge { #nodebpy.nodes.geometry.SeparateGeometry.edge }
+
+```python
+nodes.geometry.SeparateGeometry.edge(geometry=None, selection=True)
+```
+
+Create Separate Geometry with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.SeparateGeometry.face }
+
+```python
+nodes.geometry.SeparateGeometry.face(geometry=None, selection=True)
+```
+
+Create Separate Geometry with operation 'Face'.
+
+##### instance { #nodebpy.nodes.geometry.SeparateGeometry.instance }
+
+```python
+nodes.geometry.SeparateGeometry.instance(geometry=None, selection=True)
+```
+
+Create Separate Geometry with operation 'Instance'.
+
+##### layer { #nodebpy.nodes.geometry.SeparateGeometry.layer }
+
+```python
+nodes.geometry.SeparateGeometry.layer(geometry=None, selection=True)
+```
+
+Create Separate Geometry with operation 'Layer'.
+
+##### point { #nodebpy.nodes.geometry.SeparateGeometry.point }
+
+```python
+nodes.geometry.SeparateGeometry.point(geometry=None, selection=True)
+```
+
+Create Separate Geometry with operation 'Point'.
+
+##### spline { #nodebpy.nodes.geometry.SeparateGeometry.spline }
+
+```python
+nodes.geometry.SeparateGeometry.spline(geometry=None, selection=True)
+```
+
+Create Separate Geometry with operation 'Spline'.
+
 ### SetCurveNormal { #nodebpy.nodes.geometry.SetCurveNormal }
 
 ```python
 nodes.geometry.SetCurveNormal(
     curve=None,
     selection=True,
-    *,
     mode='Minimum Twist',
-    normal=(0.0, 0.0, 1.0),
+    normal=None,
 )
 ```
 
@@ -2344,7 +2602,7 @@ Set the name of a geometry for easier debugging
 nodes.geometry.SetGreasePencilColor(
     grease_pencil=None,
     selection=True,
-    color=(1.0, 1.0, 1.0, 1.0),
+    color=None,
     opacity=1.0,
     *,
     mode='STROKE',
@@ -2371,7 +2629,7 @@ Set color and opacity attributes on Grease Pencil geometry
 ### SetGreasePencilDepth { #nodebpy.nodes.geometry.SetGreasePencilDepth }
 
 ```python
-nodes.geometry.SetGreasePencilDepth(grease_pencil=None, depth_order='2D')
+nodes.geometry.SetGreasePencilDepth(grease_pencil=None, *, depth_order='2D')
 ```
 
 Set the Grease Pencil depth order to use
@@ -2420,7 +2678,8 @@ nodes.geometry.SetHandlePositions(
     curve=None,
     selection=True,
     position=None,
-    offset=(0.0, 0.0, 0.0),
+    offset=None,
+    *,
     mode='LEFT',
 )
 ```
@@ -2442,40 +2701,10 @@ Set the positions for the handles of Bézier curves
 | [tree](#nodebpy.nodes.geometry.SetHandlePositions.tree) |  |
 | [type](#nodebpy.nodes.geometry.SetHandlePositions.type) |  |
 
-### SetHandleType { #nodebpy.nodes.geometry.SetHandleType }
-
-```python
-nodes.geometry.SetHandleType(
-    curve=None,
-    selection=True,
-    *,
-    left=False,
-    right=False,
-    handle_type='AUTO',
-)
-```
-
-Set the handle type for the control points of a Bézier curve
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [handle_type](#nodebpy.nodes.geometry.SetHandleType.handle_type) |  |
-| [i_curve](#nodebpy.nodes.geometry.SetHandleType.i_curve) | Input socket: Curve |
-| [i_selection](#nodebpy.nodes.geometry.SetHandleType.i_selection) | Input socket: Selection |
-| [left](#nodebpy.nodes.geometry.SetHandleType.left) |  |
-| [name](#nodebpy.nodes.geometry.SetHandleType.name) |  |
-| [node](#nodebpy.nodes.geometry.SetHandleType.node) |  |
-| [o_curve](#nodebpy.nodes.geometry.SetHandleType.o_curve) | Output socket: Curve |
-| [right](#nodebpy.nodes.geometry.SetHandleType.right) |  |
-| [tree](#nodebpy.nodes.geometry.SetHandleType.tree) |  |
-| [type](#nodebpy.nodes.geometry.SetHandleType.type) |  |
-
 ### SetID { #nodebpy.nodes.geometry.SetID }
 
 ```python
-nodes.geometry.SetID(geometry=None, selection=True, id=None)
+nodes.geometry.SetID(geometry=None, selection=True, id=0)
 ```
 
 Set the id attribute on the input geometry, mainly used internally for randomizing
@@ -2563,7 +2792,15 @@ Set the material index for each selected geometry element
 ### SetMeshNormal { #nodebpy.nodes.geometry.SetMeshNormal }
 
 ```python
-nodes.geometry.SetMeshNormal(mode='SHARPNESS', domain='POINT', **kwargs)
+nodes.geometry.SetMeshNormal(
+    mesh=None,
+    remove_custom=True,
+    edge_sharpness=False,
+    face_sharpness=False,
+    *,
+    mode='SHARPNESS',
+    domain='POINT',
+)
 ```
 
 Store a normal vector for each mesh element
@@ -2588,43 +2825,24 @@ Store a normal vector for each mesh element
 
 | Name | Description |
 | --- | --- |
-| [m_free](#nodebpy.nodes.geometry.SetMeshNormal.m_free) |  |
-| [m_sharpness](#nodebpy.nodes.geometry.SetMeshNormal.m_sharpness) |  |
-| [m_tangent_space](#nodebpy.nodes.geometry.SetMeshNormal.m_tangent_space) |  |
+| [face](#nodebpy.nodes.geometry.SetMeshNormal.face) | Create Set Mesh Normal with operation 'Face'. |
+| [point](#nodebpy.nodes.geometry.SetMeshNormal.point) | Create Set Mesh Normal with operation 'Point'. |
 
-##### m_free { #nodebpy.nodes.geometry.SetMeshNormal.m_free }
-
-```python
-nodes.geometry.SetMeshNormal.m_free(
-    mesh=None,
-    custom_normal=None,
-    *,
-    domain='POINT',
-)
-```
-
-
-
-##### m_sharpness { #nodebpy.nodes.geometry.SetMeshNormal.m_sharpness }
+##### face { #nodebpy.nodes.geometry.SetMeshNormal.face }
 
 ```python
-nodes.geometry.SetMeshNormal.m_sharpness(
-    mesh=None,
-    remove_custom=True,
-    edge_sharpness=False,
-    face_sharpness=False,
-)
+nodes.geometry.SetMeshNormal.face(mesh=None, custom_normal=None)
 ```
 
+Create Set Mesh Normal with operation 'Face'.
 
-
-##### m_tangent_space { #nodebpy.nodes.geometry.SetMeshNormal.m_tangent_space }
+##### point { #nodebpy.nodes.geometry.SetMeshNormal.point }
 
 ```python
-nodes.geometry.SetMeshNormal.m_tangent_space(mesh=None, custom_normal=None)
+nodes.geometry.SetMeshNormal.point(mesh=None, custom_normal=None)
 ```
 
-
+Create Set Mesh Normal with operation 'Point'.
 
 ### SetPointRadius { #nodebpy.nodes.geometry.SetPointRadius }
 
@@ -2654,8 +2872,7 @@ nodes.geometry.SetPosition(
     geometry=None,
     selection=True,
     position=None,
-    offset=(0.0, 0.0, 0.0),
-    **kwargs,
+    offset=None,
 )
 ```
 
@@ -2703,6 +2920,47 @@ Set selection of the edited geometry, for tool execution
 | [tree](#nodebpy.nodes.geometry.SetSelection.tree) |  |
 | [type](#nodebpy.nodes.geometry.SetSelection.type) |  |
 
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.SetSelection.edge) | Create Set Selection with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.SetSelection.face) | Create Set Selection with operation 'Face'. |
+| [point](#nodebpy.nodes.geometry.SetSelection.point) | Create Set Selection with operation 'Point'. |
+| [spline](#nodebpy.nodes.geometry.SetSelection.spline) | Create Set Selection with operation 'Spline'. |
+
+##### edge { #nodebpy.nodes.geometry.SetSelection.edge }
+
+```python
+nodes.geometry.SetSelection.edge(geometry=None, selection=True)
+```
+
+Create Set Selection with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.SetSelection.face }
+
+```python
+nodes.geometry.SetSelection.face(geometry=None, selection=True)
+```
+
+Create Set Selection with operation 'Face'.
+
+##### point { #nodebpy.nodes.geometry.SetSelection.point }
+
+```python
+nodes.geometry.SetSelection.point(geometry=None, selection=True)
+```
+
+Create Set Selection with operation 'Point'.
+
+##### spline { #nodebpy.nodes.geometry.SetSelection.spline }
+
+```python
+nodes.geometry.SetSelection.spline(geometry=None, selection=True)
+```
+
+Create Set Selection with operation 'Spline'.
+
 ### SetShadeSmooth { #nodebpy.nodes.geometry.SetShadeSmooth }
 
 ```python
@@ -2722,14 +2980,45 @@ Control the smoothness of mesh normals around each face by changing the "shade s
 | Name | Description |
 | --- | --- |
 | [domain](#nodebpy.nodes.geometry.SetShadeSmooth.domain) |  |
-| [i_mesh](#nodebpy.nodes.geometry.SetShadeSmooth.i_mesh) | Input socket: Mesh |
+| [i_geometry](#nodebpy.nodes.geometry.SetShadeSmooth.i_geometry) | Input socket: Mesh |
 | [i_selection](#nodebpy.nodes.geometry.SetShadeSmooth.i_selection) | Input socket: Selection |
 | [i_shade_smooth](#nodebpy.nodes.geometry.SetShadeSmooth.i_shade_smooth) | Input socket: Shade Smooth |
 | [name](#nodebpy.nodes.geometry.SetShadeSmooth.name) |  |
 | [node](#nodebpy.nodes.geometry.SetShadeSmooth.node) |  |
-| [o_mesh](#nodebpy.nodes.geometry.SetShadeSmooth.o_mesh) | Output socket: Mesh |
+| [o_geometry](#nodebpy.nodes.geometry.SetShadeSmooth.o_geometry) | Output socket: Mesh |
 | [tree](#nodebpy.nodes.geometry.SetShadeSmooth.tree) |  |
 | [type](#nodebpy.nodes.geometry.SetShadeSmooth.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.SetShadeSmooth.edge) | Create Set Shade Smooth with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.SetShadeSmooth.face) | Create Set Shade Smooth with operation 'Face'. |
+
+##### edge { #nodebpy.nodes.geometry.SetShadeSmooth.edge }
+
+```python
+nodes.geometry.SetShadeSmooth.edge(
+    geometry=None,
+    selection=True,
+    shade_smooth=True,
+)
+```
+
+Create Set Shade Smooth with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.SetShadeSmooth.face }
+
+```python
+nodes.geometry.SetShadeSmooth.face(
+    geometry=None,
+    selection=True,
+    shade_smooth=True,
+)
+```
+
+Create Set Shade Smooth with operation 'Face'.
 
 ### SetSplineCyclic { #nodebpy.nodes.geometry.SetSplineCyclic }
 
@@ -2743,12 +3032,12 @@ Control whether each spline loops back on itself by changing the "cyclic" attrib
 
 | Name | Description |
 | --- | --- |
-| [i_curve](#nodebpy.nodes.geometry.SetSplineCyclic.i_curve) | Input socket: Curve |
 | [i_cyclic](#nodebpy.nodes.geometry.SetSplineCyclic.i_cyclic) | Input socket: Cyclic |
+| [i_geometry](#nodebpy.nodes.geometry.SetSplineCyclic.i_geometry) | Input socket: Curve |
 | [i_selection](#nodebpy.nodes.geometry.SetSplineCyclic.i_selection) | Input socket: Selection |
 | [name](#nodebpy.nodes.geometry.SetSplineCyclic.name) |  |
 | [node](#nodebpy.nodes.geometry.SetSplineCyclic.node) |  |
-| [o_curve](#nodebpy.nodes.geometry.SetSplineCyclic.o_curve) | Output socket: Curve |
+| [o_geometry](#nodebpy.nodes.geometry.SetSplineCyclic.o_geometry) | Output socket: Curve |
 | [tree](#nodebpy.nodes.geometry.SetSplineCyclic.tree) |  |
 | [type](#nodebpy.nodes.geometry.SetSplineCyclic.type) |  |
 
@@ -2764,12 +3053,12 @@ Control how many evaluated points should be generated on every curve segment
 
 | Name | Description |
 | --- | --- |
-| [i_curve](#nodebpy.nodes.geometry.SetSplineResolution.i_curve) | Input socket: Curve |
+| [i_geometry](#nodebpy.nodes.geometry.SetSplineResolution.i_geometry) | Input socket: Curve |
 | [i_resolution](#nodebpy.nodes.geometry.SetSplineResolution.i_resolution) | Input socket: Resolution |
 | [i_selection](#nodebpy.nodes.geometry.SetSplineResolution.i_selection) | Input socket: Selection |
 | [name](#nodebpy.nodes.geometry.SetSplineResolution.name) |  |
 | [node](#nodebpy.nodes.geometry.SetSplineResolution.node) |  |
-| [o_curve](#nodebpy.nodes.geometry.SetSplineResolution.o_curve) | Output socket: Curve |
+| [o_geometry](#nodebpy.nodes.geometry.SetSplineResolution.o_geometry) | Output socket: Curve |
 | [tree](#nodebpy.nodes.geometry.SetSplineResolution.tree) |  |
 | [type](#nodebpy.nodes.geometry.SetSplineResolution.type) |  |
 
@@ -2800,8 +3089,8 @@ Change the type of curves
 nodes.geometry.SortElements(
     geometry=None,
     selection=True,
-    group_id=None,
-    sort_weight=None,
+    group_id=0,
+    sort_weight=0.0,
     *,
     domain='POINT',
 )
@@ -2823,6 +3112,81 @@ Rearrange geometry elements, changing their indices
 | [o_geometry](#nodebpy.nodes.geometry.SortElements.o_geometry) | Output socket: Geometry |
 | [tree](#nodebpy.nodes.geometry.SortElements.tree) |  |
 | [type](#nodebpy.nodes.geometry.SortElements.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.SortElements.edge) | Create Sort Elements with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.SortElements.face) | Create Sort Elements with operation 'Face'. |
+| [instance](#nodebpy.nodes.geometry.SortElements.instance) | Create Sort Elements with operation 'Instance'. |
+| [point](#nodebpy.nodes.geometry.SortElements.point) | Create Sort Elements with operation 'Point'. |
+| [spline](#nodebpy.nodes.geometry.SortElements.spline) | Create Sort Elements with operation 'Spline'. |
+
+##### edge { #nodebpy.nodes.geometry.SortElements.edge }
+
+```python
+nodes.geometry.SortElements.edge(
+    geometry=None,
+    selection=True,
+    group_id=0,
+    sort_weight=0.0,
+)
+```
+
+Create Sort Elements with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.SortElements.face }
+
+```python
+nodes.geometry.SortElements.face(
+    geometry=None,
+    selection=True,
+    group_id=0,
+    sort_weight=0.0,
+)
+```
+
+Create Sort Elements with operation 'Face'.
+
+##### instance { #nodebpy.nodes.geometry.SortElements.instance }
+
+```python
+nodes.geometry.SortElements.instance(
+    geometry=None,
+    selection=True,
+    group_id=0,
+    sort_weight=0.0,
+)
+```
+
+Create Sort Elements with operation 'Instance'.
+
+##### point { #nodebpy.nodes.geometry.SortElements.point }
+
+```python
+nodes.geometry.SortElements.point(
+    geometry=None,
+    selection=True,
+    group_id=0,
+    sort_weight=0.0,
+)
+```
+
+Create Sort Elements with operation 'Point'.
+
+##### spline { #nodebpy.nodes.geometry.SortElements.spline }
+
+```python
+nodes.geometry.SortElements.spline(
+    geometry=None,
+    selection=True,
+    group_id=0,
+    sort_weight=0.0,
+)
+```
+
+Create Sort Elements with operation 'Spline'.
 
 ### Spiral { #nodebpy.nodes.geometry.Spiral }
 
@@ -2881,7 +3245,7 @@ Duplicate mesh edges and break connections with the surrounding faces
 nodes.geometry.SplitToInstances(
     geometry=None,
     selection=True,
-    group_id=None,
+    group_id=0,
     *,
     domain='POINT',
 )
@@ -2903,6 +3267,73 @@ Create separate geometries containing the elements from the same group
 | [o_instances](#nodebpy.nodes.geometry.SplitToInstances.o_instances) | Output socket: Instances |
 | [tree](#nodebpy.nodes.geometry.SplitToInstances.tree) |  |
 | [type](#nodebpy.nodes.geometry.SplitToInstances.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.SplitToInstances.edge) | Create Split to Instances with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.SplitToInstances.face) | Create Split to Instances with operation 'Face'. |
+| [instance](#nodebpy.nodes.geometry.SplitToInstances.instance) | Create Split to Instances with operation 'Instance'. |
+| [layer](#nodebpy.nodes.geometry.SplitToInstances.layer) | Create Split to Instances with operation 'Layer'. |
+| [point](#nodebpy.nodes.geometry.SplitToInstances.point) | Create Split to Instances with operation 'Point'. |
+| [spline](#nodebpy.nodes.geometry.SplitToInstances.spline) | Create Split to Instances with operation 'Spline'. |
+
+##### edge { #nodebpy.nodes.geometry.SplitToInstances.edge }
+
+```python
+nodes.geometry.SplitToInstances.edge(geometry=None, selection=True, group_id=0)
+```
+
+Create Split to Instances with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.SplitToInstances.face }
+
+```python
+nodes.geometry.SplitToInstances.face(geometry=None, selection=True, group_id=0)
+```
+
+Create Split to Instances with operation 'Face'.
+
+##### instance { #nodebpy.nodes.geometry.SplitToInstances.instance }
+
+```python
+nodes.geometry.SplitToInstances.instance(
+    geometry=None,
+    selection=True,
+    group_id=0,
+)
+```
+
+Create Split to Instances with operation 'Instance'.
+
+##### layer { #nodebpy.nodes.geometry.SplitToInstances.layer }
+
+```python
+nodes.geometry.SplitToInstances.layer(geometry=None, selection=True, group_id=0)
+```
+
+Create Split to Instances with operation 'Layer'.
+
+##### point { #nodebpy.nodes.geometry.SplitToInstances.point }
+
+```python
+nodes.geometry.SplitToInstances.point(geometry=None, selection=True, group_id=0)
+```
+
+Create Split to Instances with operation 'Point'.
+
+##### spline { #nodebpy.nodes.geometry.SplitToInstances.spline }
+
+```python
+nodes.geometry.SplitToInstances.spline(
+    geometry=None,
+    selection=True,
+    group_id=0,
+)
+```
+
+Create Split to Instances with operation 'Spline'.
 
 ### Star { #nodebpy.nodes.geometry.Star }
 
@@ -2937,6 +3368,8 @@ nodes.geometry.StringToCurves(
     word_spacing=1.0,
     line_spacing=1.0,
     text_box_width=0.0,
+    text_box_height=0.0,
+    *,
     overflow='OVERFLOW',
     align_x='LEFT',
     align_y='TOP_BASELINE',
@@ -2956,6 +3389,7 @@ Generate a paragraph of text with a specific font, using a curve instance to sto
 | [i_line_spacing](#nodebpy.nodes.geometry.StringToCurves.i_line_spacing) | Input socket: Line Spacing |
 | [i_size](#nodebpy.nodes.geometry.StringToCurves.i_size) | Input socket: Size |
 | [i_string](#nodebpy.nodes.geometry.StringToCurves.i_string) | Input socket: String |
+| [i_text_box_height](#nodebpy.nodes.geometry.StringToCurves.i_text_box_height) | Input socket: Text Box Height |
 | [i_text_box_width](#nodebpy.nodes.geometry.StringToCurves.i_text_box_width) | Input socket: Text Box Width |
 | [i_word_spacing](#nodebpy.nodes.geometry.StringToCurves.i_word_spacing) | Input socket: Word Spacing |
 | [name](#nodebpy.nodes.geometry.StringToCurves.name) |  |
@@ -2963,6 +3397,7 @@ Generate a paragraph of text with a specific font, using a curve instance to sto
 | [o_curve_instances](#nodebpy.nodes.geometry.StringToCurves.o_curve_instances) | Output socket: Curve Instances |
 | [o_line](#nodebpy.nodes.geometry.StringToCurves.o_line) | Output socket: Line |
 | [o_pivot_point](#nodebpy.nodes.geometry.StringToCurves.o_pivot_point) | Output socket: Pivot Point |
+| [o_remainder](#nodebpy.nodes.geometry.StringToCurves.o_remainder) | Output socket: Remainder |
 | [overflow](#nodebpy.nodes.geometry.StringToCurves.overflow) |  |
 | [pivot_mode](#nodebpy.nodes.geometry.StringToCurves.pivot_mode) |  |
 | [tree](#nodebpy.nodes.geometry.StringToCurves.tree) |  |
@@ -3047,10 +3482,9 @@ Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision 
 nodes.geometry.TransformGeometry(
     geometry=None,
     mode='Components',
-    *,
-    translation=(0.0, 0.0, 0.0),
-    rotation=(0.0, 0.0, 0.0),
-    scale=(1.0, 1.0, 1.0),
+    translation=None,
+    rotation=None,
+    scale=None,
     transform=None,
 )
 ```
@@ -3079,7 +3513,7 @@ Translate, rotate or scale the geometry
 nodes.geometry.TranslateInstances(
     instances=None,
     selection=True,
-    translation=(0.0, 0.0, 0.0),
+    translation=None,
     local_space=True,
 )
 ```
@@ -3135,6 +3569,9 @@ nodes.geometry.TrimCurve(
     selection=True,
     start=0.0,
     end=1.0,
+    start_001=0.0,
+    end_001=1.0,
+    *,
     mode='FACTOR',
 )
 ```
@@ -3147,37 +3584,16 @@ Shorten curves by removing portions at the start or end
 | --- | --- |
 | [i_curve](#nodebpy.nodes.geometry.TrimCurve.i_curve) | Input socket: Curve |
 | [i_end](#nodebpy.nodes.geometry.TrimCurve.i_end) | Input socket: End |
+| [i_end_001](#nodebpy.nodes.geometry.TrimCurve.i_end_001) | Input socket: End |
 | [i_selection](#nodebpy.nodes.geometry.TrimCurve.i_selection) | Input socket: Selection |
 | [i_start](#nodebpy.nodes.geometry.TrimCurve.i_start) | Input socket: Start |
+| [i_start_001](#nodebpy.nodes.geometry.TrimCurve.i_start_001) | Input socket: Start |
 | [mode](#nodebpy.nodes.geometry.TrimCurve.mode) |  |
 | [name](#nodebpy.nodes.geometry.TrimCurve.name) |  |
 | [node](#nodebpy.nodes.geometry.TrimCurve.node) |  |
 | [o_curve](#nodebpy.nodes.geometry.TrimCurve.o_curve) | Output socket: Curve |
 | [tree](#nodebpy.nodes.geometry.TrimCurve.tree) |  |
 | [type](#nodebpy.nodes.geometry.TrimCurve.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [factor](#nodebpy.nodes.geometry.TrimCurve.factor) |  |
-| [length](#nodebpy.nodes.geometry.TrimCurve.length) |  |
-
-##### factor { #nodebpy.nodes.geometry.TrimCurve.factor }
-
-```python
-nodes.geometry.TrimCurve.factor(curve=None, selection=True, start=0.0, end=1.0)
-```
-
-
-
-##### length { #nodebpy.nodes.geometry.TrimCurve.length }
-
-```python
-nodes.geometry.TrimCurve.length(curve=None, selection=True, start=0.0, end=1.0)
-```
-
-
 
 ### UVSphere { #nodebpy.nodes.geometry.UVSphere }
 
@@ -3200,35 +3616,3 @@ Generate a spherical mesh with quads, except for triangles at the top and bottom
 | [o_uv_map](#nodebpy.nodes.geometry.UVSphere.o_uv_map) | Output socket: UV Map |
 | [tree](#nodebpy.nodes.geometry.UVSphere.tree) |  |
 | [type](#nodebpy.nodes.geometry.UVSphere.type) |  |
-
-### VolumeToMesh { #nodebpy.nodes.geometry.VolumeToMesh }
-
-```python
-nodes.geometry.VolumeToMesh(
-    volume=None,
-    threshold=0.1,
-    adaptivity=0.0,
-    *,
-    voxel_size=0.3,
-    voxel_amount=64.0,
-    resolution_mode='Grid',
-)
-```
-
-Generate a mesh on the "surface" of a volume
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_adaptivity](#nodebpy.nodes.geometry.VolumeToMesh.i_adaptivity) | Input socket: Adaptivity |
-| [i_resolution_mode](#nodebpy.nodes.geometry.VolumeToMesh.i_resolution_mode) | Input socket: Resolution Mode |
-| [i_threshold](#nodebpy.nodes.geometry.VolumeToMesh.i_threshold) | Input socket: Threshold |
-| [i_volume](#nodebpy.nodes.geometry.VolumeToMesh.i_volume) | Input socket: Volume |
-| [i_voxel_amount](#nodebpy.nodes.geometry.VolumeToMesh.i_voxel_amount) | Input socket: Voxel Amount |
-| [i_voxel_size](#nodebpy.nodes.geometry.VolumeToMesh.i_voxel_size) | Input socket: Voxel Size |
-| [name](#nodebpy.nodes.geometry.VolumeToMesh.name) |  |
-| [node](#nodebpy.nodes.geometry.VolumeToMesh.node) |  |
-| [o_mesh](#nodebpy.nodes.geometry.VolumeToMesh.o_mesh) | Output socket: Mesh |
-| [tree](#nodebpy.nodes.geometry.VolumeToMesh.tree) |  |
-| [type](#nodebpy.nodes.geometry.VolumeToMesh.type) |  |

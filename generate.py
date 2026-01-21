@@ -768,10 +768,10 @@ def get_filename_for_node(node_info: NodeInfo) -> str:
         "INPUT": "input",
         "OUTPUT": "output",
         "ATTRIBUTE": "attribute",
-        "COLOR": "converter",  # Color manipulation nodes typically conversion-related
+        "COLOR": "color",
         "TEXTURE": "texture",
         "GROUP": "group",
-        "INTERFACE": "interface",  # Interface nodes are utility-like
+        "INTERFACE": "interface",
         "LAYOUT": "layout",
         "VECTOR": "vector",
     }

@@ -8,7 +8,145 @@
 
 | Name | Description |
 | --- | --- |
+| [BrickTexture](#nodebpy.nodes.texture.BrickTexture) | Generate a procedural texture producing bricks |
+| [CheckerTexture](#nodebpy.nodes.texture.CheckerTexture) | Generate a checkerboard texture |
+| [GaborTexture](#nodebpy.nodes.texture.GaborTexture) | Generate Gabor noise |
+| [GradientTexture](#nodebpy.nodes.texture.GradientTexture) | Generate interpolated color and intensity values based on the input vector |
 | [ImageTexture](#nodebpy.nodes.texture.ImageTexture) | Sample values from an image texture |
+| [MagicTexture](#nodebpy.nodes.texture.MagicTexture) | Generate a psychedelic color texture |
+| [NoiseTexture](#nodebpy.nodes.texture.NoiseTexture) | Generate fractal Perlin noise |
+| [VoronoiTexture](#nodebpy.nodes.texture.VoronoiTexture) | Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells |
+| [WaveTexture](#nodebpy.nodes.texture.WaveTexture) | Generate procedural bands or rings with noise |
+| [WhiteNoiseTexture](#nodebpy.nodes.texture.WhiteNoiseTexture) | Calculate a random value or color based on an input seed |
+
+### BrickTexture { #nodebpy.nodes.texture.BrickTexture }
+
+```python
+nodes.texture.BrickTexture(
+    vector=None,
+    color1=None,
+    color2=None,
+    mortar=None,
+    scale=5.0,
+    mortar_size=0.02,
+    mortar_smooth=0.1,
+    bias=0.0,
+    brick_width=0.5,
+    row_height=0.25,
+    *,
+    offset_frequency=2,
+    squash_frequency=2,
+    offset=0.5,
+    squash=1.0,
+)
+```
+
+Generate a procedural texture producing bricks
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_bias](#nodebpy.nodes.texture.BrickTexture.i_bias) | Input socket: Bias |
+| [i_brick_width](#nodebpy.nodes.texture.BrickTexture.i_brick_width) | Input socket: Brick Width |
+| [i_color1](#nodebpy.nodes.texture.BrickTexture.i_color1) | Input socket: Color1 |
+| [i_color2](#nodebpy.nodes.texture.BrickTexture.i_color2) | Input socket: Color2 |
+| [i_mortar](#nodebpy.nodes.texture.BrickTexture.i_mortar) | Input socket: Mortar |
+| [i_mortar_size](#nodebpy.nodes.texture.BrickTexture.i_mortar_size) | Input socket: Mortar Size |
+| [i_mortar_smooth](#nodebpy.nodes.texture.BrickTexture.i_mortar_smooth) | Input socket: Mortar Smooth |
+| [i_row_height](#nodebpy.nodes.texture.BrickTexture.i_row_height) | Input socket: Row Height |
+| [i_scale](#nodebpy.nodes.texture.BrickTexture.i_scale) | Input socket: Scale |
+| [i_vector](#nodebpy.nodes.texture.BrickTexture.i_vector) | Input socket: Vector |
+| [name](#nodebpy.nodes.texture.BrickTexture.name) |  |
+| [node](#nodebpy.nodes.texture.BrickTexture.node) |  |
+| [o_color](#nodebpy.nodes.texture.BrickTexture.o_color) | Output socket: Color |
+| [o_fac](#nodebpy.nodes.texture.BrickTexture.o_fac) | Output socket: Factor |
+| [offset](#nodebpy.nodes.texture.BrickTexture.offset) |  |
+| [offset_frequency](#nodebpy.nodes.texture.BrickTexture.offset_frequency) |  |
+| [squash](#nodebpy.nodes.texture.BrickTexture.squash) |  |
+| [squash_frequency](#nodebpy.nodes.texture.BrickTexture.squash_frequency) |  |
+| [tree](#nodebpy.nodes.texture.BrickTexture.tree) |  |
+| [type](#nodebpy.nodes.texture.BrickTexture.type) |  |
+
+### CheckerTexture { #nodebpy.nodes.texture.CheckerTexture }
+
+```python
+nodes.texture.CheckerTexture(vector=None, color1=None, color2=None, scale=5.0)
+```
+
+Generate a checkerboard texture
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_color1](#nodebpy.nodes.texture.CheckerTexture.i_color1) | Input socket: Color1 |
+| [i_color2](#nodebpy.nodes.texture.CheckerTexture.i_color2) | Input socket: Color2 |
+| [i_scale](#nodebpy.nodes.texture.CheckerTexture.i_scale) | Input socket: Scale |
+| [i_vector](#nodebpy.nodes.texture.CheckerTexture.i_vector) | Input socket: Vector |
+| [name](#nodebpy.nodes.texture.CheckerTexture.name) |  |
+| [node](#nodebpy.nodes.texture.CheckerTexture.node) |  |
+| [o_color](#nodebpy.nodes.texture.CheckerTexture.o_color) | Output socket: Color |
+| [o_fac](#nodebpy.nodes.texture.CheckerTexture.o_fac) | Output socket: Factor |
+| [tree](#nodebpy.nodes.texture.CheckerTexture.tree) |  |
+| [type](#nodebpy.nodes.texture.CheckerTexture.type) |  |
+
+### GaborTexture { #nodebpy.nodes.texture.GaborTexture }
+
+```python
+nodes.texture.GaborTexture(
+    vector=None,
+    scale=5.0,
+    frequency=2.0,
+    anisotropy=1.0,
+    orientation_2d=0.7854,
+    orientation_3d=None,
+    *,
+    gabor_type='2D',
+)
+```
+
+Generate Gabor noise
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [gabor_type](#nodebpy.nodes.texture.GaborTexture.gabor_type) |  |
+| [i_anisotropy](#nodebpy.nodes.texture.GaborTexture.i_anisotropy) | Input socket: Anisotropy |
+| [i_frequency](#nodebpy.nodes.texture.GaborTexture.i_frequency) | Input socket: Frequency |
+| [i_orientation_2d](#nodebpy.nodes.texture.GaborTexture.i_orientation_2d) | Input socket: Orientation |
+| [i_orientation_3d](#nodebpy.nodes.texture.GaborTexture.i_orientation_3d) | Input socket: Orientation |
+| [i_scale](#nodebpy.nodes.texture.GaborTexture.i_scale) | Input socket: Scale |
+| [i_vector](#nodebpy.nodes.texture.GaborTexture.i_vector) | Input socket: Vector |
+| [name](#nodebpy.nodes.texture.GaborTexture.name) |  |
+| [node](#nodebpy.nodes.texture.GaborTexture.node) |  |
+| [o_intensity](#nodebpy.nodes.texture.GaborTexture.o_intensity) | Output socket: Intensity |
+| [o_phase](#nodebpy.nodes.texture.GaborTexture.o_phase) | Output socket: Phase |
+| [o_value](#nodebpy.nodes.texture.GaborTexture.o_value) | Output socket: Value |
+| [tree](#nodebpy.nodes.texture.GaborTexture.tree) |  |
+| [type](#nodebpy.nodes.texture.GaborTexture.type) |  |
+
+### GradientTexture { #nodebpy.nodes.texture.GradientTexture }
+
+```python
+nodes.texture.GradientTexture(vector=None, *, gradient_type='LINEAR')
+```
+
+Generate interpolated color and intensity values based on the input vector
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [gradient_type](#nodebpy.nodes.texture.GradientTexture.gradient_type) |  |
+| [i_vector](#nodebpy.nodes.texture.GradientTexture.i_vector) | Input socket: Vector |
+| [name](#nodebpy.nodes.texture.GradientTexture.name) |  |
+| [node](#nodebpy.nodes.texture.GradientTexture.node) |  |
+| [o_color](#nodebpy.nodes.texture.GradientTexture.o_color) | Output socket: Color |
+| [o_fac](#nodebpy.nodes.texture.GradientTexture.o_fac) | Output socket: Factor |
+| [tree](#nodebpy.nodes.texture.GradientTexture.tree) |  |
+| [type](#nodebpy.nodes.texture.GradientTexture.type) |  |
 
 ### ImageTexture { #nodebpy.nodes.texture.ImageTexture }
 
@@ -17,9 +155,9 @@ nodes.texture.ImageTexture(
     image=None,
     vector=None,
     frame=0,
+    *,
     interpolation='Linear',
     extension='REPEAT',
-    **kwargs,
 )
 ```
 
@@ -40,3 +178,192 @@ Sample values from an image texture
 | [o_color](#nodebpy.nodes.texture.ImageTexture.o_color) | Output socket: Color |
 | [tree](#nodebpy.nodes.texture.ImageTexture.tree) |  |
 | [type](#nodebpy.nodes.texture.ImageTexture.type) |  |
+
+### MagicTexture { #nodebpy.nodes.texture.MagicTexture }
+
+```python
+nodes.texture.MagicTexture(
+    vector=None,
+    scale=5.0,
+    distortion=1.0,
+    *,
+    turbulence_depth=0,
+)
+```
+
+Generate a psychedelic color texture
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_distortion](#nodebpy.nodes.texture.MagicTexture.i_distortion) | Input socket: Distortion |
+| [i_scale](#nodebpy.nodes.texture.MagicTexture.i_scale) | Input socket: Scale |
+| [i_vector](#nodebpy.nodes.texture.MagicTexture.i_vector) | Input socket: Vector |
+| [name](#nodebpy.nodes.texture.MagicTexture.name) |  |
+| [node](#nodebpy.nodes.texture.MagicTexture.node) |  |
+| [o_color](#nodebpy.nodes.texture.MagicTexture.o_color) | Output socket: Color |
+| [o_fac](#nodebpy.nodes.texture.MagicTexture.o_fac) | Output socket: Factor |
+| [tree](#nodebpy.nodes.texture.MagicTexture.tree) |  |
+| [turbulence_depth](#nodebpy.nodes.texture.MagicTexture.turbulence_depth) |  |
+| [type](#nodebpy.nodes.texture.MagicTexture.type) |  |
+
+### NoiseTexture { #nodebpy.nodes.texture.NoiseTexture }
+
+```python
+nodes.texture.NoiseTexture(
+    vector=None,
+    w=0.0,
+    scale=5.0,
+    detail=2.0,
+    roughness=0.5,
+    lacunarity=2.0,
+    offset=0.0,
+    gain=1.0,
+    distortion=0.0,
+    *,
+    noise_dimensions='3D',
+    noise_type='FBM',
+    normalize=False,
+)
+```
+
+Generate fractal Perlin noise
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_detail](#nodebpy.nodes.texture.NoiseTexture.i_detail) | Input socket: Detail |
+| [i_distortion](#nodebpy.nodes.texture.NoiseTexture.i_distortion) | Input socket: Distortion |
+| [i_gain](#nodebpy.nodes.texture.NoiseTexture.i_gain) | Input socket: Gain |
+| [i_lacunarity](#nodebpy.nodes.texture.NoiseTexture.i_lacunarity) | Input socket: Lacunarity |
+| [i_offset](#nodebpy.nodes.texture.NoiseTexture.i_offset) | Input socket: Offset |
+| [i_roughness](#nodebpy.nodes.texture.NoiseTexture.i_roughness) | Input socket: Roughness |
+| [i_scale](#nodebpy.nodes.texture.NoiseTexture.i_scale) | Input socket: Scale |
+| [i_vector](#nodebpy.nodes.texture.NoiseTexture.i_vector) | Input socket: Vector |
+| [i_w](#nodebpy.nodes.texture.NoiseTexture.i_w) | Input socket: W |
+| [name](#nodebpy.nodes.texture.NoiseTexture.name) |  |
+| [node](#nodebpy.nodes.texture.NoiseTexture.node) |  |
+| [noise_dimensions](#nodebpy.nodes.texture.NoiseTexture.noise_dimensions) |  |
+| [noise_type](#nodebpy.nodes.texture.NoiseTexture.noise_type) |  |
+| [normalize](#nodebpy.nodes.texture.NoiseTexture.normalize) |  |
+| [o_color](#nodebpy.nodes.texture.NoiseTexture.o_color) | Output socket: Color |
+| [o_fac](#nodebpy.nodes.texture.NoiseTexture.o_fac) | Output socket: Factor |
+| [tree](#nodebpy.nodes.texture.NoiseTexture.tree) |  |
+| [type](#nodebpy.nodes.texture.NoiseTexture.type) |  |
+
+### VoronoiTexture { #nodebpy.nodes.texture.VoronoiTexture }
+
+```python
+nodes.texture.VoronoiTexture(
+    vector=None,
+    w=0.0,
+    scale=5.0,
+    detail=0.0,
+    roughness=0.5,
+    lacunarity=2.0,
+    smoothness=1.0,
+    exponent=0.5,
+    randomness=1.0,
+    *,
+    voronoi_dimensions='3D',
+    distance='EUCLIDEAN',
+    feature='F1',
+    normalize=False,
+)
+```
+
+Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [distance](#nodebpy.nodes.texture.VoronoiTexture.distance) |  |
+| [feature](#nodebpy.nodes.texture.VoronoiTexture.feature) |  |
+| [i_detail](#nodebpy.nodes.texture.VoronoiTexture.i_detail) | Input socket: Detail |
+| [i_exponent](#nodebpy.nodes.texture.VoronoiTexture.i_exponent) | Input socket: Exponent |
+| [i_lacunarity](#nodebpy.nodes.texture.VoronoiTexture.i_lacunarity) | Input socket: Lacunarity |
+| [i_randomness](#nodebpy.nodes.texture.VoronoiTexture.i_randomness) | Input socket: Randomness |
+| [i_roughness](#nodebpy.nodes.texture.VoronoiTexture.i_roughness) | Input socket: Roughness |
+| [i_scale](#nodebpy.nodes.texture.VoronoiTexture.i_scale) | Input socket: Scale |
+| [i_smoothness](#nodebpy.nodes.texture.VoronoiTexture.i_smoothness) | Input socket: Smoothness |
+| [i_vector](#nodebpy.nodes.texture.VoronoiTexture.i_vector) | Input socket: Vector |
+| [i_w](#nodebpy.nodes.texture.VoronoiTexture.i_w) | Input socket: W |
+| [name](#nodebpy.nodes.texture.VoronoiTexture.name) |  |
+| [node](#nodebpy.nodes.texture.VoronoiTexture.node) |  |
+| [normalize](#nodebpy.nodes.texture.VoronoiTexture.normalize) |  |
+| [o_color](#nodebpy.nodes.texture.VoronoiTexture.o_color) | Output socket: Color |
+| [o_distance](#nodebpy.nodes.texture.VoronoiTexture.o_distance) | Output socket: Distance |
+| [o_position](#nodebpy.nodes.texture.VoronoiTexture.o_position) | Output socket: Position |
+| [o_radius](#nodebpy.nodes.texture.VoronoiTexture.o_radius) | Output socket: Radius |
+| [o_w](#nodebpy.nodes.texture.VoronoiTexture.o_w) | Output socket: W |
+| [tree](#nodebpy.nodes.texture.VoronoiTexture.tree) |  |
+| [type](#nodebpy.nodes.texture.VoronoiTexture.type) |  |
+| [voronoi_dimensions](#nodebpy.nodes.texture.VoronoiTexture.voronoi_dimensions) |  |
+
+### WaveTexture { #nodebpy.nodes.texture.WaveTexture }
+
+```python
+nodes.texture.WaveTexture(
+    vector=None,
+    scale=5.0,
+    distortion=0.0,
+    detail=2.0,
+    detail_scale=1.0,
+    detail_roughness=0.5,
+    phase_offset=0.0,
+    *,
+    wave_type='BANDS',
+    bands_direction='X',
+    rings_direction='X',
+    wave_profile='SIN',
+)
+```
+
+Generate procedural bands or rings with noise
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [bands_direction](#nodebpy.nodes.texture.WaveTexture.bands_direction) |  |
+| [i_detail](#nodebpy.nodes.texture.WaveTexture.i_detail) | Input socket: Detail |
+| [i_detail_roughness](#nodebpy.nodes.texture.WaveTexture.i_detail_roughness) | Input socket: Detail Roughness |
+| [i_detail_scale](#nodebpy.nodes.texture.WaveTexture.i_detail_scale) | Input socket: Detail Scale |
+| [i_distortion](#nodebpy.nodes.texture.WaveTexture.i_distortion) | Input socket: Distortion |
+| [i_phase_offset](#nodebpy.nodes.texture.WaveTexture.i_phase_offset) | Input socket: Phase Offset |
+| [i_scale](#nodebpy.nodes.texture.WaveTexture.i_scale) | Input socket: Scale |
+| [i_vector](#nodebpy.nodes.texture.WaveTexture.i_vector) | Input socket: Vector |
+| [name](#nodebpy.nodes.texture.WaveTexture.name) |  |
+| [node](#nodebpy.nodes.texture.WaveTexture.node) |  |
+| [o_color](#nodebpy.nodes.texture.WaveTexture.o_color) | Output socket: Color |
+| [o_fac](#nodebpy.nodes.texture.WaveTexture.o_fac) | Output socket: Factor |
+| [rings_direction](#nodebpy.nodes.texture.WaveTexture.rings_direction) |  |
+| [tree](#nodebpy.nodes.texture.WaveTexture.tree) |  |
+| [type](#nodebpy.nodes.texture.WaveTexture.type) |  |
+| [wave_profile](#nodebpy.nodes.texture.WaveTexture.wave_profile) |  |
+| [wave_type](#nodebpy.nodes.texture.WaveTexture.wave_type) |  |
+
+### WhiteNoiseTexture { #nodebpy.nodes.texture.WhiteNoiseTexture }
+
+```python
+nodes.texture.WhiteNoiseTexture(vector=None, w=0.0, *, noise_dimensions='3D')
+```
+
+Calculate a random value or color based on an input seed
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_vector](#nodebpy.nodes.texture.WhiteNoiseTexture.i_vector) | Input socket: Vector |
+| [i_w](#nodebpy.nodes.texture.WhiteNoiseTexture.i_w) | Input socket: W |
+| [name](#nodebpy.nodes.texture.WhiteNoiseTexture.name) |  |
+| [node](#nodebpy.nodes.texture.WhiteNoiseTexture.node) |  |
+| [noise_dimensions](#nodebpy.nodes.texture.WhiteNoiseTexture.noise_dimensions) |  |
+| [o_color](#nodebpy.nodes.texture.WhiteNoiseTexture.o_color) | Output socket: Color |
+| [o_value](#nodebpy.nodes.texture.WhiteNoiseTexture.o_value) | Output socket: Value |
+| [tree](#nodebpy.nodes.texture.WhiteNoiseTexture.tree) |  |
+| [type](#nodebpy.nodes.texture.WhiteNoiseTexture.type) |  |
