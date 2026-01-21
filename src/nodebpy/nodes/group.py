@@ -32,6 +32,6 @@ class Group(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)

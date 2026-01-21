@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 if TYPE_CHECKING:
-    from .nodes.converter import Math, VectorMath
+    from .nodes import Math, VectorMath
 
 import arrangebpy
 import bpy
@@ -805,7 +805,7 @@ class NodeBuilder:
         self, other: Any, operation: str, reverse: bool = False
     ) -> "VectorMath | Math":
         """Apply a math operation with appropriate Math/VectorMath node."""
-        from .nodes.converter import VectorMath
+        from .nodes import VectorMath
 
         values = (
             (self._default_output_socket, other)

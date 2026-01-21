@@ -32,7 +32,7 @@ class Cursor3D(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -55,7 +55,7 @@ class ActiveCamera(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -73,7 +73,7 @@ class ActiveElement(NodeBuilder):
 
     def __init__(self, domain: Literal["POINT", "EDGE", "FACE", "LAYER"] = "POINT"):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.domain = domain
         self._establish_links(**key_args)
 
@@ -124,7 +124,7 @@ class Boolean(NodeBuilder):
 
     def __init__(self, boolean: bool = False):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.boolean = boolean
         self._establish_links(**key_args)
 
@@ -213,7 +213,7 @@ class Collection(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -283,7 +283,7 @@ class Color(NodeBuilder):
 
     def __init__(self, value: float = 0.0):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.value = value
         self._establish_links(**key_args)
 
@@ -478,7 +478,7 @@ class CurveTangent(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -496,7 +496,7 @@ class CurveTilt(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -542,7 +542,7 @@ class EdgeAngle(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -565,7 +565,7 @@ class EdgeNeighbors(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -618,7 +618,7 @@ class EdgeVertices(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -781,7 +781,7 @@ class FaceArea(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -822,7 +822,7 @@ class FaceNeighbors(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -845,7 +845,7 @@ class FaceSet(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -896,7 +896,7 @@ class ID(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -914,7 +914,7 @@ class Image(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1131,7 +1131,7 @@ class Index(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1177,7 +1177,7 @@ class InstanceRotation(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1195,7 +1195,7 @@ class InstanceScale(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1213,7 +1213,7 @@ class InstanceTransform(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1231,7 +1231,7 @@ class Integer(NodeBuilder):
 
     def __init__(self, integer: int = 1):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.integer = integer
         self._establish_links(**key_args)
 
@@ -1257,7 +1257,7 @@ class IsEdgeSmooth(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1298,7 +1298,7 @@ class IsFaceSmooth(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1316,7 +1316,7 @@ class IsSplineCyclic(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1334,7 +1334,7 @@ class IsViewport(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1352,7 +1352,7 @@ class Material(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1370,7 +1370,7 @@ class MaterialIndex(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1388,7 +1388,7 @@ class MeshIsland(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1411,7 +1411,7 @@ class MousePosition(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1460,6 +1460,36 @@ class NamedAttribute(NodeBuilder):
         key_args = {"Name": name}
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+        """Create Named Attribute with operation 'Float'."""
+        return cls(data_type="FLOAT", name=name)
+
+    @classmethod
+    def integer(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+        """Create Named Attribute with operation 'Integer'."""
+        return cls(data_type="INT", name=name)
+
+    @classmethod
+    def boolean(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+        """Create Named Attribute with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", name=name)
+
+    @classmethod
+    def vector(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+        """Create Named Attribute with operation 'Vector'."""
+        return cls(data_type="FLOAT_VECTOR", name=name)
+
+    @classmethod
+    def color(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+        """Create Named Attribute with operation 'Color'."""
+        return cls(data_type="FLOAT_COLOR", name=name)
+
+    @classmethod
+    def quaternion(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+        """Create Named Attribute with operation 'Quaternion'."""
+        return cls(data_type="QUATERNION", name=name)
 
     @property
     def i_name(self) -> SocketLinker:
@@ -1537,7 +1567,7 @@ class Normal(NodeBuilder):
 
     def __init__(self, legacy_corner_normals: bool = False):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.legacy_corner_normals = legacy_corner_normals
         self._establish_links(**key_args)
 
@@ -1568,7 +1598,7 @@ class Object(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1764,7 +1794,7 @@ class Position(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1782,7 +1812,7 @@ class Radius(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1800,7 +1830,7 @@ class Rotation(NodeBuilder):
 
     def __init__(self, rotation_euler: float = 0.0):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.rotation_euler = rotation_euler
         self._establish_links(**key_args)
 
@@ -1826,7 +1856,7 @@ class SceneTime(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1849,7 +1879,7 @@ class Selection(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1872,7 +1902,7 @@ class SelfObject(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1927,7 +1957,7 @@ class SpecialCharacters(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1950,7 +1980,7 @@ class SplineLength(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -1973,7 +2003,7 @@ class SplineParameter(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -2001,7 +2031,7 @@ class SplineResolution(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -2019,7 +2049,7 @@ class String(NodeBuilder):
 
     def __init__(self, string: str = ""):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.string = string
         self._establish_links(**key_args)
 
@@ -2077,7 +2107,7 @@ class Value(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -2095,7 +2125,7 @@ class Vector(NodeBuilder):
 
     def __init__(self, vector: float = 0.0):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.vector = vector
         self._establish_links(**key_args)
 
@@ -2121,7 +2151,7 @@ class VertexNeighbors(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -2167,7 +2197,7 @@ class ViewportTransform(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -2195,7 +2225,7 @@ class VoxelIndex(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 

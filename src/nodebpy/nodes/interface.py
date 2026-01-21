@@ -125,6 +125,86 @@ class EnableOutput(NodeBuilder):
         self.data_type = data_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def float(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Float'."""
+        return cls(data_type="FLOAT", enable=enable)
+
+    @classmethod
+    def integer(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Integer'."""
+        return cls(data_type="INT", enable=enable)
+
+    @classmethod
+    def boolean(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", enable=enable)
+
+    @classmethod
+    def vector(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Vector'."""
+        return cls(data_type="VECTOR", enable=enable)
+
+    @classmethod
+    def color(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Color'."""
+        return cls(data_type="RGBA", enable=enable)
+
+    @classmethod
+    def rotation(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Rotation'."""
+        return cls(data_type="ROTATION", enable=enable)
+
+    @classmethod
+    def matrix(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Matrix'."""
+        return cls(data_type="MATRIX", enable=enable)
+
+    @classmethod
+    def string(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'String'."""
+        return cls(data_type="STRING", enable=enable)
+
+    @classmethod
+    def menu(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Menu'."""
+        return cls(data_type="MENU", enable=enable)
+
+    @classmethod
+    def object(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Object'."""
+        return cls(data_type="OBJECT", enable=enable)
+
+    @classmethod
+    def image(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Image'."""
+        return cls(data_type="IMAGE", enable=enable)
+
+    @classmethod
+    def geometry(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Geometry'."""
+        return cls(data_type="GEOMETRY", enable=enable)
+
+    @classmethod
+    def collection(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Collection'."""
+        return cls(data_type="COLLECTION", enable=enable)
+
+    @classmethod
+    def material(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Material'."""
+        return cls(data_type="MATERIAL", enable=enable)
+
+    @classmethod
+    def bundle(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Bundle'."""
+        return cls(data_type="BUNDLE", enable=enable)
+
+    @classmethod
+    def closure(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+        """Create Enable Output with operation 'Closure'."""
+        return cls(data_type="CLOSURE", enable=enable)
+
     @property
     def i_enable(self) -> SocketLinker:
         """Input socket: Enable"""
@@ -196,7 +276,7 @@ class GroupInput(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -209,7 +289,7 @@ class GroupOutput(NodeBuilder):
 
     def __init__(self, is_active_output: bool = False):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.is_active_output = is_active_output
         self._establish_links(**key_args)
 

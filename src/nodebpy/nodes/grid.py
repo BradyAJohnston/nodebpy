@@ -51,6 +51,63 @@ class AdvectGrid(NodeBuilder):
         self.data_type = data_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def float(
+        cls,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        velocity: TYPE_INPUT_VECTOR = None,
+        time_step: TYPE_INPUT_VALUE = 1.0,
+        integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
+        limiter: TYPE_INPUT_MENU = "Clamp",
+    ) -> "AdvectGrid":
+        """Create Advect Grid with operation 'Float'."""
+        return cls(
+            data_type="FLOAT",
+            grid=grid,
+            velocity=velocity,
+            time_step=time_step,
+            integration_scheme=integration_scheme,
+            limiter=limiter,
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        grid: TYPE_INPUT_INT = 0,
+        velocity: TYPE_INPUT_VECTOR = None,
+        time_step: TYPE_INPUT_VALUE = 1.0,
+        integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
+        limiter: TYPE_INPUT_MENU = "Clamp",
+    ) -> "AdvectGrid":
+        """Create Advect Grid with operation 'Integer'."""
+        return cls(
+            data_type="INT",
+            grid=grid,
+            velocity=velocity,
+            time_step=time_step,
+            integration_scheme=integration_scheme,
+            limiter=limiter,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        grid: TYPE_INPUT_VECTOR = None,
+        velocity: TYPE_INPUT_VECTOR = None,
+        time_step: TYPE_INPUT_VALUE = 1.0,
+        integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
+        limiter: TYPE_INPUT_MENU = "Clamp",
+    ) -> "AdvectGrid":
+        """Create Advect Grid with operation 'Vector'."""
+        return cls(
+            data_type="VECTOR",
+            grid=grid,
+            velocity=velocity,
+            time_step=time_step,
+            integration_scheme=integration_scheme,
+            limiter=limiter,
+        )
+
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
@@ -236,6 +293,26 @@ class FieldToGrid(NodeBuilder):
         self.data_type = data_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def float(cls, topology: TYPE_INPUT_VALUE = 0.0) -> "FieldToGrid":
+        """Create Field to Grid with operation 'Float'."""
+        return cls(data_type="FLOAT", topology=topology)
+
+    @classmethod
+    def integer(cls, topology: TYPE_INPUT_INT = 0) -> "FieldToGrid":
+        """Create Field to Grid with operation 'Integer'."""
+        return cls(data_type="INT", topology=topology)
+
+    @classmethod
+    def boolean(cls, topology: TYPE_INPUT_BOOLEAN = False) -> "FieldToGrid":
+        """Create Field to Grid with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", topology=topology)
+
+    @classmethod
+    def vector(cls, topology: TYPE_INPUT_VECTOR = None) -> "FieldToGrid":
+        """Create Field to Grid with operation 'Vector'."""
+        return cls(data_type="VECTOR", topology=topology)
+
     @property
     def i_topology(self) -> SocketLinker:
         """Input socket: Topology"""
@@ -268,6 +345,46 @@ class GetNamedGrid(NodeBuilder):
         key_args = {"Volume": volume, "Name": name, "Remove": remove}
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        remove: TYPE_INPUT_BOOLEAN = True,
+    ) -> "GetNamedGrid":
+        """Create Get Named Grid with operation 'Float'."""
+        return cls(data_type="FLOAT", volume=volume, name=name, remove=remove)
+
+    @classmethod
+    def integer(
+        cls,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        remove: TYPE_INPUT_BOOLEAN = True,
+    ) -> "GetNamedGrid":
+        """Create Get Named Grid with operation 'Integer'."""
+        return cls(data_type="INT", volume=volume, name=name, remove=remove)
+
+    @classmethod
+    def boolean(
+        cls,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        remove: TYPE_INPUT_BOOLEAN = True,
+    ) -> "GetNamedGrid":
+        """Create Get Named Grid with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", volume=volume, name=name, remove=remove)
+
+    @classmethod
+    def vector(
+        cls,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        remove: TYPE_INPUT_BOOLEAN = True,
+    ) -> "GetNamedGrid":
+        """Create Get Named Grid with operation 'Vector'."""
+        return cls(data_type="VECTOR", volume=volume, name=name, remove=remove)
 
     @property
     def i_volume(self) -> SocketLinker:
@@ -388,6 +505,26 @@ class GridInfo(NodeBuilder):
         key_args = {"Grid": grid}
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, grid: TYPE_INPUT_VALUE = 0.0) -> "GridInfo":
+        """Create Grid Info with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid)
+
+    @classmethod
+    def integer(cls, grid: TYPE_INPUT_INT = 0) -> "GridInfo":
+        """Create Grid Info with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid)
+
+    @classmethod
+    def boolean(cls, grid: TYPE_INPUT_BOOLEAN = False) -> "GridInfo":
+        """Create Grid Info with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", grid=grid)
+
+    @classmethod
+    def vector(cls, grid: TYPE_INPUT_VECTOR = None) -> "GridInfo":
+        """Create Grid Info with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid)
 
     @property
     def i_grid(self) -> SocketLinker:
@@ -744,6 +881,43 @@ class PruneGrid(NodeBuilder):
         self.data_type = data_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def float(
+        cls,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        mode: TYPE_INPUT_MENU = "Threshold",
+        threshold: TYPE_INPUT_VALUE = 0.01,
+    ) -> "PruneGrid":
+        """Create Prune Grid with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid, mode=mode, threshold=threshold)
+
+    @classmethod
+    def integer(
+        cls,
+        grid: TYPE_INPUT_INT = 0,
+        mode: TYPE_INPUT_MENU = "Threshold",
+        threshold: TYPE_INPUT_INT = 0,
+    ) -> "PruneGrid":
+        """Create Prune Grid with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid, mode=mode, threshold=threshold)
+
+    @classmethod
+    def boolean(
+        cls, grid: TYPE_INPUT_BOOLEAN = False, mode: TYPE_INPUT_MENU = "Threshold"
+    ) -> "PruneGrid":
+        """Create Prune Grid with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", grid=grid, mode=mode)
+
+    @classmethod
+    def vector(
+        cls,
+        grid: TYPE_INPUT_VECTOR = None,
+        mode: TYPE_INPUT_MENU = "Threshold",
+        threshold: TYPE_INPUT_VECTOR = None,
+    ) -> "PruneGrid":
+        """Create Prune Grid with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid, mode=mode, threshold=threshold)
+
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
@@ -1055,6 +1229,60 @@ class SampleGrid(NodeBuilder):
         self.data_type = data_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def float(
+        cls,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        position: TYPE_INPUT_VECTOR = None,
+        interpolation: TYPE_INPUT_MENU = "Trilinear",
+    ) -> "SampleGrid":
+        """Create Sample Grid with operation 'Float'."""
+        return cls(
+            data_type="FLOAT", grid=grid, position=position, interpolation=interpolation
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        grid: TYPE_INPUT_INT = 0,
+        position: TYPE_INPUT_VECTOR = None,
+        interpolation: TYPE_INPUT_MENU = "Trilinear",
+    ) -> "SampleGrid":
+        """Create Sample Grid with operation 'Integer'."""
+        return cls(
+            data_type="INT", grid=grid, position=position, interpolation=interpolation
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        grid: TYPE_INPUT_BOOLEAN = False,
+        position: TYPE_INPUT_VECTOR = None,
+        interpolation: TYPE_INPUT_MENU = "Trilinear",
+    ) -> "SampleGrid":
+        """Create Sample Grid with operation 'Boolean'."""
+        return cls(
+            data_type="BOOLEAN",
+            grid=grid,
+            position=position,
+            interpolation=interpolation,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        grid: TYPE_INPUT_VECTOR = None,
+        position: TYPE_INPUT_VECTOR = None,
+        interpolation: TYPE_INPUT_MENU = "Trilinear",
+    ) -> "SampleGrid":
+        """Create Sample Grid with operation 'Vector'."""
+        return cls(
+            data_type="VECTOR",
+            grid=grid,
+            position=position,
+            interpolation=interpolation,
+        )
+
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
@@ -1103,6 +1331,50 @@ class SampleGridIndex(NodeBuilder):
         key_args = {"Grid": grid, "X": x, "Y": y, "Z": z}
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        grid: TYPE_INPUT_VALUE = 0.0,
+        x: TYPE_INPUT_INT = 0,
+        y: TYPE_INPUT_INT = 0,
+        z: TYPE_INPUT_INT = 0,
+    ) -> "SampleGridIndex":
+        """Create Sample Grid Index with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid, x=x, y=y, z=z)
+
+    @classmethod
+    def integer(
+        cls,
+        grid: TYPE_INPUT_INT = 0,
+        x: TYPE_INPUT_INT = 0,
+        y: TYPE_INPUT_INT = 0,
+        z: TYPE_INPUT_INT = 0,
+    ) -> "SampleGridIndex":
+        """Create Sample Grid Index with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid, x=x, y=y, z=z)
+
+    @classmethod
+    def boolean(
+        cls,
+        grid: TYPE_INPUT_BOOLEAN = False,
+        x: TYPE_INPUT_INT = 0,
+        y: TYPE_INPUT_INT = 0,
+        z: TYPE_INPUT_INT = 0,
+    ) -> "SampleGridIndex":
+        """Create Sample Grid Index with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", grid=grid, x=x, y=y, z=z)
+
+    @classmethod
+    def vector(
+        cls,
+        grid: TYPE_INPUT_VECTOR = None,
+        x: TYPE_INPUT_INT = 0,
+        y: TYPE_INPUT_INT = 0,
+        z: TYPE_INPUT_INT = 0,
+    ) -> "SampleGridIndex":
+        """Create Sample Grid Index with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid, x=x, y=y, z=z)
 
     @property
     def i_grid(self) -> SocketLinker:
@@ -1156,6 +1428,34 @@ class SetGridBackground(NodeBuilder):
         self.data_type = data_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def float(
+        cls, grid: TYPE_INPUT_VALUE = 0.0, background: TYPE_INPUT_VALUE = 0.0
+    ) -> "SetGridBackground":
+        """Create Set Grid Background with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid, background=background)
+
+    @classmethod
+    def integer(
+        cls, grid: TYPE_INPUT_INT = 0, background: TYPE_INPUT_INT = 0
+    ) -> "SetGridBackground":
+        """Create Set Grid Background with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid, background=background)
+
+    @classmethod
+    def boolean(
+        cls, grid: TYPE_INPUT_BOOLEAN = False, background: TYPE_INPUT_BOOLEAN = False
+    ) -> "SetGridBackground":
+        """Create Set Grid Background with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", grid=grid, background=background)
+
+    @classmethod
+    def vector(
+        cls, grid: TYPE_INPUT_VECTOR = None, background: TYPE_INPUT_VECTOR = None
+    ) -> "SetGridBackground":
+        """Create Set Grid Background with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid, background=background)
+
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
@@ -1197,6 +1497,34 @@ class SetGridTransform(NodeBuilder):
         key_args = {"Grid": grid, "Transform": transform}
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, grid: TYPE_INPUT_VALUE = 0.0, transform: TYPE_INPUT_MATRIX = None
+    ) -> "SetGridTransform":
+        """Create Set Grid Transform with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid, transform=transform)
+
+    @classmethod
+    def integer(
+        cls, grid: TYPE_INPUT_INT = 0, transform: TYPE_INPUT_MATRIX = None
+    ) -> "SetGridTransform":
+        """Create Set Grid Transform with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid, transform=transform)
+
+    @classmethod
+    def boolean(
+        cls, grid: TYPE_INPUT_BOOLEAN = False, transform: TYPE_INPUT_MATRIX = None
+    ) -> "SetGridTransform":
+        """Create Set Grid Transform with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", grid=grid, transform=transform)
+
+    @classmethod
+    def vector(
+        cls, grid: TYPE_INPUT_VECTOR = None, transform: TYPE_INPUT_MATRIX = None
+    ) -> "SetGridTransform":
+        """Create Set Grid Transform with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid, transform=transform)
 
     @property
     def i_grid(self) -> SocketLinker:
@@ -1245,6 +1573,46 @@ class StoreNamedGrid(NodeBuilder):
         key_args = {"Volume": volume, "Name": name, "Grid": grid}
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def boolean(
+        cls,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        grid: TYPE_INPUT_BOOLEAN = False,
+    ) -> "StoreNamedGrid":
+        """Create Store Named Grid with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", volume=volume, name=name, grid=grid)
+
+    @classmethod
+    def float(
+        cls,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        grid: TYPE_INPUT_VALUE = 0.0,
+    ) -> "StoreNamedGrid":
+        """Create Store Named Grid with operation 'Float'."""
+        return cls(data_type="FLOAT", volume=volume, name=name, grid=grid)
+
+    @classmethod
+    def integer(
+        cls,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        grid: TYPE_INPUT_INT = 0,
+    ) -> "StoreNamedGrid":
+        """Create Store Named Grid with operation 'Integer'."""
+        return cls(data_type="INT", volume=volume, name=name, grid=grid)
+
+    @classmethod
+    def vector(
+        cls,
+        volume: TYPE_INPUT_GEOMETRY = None,
+        name: TYPE_INPUT_STRING = "",
+        grid: TYPE_INPUT_VECTOR = None,
+    ) -> "StoreNamedGrid":
+        """Create Store Named Grid with operation 'Vector'."""
+        return cls(data_type="VECTOR_FLOAT", volume=volume, name=name, grid=grid)
 
     @property
     def i_volume(self) -> SocketLinker:
@@ -1424,6 +1792,26 @@ class VoxelizeGrid(NodeBuilder):
         key_args = {"Grid": grid}
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, grid: TYPE_INPUT_VALUE = 0.0) -> "VoxelizeGrid":
+        """Create Voxelize Grid with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid)
+
+    @classmethod
+    def integer(cls, grid: TYPE_INPUT_INT = 0) -> "VoxelizeGrid":
+        """Create Voxelize Grid with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid)
+
+    @classmethod
+    def boolean(cls, grid: TYPE_INPUT_BOOLEAN = False) -> "VoxelizeGrid":
+        """Create Voxelize Grid with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", grid=grid)
+
+    @classmethod
+    def vector(cls, grid: TYPE_INPUT_VECTOR = None) -> "VoxelizeGrid":
+        """Create Voxelize Grid with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid)
 
     @property
     def i_grid(self) -> SocketLinker:

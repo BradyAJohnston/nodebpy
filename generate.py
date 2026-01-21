@@ -57,6 +57,11 @@ class SocketInfo:
     max_value: Any = None
     always_enabled: bool = True
 
+    def format_argument_string(self) -> str:
+        type_hint = get_socket_type_hint(self)
+        param_name = get_socket_param_name(socket, sockets_use_same_name)
+        return f"{param_name}: {type_hint} = {format_python_value(self.default_value)}"
+
     def format_property(self) -> str:
         """Generate the property string for this socket."""
         prop_name = "{}_{}".format(
@@ -189,14 +194,14 @@ class NodeInfo:
         methods = []
 
         for prop in self.properties:
-            if not prop.identifier in ["operation", "domain"]:
+            if not prop.identifier in ["operation", "domain", "data_type"]:
                 continue
 
             # assert operation_enum.enum_items
             for enum in prop.enum_items:
                 # Handle special cases for better naming
-                method_name = enum.identifier.lower()
-                method_name = method_name.replace("_", "")
+                method_name = enum.name.lower()
+                # method_name = method_name.replace("_", "")
                 if method_name == "and":
                     method_name = "l_and"
                 elif method_name == "or":
@@ -221,7 +226,15 @@ class NodeInfo:
                 )
                 for socket in enum.sockets:
                     # Use label-based parameter naming
-                    param_name = get_socket_param_name(socket, sockets_use_same_name)
+                    socket_name = get_socket_param_name(socket, sockets_use_same_name)
+                    if socket_name.startswith("min"):
+                        param_name = "min"
+                    elif socket_name.startswith("max"):
+                        param_name = "max"
+                    else:
+                        param_name = socket_name
+                    param_name = param_name.replace("_float", "").replace("_vector", "")
+
                     if (
                         param_name
                         and param_name != ""
@@ -232,7 +245,7 @@ class NodeInfo:
                             f"{param_name}: {type_hint} = {format_python_value(socket.default_value)}"
                         )
                         # Use the same parameter name as in the constructor
-                        call_params.append(f"{param_name}={param_name}")
+                        call_params.append(f"{socket_name}={param_name}")
 
                 params_str = ",\n        ".join(input_params)
                 call_params_str = ", ".join(call_params)
@@ -591,7 +604,7 @@ def generate_node_class(node_info: NodeInfo) -> str:
         if link_mappings:
             establish_call = f"""        key_args = {{{", ".join(link_mappings)}}}"""
     else:
-        establish_call = "        key_args = kwargs"
+        establish_call = "        key_args = {}"
 
     # Build property setting calls
     property_calls = []

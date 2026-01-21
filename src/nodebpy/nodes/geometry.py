@@ -148,7 +148,7 @@ class Bake(NodeBuilder):
 
     def __init__(self):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -891,7 +891,7 @@ class DeleteGeometry(NodeBuilder):
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
-    def curve(
+    def spline(
         cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Spline'."""
@@ -2611,6 +2611,132 @@ class Raycast(NodeBuilder):
         self.data_type = data_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def float(
+        cls,
+        target_geometry: TYPE_INPUT_GEOMETRY = None,
+        attribute: TYPE_INPUT_VALUE = 0.0,
+        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        source_position: TYPE_INPUT_VECTOR = None,
+        ray_direction: TYPE_INPUT_VECTOR = None,
+        ray_length: TYPE_INPUT_VALUE = 100.0,
+    ) -> "Raycast":
+        """Create Raycast with operation 'Float'."""
+        return cls(
+            data_type="FLOAT",
+            target_geometry=target_geometry,
+            attribute=attribute,
+            interpolation=interpolation,
+            source_position=source_position,
+            ray_direction=ray_direction,
+            ray_length=ray_length,
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        target_geometry: TYPE_INPUT_GEOMETRY = None,
+        attribute: TYPE_INPUT_INT = 0,
+        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        source_position: TYPE_INPUT_VECTOR = None,
+        ray_direction: TYPE_INPUT_VECTOR = None,
+        ray_length: TYPE_INPUT_VALUE = 100.0,
+    ) -> "Raycast":
+        """Create Raycast with operation 'Integer'."""
+        return cls(
+            data_type="INT",
+            target_geometry=target_geometry,
+            attribute=attribute,
+            interpolation=interpolation,
+            source_position=source_position,
+            ray_direction=ray_direction,
+            ray_length=ray_length,
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        target_geometry: TYPE_INPUT_GEOMETRY = None,
+        attribute: TYPE_INPUT_BOOLEAN = False,
+        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        source_position: TYPE_INPUT_VECTOR = None,
+        ray_direction: TYPE_INPUT_VECTOR = None,
+        ray_length: TYPE_INPUT_VALUE = 100.0,
+    ) -> "Raycast":
+        """Create Raycast with operation 'Boolean'."""
+        return cls(
+            data_type="BOOLEAN",
+            target_geometry=target_geometry,
+            attribute=attribute,
+            interpolation=interpolation,
+            source_position=source_position,
+            ray_direction=ray_direction,
+            ray_length=ray_length,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        target_geometry: TYPE_INPUT_GEOMETRY = None,
+        attribute: TYPE_INPUT_VECTOR = None,
+        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        source_position: TYPE_INPUT_VECTOR = None,
+        ray_direction: TYPE_INPUT_VECTOR = None,
+        ray_length: TYPE_INPUT_VALUE = 100.0,
+    ) -> "Raycast":
+        """Create Raycast with operation 'Vector'."""
+        return cls(
+            data_type="FLOAT_VECTOR",
+            target_geometry=target_geometry,
+            attribute=attribute,
+            interpolation=interpolation,
+            source_position=source_position,
+            ray_direction=ray_direction,
+            ray_length=ray_length,
+        )
+
+    @classmethod
+    def color(
+        cls,
+        target_geometry: TYPE_INPUT_GEOMETRY = None,
+        attribute: TYPE_INPUT_COLOR = None,
+        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        source_position: TYPE_INPUT_VECTOR = None,
+        ray_direction: TYPE_INPUT_VECTOR = None,
+        ray_length: TYPE_INPUT_VALUE = 100.0,
+    ) -> "Raycast":
+        """Create Raycast with operation 'Color'."""
+        return cls(
+            data_type="FLOAT_COLOR",
+            target_geometry=target_geometry,
+            attribute=attribute,
+            interpolation=interpolation,
+            source_position=source_position,
+            ray_direction=ray_direction,
+            ray_length=ray_length,
+        )
+
+    @classmethod
+    def quaternion(
+        cls,
+        target_geometry: TYPE_INPUT_GEOMETRY = None,
+        attribute: TYPE_INPUT_ROTATION = None,
+        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        source_position: TYPE_INPUT_VECTOR = None,
+        ray_direction: TYPE_INPUT_VECTOR = None,
+        ray_length: TYPE_INPUT_VALUE = 100.0,
+    ) -> "Raycast":
+        """Create Raycast with operation 'Quaternion'."""
+        return cls(
+            data_type="QUATERNION",
+            target_geometry=target_geometry,
+            attribute=attribute,
+            interpolation=interpolation,
+            source_position=source_position,
+            ray_direction=ray_direction,
+            ray_length=ray_length,
+        )
+
     @property
     def i_target_geometry(self) -> SocketLinker:
         """Input socket: Target Geometry"""
@@ -2976,6 +3102,108 @@ class SampleCurve(NodeBuilder):
         self.data_type = data_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def float(
+        cls,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VALUE = 0.0,
+        length: TYPE_INPUT_VALUE = 0.0,
+        curve_index: TYPE_INPUT_INT = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation 'Float'."""
+        return cls(
+            data_type="FLOAT",
+            curves=curves,
+            value=value,
+            length=length,
+            curve_index=curve_index,
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_INT = 0,
+        length: TYPE_INPUT_VALUE = 0.0,
+        curve_index: TYPE_INPUT_INT = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation 'Integer'."""
+        return cls(
+            data_type="INT",
+            curves=curves,
+            value=value,
+            length=length,
+            curve_index=curve_index,
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_BOOLEAN = False,
+        length: TYPE_INPUT_VALUE = 0.0,
+        curve_index: TYPE_INPUT_INT = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation 'Boolean'."""
+        return cls(
+            data_type="BOOLEAN",
+            curves=curves,
+            value=value,
+            length=length,
+            curve_index=curve_index,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VECTOR = None,
+        length: TYPE_INPUT_VALUE = 0.0,
+        curve_index: TYPE_INPUT_INT = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation 'Vector'."""
+        return cls(
+            data_type="FLOAT_VECTOR",
+            curves=curves,
+            value=value,
+            length=length,
+            curve_index=curve_index,
+        )
+
+    @classmethod
+    def color(
+        cls,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_COLOR = None,
+        length: TYPE_INPUT_VALUE = 0.0,
+        curve_index: TYPE_INPUT_INT = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation 'Color'."""
+        return cls(
+            data_type="FLOAT_COLOR",
+            curves=curves,
+            value=value,
+            length=length,
+            curve_index=curve_index,
+        )
+
+    @classmethod
+    def quaternion(
+        cls,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_ROTATION = None,
+        length: TYPE_INPUT_VALUE = 0.0,
+        curve_index: TYPE_INPUT_INT = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation 'Quaternion'."""
+        return cls(
+            data_type="QUATERNION",
+            curves=curves,
+            value=value,
+            length=length,
+            curve_index=curve_index,
+        )
+
     @property
     def i_curves(self) -> SocketLinker:
         """Input socket: Curves"""
@@ -3101,6 +3329,68 @@ class SampleIndex(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
+    def float(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VALUE = 0.0,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Float'."""
+        return cls(data_type="FLOAT", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def integer(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_INT = 0,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Integer'."""
+        return cls(data_type="INT", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def boolean(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_BOOLEAN = False,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def vector(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VECTOR = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Vector'."""
+        return cls(
+            data_type="FLOAT_VECTOR", geometry=geometry, value=value, index=index
+        )
+
+    @classmethod
+    def color(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_COLOR = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Color'."""
+        return cls(data_type="FLOAT_COLOR", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def quaternion(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_ROTATION = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Quaternion'."""
+        return cls(data_type="QUATERNION", geometry=geometry, value=value, index=index)
+
+    @classmethod
     def point(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
@@ -3131,17 +3421,7 @@ class SampleIndex(NodeBuilder):
         return cls(domain="FACE", geometry=geometry, value=value, index=index)
 
     @classmethod
-    def corner(
-        cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
-        index: TYPE_INPUT_INT = 0,
-    ) -> "SampleIndex":
-        """Create Sample Index with operation 'Face Corner'."""
-        return cls(domain="CORNER", geometry=geometry, value=value, index=index)
-
-    @classmethod
-    def curve(
+    def spline(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_MATRIX = None,
@@ -3286,15 +3566,6 @@ class SampleNearest(NodeBuilder):
         """Create Sample Nearest with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, sample_position=sample_position)
 
-    @classmethod
-    def corner(
-        cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        sample_position: TYPE_INPUT_VECTOR = None,
-    ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Face Corner'."""
-        return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
-
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
@@ -3353,6 +3624,120 @@ class SampleNearestSurface(NodeBuilder):
         }
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VALUE = 0.0,
+        group_id: TYPE_INPUT_INT = 0,
+        sample_position: TYPE_INPUT_VECTOR = None,
+        sample_group_id: TYPE_INPUT_INT = 0,
+    ) -> "SampleNearestSurface":
+        """Create Sample Nearest Surface with operation 'Float'."""
+        return cls(
+            data_type="FLOAT",
+            mesh=mesh,
+            value=value,
+            group_id=group_id,
+            sample_position=sample_position,
+            sample_group_id=sample_group_id,
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_INT = 0,
+        group_id: TYPE_INPUT_INT = 0,
+        sample_position: TYPE_INPUT_VECTOR = None,
+        sample_group_id: TYPE_INPUT_INT = 0,
+    ) -> "SampleNearestSurface":
+        """Create Sample Nearest Surface with operation 'Integer'."""
+        return cls(
+            data_type="INT",
+            mesh=mesh,
+            value=value,
+            group_id=group_id,
+            sample_position=sample_position,
+            sample_group_id=sample_group_id,
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_BOOLEAN = False,
+        group_id: TYPE_INPUT_INT = 0,
+        sample_position: TYPE_INPUT_VECTOR = None,
+        sample_group_id: TYPE_INPUT_INT = 0,
+    ) -> "SampleNearestSurface":
+        """Create Sample Nearest Surface with operation 'Boolean'."""
+        return cls(
+            data_type="BOOLEAN",
+            mesh=mesh,
+            value=value,
+            group_id=group_id,
+            sample_position=sample_position,
+            sample_group_id=sample_group_id,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VECTOR = None,
+        group_id: TYPE_INPUT_INT = 0,
+        sample_position: TYPE_INPUT_VECTOR = None,
+        sample_group_id: TYPE_INPUT_INT = 0,
+    ) -> "SampleNearestSurface":
+        """Create Sample Nearest Surface with operation 'Vector'."""
+        return cls(
+            data_type="FLOAT_VECTOR",
+            mesh=mesh,
+            value=value,
+            group_id=group_id,
+            sample_position=sample_position,
+            sample_group_id=sample_group_id,
+        )
+
+    @classmethod
+    def color(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_COLOR = None,
+        group_id: TYPE_INPUT_INT = 0,
+        sample_position: TYPE_INPUT_VECTOR = None,
+        sample_group_id: TYPE_INPUT_INT = 0,
+    ) -> "SampleNearestSurface":
+        """Create Sample Nearest Surface with operation 'Color'."""
+        return cls(
+            data_type="FLOAT_COLOR",
+            mesh=mesh,
+            value=value,
+            group_id=group_id,
+            sample_position=sample_position,
+            sample_group_id=sample_group_id,
+        )
+
+    @classmethod
+    def quaternion(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_ROTATION = None,
+        group_id: TYPE_INPUT_INT = 0,
+        sample_position: TYPE_INPUT_VECTOR = None,
+        sample_group_id: TYPE_INPUT_INT = 0,
+    ) -> "SampleNearestSurface":
+        """Create Sample Nearest Surface with operation 'Quaternion'."""
+        return cls(
+            data_type="QUATERNION",
+            mesh=mesh,
+            value=value,
+            group_id=group_id,
+            sample_position=sample_position,
+            sample_group_id=sample_group_id,
+        )
 
     @property
     def i_mesh(self) -> SocketLinker:
@@ -3451,6 +3836,108 @@ class SampleUVSurface(NodeBuilder):
         }
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VALUE = 0.0,
+        source_uv_map: TYPE_INPUT_VECTOR = None,
+        sample_uv: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleUVSurface":
+        """Create Sample UV Surface with operation 'Float'."""
+        return cls(
+            data_type="FLOAT",
+            mesh=mesh,
+            value=value,
+            source_uv_map=source_uv_map,
+            sample_uv=sample_uv,
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_INT = 0,
+        source_uv_map: TYPE_INPUT_VECTOR = None,
+        sample_uv: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleUVSurface":
+        """Create Sample UV Surface with operation 'Integer'."""
+        return cls(
+            data_type="INT",
+            mesh=mesh,
+            value=value,
+            source_uv_map=source_uv_map,
+            sample_uv=sample_uv,
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_BOOLEAN = False,
+        source_uv_map: TYPE_INPUT_VECTOR = None,
+        sample_uv: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleUVSurface":
+        """Create Sample UV Surface with operation 'Boolean'."""
+        return cls(
+            data_type="BOOLEAN",
+            mesh=mesh,
+            value=value,
+            source_uv_map=source_uv_map,
+            sample_uv=sample_uv,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_VECTOR = None,
+        source_uv_map: TYPE_INPUT_VECTOR = None,
+        sample_uv: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleUVSurface":
+        """Create Sample UV Surface with operation 'Vector'."""
+        return cls(
+            data_type="FLOAT_VECTOR",
+            mesh=mesh,
+            value=value,
+            source_uv_map=source_uv_map,
+            sample_uv=sample_uv,
+        )
+
+    @classmethod
+    def color(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_COLOR = None,
+        source_uv_map: TYPE_INPUT_VECTOR = None,
+        sample_uv: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleUVSurface":
+        """Create Sample UV Surface with operation 'Color'."""
+        return cls(
+            data_type="FLOAT_COLOR",
+            mesh=mesh,
+            value=value,
+            source_uv_map=source_uv_map,
+            sample_uv=sample_uv,
+        )
+
+    @classmethod
+    def quaternion(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_ROTATION = None,
+        source_uv_map: TYPE_INPUT_VECTOR = None,
+        sample_uv: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleUVSurface":
+        """Create Sample UV Surface with operation 'Quaternion'."""
+        return cls(
+            data_type="QUATERNION",
+            mesh=mesh,
+            value=value,
+            source_uv_map=source_uv_map,
+            sample_uv=sample_uv,
+        )
 
     @property
     def i_mesh(self) -> SocketLinker:
@@ -3769,7 +4256,7 @@ class SeparateGeometry(NodeBuilder):
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
-    def curve(
+    def spline(
         cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Spline'."""
@@ -4412,13 +4899,6 @@ class SetMeshNormal(NodeBuilder):
         """Create Set Mesh Normal with operation 'Face'."""
         return cls(domain="FACE", mesh=mesh, custom_normal=custom_normal)
 
-    @classmethod
-    def corner(
-        cls, mesh: TYPE_INPUT_GEOMETRY = None, custom_normal: TYPE_INPUT_VECTOR = None
-    ) -> "SetMeshNormal":
-        """Create Set Mesh Normal with operation 'Face Corner'."""
-        return cls(domain="CORNER", mesh=mesh, custom_normal=custom_normal)
-
     @property
     def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
@@ -4590,7 +5070,7 @@ class SetSelection(NodeBuilder):
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
-    def curve(
+    def spline(
         cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
     ) -> "SetSelection":
         """Create Set Selection with operation 'Spline'."""
@@ -4909,7 +5389,7 @@ class SortElements(NodeBuilder):
         )
 
     @classmethod
-    def curve(
+    def spline(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
@@ -5129,7 +5609,7 @@ class SplitToInstances(NodeBuilder):
         )
 
     @classmethod
-    def curve(
+    def spline(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,

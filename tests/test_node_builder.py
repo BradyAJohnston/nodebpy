@@ -11,7 +11,6 @@ import bpy
 import pytest
 from numpy.testing import assert_allclose
 
-import nodebpy.nodes.converter
 import nodebpy.nodes.geometry
 import nodebpy.nodes.input
 from nodebpy import TreeBuilder
@@ -322,8 +321,8 @@ def create_tree_chain():
     with tree:
         _ = (
             value
-            >> nodebpy.nodes.converter.Math.add(..., 0.1)
-            >> nodebpy.nodes.converter.VectorMath.multiply(..., (2.0, 2.0, 2.0))
+            >> n.Math.add(..., 0.1)
+            >> n.VectorMath.multiply(..., (2.0, 2.0, 2.0))
             >> result
         )
 
@@ -338,9 +337,7 @@ def create_tree():
     with tree.outputs:
         result = s.SocketFloat("Result")
     with tree:
-        final = nodebpy.nodes.converter.VectorMath.multiply(
-            nodebpy.nodes.converter.Math.add(value, 0.1), (2.0, 2.0, 2.0)
-        )
+        final = n.VectorMath.multiply(n.Math.add(value, 0.1), (2.0, 2.0, 2.0))
 
         final >> result
 
@@ -375,14 +372,8 @@ def test_nodes():
 
     with tree:
         _ = (
-            nodebpy.nodes.geometry.Points(
-                1_000, position=nodebpy.nodes.converter.RandomValue.vector()
-            )
-            >> n.PointsToCurves(
-                curve_group_id=nodebpy.nodes.converter.RandomValue.integer(
-                    min=0, max=10
-                )
-            )
+            nodebpy.nodes.geometry.Points(1_000, position=n.RandomValue.vector())
+            >> n.PointsToCurves(curve_group_id=n.RandomValue.integer(min=0, max=10))
             >> n.CurveToMesh(profile_curve=n.CurveCircle(12, radius=0.1))
             >> output
         )
@@ -396,33 +387,23 @@ def test_mix_node():
         output = s.SocketGeometry("Instances")
 
     with tree:
-        rotation = nodebpy.nodes.converter.Mix.rotation(
-            nodebpy.nodes.converter.RandomValue.vector((-pi, -pi, -pi), (pi, pi, pi)),
+        rotation = n.Mix.rotation(
+            n.RandomValue.float(seed=nodebpy.nodes.input.Index()),
+            n.RandomValue.vector((-pi, -pi, -pi), (pi, pi, pi)),
             (0, 0, 1),
-            factor=nodebpy.nodes.converter.RandomValue.float(
-                seed=nodebpy.nodes.input.Index()
-            ),
         )
 
         selection = (
-            nodebpy.nodes.converter.RandomValue.boolean(probability=0.3)
-            >> nodebpy.nodes.converter.BooleanMath.l_not()
-            >> nodebpy.nodes.converter.BooleanMath.l_and(
-                nodebpy.nodes.converter.RandomValue.boolean(probability=0.8)
-            )
-            >> nodebpy.nodes.converter.BooleanMath.l_or(
-                nodebpy.nodes.converter.RandomValue.boolean(probability=0.5)
-            )
-            >> nodebpy.nodes.converter.BooleanMath.l_equal(
-                nodebpy.nodes.converter.RandomValue.boolean(probability=0.4)
-            )
-            >> nodebpy.nodes.converter.BooleanMath.l_not()
+            n.RandomValue.boolean(probability=0.3)
+            >> n.BooleanMath.l_not()
+            >> n.BooleanMath.l_and(n.RandomValue.boolean(probability=0.8))
+            >> n.BooleanMath.l_or(n.RandomValue.boolean(probability=0.5))
+            >> n.BooleanMath.equal(n.RandomValue.boolean(probability=0.4))
+            >> n.BooleanMath.l_not()
         )
 
         _ = (
-            nodebpy.nodes.geometry.Points(
-                count, position=nodebpy.nodes.converter.RandomValue.vector()
-            )
+            nodebpy.nodes.geometry.Points(count, position=n.RandomValue.vector())
             >> n.InstanceOnPoints(
                 selection=selection,
                 instance=n.Cube(),
@@ -443,7 +424,7 @@ def test_warning_innactive_socket():
     "Raises an error because we want to not let a user silently link sockets that won't do anything"
     with TreeBuilder():
         pos = nodebpy.nodes.input.Position()
-        mix = nodebpy.nodes.converter.Mix.vector()
+        mix = n.Mix.vector()
         # this works because by default we link to the currently active vector sockets
         pos >> mix
         # this now fails because we try to link to the innactive float sockets
@@ -460,10 +441,10 @@ def test_readme_tree():
             instances = s.SocketGeometry("Instances")
 
         rotation = (
-            nodebpy.nodes.converter.RandomValue.vector(min=(-1, -1, -1), seed=2)
-            >> nodebpy.nodes.converter.AlignRotationToVector()
+            n.RandomValue.vector(min=(-1, -1, -1), seed=2)
+            >> n.AlignRotationToVector()
             >> n.RotateRotation(
-                rotate_by=nodebpy.nodes.converter.AxisAngleToRotation(angle=0.3),
+                rotate_by=n.AxisAngleToRotation(angle=0.3),
                 rotation_space="LOCAL",
             )
         )
@@ -471,7 +452,7 @@ def test_readme_tree():
         _ = (
             count
             >> nodebpy.nodes.geometry.Points(
-                position=nodebpy.nodes.converter.RandomValue.vector(min=(-1, -1, -1))
+                position=n.RandomValue.vector(min=(-1, -1, -1))
             )
             >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
             >> n.SetPosition(

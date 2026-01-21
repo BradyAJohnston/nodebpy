@@ -38,7 +38,7 @@ class Viewer(NodeBuilder):
         ] = "AUTO",
     ):
         super().__init__()
-        key_args = kwargs
+        key_args = {}
         self.ui_shortcut = ui_shortcut
         self.domain = domain
         self._establish_links(**key_args)
@@ -64,12 +64,7 @@ class Viewer(NodeBuilder):
         return cls(domain="FACE")
 
     @classmethod
-    def corner(cls) -> "Viewer":
-        """Create Viewer with operation 'Face Corner'."""
-        return cls(domain="CORNER")
-
-    @classmethod
-    def curve(cls) -> "Viewer":
+    def spline(cls) -> "Viewer":
         """Create Viewer with operation 'Spline'."""
         return cls(domain="CURVE")
 
