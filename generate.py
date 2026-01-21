@@ -21,23 +21,29 @@ from mathutils import Euler, Vector
 from typing_extensions import Literal
 
 NODES_TO_SKIP = [
+    "AlignEulerToVector",
+    "Legacy",
     "Closure",
     "Simulation",
     "Repeat",
     "For Each",
-    "Index Switch",
-    "Menu Switch",
-    # "Math",
-    "CaptureAttribute",
-    "JoinGeometry",
-    "AlignEulerToVector",
-    "Legacy",
-    "HandleType",
-    "CurveSetHandles",
     "Frame",
     "Reroute",
     #
 ]
+
+
+MANUALLY_DEFINED = (
+    "SetHandleType",
+    "HandleTypeSelection",
+    "IndexSwitch",
+    "MenuSwitch",
+    "CaptureAttribute",
+    "FieldToGrid",
+    "JoinGeometry",
+    "SDFGridBoolean",
+    "JoinStrings",
+)
 
 
 @dataclass
@@ -850,8 +856,12 @@ def generate_all():
     skipped_count = 0
 
     for node_type in all_nodes:
-        if any([n in node_type.__name__ for n in NODES_TO_SKIP]) or any(
-            [n in node_type.bl_rna.name for n in NODES_TO_SKIP]
+        if (
+            any([n in node_type.__name__ for n in NODES_TO_SKIP])
+            or any([n in node_type.bl_rna.name for n in NODES_TO_SKIP])
+            or any(
+                [n in node_type.bl_rna.name.replace(" ", "") for n in MANUALLY_DEFINED]
+            )
         ):
             print(f"  Skipping manually specified node: {node_type.__name__}")
             skipped_count += 1
