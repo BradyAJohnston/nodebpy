@@ -233,6 +233,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.manual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.manual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/nodes.zone.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.zone</span></a>
   </div>
@@ -253,9 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
-  <li><a href="#nodebpy.nodes.attribute.AttributeStatistic" id="toc-nodebpy.nodes.attribute.AttributeStatistic" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.AttributeStatistic">AttributeStatistic</a></li>
   <li><a href="#nodebpy.nodes.attribute.BlurAttribute" id="toc-nodebpy.nodes.attribute.BlurAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.BlurAttribute">BlurAttribute</a></li>
-  <li><a href="#nodebpy.nodes.attribute.CaptureAttribute" id="toc-nodebpy.nodes.attribute.CaptureAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.CaptureAttribute">CaptureAttribute</a></li>
   <li><a href="#nodebpy.nodes.attribute.DomainSize" id="toc-nodebpy.nodes.attribute.DomainSize" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.DomainSize">DomainSize</a></li>
   <li><a href="#nodebpy.nodes.attribute.RemoveNamedAttribute" id="toc-nodebpy.nodes.attribute.RemoveNamedAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.RemoveNamedAttribute">RemoveNamedAttribute</a></li>
   <li><a href="#nodebpy.nodes.attribute.StoreNamedAttribute" id="toc-nodebpy.nodes.attribute.StoreNamedAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.attribute.StoreNamedAttribute">StoreNamedAttribute</a></li>
@@ -284,16 +288,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic">AttributeStatistic</a></td>
-<td>Calculate statistics about a data set from a field evaluated on a geometry</td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.attribute.BlurAttribute">BlurAttribute</a></td>
 <td>Mix attribute values of neighboring elements</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute">CaptureAttribute</a></td>
-<td>Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.attribute.DomainSize">DomainSize</a></td>
@@ -309,112 +305,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.attribute.AttributeStatistic" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.AttributeStatistic">AttributeStatistic</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.AttributeStatistic(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    attribute<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Calculate statistics about a data set from a field evaluated on a geometry</p>
-<section id="attributes" class="level4">
-<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.data_type">data_type</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.domain">domain</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.i_attribute">i_attribute</a></td>
-<td>Input socket: Attribute</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.i_geometry">i_geometry</a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.i_selection">i_selection</a></td>
-<td>Input socket: Selection</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.name">name</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.node">node</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_max">o_max</a></td>
-<td>Output socket: Max</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_mean">o_mean</a></td>
-<td>Output socket: Mean</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_median">o_median</a></td>
-<td>Output socket: Median</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_min">o_min</a></td>
-<td>Output socket: Min</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_range">o_range</a></td>
-<td>Output socket: Range</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_standard_deviation">o_standard_deviation</a></td>
-<td>Output socket: Standard Deviation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_sum">o_sum</a></td>
-<td>Output socket: Sum</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.o_variance">o_variance</a></td>
-<td>Output socket: Variance</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.AttributeStatistic.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
 <section id="nodebpy.nodes.attribute.BlurAttribute" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.BlurAttribute">BlurAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.BlurAttribute(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    iterations<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.BlurAttribute(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    iterations<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Mix attribute values of neighboring elements</p>
-<section id="attributes-1" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -462,88 +364,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-</section>
-<section id="nodebpy.nodes.attribute.CaptureAttribute" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.CaptureAttribute">CaptureAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.CaptureAttribute(<span class="op">*</span>args, geometry<span class="op">=</span><span class="va">None</span>, domain<span class="op">=</span><span class="st">'POINT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation</p>
-<section id="attributes-2" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.corner">corner</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.curve">curve</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.domain">domain</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.edge">edge</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.face">face</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.i_geometry">i_geometry</a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.instance">instance</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.layer">layer</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.name">name</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.node">node</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.o_geometry">o_geometry</a></td>
-<td>Output socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.point">point</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
 <section id="methods" class="level4">
 <h4 class="anchored" data-anchor-id="methods">Methods</h4>
 <table class="caption-top table">
@@ -555,25 +375,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.attribute.CaptureAttribute.capture">capture</a></td>
-<td>Capture the value to store in the attribute</td>
+<td><a href="#nodebpy.nodes.attribute.BlurAttribute.color">color</a></td>
+<td>Create Blur Attribute with operation ‘Color’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.attribute.BlurAttribute.float">float</a></td>
+<td>Create Blur Attribute with operation ‘Float’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.BlurAttribute.integer">integer</a></td>
+<td>Create Blur Attribute with operation ‘Integer’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.attribute.BlurAttribute.vector">vector</a></td>
+<td>Create Blur Attribute with operation ‘Vector’.</td>
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.attribute.CaptureAttribute.capture" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.CaptureAttribute.capture">capture</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.CaptureAttribute.capture(value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Capture the value to store in the attribute</p>
-<p>Return the SocketLinker for the output socket</p>
+<section id="nodebpy.nodes.attribute.BlurAttribute.color" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.BlurAttribute.color">color</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.BlurAttribute.color(value<span class="op">=</span><span class="va">None</span>, iterations<span class="op">=</span><span class="dv">1</span>, weight<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Blur Attribute with operation ‘Color’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.BlurAttribute.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.BlurAttribute.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.BlurAttribute.<span class="bu">float</span>(value<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>, weight<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Blur Attribute with operation ‘Float’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.BlurAttribute.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.BlurAttribute.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.BlurAttribute.integer(value<span class="op">=</span><span class="dv">0</span>, iterations<span class="op">=</span><span class="dv">1</span>, weight<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Blur Attribute with operation ‘Integer’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.BlurAttribute.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.BlurAttribute.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.BlurAttribute.vector(value<span class="op">=</span><span class="va">None</span>, iterations<span class="op">=</span><span class="dv">1</span>, weight<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Blur Attribute with operation ‘Vector’.</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.attribute.DomainSize" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.DomainSize">DomainSize</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.DomainSize(geometry<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, component<span class="op">=</span><span class="st">'MESH'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.DomainSize(geometry<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, component<span class="op">=</span><span class="st">'MESH'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the number of elements in a geometry for each attribute domain</p>
-<section id="attributes-3" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -611,14 +457,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Output socket: Face Count</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.attribute.DomainSize.o_instance_count">o_instance_count</a></td>
+<td>Output socket: Instance Count</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.DomainSize.o_layer_count">o_layer_count</a></td>
+<td>Output socket: Layer Count</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.attribute.DomainSize.o_point_count">o_point_count</a></td>
 <td>Output socket: Point Count</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.DomainSize.o_spline_count">o_spline_count</a></td>
+<td>Output socket: Spline Count</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.attribute.DomainSize.tree">tree</a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.attribute.DomainSize.type">type</a></td>
 <td></td>
 </tr>
@@ -628,14 +486,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.attribute.RemoveNamedAttribute" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.RemoveNamedAttribute">RemoveNamedAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.RemoveNamedAttribute(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    pattern_mode<span class="op">=</span><span class="st">'Exact'</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.RemoveNamedAttribute(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    pattern_mode<span class="op">=</span><span class="st">'Exact'</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Delete an attribute with a specified name from a geometry. Typically used to optimize performance</p>
-<section id="attributes-4" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -682,18 +540,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.attribute.StoreNamedAttribute" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute">StoreNamedAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store the result of a field on a geometry as an attribute with the specified name</p>
-<section id="attributes-5" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -748,8 +606,189 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+</section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.boolean">boolean</a></td>
+<td>Create Store Named Attribute with operation ‘Boolean’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.color">color</a></td>
+<td>Create Store Named Attribute with operation ‘Color’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.edge">edge</a></td>
+<td>Create Store Named Attribute with operation ‘Edge’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.face">face</a></td>
+<td>Create Store Named Attribute with operation ‘Face’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.float">float</a></td>
+<td>Create Store Named Attribute with operation ‘Float’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.instance">instance</a></td>
+<td>Create Store Named Attribute with operation ‘Instance’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.integer">integer</a></td>
+<td>Create Store Named Attribute with operation ‘Integer’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.layer">layer</a></td>
+<td>Create Store Named Attribute with operation ‘Layer’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.point">point</a></td>
+<td>Create Store Named Attribute with operation ‘Point’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.quaternion">quaternion</a></td>
+<td>Create Store Named Attribute with operation ‘Quaternion’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.spline">spline</a></td>
+<td>Create Store Named Attribute with operation ‘Spline’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.attribute.StoreNamedAttribute.vector">vector</a></td>
+<td>Create Store Named Attribute with operation ‘Vector’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.boolean" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.boolean">boolean</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.boolean(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Boolean’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.color" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.color">color</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.color(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Color’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.edge" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.edge">edge</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.edge(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Edge’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.face" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.face">face</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.face(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Face’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.<span class="bu">float</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Float’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.instance" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.instance">instance</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.instance(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Instance’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.integer(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Integer’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.layer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.layer">layer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.layer(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Layer’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.point" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.point">point</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.point(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Point’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.quaternion" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.quaternion">quaternion</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.quaternion(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Quaternion’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.spline" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.spline">spline</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.spline(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Spline’.</p>
+</section>
+<section id="nodebpy.nodes.attribute.StoreNamedAttribute.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.attribute.StoreNamedAttribute.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.attribute.StoreNamedAttribute.vector(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Store Named Attribute with operation ‘Vector’.</p>
 
 
+</section>
 </section>
 </section>
 </section>

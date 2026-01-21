@@ -1,0 +1,2643 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>nodes.manual – nodebpy</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../reference/nodes.zone.html" rel="next">
+<link href="../reference/nodes.vector.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8fd1faf6fd93e4e6d207ae0f9db51d78.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../reference/_styles-quartodoc.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">nodebpy</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../introduction.html"> 
+<span class="menu-text">Introduction</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.manual.html">nodes.manual</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Function reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Some functions</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.input.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.input</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.color.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.color</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.converter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.converter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.texture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.texture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.grid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.grid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.vector.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.manual.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">nodes.manual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.zone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.zone</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#nodebpy.nodes.manual" id="toc-nodebpy.nodes.manual" class="nav-link active" data-scroll-target="#nodebpy.nodes.manual">nodes.manual</a>
+  <ul class="collapse">
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <ul class="collapse">
+  <li><a href="#nodebpy.nodes.manual.AccumulateField" id="toc-nodebpy.nodes.manual.AccumulateField" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.AccumulateField">AccumulateField</a></li>
+  <li><a href="#nodebpy.nodes.manual.AttributeStatistic" id="toc-nodebpy.nodes.manual.AttributeStatistic" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.AttributeStatistic">AttributeStatistic</a></li>
+  <li><a href="#nodebpy.nodes.manual.Bake" id="toc-nodebpy.nodes.manual.Bake" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.Bake">Bake</a></li>
+  <li><a href="#nodebpy.nodes.manual.CaptureAttribute" id="toc-nodebpy.nodes.manual.CaptureAttribute" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.CaptureAttribute">CaptureAttribute</a></li>
+  <li><a href="#nodebpy.nodes.manual.Compare" id="toc-nodebpy.nodes.manual.Compare" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.Compare">Compare</a></li>
+  <li><a href="#nodebpy.nodes.manual.EvaluateAtIndex" id="toc-nodebpy.nodes.manual.EvaluateAtIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.EvaluateAtIndex">EvaluateAtIndex</a></li>
+  <li><a href="#nodebpy.nodes.manual.EvaluateOnDomain" id="toc-nodebpy.nodes.manual.EvaluateOnDomain" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.EvaluateOnDomain">EvaluateOnDomain</a></li>
+  <li><a href="#nodebpy.nodes.manual.FieldAverage" id="toc-nodebpy.nodes.manual.FieldAverage" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldAverage">FieldAverage</a></li>
+  <li><a href="#nodebpy.nodes.manual.FieldMinMax" id="toc-nodebpy.nodes.manual.FieldMinMax" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldMinMax">FieldMinMax</a></li>
+  <li><a href="#nodebpy.nodes.manual.FieldToGrid" id="toc-nodebpy.nodes.manual.FieldToGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldToGrid">FieldToGrid</a></li>
+  <li><a href="#nodebpy.nodes.manual.FieldVariance" id="toc-nodebpy.nodes.manual.FieldVariance" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldVariance">FieldVariance</a></li>
+  <li><a href="#nodebpy.nodes.manual.FormatString" id="toc-nodebpy.nodes.manual.FormatString" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FormatString">FormatString</a></li>
+  <li><a href="#nodebpy.nodes.manual.GeometryToInstance" id="toc-nodebpy.nodes.manual.GeometryToInstance" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.GeometryToInstance">GeometryToInstance</a></li>
+  <li><a href="#nodebpy.nodes.manual.HandleTypeSelection" id="toc-nodebpy.nodes.manual.HandleTypeSelection" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.HandleTypeSelection">HandleTypeSelection</a></li>
+  <li><a href="#nodebpy.nodes.manual.IndexSwitch" id="toc-nodebpy.nodes.manual.IndexSwitch" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.IndexSwitch">IndexSwitch</a></li>
+  <li><a href="#nodebpy.nodes.manual.JoinGeometry" id="toc-nodebpy.nodes.manual.JoinGeometry" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.JoinGeometry">JoinGeometry</a></li>
+  <li><a href="#nodebpy.nodes.manual.JoinStrings" id="toc-nodebpy.nodes.manual.JoinStrings" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.JoinStrings">JoinStrings</a></li>
+  <li><a href="#nodebpy.nodes.manual.MenuSwitch" id="toc-nodebpy.nodes.manual.MenuSwitch" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.MenuSwitch">MenuSwitch</a></li>
+  <li><a href="#nodebpy.nodes.manual.MeshBoolean" id="toc-nodebpy.nodes.manual.MeshBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.MeshBoolean">MeshBoolean</a></li>
+  <li><a href="#nodebpy.nodes.manual.SDFGridBoolean" id="toc-nodebpy.nodes.manual.SDFGridBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.SDFGridBoolean">SDFGridBoolean</a></li>
+  <li><a href="#nodebpy.nodes.manual.SetHandleType" id="toc-nodebpy.nodes.manual.SetHandleType" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.SetHandleType">SetHandleType</a></li>
+  <li><a href="#nodebpy.nodes.manual.Value" id="toc-nodebpy.nodes.manual.Value" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.Value">Value</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.manual.html">nodes.manual</a></li></ol></nav></header>
+
+
+
+
+<section id="nodebpy.nodes.manual" class="level1">
+<h1>nodes.manual</h1>
+<p><code>nodes.manual</code></p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField">AccumulateField</a></td>
+<td>Add the values of an evaluated field together and output the running total for each element</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic">AttributeStatistic</a></td>
+<td>Calculate statistics about a data set from a field evaluated on a geometry</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Bake">Bake</a></td>
+<td>Cache the incoming data so that it can be used without recomputation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute">CaptureAttribute</a></td>
+<td>Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare">Compare</a></td>
+<td>Perform a comparison operation on the two given inputs</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex">EvaluateAtIndex</a></td>
+<td>Retrieve data of other elements in the context’s geometry</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain">EvaluateOnDomain</a></td>
+<td>Retrieve values from a field on a different domain besides the domain from the context</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage">FieldAverage</a></td>
+<td>Calculate the mean and median of a given field</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax">FieldMinMax</a></td>
+<td>Calculate the minimum and maximum of a given field</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid">FieldToGrid</a></td>
+<td>Create new grids by evaluating new values on an existing volume grid topology</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance">FieldVariance</a></td>
+<td>Calculate the standard deviation and variance of a given field</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FormatString">FormatString</a></td>
+<td>Insert values into a string using a Python and path template compatible formatting syntax</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.GeometryToInstance">GeometryToInstance</a></td>
+<td>Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection">HandleTypeSelection</a></td>
+<td>Provide a selection based on the handle types of Bézier control points</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch">IndexSwitch</a></td>
+<td>Node builder for the Index Switch node</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.JoinGeometry">JoinGeometry</a></td>
+<td>Merge separately generated geometries into a single one</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.JoinStrings">JoinStrings</a></td>
+<td>Combine any number of input strings</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch">MenuSwitch</a></td>
+<td>Node builder for the Index Switch node</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean">MeshBoolean</a></td>
+<td>Cut, subtract, or join multiple mesh inputs</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean">SDFGridBoolean</a></td>
+<td>Cut, subtract, or join multiple SDF volume grid inputs</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SetHandleType">SetHandleType</a></td>
+<td>Set the handle type for the control points of a Bézier curve</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Value">Value</a></td>
+<td>Input numerical values to other nodes in the tree</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.manual.AccumulateField" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.AccumulateField">AccumulateField</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.AccumulateField(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Add the values of an evaluated field together and output the running total for each element</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.corner">corner</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.edge">edge</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.face">face</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.i_group_id">i_group_id</a></td>
+<td>Input socket: Group ID</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.i_value">i_value</a></td>
+<td>Input socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.instance">instance</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.layer">layer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.o_leading">o_leading</a></td>
+<td>Output socket: Leading</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.o_total">o_total</a></td>
+<td>Output socket: Total</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.o_trailing">o_trailing</a></td>
+<td>Output socket: Trailing</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.point">point</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.spline">spline</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AccumulateField.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.AttributeStatistic" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.AttributeStatistic">AttributeStatistic</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.AttributeStatistic(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    attribute<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate statistics about a data set from a field evaluated on a geometry</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.i_attribute">i_attribute</a></td>
+<td>Input socket: Attribute</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.i_geometry">i_geometry</a></td>
+<td>Input socket: Geometry</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.i_selection">i_selection</a></td>
+<td>Input socket: Selection</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.o_max">o_max</a></td>
+<td>Output socket: Max</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.o_mean">o_mean</a></td>
+<td>Output socket: Mean</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.o_median">o_median</a></td>
+<td>Output socket: Median</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.o_min">o_min</a></td>
+<td>Output socket: Min</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.o_range">o_range</a></td>
+<td>Output socket: Range</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.o_standard_deviation">o_standard_deviation</a></td>
+<td>Output socket: Standard Deviation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.o_sum">o_sum</a></td>
+<td>Output socket: Sum</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.o_variance">o_variance</a></td>
+<td>Output socket: Variance</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.AttributeStatistic.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.Bake" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.Bake">Bake</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Bake(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cache the incoming data so that it can be used without recomputation</p>
+<p>TODO: properly handle Animation / Still bake opations and ability to bake to a file</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Bake.i_input_socket">i_input_socket</a></td>
+<td>Input socket:</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Bake.inputs">inputs</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Bake.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Bake.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Bake.o_input_socket">o_input_socket</a></td>
+<td>Output socket:</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Bake.outputs">outputs</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Bake.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Bake.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.CaptureAttribute" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.CaptureAttribute">CaptureAttribute</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.CaptureAttribute(<span class="op">*</span>args, geometry<span class="op">=</span><span class="va">None</span>, domain<span class="op">=</span><span class="st">'POINT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation</p>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.corner">corner</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.curve">curve</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.edge">edge</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.face">face</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.i_geometry">i_geometry</a></td>
+<td>Input socket: Geometry</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.inputs">inputs</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.instance">instance</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.layer">layer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.o_geometry">o_geometry</a></td>
+<td>Output socket: Geometry</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.outputs">outputs</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.point">point</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.CaptureAttribute.capture">capture</a></td>
+<td>Capture the value to store in the attribute</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.manual.CaptureAttribute.capture" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.CaptureAttribute.capture">capture</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.CaptureAttribute.capture(value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Capture the value to store in the attribute</p>
+<p>Return the SocketLinker for the output socket</p>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.Compare" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.Compare">Compare</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Compare(operation<span class="op">=</span><span class="st">'GREATER_THAN'</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Perform a comparison operation on the two given inputs</p>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.brighter">brighter</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.darker">darker</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.equal">equal</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.greater_equal">greater_equal</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.greater_than">greater_than</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.i_a">i_a</a></td>
+<td>Input socket: A</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.i_b">i_b</a></td>
+<td>Input socket: B</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.less_equal">less_equal</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.less_than">less_than</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.mode">mode</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.not_equal">not_equal</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.o_result">o_result</a></td>
+<td>Output socket: Result</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.operation">operation</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.color">color</a></td>
+<td>Create Compare with operation ‘Color’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.float">float</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.integer">integer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Compare.string">string</a></td>
+<td>Create Compare with operation ‘String’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Compare.vector">vector</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.manual.Compare.color" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.Compare.color">color</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Compare.color(a<span class="op">=</span><span class="va">None</span>, b<span class="op">=</span><span class="va">None</span>, operation<span class="op">=</span><span class="st">'EQUAL'</span>, <span class="op">*</span>, epsilon<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Compare with operation ‘Color’.</p>
+</section>
+<section id="nodebpy.nodes.manual.Compare.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.Compare.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Compare.<span class="bu">float</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    a<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    b<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'LESS_THAN'</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    epsilon<span class="op">=</span><span class="fl">0.0001</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.manual.Compare.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.Compare.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Compare.integer(a<span class="op">=</span><span class="dv">0</span>, b<span class="op">=</span><span class="dv">0</span>, operation<span class="op">=</span><span class="st">'LESS_THAN'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.manual.Compare.string" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.Compare.string">string</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Compare.string(a, b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Compare with operation ‘String’.</p>
+</section>
+<section id="nodebpy.nodes.manual.Compare.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.Compare.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Compare.vector(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    a<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    b<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'LESS_THAN'</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'ELEMENT'</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    c<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    angle<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    epsilon<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.EvaluateAtIndex" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.EvaluateAtIndex">EvaluateAtIndex</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.EvaluateAtIndex(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve data of other elements in the context’s geometry</p>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.corner">corner</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.edge">edge</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.face">face</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.i_index">i_index</a></td>
+<td>Input socket: Index</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.i_value">i_value</a></td>
+<td>Input socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.instance">instance</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.layer">layer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.o_value">o_value</a></td>
+<td>Output socket: Value</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.point">point</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.spline">spline</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateAtIndex.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.EvaluateOnDomain" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.EvaluateOnDomain">EvaluateOnDomain</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.EvaluateOnDomain(value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, domain<span class="op">=</span><span class="st">'POINT'</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve values from a field on a different domain besides the domain from the context</p>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.corner">corner</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.edge">edge</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.face">face</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.i_value">i_value</a></td>
+<td>Input socket: Value</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.instance">instance</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.layer">layer</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.o_value">o_value</a></td>
+<td>Output socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.point">point</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.spline">spline</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.EvaluateOnDomain.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.FieldAverage" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.FieldAverage">FieldAverage</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.FieldAverage(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the mean and median of a given field</p>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.corner">corner</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.edge">edge</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.face">face</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.i_group_id">i_group_id</a></td>
+<td>Input socket: Group ID</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.i_value">i_value</a></td>
+<td>Input socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.instance">instance</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.layer">layer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.o_mean">o_mean</a></td>
+<td>Output socket: Mean</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.o_median">o_median</a></td>
+<td>Output socket: Median</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.point">point</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.spline">spline</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldAverage.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.FieldMinMax" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.FieldMinMax">FieldMinMax</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.FieldMinMax(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the minimum and maximum of a given field</p>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.corner">corner</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.edge">edge</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.face">face</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.i_group_id">i_group_id</a></td>
+<td>Input socket: Group ID</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.i_value">i_value</a></td>
+<td>Input socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.instance">instance</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.layer">layer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.o_max">o_max</a></td>
+<td>Output socket: Max</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.o_min">o_min</a></td>
+<td>Output socket: Min</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.point">point</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.spline">spline</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldMinMax.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.FieldToGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.FieldToGrid">FieldToGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.FieldToGrid(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create new grids by evaluating new values on an existing volume grid topology</p>
+<p>New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.</p>
+<p>Data types are inferred automatically from the closest compatible data type.</p>
+<section id="inputs" class="level4 doc-section doc-section-inputs">
+<h4 class="doc-section doc-section-inputs anchored" data-anchor-id="inputs">Inputs:</h4>
+<p>topology: LINKABLE The grid which contains the topology to evaluate the different fields on. data_type: _GridDataTypes = “FLOAT” The data type of the grid to evaluate on. Possible values are “FLOAT”, “INT”, “VECTOR”, “BOOLEAN”. *args: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_BOOLEAN The fields to evaluate on the grid. **kwargs: dict[str, TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_GEOMETRY] The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.</p>
+</section>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.i_topology">i_topology</a></td>
+<td>Input socket: Topology</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.inputs">inputs</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.outputs">outputs</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-2" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldToGrid.capture">capture</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.manual.FieldToGrid.capture" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.FieldToGrid.capture">capture</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.FieldToGrid.capture(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.FieldVariance" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.FieldVariance">FieldVariance</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.FieldVariance(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calculate the standard deviation and variance of a given field</p>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.corner">corner</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.data_type">data_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.domain">domain</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.edge">edge</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.face">face</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.i_group_id">i_group_id</a></td>
+<td>Input socket: Group ID</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.i_value">i_value</a></td>
+<td>Input socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.instance">instance</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.layer">layer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.o_standard_deviation">o_standard_deviation</a></td>
+<td>Output socket: Standard Deviation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.o_variance">o_variance</a></td>
+<td>Output socket: Variance</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.point">point</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.spline">spline</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FieldVariance.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.FormatString" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.FormatString">FormatString</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.FormatString(<span class="op">*</span>args, <span class="bu">format</span><span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Insert values into a string using a Python and path template compatible formatting syntax</p>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FormatString.i_format">i_format</a></td>
+<td>Input socket: Format</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FormatString.i_input_socket">i_input_socket</a></td>
+<td>Input socket:</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FormatString.items">items</a></td>
+<td>Input sockets:</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FormatString.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FormatString.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FormatString.o_string">o_string</a></td>
+<td>Output socket: String</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.FormatString.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.FormatString.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.GeometryToInstance" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.GeometryToInstance">GeometryToInstance</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.GeometryToInstance(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large</p>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.GeometryToInstance.i_geometry">i_geometry</a></td>
+<td>Input socket: Geometry</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.GeometryToInstance.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.GeometryToInstance.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.GeometryToInstance.o_instances">o_instances</a></td>
+<td>Output socket: Instances</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.GeometryToInstance.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.GeometryToInstance.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.HandleTypeSelection" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.HandleTypeSelection">HandleTypeSelection</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.HandleTypeSelection(handle_type<span class="op">=</span><span class="st">'AUTO'</span>, left<span class="op">=</span><span class="va">True</span>, right<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Provide a selection based on the handle types of Bézier control points</p>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.handle_type">handle_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.left">left</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.mode">mode</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.o_selection">o_selection</a></td>
+<td>Output socket: Selection</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.right">right</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.HandleTypeSelection.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.IndexSwitch" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.IndexSwitch">IndexSwitch</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.IndexSwitch(<span class="op">*</span>args, index<span class="op">=</span><span class="dv">0</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Node builder for the Index Switch node</p>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.boolean">boolean</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.bundle">bundle</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.closure">closure</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.collection">collection</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.color">color</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.data_type">data_type</a></td>
+<td>Input socket: Data Type</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.float">float</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.geometry">geometry</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.i_index">i_index</a></td>
+<td>Input socket: Index</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.image">image</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.inputs">inputs</a></td>
+<td>Input sockets</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.integer">integer</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.material">material</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.matrix">matrix</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.menu">menu</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.o_output">o_output</a></td>
+<td>Output socket: Output</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.object">object</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.rotation">rotation</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.string">string</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.type">type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.IndexSwitch.vector">vector</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.JoinGeometry" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.JoinGeometry">JoinGeometry</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.JoinGeometry(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Merge separately generated geometries into a single one</p>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.JoinGeometry.i_geometry">i_geometry</a></td>
+<td>Input socket: Geometry</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.JoinGeometry.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.JoinGeometry.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.JoinGeometry.o_geometry">o_geometry</a></td>
+<td>Output socket: Geometry</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.JoinGeometry.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.JoinGeometry.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.JoinStrings" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.JoinStrings">JoinStrings</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.JoinStrings(<span class="op">*</span>args, delimiter<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Combine any number of input strings</p>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.JoinStrings.i_delimiter">i_delimiter</a></td>
+<td>Input socket: Delimiter</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.JoinStrings.i_strings">i_strings</a></td>
+<td>Input socket: Strings</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.JoinStrings.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.JoinStrings.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.JoinStrings.o_string">o_string</a></td>
+<td>Output socket: String</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.JoinStrings.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.JoinStrings.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.MenuSwitch" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.MenuSwitch">MenuSwitch</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MenuSwitch(<span class="op">*</span>args, menu<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Node builder for the Index Switch node</p>
+<section id="attributes-17" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.boolean">boolean</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.bundle">bundle</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.closure">closure</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.collection">collection</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.color">color</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.data_type">data_type</a></td>
+<td>Input socket: Data Type</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.float">float</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.geometry">geometry</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.i_menu">i_menu</a></td>
+<td>Input socket: Menu</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.image">image</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.inputs">inputs</a></td>
+<td>Input sockets</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.integer">integer</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.material">material</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.matrix">matrix</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.menu">menu</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.o_output">o_output</a></td>
+<td>Output socket: Output</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.object">object</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.outputs">outputs</a></td>
+<td>Input sockets</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.rotation">rotation</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.string">string</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.type">type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MenuSwitch.vector">vector</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.MeshBoolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean">MeshBoolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cut, subtract, or join multiple mesh inputs</p>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.i_mesh_1">i_mesh_1</a></td>
+<td>Input socket: Mesh 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.i_mesh_2">i_mesh_2</a></td>
+<td>Input socket: Mesh 2</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.o_intersecting_edges">o_intersecting_edges</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.o_mesh">o_mesh</a></td>
+<td>Output socket: Mesh</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.operation">operation</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.solver">solver</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-3" class="level4">
+<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.difference">difference</a></td>
+<td>Create Mesh Boolean with operation ‘Difference’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.intersect">intersect</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.m_difference">m_difference</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.m_union">m_union</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.MeshBoolean.union">union</a></td>
+<td>Create Mesh Boolean with operation ‘Union’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.manual.MeshBoolean.difference" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.difference">difference</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.difference(mesh_1<span class="op">=</span><span class="va">None</span>, mesh_2<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mesh Boolean with operation ‘Difference’.</p>
+</section>
+<section id="nodebpy.nodes.manual.MeshBoolean.intersect" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.intersect">intersect</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.intersect(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.manual.MeshBoolean.m_difference" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.m_difference">m_difference</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.m_difference(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    mesh_1<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.manual.MeshBoolean.m_union" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.m_union">m_union</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.m_union(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.manual.MeshBoolean.union" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.union">union</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.union(mesh_1<span class="op">=</span><span class="va">None</span>, mesh_2<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mesh Boolean with operation ‘Union’.</p>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.SDFGridBoolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.SDFGridBoolean">SDFGridBoolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cut, subtract, or join multiple SDF volume grid inputs</p>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.i_grid_1">i_grid_1</a></td>
+<td>Input socket: Grid 1</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.i_grid_2">i_grid_2</a></td>
+<td>Input socket: Grid 2</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.o_grid">o_grid</a></td>
+<td>Output socket: Grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.operation">operation</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-4" class="level4">
+<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.difference">difference</a></td>
+<td>Create SDF Grid Boolean with operation ‘Difference’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.intersect">intersect</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SDFGridBoolean.union">union</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.manual.SDFGridBoolean.difference" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.SDFGridBoolean.difference">difference</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.difference(<span class="op">*</span>args, grid_1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create SDF Grid Boolean with operation ‘Difference’.</p>
+</section>
+<section id="nodebpy.nodes.manual.SDFGridBoolean.intersect" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.SDFGridBoolean.intersect">intersect</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.intersect(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.manual.SDFGridBoolean.union" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.SDFGridBoolean.union">union</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.union(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.SetHandleType" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.SetHandleType">SetHandleType</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SetHandleType(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    curve<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    left<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    right<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    handle_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Set the handle type for the control points of a Bézier curve</p>
+<section id="attributes-20" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.handle_type">handle_type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.i_curve">i_curve</a></td>
+<td>Input socket: Curve</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.i_selection">i_selection</a></td>
+<td>Input socket: Selection</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.left">left</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.o_curve">o_curve</a></td>
+<td>Output socket: Curve</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.right">right</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.SetHandleType.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.manual.Value" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.Value">Value</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Input numerical values to other nodes in the tree</p>
+<section id="attributes-21" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Value.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Value.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Value.o_value">o_value</a></td>
+<td>Output socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Value.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.manual.Value.type">type</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.manual.Value.value">value</a></td>
+<td>Input socket: Value</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../reference/nodes.vector.html" class="pagination-link" aria-label="nodes.vector">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.vector</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../reference/nodes.zone.html" class="pagination-link" aria-label="nodes.zone">
+        <span class="nav-page-text">nodes.zone</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

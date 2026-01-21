@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +65,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.zone.html" rel="next">
+<link href="../reference/nodes.manual.html" rel="next">
 <link href="../reference/nodes.geometry.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -198,6 +233,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.manual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.manual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/nodes.zone.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.zone</span></a>
   </div>
@@ -214,7 +255,16 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.nodes.vector" id="toc-nodebpy.nodes.vector" class="nav-link active" data-scroll-target="#nodebpy.nodes.vector">nodes.vector</a></li>
+  <li><a href="#nodebpy.nodes.vector" id="toc-nodebpy.nodes.vector" class="nav-link active" data-scroll-target="#nodebpy.nodes.vector">nodes.vector</a>
+  <ul class="collapse">
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <ul class="collapse">
+  <li><a href="#nodebpy.nodes.vector.RadialTiling" id="toc-nodebpy.nodes.vector.RadialTiling" class="nav-link" data-scroll-target="#nodebpy.nodes.vector.RadialTiling">RadialTiling</a></li>
+  <li><a href="#nodebpy.nodes.vector.VectorCurves" id="toc-nodebpy.nodes.vector.VectorCurves" class="nav-link" data-scroll-target="#nodebpy.nodes.vector.VectorCurves">VectorCurves</a></li>
+  <li><a href="#nodebpy.nodes.vector.VectorMath" id="toc-nodebpy.nodes.vector.VectorMath" class="nav-link" data-scroll-target="#nodebpy.nodes.vector.VectorMath">VectorMath</a></li>
+  <li><a href="#nodebpy.nodes.vector.VectorRotate" id="toc-nodebpy.nodes.vector.VectorRotate" class="nav-link" data-scroll-target="#nodebpy.nodes.vector.VectorRotate">VectorRotate</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -227,8 +277,550 @@ ul.task-list li input[type="checkbox"] {
 <section id="nodebpy.nodes.vector" class="level1">
 <h1>nodes.vector</h1>
 <p><code>nodes.vector</code></p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.RadialTiling">RadialTiling</a></td>
+<td>Transform Coordinate System for Radial Tiling</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorCurves">VectorCurves</a></td>
+<td>Map input vector components with curves</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath">VectorMath</a></td>
+<td>Perform vector math operation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorRotate">VectorRotate</a></td>
+<td>Rotate a vector around a pivot point (center)</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.vector.RadialTiling" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.vector.RadialTiling">RadialTiling</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.RadialTiling(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    sides<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    roundness<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    normalize<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Transform Coordinate System for Radial Tiling</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.i_roundness">i_roundness</a></td>
+<td>Input socket: Roundness</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.i_sides">i_sides</a></td>
+<td>Input socket: Sides</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.i_vector">i_vector</a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.normalize">normalize</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.o_segment_coordinates">o_segment_coordinates</a></td>
+<td>Output socket: Segment Coordinates</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.o_segment_id">o_segment_id</a></td>
+<td>Output socket: Segment ID</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.o_segment_rotation">o_segment_rotation</a></td>
+<td>Output socket: Segment Rotation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.o_segment_width">o_segment_width</a></td>
+<td>Output socket: Segment Width</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.RadialTiling.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.vector.VectorCurves" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorCurves">VectorCurves</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorCurves(fac<span class="op">=</span><span class="fl">1.0</span>, vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Map input vector components with curves</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorCurves.i_fac">i_fac</a></td>
+<td>Input socket: Factor</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorCurves.i_vector">i_vector</a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorCurves.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorCurves.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorCurves.o_vector">o_vector</a></td>
+<td>Output socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorCurves.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorCurves.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath">VectorMath</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    vector_001<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    vector_002<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'ADD'</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Perform vector math operation</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.i_scale">i_scale</a></td>
+<td>Input socket: Scale</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.i_vector">i_vector</a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.i_vector_001">i_vector_001</a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.i_vector_002">i_vector_002</a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.o_value">o_value</a></td>
+<td>Output socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.o_vector">o_vector</a></td>
+<td>Output socket: Vector</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.operation">operation</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.absolute">absolute</a></td>
+<td>Create Vector Math with operation ‘Absolute’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.add">add</a></td>
+<td>Create Vector Math with operation ‘Add’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.ceil">ceil</a></td>
+<td>Create Vector Math with operation ‘Ceil’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.cosine">cosine</a></td>
+<td>Create Vector Math with operation ‘Cosine’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.distance">distance</a></td>
+<td>Create Vector Math with operation ‘Distance’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.divide">divide</a></td>
+<td>Create Vector Math with operation ‘Divide’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.faceforward">faceforward</a></td>
+<td>Create Vector Math with operation ‘Faceforward’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.floor">floor</a></td>
+<td>Create Vector Math with operation ‘Floor’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.fraction">fraction</a></td>
+<td>Create Vector Math with operation ‘Fraction’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.length">length</a></td>
+<td>Create Vector Math with operation ‘Length’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.maximum">maximum</a></td>
+<td>Create Vector Math with operation ‘Maximum’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.minimum">minimum</a></td>
+<td>Create Vector Math with operation ‘Minimum’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.modulo">modulo</a></td>
+<td>Create Vector Math with operation ‘Modulo’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.multiply">multiply</a></td>
+<td>Create Vector Math with operation ‘Multiply’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.normalize">normalize</a></td>
+<td>Create Vector Math with operation ‘Normalize’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.power">power</a></td>
+<td>Create Vector Math with operation ‘Power’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.project">project</a></td>
+<td>Create Vector Math with operation ‘Project’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.reflect">reflect</a></td>
+<td>Create Vector Math with operation ‘Reflect’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.refract">refract</a></td>
+<td>Create Vector Math with operation ‘Refract’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.scale">scale</a></td>
+<td>Create Vector Math with operation ‘Scale’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.sign">sign</a></td>
+<td>Create Vector Math with operation ‘Sign’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.sine">sine</a></td>
+<td>Create Vector Math with operation ‘Sine’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.snap">snap</a></td>
+<td>Create Vector Math with operation ‘Snap’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.subtract">subtract</a></td>
+<td>Create Vector Math with operation ‘Subtract’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorMath.tangent">tangent</a></td>
+<td>Create Vector Math with operation ‘Tangent’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorMath.wrap">wrap</a></td>
+<td>Create Vector Math with operation ‘Wrap’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.vector.VectorMath.absolute" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.absolute">absolute</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.absolute(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Absolute’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.add" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.add">add</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.add(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Add’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.ceil" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.ceil">ceil</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.ceil(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Ceil’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.cosine" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.cosine">cosine</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.cosine(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Cosine’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.distance" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.distance">distance</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.distance(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Distance’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.divide" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.divide">divide</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.divide(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Divide’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.faceforward" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.faceforward">faceforward</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.faceforward(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    vector_001<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    vector_002<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Faceforward’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.floor" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.floor">floor</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.floor(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Floor’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.fraction" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.fraction">fraction</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.fraction(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Fraction’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.length" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.length">length</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.length(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Length’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.maximum" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.maximum">maximum</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.maximum(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Maximum’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.minimum" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.minimum">minimum</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.minimum(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Minimum’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.modulo" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.modulo">modulo</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.modulo(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Modulo’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.multiply" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.multiply">multiply</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.multiply(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Multiply’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.normalize" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.normalize">normalize</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.normalize(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Normalize’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.power" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.power">power</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.power(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Power’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.project" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.project">project</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.project(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Project’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.reflect" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.reflect">reflect</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.reflect(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Reflect’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.refract" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.refract">refract</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.refract(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Refract’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.scale" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.scale">scale</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.scale(vector<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Scale’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.sign" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.sign">sign</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.sign(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Sign’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.sine" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.sine">sine</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.sine(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Sine’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.snap" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.snap">snap</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.snap(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Snap’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.subtract" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.subtract">subtract</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.subtract(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Subtract’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.tangent" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.tangent">tangent</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.tangent(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Tangent’.</p>
+</section>
+<section id="nodebpy.nodes.vector.VectorMath.wrap" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorMath.wrap">wrap</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorMath.wrap(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>, vector_002<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Wrap’.</p>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.vector.VectorRotate" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.vector.VectorRotate">VectorRotate</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nodes.vector.VectorRotate(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    angle<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    rotation_type<span class="op">=</span><span class="st">'AXIS_ANGLE'</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    invert<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Rotate a vector around a pivot point (center)</p>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.i_angle">i_angle</a></td>
+<td>Input socket: Angle</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.i_axis">i_axis</a></td>
+<td>Input socket: Axis</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.i_center">i_center</a></td>
+<td>Input socket: Center</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.i_rotation">i_rotation</a></td>
+<td>Input socket: Rotation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.i_vector">i_vector</a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.invert">invert</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.o_vector">o_vector</a></td>
+<td>Output socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.rotation_type">rotation_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.vector.VectorRotate.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -639,8 +1231,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.zone.html" class="pagination-link" aria-label="nodes.zone">
-        <span class="nav-page-text">nodes.zone</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.manual.html" class="pagination-link" aria-label="nodes.manual">
+        <span class="nav-page-text">nodes.manual</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
