@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 if TYPE_CHECKING:
-    from .nodes.converter import Math, VectorMath
+    from .nodes import Math, VectorMath
 
 import arrangebpy
 import bpy
@@ -14,7 +14,7 @@ from bpy.types import (
     NodeSocket,
 )
 
-from .nodes.types import (
+from .types import (
     LINKABLE,
     SOCKET_COMPATIBILITY,
     SOCKET_TYPES,
@@ -273,7 +273,14 @@ class NodeBuilder:
     def _default_output_socket(self) -> NodeSocket:
         if self._default_output_id is not None:
             return self.node.outputs[self._output_idx(self._default_output_id)]
-        return self.node.outputs[0]
+
+        counter = 0
+        socket = self.node.outputs[counter]
+        while not socket.is_icon_visible:
+            print(f"skipping inactive socket {socket.name}")
+            counter += 1
+            socket = self.node.outputs[counter]
+        return socket
 
     def _source_socket(self, node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
         assert node
@@ -805,7 +812,7 @@ class NodeBuilder:
         self, other: Any, operation: str, reverse: bool = False
     ) -> "VectorMath | Math":
         """Apply a math operation with appropriate Math/VectorMath node."""
-        from .nodes.converter import VectorMath
+        from .nodes import VectorMath
 
         values = (
             (self._default_output_socket, other)

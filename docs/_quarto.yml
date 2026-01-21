@@ -54,4 +54,5 @@ quartodoc:
         - nodes.attribute
         ####################
         - nodes.vector
+        - nodes.manual
         - nodes.zone

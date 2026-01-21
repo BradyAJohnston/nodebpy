@@ -2,3 +2,372 @@
 
 `nodes.vector`
 
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [RadialTiling](#nodebpy.nodes.vector.RadialTiling) | Transform Coordinate System for Radial Tiling |
+| [VectorCurves](#nodebpy.nodes.vector.VectorCurves) | Map input vector components with curves |
+| [VectorMath](#nodebpy.nodes.vector.VectorMath) | Perform vector math operation |
+| [VectorRotate](#nodebpy.nodes.vector.VectorRotate) | Rotate a vector around a pivot point (center) |
+
+### RadialTiling { #nodebpy.nodes.vector.RadialTiling }
+
+```python
+nodes.vector.RadialTiling(
+    vector=None,
+    sides=5.0,
+    roundness=0.0,
+    *,
+    normalize=False,
+)
+```
+
+Transform Coordinate System for Radial Tiling
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_roundness](#nodebpy.nodes.vector.RadialTiling.i_roundness) | Input socket: Roundness |
+| [i_sides](#nodebpy.nodes.vector.RadialTiling.i_sides) | Input socket: Sides |
+| [i_vector](#nodebpy.nodes.vector.RadialTiling.i_vector) | Input socket: Vector |
+| [name](#nodebpy.nodes.vector.RadialTiling.name) |  |
+| [node](#nodebpy.nodes.vector.RadialTiling.node) |  |
+| [normalize](#nodebpy.nodes.vector.RadialTiling.normalize) |  |
+| [o_segment_coordinates](#nodebpy.nodes.vector.RadialTiling.o_segment_coordinates) | Output socket: Segment Coordinates |
+| [o_segment_id](#nodebpy.nodes.vector.RadialTiling.o_segment_id) | Output socket: Segment ID |
+| [o_segment_rotation](#nodebpy.nodes.vector.RadialTiling.o_segment_rotation) | Output socket: Segment Rotation |
+| [o_segment_width](#nodebpy.nodes.vector.RadialTiling.o_segment_width) | Output socket: Segment Width |
+| [tree](#nodebpy.nodes.vector.RadialTiling.tree) |  |
+| [type](#nodebpy.nodes.vector.RadialTiling.type) |  |
+
+### VectorCurves { #nodebpy.nodes.vector.VectorCurves }
+
+```python
+nodes.vector.VectorCurves(fac=1.0, vector=None)
+```
+
+Map input vector components with curves
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_fac](#nodebpy.nodes.vector.VectorCurves.i_fac) | Input socket: Factor |
+| [i_vector](#nodebpy.nodes.vector.VectorCurves.i_vector) | Input socket: Vector |
+| [name](#nodebpy.nodes.vector.VectorCurves.name) |  |
+| [node](#nodebpy.nodes.vector.VectorCurves.node) |  |
+| [o_vector](#nodebpy.nodes.vector.VectorCurves.o_vector) | Output socket: Vector |
+| [tree](#nodebpy.nodes.vector.VectorCurves.tree) |  |
+| [type](#nodebpy.nodes.vector.VectorCurves.type) |  |
+
+### VectorMath { #nodebpy.nodes.vector.VectorMath }
+
+```python
+nodes.vector.VectorMath(
+    vector=None,
+    vector_001=None,
+    vector_002=None,
+    scale=1.0,
+    *,
+    operation='ADD',
+)
+```
+
+Perform vector math operation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_scale](#nodebpy.nodes.vector.VectorMath.i_scale) | Input socket: Scale |
+| [i_vector](#nodebpy.nodes.vector.VectorMath.i_vector) | Input socket: Vector |
+| [i_vector_001](#nodebpy.nodes.vector.VectorMath.i_vector_001) | Input socket: Vector |
+| [i_vector_002](#nodebpy.nodes.vector.VectorMath.i_vector_002) | Input socket: Vector |
+| [name](#nodebpy.nodes.vector.VectorMath.name) |  |
+| [node](#nodebpy.nodes.vector.VectorMath.node) |  |
+| [o_value](#nodebpy.nodes.vector.VectorMath.o_value) | Output socket: Value |
+| [o_vector](#nodebpy.nodes.vector.VectorMath.o_vector) | Output socket: Vector |
+| [operation](#nodebpy.nodes.vector.VectorMath.operation) |  |
+| [tree](#nodebpy.nodes.vector.VectorMath.tree) |  |
+| [type](#nodebpy.nodes.vector.VectorMath.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [absolute](#nodebpy.nodes.vector.VectorMath.absolute) | Create Vector Math with operation 'Absolute'. |
+| [add](#nodebpy.nodes.vector.VectorMath.add) | Create Vector Math with operation 'Add'. |
+| [ceil](#nodebpy.nodes.vector.VectorMath.ceil) | Create Vector Math with operation 'Ceil'. |
+| [cosine](#nodebpy.nodes.vector.VectorMath.cosine) | Create Vector Math with operation 'Cosine'. |
+| [distance](#nodebpy.nodes.vector.VectorMath.distance) | Create Vector Math with operation 'Distance'. |
+| [divide](#nodebpy.nodes.vector.VectorMath.divide) | Create Vector Math with operation 'Divide'. |
+| [faceforward](#nodebpy.nodes.vector.VectorMath.faceforward) | Create Vector Math with operation 'Faceforward'. |
+| [floor](#nodebpy.nodes.vector.VectorMath.floor) | Create Vector Math with operation 'Floor'. |
+| [fraction](#nodebpy.nodes.vector.VectorMath.fraction) | Create Vector Math with operation 'Fraction'. |
+| [length](#nodebpy.nodes.vector.VectorMath.length) | Create Vector Math with operation 'Length'. |
+| [maximum](#nodebpy.nodes.vector.VectorMath.maximum) | Create Vector Math with operation 'Maximum'. |
+| [minimum](#nodebpy.nodes.vector.VectorMath.minimum) | Create Vector Math with operation 'Minimum'. |
+| [modulo](#nodebpy.nodes.vector.VectorMath.modulo) | Create Vector Math with operation 'Modulo'. |
+| [multiply](#nodebpy.nodes.vector.VectorMath.multiply) | Create Vector Math with operation 'Multiply'. |
+| [normalize](#nodebpy.nodes.vector.VectorMath.normalize) | Create Vector Math with operation 'Normalize'. |
+| [power](#nodebpy.nodes.vector.VectorMath.power) | Create Vector Math with operation 'Power'. |
+| [project](#nodebpy.nodes.vector.VectorMath.project) | Create Vector Math with operation 'Project'. |
+| [reflect](#nodebpy.nodes.vector.VectorMath.reflect) | Create Vector Math with operation 'Reflect'. |
+| [refract](#nodebpy.nodes.vector.VectorMath.refract) | Create Vector Math with operation 'Refract'. |
+| [scale](#nodebpy.nodes.vector.VectorMath.scale) | Create Vector Math with operation 'Scale'. |
+| [sign](#nodebpy.nodes.vector.VectorMath.sign) | Create Vector Math with operation 'Sign'. |
+| [sine](#nodebpy.nodes.vector.VectorMath.sine) | Create Vector Math with operation 'Sine'. |
+| [snap](#nodebpy.nodes.vector.VectorMath.snap) | Create Vector Math with operation 'Snap'. |
+| [subtract](#nodebpy.nodes.vector.VectorMath.subtract) | Create Vector Math with operation 'Subtract'. |
+| [tangent](#nodebpy.nodes.vector.VectorMath.tangent) | Create Vector Math with operation 'Tangent'. |
+| [wrap](#nodebpy.nodes.vector.VectorMath.wrap) | Create Vector Math with operation 'Wrap'. |
+
+##### absolute { #nodebpy.nodes.vector.VectorMath.absolute }
+
+```python
+nodes.vector.VectorMath.absolute(vector=None)
+```
+
+Create Vector Math with operation 'Absolute'.
+
+##### add { #nodebpy.nodes.vector.VectorMath.add }
+
+```python
+nodes.vector.VectorMath.add(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Add'.
+
+##### ceil { #nodebpy.nodes.vector.VectorMath.ceil }
+
+```python
+nodes.vector.VectorMath.ceil(vector=None)
+```
+
+Create Vector Math with operation 'Ceil'.
+
+##### cosine { #nodebpy.nodes.vector.VectorMath.cosine }
+
+```python
+nodes.vector.VectorMath.cosine(vector=None)
+```
+
+Create Vector Math with operation 'Cosine'.
+
+##### distance { #nodebpy.nodes.vector.VectorMath.distance }
+
+```python
+nodes.vector.VectorMath.distance(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Distance'.
+
+##### divide { #nodebpy.nodes.vector.VectorMath.divide }
+
+```python
+nodes.vector.VectorMath.divide(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Divide'.
+
+##### faceforward { #nodebpy.nodes.vector.VectorMath.faceforward }
+
+```python
+nodes.vector.VectorMath.faceforward(
+    vector=None,
+    vector_001=None,
+    vector_002=None,
+)
+```
+
+Create Vector Math with operation 'Faceforward'.
+
+##### floor { #nodebpy.nodes.vector.VectorMath.floor }
+
+```python
+nodes.vector.VectorMath.floor(vector=None)
+```
+
+Create Vector Math with operation 'Floor'.
+
+##### fraction { #nodebpy.nodes.vector.VectorMath.fraction }
+
+```python
+nodes.vector.VectorMath.fraction(vector=None)
+```
+
+Create Vector Math with operation 'Fraction'.
+
+##### length { #nodebpy.nodes.vector.VectorMath.length }
+
+```python
+nodes.vector.VectorMath.length(vector=None)
+```
+
+Create Vector Math with operation 'Length'.
+
+##### maximum { #nodebpy.nodes.vector.VectorMath.maximum }
+
+```python
+nodes.vector.VectorMath.maximum(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Maximum'.
+
+##### minimum { #nodebpy.nodes.vector.VectorMath.minimum }
+
+```python
+nodes.vector.VectorMath.minimum(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Minimum'.
+
+##### modulo { #nodebpy.nodes.vector.VectorMath.modulo }
+
+```python
+nodes.vector.VectorMath.modulo(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Modulo'.
+
+##### multiply { #nodebpy.nodes.vector.VectorMath.multiply }
+
+```python
+nodes.vector.VectorMath.multiply(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Multiply'.
+
+##### normalize { #nodebpy.nodes.vector.VectorMath.normalize }
+
+```python
+nodes.vector.VectorMath.normalize(vector=None)
+```
+
+Create Vector Math with operation 'Normalize'.
+
+##### power { #nodebpy.nodes.vector.VectorMath.power }
+
+```python
+nodes.vector.VectorMath.power(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Power'.
+
+##### project { #nodebpy.nodes.vector.VectorMath.project }
+
+```python
+nodes.vector.VectorMath.project(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Project'.
+
+##### reflect { #nodebpy.nodes.vector.VectorMath.reflect }
+
+```python
+nodes.vector.VectorMath.reflect(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Reflect'.
+
+##### refract { #nodebpy.nodes.vector.VectorMath.refract }
+
+```python
+nodes.vector.VectorMath.refract(vector=None, vector_001=None, scale=1.0)
+```
+
+Create Vector Math with operation 'Refract'.
+
+##### scale { #nodebpy.nodes.vector.VectorMath.scale }
+
+```python
+nodes.vector.VectorMath.scale(vector=None, scale=1.0)
+```
+
+Create Vector Math with operation 'Scale'.
+
+##### sign { #nodebpy.nodes.vector.VectorMath.sign }
+
+```python
+nodes.vector.VectorMath.sign(vector=None)
+```
+
+Create Vector Math with operation 'Sign'.
+
+##### sine { #nodebpy.nodes.vector.VectorMath.sine }
+
+```python
+nodes.vector.VectorMath.sine(vector=None)
+```
+
+Create Vector Math with operation 'Sine'.
+
+##### snap { #nodebpy.nodes.vector.VectorMath.snap }
+
+```python
+nodes.vector.VectorMath.snap(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Snap'.
+
+##### subtract { #nodebpy.nodes.vector.VectorMath.subtract }
+
+```python
+nodes.vector.VectorMath.subtract(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Subtract'.
+
+##### tangent { #nodebpy.nodes.vector.VectorMath.tangent }
+
+```python
+nodes.vector.VectorMath.tangent(vector=None)
+```
+
+Create Vector Math with operation 'Tangent'.
+
+##### wrap { #nodebpy.nodes.vector.VectorMath.wrap }
+
+```python
+nodes.vector.VectorMath.wrap(vector=None, vector_001=None, vector_002=None)
+```
+
+Create Vector Math with operation 'Wrap'.
+
+### VectorRotate { #nodebpy.nodes.vector.VectorRotate }
+
+```python
+nodes.vector.VectorRotate(
+    vector=None,
+    center=None,
+    axis=None,
+    angle=0.0,
+    rotation=None,
+    *,
+    rotation_type='AXIS_ANGLE',
+    invert=False,
+)
+```
+
+Rotate a vector around a pivot point (center)
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_angle](#nodebpy.nodes.vector.VectorRotate.i_angle) | Input socket: Angle |
+| [i_axis](#nodebpy.nodes.vector.VectorRotate.i_axis) | Input socket: Axis |
+| [i_center](#nodebpy.nodes.vector.VectorRotate.i_center) | Input socket: Center |
+| [i_rotation](#nodebpy.nodes.vector.VectorRotate.i_rotation) | Input socket: Rotation |
+| [i_vector](#nodebpy.nodes.vector.VectorRotate.i_vector) | Input socket: Vector |
+| [invert](#nodebpy.nodes.vector.VectorRotate.invert) |  |
+| [name](#nodebpy.nodes.vector.VectorRotate.name) |  |
+| [node](#nodebpy.nodes.vector.VectorRotate.node) |  |
+| [o_vector](#nodebpy.nodes.vector.VectorRotate.o_vector) | Output socket: Vector |
+| [rotation_type](#nodebpy.nodes.vector.VectorRotate.rotation_type) |  |
+| [tree](#nodebpy.nodes.vector.VectorRotate.tree) |  |
+| [type](#nodebpy.nodes.vector.VectorRotate.type) |  |

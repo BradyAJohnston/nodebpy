@@ -36,7 +36,6 @@
 | [FaceNeighbors](#nodebpy.nodes.input.FaceNeighbors) | Retrieve topology information relating to each face of a mesh |
 | [FaceOfCorner](#nodebpy.nodes.input.FaceOfCorner) | Retrieve the face each face corner is part of |
 | [FaceSet](#nodebpy.nodes.input.FaceSet) | Each face's sculpt face set value |
-| [HandleTypeSelection](#nodebpy.nodes.input.HandleTypeSelection) | Provide a selection based on the handle types of Bézier control points |
 | [ID](#nodebpy.nodes.input.ID) | Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist |
 | [Image](#nodebpy.nodes.input.Image) | Input an image data-block |
 | [ImageInfo](#nodebpy.nodes.input.ImageInfo) | Retrieve information about an image |
@@ -82,7 +81,6 @@
 | [SplineResolution](#nodebpy.nodes.input.SplineResolution) | Retrieve the number of evaluated points that will be generated for every control point on curves |
 | [String](#nodebpy.nodes.input.String) | Provide a string value that can be connected to other nodes in the tree |
 | [UVTangent](#nodebpy.nodes.input.UVTangent) | Generate tangent directions based on a UV map |
-| [Value](#nodebpy.nodes.input.Value) | Input numerical values to other nodes in the tree |
 | [Vector](#nodebpy.nodes.input.Vector) | Provide a vector value that can be connected to other nodes in the tree |
 | [VertexNeighbors](#nodebpy.nodes.input.VertexNeighbors) | Retrieve topology information relating to each vertex of a mesh |
 | [VertexOfCorner](#nodebpy.nodes.input.VertexOfCorner) | Retrieve the vertex each face corner is attached to |
@@ -126,6 +124,47 @@ Active element indices of the edited geometry, for tool execution
 | [o_index](#nodebpy.nodes.input.ActiveElement.o_index) | Output socket: Index |
 | [tree](#nodebpy.nodes.input.ActiveElement.tree) |  |
 | [type](#nodebpy.nodes.input.ActiveElement.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.input.ActiveElement.edge) | Create Active Element with operation 'Edge'. |
+| [face](#nodebpy.nodes.input.ActiveElement.face) | Create Active Element with operation 'Face'. |
+| [layer](#nodebpy.nodes.input.ActiveElement.layer) | Create Active Element with operation 'Layer'. |
+| [point](#nodebpy.nodes.input.ActiveElement.point) | Create Active Element with operation 'Point'. |
+
+##### edge { #nodebpy.nodes.input.ActiveElement.edge }
+
+```python
+nodes.input.ActiveElement.edge()
+```
+
+Create Active Element with operation 'Edge'.
+
+##### face { #nodebpy.nodes.input.ActiveElement.face }
+
+```python
+nodes.input.ActiveElement.face()
+```
+
+Create Active Element with operation 'Face'.
+
+##### layer { #nodebpy.nodes.input.ActiveElement.layer }
+
+```python
+nodes.input.ActiveElement.layer()
+```
+
+Create Active Element with operation 'Layer'.
+
+##### point { #nodebpy.nodes.input.ActiveElement.point }
+
+```python
+nodes.input.ActiveElement.point()
+```
+
+Create Active Element with operation 'Point'.
 
 ### Boolean { #nodebpy.nodes.input.Boolean }
 
@@ -176,7 +215,7 @@ Retrieve information from a camera object
 ### Collection { #nodebpy.nodes.input.Collection }
 
 ```python
-nodes.input.Collection(collection=None)
+nodes.input.Collection()
 ```
 
 Output a single collection
@@ -185,7 +224,6 @@ Output a single collection
 
 | Name | Description |
 | --- | --- |
-| [collection](#nodebpy.nodes.input.Collection.collection) |  |
 | [name](#nodebpy.nodes.input.Collection.name) |  |
 | [node](#nodebpy.nodes.input.Collection.node) |  |
 | [o_collection](#nodebpy.nodes.input.Collection.o_collection) | Output socket: Collection |
@@ -199,6 +237,7 @@ nodes.input.CollectionInfo(
     collection=None,
     separate_children=False,
     reset_children=False,
+    *,
     transform_space='ORIGINAL',
 )
 ```
@@ -222,7 +261,7 @@ Retrieve geometry instances from a collection
 ### Color { #nodebpy.nodes.input.Color }
 
 ```python
-nodes.input.Color(value=(1.0, 0.0, 1.0, 1.0), **kwargs)
+nodes.input.Color(value=(0.735, 0.735, 0.735, 1.0))
 ```
 
 Output a color value chosen with the color picker widget
@@ -241,7 +280,7 @@ Output a color value chosen with the color picker widget
 ### CornersOfEdge { #nodebpy.nodes.input.CornersOfEdge }
 
 ```python
-nodes.input.CornersOfEdge(edge_index=None, weights=None, sort_index=0)
+nodes.input.CornersOfEdge(edge_index=0, weights=0.0, sort_index=0)
 ```
 
 Retrieve face corners connected to edges
@@ -263,7 +302,7 @@ Retrieve face corners connected to edges
 ### CornersOfFace { #nodebpy.nodes.input.CornersOfFace }
 
 ```python
-nodes.input.CornersOfFace(face_index=None, weights=None, sort_index=0)
+nodes.input.CornersOfFace(face_index=0, weights=0.0, sort_index=0)
 ```
 
 Retrieve corners that make up a face
@@ -285,7 +324,7 @@ Retrieve corners that make up a face
 ### CornersOfVertex { #nodebpy.nodes.input.CornersOfVertex }
 
 ```python
-nodes.input.CornersOfVertex(vertex_index=None, weights=None, sort_index=0)
+nodes.input.CornersOfVertex(vertex_index=0, weights=0.0, sort_index=0)
 ```
 
 Retrieve face corners connected to vertices
@@ -346,7 +385,7 @@ Retrieve the position of each Bézier control point's handles
 ### CurveOfPoint { #nodebpy.nodes.input.CurveOfPoint }
 
 ```python
-nodes.input.CurveOfPoint(point_index=None)
+nodes.input.CurveOfPoint(point_index=0)
 ```
 
 Retrieve the curve a control point is part of
@@ -439,7 +478,7 @@ Retrieve the number of faces that use each edge as one of their sides
 ### EdgePathsToSelection { #nodebpy.nodes.input.EdgePathsToSelection }
 
 ```python
-nodes.input.EdgePathsToSelection(start_vertices=None, next_vertex_index=None)
+nodes.input.EdgePathsToSelection(start_vertices=True, next_vertex_index=-1)
 ```
 
 Output a selection of edges by following paths across mesh edges
@@ -480,7 +519,7 @@ Retrieve topology information relating to each edge of a mesh
 ### EdgesOfCorner { #nodebpy.nodes.input.EdgesOfCorner }
 
 ```python
-nodes.input.EdgesOfCorner(corner_index=None)
+nodes.input.EdgesOfCorner(corner_index=0)
 ```
 
 Retrieve the edges on both sides of a face corner
@@ -500,7 +539,7 @@ Retrieve the edges on both sides of a face corner
 ### EdgesOfVertex { #nodebpy.nodes.input.EdgesOfVertex }
 
 ```python
-nodes.input.EdgesOfVertex(vertex_index=None, weights=None, sort_index=0)
+nodes.input.EdgesOfVertex(vertex_index=0, weights=0.0, sort_index=0)
 ```
 
 Retrieve the edges connected to each vertex
@@ -522,7 +561,7 @@ Retrieve the edges connected to each vertex
 ### EdgesToFaceGroups { #nodebpy.nodes.input.EdgesToFaceGroups }
 
 ```python
-nodes.input.EdgesToFaceGroups(boundary_edges=None)
+nodes.input.EdgesToFaceGroups(boundary_edges=True)
 ```
 
 Group faces into regions surrounded by the selected boundary edges
@@ -588,7 +627,7 @@ Find edges on the boundaries between groups of faces with the same ID value
 
 | Name | Description |
 | --- | --- |
-| [i_face_group_id](#nodebpy.nodes.input.FaceGroupBoundaries.i_face_group_id) | Input socket: Face Group ID |
+| [i_face_set](#nodebpy.nodes.input.FaceGroupBoundaries.i_face_set) | Input socket: Face Group ID |
 | [name](#nodebpy.nodes.input.FaceGroupBoundaries.name) |  |
 | [node](#nodebpy.nodes.input.FaceGroupBoundaries.node) |  |
 | [o_boundary_edges](#nodebpy.nodes.input.FaceGroupBoundaries.o_boundary_edges) | Output socket: Boundary Edges |
@@ -617,7 +656,7 @@ Retrieve topology information relating to each face of a mesh
 ### FaceOfCorner { #nodebpy.nodes.input.FaceOfCorner }
 
 ```python
-nodes.input.FaceOfCorner(corner_index=None)
+nodes.input.FaceOfCorner(corner_index=0)
 ```
 
 Retrieve the face each face corner is part of
@@ -653,28 +692,6 @@ Each face's sculpt face set value
 | [tree](#nodebpy.nodes.input.FaceSet.tree) |  |
 | [type](#nodebpy.nodes.input.FaceSet.type) |  |
 
-### HandleTypeSelection { #nodebpy.nodes.input.HandleTypeSelection }
-
-```python
-nodes.input.HandleTypeSelection(handle_type='AUTO', left=True, right=True)
-```
-
-Provide a selection based on the handle types of Bézier control points
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [handle_type](#nodebpy.nodes.input.HandleTypeSelection.handle_type) |  |
-| [left](#nodebpy.nodes.input.HandleTypeSelection.left) |  |
-| [mode](#nodebpy.nodes.input.HandleTypeSelection.mode) |  |
-| [name](#nodebpy.nodes.input.HandleTypeSelection.name) |  |
-| [node](#nodebpy.nodes.input.HandleTypeSelection.node) |  |
-| [o_selection](#nodebpy.nodes.input.HandleTypeSelection.o_selection) | Output socket: Selection |
-| [right](#nodebpy.nodes.input.HandleTypeSelection.right) |  |
-| [tree](#nodebpy.nodes.input.HandleTypeSelection.tree) |  |
-| [type](#nodebpy.nodes.input.HandleTypeSelection.type) |  |
-
 ### ID { #nodebpy.nodes.input.ID }
 
 ```python
@@ -696,7 +713,7 @@ Retrieve a stable random identifier value from the "id" attribute on the point d
 ### Image { #nodebpy.nodes.input.Image }
 
 ```python
-nodes.input.Image(image=None)
+nodes.input.Image()
 ```
 
 Input an image data-block
@@ -705,7 +722,6 @@ Input an image data-block
 
 | Name | Description |
 | --- | --- |
-| [image](#nodebpy.nodes.input.Image.image) | Input socket: Image |
 | [name](#nodebpy.nodes.input.Image.name) |  |
 | [node](#nodebpy.nodes.input.Image.node) |  |
 | [o_image](#nodebpy.nodes.input.Image.o_image) | Output socket: Image |
@@ -983,7 +999,7 @@ Retrieve whether each edge is marked for smooth or split normals
 ### IsFacePlanar { #nodebpy.nodes.input.IsFacePlanar }
 
 ```python
-nodes.input.IsFacePlanar(threshold=0.001)
+nodes.input.IsFacePlanar(threshold=0.01)
 ```
 
 Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal
@@ -1056,7 +1072,7 @@ Retrieve whether the nodes are being evaluated for the viewport rather than the 
 ### Material { #nodebpy.nodes.input.Material }
 
 ```python
-nodes.input.Material(material=None)
+nodes.input.Material()
 ```
 
 Output a single material
@@ -1065,7 +1081,6 @@ Output a single material
 
 | Name | Description |
 | --- | --- |
-| [material](#nodebpy.nodes.input.Material.material) | Input socket: Material |
 | [name](#nodebpy.nodes.input.Material.name) |  |
 | [node](#nodebpy.nodes.input.Material.node) |  |
 | [o_material](#nodebpy.nodes.input.Material.o_material) | Output socket: Material |
@@ -1142,21 +1157,73 @@ Retrieve the data of a specified attribute
 
 | Name | Description |
 | --- | --- |
-| [boolean](#nodebpy.nodes.input.NamedAttribute.boolean) |  |
-| [color](#nodebpy.nodes.input.NamedAttribute.color) |  |
 | [data_type](#nodebpy.nodes.input.NamedAttribute.data_type) |  |
-| [float](#nodebpy.nodes.input.NamedAttribute.float) |  |
 | [i_name](#nodebpy.nodes.input.NamedAttribute.i_name) | Input socket: Name |
-| [integer](#nodebpy.nodes.input.NamedAttribute.integer) |  |
-| [matrix](#nodebpy.nodes.input.NamedAttribute.matrix) |  |
 | [name](#nodebpy.nodes.input.NamedAttribute.name) |  |
 | [node](#nodebpy.nodes.input.NamedAttribute.node) |  |
 | [o_attribute](#nodebpy.nodes.input.NamedAttribute.o_attribute) | Output socket: Attribute |
 | [o_exists](#nodebpy.nodes.input.NamedAttribute.o_exists) | Output socket: Exists |
-| [quaternion](#nodebpy.nodes.input.NamedAttribute.quaternion) |  |
 | [tree](#nodebpy.nodes.input.NamedAttribute.tree) |  |
 | [type](#nodebpy.nodes.input.NamedAttribute.type) |  |
-| [vector](#nodebpy.nodes.input.NamedAttribute.vector) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.input.NamedAttribute.boolean) | Create Named Attribute with operation 'Boolean'. |
+| [color](#nodebpy.nodes.input.NamedAttribute.color) | Create Named Attribute with operation 'Color'. |
+| [float](#nodebpy.nodes.input.NamedAttribute.float) | Create Named Attribute with operation 'Float'. |
+| [integer](#nodebpy.nodes.input.NamedAttribute.integer) | Create Named Attribute with operation 'Integer'. |
+| [quaternion](#nodebpy.nodes.input.NamedAttribute.quaternion) | Create Named Attribute with operation 'Quaternion'. |
+| [vector](#nodebpy.nodes.input.NamedAttribute.vector) | Create Named Attribute with operation 'Vector'. |
+
+##### boolean { #nodebpy.nodes.input.NamedAttribute.boolean }
+
+```python
+nodes.input.NamedAttribute.boolean(name='')
+```
+
+Create Named Attribute with operation 'Boolean'.
+
+##### color { #nodebpy.nodes.input.NamedAttribute.color }
+
+```python
+nodes.input.NamedAttribute.color(name='')
+```
+
+Create Named Attribute with operation 'Color'.
+
+##### float { #nodebpy.nodes.input.NamedAttribute.float }
+
+```python
+nodes.input.NamedAttribute.float(name='')
+```
+
+Create Named Attribute with operation 'Float'.
+
+##### integer { #nodebpy.nodes.input.NamedAttribute.integer }
+
+```python
+nodes.input.NamedAttribute.integer(name='')
+```
+
+Create Named Attribute with operation 'Integer'.
+
+##### quaternion { #nodebpy.nodes.input.NamedAttribute.quaternion }
+
+```python
+nodes.input.NamedAttribute.quaternion(name='')
+```
+
+Create Named Attribute with operation 'Quaternion'.
+
+##### vector { #nodebpy.nodes.input.NamedAttribute.vector }
+
+```python
+nodes.input.NamedAttribute.vector(name='')
+```
+
+Create Named Attribute with operation 'Vector'.
 
 ### NamedLayerSelection { #nodebpy.nodes.input.NamedLayerSelection }
 
@@ -1180,7 +1247,7 @@ Output a selection of a Grease Pencil layer
 ### Normal { #nodebpy.nodes.input.Normal }
 
 ```python
-nodes.input.Normal()
+nodes.input.Normal(legacy_corner_normals=False)
 ```
 
 Retrieve a unit length vector indicating the direction pointing away from the geometry at each element
@@ -1200,7 +1267,7 @@ Retrieve a unit length vector indicating the direction pointing away from the ge
 ### Object { #nodebpy.nodes.input.Object }
 
 ```python
-nodes.input.Object(object=None)
+nodes.input.Object()
 ```
 
 Output a single object
@@ -1212,7 +1279,6 @@ Output a single object
 | [name](#nodebpy.nodes.input.Object.name) |  |
 | [node](#nodebpy.nodes.input.Object.node) |  |
 | [o_object](#nodebpy.nodes.input.Object.o_object) | Output socket: Object |
-| [object](#nodebpy.nodes.input.Object.object) |  |
 | [tree](#nodebpy.nodes.input.Object.tree) |  |
 | [type](#nodebpy.nodes.input.Object.type) |  |
 
@@ -1249,7 +1315,7 @@ Retrieve information from an object
 ### OffsetCornerInFace { #nodebpy.nodes.input.OffsetCornerInFace }
 
 ```python
-nodes.input.OffsetCornerInFace(corner_index=None, offset=0)
+nodes.input.OffsetCornerInFace(corner_index=0, offset=0)
 ```
 
 Retrieve corners in the same face as another
@@ -1269,7 +1335,7 @@ Retrieve corners in the same face as another
 ### OffsetPointInCurve { #nodebpy.nodes.input.OffsetPointInCurve }
 
 ```python
-nodes.input.OffsetPointInCurve(point_index=None, offset=0)
+nodes.input.OffsetPointInCurve(point_index=0, offset=0)
 ```
 
 Offset a control point index within its curve
@@ -1290,7 +1356,7 @@ Offset a control point index within its curve
 ### PointsOfCurve { #nodebpy.nodes.input.PointsOfCurve }
 
 ```python
-nodes.input.PointsOfCurve(curve_index=None, weights=None, sort_index=0)
+nodes.input.PointsOfCurve(curve_index=0, weights=0.0, sort_index=0)
 ```
 
 Retrieve a point index within a curve
@@ -1348,7 +1414,7 @@ Retrieve the radius at each point on curve or point cloud geometry
 ### Rotation { #nodebpy.nodes.input.Rotation }
 
 ```python
-nodes.input.Rotation(rotation_euler=(0, 0, 0))
+nodes.input.Rotation(rotation_euler=(0.0, 0.0, 0.0))
 ```
 
 Provide a rotation value that can be connected to other nodes in the tree
@@ -1397,8 +1463,8 @@ User selection of the edited geometry, for tool execution
 | --- | --- |
 | [name](#nodebpy.nodes.input.Selection.name) |  |
 | [node](#nodebpy.nodes.input.Selection.node) |  |
-| [o_boolean](#nodebpy.nodes.input.Selection.o_boolean) | Output socket: Boolean |
 | [o_float](#nodebpy.nodes.input.Selection.o_float) | Output socket: Float |
+| [o_selection](#nodebpy.nodes.input.Selection.o_selection) | Output socket: Boolean |
 | [tree](#nodebpy.nodes.input.Selection.tree) |  |
 | [type](#nodebpy.nodes.input.Selection.type) |  |
 
@@ -1423,7 +1489,7 @@ Retrieve the object that contains the geometry nodes modifier currently being ex
 ### ShortestEdgePaths { #nodebpy.nodes.input.ShortestEdgePaths }
 
 ```python
-nodes.input.ShortestEdgePaths(end_vertex=None, edge_cost=None, **kwargs)
+nodes.input.ShortestEdgePaths(end_vertex=False, edge_cost=1.0)
 ```
 
 Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge
@@ -1539,7 +1605,7 @@ Provide a string value that can be connected to other nodes in the tree
 ### UVTangent { #nodebpy.nodes.input.UVTangent }
 
 ```python
-nodes.input.UVTangent(method='Exact', uv=(0.0, 0.0))
+nodes.input.UVTangent(method='Exact', uv=None)
 ```
 
 Generate tangent directions based on a UV map
@@ -1556,29 +1622,10 @@ Generate tangent directions based on a UV map
 | [tree](#nodebpy.nodes.input.UVTangent.tree) |  |
 | [type](#nodebpy.nodes.input.UVTangent.type) |  |
 
-### Value { #nodebpy.nodes.input.Value }
-
-```python
-nodes.input.Value(value=0.0)
-```
-
-Input numerical values to other nodes in the tree
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [name](#nodebpy.nodes.input.Value.name) |  |
-| [node](#nodebpy.nodes.input.Value.node) |  |
-| [o_value](#nodebpy.nodes.input.Value.o_value) | Output socket: Value |
-| [tree](#nodebpy.nodes.input.Value.tree) |  |
-| [type](#nodebpy.nodes.input.Value.type) |  |
-| [value](#nodebpy.nodes.input.Value.value) | Input socket: Value |
-
 ### Vector { #nodebpy.nodes.input.Vector }
 
 ```python
-nodes.input.Vector(vector=(0, 0, 0))
+nodes.input.Vector(vector=(0.0, 0.0, 0.0))
 ```
 
 Provide a vector value that can be connected to other nodes in the tree

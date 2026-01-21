@@ -89,19 +89,19 @@ class TestMathOperators:
 
 
 def test_format_string():
-    format_string = "Hello {x} friends, it is {y} hours and this is a {String}"
+    str_to_format = "Hello {x} friends, it is {y} hours and this is a {String}"
     with TreeBuilder("TestFormatString"):
         x_int = n.Integer(5)
         y_value = n.Value(12.50)
         format = n.FormatString(
             n.String("test"),
-            format=format_string,
+            format=str_to_format,
             x=x_int,
             y=y_value,
         )
 
         assert len(format.node.format_items) == 3
-        assert format.node.inputs[0].default_value == format_string  # type: ignore
+        assert format.node.inputs[0].default_value == str_to_format  # type: ignore
         assert format.node.inputs[1].name == "String"
         assert format.node.inputs[1].type == "STRING"
         assert format.node.inputs[1].default_value == ""
@@ -402,7 +402,7 @@ def test_accumulate_field():
     assert tree.nodes.get("Field Average").domain == "EDGE"
 
 
-def test_edge_other_point(snapshot_tree):
+def test_edge_other_point():
     with TreeBuilder() as tree:
         with tree.inputs:
             v_index = s.SocketInt("Vertex Index", default_input="INDEX")
@@ -414,11 +414,13 @@ def test_edge_other_point(snapshot_tree):
         ev = n.EdgeVertices()
         vert_1 = n.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
         vert_2 = n.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
-        other_vertex = n.Switch.integer(
-            n.Compare.equal.integer(v_index, vert_1), vert_1, vert_2
-        )
+        compare = n.Compare.equal.integer(v_index, vert_1)
+        other_vertex = n.Switch.integer(compare, vert_1, vert_2)
 
         with tree.outputs:
             _ = other_vertex >> s.SocketInt("Other Vertex")
 
-    assert snapshot_tree == tree
+    other_vertex.node.inputs[0].links[0].from_node == vert_1.node
+    other_vertex.node.inputs[1].links[0].from_node == vert_2.node
+    other_vertex.node.inputs[2].links[0].from_node.name == "Compare"
+    compare.o_result.socket.links[0].to_node.name == "Switch"

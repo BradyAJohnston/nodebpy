@@ -12,6 +12,7 @@ website:
       - reference/nodes.geometry.qmd
       - reference/nodes.attribute.qmd
       - reference/nodes.vector.qmd
+      - reference/nodes.manual.qmd
       - reference/nodes.zone.qmd
       section: Some functions
     id: reference

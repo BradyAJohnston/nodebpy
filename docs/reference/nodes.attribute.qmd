@@ -8,56 +8,16 @@
 
 | Name | Description |
 | --- | --- |
-| [AttributeStatistic](#nodebpy.nodes.attribute.AttributeStatistic) | Calculate statistics about a data set from a field evaluated on a geometry |
 | [BlurAttribute](#nodebpy.nodes.attribute.BlurAttribute) | Mix attribute values of neighboring elements |
-| [CaptureAttribute](#nodebpy.nodes.attribute.CaptureAttribute) | Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation |
 | [DomainSize](#nodebpy.nodes.attribute.DomainSize) | Retrieve the number of elements in a geometry for each attribute domain |
 | [RemoveNamedAttribute](#nodebpy.nodes.attribute.RemoveNamedAttribute) | Delete an attribute with a specified name from a geometry. Typically used to optimize performance |
 | [StoreNamedAttribute](#nodebpy.nodes.attribute.StoreNamedAttribute) | Store the result of a field on a geometry as an attribute with the specified name |
-
-### AttributeStatistic { #nodebpy.nodes.attribute.AttributeStatistic }
-
-```python
-nodes.attribute.AttributeStatistic(
-    geometry=None,
-    selection=True,
-    attribute=None,
-    *,
-    data_type='FLOAT',
-    domain='POINT',
-    **kwargs,
-)
-```
-
-Calculate statistics about a data set from a field evaluated on a geometry
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [data_type](#nodebpy.nodes.attribute.AttributeStatistic.data_type) |  |
-| [domain](#nodebpy.nodes.attribute.AttributeStatistic.domain) |  |
-| [i_attribute](#nodebpy.nodes.attribute.AttributeStatistic.i_attribute) | Input socket: Attribute |
-| [i_geometry](#nodebpy.nodes.attribute.AttributeStatistic.i_geometry) | Input socket: Geometry |
-| [i_selection](#nodebpy.nodes.attribute.AttributeStatistic.i_selection) | Input socket: Selection |
-| [name](#nodebpy.nodes.attribute.AttributeStatistic.name) |  |
-| [node](#nodebpy.nodes.attribute.AttributeStatistic.node) |  |
-| [o_max](#nodebpy.nodes.attribute.AttributeStatistic.o_max) | Output socket: Max |
-| [o_mean](#nodebpy.nodes.attribute.AttributeStatistic.o_mean) | Output socket: Mean |
-| [o_median](#nodebpy.nodes.attribute.AttributeStatistic.o_median) | Output socket: Median |
-| [o_min](#nodebpy.nodes.attribute.AttributeStatistic.o_min) | Output socket: Min |
-| [o_range](#nodebpy.nodes.attribute.AttributeStatistic.o_range) | Output socket: Range |
-| [o_standard_deviation](#nodebpy.nodes.attribute.AttributeStatistic.o_standard_deviation) | Output socket: Standard Deviation |
-| [o_sum](#nodebpy.nodes.attribute.AttributeStatistic.o_sum) | Output socket: Sum |
-| [o_variance](#nodebpy.nodes.attribute.AttributeStatistic.o_variance) | Output socket: Variance |
-| [tree](#nodebpy.nodes.attribute.AttributeStatistic.tree) |  |
-| [type](#nodebpy.nodes.attribute.AttributeStatistic.type) |  |
 
 ### BlurAttribute { #nodebpy.nodes.attribute.BlurAttribute }
 
 ```python
 nodes.attribute.BlurAttribute(
-    value=None,
+    value=0.0,
     iterations=1,
     weight=1.0,
     *,
@@ -81,50 +41,46 @@ Mix attribute values of neighboring elements
 | [tree](#nodebpy.nodes.attribute.BlurAttribute.tree) |  |
 | [type](#nodebpy.nodes.attribute.BlurAttribute.type) |  |
 
-### CaptureAttribute { #nodebpy.nodes.attribute.CaptureAttribute }
-
-```python
-nodes.attribute.CaptureAttribute(*args, geometry=None, domain='POINT', **kwargs)
-```
-
-Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [corner](#nodebpy.nodes.attribute.CaptureAttribute.corner) |  |
-| [curve](#nodebpy.nodes.attribute.CaptureAttribute.curve) |  |
-| [domain](#nodebpy.nodes.attribute.CaptureAttribute.domain) |  |
-| [edge](#nodebpy.nodes.attribute.CaptureAttribute.edge) |  |
-| [face](#nodebpy.nodes.attribute.CaptureAttribute.face) |  |
-| [i_geometry](#nodebpy.nodes.attribute.CaptureAttribute.i_geometry) | Input socket: Geometry |
-| [inputs](#nodebpy.nodes.attribute.CaptureAttribute.inputs) |  |
-| [instance](#nodebpy.nodes.attribute.CaptureAttribute.instance) |  |
-| [layer](#nodebpy.nodes.attribute.CaptureAttribute.layer) |  |
-| [name](#nodebpy.nodes.attribute.CaptureAttribute.name) |  |
-| [node](#nodebpy.nodes.attribute.CaptureAttribute.node) |  |
-| [o_geometry](#nodebpy.nodes.attribute.CaptureAttribute.o_geometry) | Output socket: Geometry |
-| [outputs](#nodebpy.nodes.attribute.CaptureAttribute.outputs) |  |
-| [point](#nodebpy.nodes.attribute.CaptureAttribute.point) |  |
-| [tree](#nodebpy.nodes.attribute.CaptureAttribute.tree) |  |
-| [type](#nodebpy.nodes.attribute.CaptureAttribute.type) |  |
-
 #### Methods
 
 | Name | Description |
 | --- | --- |
-| [capture](#nodebpy.nodes.attribute.CaptureAttribute.capture) | Capture the value to store in the attribute |
+| [color](#nodebpy.nodes.attribute.BlurAttribute.color) | Create Blur Attribute with operation 'Color'. |
+| [float](#nodebpy.nodes.attribute.BlurAttribute.float) | Create Blur Attribute with operation 'Float'. |
+| [integer](#nodebpy.nodes.attribute.BlurAttribute.integer) | Create Blur Attribute with operation 'Integer'. |
+| [vector](#nodebpy.nodes.attribute.BlurAttribute.vector) | Create Blur Attribute with operation 'Vector'. |
 
-##### capture { #nodebpy.nodes.attribute.CaptureAttribute.capture }
+##### color { #nodebpy.nodes.attribute.BlurAttribute.color }
 
 ```python
-nodes.attribute.CaptureAttribute.capture(value)
+nodes.attribute.BlurAttribute.color(value=None, iterations=1, weight=1.0)
 ```
 
-Capture the value to store in the attribute
+Create Blur Attribute with operation 'Color'.
 
-Return the SocketLinker for the output socket
+##### float { #nodebpy.nodes.attribute.BlurAttribute.float }
+
+```python
+nodes.attribute.BlurAttribute.float(value=0.0, iterations=1, weight=1.0)
+```
+
+Create Blur Attribute with operation 'Float'.
+
+##### integer { #nodebpy.nodes.attribute.BlurAttribute.integer }
+
+```python
+nodes.attribute.BlurAttribute.integer(value=0, iterations=1, weight=1.0)
+```
+
+Create Blur Attribute with operation 'Integer'.
+
+##### vector { #nodebpy.nodes.attribute.BlurAttribute.vector }
+
+```python
+nodes.attribute.BlurAttribute.vector(value=None, iterations=1, weight=1.0)
+```
+
+Create Blur Attribute with operation 'Vector'.
 
 ### DomainSize { #nodebpy.nodes.attribute.DomainSize }
 
@@ -145,7 +101,10 @@ Retrieve the number of elements in a geometry for each attribute domain
 | [o_edge_count](#nodebpy.nodes.attribute.DomainSize.o_edge_count) | Output socket: Edge Count |
 | [o_face_corner_count](#nodebpy.nodes.attribute.DomainSize.o_face_corner_count) | Output socket: Face Corner Count |
 | [o_face_count](#nodebpy.nodes.attribute.DomainSize.o_face_count) | Output socket: Face Count |
+| [o_instance_count](#nodebpy.nodes.attribute.DomainSize.o_instance_count) | Output socket: Instance Count |
+| [o_layer_count](#nodebpy.nodes.attribute.DomainSize.o_layer_count) | Output socket: Layer Count |
 | [o_point_count](#nodebpy.nodes.attribute.DomainSize.o_point_count) | Output socket: Point Count |
+| [o_spline_count](#nodebpy.nodes.attribute.DomainSize.o_spline_count) | Output socket: Spline Count |
 | [tree](#nodebpy.nodes.attribute.DomainSize.tree) |  |
 | [type](#nodebpy.nodes.attribute.DomainSize.type) |  |
 
@@ -181,7 +140,7 @@ nodes.attribute.StoreNamedAttribute(
     geometry=None,
     selection=True,
     name='',
-    value=None,
+    value=0.0,
     *,
     data_type='FLOAT',
     domain='POINT',
@@ -205,3 +164,176 @@ Store the result of a field on a geometry as an attribute with the specified nam
 | [o_geometry](#nodebpy.nodes.attribute.StoreNamedAttribute.o_geometry) | Output socket: Geometry |
 | [tree](#nodebpy.nodes.attribute.StoreNamedAttribute.tree) |  |
 | [type](#nodebpy.nodes.attribute.StoreNamedAttribute.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.attribute.StoreNamedAttribute.boolean) | Create Store Named Attribute with operation 'Boolean'. |
+| [color](#nodebpy.nodes.attribute.StoreNamedAttribute.color) | Create Store Named Attribute with operation 'Color'. |
+| [edge](#nodebpy.nodes.attribute.StoreNamedAttribute.edge) | Create Store Named Attribute with operation 'Edge'. |
+| [face](#nodebpy.nodes.attribute.StoreNamedAttribute.face) | Create Store Named Attribute with operation 'Face'. |
+| [float](#nodebpy.nodes.attribute.StoreNamedAttribute.float) | Create Store Named Attribute with operation 'Float'. |
+| [instance](#nodebpy.nodes.attribute.StoreNamedAttribute.instance) | Create Store Named Attribute with operation 'Instance'. |
+| [integer](#nodebpy.nodes.attribute.StoreNamedAttribute.integer) | Create Store Named Attribute with operation 'Integer'. |
+| [layer](#nodebpy.nodes.attribute.StoreNamedAttribute.layer) | Create Store Named Attribute with operation 'Layer'. |
+| [point](#nodebpy.nodes.attribute.StoreNamedAttribute.point) | Create Store Named Attribute with operation 'Point'. |
+| [quaternion](#nodebpy.nodes.attribute.StoreNamedAttribute.quaternion) | Create Store Named Attribute with operation 'Quaternion'. |
+| [spline](#nodebpy.nodes.attribute.StoreNamedAttribute.spline) | Create Store Named Attribute with operation 'Spline'. |
+| [vector](#nodebpy.nodes.attribute.StoreNamedAttribute.vector) | Create Store Named Attribute with operation 'Vector'. |
+
+##### boolean { #nodebpy.nodes.attribute.StoreNamedAttribute.boolean }
+
+```python
+nodes.attribute.StoreNamedAttribute.boolean(
+    geometry=None,
+    selection=True,
+    name='',
+    value=False,
+)
+```
+
+Create Store Named Attribute with operation 'Boolean'.
+
+##### color { #nodebpy.nodes.attribute.StoreNamedAttribute.color }
+
+```python
+nodes.attribute.StoreNamedAttribute.color(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Color'.
+
+##### edge { #nodebpy.nodes.attribute.StoreNamedAttribute.edge }
+
+```python
+nodes.attribute.StoreNamedAttribute.edge(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Edge'.
+
+##### face { #nodebpy.nodes.attribute.StoreNamedAttribute.face }
+
+```python
+nodes.attribute.StoreNamedAttribute.face(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Face'.
+
+##### float { #nodebpy.nodes.attribute.StoreNamedAttribute.float }
+
+```python
+nodes.attribute.StoreNamedAttribute.float(
+    geometry=None,
+    selection=True,
+    name='',
+    value=0.0,
+)
+```
+
+Create Store Named Attribute with operation 'Float'.
+
+##### instance { #nodebpy.nodes.attribute.StoreNamedAttribute.instance }
+
+```python
+nodes.attribute.StoreNamedAttribute.instance(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Instance'.
+
+##### integer { #nodebpy.nodes.attribute.StoreNamedAttribute.integer }
+
+```python
+nodes.attribute.StoreNamedAttribute.integer(
+    geometry=None,
+    selection=True,
+    name='',
+    value=0,
+)
+```
+
+Create Store Named Attribute with operation 'Integer'.
+
+##### layer { #nodebpy.nodes.attribute.StoreNamedAttribute.layer }
+
+```python
+nodes.attribute.StoreNamedAttribute.layer(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Layer'.
+
+##### point { #nodebpy.nodes.attribute.StoreNamedAttribute.point }
+
+```python
+nodes.attribute.StoreNamedAttribute.point(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Point'.
+
+##### quaternion { #nodebpy.nodes.attribute.StoreNamedAttribute.quaternion }
+
+```python
+nodes.attribute.StoreNamedAttribute.quaternion(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Quaternion'.
+
+##### spline { #nodebpy.nodes.attribute.StoreNamedAttribute.spline }
+
+```python
+nodes.attribute.StoreNamedAttribute.spline(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Spline'.
+
+##### vector { #nodebpy.nodes.attribute.StoreNamedAttribute.vector }
+
+```python
+nodes.attribute.StoreNamedAttribute.vector(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Vector'.
