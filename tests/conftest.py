@@ -3,19 +3,22 @@ from pathlib import Path
 import bpy
 import pytest
 
-from nodebpy import TreeBuilder, sockets as s, nodes as n
+from nodebpy import TreeBuilder
+from nodebpy import nodes as n
+from nodebpy import sockets as s
 
 from .snapshots import TreeBuilderSnapshotExtension
 
-BLEND_DIR = Path(__file__).parent / "blend_files"
-JSON_DIR = Path(__file__).parent / "clippings"
+CURRENT = Path(__file__).parent
+BLEND_DIR = CURRENT / "blend_files"
+JSON_DIR = CURRENT / "clippings"
 
 
 @pytest.fixture(autouse=True, scope="function")
 def clean_and_save(request):
     """Cleans the Blender file before each test and saves it after."""
     # Before each test: load a clean home file
-    bpy.ops.wm.read_homefile()
+    bpy.ops.wm.read_homefile(filepath=str(CURRENT / "test_startup.blend"))
 
     yield
 
@@ -39,7 +42,8 @@ def clean_and_save(request):
         _ = ing >> ong
 
         for i, name in enumerate(tree_names):
-            node = n.Group(name)
+            node = n.Group()
+            node.node.node_tree = bpy.data.node_groups[name]
             node.node.location = (0, 200 * i)
 
     mod.node_group = tree.tree

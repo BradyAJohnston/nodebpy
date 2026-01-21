@@ -1,0 +1,866 @@
+# nodes.manual { #nodebpy.nodes.manual }
+
+`nodes.manual`
+
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [AccumulateField](#nodebpy.nodes.manual.AccumulateField) | Add the values of an evaluated field together and output the running total for each element |
+| [AttributeStatistic](#nodebpy.nodes.manual.AttributeStatistic) | Calculate statistics about a data set from a field evaluated on a geometry |
+| [Bake](#nodebpy.nodes.manual.Bake) | Cache the incoming data so that it can be used without recomputation |
+| [CaptureAttribute](#nodebpy.nodes.manual.CaptureAttribute) | Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation |
+| [Compare](#nodebpy.nodes.manual.Compare) | Perform a comparison operation on the two given inputs |
+| [EvaluateAtIndex](#nodebpy.nodes.manual.EvaluateAtIndex) | Retrieve data of other elements in the context's geometry |
+| [EvaluateOnDomain](#nodebpy.nodes.manual.EvaluateOnDomain) | Retrieve values from a field on a different domain besides the domain from the context |
+| [FieldAverage](#nodebpy.nodes.manual.FieldAverage) | Calculate the mean and median of a given field |
+| [FieldMinMax](#nodebpy.nodes.manual.FieldMinMax) | Calculate the minimum and maximum of a given field |
+| [FieldToGrid](#nodebpy.nodes.manual.FieldToGrid) | Create new grids by evaluating new values on an existing volume grid topology |
+| [FieldVariance](#nodebpy.nodes.manual.FieldVariance) | Calculate the standard deviation and variance of a given field |
+| [FormatString](#nodebpy.nodes.manual.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
+| [GeometryToInstance](#nodebpy.nodes.manual.GeometryToInstance) | Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large |
+| [HandleTypeSelection](#nodebpy.nodes.manual.HandleTypeSelection) | Provide a selection based on the handle types of Bézier control points |
+| [IndexSwitch](#nodebpy.nodes.manual.IndexSwitch) | Node builder for the Index Switch node |
+| [JoinGeometry](#nodebpy.nodes.manual.JoinGeometry) | Merge separately generated geometries into a single one |
+| [JoinStrings](#nodebpy.nodes.manual.JoinStrings) | Combine any number of input strings |
+| [MenuSwitch](#nodebpy.nodes.manual.MenuSwitch) | Node builder for the Index Switch node |
+| [MeshBoolean](#nodebpy.nodes.manual.MeshBoolean) | Cut, subtract, or join multiple mesh inputs |
+| [SDFGridBoolean](#nodebpy.nodes.manual.SDFGridBoolean) | Cut, subtract, or join multiple SDF volume grid inputs |
+| [SetHandleType](#nodebpy.nodes.manual.SetHandleType) | Set the handle type for the control points of a Bézier curve |
+| [Value](#nodebpy.nodes.manual.Value) | Input numerical values to other nodes in the tree |
+
+### AccumulateField { #nodebpy.nodes.manual.AccumulateField }
+
+```python
+nodes.manual.AccumulateField(
+    value=1.0,
+    group_index=0,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+    **kwargs,
+)
+```
+
+Add the values of an evaluated field together and output the running total for each element
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [corner](#nodebpy.nodes.manual.AccumulateField.corner) |  |
+| [data_type](#nodebpy.nodes.manual.AccumulateField.data_type) |  |
+| [domain](#nodebpy.nodes.manual.AccumulateField.domain) |  |
+| [edge](#nodebpy.nodes.manual.AccumulateField.edge) |  |
+| [face](#nodebpy.nodes.manual.AccumulateField.face) |  |
+| [i_group_id](#nodebpy.nodes.manual.AccumulateField.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.manual.AccumulateField.i_value) | Input socket: Value |
+| [instance](#nodebpy.nodes.manual.AccumulateField.instance) |  |
+| [layer](#nodebpy.nodes.manual.AccumulateField.layer) |  |
+| [name](#nodebpy.nodes.manual.AccumulateField.name) |  |
+| [node](#nodebpy.nodes.manual.AccumulateField.node) |  |
+| [o_leading](#nodebpy.nodes.manual.AccumulateField.o_leading) | Output socket: Leading |
+| [o_total](#nodebpy.nodes.manual.AccumulateField.o_total) | Output socket: Total |
+| [o_trailing](#nodebpy.nodes.manual.AccumulateField.o_trailing) | Output socket: Trailing |
+| [point](#nodebpy.nodes.manual.AccumulateField.point) |  |
+| [spline](#nodebpy.nodes.manual.AccumulateField.spline) |  |
+| [tree](#nodebpy.nodes.manual.AccumulateField.tree) |  |
+| [type](#nodebpy.nodes.manual.AccumulateField.type) |  |
+
+### AttributeStatistic { #nodebpy.nodes.manual.AttributeStatistic }
+
+```python
+nodes.manual.AttributeStatistic(
+    geometry=None,
+    selection=True,
+    attribute=None,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+    **kwargs,
+)
+```
+
+Calculate statistics about a data set from a field evaluated on a geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.manual.AttributeStatistic.data_type) |  |
+| [domain](#nodebpy.nodes.manual.AttributeStatistic.domain) |  |
+| [i_attribute](#nodebpy.nodes.manual.AttributeStatistic.i_attribute) | Input socket: Attribute |
+| [i_geometry](#nodebpy.nodes.manual.AttributeStatistic.i_geometry) | Input socket: Geometry |
+| [i_selection](#nodebpy.nodes.manual.AttributeStatistic.i_selection) | Input socket: Selection |
+| [name](#nodebpy.nodes.manual.AttributeStatistic.name) |  |
+| [node](#nodebpy.nodes.manual.AttributeStatistic.node) |  |
+| [o_max](#nodebpy.nodes.manual.AttributeStatistic.o_max) | Output socket: Max |
+| [o_mean](#nodebpy.nodes.manual.AttributeStatistic.o_mean) | Output socket: Mean |
+| [o_median](#nodebpy.nodes.manual.AttributeStatistic.o_median) | Output socket: Median |
+| [o_min](#nodebpy.nodes.manual.AttributeStatistic.o_min) | Output socket: Min |
+| [o_range](#nodebpy.nodes.manual.AttributeStatistic.o_range) | Output socket: Range |
+| [o_standard_deviation](#nodebpy.nodes.manual.AttributeStatistic.o_standard_deviation) | Output socket: Standard Deviation |
+| [o_sum](#nodebpy.nodes.manual.AttributeStatistic.o_sum) | Output socket: Sum |
+| [o_variance](#nodebpy.nodes.manual.AttributeStatistic.o_variance) | Output socket: Variance |
+| [tree](#nodebpy.nodes.manual.AttributeStatistic.tree) |  |
+| [type](#nodebpy.nodes.manual.AttributeStatistic.type) |  |
+
+### Bake { #nodebpy.nodes.manual.Bake }
+
+```python
+nodes.manual.Bake(*args, **kwargs)
+```
+
+Cache the incoming data so that it can be used without recomputation
+
+TODO: properly handle Animation / Still bake opations and ability to bake to a file
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_input_socket](#nodebpy.nodes.manual.Bake.i_input_socket) | Input socket: |
+| [inputs](#nodebpy.nodes.manual.Bake.inputs) |  |
+| [name](#nodebpy.nodes.manual.Bake.name) |  |
+| [node](#nodebpy.nodes.manual.Bake.node) |  |
+| [o_input_socket](#nodebpy.nodes.manual.Bake.o_input_socket) | Output socket: |
+| [outputs](#nodebpy.nodes.manual.Bake.outputs) |  |
+| [tree](#nodebpy.nodes.manual.Bake.tree) |  |
+| [type](#nodebpy.nodes.manual.Bake.type) |  |
+
+### CaptureAttribute { #nodebpy.nodes.manual.CaptureAttribute }
+
+```python
+nodes.manual.CaptureAttribute(*args, geometry=None, domain='POINT', **kwargs)
+```
+
+Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [corner](#nodebpy.nodes.manual.CaptureAttribute.corner) |  |
+| [curve](#nodebpy.nodes.manual.CaptureAttribute.curve) |  |
+| [domain](#nodebpy.nodes.manual.CaptureAttribute.domain) |  |
+| [edge](#nodebpy.nodes.manual.CaptureAttribute.edge) |  |
+| [face](#nodebpy.nodes.manual.CaptureAttribute.face) |  |
+| [i_geometry](#nodebpy.nodes.manual.CaptureAttribute.i_geometry) | Input socket: Geometry |
+| [inputs](#nodebpy.nodes.manual.CaptureAttribute.inputs) |  |
+| [instance](#nodebpy.nodes.manual.CaptureAttribute.instance) |  |
+| [layer](#nodebpy.nodes.manual.CaptureAttribute.layer) |  |
+| [name](#nodebpy.nodes.manual.CaptureAttribute.name) |  |
+| [node](#nodebpy.nodes.manual.CaptureAttribute.node) |  |
+| [o_geometry](#nodebpy.nodes.manual.CaptureAttribute.o_geometry) | Output socket: Geometry |
+| [outputs](#nodebpy.nodes.manual.CaptureAttribute.outputs) |  |
+| [point](#nodebpy.nodes.manual.CaptureAttribute.point) |  |
+| [tree](#nodebpy.nodes.manual.CaptureAttribute.tree) |  |
+| [type](#nodebpy.nodes.manual.CaptureAttribute.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.manual.CaptureAttribute.capture) | Capture the value to store in the attribute |
+
+##### capture { #nodebpy.nodes.manual.CaptureAttribute.capture }
+
+```python
+nodes.manual.CaptureAttribute.capture(value)
+```
+
+Capture the value to store in the attribute
+
+Return the SocketLinker for the output socket
+
+### Compare { #nodebpy.nodes.manual.Compare }
+
+```python
+nodes.manual.Compare(operation='GREATER_THAN', data_type='FLOAT', **kwargs)
+```
+
+Perform a comparison operation on the two given inputs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [brighter](#nodebpy.nodes.manual.Compare.brighter) |  |
+| [darker](#nodebpy.nodes.manual.Compare.darker) |  |
+| [data_type](#nodebpy.nodes.manual.Compare.data_type) |  |
+| [equal](#nodebpy.nodes.manual.Compare.equal) |  |
+| [greater_equal](#nodebpy.nodes.manual.Compare.greater_equal) |  |
+| [greater_than](#nodebpy.nodes.manual.Compare.greater_than) |  |
+| [i_a](#nodebpy.nodes.manual.Compare.i_a) | Input socket: A |
+| [i_b](#nodebpy.nodes.manual.Compare.i_b) | Input socket: B |
+| [less_equal](#nodebpy.nodes.manual.Compare.less_equal) |  |
+| [less_than](#nodebpy.nodes.manual.Compare.less_than) |  |
+| [mode](#nodebpy.nodes.manual.Compare.mode) |  |
+| [name](#nodebpy.nodes.manual.Compare.name) |  |
+| [node](#nodebpy.nodes.manual.Compare.node) |  |
+| [not_equal](#nodebpy.nodes.manual.Compare.not_equal) |  |
+| [o_result](#nodebpy.nodes.manual.Compare.o_result) | Output socket: Result |
+| [operation](#nodebpy.nodes.manual.Compare.operation) |  |
+| [tree](#nodebpy.nodes.manual.Compare.tree) |  |
+| [type](#nodebpy.nodes.manual.Compare.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [color](#nodebpy.nodes.manual.Compare.color) | Create Compare with operation 'Color'. |
+| [float](#nodebpy.nodes.manual.Compare.float) |  |
+| [integer](#nodebpy.nodes.manual.Compare.integer) |  |
+| [string](#nodebpy.nodes.manual.Compare.string) | Create Compare with operation 'String'. |
+| [vector](#nodebpy.nodes.manual.Compare.vector) |  |
+
+##### color { #nodebpy.nodes.manual.Compare.color }
+
+```python
+nodes.manual.Compare.color(a=None, b=None, operation='EQUAL', *, epsilon=None)
+```
+
+Create Compare with operation 'Color'.
+
+##### float { #nodebpy.nodes.manual.Compare.float }
+
+```python
+nodes.manual.Compare.float(
+    a=0.0,
+    b=0.0,
+    operation='LESS_THAN',
+    *,
+    epsilon=0.0001,
+)
+```
+
+
+
+##### integer { #nodebpy.nodes.manual.Compare.integer }
+
+```python
+nodes.manual.Compare.integer(a=0, b=0, operation='LESS_THAN')
+```
+
+
+
+##### string { #nodebpy.nodes.manual.Compare.string }
+
+```python
+nodes.manual.Compare.string(a, b)
+```
+
+Create Compare with operation 'String'.
+
+##### vector { #nodebpy.nodes.manual.Compare.vector }
+
+```python
+nodes.manual.Compare.vector(
+    a=(0.0, 0.0, 0.0),
+    b=(0.0, 0.0, 0.0),
+    operation='LESS_THAN',
+    *,
+    mode='ELEMENT',
+    c=None,
+    angle=None,
+    epsilon=None,
+)
+```
+
+
+
+### EvaluateAtIndex { #nodebpy.nodes.manual.EvaluateAtIndex }
+
+```python
+nodes.manual.EvaluateAtIndex(
+    value=None,
+    index=0,
+    *,
+    domain='POINT',
+    data_type='FLOAT',
+    **kwargs,
+)
+```
+
+Retrieve data of other elements in the context's geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [corner](#nodebpy.nodes.manual.EvaluateAtIndex.corner) |  |
+| [data_type](#nodebpy.nodes.manual.EvaluateAtIndex.data_type) |  |
+| [domain](#nodebpy.nodes.manual.EvaluateAtIndex.domain) |  |
+| [edge](#nodebpy.nodes.manual.EvaluateAtIndex.edge) |  |
+| [face](#nodebpy.nodes.manual.EvaluateAtIndex.face) |  |
+| [i_index](#nodebpy.nodes.manual.EvaluateAtIndex.i_index) | Input socket: Index |
+| [i_value](#nodebpy.nodes.manual.EvaluateAtIndex.i_value) | Input socket: Value |
+| [instance](#nodebpy.nodes.manual.EvaluateAtIndex.instance) |  |
+| [layer](#nodebpy.nodes.manual.EvaluateAtIndex.layer) |  |
+| [name](#nodebpy.nodes.manual.EvaluateAtIndex.name) |  |
+| [node](#nodebpy.nodes.manual.EvaluateAtIndex.node) |  |
+| [o_value](#nodebpy.nodes.manual.EvaluateAtIndex.o_value) | Output socket: Value |
+| [point](#nodebpy.nodes.manual.EvaluateAtIndex.point) |  |
+| [spline](#nodebpy.nodes.manual.EvaluateAtIndex.spline) |  |
+| [tree](#nodebpy.nodes.manual.EvaluateAtIndex.tree) |  |
+| [type](#nodebpy.nodes.manual.EvaluateAtIndex.type) |  |
+
+### EvaluateOnDomain { #nodebpy.nodes.manual.EvaluateOnDomain }
+
+```python
+nodes.manual.EvaluateOnDomain(value=None, *, domain='POINT', data_type='FLOAT')
+```
+
+Retrieve values from a field on a different domain besides the domain from the context
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [corner](#nodebpy.nodes.manual.EvaluateOnDomain.corner) |  |
+| [data_type](#nodebpy.nodes.manual.EvaluateOnDomain.data_type) |  |
+| [domain](#nodebpy.nodes.manual.EvaluateOnDomain.domain) |  |
+| [edge](#nodebpy.nodes.manual.EvaluateOnDomain.edge) |  |
+| [face](#nodebpy.nodes.manual.EvaluateOnDomain.face) |  |
+| [i_value](#nodebpy.nodes.manual.EvaluateOnDomain.i_value) | Input socket: Value |
+| [instance](#nodebpy.nodes.manual.EvaluateOnDomain.instance) |  |
+| [layer](#nodebpy.nodes.manual.EvaluateOnDomain.layer) |  |
+| [name](#nodebpy.nodes.manual.EvaluateOnDomain.name) |  |
+| [node](#nodebpy.nodes.manual.EvaluateOnDomain.node) |  |
+| [o_value](#nodebpy.nodes.manual.EvaluateOnDomain.o_value) | Output socket: Value |
+| [point](#nodebpy.nodes.manual.EvaluateOnDomain.point) |  |
+| [spline](#nodebpy.nodes.manual.EvaluateOnDomain.spline) |  |
+| [tree](#nodebpy.nodes.manual.EvaluateOnDomain.tree) |  |
+| [type](#nodebpy.nodes.manual.EvaluateOnDomain.type) |  |
+
+### FieldAverage { #nodebpy.nodes.manual.FieldAverage }
+
+```python
+nodes.manual.FieldAverage(
+    value=None,
+    group_index=0,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
+```
+
+Calculate the mean and median of a given field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [corner](#nodebpy.nodes.manual.FieldAverage.corner) |  |
+| [data_type](#nodebpy.nodes.manual.FieldAverage.data_type) |  |
+| [domain](#nodebpy.nodes.manual.FieldAverage.domain) |  |
+| [edge](#nodebpy.nodes.manual.FieldAverage.edge) |  |
+| [face](#nodebpy.nodes.manual.FieldAverage.face) |  |
+| [i_group_id](#nodebpy.nodes.manual.FieldAverage.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.manual.FieldAverage.i_value) | Input socket: Value |
+| [instance](#nodebpy.nodes.manual.FieldAverage.instance) |  |
+| [layer](#nodebpy.nodes.manual.FieldAverage.layer) |  |
+| [name](#nodebpy.nodes.manual.FieldAverage.name) |  |
+| [node](#nodebpy.nodes.manual.FieldAverage.node) |  |
+| [o_mean](#nodebpy.nodes.manual.FieldAverage.o_mean) | Output socket: Mean |
+| [o_median](#nodebpy.nodes.manual.FieldAverage.o_median) | Output socket: Median |
+| [point](#nodebpy.nodes.manual.FieldAverage.point) |  |
+| [spline](#nodebpy.nodes.manual.FieldAverage.spline) |  |
+| [tree](#nodebpy.nodes.manual.FieldAverage.tree) |  |
+| [type](#nodebpy.nodes.manual.FieldAverage.type) |  |
+
+### FieldMinMax { #nodebpy.nodes.manual.FieldMinMax }
+
+```python
+nodes.manual.FieldMinMax(
+    value=1.0,
+    group_index=0,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
+```
+
+Calculate the minimum and maximum of a given field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [corner](#nodebpy.nodes.manual.FieldMinMax.corner) |  |
+| [data_type](#nodebpy.nodes.manual.FieldMinMax.data_type) |  |
+| [domain](#nodebpy.nodes.manual.FieldMinMax.domain) |  |
+| [edge](#nodebpy.nodes.manual.FieldMinMax.edge) |  |
+| [face](#nodebpy.nodes.manual.FieldMinMax.face) |  |
+| [i_group_id](#nodebpy.nodes.manual.FieldMinMax.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.manual.FieldMinMax.i_value) | Input socket: Value |
+| [instance](#nodebpy.nodes.manual.FieldMinMax.instance) |  |
+| [layer](#nodebpy.nodes.manual.FieldMinMax.layer) |  |
+| [name](#nodebpy.nodes.manual.FieldMinMax.name) |  |
+| [node](#nodebpy.nodes.manual.FieldMinMax.node) |  |
+| [o_max](#nodebpy.nodes.manual.FieldMinMax.o_max) | Output socket: Max |
+| [o_min](#nodebpy.nodes.manual.FieldMinMax.o_min) | Output socket: Min |
+| [point](#nodebpy.nodes.manual.FieldMinMax.point) |  |
+| [spline](#nodebpy.nodes.manual.FieldMinMax.spline) |  |
+| [tree](#nodebpy.nodes.manual.FieldMinMax.tree) |  |
+| [type](#nodebpy.nodes.manual.FieldMinMax.type) |  |
+
+### FieldToGrid { #nodebpy.nodes.manual.FieldToGrid }
+
+```python
+nodes.manual.FieldToGrid(*args, topology=None, data_type='FLOAT', **kwargs)
+```
+
+Create new grids by evaluating new values on an existing volume grid topology
+
+New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
+
+Data types are inferred automatically from the closest compatible data type.
+
+#### Inputs: {.doc-section .doc-section-inputs}
+
+topology: LINKABLE
+    The grid which contains the topology to evaluate the different fields on.
+data_type: _GridDataTypes = "FLOAT"
+    The data type of the grid to evaluate on. Possible values are "FLOAT", "INT", "VECTOR", "BOOLEAN".
+*args: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_BOOLEAN
+    The fields to evaluate on the grid.
+**kwargs: dict[str, TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_GEOMETRY]
+    The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.manual.FieldToGrid.data_type) |  |
+| [i_topology](#nodebpy.nodes.manual.FieldToGrid.i_topology) | Input socket: Topology |
+| [inputs](#nodebpy.nodes.manual.FieldToGrid.inputs) |  |
+| [name](#nodebpy.nodes.manual.FieldToGrid.name) |  |
+| [node](#nodebpy.nodes.manual.FieldToGrid.node) |  |
+| [outputs](#nodebpy.nodes.manual.FieldToGrid.outputs) |  |
+| [tree](#nodebpy.nodes.manual.FieldToGrid.tree) |  |
+| [type](#nodebpy.nodes.manual.FieldToGrid.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.manual.FieldToGrid.capture) |  |
+
+##### capture { #nodebpy.nodes.manual.FieldToGrid.capture }
+
+```python
+nodes.manual.FieldToGrid.capture(*args, **kwargs)
+```
+
+
+
+### FieldVariance { #nodebpy.nodes.manual.FieldVariance }
+
+```python
+nodes.manual.FieldVariance(
+    value=None,
+    group_index=None,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
+```
+
+Calculate the standard deviation and variance of a given field
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [corner](#nodebpy.nodes.manual.FieldVariance.corner) |  |
+| [data_type](#nodebpy.nodes.manual.FieldVariance.data_type) |  |
+| [domain](#nodebpy.nodes.manual.FieldVariance.domain) |  |
+| [edge](#nodebpy.nodes.manual.FieldVariance.edge) |  |
+| [face](#nodebpy.nodes.manual.FieldVariance.face) |  |
+| [i_group_id](#nodebpy.nodes.manual.FieldVariance.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.manual.FieldVariance.i_value) | Input socket: Value |
+| [instance](#nodebpy.nodes.manual.FieldVariance.instance) |  |
+| [layer](#nodebpy.nodes.manual.FieldVariance.layer) |  |
+| [name](#nodebpy.nodes.manual.FieldVariance.name) |  |
+| [node](#nodebpy.nodes.manual.FieldVariance.node) |  |
+| [o_standard_deviation](#nodebpy.nodes.manual.FieldVariance.o_standard_deviation) | Output socket: Standard Deviation |
+| [o_variance](#nodebpy.nodes.manual.FieldVariance.o_variance) | Output socket: Variance |
+| [point](#nodebpy.nodes.manual.FieldVariance.point) |  |
+| [spline](#nodebpy.nodes.manual.FieldVariance.spline) |  |
+| [tree](#nodebpy.nodes.manual.FieldVariance.tree) |  |
+| [type](#nodebpy.nodes.manual.FieldVariance.type) |  |
+
+### FormatString { #nodebpy.nodes.manual.FormatString }
+
+```python
+nodes.manual.FormatString(*args, format='', **kwargs)
+```
+
+Insert values into a string using a Python and path template compatible formatting syntax
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_format](#nodebpy.nodes.manual.FormatString.i_format) | Input socket: Format |
+| [i_input_socket](#nodebpy.nodes.manual.FormatString.i_input_socket) | Input socket: |
+| [items](#nodebpy.nodes.manual.FormatString.items) | Input sockets: |
+| [name](#nodebpy.nodes.manual.FormatString.name) |  |
+| [node](#nodebpy.nodes.manual.FormatString.node) |  |
+| [o_string](#nodebpy.nodes.manual.FormatString.o_string) | Output socket: String |
+| [tree](#nodebpy.nodes.manual.FormatString.tree) |  |
+| [type](#nodebpy.nodes.manual.FormatString.type) |  |
+
+### GeometryToInstance { #nodebpy.nodes.manual.GeometryToInstance }
+
+```python
+nodes.manual.GeometryToInstance(*args)
+```
+
+Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.manual.GeometryToInstance.i_geometry) | Input socket: Geometry |
+| [name](#nodebpy.nodes.manual.GeometryToInstance.name) |  |
+| [node](#nodebpy.nodes.manual.GeometryToInstance.node) |  |
+| [o_instances](#nodebpy.nodes.manual.GeometryToInstance.o_instances) | Output socket: Instances |
+| [tree](#nodebpy.nodes.manual.GeometryToInstance.tree) |  |
+| [type](#nodebpy.nodes.manual.GeometryToInstance.type) |  |
+
+### HandleTypeSelection { #nodebpy.nodes.manual.HandleTypeSelection }
+
+```python
+nodes.manual.HandleTypeSelection(handle_type='AUTO', left=True, right=True)
+```
+
+Provide a selection based on the handle types of Bézier control points
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [handle_type](#nodebpy.nodes.manual.HandleTypeSelection.handle_type) |  |
+| [left](#nodebpy.nodes.manual.HandleTypeSelection.left) |  |
+| [mode](#nodebpy.nodes.manual.HandleTypeSelection.mode) |  |
+| [name](#nodebpy.nodes.manual.HandleTypeSelection.name) |  |
+| [node](#nodebpy.nodes.manual.HandleTypeSelection.node) |  |
+| [o_selection](#nodebpy.nodes.manual.HandleTypeSelection.o_selection) | Output socket: Selection |
+| [right](#nodebpy.nodes.manual.HandleTypeSelection.right) |  |
+| [tree](#nodebpy.nodes.manual.HandleTypeSelection.tree) |  |
+| [type](#nodebpy.nodes.manual.HandleTypeSelection.type) |  |
+
+### IndexSwitch { #nodebpy.nodes.manual.IndexSwitch }
+
+```python
+nodes.manual.IndexSwitch(*args, index=0, data_type='FLOAT')
+```
+
+Node builder for the Index Switch node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.manual.IndexSwitch.boolean) |  |
+| [bundle](#nodebpy.nodes.manual.IndexSwitch.bundle) |  |
+| [closure](#nodebpy.nodes.manual.IndexSwitch.closure) |  |
+| [collection](#nodebpy.nodes.manual.IndexSwitch.collection) |  |
+| [color](#nodebpy.nodes.manual.IndexSwitch.color) |  |
+| [data_type](#nodebpy.nodes.manual.IndexSwitch.data_type) | Input socket: Data Type |
+| [float](#nodebpy.nodes.manual.IndexSwitch.float) |  |
+| [geometry](#nodebpy.nodes.manual.IndexSwitch.geometry) |  |
+| [i_index](#nodebpy.nodes.manual.IndexSwitch.i_index) | Input socket: Index |
+| [image](#nodebpy.nodes.manual.IndexSwitch.image) |  |
+| [inputs](#nodebpy.nodes.manual.IndexSwitch.inputs) | Input sockets |
+| [integer](#nodebpy.nodes.manual.IndexSwitch.integer) |  |
+| [material](#nodebpy.nodes.manual.IndexSwitch.material) |  |
+| [matrix](#nodebpy.nodes.manual.IndexSwitch.matrix) |  |
+| [menu](#nodebpy.nodes.manual.IndexSwitch.menu) |  |
+| [name](#nodebpy.nodes.manual.IndexSwitch.name) |  |
+| [node](#nodebpy.nodes.manual.IndexSwitch.node) |  |
+| [o_output](#nodebpy.nodes.manual.IndexSwitch.o_output) | Output socket: Output |
+| [object](#nodebpy.nodes.manual.IndexSwitch.object) |  |
+| [rotation](#nodebpy.nodes.manual.IndexSwitch.rotation) |  |
+| [string](#nodebpy.nodes.manual.IndexSwitch.string) |  |
+| [tree](#nodebpy.nodes.manual.IndexSwitch.tree) |  |
+| [type](#nodebpy.nodes.manual.IndexSwitch.type) |  |
+| [vector](#nodebpy.nodes.manual.IndexSwitch.vector) |  |
+
+### JoinGeometry { #nodebpy.nodes.manual.JoinGeometry }
+
+```python
+nodes.manual.JoinGeometry(*args)
+```
+
+Merge separately generated geometries into a single one
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.manual.JoinGeometry.i_geometry) | Input socket: Geometry |
+| [name](#nodebpy.nodes.manual.JoinGeometry.name) |  |
+| [node](#nodebpy.nodes.manual.JoinGeometry.node) |  |
+| [o_geometry](#nodebpy.nodes.manual.JoinGeometry.o_geometry) | Output socket: Geometry |
+| [tree](#nodebpy.nodes.manual.JoinGeometry.tree) |  |
+| [type](#nodebpy.nodes.manual.JoinGeometry.type) |  |
+
+### JoinStrings { #nodebpy.nodes.manual.JoinStrings }
+
+```python
+nodes.manual.JoinStrings(*args, delimiter='')
+```
+
+Combine any number of input strings
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_delimiter](#nodebpy.nodes.manual.JoinStrings.i_delimiter) | Input socket: Delimiter |
+| [i_strings](#nodebpy.nodes.manual.JoinStrings.i_strings) | Input socket: Strings |
+| [name](#nodebpy.nodes.manual.JoinStrings.name) |  |
+| [node](#nodebpy.nodes.manual.JoinStrings.node) |  |
+| [o_string](#nodebpy.nodes.manual.JoinStrings.o_string) | Output socket: String |
+| [tree](#nodebpy.nodes.manual.JoinStrings.tree) |  |
+| [type](#nodebpy.nodes.manual.JoinStrings.type) |  |
+
+### MenuSwitch { #nodebpy.nodes.manual.MenuSwitch }
+
+```python
+nodes.manual.MenuSwitch(*args, menu=None, data_type='FLOAT', **kwargs)
+```
+
+Node builder for the Index Switch node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.manual.MenuSwitch.boolean) |  |
+| [bundle](#nodebpy.nodes.manual.MenuSwitch.bundle) |  |
+| [closure](#nodebpy.nodes.manual.MenuSwitch.closure) |  |
+| [collection](#nodebpy.nodes.manual.MenuSwitch.collection) |  |
+| [color](#nodebpy.nodes.manual.MenuSwitch.color) |  |
+| [data_type](#nodebpy.nodes.manual.MenuSwitch.data_type) | Input socket: Data Type |
+| [float](#nodebpy.nodes.manual.MenuSwitch.float) |  |
+| [geometry](#nodebpy.nodes.manual.MenuSwitch.geometry) |  |
+| [i_menu](#nodebpy.nodes.manual.MenuSwitch.i_menu) | Input socket: Menu |
+| [image](#nodebpy.nodes.manual.MenuSwitch.image) |  |
+| [inputs](#nodebpy.nodes.manual.MenuSwitch.inputs) | Input sockets |
+| [integer](#nodebpy.nodes.manual.MenuSwitch.integer) |  |
+| [material](#nodebpy.nodes.manual.MenuSwitch.material) |  |
+| [matrix](#nodebpy.nodes.manual.MenuSwitch.matrix) |  |
+| [menu](#nodebpy.nodes.manual.MenuSwitch.menu) |  |
+| [name](#nodebpy.nodes.manual.MenuSwitch.name) |  |
+| [node](#nodebpy.nodes.manual.MenuSwitch.node) |  |
+| [o_output](#nodebpy.nodes.manual.MenuSwitch.o_output) | Output socket: Output |
+| [object](#nodebpy.nodes.manual.MenuSwitch.object) |  |
+| [outputs](#nodebpy.nodes.manual.MenuSwitch.outputs) | Input sockets |
+| [rotation](#nodebpy.nodes.manual.MenuSwitch.rotation) |  |
+| [string](#nodebpy.nodes.manual.MenuSwitch.string) |  |
+| [tree](#nodebpy.nodes.manual.MenuSwitch.tree) |  |
+| [type](#nodebpy.nodes.manual.MenuSwitch.type) |  |
+| [vector](#nodebpy.nodes.manual.MenuSwitch.vector) |  |
+
+### MeshBoolean { #nodebpy.nodes.manual.MeshBoolean }
+
+```python
+nodes.manual.MeshBoolean(
+    *args,
+    operation='DIFFERENCE',
+    solver='FLOAT',
+    **kwargs,
+)
+```
+
+Cut, subtract, or join multiple mesh inputs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_mesh_1](#nodebpy.nodes.manual.MeshBoolean.i_mesh_1) | Input socket: Mesh 1 |
+| [i_mesh_2](#nodebpy.nodes.manual.MeshBoolean.i_mesh_2) | Input socket: Mesh 2 |
+| [name](#nodebpy.nodes.manual.MeshBoolean.name) |  |
+| [node](#nodebpy.nodes.manual.MeshBoolean.node) |  |
+| [o_intersecting_edges](#nodebpy.nodes.manual.MeshBoolean.o_intersecting_edges) | Output socket: Mesh |
+| [o_mesh](#nodebpy.nodes.manual.MeshBoolean.o_mesh) | Output socket: Mesh |
+| [operation](#nodebpy.nodes.manual.MeshBoolean.operation) |  |
+| [solver](#nodebpy.nodes.manual.MeshBoolean.solver) |  |
+| [tree](#nodebpy.nodes.manual.MeshBoolean.tree) |  |
+| [type](#nodebpy.nodes.manual.MeshBoolean.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [difference](#nodebpy.nodes.manual.MeshBoolean.difference) | Create Mesh Boolean with operation 'Difference'. |
+| [intersect](#nodebpy.nodes.manual.MeshBoolean.intersect) |  |
+| [m_difference](#nodebpy.nodes.manual.MeshBoolean.m_difference) |  |
+| [m_union](#nodebpy.nodes.manual.MeshBoolean.m_union) |  |
+| [union](#nodebpy.nodes.manual.MeshBoolean.union) | Create Mesh Boolean with operation 'Union'. |
+
+##### difference { #nodebpy.nodes.manual.MeshBoolean.difference }
+
+```python
+nodes.manual.MeshBoolean.difference(mesh_1=None, mesh_2=None)
+```
+
+Create Mesh Boolean with operation 'Difference'.
+
+##### intersect { #nodebpy.nodes.manual.MeshBoolean.intersect }
+
+```python
+nodes.manual.MeshBoolean.intersect(
+    *args,
+    self_intersection=False,
+    hole_tolerant=False,
+    solver='FLOAT',
+)
+```
+
+
+
+##### m_difference { #nodebpy.nodes.manual.MeshBoolean.m_difference }
+
+```python
+nodes.manual.MeshBoolean.m_difference(
+    *args,
+    mesh_1=None,
+    hole_tolerant=False,
+    self_intersection=False,
+    solver='FLOAT',
+)
+```
+
+
+
+##### m_union { #nodebpy.nodes.manual.MeshBoolean.m_union }
+
+```python
+nodes.manual.MeshBoolean.m_union(
+    *args,
+    hole_tolerant=False,
+    self_intersection=False,
+    solver='FLOAT',
+)
+```
+
+
+
+##### union { #nodebpy.nodes.manual.MeshBoolean.union }
+
+```python
+nodes.manual.MeshBoolean.union(mesh_1=None, mesh_2=None)
+```
+
+Create Mesh Boolean with operation 'Union'.
+
+### SDFGridBoolean { #nodebpy.nodes.manual.SDFGridBoolean }
+
+```python
+nodes.manual.SDFGridBoolean(operation='DIFFERENCE')
+```
+
+Cut, subtract, or join multiple SDF volume grid inputs
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_grid_1](#nodebpy.nodes.manual.SDFGridBoolean.i_grid_1) | Input socket: Grid 1 |
+| [i_grid_2](#nodebpy.nodes.manual.SDFGridBoolean.i_grid_2) | Input socket: Grid 2 |
+| [name](#nodebpy.nodes.manual.SDFGridBoolean.name) |  |
+| [node](#nodebpy.nodes.manual.SDFGridBoolean.node) |  |
+| [o_grid](#nodebpy.nodes.manual.SDFGridBoolean.o_grid) | Output socket: Grid |
+| [operation](#nodebpy.nodes.manual.SDFGridBoolean.operation) |  |
+| [tree](#nodebpy.nodes.manual.SDFGridBoolean.tree) |  |
+| [type](#nodebpy.nodes.manual.SDFGridBoolean.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [difference](#nodebpy.nodes.manual.SDFGridBoolean.difference) | Create SDF Grid Boolean with operation 'Difference'. |
+| [intersect](#nodebpy.nodes.manual.SDFGridBoolean.intersect) |  |
+| [union](#nodebpy.nodes.manual.SDFGridBoolean.union) |  |
+
+##### difference { #nodebpy.nodes.manual.SDFGridBoolean.difference }
+
+```python
+nodes.manual.SDFGridBoolean.difference(*args, grid_1)
+```
+
+Create SDF Grid Boolean with operation 'Difference'.
+
+##### intersect { #nodebpy.nodes.manual.SDFGridBoolean.intersect }
+
+```python
+nodes.manual.SDFGridBoolean.intersect(*args)
+```
+
+
+
+##### union { #nodebpy.nodes.manual.SDFGridBoolean.union }
+
+```python
+nodes.manual.SDFGridBoolean.union(*args)
+```
+
+
+
+### SetHandleType { #nodebpy.nodes.manual.SetHandleType }
+
+```python
+nodes.manual.SetHandleType(
+    curve=None,
+    selection=True,
+    *,
+    left=False,
+    right=False,
+    handle_type='AUTO',
+)
+```
+
+Set the handle type for the control points of a Bézier curve
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [handle_type](#nodebpy.nodes.manual.SetHandleType.handle_type) |  |
+| [i_curve](#nodebpy.nodes.manual.SetHandleType.i_curve) | Input socket: Curve |
+| [i_selection](#nodebpy.nodes.manual.SetHandleType.i_selection) | Input socket: Selection |
+| [left](#nodebpy.nodes.manual.SetHandleType.left) |  |
+| [name](#nodebpy.nodes.manual.SetHandleType.name) |  |
+| [node](#nodebpy.nodes.manual.SetHandleType.node) |  |
+| [o_curve](#nodebpy.nodes.manual.SetHandleType.o_curve) | Output socket: Curve |
+| [right](#nodebpy.nodes.manual.SetHandleType.right) |  |
+| [tree](#nodebpy.nodes.manual.SetHandleType.tree) |  |
+| [type](#nodebpy.nodes.manual.SetHandleType.type) |  |
+
+### Value { #nodebpy.nodes.manual.Value }
+
+```python
+nodes.manual.Value(value=0.0)
+```
+
+Input numerical values to other nodes in the tree
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.manual.Value.name) |  |
+| [node](#nodebpy.nodes.manual.Value.node) |  |
+| [o_value](#nodebpy.nodes.manual.Value.o_value) | Output socket: Value |
+| [tree](#nodebpy.nodes.manual.Value.tree) |  |
+| [type](#nodebpy.nodes.manual.Value.type) |  |
+| [value](#nodebpy.nodes.manual.Value.value) | Input socket: Value |

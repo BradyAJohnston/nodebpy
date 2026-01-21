@@ -6,7 +6,7 @@ from bpy.types import NodeSocket
 
 from nodebpy.builder import NodeBuilder, SocketLinker
 
-from .types import (
+from ..types import (
     LINKABLE,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_GEOMETRY,

@@ -18,17 +18,50 @@ from typing import Any
 import bpy
 from bpy.types import bpy_prop_array
 from mathutils import Euler, Vector
+from typing_extensions import Literal
 
 NODES_TO_SKIP = [
+    "AlignEulerToVector",
+    "Legacy",
     "Closure",
     "Simulation",
-    "Repeat",
+    "For Each",
+    "Frame",
+    "GridBoolean",
+    "Reroute",
+    #
+]
+
+
+MANUALLY_DEFINED = (
+    "SetHandleType",
+    "HandleTypeSelection",
     "IndexSwitch",
     "MenuSwitch",
-    "VectorMath",
     "CaptureAttribute",
+    "FieldToGrid",
     "JoinGeometry",
-]
+    "SDFGridBoolean",
+    "Bake",
+    "JoinStrings",
+    "GeometryToInstance",
+    "RepeatInput",
+    "RepeatOutput",
+    "RepeatZone",
+    "SimulationInput",
+    "SimulationOutput",
+    "SimulationZone",
+    "FormatString",
+    "Value",
+    "AccumulateField",
+    "EvaluateAtIndex",
+    "FieldAverage",
+    "FieldMinMax",
+    "EvaluateOnDomain",
+    "FieldVariance",
+    "Compare",
+    "AttributeStatistic",
+)
 
 
 @dataclass
@@ -38,6 +71,7 @@ class SocketInfo:
     name: str
     identifier: str  # Internal identifier
     label: str  # Socket label (empty string if no label)
+    description: str  # Socket description (empty string if no description)
     bl_socket_type: str  # e.g., "NodeSocketGeometry", "NodeSocketFloat"
     socket_type: str  # e.g., "GEOMETRY", "FLOAT", "VECTOR"
     is_output: bool
@@ -45,6 +79,41 @@ class SocketInfo:
     default_value: Any = None
     min_value: Any = None
     max_value: Any = None
+    always_enabled: bool = True
+
+    def format_argument_string(self) -> str:
+        type_hint = get_socket_type_hint(self)
+        param_name = get_socket_param_name(socket, sockets_use_same_name)
+        return f"{param_name}: {type_hint} = {format_python_value(self.default_value)}"
+
+    def format_property(self) -> str:
+        """Generate the property string for this socket."""
+        prop_name = "{}_{}".format(
+            "o" if self.is_output else "i", normalize_name(self.identifier)
+        )
+        socket_type_annotation = get_socket_type_annotation(self)
+        description = "{} socket: {}".format(
+            "Output" if self.is_output else "Input", self.name
+        )
+        if self.description != "":
+            description += f"\n        {self.description}\n        "
+
+        return f'''
+    @property
+    def {prop_name}(self) -> {socket_type_annotation}:
+        """{description}"""
+        return self._{"output" if self.is_output else "input"}("{self.identifier}")
+'''
+
+
+@dataclass
+class EnumInfo:
+    """Information about a node enum property."""
+
+    identifier: str
+    name: str
+    description: str = ""
+    sockets: list[SocketInfo] | None = None
 
 
 @dataclass
@@ -53,10 +122,86 @@ class PropertyInfo:
 
     identifier: str
     name: str
-    prop_type: str  # 'ENUM', 'BOOLEAN', 'INT', 'FLOAT', etc.
+    prop_type: Literal["ENUM", "BOOLEAN", "INT", "FLOAT", "STRING", "COLOR", "VECTOR"]
     subtype: str | None = None
-    enum_items: list[tuple[str, str]] | None = None  # [(identifier, name), ...]
+    enum_items: list[EnumInfo] | None = None
     default: Any = None
+
+    def enum_values_to_literal(self) -> str:
+        if self.enum_items is None:
+            return ""
+        return (
+            f"Literal[{', '.join(repr(item.identifier) for item in self.enum_items)}]"
+        )
+
+    def format_name(self) -> str:
+        prop_name = normalize_name(self.identifier)
+        if prop_name in ["primary_axis", "secondary_axis"]:
+            prop_name = prop_name.replace("_axis", "")
+        return prop_name
+
+    def format_property_argument(self) -> str:
+        match self.prop_type:
+            case "ENUM":
+                type = self.enum_values_to_literal()
+                default = f'"{self.default}"'
+            case "BOOLEAN":
+                type = "bool"
+                default = self.default
+            case "INT":
+                type = "int"
+                default = self.default
+            case "FLOAT":
+                match self.subtype:
+                    case "COLOR":
+                        type = "tuple[float, float, float, float]"
+                        default = self.default
+                    case "EULER" | "XYZ":
+                        type = "tuple[float, float, float]"
+                        default = self.default
+                    case _:
+                        type = "float"
+                        default = round(self.default, 3)
+            case "STRING":
+                type = "str"
+                default = f'"{self.default}"'
+            case _:
+                raise ValueError(f"Unsupported property type: {self.prop_type}")
+
+        return "{}: {} = {}".format(self.format_name(), type, default)
+
+    def format_property_accessors(self) -> str:
+        prop_name = self.format_name()
+        match self.prop_type:
+            case "ENUM":
+                type = self.enum_values_to_literal()
+            case "BOOLEAN":
+                type = "bool"
+            case "INT":
+                type = "int"
+            case "FLOAT":
+                match self.subtype:
+                    case "COLOR":
+                        type = "tuple[float, float, float, float]"
+                    case "EULER" | "XYZ":
+                        type = "tuple[float, float, float]"
+                    case _:
+                        type = "float"
+            case "STRING":
+                type = "str"
+            case _:
+                raise ValueError(f"Unsupported property type: {self.prop_type}")
+
+        return f"""\n
+    @property
+    def {prop_name}(self) -> {type}:
+        return self.node.{self.identifier}
+
+    @{prop_name}.setter
+    def {prop_name}(self, value: {type}):
+        self.node.{self.identifier} = value
+    \n
+    """
 
 
 @dataclass
@@ -65,11 +210,101 @@ class NodeInfo:
 
     bl_idname: str  # e.g., "GeometryNodeSetPosition"
     name: str  # Human-readable name
-    category: str  # e.g., "Geometry", "Mesh", "Curve"
+    color_tag: str  # e.g., "GEOMETRY", "CONVERTER", "INPUT"
     description: str
     inputs: list[SocketInfo]
     outputs: list[SocketInfo]
     properties: list[PropertyInfo]
+    domain_sockets: dict[str, list[SocketInfo]]
+
+    @property
+    def class_name(self):
+        return python_class_name(self.name)
+
+    def generate_enum_class_methods(self) -> str:
+        """Generate @classmethod convenience methods for enum operations."""
+        methods = []
+
+        for prop in self.properties:
+            if not prop.identifier in [
+                "operation",
+                "domain",
+                "data_type",
+                "input_type",
+            ]:
+                continue
+
+            # assert operation_enum.enum_items
+            for enum in prop.enum_items:
+                # Handle special cases for better naming
+                method_name = enum.name.lower()
+                # method_name = method_name.replace("_", "")
+                if method_name == "and":
+                    method_name = "l_and"
+                elif method_name == "or":
+                    method_name = "l_or"
+                elif method_name == "not":
+                    method_name = "l_not"
+                else:
+                    # Add underscore suffix to avoid Python keyword conflicts for others
+                    method_name = f"{method_name}"
+
+                # Skip invalid method names
+                if not method_name.replace("_", "").replace("l", "").isalnum():
+                    continue
+
+                # Generate method signature based on node inputs (excluding operation socket)
+                input_params = ["cls"]
+                call_params = []
+
+                all_labels = [socket.identifier for socket in enum.sockets]
+                sockets_use_same_name = all(
+                    label == all_labels[0] for label in all_labels
+                )
+                for socket in enum.sockets:
+                    # Use label-based parameter naming
+                    socket_name = get_socket_param_name(socket, sockets_use_same_name)
+                    if socket_name.startswith("min"):
+                        param_name = "min"
+                    elif socket_name.startswith("max"):
+                        param_name = "max"
+                    else:
+                        param_name = socket_name
+                    param_name = param_name.replace("_float", "").replace("_vector", "")
+
+                    if (
+                        param_name
+                        and param_name != ""
+                        and param_name != normalize_name(prop.identifier)
+                    ):
+                        type_hint = get_socket_type_hint(socket)
+                        input_params.append(
+                            f"{param_name}: {type_hint} = {format_python_value(socket.default_value)}"
+                        )
+                        # Use the same parameter name as in the constructor
+                        call_params.append(f"{socket_name}={param_name}")
+
+                params_str = ",\n        ".join(input_params)
+                call_params_str = ", ".join(call_params)
+
+                # Add operation parameter to call
+                operation_param = f'{prop.identifier}="{enum.identifier}"'
+                if call_params_str:
+                    call_params_str = f"{operation_param}, {call_params_str}"
+                else:
+                    call_params_str = operation_param
+
+                method = f'''
+    @classmethod
+    def {method_name}(
+        {params_str}
+    ) -> "{self.class_name}":
+        """Create {self.name} with operation '{enum.name}'."""
+        return cls({call_params_str})'''
+
+                methods.append(method)
+
+        return "".join(methods)
 
 
 def normalize_name(name: str) -> str:
@@ -101,6 +336,7 @@ def get_socket_param_name(socket: SocketInfo, use_identifier: bool = False) -> s
     """Get the best parameter name for a socket, preferring label over name."""
     # Use label if available and non-empty, otherwise fallback to name
     # if sockets all use the same label name, we need to drop back to using the iden
+    return normalize_name(socket.identifier)
     if use_identifier:
         return normalize_name(socket.identifier)
     else:
@@ -119,18 +355,31 @@ def python_class_name(name: str) -> str:
     # Remove any characters that aren't alphanumeric or spaces
     # This handles cases like "Field Min&Max" -> "Field Min Max"
     class_name = "".join(c if c.isalnum() or c.isspace() else "" for c in class_name)
-
-    # Title case and remove spaces
     class_name = class_name.title().replace(" ", "")
 
-    # Python class names can't start with a digit, so move leading numbers to the end
-    if class_name and class_name[0].isdigit():
-        # Find where digits end
-        i = 0
-        while i < len(class_name) and class_name[i].isdigit():
-            i += 1
-        # Move digits to end: "3DCursor" -> "Cursor3D"
-        class_name = class_name[i:] + class_name[:i]
+    # special mapping to upper case for things like "UV"
+    replacements = {
+        "Uv": "UV",
+        "Sdf": "SDF",
+        "3DCursor": "Cursor3D",
+        "GeometryNode": "",
+        "ShaderMath": "",
+        "FunctionNode": "",
+        "Node": "",
+        "Xyz": "XYZ",
+        "Id": "ID",
+        "Bézier": "Bezier",
+        "ImportStl": "ImportSTL",
+        "ImportObj": "ImportOBJ",
+        "ImportCsv": "ImportCSV",
+        "ImportPly": "ImportPLY",
+        "Vdb": "VDB",
+        "3DLocation": "Location3D",
+    }
+
+    # Apply replacements
+    for key, value in replacements.items():
+        class_name = class_name.replace(key, value)
 
     return class_name
 
@@ -139,42 +388,47 @@ def get_socket_type_hint(socket_info: SocketInfo) -> str:
     """Get the Python type hint for a socket."""
     # Map Blender socket types to our type hints
     type_map = {
-        "NodeSocketGeometry": "LINKABLE",
+        "NodeSocketFloat": "TYPE_INPUT_VALUE",
+        "NodeSocketInt": "TYPE_INPUT_INT",
         "NodeSocketBool": "TYPE_INPUT_BOOLEAN",
         "NodeSocketVector": "TYPE_INPUT_VECTOR",
+        "NodeSocketColor": "TYPE_INPUT_COLOR",
         "NodeSocketRotation": "TYPE_INPUT_ROTATION",
-        "NodeSocketFloat": "float | LINKABLE | None",
-        "NodeSocketInt": "int | LINKABLE | None",
-        "NodeSocketString": "str | LINKABLE | None",
-        "NodeSocketColor": "tuple[float, float, float, float] | LINKABLE | None",
-        "NodeSocketMaterial": "LINKABLE | None",
-        "NodeSocketImage": "LINKABLE | None",
-        "NodeSocketObject": "LINKABLE | None",
-        "NodeSocketCollection": "LINKABLE | None",
+        "NodeSocketMatrix": "TYPE_INPUT_MATRIX",
+        "NodeSocketString": "TYPE_INPUT_STRING",
+        "NodeSocketMenu": "TYPE_INPUT_MENU",
+        "NodeSocketObject": "TYPE_INPUT_OBJECT",
+        "NodeSocketGeometry": "TYPE_INPUT_GEOMETRY",
+        "NodeSocketCollection": "TYPE_INPUT_COLLECTION",
+        "NodeSocketImage": "TYPE_INPUT_IMAGE",
+        "NodeSocketMaterial": "TYPE_INPUT_MATERIAL",
+        "NodeSocketBundle": "TYPE_INPUT_BUNDLE",
+        "NodeSocketClosure": "TYPE_INPUT_CLOSURE",
     }
-
-    return type_map.get(socket_info.bl_socket_type, "LINKABLE | None")
+    for key in type_map.keys():
+        if key in socket_info.bl_socket_type:
+            return type_map[key]
 
 
 def get_socket_type_annotation(socket_info: SocketInfo) -> str:
     """Get the Python type annotation for socket properties."""
-    # Map Blender socket types to proper bpy.types annotations
+    # Map Blender socket types to SocketLinker for consistency
     type_map = {
-        "NodeSocketGeometry": "NodeSocket",
-        "NodeSocketBool": "bpy.types.NodeSocketBool",
-        "NodeSocketVector": "bpy.types.NodeSocketVector",
-        "NodeSocketRotation": "bpy.types.NodeSocketRotation",
-        "NodeSocketFloat": "bpy.types.NodeSocketFloat",
-        "NodeSocketInt": "bpy.types.NodeSocketInt",
-        "NodeSocketString": "bpy.types.NodeSocketString",
-        "NodeSocketColor": "bpy.types.NodeSocketColor",
-        "NodeSocketMaterial": "bpy.types.NodeSocketMaterial",
-        "NodeSocketImage": "bpy.types.NodeSocketImage",
-        "NodeSocketObject": "bpy.types.NodeSocketObject",
-        "NodeSocketCollection": "bpy.types.NodeSocketCollection",
+        "NodeSocketGeometry": "SocketLinker",
+        "NodeSocketBool": "SocketLinker",
+        "NodeSocketVector": "SocketLinker",
+        "NodeSocketRotation": "SocketLinker",
+        "NodeSocketFloat": "SocketLinker",
+        "NodeSocketInt": "SocketLinker",
+        "NodeSocketString": "SocketLinker",
+        "NodeSocketColor": "SocketLinker",
+        "NodeSocketMaterial": "SocketLinker",
+        "NodeSocketImage": "SocketLinker",
+        "NodeSocketObject": "SocketLinker",
+        "NodeSocketCollection": "SocketLinker",
     }
 
-    return type_map.get(socket_info.bl_socket_type, "NodeSocket")
+    return type_map.get(socket_info.bl_socket_type, "SocketLinker")
 
 
 def format_python_value(value: Any) -> str:
@@ -182,167 +436,147 @@ def format_python_value(value: Any) -> str:
     if value is None:
         return "None"
     elif isinstance(value, str):
-        return repr(value)
+        return repr(value) if value != "" else "''"
     elif isinstance(value, bool):
         return str(value)
-    elif isinstance(value, (int, float)):
+    elif isinstance(value, int):
         return str(value)
+    elif isinstance(value, float):
+        return str(round(value, 4))
     elif hasattr(value, "__iter__") and not isinstance(value, str):
-        # Handle tuples, lists, vectors
         try:
-            if len(value) == 3:
-                return f"({value[0]}, {value[1]}, {value[2]})"
-            elif len(value) == 4:
-                return f"({value[0]}, {value[1]}, {value[2]}, {value[3]})"
-            else:
-                return str(tuple(value))
+            return "({})".format(", ".join([round(x, 3) for x in value]))
         except (TypeError, AttributeError):
             return "None"
     else:
-        # For other types, try to get a reasonable representation
         try:
             return repr(value)
         except Exception:
             return "None"
 
 
+def collect_socket_info(
+    sockets: bpy.types.bpy_prop_collection[bpy.types.NodeSocket],
+    hidden=False,
+    is_output=False,
+) -> list[SocketInfo]:
+    """Extract socket infos for a current node state"""
+    inputs = []
+    for socket in sockets:
+        # GN switch sockets are innactive one or the other so we have to
+        # be explicit to capture all of them
+        if socket.node.bl_idname != "GeometryNodeSwitch":
+            if (socket.is_inactive and not hidden) or "__extend__" in socket.identifier:
+                continue
+
+        socket_info = SocketInfo(
+            name=socket.name,
+            identifier=socket.identifier,
+            description=socket.description,
+            label=getattr(socket, "label", ""),
+            bl_socket_type=type(socket).__name__,
+            socket_type=socket.type,
+            is_output=is_output,
+            is_multi_input=getattr(socket, "is_multi_input", False),
+        )
+
+        if hasattr(socket, "default_value"):
+            value = socket.default_value
+            if isinstance(value, (Euler, Vector, bpy_prop_array)):
+                value = list(value)
+            socket_info.default_value = value
+
+        if hasattr(socket, "min_value"):
+            socket_info.min_value = socket.min_value
+        if hasattr(socket, "max_value"):
+            socket_info.max_value = socket.max_value
+
+        inputs.append(socket_info)
+    return inputs
+
+
+def collect_property_info(node, node_type):
+    properties = []
+    props_to_ignore = {"active_index", "active_output"}
+    for base in node_type.__bases__:
+        if hasattr(base, "bl_rna"):
+            for prop in base.bl_rna.properties:
+                props_to_ignore.add(prop.identifier)
+
+    for prop in node_type.bl_rna.properties:
+        if prop.identifier in props_to_ignore:
+            continue
+
+        if prop.type == "ENUM":
+            # the classes quite often have enums registered with lots of potential items
+            # but can only use a subset of them. We attempt to change the value for each item
+            # and collect the sockets that are visible when each property is changed
+            # for generating the class methods late on
+            usable_values: list[EnumInfo] = []
+            # default = prop.default
+            prop_identifier = prop.identifier
+            default = getattr(node, prop_identifier)
+            for item in prop.enum_items:
+                try:
+                    setattr(node, prop_identifier, item.identifier)
+                    usable_values.append(
+                        EnumInfo(
+                            identifier=item.identifier,
+                            name=item.name,
+                            description=item.description,
+                            sockets=collect_socket_info(node.inputs),
+                        )
+                    )
+
+                except TypeError as e:
+                    print(f"TypeError: {prop.identifier}, {e}")
+                    pass
+
+            properties.append(
+                PropertyInfo(
+                    identifier=prop_identifier,
+                    name=prop.name,
+                    prop_type="ENUM",
+                    enum_items=usable_values,
+                    default=default,
+                )
+            )
+        elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
+            default = prop.default if not prop.type == "STRING" else ""
+            if prop.subtype == "COLOR":
+                default = (0.735, 0.735, 0.735, 1.0)
+            if prop.subtype in ["EULER", "XYZ"]:
+                default = (0.0, 0.0, 0.0)
+            properties.append(
+                PropertyInfo(
+                    identifier=prop.identifier,
+                    name=prop.name,
+                    prop_type=prop.type,
+                    subtype=prop.subtype,
+                    default=default,
+                )
+            )
+    return properties
+
+
 def introspect_node(node_type: type) -> NodeInfo | None:
     """Introspect a Blender node type and extract all information."""
     try:
-        # Create temporary node group to instantiate the node
+        # Create temporary node group to instantiate the node"
         temp_tree = bpy.data.node_groups.new("temp", "GeometryNodeTree")
-        node = temp_tree.nodes.new(node_type.__name__)
+        node: bpy.types.Node = temp_tree.nodes.new(node_type.__name__)
 
         # Extract basic info
         bl_idname = node_type.__name__
         name = node_type.bl_rna.name
         description = node_type.bl_rna.description or f"{name} node"
+        color_tag = getattr(node, "color_tag", "UTILITY")
 
-        # Try to determine category from the node's menu registration
-        # This is a simplified approach - geometry-script has more sophisticated categorization
-        category = "Geometry"  # Default
-        if "Mesh" in bl_idname:
-            category = "Mesh"
-        elif "Curve" in bl_idname:
-            category = "Curve"
-        elif "Attribute" in bl_idname:
-            category = "Attribute"
-        elif "Input" in bl_idname:
-            category = "Input"
-        elif "Utility" in bl_idname or "Math" in bl_idname:
-            category = "Utilities"
-        elif bl_idname.startswith("ShaderNode"):
-            # Shader nodes used in geometry contexts
-            if bl_idname in [
-                "ShaderNodeMath",
-                "ShaderNodeVectorMath",
-                "ShaderNodeClamp",
-                "ShaderNodeMapRange",
-                "ShaderNodeMix",
-                "ShaderNodeInvert",
-            ]:
-                category = "Utilities"
-            elif bl_idname in [
-                "ShaderNodeCombineXYZ",
-                "ShaderNodeSeparateXYZ",
-                "ShaderNodeCombineColor",
-                "ShaderNodeSeparateColor",
-            ]:
-                category = "Utilities"
-            elif bl_idname in ["ShaderNodeRGB", "ShaderNodeValue"]:
-                category = "Input"
-            else:
-                category = "Utilities"  # Default for other shader nodes
-        elif bl_idname.startswith("FunctionNode"):
-            # Function nodes
-            if "Input" in bl_idname:
-                category = "Input"
-            else:
-                category = "Utilities"
-
-        # Extract input sockets
-        inputs = []
-        for socket in node.inputs:
-            if not socket.enabled:
-                continue
-
-            socket_info = SocketInfo(
-                name=socket.name,
-                identifier=socket.identifier,
-                label=getattr(socket, "label", ""),  # Capture socket label
-                bl_socket_type=type(socket).__name__,
-                socket_type=socket.type,
-                is_output=False,
-                is_multi_input=getattr(socket, "is_multi_input", False),
-            )
-
-            # Try to get default value
-            if hasattr(socket, "default_value"):
-                # try:
-                value = socket.default_value
-                if isinstance(value, (Euler, Vector, bpy_prop_array)):
-                    value = list(value)
-                socket_info.default_value = value
-                # except (AttributeError, TypeError):
-                #     pass
-
-            # Try to get min/max
-            if hasattr(socket, "min_value"):
-                socket_info.min_value = socket.min_value
-            if hasattr(socket, "max_value"):
-                socket_info.max_value = socket.max_value
-
-            inputs.append(socket_info)
-
-        # Extract output sockets
-        outputs = []
-        for socket in node.outputs:
-            if not socket.enabled:
-                continue
-
-            socket_info = SocketInfo(
-                name=socket.name,
-                identifier=socket.identifier,
-                label=getattr(socket, "label", ""),  # Capture socket label
-                bl_socket_type=type(socket).__name__,
-                socket_type=socket.type,
-                is_output=True,
-            )
-            outputs.append(socket_info)
+        inputs = collect_socket_info(node.inputs, hidden=True)
+        outputs = collect_socket_info(node.outputs, hidden=True, is_output=True)
+        properties = collect_property_info(node, node_type)
 
         # Extract properties (enum menus, boolean flags, etc.)
-        properties = []
-        parent_props = set()
-        for base in node_type.__bases__:
-            if hasattr(base, "bl_rna"):
-                for prop in base.bl_rna.properties:
-                    parent_props.add(prop.identifier)
-
-        for prop in node_type.bl_rna.properties:
-            if prop.identifier in parent_props:
-                continue
-
-            if prop.type == "ENUM":
-                enum_items = [(item.identifier, item.name) for item in prop.enum_items]
-                properties.append(
-                    PropertyInfo(
-                        identifier=prop.identifier,
-                        name=prop.name,
-                        prop_type="ENUM",
-                        enum_items=enum_items,
-                        default=getattr(node, prop.identifier),
-                    )
-                )
-            elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
-                properties.append(
-                    PropertyInfo(
-                        identifier=prop.identifier,
-                        name=prop.name,
-                        prop_type=prop.type,
-                        subtype=prop.subtype,
-                        default=prop.default,
-                    )
-                )
 
         # Clean up
         bpy.data.node_groups.remove(temp_tree)
@@ -350,170 +584,57 @@ def introspect_node(node_type: type) -> NodeInfo | None:
         return NodeInfo(
             bl_idname=bl_idname,
             name=name,
-            category=category,
+            color_tag=color_tag,
             description=description,
             inputs=inputs,
             outputs=outputs,
             properties=properties,
+            domain_sockets={},
         )
 
-    except Exception as e:
+    except RuntimeError as e:
         print(f"Error introspecting {node_type.__name__}: {e}")
         return None
 
 
-def generate_enum_class_methods(node_info: NodeInfo) -> str:
-    """Generate @classmethod convenience methods for enum operations."""
-    methods = []
-
-    # Find the main operation enum (usually contains "operation" in name)
-    operation_enum = None
-    for prop in node_info.properties:
-        if prop.prop_type == "ENUM" and (
-            "operation" in prop.identifier.lower() or prop.identifier == "type"
-        ):
-            operation_enum = prop
-            break
-
-    if not operation_enum:
-        return ""
-
-    class_name = python_class_name(node_info.name)
-
-    # Generate method for each enum value
-    for enum_id, enum_name in operation_enum.enum_items:
-        method_name = enum_id.lower()
-
-        # Handle special cases for better naming
-        method_name = method_name.replace("_", "")
-        if method_name == "and":
-            method_name = "l_and"
-        elif method_name == "or":
-            method_name = "l_or"
-        elif method_name == "not":
-            method_name = "l_not"
-        else:
-            # Add underscore suffix to avoid Python keyword conflicts for others
-            method_name = f"{method_name}"
-
-        # Skip invalid method names
-        if not method_name.replace("_", "").replace("l", "").isalnum():
-            continue
-
-        # Generate method signature based on node inputs (excluding operation socket)
-        input_params = ["cls"]
-        call_params = []
-
-        all_labels = [socket.label for socket in node_info.inputs]
-        sockets_use_same_name = all(label == all_labels[0] for label in all_labels)
-        for socket in node_info.inputs:
-            # Use label-based parameter naming
-            param_name = get_socket_param_name(socket, sockets_use_same_name)
-            if (
-                param_name
-                and param_name != ""
-                and param_name != normalize_name(operation_enum.identifier)
-            ):
-                type_hint = get_socket_type_hint(socket)
-                input_params.append(
-                    f"{param_name}: {type_hint} = {socket.default_value}"
-                )
-                # Use the same parameter name as in the constructor
-                call_params.append(f"{param_name}={param_name}")
-
-        params_str = ",\n        ".join(input_params)
-        call_params_str = ", ".join(call_params)
-
-        # Add operation parameter to call
-        operation_param = f'{operation_enum.identifier}="{enum_id}"'
-        if call_params_str:
-            call_params_str = f"{operation_param}, {call_params_str}"
-        else:
-            call_params_str = operation_param
-
-        method = f'''
-    @classmethod
-    def {method_name}(
-        {params_str}
-    ) -> "{class_name}":
-        """Create {node_info.name} with operation '{enum_name}'."""
-        return cls({call_params_str})'''
-
-        methods.append(method)
-
-    return "".join(methods)
-
-
-def generate_node_class(node_info: NodeInfo) -> tuple[str, bool]:
+def generate_node_class(node_info: NodeInfo) -> str:
     """Generate Python class code for a node.
 
     Returns:
         tuple[str, bool]: (generated code, has_dynamic_sockets)
     """
-    class_name = python_class_name(node_info.name)
-    has_dynamic_sockets = False
 
-    # Build __init__ parameters
     init_params = ["self"]
     establish_links_params = []
 
     # Add input sockets as parameters
     all_labels = [socket.label for socket in node_info.inputs]
     sockets_use_same_name = all(label == all_labels[0] for label in all_labels)
+
     for socket in node_info.inputs:
         param_name = get_socket_param_name(socket, sockets_use_same_name)
-
-        # Skip unnamed sockets (dynamic sockets that users can drag into)
-        # TODO: Support dynamic multi-input sockets properly
-        if not param_name or param_name.strip() == "":
-            has_dynamic_sockets = True
-            continue
-
         type_hint = get_socket_type_hint(socket)
 
         if hasattr(socket, "default_value"):
-            default = getattr(socket, "default_value", "None")
-            if isinstance(default, str):
-                default = f'"{default}"'
+            default = format_python_value(socket.default_value)
         else:
-            default = None
+            default = "None"
         init_params.append(f"{param_name}: {type_hint} = {default}")
         establish_links_params.append((param_name, socket))
 
     # Add properties as parameters
-    for prop in node_info.properties:
-        param_name = normalize_name(prop.identifier)
-        if class_name == "AxesToRotation":
-            param_name += "_axis"
-        match prop.prop_type:
-            case "ENUM":
-                if prop.enum_items:
-                    # Create type literal for enum
-                    enum_values = [item[0] for item in prop.enum_items]
-                    enum_type = (
-                        f"Literal[{', '.join(repr(val) for val in enum_values)}]"
-                    )
-                    init_params.append(f'{param_name}: {enum_type} = "{prop.default}"')
-            case "BOOLEAN":
-                init_params.append(f"{param_name}: bool  = {prop.default}")
-            case "INT":
-                init_params.append(f"{param_name}: int  = {prop.default}")
-            case "FLOAT":
-                init_params.append(f"{param_name}: float = {prop.default}")
-            case "STRING":
-                init_params.append(f'{param_name}: str = "{prop.default}"')
-            case _:
-                init_params.append(f"{param_name}: Any | None = None")
+    for i, prop in enumerate(node_info.properties):
+        if i == 0:
+            if len(node_info.inputs) > 0:
+                init_params.append("*")
+
+        init_params.append(prop.format_property_argument())
 
     # Format init signature
     if len(init_params) > 2:  # If more than just self
-        init_signature = (
-            "(\n        "
-            + ",\n        ".join(init_params)
-            + ",\n        **kwargs\n    )"
-        )
+        init_signature = "(\n        " + ",\n        ".join(init_params) + ",\n    )"
     else:
-        init_signature = "(" + ", ".join(init_params) + ", **kwargs)"
+        init_signature = "(" + ", ".join(init_params) + ")"
 
     # Build establish_links call - map parameter names to socket identifiers
     establish_call = ""
@@ -526,12 +647,9 @@ def generate_node_class(node_info: NodeInfo) -> tuple[str, bool]:
             link_mappings.append(f'"{socket.identifier}": {param_name}')
 
         if link_mappings:
-            establish_call = f"""        key_args = {{
-            {", ".join(link_mappings)}
-        }}
-        key_args.update(kwargs)"""
+            establish_call = f"""        key_args = {{{", ".join(link_mappings)}}}"""
     else:
-        establish_call = "        key_args = kwargs"
+        establish_call = "        key_args = {}"
 
     # Build property setting calls
     property_calls = []
@@ -539,100 +657,19 @@ def generate_node_class(node_info: NodeInfo) -> tuple[str, bool]:
         param_name = normalize_name(prop.identifier)
         property_calls.append(f"""        self.{prop.identifier} = {param_name}""")
 
-    property_setting = "\n".join(property_calls) if property_calls else ""
+    # if property_calls:
+    property_setting = "\n".join(property_calls)
 
     # Generate input properties
-    input_properties = []
+    input_properties = [socket.format_property() for socket in node_info.inputs]
+    output_properties = [socket.format_property() for socket in node_info.outputs]
     used_input_names = set()
-    for socket in node_info.inputs:
-        if not socket.identifier or socket.identifier.strip() == "":
-            continue
-
-        prop_name = f"i_{normalize_name(socket.name)}"
-        if prop_name in used_input_names:
-            prop_name = f"i_{normalize_name(socket.identifier)}"
-
-        if prop_name in used_input_names:
-            continue
-
-        used_input_names.add(prop_name)
-        socket_type_annotation = get_socket_type_annotation(socket)
-
-        input_properties.append(f'''
-    @property
-    def {prop_name}(self) -> {socket_type_annotation}:
-        """Input socket: {socket.name}"""
-        return self._input("{socket.identifier}")''')
-
-    # Generate output properties
-    output_properties = []
     used_output_names = set()
-    for socket in node_info.outputs:
-        if not socket.identifier or socket.identifier.strip() == "":
-            continue
 
-        prop_name = f"o_{normalize_name(socket.name)}"
-        if prop_name in used_output_names:
-            prop_name = f"o_{normalize_name(socket.identifier)}"
-
-        if prop_name in used_output_names:
-            continue
-
-        used_output_names.add(prop_name)
-        socket_type_annotation = get_socket_type_annotation(socket)
-
-        output_properties.append(f'''
-    @property
-    def {prop_name}(self) -> {socket_type_annotation}:
-        """Output socket: {socket.name}"""
-        return self._output("{socket.identifier}")''')
-
-    # Generate property accessors for node properties
-    property_accessors = []
-    for prop in node_info.properties:
-        prop_name = normalize_name(prop.identifier)
-        if prop.prop_type == "ENUM" and prop.enum_items:
-            # Create type literal for enum
-            enum_values = [item[0] for item in prop.enum_items]
-            enum_type = f"Literal[{', '.join(repr(val) for val in enum_values)}]"
-            property_accessors.append(f"""
-    @property
-    def {prop_name}(self) -> {enum_type}:
-        return self.node.{prop.identifier}
-
-    @{prop_name}.setter
-    def {prop_name}(self, value: {enum_type}):
-        self.node.{prop.identifier} = value""")
-
-        else:
-            match prop.prop_type:
-                case "BOOLEAN":
-                    type = "bool"
-                case "INT":
-                    type = "int"
-                case "FLOAT":
-                    match prop.subtype:
-                        case "XYZ":
-                            type = "list[float, float, float]"
-                        case "COLOR_GAMMA":
-                            type = "list[float, float, float, float]"
-                        case _:
-                            type = "float"
-                case "STRING":
-                    type = "str"
-                case _:
-                    raise ValueError(f"Unsupported property type: {prop.prop_type}")
-            property_accessors.append(f"""
-    @property
-    def {prop_name}(self) -> {type}:
-        return self.node.{prop.identifier}
-
-    @{prop_name}.setter
-    def {prop_name}(self, value: {type}):
-        self.node.{prop.identifier} = value""")
-
-    # Generate enum convenience methods
-    enum_methods = generate_enum_class_methods(node_info)
+    property_accessors = [
+        prop.format_property_accessors() for prop in node_info.properties
+    ]
+    enum_methods = node_info.generate_enum_class_methods()
 
     # Add node type annotation
     node_type_annotation = (
@@ -642,8 +679,7 @@ def generate_node_class(node_info: NodeInfo) -> tuple[str, bool]:
     )
 
     # Build class
-    class_code = f'''
-class {class_name}(NodeBuilder):
+    class_code = f'''class {node_info.class_name}(NodeBuilder):
     """{node_info.description}"""
 
     name = "{node_info.bl_idname}"
@@ -655,223 +691,229 @@ class {class_name}(NodeBuilder):
 {property_setting}
         self._establish_links(**key_args)
 {enum_methods}
-{"".join(input_properties)}
-{"".join(output_properties)}
-{"".join(property_accessors)}
+
+{chr(10).join(input_properties)}
+
+{chr(10).join(output_properties)}
+
+{chr(10).join(property_accessors)}
 '''
 
-    return class_code.strip(), has_dynamic_sockets
+    return class_code.strip()
 
 
-def get_all_geometry_nodes() -> list[type]:
-    """Get all registered geometry node types from Blender, including useful shader and function nodes."""
-
-    # Useful shader nodes that work well in geometry node trees
-    USEFUL_SHADER_NODES = [
-        "ShaderNodeMath",
-        "ShaderNodeVectorMath",
-        "ShaderNodeMix",
-        "ShaderNodeClamp",
-        "ShaderNodeMapRange",
-        "ShaderNodeCombineXYZ",
-        "ShaderNodeSeparateXYZ",
-        "ShaderNodeRGB",
-        "ShaderNodeValue",
-        "ShaderNodeCombineColor",
-        "ShaderNodeSeparateColor",
-        "ShaderNodeInvert",
-        "ShaderNodeGamma",
-        "ShaderNodeBrightContrast",
-        "ShaderNodeHueSaturation",
-        "ShaderNodeRGBToBW",
-        "ShaderNodeFloatCurve",
-        "ShaderNodeRGBCurve",
-    ]
-
-    # Useful function nodes for utilities
-    USEFUL_FUNCTION_NODES = [
-        "FunctionNodeCompare",
-        "FunctionNodeBooleanMath",
-        "FunctionNodeFloatToInt",
-        "FunctionNodeRandomValue",
-        "FunctionNodeCombineColor",
-        "FunctionNodeSeparateColor",
-        "FunctionNodeHashValue",
-        "FunctionNodeInputBool",
-        "FunctionNodeInputColor",
-        "FunctionNodeInputInt",
-        "FunctionNodeInputString",
-        "FunctionNodeInputVector",
-    ]
-
+def get_node_names() -> list[type]:
     all_nodes = []
-
     for attr_name in dir(bpy.types):
         node_type = getattr(bpy.types, attr_name)
-
-        # Check if it's a registered node type
-        if not isinstance(node_type, type):
-            continue
-
-        if not issubclass(node_type, bpy.types.Node):
-            continue
-
-        # Include geometry nodes and useful shader/function nodes
-        if not (
-            attr_name.startswith("GeometryNode")
-            or attr_name.startswith("FunctionNode")
-            or attr_name in USEFUL_SHADER_NODES
-            or attr_name in USEFUL_FUNCTION_NODES
-        ):
-            continue
-
-        # Check if it's actually registered
         try:
-            if not node_type.is_registered_node_type():
-                continue
-        except AttributeError:
-            continue
+            if issubclass(node_type, bpy.types.Node):
+                all_nodes.append(node_type)
+        except TypeError:
+            pass
 
-        all_nodes.append(node_type)
-
-    # Sort by name for consistent output
-    all_nodes.sort(key=lambda x: x.__name__)
-
-    return all_nodes
+    return sorted(all_nodes, key=lambda x: x.__name__)
 
 
 def generate_file_header() -> str:
     """Generate the header for generated files."""
-    return '''"""
-Auto-generated Blender Geometry Node classes.
+    return """from typing import Literal
 
-DO NOT EDIT THIS FILE MANUALLY.
-This file is generated by molecularnodes/nodes/generator.py
+import bpy
 
-To regenerate: Run generator.py from within Blender
+from ..builder import NodeBuilder, SocketLinker
+from ..types import (
+    LINKABLE,
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_GEOMETRY,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_STRING,
+    TYPE_INPUT_ROTATION,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_MATRIX,
+    TYPE_INPUT_BUNDLE,
+    TYPE_INPUT_CLOSURE,
+    TYPE_INPUT_OBJECT,
+    TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_IMAGE,
+    TYPE_INPUT_MATERIAL,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_VECTOR,
+)
 
-KNOWN LIMITATIONS:
-- Dynamic multi-input/output sockets are not yet supported
-  (these are the unnamed sockets that appear in the UI for nodes like
-  "Evaluate Closure", "Join Geometry", etc. that allow dragging in
-  multiple connections)
-- TODO: Add support for dynamic socket creation
 """
 
-from __future__ import annotations
-import bpy
-from typing import Any
-from typing_extensions import Literal
-from ..builder import NodeBuilder, NodeSocket
-from . import types
-from .types import LINKABLE, TYPE_INPUT_BOOLEAN, TYPE_INPUT_VECTOR
 
-'''
+def get_filename_for_node(node_info: NodeInfo) -> str:
+    """Determine the target filename for a node based on color_tag and special cases."""
+    # Special cases for zones
+    if any(
+        keyword in node_info.bl_idname
+        for keyword in ["Repeat", "ForEach", "Simulation"]
+    ):
+        return "zone"
 
+    # Special cases for grid/volume nodes
+    if any(keyword in node_info.bl_idname for keyword in ["Volume", "Grid"]):
+        return "grid" if node_info.class_name != "Grid" else "geometry"
 
-def get_manually_specified_nodes() -> set[str]:
-    """Get the list of manually specified node bl_idnames."""
-    manually_specified_nodes = {
-        "FunctionNodeRandomValue",
-        "ShaderNodeSeparateXYZ",
-        "ShaderNodeCombineXYZ",
-        "ShaderNodeMix",
-        "ShaderNodeMath",
-        "FunctionNodeBooleanMath",
+    if "List" in node_info.bl_idname:
+        return "experimental"
+
+    # Map color_tag to filename
+    color_tag_to_filename = {
+        "GEOMETRY": "geometry",
+        "CONVERTER": "converter",
+        "INPUT": "input",
+        "OUTPUT": "output",
+        "ATTRIBUTE": "attribute",
+        "COLOR": "color",
+        "TEXTURE": "texture",
+        "GROUP": "group",
+        "INTERFACE": "interface",
+        "LAYOUT": "layout",
+        "VECTOR": "vector",
     }
-    return manually_specified_nodes
+
+    # Get filename from color_tag, default to utilities.py
+    filename = color_tag_to_filename.get(node_info.color_tag, "utilities.py")
+
+    return filename
 
 
-def generate_all(output_dir: Path | None = None):
+class BaseModuleWriter:
+    output_dir = Path(__file__).parent / "src/nodebpy/nodes/"
+
+
+class ModuleWriter(BaseModuleWriter):
+    def __init__(self, module_name: str):
+        self.module_name = module_name
+        self.node_list: list[NodeInfo] = list()
+
+    @property
+    def filename(self):
+        return f"{self.module_name}.py"
+
+    def write(self):
+        module_path = self.output_dir / self.filename
+        with open(module_path, "w") as file:
+            file.write(self.generate_content())
+
+    def generate_content(self) -> str:
+        print(f"Generating {self.filename} with {len(self.nodes)} nodes...")
+        string = ""
+        string += generate_file_header()
+        string += "\n\n"
+
+        for node_info in self.nodes:
+            # try:
+            class_code = generate_node_class(node_info)
+            string += class_code
+            string += "\n\n"
+            # except Exception as e:
+            #     print(f"  Error generating {node_info.name}: {e}")
+
+        return string
+
+    @property
+    def nodes(self):
+        return sorted(self.node_list, key=lambda node: node.name)
+
+    def add_node(self, node_info: NodeInfo):
+        self.node_list.append(node_info)
+
+
+class ModulesHandler(BaseModuleWriter):
+    def __init__(self):
+        super().__init__()
+        self.modules: dict[str, ModuleWriter] = {}
+
+    def write(self):
+        self.write_modules()
+        self.write_init()
+
+    def write_modules(self):
+        for module_name, module_writer in self.modules.items():
+            module_writer.write()
+
+    def generate_init(self):
+        string = '"""Auto-generated init file from generate.py"""\n\n'
+        all = []
+        string += f"from .manual import ({', '.join(MANUALLY_DEFINED)})\n"
+        all += [name for name in MANUALLY_DEFINED]
+        for writer in self.modules.values():
+            nodes = writer.nodes
+            all += [node.class_name for node in nodes]
+            string += "from .{} import ({})\n".format(
+                writer.module_name, ",\n".join([node.class_name for node in nodes])
+            )
+        all.sort()
+        all_string = "\n__all__ = ({})".format(
+            ",\n".join([f'"{name}"' for name in all])
+        )
+        return string + all_string
+
+    def write_init(self):
+        filepath = self.output_dir / "__init__.py"
+        with open(filepath, "w") as file:
+            file.write(self.generate_init())
+
+    def add_node(self, node_info: NodeInfo | None) -> None:
+        if not node_info:
+            return
+        module_name = get_filename_for_node(node_info)
+        if module_name not in self.modules:
+            self.modules[module_name] = ModuleWriter(module_name)
+        self.modules[module_name].add_node(node_info)
+
+    def count_nodes(self) -> int:
+        return sum(len(module.nodes) for module in self.modules.values())
+
+
+def generate_all():
     """Generate all node classes and write to files."""
-    if output_dir is None:
-        # Default to _generated directory next to this file
-        output_dir = Path(__file__).parent / "generated"
+    handler = ModulesHandler()
 
-    output_dir = Path(output_dir)
-    output_dir.mkdir(exist_ok=True)
+    print(f"Generating node classes to {handler.output_dir}")
 
-    print(f"Generating node classes to {output_dir}")
-
-    # Get manually specified nodes to skip
-    manually_specified = get_manually_specified_nodes()
-
-    # Get all geometry nodes
-    all_nodes = get_all_geometry_nodes()
+    all_nodes = get_node_names()
     print(f"Found {len(all_nodes)} geometry nodes")
 
-    # Introspect all nodes (excluding manually specified ones)
     node_infos = []
     skipped_count = 0
 
     for node_type in all_nodes:
-        if node_type.__name__ in manually_specified or any(
-            [n in node_type.__name__ for n in NODES_TO_SKIP]
+        if (
+            any([n in node_type.__name__ for n in NODES_TO_SKIP])
+            or any([n in node_type.bl_rna.name for n in NODES_TO_SKIP])
+            or any(
+                [
+                    n
+                    == node_type.bl_rna.name.title()
+                    .replace(" ", "")
+                    .replace("Sdf", "SDF")
+                    for n in MANUALLY_DEFINED
+                ]
+            )
         ):
             print(f"  Skipping manually specified node: {node_type.__name__}")
             skipped_count += 1
             continue
 
-        node_info = introspect_node(node_type)
-        if node_info:
-            node_infos.append(node_info)
+        handler.add_node(introspect_node(node_type))
 
-    print(f"Successfully introspected {len(node_infos)} nodes")
+    print(f"Successfully introspected {handler.count_nodes()} nodes")
     print(f"Skipped {skipped_count} manually specified nodes")
 
-    # Group by category
-    by_category = {}
-    for node_info in node_infos:
-        category = node_info.category.lower()
-        if category not in by_category:
-            by_category[category] = []
-        by_category[category].append(node_info)
-
-    # Generate files by category
-    generated_files = []
-    for category, nodes in by_category.items():
-        filename = f"{category}.py"
-        filepath = output_dir / filename
-
-        print(f"Generating {filename} with {len(nodes)} nodes...")
-
-        with open(filepath, "w") as f:
-            f.write(generate_file_header())
-            f.write("\n\n")
-
-            for node_info in nodes:
-                try:
-                    class_code, has_dynamic = generate_node_class(node_info)
-                    f.write(class_code)
-                    f.write("\n\n")
-                except Exception as e:
-                    print(f"  Error generating {node_info.name}: {e}")
-
-        generated_files.append(filename)
-
-    # Generate __init__.py that exports everything
-    init_file = output_dir / "__init__.py"
-    with open(init_file, "w") as f:
-        f.write('"""Auto-generated geometry node classes."""\n\n')
-
-        # Import manually specified nodes first
-        f.write("# Import manually specified nodes\n")
-        f.write("from .manually_specified import *\n\n")
-
-        # Import from all category files
-        f.write("# Import auto-generated nodes\n")
-        for filename in sorted(generated_files):
-            module_name = filename.replace(".py", "")
-            if module_name != "manually_specified":  # Don't import twice
-                f.write(f"from .{module_name} import *\n")
+    handler.write()
 
     print("\nGeneration complete!")
-    print(f"Generated {len(generated_files)} files:")
-    for filename in sorted(generated_files):
+    print(f"Generated {len(handler.modules)} files:")
+    for filename in sorted(handler.modules.keys()):
         print(f"  - {filename}")
     print(f"\nTotal: {len(node_infos)} node classes")
-    print(f"Plus {len(manually_specified)} manually specified nodes")
 
 
 if __name__ == "__main__":
-    generate_all(Path(__file__).parent / "src/nodebpy/nodes/")
+    generate_all()
