@@ -1,7 +1,14 @@
 from typing import Any, Literal
 
 import bpy
-
+from .zone import (
+    RepeatInput,
+    RepeatOutput,
+    RepeatZone,
+    SimulationInput,
+    SimulationOutput,
+    SimulationZone,
+)
 from ..builder import NodeBuilder, NodeSocket, SocketLinker
 from ..types import (
     LINKABLE,
@@ -28,25 +35,45 @@ from ..types import (
     _GridDataTypes,
     _is_default_value,
 )
-from .zone import (
-    RepeatInput,
-    RepeatOutput,
-    RepeatZone,
-    SimulationInput,
-    SimulationOutput,
-    SimulationZone,
-)
 
-# __all__ = (
-#     "RepeatInput",
-#     "RepeatOutput",
-#     "RepeatZone",
-#     "SimulationInput",
-#     "SimulationOutput",
-#     "SimulationZone",
-#     "GeometryToInstance",
-#     "SDFGridBoolean",
-# )
+__all__ = (
+    "RepeatInput",
+    "RepeatOutput",
+    "RepeatZone",
+    "SimulationInput",
+    "SimulationOutput",
+    "SimulationZone",
+    "GeometryToInstance",
+    "SDFGridBoolean",
+    #
+    "SetHandleType",
+    "HandleTypeSelection",
+    "IndexSwitch",
+    "MenuSwitch",
+    "CaptureAttribute",
+    "FieldToGrid",
+    "JoinGeometry",
+    "SDFGridBoolean",
+    "Bake",
+    "JoinStrings",
+    "GeometryToInstance",
+    "RepeatInput",
+    "RepeatOutput",
+    "RepeatZone",
+    "SimulationInput",
+    "SimulationOutput",
+    "SimulationZone",
+    "FormatString",
+    "Value",
+    "AccumulateField",
+    "EvaluateAtIndex",
+    "FieldAverage",
+    "FieldMinAndMax",
+    "EvaluateOnDomain",
+    "FieldVariance",
+    "Compare",
+    "AttributeStatistic",
+)
 
 
 class Bake(NodeBuilder):
@@ -1315,32 +1342,32 @@ def _field_min_and_max_factory(domain: _AttributeDomains):
         def float(
             value: TYPE_INPUT_VALUE = 1.0,
             group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldMinMax":
+        ) -> "FieldMinAndMax":
             """Create FieldMinMax for the "FLOAT" data type"""
-            return FieldMinMax(value, group_index, data_type="FLOAT", domain=domain)
+            return FieldMinAndMax(value, group_index, data_type="FLOAT", domain=domain)
 
         @staticmethod
         def integer(
             value: TYPE_INPUT_INT = 1,
             group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldMinMax":
+        ) -> "FieldMinAndMax":
             """Create FieldMinMax for the "INT" data type"""
-            return FieldMinMax(value, group_index, data_type="INT", domain=domain)
+            return FieldMinAndMax(value, group_index, data_type="INT", domain=domain)
 
         @staticmethod
         def vector(
             value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
             group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldMinMax":
+        ) -> "FieldMinAndMax":
             """Create FieldMinMax on for the "FLOAT_VECTOR" data type"""
-            return FieldMinMax(
+            return FieldMinAndMax(
                 value, group_index, data_type="FLOAT_VECTOR", domain=domain
             )
 
     return FieldMinMaxDataTypeFactory()
 
 
-class FieldMinMax(NodeBuilder):
+class FieldMinAndMax(NodeBuilder):
     """Calculate the minimum and maximum of a given field"""
 
     name = "GeometryNodeFieldMinAndMax"

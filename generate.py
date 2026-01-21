@@ -30,6 +30,7 @@ NODES_TO_SKIP = [
     "GridBoolean",
     "Reroute",
     #
+    "FieldMinAndMax",
 ]
 
 
@@ -56,7 +57,7 @@ MANUALLY_DEFINED = (
     "AccumulateField",
     "EvaluateAtIndex",
     "FieldAverage",
-    "FieldMinMax",
+    "FieldMinAndMax",
     "EvaluateOnDomain",
     "FieldVariance",
     "Compare",
@@ -83,7 +84,7 @@ class SocketInfo:
 
     def format_argument_string(self) -> str:
         type_hint = get_socket_type_hint(self)
-        param_name = get_socket_param_name(socket, sockets_use_same_name)
+        param_name = get_socket_param_name(self)
         return f"{param_name}: {type_hint} = {format_python_value(self.default_value)}"
 
     def format_property(self) -> str:
@@ -226,7 +227,7 @@ class NodeInfo:
         methods = []
 
         for prop in self.properties:
-            if not prop.identifier in [
+            if prop.identifier not in [
                 "operation",
                 "domain",
                 "data_type",
@@ -663,8 +664,6 @@ def generate_node_class(node_info: NodeInfo) -> str:
     # Generate input properties
     input_properties = [socket.format_property() for socket in node_info.inputs]
     output_properties = [socket.format_property() for socket in node_info.outputs]
-    used_input_names = set()
-    used_output_names = set()
 
     property_accessors = [
         prop.format_property_accessors() for prop in node_info.properties

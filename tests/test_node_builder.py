@@ -462,7 +462,7 @@ def test_readme_tree():
 
 
 def test_add_all_nodes():
-    with TreeBuilder() as tree:
+    with TreeBuilder():
         for name in dir(n):
             if re.match(r"^[A-Z]", name):
                 getattr(n, name)()
