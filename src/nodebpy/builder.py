@@ -272,8 +272,16 @@ class NodeBuilder:
     @property
     def _default_output_socket(self) -> NodeSocket:
         if self._default_output_id is not None:
+            print(f"using default output socket {self._default_output_id}")
             return self.node.outputs[self._output_idx(self._default_output_id)]
-        return self.node.outputs[0]
+
+        counter = 0
+        socket = self.node.outputs[counter]
+        while socket.is_inactive:
+            print(f"skipping inactive socket {socket.name}")
+            counter += 1
+            socket = self.node.outputs[counter]
+        return socket
 
     def _source_socket(self, node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
         assert node

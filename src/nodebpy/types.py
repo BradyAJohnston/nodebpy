@@ -6,6 +6,8 @@ from typing import Literal
 from bpy.types import (
     NodeSocket,
     NodeSocketBool,
+    NodeSocketBundle,
+    NodeSocketClosure,
     NodeSocketCollection,
     NodeSocketColor,
     NodeSocketFloat,
@@ -18,8 +20,6 @@ from bpy.types import (
     NodeSocketObject,
     NodeSocketString,
     NodeSocketVector,
-    NodeSocketBundle,
-    NodeSocketClosure,
 )
 from mathutils import Euler
 
@@ -71,6 +71,15 @@ TYPE_INPUT_GRID = typing.Union[
 TYPE_INPUT_MENU = typing.Union[LINKABLE, NodeSocketMenu]
 TYPE_INPUT_BUNDLE = typing.Union[LINKABLE, NodeSocketBundle]
 TYPE_INPUT_CLOSURE = typing.Union[LINKABLE, NodeSocketClosure]
+
+TYPE_INPUT_DATA = typing.Union[
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_VECTOR,
+    TYPE_INPUT_ROTATION,
+    TYPE_INPUT_MATRIX,
+]
 
 TYPE_INPUT_ALL = typing.Union[
     TYPE_INPUT_VALUE,

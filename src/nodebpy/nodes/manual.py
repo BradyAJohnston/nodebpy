@@ -8,15 +8,23 @@ from ..types import (
     SOCKET_TYPES,
     TYPE_INPUT_ALL,
     TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_DATA,
     TYPE_INPUT_GEOMETRY,
     TYPE_INPUT_GRID,
     TYPE_INPUT_INT,
+    TYPE_INPUT_MATRIX,
     TYPE_INPUT_MENU,
+    TYPE_INPUT_ROTATION,
     TYPE_INPUT_STRING,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_VECTOR,
+    _AccumulateFieldDataTypes,
     _AttributeDataTypes,
     _AttributeDomains,
     _BakeDataTypes,
     _BakedDataTypeValues,
+    _EvaluateAtIndexDataTypes,
     _GridDataTypes,
     _is_default_value,
 )
@@ -984,3 +992,983 @@ class SDFGridBoolean(NodeBuilder):
     @operation.setter
     def operation(self, value: Literal["INTERSECT", "UNION", "DIFFERENCE"]):
         self.node.operation = value
+
+
+def _accumlate_field_factory(domain: _AttributeDomains):
+    """Create a factory for AccumulateField with a specific data type"""
+
+    class EvaluateAtIndexDomainFactory:
+        @staticmethod
+        def float(
+            value: TYPE_INPUT_VALUE = None, index: TYPE_INPUT_INT = 0
+        ) -> "AccumulateField":
+            return AccumulateField(value, index, domain=domain, data_type="FLOAT")
+
+        @staticmethod
+        def integer(
+            value: TYPE_INPUT_INT = None, index: TYPE_INPUT_INT = 0
+        ) -> "AccumulateField":
+            return AccumulateField(value, index, domain=domain, data_type="INT")
+
+        @staticmethod
+        def vector(
+            value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0
+        ) -> "AccumulateField":
+            return AccumulateField(
+                value, index, domain=domain, data_type="FLOAT_VECTOR"
+            )
+
+        @staticmethod
+        def transform(
+            value: TYPE_INPUT_MATRIX = None, index: TYPE_INPUT_INT = 0
+        ) -> "AccumulateField":
+            return AccumulateField(value, index, domain=domain, data_type="TRANSFORM")
+
+    return EvaluateAtIndexDomainFactory()
+
+
+class AccumulateField(NodeBuilder):
+    """Add the values of an evaluated field together and output the running total for each element"""
+
+    name = "GeometryNodeAccumulateField"
+    node: bpy.types.GeometryNodeAccumulateField
+
+    point = _accumlate_field_factory("POINT")
+    edge = _accumlate_field_factory("EDGE")
+    face = _accumlate_field_factory("FACE")
+    corner = _accumlate_field_factory("CORNER")
+    spline = _accumlate_field_factory("CURVE")
+    instance = _accumlate_field_factory("INSTANCE")
+    layer = _accumlate_field_factory("LAYER")
+
+    def __init__(
+        self,
+        value: TYPE_INPUT_VALUE
+        | TYPE_INPUT_INT
+        | TYPE_INPUT_VECTOR
+        | TYPE_INPUT_MATRIX = 1.0,
+        group_index: TYPE_INPUT_INT = 0,
+        *,
+        data_type: _AccumulateFieldDataTypes = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        key_args.update(kwargs)
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group Index")
+
+    @property
+    def o_leading(self) -> SocketLinker:
+        """Output socket: Leading"""
+        return self._output("Leading")
+
+    @property
+    def o_trailing(self) -> SocketLinker:
+        """Output socket: Trailing"""
+        return self._output("Trailing")
+
+    @property
+    def o_total(self) -> SocketLinker:
+        """Output socket: Total"""
+        return self._output("Total")
+
+    @property
+    def data_type(self) -> _AccumulateFieldDataTypes:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: _AccumulateFieldDataTypes):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+
+def _evaluate_at_index_factory(domain: _AttributeDomains):
+    """Create a factory for AccumulateField with a specific data type"""
+
+    class EvaluateAtIndexDomainFactory:
+        @staticmethod
+        def float(value: TYPE_INPUT_VALUE = None, index: TYPE_INPUT_INT = 0):
+            return EvaluateAtIndex(value, index, domain=domain, data_type="FLOAT")
+
+        @staticmethod
+        def integer(value: TYPE_INPUT_INT = None, index: TYPE_INPUT_INT = 0):
+            return EvaluateAtIndex(value, index, domain=domain, data_type="INT")
+
+        @staticmethod
+        def boolean(value: TYPE_INPUT_BOOLEAN = None, index: TYPE_INPUT_INT = 0):
+            return EvaluateAtIndex(value, index, domain=domain, data_type="BOOLEAN")
+
+        @staticmethod
+        def vector(value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0):
+            return EvaluateAtIndex(
+                value, index, domain=domain, data_type="FLOAT_VECTOR"
+            )
+
+        @staticmethod
+        def rotation(value: TYPE_INPUT_ROTATION = None, index: TYPE_INPUT_INT = 0):
+            return EvaluateAtIndex(value, index, domain=domain, data_type="QUATERNION")
+
+        @staticmethod
+        def transform(value: TYPE_INPUT_MATRIX = None, index: TYPE_INPUT_INT = 0):
+            return EvaluateAtIndex(value, index, domain=domain, data_type="FLOAT4X4")
+
+    return EvaluateAtIndexDomainFactory()
+
+
+class EvaluateAtIndex(NodeBuilder):
+    """Retrieve data of other elements in the context's geometry"""
+
+    name = "GeometryNodeFieldAtIndex"
+    node: bpy.types.GeometryNodeFieldAtIndex
+
+    point = _evaluate_at_index_factory("POINT")
+    edge = _evaluate_at_index_factory("EDGE")
+    face = _evaluate_at_index_factory("FACE")
+    corner = _evaluate_at_index_factory("CORNER")
+    spline = _evaluate_at_index_factory("CURVE")
+    instance = _evaluate_at_index_factory("INSTANCE")
+    layer = _evaluate_at_index_factory("LAYER")
+
+    def __init__(
+        self,
+        value: TYPE_INPUT_DATA = None,
+        index: TYPE_INPUT_INT = 0,
+        *,
+        domain: _AttributeDomains = "POINT",
+        data_type: _EvaluateAtIndexDataTypes = "FLOAT",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Index": index}
+        key_args.update(kwargs)
+        self.domain = domain
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_index(self) -> SocketLinker:
+        """Input socket: Index"""
+        return self._input("Index")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+    @property
+    def data_type(
+        self,
+    ) -> _EvaluateAtIndexDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _EvaluateAtIndexDataTypes,
+    ):
+        self.node.data_type = value
+
+
+def _field_average_factory(domain: _AttributeDomains):
+    """Create a factory for FieldVariance with a specific data type"""
+
+    class FieldAverageDomainFactory:
+        @staticmethod
+        def float(
+            value: TYPE_INPUT_VALUE = 1.0,
+            group_index: TYPE_INPUT_INT = 0,
+        ) -> "FieldAverage":
+            """Create FieldAverage for the "FLOAT" data type"""
+            return FieldAverage(value, group_index, data_type="FLOAT", domain=domain)
+
+        @staticmethod
+        def vector(
+            value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
+            group_index: TYPE_INPUT_INT = 0,
+        ) -> "FieldAverage":
+            """Create FieldAverage on for the "FLOAT_VECTOR" data type"""
+            return FieldAverage(
+                value, group_index, data_type="FLOAT_VECTOR", domain=domain
+            )
+
+    return FieldAverageDomainFactory()
+
+
+class FieldAverage(NodeBuilder):
+    """Calculate the mean and median of a given field"""
+
+    name = "GeometryNodeFieldAverage"
+    node: bpy.types.GeometryNodeFieldAverage
+
+    point = _field_average_factory("POINT")
+    edge = _field_average_factory("EDGE")
+    face = _field_average_factory("FACE")
+    corner = _field_average_factory("CORNER")
+    spline = _field_average_factory("CURVE")
+    instance = _field_average_factory("INSTANCE")
+    layer = _field_average_factory("LAYER")
+
+    def __init__(
+        self,
+        value: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR = None,
+        group_index: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR = 0,
+        *,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group Index")
+
+    @property
+    def o_mean(self) -> SocketLinker:
+        """Output socket: Mean"""
+        return self._output("Mean")
+
+    @property
+    def o_median(self) -> SocketLinker:
+        """Output socket: Median"""
+        return self._output("Median")
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+
+def _field_min_and_max_factory(domain: _AttributeDomains):
+    """Create a factory for AccumulateField with a specific data type"""
+
+    class FieldMinMaxDataTypeFactory:
+        @staticmethod
+        def float(
+            value: TYPE_INPUT_VALUE = 1.0,
+            group_index: TYPE_INPUT_INT = 0,
+        ) -> "FieldMinMax":
+            """Create FieldMinMax for the "FLOAT" data type"""
+            return FieldMinMax(value, group_index, data_type="FLOAT", domain=domain)
+
+        @staticmethod
+        def integer(
+            value: TYPE_INPUT_INT = 1,
+            group_index: TYPE_INPUT_INT = 0,
+        ) -> "FieldMinMax":
+            """Create FieldMinMax for the "INT" data type"""
+            return FieldMinMax(value, group_index, data_type="INT", domain=domain)
+
+        @staticmethod
+        def vector(
+            value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
+            group_index: TYPE_INPUT_INT = 0,
+        ) -> "FieldMinMax":
+            """Create FieldMinMax on for the "FLOAT_VECTOR" data type"""
+            return FieldMinMax(
+                value, group_index, data_type="FLOAT_VECTOR", domain=domain
+            )
+
+    return FieldMinMaxDataTypeFactory()
+
+
+class FieldMinMax(NodeBuilder):
+    """Calculate the minimum and maximum of a given field"""
+
+    name = "GeometryNodeFieldMinAndMax"
+    node: bpy.types.GeometryNodeFieldMinAndMax
+
+    point = _field_min_and_max_factory("POINT")
+    edge = _field_min_and_max_factory("EDGE")
+    face = _field_min_and_max_factory("FACE")
+    corner = _field_min_and_max_factory("CORNER")
+    spline = _field_min_and_max_factory("CURVE")
+    instance = _field_min_and_max_factory("INSTANCE")
+    layer = _field_min_and_max_factory("LAYER")
+
+    def __init__(
+        self,
+        value: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT = 1.0,
+        group_index: TYPE_INPUT_INT = 0,
+        *,
+        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group Index")
+
+    @property
+    def o_min(self) -> SocketLinker:
+        """Output socket: Min"""
+        return self._output("Min")
+
+    @property
+    def o_max(self) -> SocketLinker:
+        """Output socket: Max"""
+        return self._output("Max")
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+
+def _evaluate_on_domain_factory(domain: _AttributeDomains):
+    """Create a factory for AccumulateField with a specific data type"""
+
+    class EvaluateOnDomainDomainFactory:
+        @staticmethod
+        def float(value: TYPE_INPUT_VALUE = None):
+            return EvaluateOnDomain(value, domain=domain, data_type="FLOAT")
+
+        @staticmethod
+        def integer(value: TYPE_INPUT_INT = None):
+            return EvaluateOnDomain(value, domain=domain, data_type="INT")
+
+        @staticmethod
+        def boolean(value: TYPE_INPUT_BOOLEAN = None, index: TYPE_INPUT_INT = 0):
+            return EvaluateOnDomain(value, domain=domain, data_type="BOOLEAN")
+
+        @staticmethod
+        def vector(value: TYPE_INPUT_VECTOR = None):
+            return EvaluateOnDomain(value, domain=domain, data_type="FLOAT_VECTOR")
+
+        @staticmethod
+        def rotation(value: TYPE_INPUT_ROTATION = None):
+            return EvaluateOnDomain(value, domain=domain, data_type="QUATERNION")
+
+        @staticmethod
+        def transform(value: TYPE_INPUT_MATRIX = None):
+            return EvaluateOnDomain(value, domain=domain, data_type="FLOAT4X4")
+
+    return EvaluateOnDomainDomainFactory()
+
+
+class EvaluateOnDomain(NodeBuilder):
+    """Retrieve values from a field on a different domain besides the domain from the context"""
+
+    name = "GeometryNodeFieldOnDomain"
+    node: bpy.types.GeometryNodeFieldOnDomain
+
+    point = _field_min_and_max_factory("POINT")
+    edge = _field_min_and_max_factory("EDGE")
+    face = _field_min_and_max_factory("FACE")
+    corner = _field_min_and_max_factory("CORNER")
+    spline = _field_min_and_max_factory("CURVE")
+    instance = _field_min_and_max_factory("INSTANCE")
+    layer = _field_min_and_max_factory("LAYER")
+
+    def __init__(
+        self,
+        value: TYPE_INPUT_DATA = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+        data_type: _EvaluateAtIndexDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Value": value}
+        self.domain = domain
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+    @property
+    def data_type(
+        self,
+    ) -> _EvaluateAtIndexDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _EvaluateAtIndexDataTypes,
+    ):
+        self.node.data_type = value
+
+
+def _field_variance_factory(domain: _AttributeDomains):
+    """Create a factory for FieldVariance with a specific data type"""
+
+    class FieldVarianceDomainFactory:
+        @staticmethod
+        def float(
+            value: TYPE_INPUT_VALUE = 1.0,
+            group_index: TYPE_INPUT_INT = 0,
+        ) -> "FieldVariance":
+            """Create FieldVariance for the "FLOAT" data type"""
+            return FieldVariance(value, group_index, data_type="FLOAT", domain=domain)
+
+        @staticmethod
+        def vector(
+            value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
+            group_index: TYPE_INPUT_INT = 0,
+        ) -> "FieldVariance":
+            """Create FieldVariance on for the "FLOAT_VECTOR" data type"""
+            return FieldVariance(
+                value, group_index, data_type="FLOAT_VECTOR", domain=domain
+            )
+
+    return FieldVarianceDomainFactory()
+
+
+class FieldVariance(NodeBuilder):
+    """Calculate the standard deviation and variance of a given field"""
+
+    name = "GeometryNodeFieldVariance"
+    node: bpy.types.GeometryNodeFieldVariance
+
+    point = _field_variance_factory("POINT")
+    edge = _field_variance_factory("EDGE")
+    face = _field_variance_factory("FACE")
+    corner = _field_variance_factory("CORNER")
+    spline = _field_variance_factory("CURVE")
+    instance = _field_variance_factory("INSTANCE")
+    layer = _field_variance_factory("LAYER")
+
+    def __init__(
+        self,
+        value: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR = None,
+        group_index: TYPE_INPUT_INT = None,
+        *,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_group_id(self) -> SocketLinker:
+        """Input socket: Group ID"""
+        return self._input("Group Index")
+
+    @property
+    def o_standard_deviation(self) -> SocketLinker:
+        """Output socket: Standard Deviation"""
+        return self._output("Standard Deviation")
+
+    @property
+    def o_variance(self) -> SocketLinker:
+        """Output socket: Variance"""
+        return self._output("Variance")
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+
+_CompareOperations = Literal[
+    "LESS_THAN",
+    "LESS_EQUAL",
+    "GREATER_THAN",
+    "GREATER_EQUAL",
+    "EQUAL",
+    "NOT_EQUAL",
+    "BRIGHTER",
+    "DARKER",
+]
+
+_CompareDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "STRING",
+]
+
+_CompareVectorModes = Literal[
+    "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+]
+
+
+def _compare_operation_method(operation: _CompareOperations):
+    """Create a factory for Compare with a specific operation"""
+
+    class CompareOperationFactory:
+        @staticmethod
+        def float(
+            a: TYPE_INPUT_VALUE = 0.0,
+            b: TYPE_INPUT_VALUE = 0.0,
+            *,
+            epsilon: TYPE_INPUT_VALUE = 0.0001,
+        ) -> "Compare":
+            return Compare.float(operation=operation, a=a, b=b, epsilon=epsilon)
+
+        @staticmethod
+        def integer(a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "Compare":
+            return Compare.integer(operation=operation, a=a, b=b)
+
+        @staticmethod
+        def vector(
+            a: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+            b: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+            *,
+            mode: _CompareVectorModes = "ELEMENT",
+            c: TYPE_INPUT_VALUE = None,
+            angle: TYPE_INPUT_VALUE = None,
+            epsilon: TYPE_INPUT_VALUE = None,
+        ) -> "Compare":
+            return Compare.vector(
+                operation=operation,
+                a=a,
+                b=b,
+                mode=mode,
+                c=c,
+                angle=angle,
+                epsilon=epsilon,
+            )
+
+        @staticmethod
+        def color(
+            a: TYPE_INPUT_COLOR = None,
+            b: TYPE_INPUT_COLOR = None,
+            epsilon: TYPE_INPUT_VALUE = None,
+        ) -> "Compare":
+            return Compare.color(operation=operation, a=a, b=b, epsilon=epsilon)
+
+        @staticmethod
+        def string(a: TYPE_INPUT_STRING = "", b: TYPE_INPUT_STRING = "") -> "Compare":
+            return Compare.string(operation=operation, a=a, b=b)
+
+    return CompareOperationFactory()
+
+
+class Compare(NodeBuilder):
+    """Perform a comparison operation on the two given inputs"""
+
+    name = "FunctionNodeCompare"
+    node: bpy.types.FunctionNodeCompare
+
+    less_than = _compare_operation_method("LESS_THAN")
+    less_equal = _compare_operation_method("LESS_EQUAL")
+    greater_than = _compare_operation_method("GREATER_THAN")
+    greater_equal = _compare_operation_method("GREATER_EQUAL")
+    equal = _compare_operation_method("EQUAL")
+    not_equal = _compare_operation_method("NOT_EQUAL")
+    brighter = _compare_operation_method("BRIGHTER")
+    darker = _compare_operation_method("DARKER")
+
+    def __init__(
+        self,
+        operation: _CompareOperations = "GREATER_THAN",
+        data_type: _CompareDataTypes = "FLOAT",
+        **kwargs,
+    ):
+        super().__init__()
+        self.operation = operation
+        self.data_type = data_type
+        if self.data_type == "VECTOR":
+            self.mode = kwargs["mode"]
+        self._establish_links(**kwargs)
+
+    @classmethod
+    def float(
+        cls,
+        a: TYPE_INPUT_VALUE = 0.0,
+        b: TYPE_INPUT_VALUE = 0.0,
+        operation: _CompareOperations = "LESS_THAN",
+        *,
+        epsilon: TYPE_INPUT_VALUE = 0.0001,
+    ):
+        kwargs = {"operation": operation, "data_type": "FLOAT", "A": a, "B": b}
+        if operation in ("EQUAL", "NOT_EQUAL"):
+            kwargs["Epsilon"] = epsilon
+        return cls(**kwargs)
+
+    @classmethod
+    def integer(
+        cls,
+        a: TYPE_INPUT_INT = 0,
+        b: TYPE_INPUT_INT = 0,
+        operation: _CompareOperations = "LESS_THAN",
+    ) -> "Compare":
+        return cls(operation=operation, data_type="INT", A_INT=a, B_INT=b)
+
+    @classmethod
+    def vector(
+        cls,
+        a: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        b: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        operation: _CompareOperations = "LESS_THAN",
+        *,
+        mode: _CompareVectorModes = "ELEMENT",
+        c: TYPE_INPUT_VALUE = None,
+        angle: TYPE_INPUT_VALUE = None,
+        epsilon: TYPE_INPUT_VALUE = None,
+    ) -> "Compare":
+        kwargs = {
+            "operation": operation,
+            "data_type": "VECTOR",
+            "mode": mode,
+            "A_VEC3": a,
+            "B_VEC3": b,
+        }
+        if operation in ("EQUAL", "NOT_EQUAL"):
+            kwargs["Epsilon"] = epsilon
+
+        match mode:
+            case "DIRECTION":
+                kwargs["Angle"] = angle
+            case "DOT_PRODUCT":
+                kwargs["C"] = c
+            case _:
+                pass
+
+        return cls(**kwargs)
+
+    @classmethod
+    def color(
+        cls,
+        a: TYPE_INPUT_COLOR = None,
+        b: TYPE_INPUT_COLOR = None,
+        operation: _CompareOperations = "EQUAL",
+        *,
+        epsilon: TYPE_INPUT_VALUE = None,
+    ) -> "Compare":
+        """Create Compare with operation 'Color'."""
+        kwargs = {
+            "operation": operation,
+            "data_type": "RGBA",
+            "A_COL": a,
+            "B_COL": b,
+        }
+        if operation in ("EQUAL", "NOT_EQUAL"):
+            kwargs["Epsilon"] = epsilon
+        return cls(**kwargs)
+
+    @classmethod
+    def string(
+        cls,
+        a,
+        b,
+    ) -> "Compare":
+        """Create Compare with operation 'String'."""
+        return cls(mode="STRING", A_STR=a, B_STR=b)
+
+    def _suffix(self) -> str:
+        suffix_lookup = {
+            "FLOAT": "",
+            "INT": "_INT",
+            "VECTOR": "_VEC",
+            "RGBA": "_COL",
+            "STRING": "_STR",
+        }
+        return suffix_lookup[self.data_type]
+
+    @property
+    def i_a(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input(f"A{self._suffix()}")
+
+    @property
+    def i_b(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input(f"B{self._suffix()}")
+
+    @property
+    def o_result(self) -> SocketLinker:
+        """Output socket: Result"""
+        return self._output("Result")
+
+    @property
+    def operation(
+        self,
+    ) -> _CompareOperations:
+        return self.node.operation
+
+    @operation.setter
+    def operation(
+        self,
+        value: _CompareOperations,
+    ):
+        self.node.operation = value
+
+    @property
+    def data_type(
+        self,
+    ) -> _CompareDataTypes:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _CompareDataTypes,
+    ):
+        self.node.data_type = value
+
+    @property
+    def mode(
+        self,
+    ) -> _CompareVectorModes:
+        return self.node.mode
+
+    @mode.setter
+    def mode(
+        self,
+        value: _CompareVectorModes,
+    ):
+        self.node.mode = value
+
+
+class AttributeStatistic(NodeBuilder):
+    """Calculate statistics about a data set from a field evaluated on a geometry"""
+
+    name = "GeometryNodeAttributeStatistic"
+    node: bpy.types.GeometryNodeAttributeStatistic
+
+    def __init__(
+        self,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        attribute: LINKABLE = None,
+        *,
+        data_type: Literal[
+            "FLOAT",
+            "FLOAT_VECTOR",
+        ] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {
+            "Geometry": geometry,
+            "Selection": selection,
+            "Attribute": attribute,
+        }
+        key_args.update(kwargs)
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def i_geometry(self) -> SocketLinker:
+        """Input socket: Geometry"""
+        return self._input("Geometry")
+
+    @property
+    def i_selection(self) -> SocketLinker:
+        """Input socket: Selection"""
+        return self._input("Selection")
+
+    @property
+    def i_attribute(self) -> SocketLinker:
+        """Input socket: Attribute"""
+        return self._input("Attribute")
+
+    @property
+    def o_mean(self) -> SocketLinker:
+        """Output socket: Mean"""
+        return self._output("Mean")
+
+    @property
+    def o_median(self) -> SocketLinker:
+        """Output socket: Median"""
+        return self._output("Median")
+
+    @property
+    def o_sum(self) -> SocketLinker:
+        """Output socket: Sum"""
+        return self._output("Sum")
+
+    @property
+    def o_min(self) -> SocketLinker:
+        """Output socket: Min"""
+        return self._output("Min")
+
+    @property
+    def o_max(self) -> SocketLinker:
+        """Output socket: Max"""
+        return self._output("Max")
+
+    @property
+    def o_range(self) -> SocketLinker:
+        """Output socket: Range"""
+        return self._output("Range")
+
+    @property
+    def o_standard_deviation(self) -> SocketLinker:
+        """Output socket: Standard Deviation"""
+        return self._output("Standard Deviation")
+
+    @property
+    def o_variance(self) -> SocketLinker:
+        """Output socket: Variance"""
+        return self._output("Variance")
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "FLOAT_VECTOR",
+    ]:
+        return self.node.data_type  # type: ignore
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "FLOAT_VECTOR",
+        ],
+    ):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value

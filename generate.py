@@ -53,6 +53,14 @@ MANUALLY_DEFINED = (
     "SimulationZone",
     "FormatString",
     "Value",
+    "AccumulateField",
+    "EvaluateAtIndex",
+    "FieldAverage",
+    "FieldMinMax",
+    "EvaluateOnDomain",
+    "FieldVariance",
+    "Compare",
+    "AttributeStatistic",
 )
 
 
@@ -218,7 +226,12 @@ class NodeInfo:
         methods = []
 
         for prop in self.properties:
-            if not prop.identifier in ["operation", "domain", "data_type"]:
+            if not prop.identifier in [
+                "operation",
+                "domain",
+                "data_type",
+                "input_type",
+            ]:
                 continue
 
             # assert operation_enum.enum_items
@@ -450,8 +463,11 @@ def collect_socket_info(
     """Extract socket infos for a current node state"""
     inputs = []
     for socket in sockets:
-        if (socket.is_inactive and not hidden) or "__extend__" in socket.identifier:
-            continue
+        # GN switch sockets are innactive one or the other so we have to
+        # be explicit to capture all of them
+        if socket.node.bl_idname != "GeometryNodeSwitch":
+            if (socket.is_inactive and not hidden) or "__extend__" in socket.identifier:
+                continue
 
         socket_info = SocketInfo(
             name=socket.name,

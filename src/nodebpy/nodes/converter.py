@@ -24,145 +24,6 @@ from ..types import (
 )
 
 
-class AccumulateField(NodeBuilder):
-    """Add the values of an evaluated field together and output the running total for each element"""
-
-    name = "GeometryNodeAccumulateField"
-    node: bpy.types.GeometryNodeAccumulateField
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 1.0,
-        group_index: TYPE_INPUT_INT = 0,
-        *,
-        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"] = "FLOAT",
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Group Index": group_index}
-        self.data_type = data_type
-        self.domain = domain
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls, value: TYPE_INPUT_VALUE = 1.0, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Float'."""
-        return cls(data_type="FLOAT", value=value, group_index=group_index)
-
-    @classmethod
-    def integer(
-        cls, value: TYPE_INPUT_INT = 1, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Integer'."""
-        return cls(data_type="INT", value=value, group_index=group_index)
-
-    @classmethod
-    def vector(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Vector'."""
-        return cls(data_type="FLOAT_VECTOR", value=value, group_index=group_index)
-
-    @classmethod
-    def transform(
-        cls, value: TYPE_INPUT_MATRIX = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Transform'."""
-        return cls(data_type="TRANSFORM", value=value, group_index=group_index)
-
-    @classmethod
-    def point(
-        cls, value: TYPE_INPUT_MATRIX = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Point'."""
-        return cls(domain="POINT", value=value, group_index=group_index)
-
-    @classmethod
-    def edge(
-        cls, value: TYPE_INPUT_MATRIX = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Edge'."""
-        return cls(domain="EDGE", value=value, group_index=group_index)
-
-    @classmethod
-    def face(
-        cls, value: TYPE_INPUT_MATRIX = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Face'."""
-        return cls(domain="FACE", value=value, group_index=group_index)
-
-    @classmethod
-    def spline(
-        cls, value: TYPE_INPUT_MATRIX = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Spline'."""
-        return cls(domain="CURVE", value=value, group_index=group_index)
-
-    @classmethod
-    def instance(
-        cls, value: TYPE_INPUT_MATRIX = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Instance'."""
-        return cls(domain="INSTANCE", value=value, group_index=group_index)
-
-    @classmethod
-    def layer(
-        cls, value: TYPE_INPUT_MATRIX = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "AccumulateField":
-        """Create Accumulate Field with operation 'Layer'."""
-        return cls(domain="LAYER", value=value, group_index=group_index)
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def i_group_index(self) -> SocketLinker:
-        """Input socket: Group ID"""
-        return self._input("Group Index")
-
-    @property
-    def o_leading(self) -> SocketLinker:
-        """Output socket: Leading"""
-        return self._output("Leading")
-
-    @property
-    def o_trailing(self) -> SocketLinker:
-        """Output socket: Trailing"""
-        return self._output("Trailing")
-
-    @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self._output("Total")
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]):
-        self.node.data_type = value
-
-    @property
-    def domain(
-        self,
-    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self,
-        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
-        self.node.domain = value
-
-
 class AlignRotationToVector(NodeBuilder):
     """Orient a rotation along the given direction"""
 
@@ -876,227 +737,6 @@ class CombineXYZ(NodeBuilder):
         return self._output("Vector")
 
 
-class Compare(NodeBuilder):
-    """Perform a comparison operation on the two given inputs"""
-
-    name = "FunctionNodeCompare"
-    node: bpy.types.FunctionNodeCompare
-
-    def __init__(
-        self,
-        a: TYPE_INPUT_VALUE = 0.0,
-        b: TYPE_INPUT_VALUE = 0.0,
-        a_int: TYPE_INPUT_INT = 0,
-        b_int: TYPE_INPUT_INT = 0,
-        a_vec3: TYPE_INPUT_VECTOR = None,
-        b_vec3: TYPE_INPUT_VECTOR = None,
-        a_col: TYPE_INPUT_COLOR = None,
-        b_col: TYPE_INPUT_COLOR = None,
-        a_str: TYPE_INPUT_STRING = "",
-        b_str: TYPE_INPUT_STRING = "",
-        c: TYPE_INPUT_VALUE = 0.9,
-        angle: TYPE_INPUT_VALUE = 0.0873,
-        epsilon: TYPE_INPUT_VALUE = 0.001,
-        *,
-        operation: Literal[
-            "LESS_THAN",
-            "LESS_EQUAL",
-            "GREATER_THAN",
-            "GREATER_EQUAL",
-            "EQUAL",
-            "NOT_EQUAL",
-        ] = "GREATER_THAN",
-        data_type: Literal["FLOAT", "INT", "VECTOR", "RGBA", "STRING"] = "FLOAT",
-        mode: Literal[
-            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
-        ] = "ELEMENT",
-    ):
-        super().__init__()
-        key_args = {
-            "A": a,
-            "B": b,
-            "A_INT": a_int,
-            "B_INT": b_int,
-            "A_VEC3": a_vec3,
-            "B_VEC3": b_vec3,
-            "A_COL": a_col,
-            "B_COL": b_col,
-            "A_STR": a_str,
-            "B_STR": b_str,
-            "C": c,
-            "Angle": angle,
-            "Epsilon": epsilon,
-        }
-        self.operation = operation
-        self.data_type = data_type
-        self.mode = mode
-        self._establish_links(**key_args)
-
-    @classmethod
-    def equal(
-        cls,
-        a: TYPE_INPUT_VALUE = 0.0,
-        b: TYPE_INPUT_VALUE = 0.0,
-        epsilon: TYPE_INPUT_VALUE = 0.001,
-    ) -> "Compare":
-        """Create Compare with operation 'Equal'."""
-        return cls(operation="EQUAL", a=a, b=b, epsilon=epsilon)
-
-    @classmethod
-    def float(
-        cls,
-        a: TYPE_INPUT_VALUE = 0.0,
-        b: TYPE_INPUT_VALUE = 0.0,
-        epsilon: TYPE_INPUT_VALUE = 0.001,
-    ) -> "Compare":
-        """Create Compare with operation 'Float'."""
-        return cls(data_type="FLOAT", a=a, b=b, epsilon=epsilon)
-
-    @classmethod
-    def integer(cls, a_int: TYPE_INPUT_INT = 0, b_int: TYPE_INPUT_INT = 0) -> "Compare":
-        """Create Compare with operation 'Integer'."""
-        return cls(data_type="INT", a_int=a_int, b_int=b_int)
-
-    @classmethod
-    def vector(
-        cls,
-        a_vec3: TYPE_INPUT_VECTOR = None,
-        b_vec3: TYPE_INPUT_VECTOR = None,
-        epsilon: TYPE_INPUT_VALUE = 0.001,
-    ) -> "Compare":
-        """Create Compare with operation 'Vector'."""
-        return cls(data_type="VECTOR", a_vec3=a_vec3, b_vec3=b_vec3, epsilon=epsilon)
-
-    @classmethod
-    def color(
-        cls,
-        a_col: TYPE_INPUT_COLOR = None,
-        b_col: TYPE_INPUT_COLOR = None,
-        epsilon: TYPE_INPUT_VALUE = 0.001,
-    ) -> "Compare":
-        """Create Compare with operation 'Color'."""
-        return cls(data_type="RGBA", a_col=a_col, b_col=b_col, epsilon=epsilon)
-
-    @classmethod
-    def string(
-        cls, a_str: TYPE_INPUT_STRING = "", b_str: TYPE_INPUT_STRING = ""
-    ) -> "Compare":
-        """Create Compare with operation 'String'."""
-        return cls(data_type="STRING", a_str=a_str, b_str=b_str)
-
-    @property
-    def i_a(self) -> SocketLinker:
-        """Input socket: A"""
-        return self._input("A")
-
-    @property
-    def i_b(self) -> SocketLinker:
-        """Input socket: B"""
-        return self._input("B")
-
-    @property
-    def i_a_int(self) -> SocketLinker:
-        """Input socket: A"""
-        return self._input("A_INT")
-
-    @property
-    def i_b_int(self) -> SocketLinker:
-        """Input socket: B"""
-        return self._input("B_INT")
-
-    @property
-    def i_a_vec3(self) -> SocketLinker:
-        """Input socket: A"""
-        return self._input("A_VEC3")
-
-    @property
-    def i_b_vec3(self) -> SocketLinker:
-        """Input socket: B"""
-        return self._input("B_VEC3")
-
-    @property
-    def i_a_col(self) -> SocketLinker:
-        """Input socket: A"""
-        return self._input("A_COL")
-
-    @property
-    def i_b_col(self) -> SocketLinker:
-        """Input socket: B"""
-        return self._input("B_COL")
-
-    @property
-    def i_a_str(self) -> SocketLinker:
-        """Input socket: A"""
-        return self._input("A_STR")
-
-    @property
-    def i_b_str(self) -> SocketLinker:
-        """Input socket: B"""
-        return self._input("B_STR")
-
-    @property
-    def i_c(self) -> SocketLinker:
-        """Input socket: C"""
-        return self._input("C")
-
-    @property
-    def i_angle(self) -> SocketLinker:
-        """Input socket: Angle"""
-        return self._input("Angle")
-
-    @property
-    def i_epsilon(self) -> SocketLinker:
-        """Input socket: Epsilon"""
-        return self._input("Epsilon")
-
-    @property
-    def o_result(self) -> SocketLinker:
-        """Output socket: Result"""
-        return self._output("Result")
-
-    @property
-    def operation(
-        self,
-    ) -> Literal[
-        "LESS_THAN", "LESS_EQUAL", "GREATER_THAN", "GREATER_EQUAL", "EQUAL", "NOT_EQUAL"
-    ]:
-        return self.node.operation
-
-    @operation.setter
-    def operation(
-        self,
-        value: Literal[
-            "LESS_THAN",
-            "LESS_EQUAL",
-            "GREATER_THAN",
-            "GREATER_EQUAL",
-            "EQUAL",
-            "NOT_EQUAL",
-        ],
-    ):
-        self.node.operation = value
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "INT", "VECTOR", "RGBA", "STRING"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR", "RGBA", "STRING"]):
-        self.node.data_type = value
-
-    @property
-    def mode(
-        self,
-    ) -> Literal["ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(
-        self, value: Literal["ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"]
-    ):
-        self.node.mode = value
-
-
 class EulerToRotation(NodeBuilder):
     """Build a rotation from separate angles around each axis"""
 
@@ -1118,440 +758,6 @@ class EulerToRotation(NodeBuilder):
     def o_rotation(self) -> SocketLinker:
         """Output socket: Rotation"""
         return self._output("Rotation")
-
-
-class EvaluateAtIndex(NodeBuilder):
-    """Retrieve data of other elements in the context's geometry"""
-
-    name = "GeometryNodeFieldAtIndex"
-    node: bpy.types.GeometryNodeFieldAtIndex
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
-        *,
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-        ] = "FLOAT",
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Index": index}
-        self.domain = domain
-        self.data_type = data_type
-        self._establish_links(**key_args)
-
-    @classmethod
-    def point(
-        cls, value: TYPE_INPUT_VALUE = 0.0, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Point'."""
-        return cls(domain="POINT", value=value, index=index)
-
-    @classmethod
-    def edge(
-        cls, value: TYPE_INPUT_VALUE = 0.0, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Edge'."""
-        return cls(domain="EDGE", value=value, index=index)
-
-    @classmethod
-    def face(
-        cls, value: TYPE_INPUT_VALUE = 0.0, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Face'."""
-        return cls(domain="FACE", value=value, index=index)
-
-    @classmethod
-    def spline(
-        cls, value: TYPE_INPUT_VALUE = 0.0, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Spline'."""
-        return cls(domain="CURVE", value=value, index=index)
-
-    @classmethod
-    def instance(
-        cls, value: TYPE_INPUT_VALUE = 0.0, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Instance'."""
-        return cls(domain="INSTANCE", value=value, index=index)
-
-    @classmethod
-    def layer(
-        cls, value: TYPE_INPUT_VALUE = 0.0, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Layer'."""
-        return cls(domain="LAYER", value=value, index=index)
-
-    @classmethod
-    def float(
-        cls, value: TYPE_INPUT_VALUE = 0.0, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Float'."""
-        return cls(data_type="FLOAT", value=value, index=index)
-
-    @classmethod
-    def integer(
-        cls, value: TYPE_INPUT_INT = 0, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Integer'."""
-        return cls(data_type="INT", value=value, index=index)
-
-    @classmethod
-    def boolean(
-        cls, value: TYPE_INPUT_BOOLEAN = False, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Boolean'."""
-        return cls(data_type="BOOLEAN", value=value, index=index)
-
-    @classmethod
-    def vector(
-        cls, value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Vector'."""
-        return cls(data_type="FLOAT_VECTOR", value=value, index=index)
-
-    @classmethod
-    def color(
-        cls, value: TYPE_INPUT_COLOR = None, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Color'."""
-        return cls(data_type="FLOAT_COLOR", value=value, index=index)
-
-    @classmethod
-    def quaternion(
-        cls, value: TYPE_INPUT_ROTATION = None, index: TYPE_INPUT_INT = 0
-    ) -> "EvaluateAtIndex":
-        """Create Evaluate at Index with operation 'Quaternion'."""
-        return cls(data_type="QUATERNION", value=value, index=index)
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def i_index(self) -> SocketLinker:
-        """Input socket: Index"""
-        return self._input("Index")
-
-    @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self._output("Value")
-
-    @property
-    def domain(
-        self,
-    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self,
-        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
-        self.node.domain = value
-
-    @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "FLOAT_VECTOR",
-        "FLOAT_COLOR",
-        "QUATERNION",
-        "FLOAT4X4",
-    ]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-        ],
-    ):
-        self.node.data_type = value
-
-
-class EvaluateOnDomain(NodeBuilder):
-    """Retrieve values from a field on a different domain besides the domain from the context"""
-
-    name = "GeometryNodeFieldOnDomain"
-    node: bpy.types.GeometryNodeFieldOnDomain
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 0.0,
-        *,
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-        ] = "FLOAT",
-    ):
-        super().__init__()
-        key_args = {"Value": value}
-        self.domain = domain
-        self.data_type = data_type
-        self._establish_links(**key_args)
-
-    @classmethod
-    def point(cls, value: TYPE_INPUT_VALUE = 0.0) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Point'."""
-        return cls(domain="POINT", value=value)
-
-    @classmethod
-    def edge(cls, value: TYPE_INPUT_VALUE = 0.0) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Edge'."""
-        return cls(domain="EDGE", value=value)
-
-    @classmethod
-    def face(cls, value: TYPE_INPUT_VALUE = 0.0) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Face'."""
-        return cls(domain="FACE", value=value)
-
-    @classmethod
-    def spline(cls, value: TYPE_INPUT_VALUE = 0.0) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Spline'."""
-        return cls(domain="CURVE", value=value)
-
-    @classmethod
-    def instance(cls, value: TYPE_INPUT_VALUE = 0.0) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Instance'."""
-        return cls(domain="INSTANCE", value=value)
-
-    @classmethod
-    def layer(cls, value: TYPE_INPUT_VALUE = 0.0) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Layer'."""
-        return cls(domain="LAYER", value=value)
-
-    @classmethod
-    def float(cls, value: TYPE_INPUT_VALUE = 0.0) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Float'."""
-        return cls(data_type="FLOAT", value=value)
-
-    @classmethod
-    def integer(cls, value: TYPE_INPUT_INT = 0) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Integer'."""
-        return cls(data_type="INT", value=value)
-
-    @classmethod
-    def boolean(cls, value: TYPE_INPUT_BOOLEAN = False) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Boolean'."""
-        return cls(data_type="BOOLEAN", value=value)
-
-    @classmethod
-    def vector(cls, value: TYPE_INPUT_VECTOR = None) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Vector'."""
-        return cls(data_type="FLOAT_VECTOR", value=value)
-
-    @classmethod
-    def color(cls, value: TYPE_INPUT_COLOR = None) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Color'."""
-        return cls(data_type="FLOAT_COLOR", value=value)
-
-    @classmethod
-    def quaternion(cls, value: TYPE_INPUT_ROTATION = None) -> "EvaluateOnDomain":
-        """Create Evaluate on Domain with operation 'Quaternion'."""
-        return cls(data_type="QUATERNION", value=value)
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self._output("Value")
-
-    @property
-    def domain(
-        self,
-    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self,
-        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
-        self.node.domain = value
-
-    @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "FLOAT_VECTOR",
-        "FLOAT_COLOR",
-        "QUATERNION",
-        "FLOAT4X4",
-    ]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-        ],
-    ):
-        self.node.data_type = value
-
-
-class FieldAverage(NodeBuilder):
-    """Calculate the mean and median of a given field"""
-
-    name = "GeometryNodeFieldAverage"
-    node: bpy.types.GeometryNodeFieldAverage
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 0.0,
-        group_index: TYPE_INPUT_INT = 0,
-        *,
-        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Group Index": group_index}
-        self.data_type = data_type
-        self.domain = domain
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls, value: TYPE_INPUT_VALUE = 0.0, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldAverage":
-        """Create Field Average with operation 'Float'."""
-        return cls(data_type="FLOAT", value=value, group_index=group_index)
-
-    @classmethod
-    def vector(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldAverage":
-        """Create Field Average with operation 'Vector'."""
-        return cls(data_type="FLOAT_VECTOR", value=value, group_index=group_index)
-
-    @classmethod
-    def point(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldAverage":
-        """Create Field Average with operation 'Point'."""
-        return cls(domain="POINT", value=value, group_index=group_index)
-
-    @classmethod
-    def edge(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldAverage":
-        """Create Field Average with operation 'Edge'."""
-        return cls(domain="EDGE", value=value, group_index=group_index)
-
-    @classmethod
-    def face(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldAverage":
-        """Create Field Average with operation 'Face'."""
-        return cls(domain="FACE", value=value, group_index=group_index)
-
-    @classmethod
-    def spline(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldAverage":
-        """Create Field Average with operation 'Spline'."""
-        return cls(domain="CURVE", value=value, group_index=group_index)
-
-    @classmethod
-    def instance(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldAverage":
-        """Create Field Average with operation 'Instance'."""
-        return cls(domain="INSTANCE", value=value, group_index=group_index)
-
-    @classmethod
-    def layer(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldAverage":
-        """Create Field Average with operation 'Layer'."""
-        return cls(domain="LAYER", value=value, group_index=group_index)
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def i_group_index(self) -> SocketLinker:
-        """Input socket: Group ID"""
-        return self._input("Group Index")
-
-    @property
-    def o_mean(self) -> SocketLinker:
-        """Output socket: Mean"""
-        return self._output("Mean")
-
-    @property
-    def o_median(self) -> SocketLinker:
-        """Output socket: Median"""
-        return self._output("Median")
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
-        self.node.data_type = value
-
-    @property
-    def domain(
-        self,
-    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self,
-        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
-        self.node.domain = value
 
 
 class FieldMinMax(NodeBuilder):
@@ -1665,126 +871,6 @@ class FieldMinMax(NodeBuilder):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]):
-        self.node.data_type = value
-
-    @property
-    def domain(
-        self,
-    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
-        return self.node.domain
-
-    @domain.setter
-    def domain(
-        self,
-        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
-        self.node.domain = value
-
-
-class FieldVariance(NodeBuilder):
-    """Calculate the standard deviation and variance of a given field"""
-
-    name = "GeometryNodeFieldVariance"
-    node: bpy.types.GeometryNodeFieldVariance
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 0.0,
-        group_index: TYPE_INPUT_INT = 0,
-        *,
-        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Group Index": group_index}
-        self.data_type = data_type
-        self.domain = domain
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls, value: TYPE_INPUT_VALUE = 0.0, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldVariance":
-        """Create Field Variance with operation 'Float'."""
-        return cls(data_type="FLOAT", value=value, group_index=group_index)
-
-    @classmethod
-    def vector(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldVariance":
-        """Create Field Variance with operation 'Vector'."""
-        return cls(data_type="FLOAT_VECTOR", value=value, group_index=group_index)
-
-    @classmethod
-    def point(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldVariance":
-        """Create Field Variance with operation 'Point'."""
-        return cls(domain="POINT", value=value, group_index=group_index)
-
-    @classmethod
-    def edge(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldVariance":
-        """Create Field Variance with operation 'Edge'."""
-        return cls(domain="EDGE", value=value, group_index=group_index)
-
-    @classmethod
-    def face(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldVariance":
-        """Create Field Variance with operation 'Face'."""
-        return cls(domain="FACE", value=value, group_index=group_index)
-
-    @classmethod
-    def spline(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldVariance":
-        """Create Field Variance with operation 'Spline'."""
-        return cls(domain="CURVE", value=value, group_index=group_index)
-
-    @classmethod
-    def instance(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldVariance":
-        """Create Field Variance with operation 'Instance'."""
-        return cls(domain="INSTANCE", value=value, group_index=group_index)
-
-    @classmethod
-    def layer(
-        cls, value: TYPE_INPUT_VECTOR = None, group_index: TYPE_INPUT_INT = 0
-    ) -> "FieldVariance":
-        """Create Field Variance with operation 'Layer'."""
-        return cls(domain="LAYER", value=value, group_index=group_index)
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def i_group_index(self) -> SocketLinker:
-        """Input socket: Group ID"""
-        return self._input("Group Index")
-
-    @property
-    def o_standard_deviation(self) -> SocketLinker:
-        """Output socket: Standard Deviation"""
-        return self._output("Standard Deviation")
-
-    @property
-    def o_variance(self) -> SocketLinker:
-        """Output socket: Variance"""
-        return self._output("Variance")
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
         self.node.data_type = value
 
     @property
@@ -4207,6 +3293,166 @@ class Switch(NodeBuilder):
         key_args = {"Switch": switch, "False": false, "True": true}
         self.input_type = input_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_VALUE = 0.0,
+        true: TYPE_INPUT_VALUE = 0.0,
+    ) -> "Switch":
+        """Create Switch with operation 'Float'."""
+        return cls(input_type="FLOAT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def integer(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_INT = 0,
+        true: TYPE_INPUT_INT = 0,
+    ) -> "Switch":
+        """Create Switch with operation 'Integer'."""
+        return cls(input_type="INT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def boolean(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_BOOLEAN = False,
+        true: TYPE_INPUT_BOOLEAN = False,
+    ) -> "Switch":
+        """Create Switch with operation 'Boolean'."""
+        return cls(input_type="BOOLEAN", switch=switch, false=false, true=true)
+
+    @classmethod
+    def vector(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_VECTOR = None,
+        true: TYPE_INPUT_VECTOR = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Vector'."""
+        return cls(input_type="VECTOR", switch=switch, false=false, true=true)
+
+    @classmethod
+    def color(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_COLOR = None,
+        true: TYPE_INPUT_COLOR = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Color'."""
+        return cls(input_type="RGBA", switch=switch, false=false, true=true)
+
+    @classmethod
+    def rotation(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_ROTATION = None,
+        true: TYPE_INPUT_ROTATION = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Rotation'."""
+        return cls(input_type="ROTATION", switch=switch, false=false, true=true)
+
+    @classmethod
+    def matrix(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_MATRIX = None,
+        true: TYPE_INPUT_MATRIX = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Matrix'."""
+        return cls(input_type="MATRIX", switch=switch, false=false, true=true)
+
+    @classmethod
+    def string(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_STRING = "",
+        true: TYPE_INPUT_STRING = "",
+    ) -> "Switch":
+        """Create Switch with operation 'String'."""
+        return cls(input_type="STRING", switch=switch, false=false, true=true)
+
+    @classmethod
+    def menu(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_MENU = "",
+        true: TYPE_INPUT_MENU = "",
+    ) -> "Switch":
+        """Create Switch with operation 'Menu'."""
+        return cls(input_type="MENU", switch=switch, false=false, true=true)
+
+    @classmethod
+    def object(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_OBJECT = None,
+        true: TYPE_INPUT_OBJECT = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Object'."""
+        return cls(input_type="OBJECT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def image(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_IMAGE = None,
+        true: TYPE_INPUT_IMAGE = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Image'."""
+        return cls(input_type="IMAGE", switch=switch, false=false, true=true)
+
+    @classmethod
+    def geometry(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_GEOMETRY = None,
+        true: TYPE_INPUT_GEOMETRY = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Geometry'."""
+        return cls(input_type="GEOMETRY", switch=switch, false=false, true=true)
+
+    @classmethod
+    def collection(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_COLLECTION = None,
+        true: TYPE_INPUT_COLLECTION = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Collection'."""
+        return cls(input_type="COLLECTION", switch=switch, false=false, true=true)
+
+    @classmethod
+    def material(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_MATERIAL = None,
+        true: TYPE_INPUT_MATERIAL = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Material'."""
+        return cls(input_type="MATERIAL", switch=switch, false=false, true=true)
+
+    @classmethod
+    def bundle(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_BUNDLE = None,
+        true: TYPE_INPUT_BUNDLE = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Bundle'."""
+        return cls(input_type="BUNDLE", switch=switch, false=false, true=true)
+
+    @classmethod
+    def closure(
+        cls,
+        switch: TYPE_INPUT_BOOLEAN = False,
+        false: TYPE_INPUT_CLOSURE = None,
+        true: TYPE_INPUT_CLOSURE = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Closure'."""
+        return cls(input_type="CLOSURE", switch=switch, false=false, true=true)
 
     @property
     def i_switch(self) -> SocketLinker:
