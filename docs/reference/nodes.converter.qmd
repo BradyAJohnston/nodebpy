@@ -22,7 +22,6 @@
 | [CombineTransform](#nodebpy.nodes.converter.CombineTransform) | Combine a translation vector, a rotation, and a scale vector into a transformation matrix |
 | [CombineXYZ](#nodebpy.nodes.converter.CombineXYZ) | Create a vector from X, Y, and Z components |
 | [EulerToRotation](#nodebpy.nodes.converter.EulerToRotation) | Build a rotation from separate angles around each axis |
-| [FieldMinMax](#nodebpy.nodes.converter.FieldMinMax) | Calculate the minimum and maximum of a given field |
 | [FindInString](#nodebpy.nodes.converter.FindInString) | Find the number of times a given string occurs in another string and the position of the first match |
 | [FloatCurve](#nodebpy.nodes.converter.FloatCurve) | Map an input float to a curve and outputs a float value |
 | [FloatToInteger](#nodebpy.nodes.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
@@ -531,121 +530,6 @@ Build a rotation from separate angles around each axis
 | [o_rotation](#nodebpy.nodes.converter.EulerToRotation.o_rotation) | Output socket: Rotation |
 | [tree](#nodebpy.nodes.converter.EulerToRotation.tree) |  |
 | [type](#nodebpy.nodes.converter.EulerToRotation.type) |  |
-
-### FieldMinMax { #nodebpy.nodes.converter.FieldMinMax }
-
-```python
-nodes.converter.FieldMinMax(
-    value=0.0,
-    group_index=0,
-    *,
-    data_type='FLOAT',
-    domain='POINT',
-)
-```
-
-Calculate the minimum and maximum of a given field
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [data_type](#nodebpy.nodes.converter.FieldMinMax.data_type) |  |
-| [domain](#nodebpy.nodes.converter.FieldMinMax.domain) |  |
-| [i_group_index](#nodebpy.nodes.converter.FieldMinMax.i_group_index) | Input socket: Group ID |
-| [i_value](#nodebpy.nodes.converter.FieldMinMax.i_value) | Input socket: Value |
-| [name](#nodebpy.nodes.converter.FieldMinMax.name) |  |
-| [node](#nodebpy.nodes.converter.FieldMinMax.node) |  |
-| [o_max](#nodebpy.nodes.converter.FieldMinMax.o_max) | Output socket: Max |
-| [o_min](#nodebpy.nodes.converter.FieldMinMax.o_min) | Output socket: Min |
-| [tree](#nodebpy.nodes.converter.FieldMinMax.tree) |  |
-| [type](#nodebpy.nodes.converter.FieldMinMax.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [edge](#nodebpy.nodes.converter.FieldMinMax.edge) | Create Field Min & Max with operation 'Edge'. |
-| [face](#nodebpy.nodes.converter.FieldMinMax.face) | Create Field Min & Max with operation 'Face'. |
-| [float](#nodebpy.nodes.converter.FieldMinMax.float) | Create Field Min & Max with operation 'Float'. |
-| [instance](#nodebpy.nodes.converter.FieldMinMax.instance) | Create Field Min & Max with operation 'Instance'. |
-| [integer](#nodebpy.nodes.converter.FieldMinMax.integer) | Create Field Min & Max with operation 'Integer'. |
-| [layer](#nodebpy.nodes.converter.FieldMinMax.layer) | Create Field Min & Max with operation 'Layer'. |
-| [point](#nodebpy.nodes.converter.FieldMinMax.point) | Create Field Min & Max with operation 'Point'. |
-| [spline](#nodebpy.nodes.converter.FieldMinMax.spline) | Create Field Min & Max with operation 'Spline'. |
-| [vector](#nodebpy.nodes.converter.FieldMinMax.vector) | Create Field Min & Max with operation 'Vector'. |
-
-##### edge { #nodebpy.nodes.converter.FieldMinMax.edge }
-
-```python
-nodes.converter.FieldMinMax.edge(value=None, group_index=0)
-```
-
-Create Field Min & Max with operation 'Edge'.
-
-##### face { #nodebpy.nodes.converter.FieldMinMax.face }
-
-```python
-nodes.converter.FieldMinMax.face(value=None, group_index=0)
-```
-
-Create Field Min & Max with operation 'Face'.
-
-##### float { #nodebpy.nodes.converter.FieldMinMax.float }
-
-```python
-nodes.converter.FieldMinMax.float(value=0.0, group_index=0)
-```
-
-Create Field Min & Max with operation 'Float'.
-
-##### instance { #nodebpy.nodes.converter.FieldMinMax.instance }
-
-```python
-nodes.converter.FieldMinMax.instance(value=None, group_index=0)
-```
-
-Create Field Min & Max with operation 'Instance'.
-
-##### integer { #nodebpy.nodes.converter.FieldMinMax.integer }
-
-```python
-nodes.converter.FieldMinMax.integer(value=0, group_index=0)
-```
-
-Create Field Min & Max with operation 'Integer'.
-
-##### layer { #nodebpy.nodes.converter.FieldMinMax.layer }
-
-```python
-nodes.converter.FieldMinMax.layer(value=None, group_index=0)
-```
-
-Create Field Min & Max with operation 'Layer'.
-
-##### point { #nodebpy.nodes.converter.FieldMinMax.point }
-
-```python
-nodes.converter.FieldMinMax.point(value=None, group_index=0)
-```
-
-Create Field Min & Max with operation 'Point'.
-
-##### spline { #nodebpy.nodes.converter.FieldMinMax.spline }
-
-```python
-nodes.converter.FieldMinMax.spline(value=None, group_index=0)
-```
-
-Create Field Min & Max with operation 'Spline'.
-
-##### vector { #nodebpy.nodes.converter.FieldMinMax.vector }
-
-```python
-nodes.converter.FieldMinMax.vector(value=None, group_index=0)
-```
-
-Create Field Min & Max with operation 'Vector'.
 
 ### FindInString { #nodebpy.nodes.converter.FindInString }
 

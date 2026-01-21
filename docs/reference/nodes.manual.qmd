@@ -16,7 +16,7 @@
 | [EvaluateAtIndex](#nodebpy.nodes.manual.EvaluateAtIndex) | Retrieve data of other elements in the context's geometry |
 | [EvaluateOnDomain](#nodebpy.nodes.manual.EvaluateOnDomain) | Retrieve values from a field on a different domain besides the domain from the context |
 | [FieldAverage](#nodebpy.nodes.manual.FieldAverage) | Calculate the mean and median of a given field |
-| [FieldMinMax](#nodebpy.nodes.manual.FieldMinMax) | Calculate the minimum and maximum of a given field |
+| [FieldMinAndMax](#nodebpy.nodes.manual.FieldMinAndMax) | Calculate the minimum and maximum of a given field |
 | [FieldToGrid](#nodebpy.nodes.manual.FieldToGrid) | Create new grids by evaluating new values on an existing volume grid topology |
 | [FieldVariance](#nodebpy.nodes.manual.FieldVariance) | Calculate the standard deviation and variance of a given field |
 | [FormatString](#nodebpy.nodes.manual.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
@@ -26,7 +26,6 @@
 | [JoinGeometry](#nodebpy.nodes.manual.JoinGeometry) | Merge separately generated geometries into a single one |
 | [JoinStrings](#nodebpy.nodes.manual.JoinStrings) | Combine any number of input strings |
 | [MenuSwitch](#nodebpy.nodes.manual.MenuSwitch) | Node builder for the Index Switch node |
-| [MeshBoolean](#nodebpy.nodes.manual.MeshBoolean) | Cut, subtract, or join multiple mesh inputs |
 | [SDFGridBoolean](#nodebpy.nodes.manual.SDFGridBoolean) | Cut, subtract, or join multiple SDF volume grid inputs |
 | [SetHandleType](#nodebpy.nodes.manual.SetHandleType) | Set the handle type for the control points of a Bézier curve |
 | [Value](#nodebpy.nodes.manual.Value) | Input numerical values to other nodes in the tree |
@@ -371,10 +370,10 @@ Calculate the mean and median of a given field
 | [tree](#nodebpy.nodes.manual.FieldAverage.tree) |  |
 | [type](#nodebpy.nodes.manual.FieldAverage.type) |  |
 
-### FieldMinMax { #nodebpy.nodes.manual.FieldMinMax }
+### FieldMinAndMax { #nodebpy.nodes.manual.FieldMinAndMax }
 
 ```python
-nodes.manual.FieldMinMax(
+nodes.manual.FieldMinAndMax(
     value=1.0,
     group_index=0,
     *,
@@ -389,23 +388,23 @@ Calculate the minimum and maximum of a given field
 
 | Name | Description |
 | --- | --- |
-| [corner](#nodebpy.nodes.manual.FieldMinMax.corner) |  |
-| [data_type](#nodebpy.nodes.manual.FieldMinMax.data_type) |  |
-| [domain](#nodebpy.nodes.manual.FieldMinMax.domain) |  |
-| [edge](#nodebpy.nodes.manual.FieldMinMax.edge) |  |
-| [face](#nodebpy.nodes.manual.FieldMinMax.face) |  |
-| [i_group_id](#nodebpy.nodes.manual.FieldMinMax.i_group_id) | Input socket: Group ID |
-| [i_value](#nodebpy.nodes.manual.FieldMinMax.i_value) | Input socket: Value |
-| [instance](#nodebpy.nodes.manual.FieldMinMax.instance) |  |
-| [layer](#nodebpy.nodes.manual.FieldMinMax.layer) |  |
-| [name](#nodebpy.nodes.manual.FieldMinMax.name) |  |
-| [node](#nodebpy.nodes.manual.FieldMinMax.node) |  |
-| [o_max](#nodebpy.nodes.manual.FieldMinMax.o_max) | Output socket: Max |
-| [o_min](#nodebpy.nodes.manual.FieldMinMax.o_min) | Output socket: Min |
-| [point](#nodebpy.nodes.manual.FieldMinMax.point) |  |
-| [spline](#nodebpy.nodes.manual.FieldMinMax.spline) |  |
-| [tree](#nodebpy.nodes.manual.FieldMinMax.tree) |  |
-| [type](#nodebpy.nodes.manual.FieldMinMax.type) |  |
+| [corner](#nodebpy.nodes.manual.FieldMinAndMax.corner) |  |
+| [data_type](#nodebpy.nodes.manual.FieldMinAndMax.data_type) |  |
+| [domain](#nodebpy.nodes.manual.FieldMinAndMax.domain) |  |
+| [edge](#nodebpy.nodes.manual.FieldMinAndMax.edge) |  |
+| [face](#nodebpy.nodes.manual.FieldMinAndMax.face) |  |
+| [i_group_id](#nodebpy.nodes.manual.FieldMinAndMax.i_group_id) | Input socket: Group ID |
+| [i_value](#nodebpy.nodes.manual.FieldMinAndMax.i_value) | Input socket: Value |
+| [instance](#nodebpy.nodes.manual.FieldMinAndMax.instance) |  |
+| [layer](#nodebpy.nodes.manual.FieldMinAndMax.layer) |  |
+| [name](#nodebpy.nodes.manual.FieldMinAndMax.name) |  |
+| [node](#nodebpy.nodes.manual.FieldMinAndMax.node) |  |
+| [o_max](#nodebpy.nodes.manual.FieldMinAndMax.o_max) | Output socket: Max |
+| [o_min](#nodebpy.nodes.manual.FieldMinAndMax.o_min) | Output socket: Min |
+| [point](#nodebpy.nodes.manual.FieldMinAndMax.point) |  |
+| [spline](#nodebpy.nodes.manual.FieldMinAndMax.spline) |  |
+| [tree](#nodebpy.nodes.manual.FieldMinAndMax.tree) |  |
+| [type](#nodebpy.nodes.manual.FieldMinAndMax.type) |  |
 
 ### FieldToGrid { #nodebpy.nodes.manual.FieldToGrid }
 
@@ -668,100 +667,6 @@ Node builder for the Index Switch node
 | [tree](#nodebpy.nodes.manual.MenuSwitch.tree) |  |
 | [type](#nodebpy.nodes.manual.MenuSwitch.type) |  |
 | [vector](#nodebpy.nodes.manual.MenuSwitch.vector) |  |
-
-### MeshBoolean { #nodebpy.nodes.manual.MeshBoolean }
-
-```python
-nodes.manual.MeshBoolean(
-    *args,
-    operation='DIFFERENCE',
-    solver='FLOAT',
-    **kwargs,
-)
-```
-
-Cut, subtract, or join multiple mesh inputs
-
-#### Attributes
-
-| Name | Description |
-| --- | --- |
-| [i_mesh_1](#nodebpy.nodes.manual.MeshBoolean.i_mesh_1) | Input socket: Mesh 1 |
-| [i_mesh_2](#nodebpy.nodes.manual.MeshBoolean.i_mesh_2) | Input socket: Mesh 2 |
-| [name](#nodebpy.nodes.manual.MeshBoolean.name) |  |
-| [node](#nodebpy.nodes.manual.MeshBoolean.node) |  |
-| [o_intersecting_edges](#nodebpy.nodes.manual.MeshBoolean.o_intersecting_edges) | Output socket: Mesh |
-| [o_mesh](#nodebpy.nodes.manual.MeshBoolean.o_mesh) | Output socket: Mesh |
-| [operation](#nodebpy.nodes.manual.MeshBoolean.operation) |  |
-| [solver](#nodebpy.nodes.manual.MeshBoolean.solver) |  |
-| [tree](#nodebpy.nodes.manual.MeshBoolean.tree) |  |
-| [type](#nodebpy.nodes.manual.MeshBoolean.type) |  |
-
-#### Methods
-
-| Name | Description |
-| --- | --- |
-| [difference](#nodebpy.nodes.manual.MeshBoolean.difference) | Create Mesh Boolean with operation 'Difference'. |
-| [intersect](#nodebpy.nodes.manual.MeshBoolean.intersect) |  |
-| [m_difference](#nodebpy.nodes.manual.MeshBoolean.m_difference) |  |
-| [m_union](#nodebpy.nodes.manual.MeshBoolean.m_union) |  |
-| [union](#nodebpy.nodes.manual.MeshBoolean.union) | Create Mesh Boolean with operation 'Union'. |
-
-##### difference { #nodebpy.nodes.manual.MeshBoolean.difference }
-
-```python
-nodes.manual.MeshBoolean.difference(mesh_1=None, mesh_2=None)
-```
-
-Create Mesh Boolean with operation 'Difference'.
-
-##### intersect { #nodebpy.nodes.manual.MeshBoolean.intersect }
-
-```python
-nodes.manual.MeshBoolean.intersect(
-    *args,
-    self_intersection=False,
-    hole_tolerant=False,
-    solver='FLOAT',
-)
-```
-
-
-
-##### m_difference { #nodebpy.nodes.manual.MeshBoolean.m_difference }
-
-```python
-nodes.manual.MeshBoolean.m_difference(
-    *args,
-    mesh_1=None,
-    hole_tolerant=False,
-    self_intersection=False,
-    solver='FLOAT',
-)
-```
-
-
-
-##### m_union { #nodebpy.nodes.manual.MeshBoolean.m_union }
-
-```python
-nodes.manual.MeshBoolean.m_union(
-    *args,
-    hole_tolerant=False,
-    self_intersection=False,
-    solver='FLOAT',
-)
-```
-
-
-
-##### union { #nodebpy.nodes.manual.MeshBoolean.union }
-
-```python
-nodes.manual.MeshBoolean.union(mesh_1=None, mesh_2=None)
-```
-
-Create Mesh Boolean with operation 'Union'.
 
 ### SDFGridBoolean { #nodebpy.nodes.manual.SDFGridBoolean }
 
