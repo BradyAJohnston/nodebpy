@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 import bpy
 
@@ -15,9 +15,179 @@ from ..types import (
     TYPE_INPUT_STRING,
     _AttributeDataTypes,
     _AttributeDomains,
+    _BakeDataTypes,
+    _BakedDataTypeValues,
     _GridDataTypes,
     _is_default_value,
 )
+from .zone import (
+    RepeatInput,
+    RepeatOutput,
+    RepeatZone,
+    SimulationInput,
+    SimulationOutput,
+    SimulationZone,
+)
+
+# __all__ = (
+#     "RepeatInput",
+#     "RepeatOutput",
+#     "RepeatZone",
+#     "SimulationInput",
+#     "SimulationOutput",
+#     "SimulationZone",
+#     "GeometryToInstance",
+#     "SDFGridBoolean",
+# )
+
+
+class Bake(NodeBuilder):
+    """Cache the incoming data so that it can be used without recomputation
+
+    TODO: properly handle Animation / Still bake opations and ability to bake to a file
+    """
+
+    name = "GeometryNodeBake"
+    node: bpy.types.GeometryNodeBake
+    _socket_data_types = _BakedDataTypeValues
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self._establish_links(**self._add_inputs(*args, **kwargs))
+
+    def _add_socket(  # type: ignore
+        self, name: str, type: _BakeDataTypes, default_value: Any | None = None
+    ):
+        item = self.node.bake_items.new(socket_type=type, name=name)
+        return self.node.inputs[item.name]
+
+    @property
+    def outputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.outputs[item.name])
+            for item in self.node.bake_items
+        }
+
+    @property
+    def inputs(self) -> dict[str, SocketLinker]:
+        return {
+            item.name: SocketLinker(self.node.inputs[item.name])
+            for item in self.node.bake_items
+        }
+
+    @property
+    def i_input_socket(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__")
+
+    @property
+    def o_input_socket(self) -> SocketLinker:
+        """Output socket:"""
+        return self._output("__extend__")
+
+
+class GeometryToInstance(NodeBuilder):
+    """Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large"""
+
+    name = "GeometryNodeGeometryToInstance"
+    node: bpy.types.GeometryNodeGeometryToInstance
+
+    def __init__(self, *args: TYPE_INPUT_GEOMETRY):
+        super().__init__()
+        for arg in reversed(args):
+            self._link_from(arg, "Geometry")
+
+    @property
+    def i_geometry(self) -> SocketLinker:
+        """Input socket: Geometry"""
+        return self._input("Geometry")
+
+    @property
+    def o_instances(self) -> SocketLinker:
+        """Output socket: Instances"""
+        return self._output("Instances")
+
+
+class Value(NodeBuilder):
+    """Input numerical values to other nodes in the tree"""
+
+    name = "ShaderNodeValue"
+    node: bpy.types.ShaderNodeValue
+
+    def __init__(self, value: float = 0.0):
+        super().__init__()
+        self.value = value
+
+    @property
+    def value(self) -> float:
+        """Input socket: Value"""
+        # this node is a strange one because it doesn't have a value property,
+        # instead we directly access and change the sockets default output
+        return self.node.outputs[0].default_value  # type: ignore
+
+    @value.setter
+    def value(self, value: float):
+        self.node.outputs[0].default_value = value  # type: ignore
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+
+class FormatString(NodeBuilder):
+    """Insert values into a string using a Python and path template compatible formatting syntax"""
+
+    name = "FunctionNodeFormatString"
+    node: bpy.types.FunctionNodeFormatString
+    _socket_data_types = ("VALUE", "INT", "STRING")
+
+    def __init__(
+        self,
+        *args,
+        format: TYPE_INPUT_STRING = "",
+        **kwargs,
+    ):
+        super().__init__()
+        key_args = {"Format": format}
+        key_args.update(self._add_inputs(*args, **kwargs))  # type: ignore
+        self._establish_links(**key_args)
+
+    def _add_socket(  # type: ignore
+        self,
+        name: str,
+        type: Literal["FLOAT", "INT", "STRING"] = "FLOAT",
+        default_value: float | int | str | None = None,
+    ):
+        item = self.node.format_items.new(socket_type=type, name=name)
+        if default_value is not None:
+            try:
+                self.node.inputs[item.name].default_value = default_value  # type: ignore
+            except TypeError as e:
+                raise ValueError(
+                    f"Invalid default value for {type}: {default_value}"
+                ) from e
+        return self.node.inputs[item.name]
+
+    @property
+    def i_format(self) -> SocketLinker:
+        """Input socket: Format"""
+        return self._input("Format")
+
+    @property
+    def i_input_socket(self) -> SocketLinker:
+        """Input socket:"""
+        return self._input("__extend__")
+
+    @property
+    def items(self) -> dict[str, SocketLinker]:
+        """Input sockets:"""
+        return {socket.name: self._input(socket.name) for socket in self.node.inputs}
+
+    @property
+    def o_string(self) -> SocketLinker:
+        """Output socket: String"""
+        return self._output("String")
 
 
 class JoinStrings(NodeBuilder):

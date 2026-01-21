@@ -140,19 +140,6 @@ class Arc(NodeBuilder):
         self.node.mode = value
 
 
-class Bake(NodeBuilder):
-    """Cache the incoming data so that it can be used without recomputation"""
-
-    name = "GeometryNodeBake"
-    node: bpy.types.GeometryNodeBake
-
-    def __init__(self):
-        super().__init__()
-        key_args = {}
-
-        self._establish_links(**key_args)
-
-
 class BoundingBox(NodeBuilder):
     """Calculate the limits of a geometry's positions and generate a box mesh with those dimensions"""
 
@@ -1513,29 +1500,6 @@ class GeometryProximity(NodeBuilder):
     @target_element.setter
     def target_element(self, value: Literal["POINTS", "EDGES", "FACES"]):
         self.node.target_element = value
-
-
-class GeometryToInstance(NodeBuilder):
-    """Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large"""
-
-    name = "GeometryNodeGeometryToInstance"
-    node: bpy.types.GeometryNodeGeometryToInstance
-
-    def __init__(self, geometry: TYPE_INPUT_GEOMETRY = None):
-        super().__init__()
-        key_args = {"Geometry": geometry}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self._input("Geometry")
-
-    @property
-    def o_instances(self) -> SocketLinker:
-        """Output socket: Instances"""
-        return self._output("Instances")
 
 
 class GreasePencilToCurves(NodeBuilder):

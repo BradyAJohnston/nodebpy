@@ -89,19 +89,19 @@ class TestMathOperators:
 
 
 def test_format_string():
-    format_string = "Hello {x} friends, it is {y} hours and this is a {String}"
+    str_to_format = "Hello {x} friends, it is {y} hours and this is a {String}"
     with TreeBuilder("TestFormatString"):
         x_int = n.Integer(5)
         y_value = n.Value(12.50)
         format = n.FormatString(
             n.String("test"),
-            format=format_string,
+            format=str_to_format,
             x=x_int,
             y=y_value,
         )
 
         assert len(format.node.format_items) == 3
-        assert format.node.inputs[0].default_value == format_string  # type: ignore
+        assert format.node.inputs[0].default_value == str_to_format  # type: ignore
         assert format.node.inputs[1].name == "String"
         assert format.node.inputs[1].type == "STRING"
         assert format.node.inputs[1].default_value == ""

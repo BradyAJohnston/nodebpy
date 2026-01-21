@@ -1,20 +1,21 @@
 """Example test showing how to use tree snapshots."""
 
-from nodebpy import TreeBuilder, nodes, sockets
-import nodebpy.nodes.geometry
+from nodebpy import TreeBuilder
+from nodebpy import nodes as n
+from nodebpy import sockets as s
 
 
 def test_simple_tree_snapshot(snapshot_tree):
     """Test a simple geometry node tree snapshot."""
     with TreeBuilder("SimpleTest") as tree:
         with tree.inputs:
-            input = sockets.SocketGeometry()
+            input = s.SocketGeometry()
         with tree.outputs:
-            output = sockets.SocketGeometry()
+            output = s.SocketGeometry()
 
         # Create some nodes
-        set_pos = nodes.SetPosition()
-        transform = nodes.TransformGeometry()
+        set_pos = n.SetPosition()
+        transform = n.TransformGeometry()
 
         # Link them together
         input >> set_pos >> transform >> output
@@ -32,17 +33,17 @@ def test_complex_tree_snapshot(snapshot_tree):
     with TreeBuilder("ComplexTest") as tree:
         # Set up interface
         with tree.inputs:
-            input = sockets.SocketGeometry()
-            scale = sockets.SocketFloat("Scale", 1.0, min_value=0.0, max_value=10.0)
+            input = s.SocketGeometry()
+            scale = s.SocketFloat("Scale", 1.0, min_value=0.0, max_value=10.0)
         with tree.outputs:
-            output = sockets.SocketGeometry()
+            output = s.SocketGeometry()
 
-        subdivide = nodebpy.nodes.geometry.SubdivisionSurface()
-        transform1 = nodes.TransformGeometry(scale=scale)
-        transform2 = nodes.TransformGeometry(scale=scale)
+        subdivide = n.SubdivisionSurface()
+        transform1 = n.TransformGeometry(scale=scale)
+        transform2 = n.TransformGeometry(scale=scale)
 
         _ = (
-            nodebpy.nodes.geometry.JoinGeometry(
+            n.JoinGeometry(
                 input >> subdivide >> transform1,
                 input >> transform2,
             )
@@ -60,18 +61,18 @@ def test_tree_with_math_nodes(snapshot_tree):
     """Test tree with math operations."""
     with TreeBuilder("MathTest") as tree:
         with tree.inputs:
-            geo_in = sockets.SocketGeometry()
-            value = sockets.SocketFloat("Value", 5.0)
+            geo_in = s.SocketGeometry()
+            value = s.SocketFloat("Value", 5.0)
 
         with tree.outputs:
-            geo_out = sockets.SocketGeometry()
-            result = sockets.SocketFloat("Result")
+            geo_out = s.SocketGeometry()
+            result = s.SocketFloat("Result")
 
         # Create math operations using the overloaded operators
         math_result = value * 2.0 + 1.0
 
         # Use result in geometry
-        set_pos = nodes.SetPosition(offset=math_result)
+        set_pos = n.SetPosition(offset=math_result)
         geo_in >> set_pos >> geo_out
         math_result >> result
 

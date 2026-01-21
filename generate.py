@@ -25,9 +25,9 @@ NODES_TO_SKIP = [
     "Legacy",
     "Closure",
     "Simulation",
-    "Repeat",
     "For Each",
     "Frame",
+    "GridBoolean",
     "Reroute",
     #
 ]
@@ -42,7 +42,17 @@ MANUALLY_DEFINED = (
     "FieldToGrid",
     "JoinGeometry",
     "SDFGridBoolean",
+    "Bake",
     "JoinStrings",
+    "GeometryToInstance",
+    "RepeatInput",
+    "RepeatOutput",
+    "RepeatZone",
+    "SimulationInput",
+    "SimulationOutput",
+    "SimulationZone",
+    "FormatString",
+    "Value",
 )
 
 
@@ -814,6 +824,8 @@ class ModulesHandler(BaseModuleWriter):
     def generate_init(self):
         string = '"""Auto-generated init file from generate.py"""\n\n'
         all = []
+        string += f"from .manual import ({', '.join(MANUALLY_DEFINED)})\n"
+        all += [name for name in MANUALLY_DEFINED]
         for writer in self.modules.values():
             nodes = writer.nodes
             all += [node.class_name for node in nodes]
@@ -860,7 +872,13 @@ def generate_all():
             any([n in node_type.__name__ for n in NODES_TO_SKIP])
             or any([n in node_type.bl_rna.name for n in NODES_TO_SKIP])
             or any(
-                [n in node_type.bl_rna.name.replace(" ", "") for n in MANUALLY_DEFINED]
+                [
+                    n
+                    == node_type.bl_rna.name.title()
+                    .replace(" ", "")
+                    .replace("Sdf", "SDF")
+                    for n in MANUALLY_DEFINED
+                ]
             )
         ):
             print(f"  Skipping manually specified node: {node_type.__name__}")

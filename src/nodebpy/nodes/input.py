@@ -2101,24 +2101,6 @@ class UVTangent(NodeBuilder):
         return self._output("Tangent")
 
 
-class Value(NodeBuilder):
-    """Input numerical values to other nodes in the tree"""
-
-    name = "ShaderNodeValue"
-    node: bpy.types.ShaderNodeValue
-
-    def __init__(self):
-        super().__init__()
-        key_args = {}
-
-        self._establish_links(**key_args)
-
-    @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self._output("Value")
-
-
 class Vector(NodeBuilder):
     """Provide a vector value that can be connected to other nodes in the tree"""
 

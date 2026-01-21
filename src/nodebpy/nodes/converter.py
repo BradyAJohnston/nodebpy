@@ -1906,29 +1906,6 @@ class FloatToInteger(NodeBuilder):
         self.node.rounding_mode = value
 
 
-class FormatString(NodeBuilder):
-    """Insert values into a string using a Python and path template compatible formatting syntax"""
-
-    name = "FunctionNodeFormatString"
-    node: bpy.types.FunctionNodeFormatString
-
-    def __init__(self, format: TYPE_INPUT_STRING = ""):
-        super().__init__()
-        key_args = {"Format": format}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_format(self) -> SocketLinker:
-        """Input socket: Format"""
-        return self._input("Format")
-
-    @property
-    def o_string(self) -> SocketLinker:
-        """Output socket: String"""
-        return self._output("String")
-
-
 class Gamma(NodeBuilder):
     """Apply a gamma correction"""
 
@@ -2351,38 +2328,6 @@ class JoinBundle(NodeBuilder):
     def o_bundle(self) -> SocketLinker:
         """Output socket: Bundle"""
         return self._output("Bundle")
-
-
-class JoinStrings(NodeBuilder):
-    """Combine any number of input strings"""
-
-    name = "GeometryNodeStringJoin"
-    node: bpy.types.GeometryNodeStringJoin
-
-    def __init__(
-        self,
-        delimiter: TYPE_INPUT_STRING = "",
-        strings: TYPE_INPUT_STRING = "",
-    ):
-        super().__init__()
-        key_args = {"Delimiter": delimiter, "Strings": strings}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_delimiter(self) -> SocketLinker:
-        """Input socket: Delimiter"""
-        return self._input("Delimiter")
-
-    @property
-    def i_strings(self) -> SocketLinker:
-        """Input socket: Strings"""
-        return self._input("Strings")
-
-    @property
-    def o_string(self) -> SocketLinker:
-        """Output socket: String"""
-        return self._output("String")
 
 
 class MapRange(NodeBuilder):

@@ -276,57 +276,6 @@ class DistributePointsInVolume(NodeBuilder):
         return self._output("Points")
 
 
-class FieldToGrid(NodeBuilder):
-    """Create new grids by evaluating new values on an existing volume grid topology"""
-
-    name = "GeometryNodeFieldToGrid"
-    node: bpy.types.GeometryNodeFieldToGrid
-
-    def __init__(
-        self,
-        topology: TYPE_INPUT_VALUE = 0.0,
-        *,
-        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
-    ):
-        super().__init__()
-        key_args = {"Topology": topology}
-        self.data_type = data_type
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(cls, topology: TYPE_INPUT_VALUE = 0.0) -> "FieldToGrid":
-        """Create Field to Grid with operation 'Float'."""
-        return cls(data_type="FLOAT", topology=topology)
-
-    @classmethod
-    def integer(cls, topology: TYPE_INPUT_INT = 0) -> "FieldToGrid":
-        """Create Field to Grid with operation 'Integer'."""
-        return cls(data_type="INT", topology=topology)
-
-    @classmethod
-    def boolean(cls, topology: TYPE_INPUT_BOOLEAN = False) -> "FieldToGrid":
-        """Create Field to Grid with operation 'Boolean'."""
-        return cls(data_type="BOOLEAN", topology=topology)
-
-    @classmethod
-    def vector(cls, topology: TYPE_INPUT_VECTOR = None) -> "FieldToGrid":
-        """Create Field to Grid with operation 'Vector'."""
-        return cls(data_type="VECTOR", topology=topology)
-
-    @property
-    def i_topology(self) -> SocketLinker:
-        """Input socket: Topology"""
-        return self._input("Topology")
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
-        self.node.data_type = value
-
-
 class GetNamedGrid(NodeBuilder):
     """Get volume grid from a volume geometry with the specified name"""
 
@@ -945,65 +894,6 @@ class PruneGrid(NodeBuilder):
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
-
-
-class SDFGridBoolean(NodeBuilder):
-    """Cut, subtract, or join multiple SDF volume grid inputs"""
-
-    name = "GeometryNodeSDFGridBoolean"
-    node: bpy.types.GeometryNodeSDFGridBoolean
-
-    def __init__(
-        self,
-        grid_1: TYPE_INPUT_VALUE = 0.0,
-        grid_2: TYPE_INPUT_VALUE = 0.0,
-        *,
-        operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
-    ):
-        super().__init__()
-        key_args = {"Grid 1": grid_1, "Grid 2": grid_2}
-        self.operation = operation
-        self._establish_links(**key_args)
-
-    @classmethod
-    def intersect(cls, grid_2: TYPE_INPUT_VALUE = 0.0) -> "SDFGridBoolean":
-        """Create SDF Grid Boolean with operation 'Intersect'."""
-        return cls(operation="INTERSECT", grid_2=grid_2)
-
-    @classmethod
-    def union(cls, grid_2: TYPE_INPUT_VALUE = 0.0) -> "SDFGridBoolean":
-        """Create SDF Grid Boolean with operation 'Union'."""
-        return cls(operation="UNION", grid_2=grid_2)
-
-    @classmethod
-    def difference(
-        cls, grid_1: TYPE_INPUT_VALUE = 0.0, grid_2: TYPE_INPUT_VALUE = 0.0
-    ) -> "SDFGridBoolean":
-        """Create SDF Grid Boolean with operation 'Difference'."""
-        return cls(operation="DIFFERENCE", grid_1=grid_1, grid_2=grid_2)
-
-    @property
-    def i_grid_1(self) -> SocketLinker:
-        """Input socket: Grid 1"""
-        return self._input("Grid 1")
-
-    @property
-    def i_grid_2(self) -> SocketLinker:
-        """Input socket: Grid 2"""
-        return self._input("Grid 2")
-
-    @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self._output("Grid")
-
-    @property
-    def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
-        return self.node.operation
-
-    @operation.setter
-    def operation(self, value: Literal["INTERSECT", "UNION", "DIFFERENCE"]):
-        self.node.operation = value
 
 
 class SDFGridFillet(NodeBuilder):
