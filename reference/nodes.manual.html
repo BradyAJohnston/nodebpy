@@ -267,7 +267,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.manual.EvaluateAtIndex" id="toc-nodebpy.nodes.manual.EvaluateAtIndex" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.EvaluateAtIndex">EvaluateAtIndex</a></li>
   <li><a href="#nodebpy.nodes.manual.EvaluateOnDomain" id="toc-nodebpy.nodes.manual.EvaluateOnDomain" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.EvaluateOnDomain">EvaluateOnDomain</a></li>
   <li><a href="#nodebpy.nodes.manual.FieldAverage" id="toc-nodebpy.nodes.manual.FieldAverage" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldAverage">FieldAverage</a></li>
-  <li><a href="#nodebpy.nodes.manual.FieldMinMax" id="toc-nodebpy.nodes.manual.FieldMinMax" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldMinMax">FieldMinMax</a></li>
+  <li><a href="#nodebpy.nodes.manual.FieldMinAndMax" id="toc-nodebpy.nodes.manual.FieldMinAndMax" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldMinAndMax">FieldMinAndMax</a></li>
   <li><a href="#nodebpy.nodes.manual.FieldToGrid" id="toc-nodebpy.nodes.manual.FieldToGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldToGrid">FieldToGrid</a></li>
   <li><a href="#nodebpy.nodes.manual.FieldVariance" id="toc-nodebpy.nodes.manual.FieldVariance" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FieldVariance">FieldVariance</a></li>
   <li><a href="#nodebpy.nodes.manual.FormatString" id="toc-nodebpy.nodes.manual.FormatString" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.FormatString">FormatString</a></li>
@@ -277,7 +277,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.manual.JoinGeometry" id="toc-nodebpy.nodes.manual.JoinGeometry" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.JoinGeometry">JoinGeometry</a></li>
   <li><a href="#nodebpy.nodes.manual.JoinStrings" id="toc-nodebpy.nodes.manual.JoinStrings" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.JoinStrings">JoinStrings</a></li>
   <li><a href="#nodebpy.nodes.manual.MenuSwitch" id="toc-nodebpy.nodes.manual.MenuSwitch" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.MenuSwitch">MenuSwitch</a></li>
-  <li><a href="#nodebpy.nodes.manual.MeshBoolean" id="toc-nodebpy.nodes.manual.MeshBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.MeshBoolean">MeshBoolean</a></li>
   <li><a href="#nodebpy.nodes.manual.SDFGridBoolean" id="toc-nodebpy.nodes.manual.SDFGridBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.SDFGridBoolean">SDFGridBoolean</a></li>
   <li><a href="#nodebpy.nodes.manual.SetHandleType" id="toc-nodebpy.nodes.manual.SetHandleType" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.SetHandleType">SetHandleType</a></li>
   <li><a href="#nodebpy.nodes.manual.Value" id="toc-nodebpy.nodes.manual.Value" class="nav-link" data-scroll-target="#nodebpy.nodes.manual.Value">Value</a></li>
@@ -338,7 +337,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Calculate the mean and median of a given field</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax">FieldMinMax</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax">FieldMinAndMax</a></td>
 <td>Calculate the minimum and maximum of a given field</td>
 </tr>
 <tr class="even">
@@ -378,18 +377,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Node builder for the Index Switch node</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean">MeshBoolean</a></td>
-<td>Cut, subtract, or join multiple mesh inputs</td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.manual.SDFGridBoolean">SDFGridBoolean</a></td>
 <td>Cut, subtract, or join multiple SDF volume grid inputs</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.manual.SetHandleType">SetHandleType</a></td>
 <td>Set the handle type for the control points of a Bézier curve</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.manual.Value">Value</a></td>
 <td>Input numerical values to other nodes in the tree</td>
 </tr>
@@ -1161,9 +1156,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.manual.FieldMinMax" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.FieldMinMax">FieldMinMax</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.FieldMinMax(</span>
+<section id="nodebpy.nodes.manual.FieldMinAndMax" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.FieldMinAndMax">FieldMinAndMax</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.FieldMinAndMax(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
@@ -1182,71 +1177,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.corner">corner</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.corner">corner</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.data_type">data_type</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.domain">domain</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.edge">edge</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.edge">edge</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.face">face</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.face">face</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.i_group_id">i_group_id</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.i_group_id">i_group_id</a></td>
 <td>Input socket: Group ID</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.i_value">i_value</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.i_value">i_value</a></td>
 <td>Input socket: Value</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.instance">instance</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.instance">instance</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.layer">layer</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.name">name</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.node">node</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.o_max">o_max</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.o_max">o_max</a></td>
 <td>Output socket: Max</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.o_min">o_min</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.o_min">o_min</a></td>
 <td>Output socket: Min</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.point">point</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.point">point</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.spline">spline</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.spline">spline</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.manual.FieldMinMax.type">type</a></td>
+<td><a href="#nodebpy.nodes.manual.FieldMinAndMax.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1888,146 +1883,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.manual.MeshBoolean" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean">MeshBoolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>,</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Cut, subtract, or join multiple mesh inputs</p>
-<section id="attributes-18" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.i_mesh_1">i_mesh_1</a></td>
-<td>Input socket: Mesh 1</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.i_mesh_2">i_mesh_2</a></td>
-<td>Input socket: Mesh 2</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.name">name</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.node">node</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.o_intersecting_edges">o_intersecting_edges</a></td>
-<td>Output socket: Mesh</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.o_mesh">o_mesh</a></td>
-<td>Output socket: Mesh</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.operation">operation</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.solver">solver</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="methods-3" class="level4">
-<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.difference">difference</a></td>
-<td>Create Mesh Boolean with operation ‘Difference’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.intersect">intersect</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.m_difference">m_difference</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.m_union">m_union</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.manual.MeshBoolean.union">union</a></td>
-<td>Create Mesh Boolean with operation ‘Union’.</td>
-</tr>
-</tbody>
-</table>
-<section id="nodebpy.nodes.manual.MeshBoolean.difference" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.difference">difference</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.difference(mesh_1<span class="op">=</span><span class="va">None</span>, mesh_2<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Mesh Boolean with operation ‘Difference’.</p>
-</section>
-<section id="nodebpy.nodes.manual.MeshBoolean.intersect" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.intersect">intersect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.intersect(</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.manual.MeshBoolean.m_difference" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.m_difference">m_difference</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.m_difference(</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    mesh_1<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.manual.MeshBoolean.m_union" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.m_union">m_union</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.m_union(</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.manual.MeshBoolean.union" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.MeshBoolean.union">union</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.MeshBoolean.union(mesh_1<span class="op">=</span><span class="va">None</span>, mesh_2<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Mesh Boolean with operation ‘Union’.</p>
-</section>
-</section>
-</section>
 <section id="nodebpy.nodes.manual.SDFGridBoolean" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.SDFGridBoolean">SDFGridBoolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Cut, subtract, or join multiple SDF volume grid inputs</p>
-<section id="attributes-19" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2071,8 +1932,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-4" class="level4">
-<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
+<section id="methods-3" class="level4">
+<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2097,32 +1958,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.manual.SDFGridBoolean.difference" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.SDFGridBoolean.difference">difference</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.difference(<span class="op">*</span>args, grid_1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.difference(<span class="op">*</span>args, grid_1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create SDF Grid Boolean with operation ‘Difference’.</p>
 </section>
 <section id="nodebpy.nodes.manual.SDFGridBoolean.intersect" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.SDFGridBoolean.intersect">intersect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.intersect(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.intersect(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.manual.SDFGridBoolean.union" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.manual.SDFGridBoolean.union">union</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.union(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SDFGridBoolean.union(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.manual.SetHandleType" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.SetHandleType">SetHandleType</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SetHandleType(</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    curve<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    left<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    right<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    handle_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.SetHandleType(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    curve<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    left<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    right<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    handle_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set the handle type for the control points of a Bézier curve</p>
-<section id="attributes-20" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2177,10 +2038,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.manual.Value" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.manual.Value">Value</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>nodes.manual.Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input numerical values to other nodes in the tree</p>
-<section id="attributes-21" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<section id="attributes-20" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
