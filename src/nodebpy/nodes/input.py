@@ -19,7 +19,7 @@ from ..types import (
 class Cursor3D(NodeBuilder):
     """The scene's 3D cursor location and rotation"""
 
-    name = "GeometryNodeTool3DCursor"
+    _bl_idname = "GeometryNodeTool3DCursor"
     node: bpy.types.GeometryNodeTool3DCursor
 
     def __init__(self):
@@ -42,7 +42,7 @@ class Cursor3D(NodeBuilder):
 class ActiveCamera(NodeBuilder):
     """Retrieve the scene's active camera"""
 
-    name = "GeometryNodeInputActiveCamera"
+    _bl_idname = "GeometryNodeInputActiveCamera"
     node: bpy.types.GeometryNodeInputActiveCamera
 
     def __init__(self):
@@ -60,7 +60,7 @@ class ActiveCamera(NodeBuilder):
 class ActiveElement(NodeBuilder):
     """Active element indices of the edited geometry, for tool execution"""
 
-    name = "GeometryNodeToolActiveElement"
+    _bl_idname = "GeometryNodeToolActiveElement"
     node: bpy.types.GeometryNodeToolActiveElement
 
     def __init__(self, domain: Literal["POINT", "EDGE", "FACE", "LAYER"] = "POINT"):
@@ -111,7 +111,7 @@ class ActiveElement(NodeBuilder):
 class Boolean(NodeBuilder):
     """Provide a True/False value that can be connected to other nodes in the tree"""
 
-    name = "FunctionNodeInputBool"
+    _bl_idname = "FunctionNodeInputBool"
     node: bpy.types.FunctionNodeInputBool
 
     def __init__(self, boolean: bool = False):
@@ -137,7 +137,7 @@ class Boolean(NodeBuilder):
 class CameraInfo(NodeBuilder):
     """Retrieve information from a camera object"""
 
-    name = "GeometryNodeCameraInfo"
+    _bl_idname = "GeometryNodeCameraInfo"
     node: bpy.types.GeometryNodeCameraInfo
 
     def __init__(self, camera: TYPE_INPUT_OBJECT = None):
@@ -200,7 +200,7 @@ class CameraInfo(NodeBuilder):
 class Collection(NodeBuilder):
     """Output a single collection"""
 
-    name = "GeometryNodeInputCollection"
+    _bl_idname = "GeometryNodeInputCollection"
     node: bpy.types.GeometryNodeInputCollection
 
     def __init__(self):
@@ -218,7 +218,7 @@ class Collection(NodeBuilder):
 class CollectionInfo(NodeBuilder):
     """Retrieve geometry instances from a collection"""
 
-    name = "GeometryNodeCollectionInfo"
+    _bl_idname = "GeometryNodeCollectionInfo"
     node: bpy.types.GeometryNodeCollectionInfo
 
     def __init__(
@@ -270,7 +270,7 @@ class CollectionInfo(NodeBuilder):
 class Color(NodeBuilder):
     """Output a color value chosen with the color picker widget"""
 
-    name = "FunctionNodeInputColor"
+    _bl_idname = "FunctionNodeInputColor"
     node: bpy.types.FunctionNodeInputColor
 
     def __init__(
@@ -298,7 +298,7 @@ class Color(NodeBuilder):
 class CornersOfEdge(NodeBuilder):
     """Retrieve face corners connected to edges"""
 
-    name = "GeometryNodeCornersOfEdge"
+    _bl_idname = "GeometryNodeCornersOfEdge"
     node: bpy.types.GeometryNodeCornersOfEdge
 
     def __init__(
@@ -345,7 +345,7 @@ class CornersOfEdge(NodeBuilder):
 class CornersOfFace(NodeBuilder):
     """Retrieve corners that make up a face"""
 
-    name = "GeometryNodeCornersOfFace"
+    _bl_idname = "GeometryNodeCornersOfFace"
     node: bpy.types.GeometryNodeCornersOfFace
 
     def __init__(
@@ -392,7 +392,7 @@ class CornersOfFace(NodeBuilder):
 class CornersOfVertex(NodeBuilder):
     """Retrieve face corners connected to vertices"""
 
-    name = "GeometryNodeCornersOfVertex"
+    _bl_idname = "GeometryNodeCornersOfVertex"
     node: bpy.types.GeometryNodeCornersOfVertex
 
     def __init__(
@@ -439,7 +439,7 @@ class CornersOfVertex(NodeBuilder):
 class CurveHandlePositions(NodeBuilder):
     """Retrieve the position of each Bézier control point's handles"""
 
-    name = "GeometryNodeInputCurveHandlePositions"
+    _bl_idname = "GeometryNodeInputCurveHandlePositions"
     node: bpy.types.GeometryNodeInputCurveHandlePositions
 
     def __init__(self, relative: TYPE_INPUT_BOOLEAN = False):
@@ -467,7 +467,7 @@ class CurveHandlePositions(NodeBuilder):
 class CurveTangent(NodeBuilder):
     """Retrieve the direction of curves at each control point"""
 
-    name = "GeometryNodeInputTangent"
+    _bl_idname = "GeometryNodeInputTangent"
     node: bpy.types.GeometryNodeInputTangent
 
     def __init__(self):
@@ -485,7 +485,7 @@ class CurveTangent(NodeBuilder):
 class CurveTilt(NodeBuilder):
     """Retrieve the angle at each control point used to twist the curve's normal around its tangent"""
 
-    name = "GeometryNodeInputCurveTilt"
+    _bl_idname = "GeometryNodeInputCurveTilt"
     node: bpy.types.GeometryNodeInputCurveTilt
 
     def __init__(self):
@@ -503,7 +503,7 @@ class CurveTilt(NodeBuilder):
 class CurveOfPoint(NodeBuilder):
     """Retrieve the curve a control point is part of"""
 
-    name = "GeometryNodeCurveOfPoint"
+    _bl_idname = "GeometryNodeCurveOfPoint"
     node: bpy.types.GeometryNodeCurveOfPoint
 
     def __init__(self, point_index: TYPE_INPUT_INT = 0):
@@ -531,7 +531,7 @@ class CurveOfPoint(NodeBuilder):
 class EdgeAngle(NodeBuilder):
     """The angle between the normals of connected manifold faces"""
 
-    name = "GeometryNodeInputMeshEdgeAngle"
+    _bl_idname = "GeometryNodeInputMeshEdgeAngle"
     node: bpy.types.GeometryNodeInputMeshEdgeAngle
 
     def __init__(self):
@@ -554,7 +554,7 @@ class EdgeAngle(NodeBuilder):
 class EdgeNeighbors(NodeBuilder):
     """Retrieve the number of faces that use each edge as one of their sides"""
 
-    name = "GeometryNodeInputMeshEdgeNeighbors"
+    _bl_idname = "GeometryNodeInputMeshEdgeNeighbors"
     node: bpy.types.GeometryNodeInputMeshEdgeNeighbors
 
     def __init__(self):
@@ -572,7 +572,7 @@ class EdgeNeighbors(NodeBuilder):
 class EdgePathsToSelection(NodeBuilder):
     """Output a selection of edges by following paths across mesh edges"""
 
-    name = "GeometryNodeEdgePathsToSelection"
+    _bl_idname = "GeometryNodeEdgePathsToSelection"
     node: bpy.types.GeometryNodeEdgePathsToSelection
 
     def __init__(
@@ -607,7 +607,7 @@ class EdgePathsToSelection(NodeBuilder):
 class EdgeVertices(NodeBuilder):
     """Retrieve topology information relating to each edge of a mesh"""
 
-    name = "GeometryNodeInputMeshEdgeVertices"
+    _bl_idname = "GeometryNodeInputMeshEdgeVertices"
     node: bpy.types.GeometryNodeInputMeshEdgeVertices
 
     def __init__(self):
@@ -640,7 +640,7 @@ class EdgeVertices(NodeBuilder):
 class EdgesOfCorner(NodeBuilder):
     """Retrieve the edges on both sides of a face corner"""
 
-    name = "GeometryNodeEdgesOfCorner"
+    _bl_idname = "GeometryNodeEdgesOfCorner"
     node: bpy.types.GeometryNodeEdgesOfCorner
 
     def __init__(self, corner_index: TYPE_INPUT_INT = 0):
@@ -668,7 +668,7 @@ class EdgesOfCorner(NodeBuilder):
 class EdgesOfVertex(NodeBuilder):
     """Retrieve the edges connected to each vertex"""
 
-    name = "GeometryNodeEdgesOfVertex"
+    _bl_idname = "GeometryNodeEdgesOfVertex"
     node: bpy.types.GeometryNodeEdgesOfVertex
 
     def __init__(
@@ -715,7 +715,7 @@ class EdgesOfVertex(NodeBuilder):
 class EdgesToFaceGroups(NodeBuilder):
     """Group faces into regions surrounded by the selected boundary edges"""
 
-    name = "GeometryNodeEdgesToFaceGroups"
+    _bl_idname = "GeometryNodeEdgesToFaceGroups"
     node: bpy.types.GeometryNodeEdgesToFaceGroups
 
     def __init__(self, boundary_edges: TYPE_INPUT_BOOLEAN = True):
@@ -738,7 +738,7 @@ class EdgesToFaceGroups(NodeBuilder):
 class EndpointSelection(NodeBuilder):
     """Provide a selection for an arbitrary number of endpoints in each spline"""
 
-    name = "GeometryNodeCurveEndpointSelection"
+    _bl_idname = "GeometryNodeCurveEndpointSelection"
     node: bpy.types.GeometryNodeCurveEndpointSelection
 
     def __init__(
@@ -770,7 +770,7 @@ class EndpointSelection(NodeBuilder):
 class FaceArea(NodeBuilder):
     """Calculate the surface area of a mesh's faces"""
 
-    name = "GeometryNodeInputMeshFaceArea"
+    _bl_idname = "GeometryNodeInputMeshFaceArea"
     node: bpy.types.GeometryNodeInputMeshFaceArea
 
     def __init__(self):
@@ -788,7 +788,7 @@ class FaceArea(NodeBuilder):
 class FaceGroupBoundaries(NodeBuilder):
     """Find edges on the boundaries between groups of faces with the same ID value"""
 
-    name = "GeometryNodeMeshFaceSetBoundaries"
+    _bl_idname = "GeometryNodeMeshFaceSetBoundaries"
     node: bpy.types.GeometryNodeMeshFaceSetBoundaries
 
     def __init__(self, face_set: TYPE_INPUT_INT = 0):
@@ -811,7 +811,7 @@ class FaceGroupBoundaries(NodeBuilder):
 class FaceNeighbors(NodeBuilder):
     """Retrieve topology information relating to each face of a mesh"""
 
-    name = "GeometryNodeInputMeshFaceNeighbors"
+    _bl_idname = "GeometryNodeInputMeshFaceNeighbors"
     node: bpy.types.GeometryNodeInputMeshFaceNeighbors
 
     def __init__(self):
@@ -834,7 +834,7 @@ class FaceNeighbors(NodeBuilder):
 class FaceSet(NodeBuilder):
     """Each face's sculpt face set value"""
 
-    name = "GeometryNodeToolFaceSet"
+    _bl_idname = "GeometryNodeToolFaceSet"
     node: bpy.types.GeometryNodeToolFaceSet
 
     def __init__(self):
@@ -857,7 +857,7 @@ class FaceSet(NodeBuilder):
 class FaceOfCorner(NodeBuilder):
     """Retrieve the face each face corner is part of"""
 
-    name = "GeometryNodeFaceOfCorner"
+    _bl_idname = "GeometryNodeFaceOfCorner"
     node: bpy.types.GeometryNodeFaceOfCorner
 
     def __init__(self, corner_index: TYPE_INPUT_INT = 0):
@@ -885,7 +885,7 @@ class FaceOfCorner(NodeBuilder):
 class ID(NodeBuilder):
     """Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist"""
 
-    name = "GeometryNodeInputID"
+    _bl_idname = "GeometryNodeInputID"
     node: bpy.types.GeometryNodeInputID
 
     def __init__(self):
@@ -903,7 +903,7 @@ class ID(NodeBuilder):
 class Image(NodeBuilder):
     """Input an image data-block"""
 
-    name = "GeometryNodeInputImage"
+    _bl_idname = "GeometryNodeInputImage"
     node: bpy.types.GeometryNodeInputImage
 
     def __init__(self):
@@ -921,7 +921,7 @@ class Image(NodeBuilder):
 class ImageInfo(NodeBuilder):
     """Retrieve information about an image"""
 
-    name = "GeometryNodeImageInfo"
+    _bl_idname = "GeometryNodeImageInfo"
     node: bpy.types.GeometryNodeImageInfo
 
     def __init__(
@@ -973,7 +973,7 @@ class ImageInfo(NodeBuilder):
 class ImportCSV(NodeBuilder):
     """Import geometry from an CSV file"""
 
-    name = "GeometryNodeImportCSV"
+    _bl_idname = "GeometryNodeImportCSV"
     node: bpy.types.GeometryNodeImportCSV
 
     def __init__(
@@ -1005,7 +1005,7 @@ class ImportCSV(NodeBuilder):
 class ImportOBJ(NodeBuilder):
     """Import geometry from an OBJ file"""
 
-    name = "GeometryNodeImportOBJ"
+    _bl_idname = "GeometryNodeImportOBJ"
     node: bpy.types.GeometryNodeImportOBJ
 
     def __init__(self, path: TYPE_INPUT_STRING = ""):
@@ -1028,7 +1028,7 @@ class ImportOBJ(NodeBuilder):
 class ImportPLY(NodeBuilder):
     """Import a point cloud from a PLY file"""
 
-    name = "GeometryNodeImportPLY"
+    _bl_idname = "GeometryNodeImportPLY"
     node: bpy.types.GeometryNodeImportPLY
 
     def __init__(self, path: TYPE_INPUT_STRING = ""):
@@ -1051,7 +1051,7 @@ class ImportPLY(NodeBuilder):
 class ImportSTL(NodeBuilder):
     """Import a mesh from an STL file"""
 
-    name = "GeometryNodeImportSTL"
+    _bl_idname = "GeometryNodeImportSTL"
     node: bpy.types.GeometryNodeImportSTL
 
     def __init__(self, path: TYPE_INPUT_STRING = ""):
@@ -1074,7 +1074,7 @@ class ImportSTL(NodeBuilder):
 class ImportText(NodeBuilder):
     """Import a string from a text file"""
 
-    name = "GeometryNodeImportText"
+    _bl_idname = "GeometryNodeImportText"
     node: bpy.types.GeometryNodeImportText
 
     def __init__(self, path: TYPE_INPUT_STRING = ""):
@@ -1097,7 +1097,7 @@ class ImportText(NodeBuilder):
 class ImportVDB(NodeBuilder):
     """Import volume data from a .vdb file"""
 
-    name = "GeometryNodeImportVDB"
+    _bl_idname = "GeometryNodeImportVDB"
     node: bpy.types.GeometryNodeImportVDB
 
     def __init__(self, path: TYPE_INPUT_STRING = ""):
@@ -1120,7 +1120,7 @@ class ImportVDB(NodeBuilder):
 class Index(NodeBuilder):
     """Retrieve an integer value indicating the position of each element in the list, starting at zero"""
 
-    name = "GeometryNodeInputIndex"
+    _bl_idname = "GeometryNodeInputIndex"
     node: bpy.types.GeometryNodeInputIndex
 
     def __init__(self):
@@ -1138,7 +1138,7 @@ class Index(NodeBuilder):
 class InstanceBounds(NodeBuilder):
     """Calculate position bounds of each instance's geometry set"""
 
-    name = "GeometryNodeInputInstanceBounds"
+    _bl_idname = "GeometryNodeInputInstanceBounds"
     node: bpy.types.GeometryNodeInputInstanceBounds
 
     def __init__(self, use_radius: TYPE_INPUT_BOOLEAN = True):
@@ -1166,7 +1166,7 @@ class InstanceBounds(NodeBuilder):
 class InstanceRotation(NodeBuilder):
     """Retrieve the rotation of each instance in the geometry"""
 
-    name = "GeometryNodeInputInstanceRotation"
+    _bl_idname = "GeometryNodeInputInstanceRotation"
     node: bpy.types.GeometryNodeInputInstanceRotation
 
     def __init__(self):
@@ -1184,7 +1184,7 @@ class InstanceRotation(NodeBuilder):
 class InstanceScale(NodeBuilder):
     """Retrieve the scale of each instance in the geometry"""
 
-    name = "GeometryNodeInputInstanceScale"
+    _bl_idname = "GeometryNodeInputInstanceScale"
     node: bpy.types.GeometryNodeInputInstanceScale
 
     def __init__(self):
@@ -1202,7 +1202,7 @@ class InstanceScale(NodeBuilder):
 class InstanceTransform(NodeBuilder):
     """Retrieve the full transformation of each instance in the geometry"""
 
-    name = "GeometryNodeInstanceTransform"
+    _bl_idname = "GeometryNodeInstanceTransform"
     node: bpy.types.GeometryNodeInstanceTransform
 
     def __init__(self):
@@ -1220,7 +1220,7 @@ class InstanceTransform(NodeBuilder):
 class Integer(NodeBuilder):
     """Provide an integer value that can be connected to other nodes in the tree"""
 
-    name = "FunctionNodeInputInt"
+    _bl_idname = "FunctionNodeInputInt"
     node: bpy.types.FunctionNodeInputInt
 
     def __init__(self, integer: int = 1):
@@ -1246,7 +1246,7 @@ class Integer(NodeBuilder):
 class IsEdgeSmooth(NodeBuilder):
     """Retrieve whether each edge is marked for smooth or split normals"""
 
-    name = "GeometryNodeInputEdgeSmooth"
+    _bl_idname = "GeometryNodeInputEdgeSmooth"
     node: bpy.types.GeometryNodeInputEdgeSmooth
 
     def __init__(self):
@@ -1264,7 +1264,7 @@ class IsEdgeSmooth(NodeBuilder):
 class IsFacePlanar(NodeBuilder):
     """Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal"""
 
-    name = "GeometryNodeInputMeshFaceIsPlanar"
+    _bl_idname = "GeometryNodeInputMeshFaceIsPlanar"
     node: bpy.types.GeometryNodeInputMeshFaceIsPlanar
 
     def __init__(self, threshold: TYPE_INPUT_VALUE = 0.01):
@@ -1287,7 +1287,7 @@ class IsFacePlanar(NodeBuilder):
 class IsFaceSmooth(NodeBuilder):
     """Retrieve whether each face is marked for smooth or sharp normals"""
 
-    name = "GeometryNodeInputShadeSmooth"
+    _bl_idname = "GeometryNodeInputShadeSmooth"
     node: bpy.types.GeometryNodeInputShadeSmooth
 
     def __init__(self):
@@ -1305,7 +1305,7 @@ class IsFaceSmooth(NodeBuilder):
 class IsSplineCyclic(NodeBuilder):
     """Retrieve whether each spline endpoint connects to the beginning"""
 
-    name = "GeometryNodeInputSplineCyclic"
+    _bl_idname = "GeometryNodeInputSplineCyclic"
     node: bpy.types.GeometryNodeInputSplineCyclic
 
     def __init__(self):
@@ -1323,7 +1323,7 @@ class IsSplineCyclic(NodeBuilder):
 class IsViewport(NodeBuilder):
     """Retrieve whether the nodes are being evaluated for the viewport rather than the final render"""
 
-    name = "GeometryNodeIsViewport"
+    _bl_idname = "GeometryNodeIsViewport"
     node: bpy.types.GeometryNodeIsViewport
 
     def __init__(self):
@@ -1341,7 +1341,7 @@ class IsViewport(NodeBuilder):
 class Material(NodeBuilder):
     """Output a single material"""
 
-    name = "GeometryNodeInputMaterial"
+    _bl_idname = "GeometryNodeInputMaterial"
     node: bpy.types.GeometryNodeInputMaterial
 
     def __init__(self):
@@ -1359,7 +1359,7 @@ class Material(NodeBuilder):
 class MaterialIndex(NodeBuilder):
     """Retrieve the index of the material used for each element in the geometry's list of materials"""
 
-    name = "GeometryNodeInputMaterialIndex"
+    _bl_idname = "GeometryNodeInputMaterialIndex"
     node: bpy.types.GeometryNodeInputMaterialIndex
 
     def __init__(self):
@@ -1377,7 +1377,7 @@ class MaterialIndex(NodeBuilder):
 class MeshIsland(NodeBuilder):
     """Retrieve information about separate connected regions in a mesh"""
 
-    name = "GeometryNodeInputMeshIsland"
+    _bl_idname = "GeometryNodeInputMeshIsland"
     node: bpy.types.GeometryNodeInputMeshIsland
 
     def __init__(self):
@@ -1400,7 +1400,7 @@ class MeshIsland(NodeBuilder):
 class MousePosition(NodeBuilder):
     """Retrieve the position of the mouse cursor"""
 
-    name = "GeometryNodeToolMousePosition"
+    _bl_idname = "GeometryNodeToolMousePosition"
     node: bpy.types.GeometryNodeToolMousePosition
 
     def __init__(self):
@@ -1433,7 +1433,7 @@ class MousePosition(NodeBuilder):
 class NamedAttribute(NodeBuilder):
     """Retrieve the data of a specified attribute"""
 
-    name = "GeometryNodeInputNamedAttribute"
+    _bl_idname = "GeometryNodeInputNamedAttribute"
     node: bpy.types.GeometryNodeInputNamedAttribute
 
     def __init__(
@@ -1533,7 +1533,7 @@ class NamedAttribute(NodeBuilder):
 class NamedLayerSelection(NodeBuilder):
     """Output a selection of a Grease Pencil layer"""
 
-    name = "GeometryNodeInputNamedLayerSelection"
+    _bl_idname = "GeometryNodeInputNamedLayerSelection"
     node: bpy.types.GeometryNodeInputNamedLayerSelection
 
     def __init__(self, name: TYPE_INPUT_STRING = ""):
@@ -1556,7 +1556,7 @@ class NamedLayerSelection(NodeBuilder):
 class Normal(NodeBuilder):
     """Retrieve a unit length vector indicating the direction pointing away from the geometry at each element"""
 
-    name = "GeometryNodeInputNormal"
+    _bl_idname = "GeometryNodeInputNormal"
     node: bpy.types.GeometryNodeInputNormal
 
     def __init__(self, legacy_corner_normals: bool = False):
@@ -1587,7 +1587,7 @@ class Normal(NodeBuilder):
 class Object(NodeBuilder):
     """Output a single object"""
 
-    name = "GeometryNodeInputObject"
+    _bl_idname = "GeometryNodeInputObject"
     node: bpy.types.GeometryNodeInputObject
 
     def __init__(self):
@@ -1605,7 +1605,7 @@ class Object(NodeBuilder):
 class ObjectInfo(NodeBuilder):
     """Retrieve information from an object"""
 
-    name = "GeometryNodeObjectInfo"
+    _bl_idname = "GeometryNodeObjectInfo"
     node: bpy.types.GeometryNodeObjectInfo
 
     def __init__(
@@ -1667,7 +1667,7 @@ class ObjectInfo(NodeBuilder):
 class OffsetCornerInFace(NodeBuilder):
     """Retrieve corners in the same face as another"""
 
-    name = "GeometryNodeOffsetCornerInFace"
+    _bl_idname = "GeometryNodeOffsetCornerInFace"
     node: bpy.types.GeometryNodeOffsetCornerInFace
 
     def __init__(
@@ -1699,7 +1699,7 @@ class OffsetCornerInFace(NodeBuilder):
 class OffsetPointInCurve(NodeBuilder):
     """Offset a control point index within its curve"""
 
-    name = "GeometryNodeOffsetPointInCurve"
+    _bl_idname = "GeometryNodeOffsetPointInCurve"
     node: bpy.types.GeometryNodeOffsetPointInCurve
 
     def __init__(
@@ -1736,7 +1736,7 @@ class OffsetPointInCurve(NodeBuilder):
 class PointsOfCurve(NodeBuilder):
     """Retrieve a point index within a curve"""
 
-    name = "GeometryNodePointsOfCurve"
+    _bl_idname = "GeometryNodePointsOfCurve"
     node: bpy.types.GeometryNodePointsOfCurve
 
     def __init__(
@@ -1783,7 +1783,7 @@ class PointsOfCurve(NodeBuilder):
 class Position(NodeBuilder):
     """Retrieve a vector indicating the location of each element"""
 
-    name = "GeometryNodeInputPosition"
+    _bl_idname = "GeometryNodeInputPosition"
     node: bpy.types.GeometryNodeInputPosition
 
     def __init__(self):
@@ -1801,7 +1801,7 @@ class Position(NodeBuilder):
 class Radius(NodeBuilder):
     """Retrieve the radius at each point on curve or point cloud geometry"""
 
-    name = "GeometryNodeInputRadius"
+    _bl_idname = "GeometryNodeInputRadius"
     node: bpy.types.GeometryNodeInputRadius
 
     def __init__(self):
@@ -1819,7 +1819,7 @@ class Radius(NodeBuilder):
 class Rotation(NodeBuilder):
     """Provide a rotation value that can be connected to other nodes in the tree"""
 
-    name = "FunctionNodeInputRotation"
+    _bl_idname = "FunctionNodeInputRotation"
     node: bpy.types.FunctionNodeInputRotation
 
     def __init__(self, rotation_euler: tuple[float, float, float] = (0.0, 0.0, 0.0)):
@@ -1845,7 +1845,7 @@ class Rotation(NodeBuilder):
 class SceneTime(NodeBuilder):
     """Retrieve the current time in the scene's animation in units of seconds or frames"""
 
-    name = "GeometryNodeInputSceneTime"
+    _bl_idname = "GeometryNodeInputSceneTime"
     node: bpy.types.GeometryNodeInputSceneTime
 
     def __init__(self):
@@ -1868,7 +1868,7 @@ class SceneTime(NodeBuilder):
 class Selection(NodeBuilder):
     """User selection of the edited geometry, for tool execution"""
 
-    name = "GeometryNodeToolSelection"
+    _bl_idname = "GeometryNodeToolSelection"
     node: bpy.types.GeometryNodeToolSelection
 
     def __init__(self):
@@ -1891,7 +1891,7 @@ class Selection(NodeBuilder):
 class SelfObject(NodeBuilder):
     """Retrieve the object that contains the geometry nodes modifier currently being executed"""
 
-    name = "GeometryNodeSelfObject"
+    _bl_idname = "GeometryNodeSelfObject"
     node: bpy.types.GeometryNodeSelfObject
 
     def __init__(self):
@@ -1909,7 +1909,7 @@ class SelfObject(NodeBuilder):
 class ShortestEdgePaths(NodeBuilder):
     """Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge"""
 
-    name = "GeometryNodeInputShortestEdgePaths"
+    _bl_idname = "GeometryNodeInputShortestEdgePaths"
     node: bpy.types.GeometryNodeInputShortestEdgePaths
 
     def __init__(
@@ -1946,7 +1946,7 @@ class ShortestEdgePaths(NodeBuilder):
 class SpecialCharacters(NodeBuilder):
     """Output string characters that cannot be typed directly with the keyboard"""
 
-    name = "FunctionNodeInputSpecialCharacters"
+    _bl_idname = "FunctionNodeInputSpecialCharacters"
     node: bpy.types.FunctionNodeInputSpecialCharacters
 
     def __init__(self):
@@ -1969,7 +1969,7 @@ class SpecialCharacters(NodeBuilder):
 class SplineLength(NodeBuilder):
     """Retrieve the total length of each spline, as a distance or as a number of points"""
 
-    name = "GeometryNodeSplineLength"
+    _bl_idname = "GeometryNodeSplineLength"
     node: bpy.types.GeometryNodeSplineLength
 
     def __init__(self):
@@ -1992,7 +1992,7 @@ class SplineLength(NodeBuilder):
 class SplineParameter(NodeBuilder):
     """Retrieve how far along each spline a control point is"""
 
-    name = "GeometryNodeSplineParameter"
+    _bl_idname = "GeometryNodeSplineParameter"
     node: bpy.types.GeometryNodeSplineParameter
 
     def __init__(self):
@@ -2020,7 +2020,7 @@ class SplineParameter(NodeBuilder):
 class SplineResolution(NodeBuilder):
     """Retrieve the number of evaluated points that will be generated for every control point on curves"""
 
-    name = "GeometryNodeInputSplineResolution"
+    _bl_idname = "GeometryNodeInputSplineResolution"
     node: bpy.types.GeometryNodeInputSplineResolution
 
     def __init__(self):
@@ -2038,7 +2038,7 @@ class SplineResolution(NodeBuilder):
 class String(NodeBuilder):
     """Provide a string value that can be connected to other nodes in the tree"""
 
-    name = "FunctionNodeInputString"
+    _bl_idname = "FunctionNodeInputString"
     node: bpy.types.FunctionNodeInputString
 
     def __init__(self, string: str = ""):
@@ -2064,7 +2064,7 @@ class String(NodeBuilder):
 class UVTangent(NodeBuilder):
     """Generate tangent directions based on a UV map"""
 
-    name = "GeometryNodeUVTangent"
+    _bl_idname = "GeometryNodeUVTangent"
     node: bpy.types.GeometryNodeUVTangent
 
     def __init__(
@@ -2096,7 +2096,7 @@ class UVTangent(NodeBuilder):
 class Vector(NodeBuilder):
     """Provide a vector value that can be connected to other nodes in the tree"""
 
-    name = "FunctionNodeInputVector"
+    _bl_idname = "FunctionNodeInputVector"
     node: bpy.types.FunctionNodeInputVector
 
     def __init__(self, vector: tuple[float, float, float] = (0.0, 0.0, 0.0)):
@@ -2122,7 +2122,7 @@ class Vector(NodeBuilder):
 class VertexNeighbors(NodeBuilder):
     """Retrieve topology information relating to each vertex of a mesh"""
 
-    name = "GeometryNodeInputMeshVertexNeighbors"
+    _bl_idname = "GeometryNodeInputMeshVertexNeighbors"
     node: bpy.types.GeometryNodeInputMeshVertexNeighbors
 
     def __init__(self):
@@ -2145,7 +2145,7 @@ class VertexNeighbors(NodeBuilder):
 class VertexOfCorner(NodeBuilder):
     """Retrieve the vertex each face corner is attached to"""
 
-    name = "GeometryNodeVertexOfCorner"
+    _bl_idname = "GeometryNodeVertexOfCorner"
     node: bpy.types.GeometryNodeVertexOfCorner
 
     def __init__(self, corner_index: TYPE_INPUT_INT = 0):
@@ -2168,7 +2168,7 @@ class VertexOfCorner(NodeBuilder):
 class ViewportTransform(NodeBuilder):
     """Retrieve the view direction and location of the 3D viewport"""
 
-    name = "GeometryNodeViewportTransform"
+    _bl_idname = "GeometryNodeViewportTransform"
     node: bpy.types.GeometryNodeViewportTransform
 
     def __init__(self):
@@ -2196,7 +2196,7 @@ class ViewportTransform(NodeBuilder):
 class VoxelIndex(NodeBuilder):
     """Retrieve the integer coordinates of the voxel that the field is evaluated on"""
 
-    name = "GeometryNodeInputVoxelIndex"
+    _bl_idname = "GeometryNodeInputVoxelIndex"
     node: bpy.types.GeometryNodeInputVoxelIndex
 
     def __init__(self):

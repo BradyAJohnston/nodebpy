@@ -19,7 +19,7 @@ from ..types import (
 class BlurAttribute(NodeBuilder):
     """Mix attribute values of neighboring elements"""
 
-    name = "GeometryNodeBlurAttribute"
+    _bl_idname = "GeometryNodeBlurAttribute"
     node: bpy.types.GeometryNodeBlurAttribute
 
     def __init__(
@@ -111,7 +111,7 @@ class BlurAttribute(NodeBuilder):
 class DomainSize(NodeBuilder):
     """Retrieve the number of elements in a geometry for each attribute domain"""
 
-    name = "GeometryNodeAttributeDomainSize"
+    _bl_idname = "GeometryNodeAttributeDomainSize"
     node: bpy.types.GeometryNodeAttributeDomainSize
 
     def __init__(
@@ -183,7 +183,7 @@ class DomainSize(NodeBuilder):
 class RemoveNamedAttribute(NodeBuilder):
     """Delete an attribute with a specified name from a geometry. Typically used to optimize performance"""
 
-    name = "GeometryNodeRemoveAttribute"
+    _bl_idname = "GeometryNodeRemoveAttribute"
     node: bpy.types.GeometryNodeRemoveAttribute
 
     def __init__(
@@ -221,7 +221,7 @@ class RemoveNamedAttribute(NodeBuilder):
 class StoreNamedAttribute(NodeBuilder):
     """Store the result of a field on a geometry as an attribute with the specified name"""
 
-    name = "GeometryNodeStoreNamedAttribute"
+    _bl_idname = "GeometryNodeStoreNamedAttribute"
     node: bpy.types.GeometryNodeStoreNamedAttribute
 
     def __init__(

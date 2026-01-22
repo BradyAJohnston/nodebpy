@@ -15,7 +15,7 @@ from ..types import (
 class BrickTexture(NodeBuilder):
     """Generate a procedural texture producing bricks"""
 
-    name = "ShaderNodeTexBrick"
+    _bl_idname = "ShaderNodeTexBrick"
     node: bpy.types.ShaderNodeTexBrick
 
     def __init__(
@@ -151,7 +151,7 @@ class BrickTexture(NodeBuilder):
 class CheckerTexture(NodeBuilder):
     """Generate a checkerboard texture"""
 
-    name = "ShaderNodeTexChecker"
+    _bl_idname = "ShaderNodeTexChecker"
     node: bpy.types.ShaderNodeTexChecker
 
     def __init__(
@@ -205,7 +205,7 @@ class CheckerTexture(NodeBuilder):
 class GaborTexture(NodeBuilder):
     """Generate Gabor noise"""
 
-    name = "ShaderNodeTexGabor"
+    _bl_idname = "ShaderNodeTexGabor"
     node: bpy.types.ShaderNodeTexGabor
 
     def __init__(
@@ -288,7 +288,7 @@ class GaborTexture(NodeBuilder):
 class GradientTexture(NodeBuilder):
     """Generate interpolated color and intensity values based on the input vector"""
 
-    name = "ShaderNodeTexGradient"
+    _bl_idname = "ShaderNodeTexGradient"
     node: bpy.types.ShaderNodeTexGradient
 
     def __init__(
@@ -358,7 +358,7 @@ class GradientTexture(NodeBuilder):
 class ImageTexture(NodeBuilder):
     """Sample values from an image texture"""
 
-    name = "GeometryNodeImageTexture"
+    _bl_idname = "GeometryNodeImageTexture"
     node: bpy.types.GeometryNodeImageTexture
 
     def __init__(
@@ -421,7 +421,7 @@ class ImageTexture(NodeBuilder):
 class MagicTexture(NodeBuilder):
     """Generate a psychedelic color texture"""
 
-    name = "ShaderNodeTexMagic"
+    _bl_idname = "ShaderNodeTexMagic"
     node: bpy.types.ShaderNodeTexMagic
 
     def __init__(
@@ -474,7 +474,7 @@ class MagicTexture(NodeBuilder):
 class NoiseTexture(NodeBuilder):
     """Generate fractal Perlin noise"""
 
-    name = "ShaderNodeTexNoise"
+    _bl_idname = "ShaderNodeTexNoise"
     node: bpy.types.ShaderNodeTexNoise
 
     def __init__(
@@ -616,7 +616,7 @@ class NoiseTexture(NodeBuilder):
 class VoronoiTexture(NodeBuilder):
     """Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells"""
 
-    name = "ShaderNodeTexVoronoi"
+    _bl_idname = "ShaderNodeTexVoronoi"
     node: bpy.types.ShaderNodeTexVoronoi
 
     def __init__(
@@ -771,7 +771,7 @@ class VoronoiTexture(NodeBuilder):
 class WaveTexture(NodeBuilder):
     """Generate procedural bands or rings with noise"""
 
-    name = "ShaderNodeTexWave"
+    _bl_idname = "ShaderNodeTexWave"
     node: bpy.types.ShaderNodeTexWave
 
     def __init__(
@@ -886,7 +886,7 @@ class WaveTexture(NodeBuilder):
 class WhiteNoiseTexture(NodeBuilder):
     """Calculate a random value or color based on an input seed"""
 
-    name = "ShaderNodeTexWhiteNoise"
+    _bl_idname = "ShaderNodeTexWhiteNoise"
     node: bpy.types.ShaderNodeTexWhiteNoise
 
     def __init__(

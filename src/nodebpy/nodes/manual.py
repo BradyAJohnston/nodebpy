@@ -1,14 +1,7 @@
 from typing import Any, Literal
 
 import bpy
-from .zone import (
-    RepeatInput,
-    RepeatOutput,
-    RepeatZone,
-    SimulationInput,
-    SimulationOutput,
-    SimulationZone,
-)
+
 from ..builder import NodeBuilder, NodeSocket, SocketLinker
 from ..types import (
     LINKABLE,
@@ -34,6 +27,14 @@ from ..types import (
     _EvaluateAtIndexDataTypes,
     _GridDataTypes,
     _is_default_value,
+)
+from .zone import (
+    RepeatInput,
+    RepeatOutput,
+    RepeatZone,
+    SimulationInput,
+    SimulationOutput,
+    SimulationZone,
 )
 
 __all__ = (
@@ -82,7 +83,7 @@ class Bake(NodeBuilder):
     TODO: properly handle Animation / Still bake opations and ability to bake to a file
     """
 
-    name = "GeometryNodeBake"
+    _bl_idname = "GeometryNodeBake"
     node: bpy.types.GeometryNodeBake
     _socket_data_types = _BakedDataTypeValues
 
@@ -124,7 +125,7 @@ class Bake(NodeBuilder):
 class GeometryToInstance(NodeBuilder):
     """Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large"""
 
-    name = "GeometryNodeGeometryToInstance"
+    _bl_idname = "GeometryNodeGeometryToInstance"
     node: bpy.types.GeometryNodeGeometryToInstance
 
     def __init__(self, *args: TYPE_INPUT_GEOMETRY):
@@ -146,7 +147,7 @@ class GeometryToInstance(NodeBuilder):
 class Value(NodeBuilder):
     """Input numerical values to other nodes in the tree"""
 
-    name = "ShaderNodeValue"
+    _bl_idname = "ShaderNodeValue"
     node: bpy.types.ShaderNodeValue
 
     def __init__(self, value: float = 0.0):
@@ -173,7 +174,7 @@ class Value(NodeBuilder):
 class FormatString(NodeBuilder):
     """Insert values into a string using a Python and path template compatible formatting syntax"""
 
-    name = "FunctionNodeFormatString"
+    _bl_idname = "FunctionNodeFormatString"
     node: bpy.types.FunctionNodeFormatString
     _socket_data_types = ("VALUE", "INT", "STRING")
 
@@ -228,7 +229,7 @@ class FormatString(NodeBuilder):
 class JoinStrings(NodeBuilder):
     """Combine any number of input strings"""
 
-    name = "GeometryNodeStringJoin"
+    _bl_idname = "GeometryNodeStringJoin"
     node: bpy.types.GeometryNodeStringJoin
 
     def __init__(self, *args: LINKABLE, delimiter: TYPE_INPUT_STRING = ""):
@@ -257,7 +258,7 @@ class JoinStrings(NodeBuilder):
 class MeshBoolean(NodeBuilder):
     """Cut, subtract, or join multiple mesh inputs"""
 
-    name = "GeometryNodeMeshBoolean"
+    _bl_idname = "GeometryNodeMeshBoolean"
     node: bpy.types.GeometryNodeMeshBoolean
 
     def __init__(
@@ -389,7 +390,7 @@ class MeshBoolean(NodeBuilder):
 class JoinGeometry(NodeBuilder):
     """Merge separately generated geometries into a single one"""
 
-    name = "GeometryNodeJoinGeometry"
+    _bl_idname = "GeometryNodeJoinGeometry"
     node: bpy.types.GeometryNodeJoinGeometry
 
     def __init__(self, *args: LINKABLE):
@@ -411,7 +412,7 @@ class JoinGeometry(NodeBuilder):
 class SetHandleType(NodeBuilder):
     """Set the handle type for the control points of a Bézier curve"""
 
-    name = "GeometryNodeCurveSetHandles"
+    _bl_idname = "GeometryNodeCurveSetHandles"
     node: bpy.types.GeometryNodeCurveSetHandles
 
     def __init__(
@@ -489,7 +490,7 @@ class SetHandleType(NodeBuilder):
 class HandleTypeSelection(NodeBuilder):
     """Provide a selection based on the handle types of Bézier control points"""
 
-    name = "GeometryNodeCurveHandleTypeSelection"
+    _bl_idname = "GeometryNodeCurveHandleTypeSelection"
     node: bpy.types.GeometryNodeCurveHandleTypeSelection
 
     def __init__(
@@ -569,7 +570,7 @@ def _typed_index_switch(data_type: SOCKET_TYPES):
 class IndexSwitch(NodeBuilder):
     """Node builder for the Index Switch node"""
 
-    name = "GeometryNodeIndexSwitch"
+    _bl_idname = "GeometryNodeIndexSwitch"
     node: bpy.types.GeometryNodeIndexSwitch
     float = _typed_index_switch("FLOAT")
     integer = _typed_index_switch("INT")
@@ -661,7 +662,7 @@ def _typed_menu_switch(data_type: SOCKET_TYPES):
 class MenuSwitch(NodeBuilder):
     """Node builder for the Index Switch node"""
 
-    name = "GeometryNodeMenuSwitch"
+    _bl_idname = "GeometryNodeMenuSwitch"
     node: bpy.types.GeometryNodeMenuSwitch
 
     float = _typed_menu_switch("FLOAT")
@@ -771,7 +772,7 @@ def _domain_capture_attribute(domain: _AttributeDomains):
 class CaptureAttribute(NodeBuilder):
     """Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation"""
 
-    name = "GeometryNodeCaptureAttribute"
+    _bl_idname = "GeometryNodeCaptureAttribute"
     node: bpy.types.GeometryNodeCaptureAttribute
     point = _domain_capture_attribute("POINT")
     edge = _domain_capture_attribute("EDGE")
@@ -870,7 +871,7 @@ class FieldToGrid(NodeBuilder):
 
     """
 
-    name = "GeometryNodeFieldToGrid"
+    _bl_idname = "GeometryNodeFieldToGrid"
     node: bpy.types.GeometryNodeFieldToGrid
     _socket_data_types = ("FLOAT", "VALUE", "INT", "VECTOR", "BOOLEAN")
     _default_input_id = "Topology"
@@ -913,6 +914,26 @@ class FieldToGrid(NodeBuilder):
 
         return [SocketLinker(x) for x in outputs.values()]
 
+    @classmethod
+    def float(cls, *args: TYPE_INPUT_GRID, topology: TYPE_INPUT_GRID = None, **kwargs):
+        return cls(*args, data_type="FLOAT", topology=topology, **kwargs)
+
+    @classmethod
+    def integer(
+        cls, *args: TYPE_INPUT_GRID, topology: TYPE_INPUT_GRID = None, **kwargs
+    ):
+        return cls(*args, data_type="INT", topology=topology, **kwargs)
+
+    @classmethod
+    def vector(cls, *args: TYPE_INPUT_GRID, topology: TYPE_INPUT_GRID = None, **kwargs):
+        return cls(*args, data_type="VECTOR", topology=topology, **kwargs)
+
+    @classmethod
+    def boolean(
+        cls, *args: TYPE_INPUT_GRID, topology: TYPE_INPUT_GRID = None, **kwargs
+    ):
+        return cls(*args, data_type="BOOLEAN", topology=topology, **kwargs)
+
     @property
     def outputs(self) -> dict[str, SocketLinker]:
         return {
@@ -949,7 +970,7 @@ class FieldToGrid(NodeBuilder):
 class SDFGridBoolean(NodeBuilder):
     """Cut, subtract, or join multiple SDF volume grid inputs"""
 
-    name = "GeometryNodeSDFGridBoolean"
+    _bl_idname = "GeometryNodeSDFGridBoolean"
     node: bpy.types.GeometryNodeSDFGridBoolean
 
     def __init__(
@@ -1057,7 +1078,7 @@ def _accumlate_field_factory(domain: _AttributeDomains):
 class AccumulateField(NodeBuilder):
     """Add the values of an evaluated field together and output the running total for each element"""
 
-    name = "GeometryNodeAccumulateField"
+    _bl_idname = "GeometryNodeAccumulateField"
     node: bpy.types.GeometryNodeAccumulateField
 
     point = _accumlate_field_factory("POINT")
@@ -1170,7 +1191,7 @@ def _evaluate_at_index_factory(domain: _AttributeDomains):
 class EvaluateAtIndex(NodeBuilder):
     """Retrieve data of other elements in the context's geometry"""
 
-    name = "GeometryNodeFieldAtIndex"
+    _bl_idname = "GeometryNodeFieldAtIndex"
     node: bpy.types.GeometryNodeFieldAtIndex
 
     point = _evaluate_at_index_factory("POINT")
@@ -1267,7 +1288,7 @@ def _field_average_factory(domain: _AttributeDomains):
 class FieldAverage(NodeBuilder):
     """Calculate the mean and median of a given field"""
 
-    name = "GeometryNodeFieldAverage"
+    _bl_idname = "GeometryNodeFieldAverage"
     node: bpy.types.GeometryNodeFieldAverage
 
     point = _field_average_factory("POINT")
@@ -1370,7 +1391,7 @@ def _field_min_and_max_factory(domain: _AttributeDomains):
 class FieldMinAndMax(NodeBuilder):
     """Calculate the minimum and maximum of a given field"""
 
-    name = "GeometryNodeFieldMinAndMax"
+    _bl_idname = "GeometryNodeFieldMinAndMax"
     node: bpy.types.GeometryNodeFieldMinAndMax
 
     point = _field_min_and_max_factory("POINT")
@@ -1471,7 +1492,7 @@ def _evaluate_on_domain_factory(domain: _AttributeDomains):
 class EvaluateOnDomain(NodeBuilder):
     """Retrieve values from a field on a different domain besides the domain from the context"""
 
-    name = "GeometryNodeFieldOnDomain"
+    _bl_idname = "GeometryNodeFieldOnDomain"
     node: bpy.types.GeometryNodeFieldOnDomain
 
     point = _field_min_and_max_factory("POINT")
@@ -1560,7 +1581,7 @@ def _field_variance_factory(domain: _AttributeDomains):
 class FieldVariance(NodeBuilder):
     """Calculate the standard deviation and variance of a given field"""
 
-    name = "GeometryNodeFieldVariance"
+    _bl_idname = "GeometryNodeFieldVariance"
     node: bpy.types.GeometryNodeFieldVariance
 
     point = _field_variance_factory("POINT")
@@ -1707,7 +1728,7 @@ def _compare_operation_method(operation: _CompareOperations):
 class Compare(NodeBuilder):
     """Perform a comparison operation on the two given inputs"""
 
-    name = "FunctionNodeCompare"
+    _bl_idname = "FunctionNodeCompare"
     node: bpy.types.FunctionNodeCompare
 
     less_than = _compare_operation_method("LESS_THAN")
@@ -1884,7 +1905,7 @@ class Compare(NodeBuilder):
 class AttributeStatistic(NodeBuilder):
     """Calculate statistics about a data set from a field evaluated on a geometry"""
 
-    name = "GeometryNodeAttributeStatistic"
+    _bl_idname = "GeometryNodeAttributeStatistic"
     node: bpy.types.GeometryNodeAttributeStatistic
 
     def __init__(

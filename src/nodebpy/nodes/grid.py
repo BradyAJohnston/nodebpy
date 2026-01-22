@@ -18,7 +18,7 @@ from ..types import (
 class AdvectGrid(NodeBuilder):
     """Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs"""
 
-    name = "GeometryNodeGridAdvect"
+    _bl_idname = "GeometryNodeGridAdvect"
     node: bpy.types.GeometryNodeGridAdvect
 
     def __init__(
@@ -141,7 +141,7 @@ class AdvectGrid(NodeBuilder):
 class DistributePointsInGrid(NodeBuilder):
     """Generate points inside a volume grid"""
 
-    name = "GeometryNodeDistributePointsInGrid"
+    _bl_idname = "GeometryNodeDistributePointsInGrid"
     node: bpy.types.GeometryNodeDistributePointsInGrid
 
     def __init__(
@@ -207,7 +207,7 @@ class DistributePointsInGrid(NodeBuilder):
 class DistributePointsInVolume(NodeBuilder):
     """Generate points inside a volume"""
 
-    name = "GeometryNodeDistributePointsInVolume"
+    _bl_idname = "GeometryNodeDistributePointsInVolume"
     node: bpy.types.GeometryNodeDistributePointsInVolume
 
     def __init__(
@@ -270,7 +270,7 @@ class DistributePointsInVolume(NodeBuilder):
 class GetNamedGrid(NodeBuilder):
     """Get volume grid from a volume geometry with the specified name"""
 
-    name = "GeometryNodeGetNamedGrid"
+    _bl_idname = "GeometryNodeGetNamedGrid"
     node: bpy.types.GeometryNodeGetNamedGrid
 
     def __init__(
@@ -363,7 +363,7 @@ class GetNamedGrid(NodeBuilder):
 class GridCurl(NodeBuilder):
     """Calculate the magnitude and direction of circulation of a directional vector grid"""
 
-    name = "GeometryNodeGridCurl"
+    _bl_idname = "GeometryNodeGridCurl"
     node: bpy.types.GeometryNodeGridCurl
 
     def __init__(self, grid: TYPE_INPUT_VECTOR = None):
@@ -386,7 +386,7 @@ class GridCurl(NodeBuilder):
 class GridDivergence(NodeBuilder):
     """Calculate the flow into and out of each point of a directional vector grid"""
 
-    name = "GeometryNodeGridDivergence"
+    _bl_idname = "GeometryNodeGridDivergence"
     node: bpy.types.GeometryNodeGridDivergence
 
     def __init__(self, grid: TYPE_INPUT_VECTOR = None):
@@ -409,7 +409,7 @@ class GridDivergence(NodeBuilder):
 class GridGradient(NodeBuilder):
     """Calculate the direction and magnitude of the change in values of a scalar grid"""
 
-    name = "GeometryNodeGridGradient"
+    _bl_idname = "GeometryNodeGridGradient"
     node: bpy.types.GeometryNodeGridGradient
 
     def __init__(self, grid: TYPE_INPUT_VALUE = 0.0):
@@ -432,7 +432,7 @@ class GridGradient(NodeBuilder):
 class GridInfo(NodeBuilder):
     """Retrieve information about a volume grid"""
 
-    name = "GeometryNodeGridInfo"
+    _bl_idname = "GeometryNodeGridInfo"
     node: bpy.types.GeometryNodeGridInfo
 
     def __init__(
@@ -493,7 +493,7 @@ class GridInfo(NodeBuilder):
 class GridLaplacian(NodeBuilder):
     """Compute the divergence of the gradient of the input grid"""
 
-    name = "GeometryNodeGridLaplacian"
+    _bl_idname = "GeometryNodeGridLaplacian"
     node: bpy.types.GeometryNodeGridLaplacian
 
     def __init__(self, grid: TYPE_INPUT_VALUE = 0.0):
@@ -516,7 +516,7 @@ class GridLaplacian(NodeBuilder):
 class GridToMesh(NodeBuilder):
     """Generate a mesh on the "surface" of a volume grid"""
 
-    name = "GeometryNodeGridToMesh"
+    _bl_idname = "GeometryNodeGridToMesh"
     node: bpy.types.GeometryNodeGridToMesh
 
     def __init__(
@@ -554,7 +554,7 @@ class GridToMesh(NodeBuilder):
 class MeshToDensityGrid(NodeBuilder):
     """Create a filled volume grid from a mesh"""
 
-    name = "GeometryNodeMeshToDensityGrid"
+    _bl_idname = "GeometryNodeMeshToDensityGrid"
     node: bpy.types.GeometryNodeMeshToDensityGrid
 
     def __init__(
@@ -603,7 +603,7 @@ class MeshToDensityGrid(NodeBuilder):
 class MeshToSDFGrid(NodeBuilder):
     """Create a signed distance volume grid from a mesh"""
 
-    name = "GeometryNodeMeshToSDFGrid"
+    _bl_idname = "GeometryNodeMeshToSDFGrid"
     node: bpy.types.GeometryNodeMeshToSDFGrid
 
     def __init__(
@@ -641,7 +641,7 @@ class MeshToSDFGrid(NodeBuilder):
 class MeshToVolume(NodeBuilder):
     """Create a fog volume with the shape of the input mesh's surface"""
 
-    name = "GeometryNodeMeshToVolume"
+    _bl_idname = "GeometryNodeMeshToVolume"
     node: bpy.types.GeometryNodeMeshToVolume
 
     def __init__(
@@ -704,7 +704,7 @@ class MeshToVolume(NodeBuilder):
 class PointsToSDFGrid(NodeBuilder):
     """Create a signed distance volume grid from points"""
 
-    name = "GeometryNodePointsToSDFGrid"
+    _bl_idname = "GeometryNodePointsToSDFGrid"
     node: bpy.types.GeometryNodePointsToSDFGrid
 
     def __init__(
@@ -742,7 +742,7 @@ class PointsToSDFGrid(NodeBuilder):
 class PointsToVolume(NodeBuilder):
     """Generate a fog volume sphere around every point"""
 
-    name = "GeometryNodePointsToVolume"
+    _bl_idname = "GeometryNodePointsToVolume"
     node: bpy.types.GeometryNodePointsToVolume
 
     def __init__(
@@ -805,7 +805,7 @@ class PointsToVolume(NodeBuilder):
 class PruneGrid(NodeBuilder):
     """Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes"""
 
-    name = "GeometryNodeGridPrune"
+    _bl_idname = "GeometryNodeGridPrune"
     node: bpy.types.GeometryNodeGridPrune
 
     def __init__(
@@ -890,7 +890,7 @@ class PruneGrid(NodeBuilder):
 class SDFGridFillet(NodeBuilder):
     """Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces"""
 
-    name = "GeometryNodeSDFGridFillet"
+    _bl_idname = "GeometryNodeSDFGridFillet"
     node: bpy.types.GeometryNodeSDFGridFillet
 
     def __init__(
@@ -922,7 +922,7 @@ class SDFGridFillet(NodeBuilder):
 class SDFGridLaplacian(NodeBuilder):
     """Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization"""
 
-    name = "GeometryNodeSDFGridLaplacian"
+    _bl_idname = "GeometryNodeSDFGridLaplacian"
     node: bpy.types.GeometryNodeSDFGridLaplacian
 
     def __init__(
@@ -954,7 +954,7 @@ class SDFGridLaplacian(NodeBuilder):
 class SDFGridMean(NodeBuilder):
     """Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field"""
 
-    name = "GeometryNodeSDFGridMean"
+    _bl_idname = "GeometryNodeSDFGridMean"
     node: bpy.types.GeometryNodeSDFGridMean
 
     def __init__(
@@ -992,7 +992,7 @@ class SDFGridMean(NodeBuilder):
 class SDFGridMeanCurvature(NodeBuilder):
     """Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas"""
 
-    name = "GeometryNodeSDFGridMeanCurvature"
+    _bl_idname = "GeometryNodeSDFGridMeanCurvature"
     node: bpy.types.GeometryNodeSDFGridMeanCurvature
 
     def __init__(
@@ -1024,7 +1024,7 @@ class SDFGridMeanCurvature(NodeBuilder):
 class SDFGridMedian(NodeBuilder):
     """Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field"""
 
-    name = "GeometryNodeSDFGridMedian"
+    _bl_idname = "GeometryNodeSDFGridMedian"
     node: bpy.types.GeometryNodeSDFGridMedian
 
     def __init__(
@@ -1062,7 +1062,7 @@ class SDFGridMedian(NodeBuilder):
 class SDFGridOffset(NodeBuilder):
     """Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property"""
 
-    name = "GeometryNodeSDFGridOffset"
+    _bl_idname = "GeometryNodeSDFGridOffset"
     node: bpy.types.GeometryNodeSDFGridOffset
 
     def __init__(
@@ -1094,7 +1094,7 @@ class SDFGridOffset(NodeBuilder):
 class SampleGrid(NodeBuilder):
     """Retrieve values from the specified volume grid"""
 
-    name = "GeometryNodeSampleGrid"
+    _bl_idname = "GeometryNodeSampleGrid"
     node: bpy.types.GeometryNodeSampleGrid
 
     def __init__(
@@ -1196,7 +1196,7 @@ class SampleGrid(NodeBuilder):
 class SampleGridIndex(NodeBuilder):
     """Retrieve volume grid values at specific voxels"""
 
-    name = "GeometryNodeSampleGridIndex"
+    _bl_idname = "GeometryNodeSampleGridIndex"
     node: bpy.types.GeometryNodeSampleGridIndex
 
     def __init__(
@@ -1294,7 +1294,7 @@ class SampleGridIndex(NodeBuilder):
 class SetGridBackground(NodeBuilder):
     """Set the background value used for inactive voxels and tiles"""
 
-    name = "GeometryNodeSetGridBackground"
+    _bl_idname = "GeometryNodeSetGridBackground"
     node: bpy.types.GeometryNodeSetGridBackground
 
     def __init__(
@@ -1364,7 +1364,7 @@ class SetGridBackground(NodeBuilder):
 class SetGridTransform(NodeBuilder):
     """Set the transform for the grid from index space into object space."""
 
-    name = "GeometryNodeSetGridTransform"
+    _bl_idname = "GeometryNodeSetGridTransform"
     node: bpy.types.GeometryNodeSetGridTransform
 
     def __init__(
@@ -1439,7 +1439,7 @@ class SetGridTransform(NodeBuilder):
 class StoreNamedGrid(NodeBuilder):
     """Store grid data in a volume geometry with the specified name"""
 
-    name = "GeometryNodeStoreNamedGrid"
+    _bl_idname = "GeometryNodeStoreNamedGrid"
     node: bpy.types.GeometryNodeStoreNamedGrid
 
     def __init__(
@@ -1527,7 +1527,7 @@ class StoreNamedGrid(NodeBuilder):
 class VolumeCube(NodeBuilder):
     """Generate a dense volume with a field that controls the density at each grid voxel based on its position"""
 
-    name = "GeometryNodeVolumeCube"
+    _bl_idname = "GeometryNodeVolumeCube"
     node: bpy.types.GeometryNodeVolumeCube
 
     def __init__(
@@ -1597,7 +1597,7 @@ class VolumeCube(NodeBuilder):
 class VolumeToMesh(NodeBuilder):
     """Generate a mesh on the "surface" of a volume"""
 
-    name = "GeometryNodeVolumeToMesh"
+    _bl_idname = "GeometryNodeVolumeToMesh"
     node: bpy.types.GeometryNodeVolumeToMesh
 
     def __init__(
@@ -1660,7 +1660,7 @@ class VolumeToMesh(NodeBuilder):
 class VoxelizeGrid(NodeBuilder):
     """Remove sparseness from a volume grid by making the active tiles into voxels"""
 
-    name = "GeometryNodeGridVoxelize"
+    _bl_idname = "GeometryNodeGridVoxelize"
     node: bpy.types.GeometryNodeGridVoxelize
 
     def __init__(
