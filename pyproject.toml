@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "0.2.0"
+version = "0.2.1"
 description = "Build nodes in Blender with code"
 readme = "README.md"
 authors = [
