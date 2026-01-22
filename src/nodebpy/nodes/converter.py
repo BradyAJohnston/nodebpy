@@ -26,7 +26,7 @@ from ..types import (
 class AlignRotationToVector(NodeBuilder):
     """Orient a rotation along the given direction"""
 
-    name = "FunctionNodeAlignRotationToVector"
+    _bl_idname = "FunctionNodeAlignRotationToVector"
     node: bpy.types.FunctionNodeAlignRotationToVector
 
     def __init__(
@@ -84,7 +84,7 @@ class AlignRotationToVector(NodeBuilder):
 class AxesToRotation(NodeBuilder):
     """Create a rotation from a primary and (ideally orthogonal) secondary axis"""
 
-    name = "FunctionNodeAxesToRotation"
+    _bl_idname = "FunctionNodeAxesToRotation"
     node: bpy.types.FunctionNodeAxesToRotation
 
     def __init__(
@@ -136,7 +136,7 @@ class AxesToRotation(NodeBuilder):
 class AxisAngleToRotation(NodeBuilder):
     """Build a rotation from an axis and a rotation around that axis"""
 
-    name = "FunctionNodeAxisAngleToRotation"
+    _bl_idname = "FunctionNodeAxisAngleToRotation"
     node: bpy.types.FunctionNodeAxisAngleToRotation
 
     def __init__(
@@ -168,7 +168,7 @@ class AxisAngleToRotation(NodeBuilder):
 class BitMath(NodeBuilder):
     """Perform bitwise operations on 32-bit integers"""
 
-    name = "FunctionNodeBitMath"
+    _bl_idname = "FunctionNodeBitMath"
     node: bpy.types.FunctionNodeBitMath
 
     def __init__(
@@ -241,7 +241,7 @@ class BitMath(NodeBuilder):
 class Blackbody(NodeBuilder):
     """Convert a blackbody temperature to an RGB value"""
 
-    name = "ShaderNodeBlackbody"
+    _bl_idname = "ShaderNodeBlackbody"
     node: bpy.types.ShaderNodeBlackbody
 
     def __init__(self, temperature: TYPE_INPUT_VALUE = 6500.0):
@@ -264,7 +264,7 @@ class Blackbody(NodeBuilder):
 class BooleanMath(NodeBuilder):
     """Perform a logical operation on the given boolean inputs"""
 
-    name = "FunctionNodeBooleanMath"
+    _bl_idname = "FunctionNodeBooleanMath"
     node: bpy.types.FunctionNodeBooleanMath
 
     def __init__(
@@ -374,7 +374,7 @@ class BooleanMath(NodeBuilder):
 class Clamp(NodeBuilder):
     """Clamp a value between a minimum and a maximum"""
 
-    name = "ShaderNodeClamp"
+    _bl_idname = "ShaderNodeClamp"
     node: bpy.types.ShaderNodeClamp
 
     def __init__(
@@ -422,7 +422,7 @@ class Clamp(NodeBuilder):
 class ColorRamp(NodeBuilder):
     """Map values to colors with the use of a gradient"""
 
-    name = "ShaderNodeValToRGB"
+    _bl_idname = "ShaderNodeValToRGB"
     node: bpy.types.ShaderNodeValToRGB
 
     def __init__(self, fac: TYPE_INPUT_VALUE = 0.5):
@@ -450,7 +450,7 @@ class ColorRamp(NodeBuilder):
 class CombineBundle(NodeBuilder):
     """Combine multiple socket values into one."""
 
-    name = "NodeCombineBundle"
+    _bl_idname = "NodeCombineBundle"
     node: bpy.types.Node
 
     def __init__(self, define_signature: bool = False):
@@ -476,7 +476,7 @@ class CombineBundle(NodeBuilder):
 class CombineColor(NodeBuilder):
     """Combine four channels into a single color, based on a particular color model"""
 
-    name = "FunctionNodeCombineColor"
+    _bl_idname = "FunctionNodeCombineColor"
     node: bpy.types.FunctionNodeCombineColor
 
     def __init__(
@@ -530,7 +530,7 @@ class CombineColor(NodeBuilder):
 class CombineMatrix(NodeBuilder):
     """Construct a 4x4 matrix from its individual values"""
 
-    name = "FunctionNodeCombineMatrix"
+    _bl_idname = "FunctionNodeCombineMatrix"
     node: bpy.types.FunctionNodeCombineMatrix
 
     def __init__(
@@ -663,7 +663,7 @@ class CombineMatrix(NodeBuilder):
 class CombineTransform(NodeBuilder):
     """Combine a translation vector, a rotation, and a scale vector into a transformation matrix"""
 
-    name = "FunctionNodeCombineTransform"
+    _bl_idname = "FunctionNodeCombineTransform"
     node: bpy.types.FunctionNodeCombineTransform
 
     def __init__(
@@ -701,7 +701,7 @@ class CombineTransform(NodeBuilder):
 class CombineXYZ(NodeBuilder):
     """Create a vector from X, Y, and Z components"""
 
-    name = "ShaderNodeCombineXYZ"
+    _bl_idname = "ShaderNodeCombineXYZ"
     node: bpy.types.ShaderNodeCombineXYZ
 
     def __init__(
@@ -739,7 +739,7 @@ class CombineXYZ(NodeBuilder):
 class EulerToRotation(NodeBuilder):
     """Build a rotation from separate angles around each axis"""
 
-    name = "FunctionNodeEulerToRotation"
+    _bl_idname = "FunctionNodeEulerToRotation"
     node: bpy.types.FunctionNodeEulerToRotation
 
     def __init__(self, euler: TYPE_INPUT_VECTOR = None):
@@ -762,7 +762,7 @@ class EulerToRotation(NodeBuilder):
 class FindInString(NodeBuilder):
     """Find the number of times a given string occurs in another string and the position of the first match"""
 
-    name = "FunctionNodeFindInString"
+    _bl_idname = "FunctionNodeFindInString"
     node: bpy.types.FunctionNodeFindInString
 
     def __init__(
@@ -799,7 +799,7 @@ class FindInString(NodeBuilder):
 class FloatCurve(NodeBuilder):
     """Map an input float to a curve and outputs a float value"""
 
-    name = "ShaderNodeFloatCurve"
+    _bl_idname = "ShaderNodeFloatCurve"
     node: bpy.types.ShaderNodeFloatCurve
 
     def __init__(
@@ -831,7 +831,7 @@ class FloatCurve(NodeBuilder):
 class FloatToInteger(NodeBuilder):
     """Convert the given floating-point number to an integer, with a choice of methods"""
 
-    name = "FunctionNodeFloatToInt"
+    _bl_idname = "FunctionNodeFloatToInt"
     node: bpy.types.FunctionNodeFloatToInt
 
     def __init__(
@@ -867,7 +867,7 @@ class FloatToInteger(NodeBuilder):
 class HashValue(NodeBuilder):
     """Generate a randomized integer using the given input value as a seed"""
 
-    name = "FunctionNodeHashValue"
+    _bl_idname = "FunctionNodeHashValue"
     node: bpy.types.FunctionNodeHashValue
 
     def __init__(
@@ -967,7 +967,7 @@ class HashValue(NodeBuilder):
 class IndexOfNearest(NodeBuilder):
     """Find the nearest element in a group. Similar to the "Sample Nearest" node"""
 
-    name = "GeometryNodeIndexOfNearest"
+    _bl_idname = "GeometryNodeIndexOfNearest"
     node: bpy.types.GeometryNodeIndexOfNearest
 
     def __init__(
@@ -1004,7 +1004,7 @@ class IndexOfNearest(NodeBuilder):
 class IntegerMath(NodeBuilder):
     """Perform various math operations on the given integer inputs"""
 
-    name = "FunctionNodeIntegerMath"
+    _bl_idname = "FunctionNodeIntegerMath"
     node: bpy.types.FunctionNodeIntegerMath
 
     def __init__(
@@ -1185,7 +1185,7 @@ class IntegerMath(NodeBuilder):
 class InvertMatrix(NodeBuilder):
     """Compute the inverse of the given matrix, if one exists"""
 
-    name = "FunctionNodeInvertMatrix"
+    _bl_idname = "FunctionNodeInvertMatrix"
     node: bpy.types.FunctionNodeInvertMatrix
 
     def __init__(self, matrix: TYPE_INPUT_MATRIX = None):
@@ -1213,7 +1213,7 @@ class InvertMatrix(NodeBuilder):
 class InvertRotation(NodeBuilder):
     """Compute the inverse of the given rotation"""
 
-    name = "FunctionNodeInvertRotation"
+    _bl_idname = "FunctionNodeInvertRotation"
     node: bpy.types.FunctionNodeInvertRotation
 
     def __init__(self, rotation: TYPE_INPUT_ROTATION = None):
@@ -1236,7 +1236,7 @@ class InvertRotation(NodeBuilder):
 class JoinBundle(NodeBuilder):
     """Join multiple bundles together"""
 
-    name = "NodeJoinBundle"
+    _bl_idname = "NodeJoinBundle"
     node: bpy.types.Node
 
     def __init__(self, bundle: TYPE_INPUT_BUNDLE = None):
@@ -1259,7 +1259,7 @@ class JoinBundle(NodeBuilder):
 class MapRange(NodeBuilder):
     """Remap a value from a range to a target range"""
 
-    name = "ShaderNodeMapRange"
+    _bl_idname = "ShaderNodeMapRange"
     node: bpy.types.ShaderNodeMapRange
 
     def __init__(
@@ -1443,7 +1443,7 @@ class MapRange(NodeBuilder):
 class MatchString(NodeBuilder):
     """Check if a given string exists within another string"""
 
-    name = "FunctionNodeMatchString"
+    _bl_idname = "FunctionNodeMatchString"
     node: bpy.types.FunctionNodeMatchString
 
     def __init__(
@@ -1481,7 +1481,7 @@ class MatchString(NodeBuilder):
 class Math(NodeBuilder):
     """Perform math operations"""
 
-    name = "ShaderNodeMath"
+    _bl_idname = "ShaderNodeMath"
     node: bpy.types.ShaderNodeMath
 
     def __init__(
@@ -1834,7 +1834,7 @@ class Math(NodeBuilder):
 class MatrixDeterminant(NodeBuilder):
     """Compute the determinant of the given matrix"""
 
-    name = "FunctionNodeMatrixDeterminant"
+    _bl_idname = "FunctionNodeMatrixDeterminant"
     node: bpy.types.FunctionNodeMatrixDeterminant
 
     def __init__(self, matrix: TYPE_INPUT_MATRIX = None):
@@ -1857,7 +1857,7 @@ class MatrixDeterminant(NodeBuilder):
 class Mix(NodeBuilder):
     """Mix values by a factor"""
 
-    name = "ShaderNodeMix"
+    _bl_idname = "ShaderNodeMix"
     node: bpy.types.ShaderNodeMix
 
     def __init__(
@@ -2125,7 +2125,7 @@ class Mix(NodeBuilder):
 class MultiplyMatrices(NodeBuilder):
     """Perform a matrix multiplication on two input matrices"""
 
-    name = "FunctionNodeMatrixMultiply"
+    _bl_idname = "FunctionNodeMatrixMultiply"
     node: bpy.types.FunctionNodeMatrixMultiply
 
     def __init__(
@@ -2157,7 +2157,7 @@ class MultiplyMatrices(NodeBuilder):
 class PackUVIslands(NodeBuilder):
     """Scale islands of a UV map and move them so they fill the UV space as much as possible"""
 
-    name = "GeometryNodeUVPackIslands"
+    _bl_idname = "GeometryNodeUVPackIslands"
     node: bpy.types.GeometryNodeUVPackIslands
 
     def __init__(
@@ -2213,7 +2213,7 @@ class PackUVIslands(NodeBuilder):
 class ProjectPoint(NodeBuilder):
     """Project a point using a matrix, using location, rotation, scale, and perspective divide"""
 
-    name = "FunctionNodeProjectPoint"
+    _bl_idname = "FunctionNodeProjectPoint"
     node: bpy.types.FunctionNodeProjectPoint
 
     def __init__(
@@ -2245,7 +2245,7 @@ class ProjectPoint(NodeBuilder):
 class QuaternionToRotation(NodeBuilder):
     """Build a rotation from quaternion components"""
 
-    name = "FunctionNodeQuaternionToRotation"
+    _bl_idname = "FunctionNodeQuaternionToRotation"
     node: bpy.types.FunctionNodeQuaternionToRotation
 
     def __init__(
@@ -2289,7 +2289,7 @@ class QuaternionToRotation(NodeBuilder):
 class RandomValue(NodeBuilder):
     """Output a randomized value"""
 
-    name = "FunctionNodeRandomValue"
+    _bl_idname = "FunctionNodeRandomValue"
     node: bpy.types.FunctionNodeRandomValue
 
     def __init__(
@@ -2441,7 +2441,7 @@ class RandomValue(NodeBuilder):
 class ReplaceString(NodeBuilder):
     """Replace a given string segment with another"""
 
-    name = "FunctionNodeReplaceString"
+    _bl_idname = "FunctionNodeReplaceString"
     node: bpy.types.FunctionNodeReplaceString
 
     def __init__(
@@ -2479,7 +2479,7 @@ class ReplaceString(NodeBuilder):
 class RotateEuler(NodeBuilder):
     """Apply a secondary Euler rotation to a given Euler rotation"""
 
-    name = "FunctionNodeRotateEuler"
+    _bl_idname = "FunctionNodeRotateEuler"
     node: bpy.types.FunctionNodeRotateEuler
 
     def __init__(
@@ -2548,7 +2548,7 @@ class RotateEuler(NodeBuilder):
 class RotateRotation(NodeBuilder):
     """Apply a secondary rotation to a given rotation value"""
 
-    name = "FunctionNodeRotateRotation"
+    _bl_idname = "FunctionNodeRotateRotation"
     node: bpy.types.FunctionNodeRotateRotation
 
     def __init__(
@@ -2590,7 +2590,7 @@ class RotateRotation(NodeBuilder):
 class RotateVector(NodeBuilder):
     """Apply a rotation to a given vector"""
 
-    name = "FunctionNodeRotateVector"
+    _bl_idname = "FunctionNodeRotateVector"
     node: bpy.types.FunctionNodeRotateVector
 
     def __init__(
@@ -2622,7 +2622,7 @@ class RotateVector(NodeBuilder):
 class RotationToAxisAngle(NodeBuilder):
     """Convert a rotation to axis angle components"""
 
-    name = "FunctionNodeRotationToAxisAngle"
+    _bl_idname = "FunctionNodeRotationToAxisAngle"
     node: bpy.types.FunctionNodeRotationToAxisAngle
 
     def __init__(self, rotation: TYPE_INPUT_ROTATION = None):
@@ -2650,7 +2650,7 @@ class RotationToAxisAngle(NodeBuilder):
 class RotationToEuler(NodeBuilder):
     """Convert a standard rotation value to an Euler rotation"""
 
-    name = "FunctionNodeRotationToEuler"
+    _bl_idname = "FunctionNodeRotationToEuler"
     node: bpy.types.FunctionNodeRotationToEuler
 
     def __init__(self, rotation: TYPE_INPUT_ROTATION = None):
@@ -2673,7 +2673,7 @@ class RotationToEuler(NodeBuilder):
 class RotationToQuaternion(NodeBuilder):
     """Retrieve the quaternion components representing a rotation"""
 
-    name = "FunctionNodeRotationToQuaternion"
+    _bl_idname = "FunctionNodeRotationToQuaternion"
     node: bpy.types.FunctionNodeRotationToQuaternion
 
     def __init__(self, rotation: TYPE_INPUT_ROTATION = None):
@@ -2711,7 +2711,7 @@ class RotationToQuaternion(NodeBuilder):
 class SeparateBundle(NodeBuilder):
     """Split a bundle into multiple sockets."""
 
-    name = "NodeSeparateBundle"
+    _bl_idname = "NodeSeparateBundle"
     node: bpy.types.Node
 
     def __init__(
@@ -2742,7 +2742,7 @@ class SeparateBundle(NodeBuilder):
 class SeparateColor(NodeBuilder):
     """Split a color into separate channels, based on a particular color model"""
 
-    name = "FunctionNodeSeparateColor"
+    _bl_idname = "FunctionNodeSeparateColor"
     node: bpy.types.FunctionNodeSeparateColor
 
     def __init__(
@@ -2793,7 +2793,7 @@ class SeparateColor(NodeBuilder):
 class SeparateMatrix(NodeBuilder):
     """Split a 4x4 matrix into its individual values"""
 
-    name = "FunctionNodeSeparateMatrix"
+    _bl_idname = "FunctionNodeSeparateMatrix"
     node: bpy.types.FunctionNodeSeparateMatrix
 
     def __init__(self, matrix: TYPE_INPUT_MATRIX = None):
@@ -2891,7 +2891,7 @@ class SeparateMatrix(NodeBuilder):
 class SeparateTransform(NodeBuilder):
     """Split a transformation matrix into a translation vector, a rotation, and a scale vector"""
 
-    name = "FunctionNodeSeparateTransform"
+    _bl_idname = "FunctionNodeSeparateTransform"
     node: bpy.types.FunctionNodeSeparateTransform
 
     def __init__(self, transform: TYPE_INPUT_MATRIX = None):
@@ -2924,7 +2924,7 @@ class SeparateTransform(NodeBuilder):
 class SeparateXYZ(NodeBuilder):
     """Split a vector into its X, Y, and Z components"""
 
-    name = "ShaderNodeSeparateXYZ"
+    _bl_idname = "ShaderNodeSeparateXYZ"
     node: bpy.types.ShaderNodeSeparateXYZ
 
     def __init__(self, vector: TYPE_INPUT_VECTOR = None):
@@ -2957,7 +2957,7 @@ class SeparateXYZ(NodeBuilder):
 class SliceString(NodeBuilder):
     """Extract a string segment from a larger string"""
 
-    name = "FunctionNodeSliceString"
+    _bl_idname = "FunctionNodeSliceString"
     node: bpy.types.FunctionNodeSliceString
 
     def __init__(
@@ -2995,7 +2995,7 @@ class SliceString(NodeBuilder):
 class StringLength(NodeBuilder):
     """Output the number of characters in the given string"""
 
-    name = "FunctionNodeStringLength"
+    _bl_idname = "FunctionNodeStringLength"
     node: bpy.types.FunctionNodeStringLength
 
     def __init__(self, string: TYPE_INPUT_STRING = ""):
@@ -3018,7 +3018,7 @@ class StringLength(NodeBuilder):
 class StringToValue(NodeBuilder):
     """Derive a numeric value from a given string representation"""
 
-    name = "FunctionNodeStringToValue"
+    _bl_idname = "FunctionNodeStringToValue"
     node: bpy.types.FunctionNodeStringToValue
 
     def __init__(
@@ -3069,7 +3069,7 @@ class StringToValue(NodeBuilder):
 class Switch(NodeBuilder):
     """Switch between two inputs"""
 
-    name = "GeometryNodeSwitch"
+    _bl_idname = "GeometryNodeSwitch"
     node: bpy.types.GeometryNodeSwitch
 
     def __init__(
@@ -3333,7 +3333,7 @@ class Switch(NodeBuilder):
 class TransformDirection(NodeBuilder):
     """Apply a transformation matrix (excluding translation) to the given vector"""
 
-    name = "FunctionNodeTransformDirection"
+    _bl_idname = "FunctionNodeTransformDirection"
     node: bpy.types.FunctionNodeTransformDirection
 
     def __init__(
@@ -3365,7 +3365,7 @@ class TransformDirection(NodeBuilder):
 class TransformPoint(NodeBuilder):
     """Apply a transformation matrix to the given vector"""
 
-    name = "FunctionNodeTransformPoint"
+    _bl_idname = "FunctionNodeTransformPoint"
     node: bpy.types.FunctionNodeTransformPoint
 
     def __init__(
@@ -3397,7 +3397,7 @@ class TransformPoint(NodeBuilder):
 class TransposeMatrix(NodeBuilder):
     """Flip a matrix over its diagonal, turning columns into rows and vice-versa"""
 
-    name = "FunctionNodeTransposeMatrix"
+    _bl_idname = "FunctionNodeTransposeMatrix"
     node: bpy.types.FunctionNodeTransposeMatrix
 
     def __init__(self, matrix: TYPE_INPUT_MATRIX = None):
@@ -3420,7 +3420,7 @@ class TransposeMatrix(NodeBuilder):
 class UVUnwrap(NodeBuilder):
     """Generate a UV map based on seam edges"""
 
-    name = "GeometryNodeUVUnwrap"
+    _bl_idname = "GeometryNodeUVUnwrap"
     node: bpy.types.GeometryNodeUVUnwrap
 
     def __init__(
@@ -3476,7 +3476,7 @@ class UVUnwrap(NodeBuilder):
 class ValueToString(NodeBuilder):
     """Generate a string representation of the given input value"""
 
-    name = "FunctionNodeValueToString"
+    _bl_idname = "FunctionNodeValueToString"
     node: bpy.types.FunctionNodeValueToString
 
     def __init__(

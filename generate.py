@@ -681,7 +681,7 @@ def generate_node_class(node_info: NodeInfo) -> str:
     class_code = f'''class {node_info.class_name}(NodeBuilder):
     """{node_info.description}"""
 
-    name = "{node_info.bl_idname}"
+    _bl_idname = "{node_info.bl_idname}"
     node: {node_type_annotation}
 
     def __init__{init_signature}:

@@ -194,7 +194,7 @@ class BaseSimulationZone(BaseZone):
 class SimulationInput(BaseSimulationZone, BaseZoneInput):
     """Simulation Input node"""
 
-    name = "GeometryNodeSimulationInput"
+    _bl_idname = "GeometryNodeSimulationInput"
     node: bpy.types.GeometryNodeSimulationInput
 
     @property
@@ -206,7 +206,7 @@ class SimulationInput(BaseSimulationZone, BaseZoneInput):
 class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
     """Simulation Output node"""
 
-    name = "GeometryNodeSimulationOutput"
+    _bl_idname = "GeometryNodeSimulationOutput"
     node: bpy.types.GeometryNodeSimulationOutput
 
     @property
@@ -257,7 +257,7 @@ class BaseRepeatZone(BaseZone):
 class RepeatInput(BaseRepeatZone, BaseZoneInput):
     """Repeat Input node"""
 
-    name = "GeometryNodeRepeatInput"
+    _bl_idname = "GeometryNodeRepeatInput"
     node: bpy.types.GeometryNodeRepeatInput
 
     def __init__(self, iterations: TYPE_INPUT_INT = 1):
@@ -280,14 +280,14 @@ class RepeatInput(BaseRepeatZone, BaseZoneInput):
 class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
     """Repeat Output node"""
 
-    name = "GeometryNodeRepeatOutput"
+    _bl_idname = "GeometryNodeRepeatOutput"
     node: bpy.types.GeometryNodeRepeatOutput
 
 
 class ForEachGeometryElementInput(NodeBuilder):
     """For Each Geometry Element Input node"""
 
-    name = "GeometryNodeForeachGeometryElementInput"
+    _bl_idname = "GeometryNodeForeachGeometryElementInput"
     node: bpy.types.GeometryNodeForeachGeometryElementInput
 
     def __init__(
@@ -332,7 +332,7 @@ class ForEachGeometryElementInput(NodeBuilder):
 class ForEachGeometryElementOutput(NodeBuilder):
     """For Each Geometry Element Output node"""
 
-    name = "GeometryNodeForeachGeometryElementOutput"
+    _bl_idname = "GeometryNodeForeachGeometryElementOutput"
     node: bpy.types.GeometryNodeForeachGeometryElementOutput
 
     def __init__(

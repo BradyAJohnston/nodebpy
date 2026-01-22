@@ -18,7 +18,7 @@ from ..types import (
 class GetListItem(NodeBuilder):
     """Retrieve a value from a list"""
 
-    name = "GeometryNodeListGetItem"
+    _bl_idname = "GeometryNodeListGetItem"
     node: bpy.types.GeometryNodeListGetItem
 
     def __init__(
@@ -127,7 +127,7 @@ class GetListItem(NodeBuilder):
 class List(NodeBuilder):
     """Create a list of values"""
 
-    name = "GeometryNodeList"
+    _bl_idname = "GeometryNodeList"
     node: bpy.types.GeometryNodeList
 
     def __init__(
@@ -228,7 +228,7 @@ class List(NodeBuilder):
 class ListLength(NodeBuilder):
     """Count how many items are in a given list"""
 
-    name = "GeometryNodeListLength"
+    _bl_idname = "GeometryNodeListLength"
     node: bpy.types.GeometryNodeListLength
 
     def __init__(

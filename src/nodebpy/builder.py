@@ -117,12 +117,10 @@ class TreeBuilder:
     just_added: "Node | None" = None
 
     def __init__(
-        self, tree: "GeometryNodeTree | str | None" = None, arrange: bool = True
+        self, tree: GeometryNodeTree | str = "Geometry Nodes", arrange: bool = True
     ):
         if isinstance(tree, str):
             self.tree = bpy.data.node_groups.new(tree, "GeometryNodeTree")
-        elif tree is None:
-            self.tree = bpy.data.node_groups.new("GeometryNodeTree", "GeometryNodeTree")
         else:
             assert isinstance(tree, GeometryNodeTree)
             self.tree = tree
@@ -195,14 +193,16 @@ class TreeBuilder:
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
 
         if any(socket.is_inactive for socket in [socket1, socket2]):
+            assert socket1.node
+            assert socket2.node
             # the warning message should report which sockets from which nodes were linked and which were innactive
             for socket in [socket1, socket2]:
                 # we want to be loud about it if we end up linking an inactive socket to a node that is not a switch
-                if socket.is_inactive and socket.node.bl_idname not in (
+                if socket.is_inactive and socket.node.bl_idname not in (  # type: ignore
                     "GeometryNodeIndexSwitch",
                     "GeometryNodeMenuSwitch",
                 ):
-                    message = f"Socket {socket.name} from node {socket.node.name} is inactive."
+                    message = f"Socket {socket.name} from node {socket.node.name} is inactive."  # type: ignore
                     message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."
                     message += " This link will be created by Blender but ignored when evaluated."
                     message += f"Socket type: {socket.bl_idname}"
@@ -211,15 +211,14 @@ class TreeBuilder:
         return link
 
     def add(self, name: str) -> Node:
-        self.just_added = self.tree.nodes.new(name)  # type: ignore
-        assert self.just_added is not None
-        return self.just_added
+        return self.tree.nodes.new(name)
 
 
 class NodeBuilder:
     """Base class for all geometry node wrappers."""
 
     node: Any
+    _bl_idname: str
     _tree: "TreeBuilder"
     _link_target: str | None = None
     _from_socket: NodeSocket | None = None
@@ -241,7 +240,7 @@ class NodeBuilder:
         self._tree = tree
         self._link_target = None
         if self.__class__.name is not None:
-            self.node = self._tree.add(self.__class__.name)
+            self.node = self._tree.add(self.__class__._bl_idname)
         else:
             raise ValueError(
                 f"Class {self.__class__.__name__} must define a 'name' attribute"

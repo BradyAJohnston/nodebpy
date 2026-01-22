@@ -16,7 +16,7 @@ from ..types import (
 class DialGizmo(NodeBuilder):
     """Show a dial gizmo in the viewport for a value"""
 
-    name = "GeometryNodeGizmoDial"
+    _bl_idname = "GeometryNodeGizmoDial"
     node: bpy.types.GeometryNodeGizmoDial
 
     def __init__(
@@ -82,7 +82,7 @@ class DialGizmo(NodeBuilder):
 class EnableOutput(NodeBuilder):
     """Either pass through the input value or output the fallback value"""
 
-    name = "NodeEnableOutput"
+    _bl_idname = "NodeEnableOutput"
     node: bpy.types.Node
 
     def __init__(
@@ -260,7 +260,7 @@ class EnableOutput(NodeBuilder):
 class GroupInput(NodeBuilder):
     """Expose connected data from inside a node group as inputs to its interface"""
 
-    name = "NodeGroupInput"
+    _bl_idname = "NodeGroupInput"
     node: bpy.types.Node
 
     def __init__(self):
@@ -273,7 +273,7 @@ class GroupInput(NodeBuilder):
 class GroupOutput(NodeBuilder):
     """Output data from inside of a node group"""
 
-    name = "NodeGroupOutput"
+    _bl_idname = "NodeGroupOutput"
     node: bpy.types.Node
 
     def __init__(self, is_active_output: bool = False):
@@ -294,7 +294,7 @@ class GroupOutput(NodeBuilder):
 class LinearGizmo(NodeBuilder):
     """Show a linear gizmo in the viewport for a value"""
 
-    name = "GeometryNodeGizmoLinear"
+    _bl_idname = "GeometryNodeGizmoLinear"
     node: bpy.types.GeometryNodeGizmoLinear
 
     def __init__(
@@ -352,7 +352,7 @@ class LinearGizmo(NodeBuilder):
 class TransformGizmo(NodeBuilder):
     """Show a transform gizmo in the viewport"""
 
-    name = "GeometryNodeGizmoTransform"
+    _bl_idname = "GeometryNodeGizmoTransform"
     node: bpy.types.GeometryNodeGizmoTransform
 
     def __init__(
@@ -480,7 +480,7 @@ class TransformGizmo(NodeBuilder):
 class Warning(NodeBuilder):
     """Create custom warnings in node groups"""
 
-    name = "GeometryNodeWarning"
+    _bl_idname = "GeometryNodeWarning"
     node: bpy.types.GeometryNodeWarning
 
     def __init__(

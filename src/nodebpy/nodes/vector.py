@@ -12,7 +12,7 @@ from ..types import (
 class RadialTiling(NodeBuilder):
     """Transform Coordinate System for Radial Tiling"""
 
-    name = "ShaderNodeRadialTiling"
+    _bl_idname = "ShaderNodeRadialTiling"
     node: bpy.types.ShaderNodeRadialTiling
 
     def __init__(
@@ -75,7 +75,7 @@ class RadialTiling(NodeBuilder):
 class VectorCurves(NodeBuilder):
     """Map input vector components with curves"""
 
-    name = "ShaderNodeVectorCurve"
+    _bl_idname = "ShaderNodeVectorCurve"
     node: bpy.types.ShaderNodeVectorCurve
 
     def __init__(
@@ -107,7 +107,7 @@ class VectorCurves(NodeBuilder):
 class VectorMath(NodeBuilder):
     """Perform vector math operation"""
 
-    name = "ShaderNodeVectorMath"
+    _bl_idname = "ShaderNodeVectorMath"
     node: bpy.types.ShaderNodeVectorMath
 
     def __init__(
@@ -449,7 +449,7 @@ class VectorMath(NodeBuilder):
 class VectorRotate(NodeBuilder):
     """Rotate a vector around a pivot point (center)"""
 
-    name = "ShaderNodeVectorRotate"
+    _bl_idname = "ShaderNodeVectorRotate"
     node: bpy.types.ShaderNodeVectorRotate
 
     def __init__(

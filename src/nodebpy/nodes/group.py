@@ -1,4 +1,3 @@
-
 import bpy
 
 from ..builder import NodeBuilder
@@ -7,7 +6,7 @@ from ..builder import NodeBuilder
 class Group(NodeBuilder):
     """Group node"""
 
-    name = "GeometryNodeGroup"
+    _bl_idname = "GeometryNodeGroup"
     node: bpy.types.GeometryNodeGroup
 
     def __init__(self):

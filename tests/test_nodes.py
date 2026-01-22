@@ -137,6 +137,16 @@ def test_field_to_grid():
     ):
         assert item.data_type == type
 
+    with TreeBuilder() as tree:
+        grid = n.VolumeCube(n.NoiseTexture()) >> n.GetNamedGrid(name="density")
+        ftg = n.FieldToGrid.vector(n.NoiseTexture().o_color, topology=grid)
+
+    assert ftg.data_type == "VECTOR"
+    assert len(ftg.node.grid_items) == 1
+    assert ftg.i_topology.socket.links[0].from_node == grid.node
+    assert ftg.i_topology.socket.links[0].from_socket == grid.o_grid.socket
+    assert ftg.inputs["Color"].socket.links[0].from_node.name == "Noise Texture.001"
+
 
 def test_geometry_to_instance():
     with TreeBuilder() as tree:

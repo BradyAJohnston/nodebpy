@@ -8,7 +8,7 @@ from ..builder import NodeBuilder
 class Viewer(NodeBuilder):
     """Display the input data in the Spreadsheet Editor"""
 
-    name = "GeometryNodeViewer"
+    _bl_idname = "GeometryNodeViewer"
     node: bpy.types.GeometryNodeViewer
 
     def __init__(

@@ -105,3 +105,28 @@ with TreeBuilder() as tree:
 
 tree
 ```
+
+## Zones
+
+Zones like the repeat and simulation zone are initialized with their `SimulationZone()` and `RepeatZone()` constructors. You can add individvual `RepeatInput()` node and output, but they require additional setup to be actually linked. The repeat zone can be initialized with a repeat count, which can also be linked to from elsewhere.
+
+We can access the input and output nodes with `zone.input` and `zone.output`. The repeat zone as the `zone.i` which is the iteration number of the current zone. Simulation zone has the `zone.output.o_delta_time` which is the time between previous and current simulation loop.
+
+Both input and output nodes can automatically detect and capture links when you attempt to link into them with `>>`. The `zone.input.capture()` method also allows you to explicitly capture a link or a value, returning the output socket for further linking.
+
+
+```{python}
+with TreeBuilder(arrange=False) as tree:
+    zone = n.RepeatZone(10)
+
+    join = zone.input >> n.JoinGeometry()
+    (
+        zone.i
+        >> n.Points(position=n.RandomValue.vector(seed=zone.i))
+        >> join
+        >> zone.output
+        >> n.SetPosition()
+    )
+
+tree
+```
