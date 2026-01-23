@@ -432,3 +432,21 @@ def test_edge_other_point():
     other_vertex.node.inputs[1].links[0].from_node == vert_2.node
     other_vertex.node.inputs[2].links[0].from_node.name == "Compare"
     compare.o_result.socket.links[0].to_node.name == "Switch"
+
+
+def test_align_rotation_to_vector():
+    """Ensure that it appropiately selects a vector or rotation socket"""
+    with TreeBuilder() as tree:
+        # this should select the vector input socket
+        artv = n.RandomValue.vector() >> n.AlignRotationToVector()
+        # this should select the rotation input socket
+        artv2 = n.AxesToRotation() >> n.AlignRotationToVector()
+
+    assert (
+        artv.i_vector.socket.links[0].from_socket
+        == tree.nodes["Random Value"].outputs[0]
+    )
+    assert (
+        artv2.i_rotation.socket.links[0].from_socket
+        == tree.nodes["Axes to Rotation"].outputs[0]
+    )
