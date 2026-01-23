@@ -424,11 +424,10 @@ def test_warning_innactive_socket():
         pos = n.Position()
         mix = n.Mix.vector()
         # this works because by default we link to the currently active vector sockets
-        pos >> mix
+        n.Mix(a_vector=pos, data_type="VECTOR")
         # this now fails because we try to link to the innactive float sockets
-        mix._default_input_id = "A_Float"
         with pytest.raises(RuntimeError):
-            pos >> mix
+            n.Mix(a_vector=pos, data_type="FLOAT")
 
 
 def test_readme_tree():
@@ -459,6 +458,29 @@ def test_readme_tree():
             >> n.InstanceOnPoints(n.Cube(), instance=...)
             >> instances
         )
+
+
+def test_auto_selection():
+    with TreeBuilder(arrange=False) as tree:
+        # this initializes the zone with two socket inputs for each of the values
+        zone = n.SimulationZone(n.Value(), n.Vector())
+
+        # this explicitly grabs the "Value" socket (which got it's name from the n.Value() node)
+        # and adds 10 then attempts to plug it into the zone output (it will choose the float
+        # socket instead of the vector socket because that is the most compatible)
+        zone.input.outputs["Value"] + 10 >> zone.output
+        # this should automatically pick the vector input socket because we are
+        # explicity about the VectorMath and it will be the most compatible
+        zone.input >> n.VectorMath.add(..., (1.2, 1.2, 1.2)) >> zone.output
+
+    assert (
+        tree.nodes["Math"].inputs[0].links[0].from_socket
+        == zone.input.outputs["Value"].socket
+    )
+    assert (
+        tree.nodes["Vector Math"].inputs[1].links[0].from_socket
+        == zone.input.outputs["Vector"].socket
+    )
 
 
 def test_add_all_nodes():

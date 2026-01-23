@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Literal
 
 import bpy
-from bpy.types import NodeSocket
 
-from nodebpy.builder import NodeBuilder, SocketLinker
+from nodebpy.builder import DynamicInputsMixin, NodeBuilder, SocketLinker
 
 from ..types import (
     LINKABLE,
@@ -16,7 +15,7 @@ from ..types import (
 )
 
 
-class BaseZone(NodeBuilder, ABC):
+class BaseZone(NodeBuilder, DynamicInputsMixin, ABC):
     _items_attribute: Literal["state_items", "repeat_items"]
 
     @property
@@ -81,30 +80,6 @@ class BaseZoneInput(BaseZone, NodeBuilder, ABC):
         item = self.items.new(type, name)
         return self.inputs[item.name]
 
-    def __rshift__(self, other):
-        """Custom zone input linking that creates sockets as needed"""
-        # Check if target is a zone output without inputs
-        if (
-            hasattr(other, "_default_input_socket")
-            and other._default_input_socket is None
-        ):
-            # Target zone needs a socket - create one based on our output
-            from ..builder import SOCKET_COMPATIBILITY
-
-            source_socket = self._default_output_socket
-            source_type = source_socket.type
-
-            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [source_type])
-            best_type = compatible_types[0] if compatible_types else source_type
-
-            # Create socket on target zone
-            target_socket = other._add_socket(name=best_type.title(), type=best_type)
-            self.tree.link(source_socket, target_socket)
-            return other
-        else:
-            # Use the general smart linking approach
-            return self._smart_link_to(other)
-
 
 class BaseZoneOutput(BaseZone, NodeBuilder, ABC):
     """Base class for zone output nodes"""
@@ -121,42 +96,6 @@ class BaseZoneOutput(BaseZone, NodeBuilder, ABC):
         """Add a socket to the zone"""
         item = self.items.new(type, name)
         return self.node.inputs[item.name]
-
-    def __rshift__(self, other):
-        """Custom zone output linking that creates sockets as needed"""
-        from ..builder import SOCKET_COMPATIBILITY
-
-        # Get the source socket type
-        source_socket = self._default_output_socket
-        source_type = source_socket.type
-
-        # Check if target has compatible inputs
-        if hasattr(other, "_default_input_socket") and other._default_input_socket:
-            # Normal linking
-            return super().__rshift__(other)
-        elif hasattr(other, "_add_socket"):
-            # Target is also a zone - create compatible socket
-            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [source_type])
-            best_type = compatible_types[0] if compatible_types else source_type
-
-            # Create socket on target zone
-            target_socket = other._add_socket(name=best_type.title(), type=best_type)
-            self.tree.link(source_socket, target_socket)
-            return other
-        else:
-            # Normal NodeBuilder
-            return super().__rshift__(other)
-
-    @property
-    def _default_input_socket(self) -> NodeSocket:
-        """Get default input socket, avoiding skip-type sockets"""
-        inputs = list(self.inputs.values())
-        if inputs:
-            return inputs[0].socket
-        else:
-            # No socket exists - this should be handled by zone-specific __rshift__ logic
-            # Return None to signal that a socket needs to be created
-            return None
 
 
 class SimulationZone:
@@ -185,6 +124,18 @@ class SimulationZone:
 
 class BaseSimulationZone(BaseZone):
     _items_attribute = "state_items"
+    _socket_data_types = (
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "GEOMETRY",
+        "BUNDLE",
+    )
 
     @property
     def items(self) -> bpy.types.NodeGeometrySimulationOutputItems:
@@ -248,6 +199,23 @@ class RepeatZone:
 
 class BaseRepeatZone(BaseZone):
     _items_attribute = "repeat_items"
+    _socket_data_types = (
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+    )
 
     @property
     def items(self) -> bpy.types.NodeGeometryRepeatOutputItems:
