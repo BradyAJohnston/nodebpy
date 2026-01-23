@@ -70,8 +70,8 @@ tree
 graph LR
     N0("NodeGroupInput"):::default-node
     N1("RandomValue<br/><small>(-1,-1,-1) seed:2</small>"):::converter-node
-    N2("RandomValue<br/><small>(-1,-1,-1) seed:1</small>"):::converter-node
-    N3("AlignRotationToVector<br/><small>(0,0,1)</small>"):::converter-node
+    N2("RandomValue<br/><small>(-1,-1,-1)</small>"):::converter-node
+    N3("AlignRotationToVector"):::converter-node
     N4("AxisAngleToRotation<br/><small>(0,0,1)</small>"):::converter-node
     N5("InputPosition"):::input-node
     N6("Points"):::geometry-node
@@ -85,7 +85,7 @@ graph LR
     N14("RealizeInstances"):::geometry-node
     N15("InstanceOnPoints"):::geometry-node
     N16("NodeGroupOutput"):::default-node
-    N1 -->|"Value>>Rotation"| N3
+    N1 -->|"Value>>Vector"| N3
     N4 -->|"Rotation>>Rotate By"| N8
     N3 -->|"Rotation>>Rotation"| N8
     N2 -->|"Value>>Position"| N6
