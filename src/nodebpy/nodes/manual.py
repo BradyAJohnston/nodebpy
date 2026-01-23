@@ -2,7 +2,13 @@ from typing import Any, Literal
 
 import bpy
 
-from ..builder import DynamicInputsMixin, NodeBuilder, NodeSocket, SocketLinker
+from ..builder import (
+    DynamicInputsMixin,
+    NodeBuilder,
+    NodeSocket,
+    SocketError,
+    SocketLinker,
+)
 from ..types import (
     LINKABLE,
     SOCKET_TYPES,
@@ -399,7 +405,10 @@ class JoinGeometry(NodeBuilder):
     def __init__(self, *args: LINKABLE):
         super().__init__()
         for source in reversed(args):
-            self._link_from(source, self)
+            try:
+                self._link(*self._find_best_socket_pair(source, self))
+            except SocketError:
+                self._link(*source._find_best_socket_pair(source, self))
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -870,7 +879,7 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         self.node.domain = value
 
 
-class FieldToGrid(NodeBuilder, DynamicInputsMixin):
+class FieldToGrid(DynamicInputsMixin, NodeBuilder):
     """Create new grids by evaluating new values on an existing volume grid topology
 
     New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
@@ -1008,7 +1017,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(arg, "Grid 2")
+            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
         return node
 
     @classmethod
@@ -1020,7 +1029,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(arg, "Grid 2")
+            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
         return node
 
     @classmethod
@@ -1031,11 +1040,11 @@ class SDFGridBoolean(NodeBuilder):
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
-        node._link_from(grid_1, "Grid 1")
+        node._link_from(*node._find_best_socket_pair(grid_1, node._input("Grid 1")))
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(arg, "Grid 2")
+            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
         return node
 
     @property

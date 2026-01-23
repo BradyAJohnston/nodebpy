@@ -15,7 +15,7 @@ from ..types import (
 )
 
 
-class BaseZone(NodeBuilder, DynamicInputsMixin, ABC):
+class BaseZone(DynamicInputsMixin, NodeBuilder, ABC):
     _items_attribute: Literal["state_items", "repeat_items"]
 
     @property
@@ -98,34 +98,10 @@ class BaseZoneOutput(BaseZone, NodeBuilder, ABC):
         return self.node.inputs[item.name]
 
 
-class SimulationZone:
-    def __init__(self, *args: LINKABLE, **kwargs: LINKABLE):
-        self.input = SimulationInput()
-        self.output = SimulationOutput()
-        self.input.node.pair_with_output(self.output.node)
-
-        self.output.node.state_items.clear()
-        socket_lookup = self.output._add_inputs(*args, **kwargs)
-        for name, source in socket_lookup.items():
-            self.input._link_from(source, name)
-
-    def delta_time(self) -> SocketLinker:
-        return self.input.o_delta_time
-
-    def __getitem__(self, index: int):
-        match index:
-            case 0:
-                return self.input
-            case 1:
-                return self.output
-            case _:
-                raise IndexError("SimulationZone has only two items")
-
-
 class BaseSimulationZone(BaseZone):
     _items_attribute = "state_items"
     _socket_data_types = (
-        "FLOAT",
+        "VALUE",
         "INT",
         "BOOLEAN",
         "VECTOR",
@@ -136,6 +112,7 @@ class BaseSimulationZone(BaseZone):
         "GEOMETRY",
         "BUNDLE",
     )
+    _type_map = {"VALUE": "FLOAT"}
 
     @property
     def items(self) -> bpy.types.NodeGeometrySimulationOutputItems:
@@ -166,35 +143,28 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
         return self._input("Skip")
 
 
-class RepeatZone:
-    """Wrapper that supports both direct unpacking and iteration"""
-
-    def __init__(
-        self, iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKABLE
-    ):
-        self.input = RepeatInput(iterations)
-        self.output = RepeatOutput()
+class SimulationZone:
+    def __init__(self, *args: LINKABLE, **kwargs: LINKABLE):
+        self.input = SimulationInput()
+        self.output = SimulationOutput()
         self.input.node.pair_with_output(self.output.node)
 
-        self.output.node.repeat_items.clear()
-        self.input._establish_links(**self.input._add_inputs(*args, **kwargs))
+        self.output.node.state_items.clear()
+        socket_lookup = self.output._add_inputs(*args, **kwargs)
+        for name, source in socket_lookup.items():
+            self.input._link_from(source, name)
 
-    @property
-    def i(self) -> SocketLinker:
-        """Input socket: Skip simluation frame"""
-        return self.input.o_iteration
+    def delta_time(self) -> SocketLinker:
+        return self.input.o_delta_time
 
-    def __iter__(self):
-        """Support for loop: for i, input, output in RepeatZone(...)"""
-        self._index = 0
-        return self
-
-    def __next__(self):
-        """Support for iteration: next(RepeatZone)"""
-        if self._index > 0:
-            raise StopIteration
-        self._index += 1
-        return self.i, self.input, self.output
+    def __getitem__(self, index: int):
+        match index:
+            case 0:
+                return self.input
+            case 1:
+                return self.output
+            case _:
+                raise IndexError("SimulationZone has only two items")
 
 
 class BaseRepeatZone(BaseZone):
@@ -250,6 +220,37 @@ class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
 
     _bl_idname = "GeometryNodeRepeatOutput"
     node: bpy.types.GeometryNodeRepeatOutput
+
+
+class RepeatZone:
+    """Wrapper that supports both direct unpacking and iteration"""
+
+    def __init__(
+        self, iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKABLE
+    ):
+        self.input = RepeatInput(iterations)
+        self.output = RepeatOutput()
+        self.input.node.pair_with_output(self.output.node)
+
+        self.output.node.repeat_items.clear()
+        self.input._establish_links(**self.input._add_inputs(*args, **kwargs))
+
+    @property
+    def i(self) -> SocketLinker:
+        """Input socket: Skip simluation frame"""
+        return self.input.o_iteration
+
+    def __iter__(self):
+        """Support for loop: for i, input, output in RepeatZone(...)"""
+        self._index = 0
+        return self
+
+    def __next__(self):
+        """Support for iteration: next(RepeatZone)"""
+        if self._index > 0:
+            raise StopIteration
+        self._index += 1
+        return self.i, self.input, self.output
 
 
 class ForEachGeometryElementInput(NodeBuilder):

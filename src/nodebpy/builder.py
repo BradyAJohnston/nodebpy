@@ -25,6 +25,7 @@ from .types import (
     TYPE_INPUT_ALL,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
+    NodeBooleanMathItems,
     StringInterfaceSubtypes,
     VectorInterfaceSubtypes,
     _AttributeDomains,
@@ -198,6 +199,14 @@ class TreeBuilder:
         if isinstance(socket2, SocketLinker):
             socket2 = socket2.socket
 
+        if (
+            socket1.type not in SOCKET_COMPATIBILITY.get(socket2.type, ())
+            and socket2.type != "CUSTOM"
+        ):
+            raise SocketError(
+                f"Incompatible socket types, {socket1.type} and {socket2.type}"
+            )
+
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
 
         if any(socket.is_inactive for socket in [socket1, socket2]):
@@ -331,7 +340,9 @@ class NodeBuilder:
             socket for socket in self._available_outputs if socket.type in compatible
         ]
         if possible:
-            return sorted(possible, key=lambda x: compatible.index(x.type))[0]
+            possible.sort(key=lambda x: compatible.index(x.type))
+            print(f"{possible=}")
+            return possible[0]
 
         raise SocketError("No compatible output sockets found")
 
@@ -367,8 +378,8 @@ class NodeBuilder:
 
         raise SocketError(
             f"Cannot link any output from {source.node.name} to any input of {target.node.name}. "
-            f"Available output types: {outputs}, "
-            f"Available input types: {inputs}"
+            f"Available output types: {[f'{o.name}:{o.type}' for o in outputs]}, "
+            f"Available input types: {[f'{i.name}:{i.type}' for i in inputs]}"
         )
 
     def _input_idx(self, identifier: str) -> int:
@@ -408,7 +419,9 @@ class NodeBuilder:
     def _link(
         self, source: LINKABLE | SocketLinker | NodeSocket, target: LINKABLE
     ) -> bpy.types.NodeLink:
-        return self.tree.link(self._source_socket(source), self._target_socket(target))
+        source_socket = self._source_socket(source)
+        target_socket = self._target_socket(target)
+        return self.tree.link(source_socket, target_socket)
 
     def _link_from(
         self,
@@ -481,7 +494,12 @@ class NodeBuilder:
             target = other.socket
             other._from_socket = source
         else:
-            source, target = self._find_best_socket_pair(self, other)
+            try:
+                print(f"{self=}, {other=}")
+                source, target = self._find_best_socket_pair(self, other)
+            except SocketError:
+                print(f"SocketError{self=}, {other=}")
+                source, target = other._find_best_socket_pair(self, other)
 
         self.tree.link(source, target)
         return other
@@ -506,14 +524,14 @@ class NodeBuilder:
             else (other, self._default_output_socket)
         )
 
-        # Determine if either operand is a vector type
-        self_is_vector = self._default_output_socket.type == "VECTOR"
-        other_is_vector = False
-        if isinstance(other, NodeBuilder):
-            other_is_vector = other._default_output_socket.type == "VECTOR"
+        component_is_vector = False
+        for value in values:
+            if getattr(value, "type", None) == "VECTOR":
+                component_is_vector = True
+                break
 
         # Use VectorMath if either operand is a vector
-        if self_is_vector or other_is_vector:
+        if component_is_vector:
             if operation == "multiply":
                 # Handle special cases for vector multiplication where we might scale instead
                 # of using the multiply method
@@ -525,7 +543,7 @@ class NodeBuilder:
                     return VectorMath.multiply(*values)
                 else:
                     raise TypeError(
-                        f"Unsupported type for {operation} with VECTOR socket: {type(other)}"
+                        f"Unsupported type for {operation} with VECTOR socket: {type(other)}, {other=}"
                     )
             else:
                 vector_method = getattr(VectorMath, operation)
@@ -545,8 +563,7 @@ class NodeBuilder:
                     raise TypeError(
                         f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
                     )
-        else:
-            # Both operands are scalar types, use regular Math
+        else:  # Both operands are scalar types, use regular Math
             from .nodes.converter import IntegerMath, Math
 
             if isinstance(other, int) and self._default_output_socket.type == "INT":
@@ -583,18 +600,18 @@ class DynamicInputsMixin:
     _socket_data_types: tuple[str]
     _type_map: dict[str, str] = {}
 
-    def _match_compatible_source(self, source: NodeBuilder) -> str:
+    def _match_compatible_data(self, *sockets: NodeSocket) -> tuple[NodeSocket, str]:
         possible = []
-        for output in source._available_outputs:
-            compatible = SOCKET_COMPATIBILITY.get(output.type, ())
-            possible = [
-                (type, compatible.index(type))
-                for type in self._socket_data_types
-                if type in compatible
-            ]
+        for socket in sockets:
+            compatible = SOCKET_COMPATIBILITY.get(socket.type, ())
+            for type in self._socket_data_types:
+                if type in compatible:
+                    possible.append((socket, type, compatible.index(type)))
 
-        if possible:
-            return sorted(possible, key=lambda x: x[1])[0][0]
+        if len(possible) > 0:
+            possible.sort(key=lambda x: x[2])
+            best_value = possible[0]
+            return best_value[:2]
 
         raise SocketError("No compatible socket found")
 
@@ -604,8 +621,31 @@ class DynamicInputsMixin:
         try:
             return super()._find_best_socket_pair(source, target)
         except SocketError:
-            new_sockets = self._add_inputs(source)
-            return (source, list(new_sockets.values())[0])
+            if target == self:
+                target_name, source_socket = list(target._add_inputs(source).items())[0]
+                return (source_socket, target.inputs[target_name].socket)
+            else:
+                target_name, source_socket = list(
+                    source._add_inputs(*target.node.inputs).items()
+                )[0]
+                return (
+                    source.outputs[target_name].socket,
+                    target.inputs[target_name].socket,
+                )
+
+            for target_name, source_socket in new_sockets.items():
+                target_socket = target.inputs[target_name].socket
+                return (source_socket, target_socket)
+
+    # def _best_output_socket(self, type: str) -> NodeSocket:
+    #     # compatible = SOCKET_COMPATIBILITY.get(type, ())
+    #     # possible = [
+    #     #     socket for socket in self._available_outputs if socket.type in compatible
+    #     # ]
+    #     # if possible:
+    #     #     return sorted(possible, key=lambda x: compatible.index(x.type))[0]
+
+    #     raise SocketError("No compatible output sockets found")
 
     def _add_inputs(self, *args, **kwargs) -> dict[str, LINKABLE]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
@@ -619,12 +659,12 @@ class DynamicInputsMixin:
                 items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
-            type = self._match_compatible_source(source)
+            socket_source, type = self._match_compatible_data(*source.node.outputs)
             print(f"{key=}, {source=}, {type=}")
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)
-            new_sockets[socket.name] = source
+            new_sockets[socket.name] = socket_source
 
         return new_sockets
 

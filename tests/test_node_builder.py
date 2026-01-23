@@ -478,7 +478,7 @@ def test_auto_selection():
         == zone.input.outputs["Value"].socket
     )
     assert (
-        tree.nodes["Vector Math"].inputs[1].links[0].from_socket
+        tree.nodes["Vector Math"].inputs[0].links[0].from_socket
         == zone.input.outputs["Vector"].socket
     )
 
