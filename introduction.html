@@ -184,14 +184,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="4eadcfe1" class="cell" data-execution_count="1">
+<div id="8088556f" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder, nodes <span class="im">as</span> n, sockets <span class="im">as</span> s</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="adding-nodes" class="level2">
 <h2 class="anchored" data-anchor-id="adding-nodes">Adding Nodes</h2>
 <p>Adding nodes must be done inside of a context. We enter a context using the <code>with</code> keyword. While inside of this context, whenever you call a node class (<code>n.SetPosition()</code>) a node of that type will be added to the current tree.</p>
 <p>This first example creates a new tree and adds two new nodes, linking the <code>Set Position</code> node into the <code>Transform Geometry</code> node. The output and input sockets for each are inferred based on simple heuristics around socket type and order.</p>
-<div id="8bcfa251" class="cell" data-execution_count="2">
+<div id="dee1e743" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"NewTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    n.SetPosition() <span class="op">&gt;&gt;</span> n.TransformGeometry()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -229,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Individual Socket Access</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Using Arguments to Class</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="fa8cb31d" class="cell" data-execution_count="3">
+<div id="6f669d66" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"AnotherTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> n.SetPosition()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -238,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="e074d15d" class="cell" data-execution_count="4">
+<div id="adb1214d" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"AnotherAnotherTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    n.SetPosition(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        offset <span class="op">=</span> n.Vector(),</span>
@@ -248,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="5d5bb2c4" class="cell" data-execution_count="5">
+<div id="a81ae785" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -285,7 +285,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="node-input-sockets">Node Input Sockets</h2>
 <p>The socket interface nodes define what values / sockets are available as inputs for the node tree.</p>
 <p>We define them in a similar way to the socekts themselves, using context with the <code>tree.inputs</code> and <code>tree.outputs</code> and adding sockets with the <code>s.SocketGeometry()</code>.</p>
-<div id="b65ef7ac" class="cell" data-execution_count="6">
+<div id="783207d3" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"NewTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        geom_inputs <span class="op">=</span> [s.SocketGeometry(<span class="ss">f"Geometry_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>)]</span>
@@ -327,7 +327,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="15364399" class="cell" data-execution_count="7">
+<div id="599476b4" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder() <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> s.SocketInt(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
@@ -373,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="a0f2d42a" class="cell" data-execution_count="8">
+<div id="c240fcfe" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder() <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> s.SocketInt(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
@@ -431,20 +431,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Zones like the repeat and simulation zone are initialized with their <code>SimulationZone()</code> and <code>RepeatZone()</code> constructors. You can add individvual <code>RepeatInput()</code> node and output, but they require additional setup to be actually linked. The repeat zone can be initialized with a repeat count, which can also be linked to from elsewhere.</p>
 <p>We can access the input and output nodes with <code>zone.input</code> and <code>zone.output</code>. The repeat zone as the <code>zone.i</code> which is the iteration number of the current zone. Simulation zone has the <code>zone.output.o_delta_time</code> which is the time between previous and current simulation loop.</p>
 <p>Both input and output nodes can automatically detect and capture links when you attempt to link into them with <code>&gt;&gt;</code>. The <code>zone.input.capture()</code> method also allows you to explicitly capture a link or a value, returning the output socket for further linking.</p>
-<div id="98cb2bcb" class="cell" data-execution_count="9">
+<div id="b937914e" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(arrange<span class="op">=</span><span class="va">False</span>) <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    zone <span class="op">=</span> n.RepeatZone(<span class="dv">10</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    join <span class="op">=</span> zone.<span class="bu">input</span> <span class="op">&gt;&gt;</span> n.JoinGeometry()</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    (</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        zone.i</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> n.Points(position<span class="op">=</span>n.RandomValue.vector(seed<span class="op">=</span>zone.i))</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> join</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> zone.output</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> n.SetPosition()</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    join <span class="op">=</span> n.JoinGeometry()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># a geometry socket is added to the zone when we try to connect from the Join Geometry</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># to the zone output, which is then available for the zone.input &gt;&gt; join</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    join <span class="op">&gt;&gt;</span> zone.output <span class="op">&gt;&gt;</span> n.SetPosition()</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    zone.<span class="bu">input</span> <span class="op">&gt;&gt;</span> join</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    n.Points(zone.i, position<span class="op">=</span>n.RandomValue.vector(seed<span class="op">=</span>zone.i)) <span class="op">&gt;&gt;</span> join</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="9">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -455,16 +453,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N0("RepeatInput"):::default-node
     N1("RepeatOutput"):::default-node
     N2("JoinGeometry"):::geometry-node
-    N3("RandomValue"):::converter-node
-    N4("Points"):::geometry-node
-    N5("SetPosition"):::geometry-node
-    N0 --&gt;|"Geometry&gt;&gt;Geometry"| N2
-    N0 --&gt;|"Iteration&gt;&gt;Seed"| N3
-    N3 --&gt;|"Value&gt;&gt;Position"| N4
-    N0 --&gt;|"Iteration&gt;&gt;Count"| N4
-    N4 --&gt;|"Points&gt;&gt;Geometry"| N2
+    N3("SetPosition"):::geometry-node
+    N4("RandomValue"):::converter-node
+    N5("Points"):::geometry-node
     N2 --&gt;|"Geometry&gt;&gt;Geometry"| N1
-    N1 --&gt;|"Geometry&gt;&gt;Geometry"| N5
+    N1 --&gt;|"Geometry&gt;&gt;Geometry"| N3
+    N0 --&gt;|"Geometry&gt;&gt;Geometry"| N2
+    N0 --&gt;|"Iteration&gt;&gt;Seed"| N4
+    N0 --&gt;|"Iteration&gt;&gt;Count"| N5
+    N4 --&gt;|"Value&gt;&gt;Position"| N5
+    N5 --&gt;|"Points&gt;&gt;Geometry"| N2
+
+    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
+    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
+    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
+    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
+    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
+    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
+    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
+    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="d26d430e" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(arrange<span class="op">=</span><span class="va">False</span>) <span class="im">as</span> tree:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this initializes the zone with two socket inputs for each of the values</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    zone <span class="op">=</span> n.SimulationZone(n.Value(), n.Vector())</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this explicitly grabs the "Value" socket (which got it's name from the n.Value() node)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># and adds 10 then attempts to plug it into the zone output (it will choose the float</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># socket instead of the vector socket because that is the most compatible)</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    zone.<span class="bu">input</span>.outputs[<span class="st">"Value"</span>] <span class="op">+</span> <span class="dv">10</span> <span class="op">&gt;&gt;</span> zone.output</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this should automatically pick the vector input socket because we are</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># explicity about the VectorMath and it will be the most compatible</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    zone.<span class="bu">input</span> <span class="op">&gt;&gt;</span> n.VectorMath.add((<span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="fl">1.2</span>)) <span class="op">&gt;&gt;</span> zone.output</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+    N0("Value"):::input-node
+    N1("InputVector"):::input-node
+    N2("SimulationInput"):::default-node
+    N3("SimulationOutput"):::default-node
+    N4("Math"):::converter-node
+    N5("VectorMath"):::vector-node
+    N0 --&gt;|"Value&gt;&gt;Value"| N2
+    N1 --&gt;|"Vector&gt;&gt;Vector"| N2
+    N2 --&gt;|"Value&gt;&gt;Value"| N4
+    N4 --&gt;|"Value&gt;&gt;Value"| N3
+    N2 --&gt;|"Vector&gt;&gt;Vector"| N5
+    N5 --&gt;|"Vector&gt;&gt;Vector"| N3
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px

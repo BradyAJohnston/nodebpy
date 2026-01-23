@@ -239,7 +239,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N0("NodeGroupInput"):::default-node
     N1("RandomValue&lt;br/&gt;&lt;small&gt;(-1,-1,-1) seed:2&lt;/small&gt;"):::converter-node
     N2("RandomValue&lt;br/&gt;&lt;small&gt;(-1,-1,-1)&lt;/small&gt;"):::converter-node
-    N3("AlignRotationToVector&lt;br/&gt;&lt;small&gt;(0,0,1)&lt;/small&gt;"):::converter-node
+    N3("AlignRotationToVector"):::converter-node
     N4("AxisAngleToRotation&lt;br/&gt;&lt;small&gt;(0,0,1)&lt;/small&gt;"):::converter-node
     N5("InputPosition"):::input-node
     N6("Points"):::geometry-node
@@ -253,7 +253,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N14("RealizeInstances"):::geometry-node
     N15("InstanceOnPoints"):::geometry-node
     N16("NodeGroupOutput"):::default-node
-    N1 --&gt;|"Value&gt;&gt;Rotation"| N3
+    N1 --&gt;|"Value&gt;&gt;Vector"| N3
     N4 --&gt;|"Rotation&gt;&gt;Rotate By"| N8
     N3 --&gt;|"Rotation&gt;&gt;Rotation"| N8
     N2 --&gt;|"Value&gt;&gt;Position"| N6
