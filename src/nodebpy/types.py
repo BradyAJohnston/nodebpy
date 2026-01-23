@@ -280,7 +280,7 @@ SOCKET_TYPES = Literal[
     "CLOSURE",
 ]
 
-SOCKET_COMPATIBILITY = {
+SOCKET_COMPATIBILITY: dict[str, tuple[str]] = {
     "VALUE": (
         "VALUE",
         "VECTOR",
