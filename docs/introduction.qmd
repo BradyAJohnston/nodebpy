@@ -118,17 +118,13 @@ Both input and output nodes can automatically detect and capture links when you 
 ```{python}
 with TreeBuilder(arrange=False) as tree:
     zone = n.RepeatZone(10)
+    join = n.JoinGeometry()
+    # a geometry socket is added to the zone when we try to connect from the Join Geometry
+    # to the zone output, which is then available for the zone.input >> join
+    join >> zone.output >> n.SetPosition()
+    zone.input >> join
+    n.Points(zone.i, position=n.RandomValue.vector(seed=zone.i)) >> join
 
-    # this adds a geometry socket to the repeat zone implicitly to enable the connection
-    # as the zone starts with no inputs
-    join = zone.input >> n.JoinGeometry()
-    (
-        zone.i
-        >> n.Points(position=n.RandomValue.vector(seed=zone.i))
-        >> join
-        >> zone.output
-        >> n.SetPosition()
-    )
 
 tree
 ```
@@ -146,7 +142,6 @@ with TreeBuilder(arrange=False) as tree:
     # this should automatically pick the vector input socket because we are
     # explicity about the VectorMath and it will be the most compatible
     zone.input >> n.VectorMath.add((1.2, 1.2, 1.2)) >> zone.output
-
 
 tree
 ```

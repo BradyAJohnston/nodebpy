@@ -292,7 +292,6 @@ class NodeBuilder:
         counter = 0
         socket = self.node.outputs[counter]
         while not socket.is_icon_visible:
-            print(f"skipping inactive socket {socket.name}")
             counter += 1
             socket = self.node.outputs[counter]
         return socket
@@ -341,7 +340,6 @@ class NodeBuilder:
         ]
         if possible:
             possible.sort(key=lambda x: compatible.index(x.type))
-            print(f"{possible=}")
             return possible[0]
 
         raise SocketError("No compatible output sockets found")
@@ -495,10 +493,8 @@ class NodeBuilder:
             other._from_socket = source
         else:
             try:
-                print(f"{self=}, {other=}")
                 source, target = self._find_best_socket_pair(self, other)
             except SocketError:
-                print(f"SocketError{self=}, {other=}")
                 source, target = other._find_best_socket_pair(self, other)
 
         self.tree.link(source, target)
@@ -660,7 +656,6 @@ class DynamicInputsMixin:
         items.update(kwargs)
         for key, source in items.items():
             socket_source, type = self._match_compatible_data(*source.node.outputs)
-            print(f"{key=}, {source=}, {type=}")
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)
