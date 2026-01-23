@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Literal
 
 import bpy
-from bpy.types import NodeSocket
 
-from nodebpy.builder import NodeBuilder, SocketLinker
+from nodebpy.builder import DynamicInputsMixin, NodeBuilder, SocketLinker
 
 from ..types import (
     LINKABLE,
@@ -16,7 +15,7 @@ from ..types import (
 )
 
 
-class BaseZone(NodeBuilder, ABC):
+class BaseZone(DynamicInputsMixin, NodeBuilder, ABC):
     _items_attribute: Literal["state_items", "repeat_items"]
 
     @property
@@ -81,30 +80,6 @@ class BaseZoneInput(BaseZone, NodeBuilder, ABC):
         item = self.items.new(type, name)
         return self.inputs[item.name]
 
-    def __rshift__(self, other):
-        """Custom zone input linking that creates sockets as needed"""
-        # Check if target is a zone output without inputs
-        if (
-            hasattr(other, "_default_input_socket")
-            and other._default_input_socket is None
-        ):
-            # Target zone needs a socket - create one based on our output
-            from ..builder import SOCKET_COMPATIBILITY
-
-            source_socket = self._default_output_socket
-            source_type = source_socket.type
-
-            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [source_type])
-            best_type = compatible_types[0] if compatible_types else source_type
-
-            # Create socket on target zone
-            target_socket = other._add_socket(name=best_type.title(), type=best_type)
-            self.tree.link(source_socket, target_socket)
-            return other
-        else:
-            # Use the general smart linking approach
-            return self._smart_link_to(other)
-
 
 class BaseZoneOutput(BaseZone, NodeBuilder, ABC):
     """Base class for zone output nodes"""
@@ -122,69 +97,22 @@ class BaseZoneOutput(BaseZone, NodeBuilder, ABC):
         item = self.items.new(type, name)
         return self.node.inputs[item.name]
 
-    def __rshift__(self, other):
-        """Custom zone output linking that creates sockets as needed"""
-        from ..builder import SOCKET_COMPATIBILITY
-
-        # Get the source socket type
-        source_socket = self._default_output_socket
-        source_type = source_socket.type
-
-        # Check if target has compatible inputs
-        if hasattr(other, "_default_input_socket") and other._default_input_socket:
-            # Normal linking
-            return super().__rshift__(other)
-        elif hasattr(other, "_add_socket"):
-            # Target is also a zone - create compatible socket
-            compatible_types = SOCKET_COMPATIBILITY.get(source_type, [source_type])
-            best_type = compatible_types[0] if compatible_types else source_type
-
-            # Create socket on target zone
-            target_socket = other._add_socket(name=best_type.title(), type=best_type)
-            self.tree.link(source_socket, target_socket)
-            return other
-        else:
-            # Normal NodeBuilder
-            return super().__rshift__(other)
-
-    @property
-    def _default_input_socket(self) -> NodeSocket:
-        """Get default input socket, avoiding skip-type sockets"""
-        inputs = list(self.inputs.values())
-        if inputs:
-            return inputs[0].socket
-        else:
-            # No socket exists - this should be handled by zone-specific __rshift__ logic
-            # Return None to signal that a socket needs to be created
-            return None
-
-
-class SimulationZone:
-    def __init__(self, *args: LINKABLE, **kwargs: LINKABLE):
-        self.input = SimulationInput()
-        self.output = SimulationOutput()
-        self.input.node.pair_with_output(self.output.node)
-
-        self.output.node.state_items.clear()
-        socket_lookup = self.output._add_inputs(*args, **kwargs)
-        for name, source in socket_lookup.items():
-            self.input._link_from(source, name)
-
-    def delta_time(self) -> SocketLinker:
-        return self.input.o_delta_time
-
-    def __getitem__(self, index: int):
-        match index:
-            case 0:
-                return self.input
-            case 1:
-                return self.output
-            case _:
-                raise IndexError("SimulationZone has only two items")
-
 
 class BaseSimulationZone(BaseZone):
     _items_attribute = "state_items"
+    _socket_data_types = (
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "GEOMETRY",
+        "BUNDLE",
+    )
+    _type_map = {"VALUE": "FLOAT"}
 
     @property
     def items(self) -> bpy.types.NodeGeometrySimulationOutputItems:
@@ -215,39 +143,49 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
         return self._input("Skip")
 
 
-class RepeatZone:
-    """Wrapper that supports both direct unpacking and iteration"""
-
-    def __init__(
-        self, iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKABLE
-    ):
-        self.input = RepeatInput(iterations)
-        self.output = RepeatOutput()
+class SimulationZone:
+    def __init__(self, *args: LINKABLE, **kwargs: LINKABLE):
+        self.input = SimulationInput()
+        self.output = SimulationOutput()
         self.input.node.pair_with_output(self.output.node)
 
-        self.output.node.repeat_items.clear()
-        self.input._establish_links(**self.input._add_inputs(*args, **kwargs))
+        self.output.node.state_items.clear()
+        socket_lookup = self.output._add_inputs(*args, **kwargs)
+        for name, source in socket_lookup.items():
+            self.input._link_from(source, name)
 
-    @property
-    def i(self) -> SocketLinker:
-        """Input socket: Skip simluation frame"""
-        return self.input.o_iteration
+    def delta_time(self) -> SocketLinker:
+        return self.input.o_delta_time
 
-    def __iter__(self):
-        """Support for loop: for i, input, output in RepeatZone(...)"""
-        self._index = 0
-        return self
-
-    def __next__(self):
-        """Support for iteration: next(RepeatZone)"""
-        if self._index > 0:
-            raise StopIteration
-        self._index += 1
-        return self.i, self.input, self.output
+    def __getitem__(self, index: int):
+        match index:
+            case 0:
+                return self.input
+            case 1:
+                return self.output
+            case _:
+                raise IndexError("SimulationZone has only two items")
 
 
 class BaseRepeatZone(BaseZone):
     _items_attribute = "repeat_items"
+    _socket_data_types = (
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+    )
 
     @property
     def items(self) -> bpy.types.NodeGeometryRepeatOutputItems:
@@ -282,6 +220,37 @@ class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
 
     _bl_idname = "GeometryNodeRepeatOutput"
     node: bpy.types.GeometryNodeRepeatOutput
+
+
+class RepeatZone:
+    """Wrapper that supports both direct unpacking and iteration"""
+
+    def __init__(
+        self, iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKABLE
+    ):
+        self.input = RepeatInput(iterations)
+        self.output = RepeatOutput()
+        self.input.node.pair_with_output(self.output.node)
+
+        self.output.node.repeat_items.clear()
+        self.input._establish_links(**self.input._add_inputs(*args, **kwargs))
+
+    @property
+    def i(self) -> SocketLinker:
+        """Input socket: Skip simluation frame"""
+        return self.input.o_iteration
+
+    def __iter__(self):
+        """Support for loop: for i, input, output in RepeatZone(...)"""
+        self._index = 0
+        return self
+
+    def __next__(self):
+        """Support for iteration: next(RepeatZone)"""
+        if self._index > 0:
+            raise StopIteration
+        self._index += 1
+        return self.i, self.input, self.output
 
 
 class ForEachGeometryElementInput(NodeBuilder):

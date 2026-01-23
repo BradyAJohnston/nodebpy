@@ -2,7 +2,13 @@ from typing import Any, Literal
 
 import bpy
 
-from ..builder import NodeBuilder, NodeSocket, SocketLinker
+from ..builder import (
+    DynamicInputsMixin,
+    NodeBuilder,
+    NodeSocket,
+    SocketError,
+    SocketLinker,
+)
 from ..types import (
     LINKABLE,
     SOCKET_TYPES,
@@ -77,7 +83,7 @@ __all__ = (
 )
 
 
-class Bake(NodeBuilder):
+class Bake(NodeBuilder, DynamicInputsMixin):
     """Cache the incoming data so that it can be used without recomputation
 
     TODO: properly handle Animation / Still bake opations and ability to bake to a file
@@ -171,12 +177,15 @@ class Value(NodeBuilder):
         return self._output("Value")
 
 
-class FormatString(NodeBuilder):
+class FormatString(NodeBuilder, DynamicInputsMixin):
     """Insert values into a string using a Python and path template compatible formatting syntax"""
 
     _bl_idname = "FunctionNodeFormatString"
     node: bpy.types.FunctionNodeFormatString
     _socket_data_types = ("VALUE", "INT", "STRING")
+    _type_map = {
+        "VALUE": "FLOAT",
+    }
 
     def __init__(
         self,
@@ -396,7 +405,10 @@ class JoinGeometry(NodeBuilder):
     def __init__(self, *args: LINKABLE):
         super().__init__()
         for source in reversed(args):
-            self._link_from(source, self)
+            try:
+                self._link(*self._find_best_socket_pair(source, self))
+            except SocketError:
+                self._link(*source._find_best_socket_pair(source, self))
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -769,11 +781,27 @@ def _domain_capture_attribute(domain: _AttributeDomains):
     return method
 
 
-class CaptureAttribute(NodeBuilder):
+class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
     """Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation"""
 
     _bl_idname = "GeometryNodeCaptureAttribute"
     node: bpy.types.GeometryNodeCaptureAttribute
+    _socket_data_types = (
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+    )
+    _type_map = {
+        "VALUE": "FLOAT",
+        # "VECTOR": "FLOAT_VECTOR",
+        "RGBA": "FLOAT_COLOR",
+        "ROTATION": "QUATERNION",
+        "MATRIX": "FLOAT4X4",
+    }
     point = _domain_capture_attribute("POINT")
     edge = _domain_capture_attribute("EDGE")
     face = _domain_capture_attribute("FACE")
@@ -851,7 +879,7 @@ class CaptureAttribute(NodeBuilder):
         self.node.domain = value
 
 
-class FieldToGrid(NodeBuilder):
+class FieldToGrid(DynamicInputsMixin, NodeBuilder):
     """Create new grids by evaluating new values on an existing volume grid topology
 
     New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
@@ -873,7 +901,8 @@ class FieldToGrid(NodeBuilder):
 
     _bl_idname = "GeometryNodeFieldToGrid"
     node: bpy.types.GeometryNodeFieldToGrid
-    _socket_data_types = ("FLOAT", "VALUE", "INT", "VECTOR", "BOOLEAN")
+    _socket_data_types = ("VALUE", "INT", "VECTOR", "BOOLEAN")
+    _type_map = {"VALUE": "FLOAT"}
     _default_input_id = "Topology"
 
     def __init__(
@@ -988,7 +1017,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(arg, "Grid 2")
+            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
         return node
 
     @classmethod
@@ -1000,7 +1029,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(arg, "Grid 2")
+            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
         return node
 
     @classmethod
@@ -1011,11 +1040,11 @@ class SDFGridBoolean(NodeBuilder):
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
-        node._link_from(grid_1, "Grid 1")
+        node._link_from(*node._find_best_socket_pair(grid_1, node._input("Grid 1")))
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(arg, "Grid 2")
+            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
         return node
 
     @property

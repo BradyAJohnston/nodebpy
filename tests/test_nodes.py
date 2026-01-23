@@ -294,15 +294,13 @@ def test_repeat(snapshot_tree):
 
     with TreeBuilder() as tree:
         zone = n.RepeatZone(5)
-        # for i, input, output in n.RepeatZone(5):
-        join = n.JoinGeometry(zone.input)
-        _ = (
-            n.Points(zone.i, position=n.RandomValue.vector(min=-1, seed=zone.i))
-            >> join
-            >> zone.output
-        )
-        # input >> join
-
+        join = n.JoinGeometry()
+        zone.output.capture(join)
+        zone.input >> join
+        _ = n.Points(zone.i, position=n.RandomValue.vector(min=-1, seed=zone.i)) >> join
+    assert all(
+        [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
+    )
     assert len(tree) == 7
     assert snapshot_tree == tree
 
