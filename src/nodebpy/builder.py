@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from ast import Return
 from typing import TYPE_CHECKING, Any, ClassVar, Literal
-
-from arrangebpy.arrange.routing import Socket
-from numpy import isin
 
 if TYPE_CHECKING:
     from .nodes import Math, VectorMath
@@ -121,8 +117,9 @@ class OutputInterfaceContext(DirectionalContext):
 class TreeBuilder:
     """Builder for creating Blender geometry node trees with a clean Python API."""
 
-    _active_tree: ClassVar["TreeBuilder | None"] = None
-    _previous_tree: ClassVar["TreeBuilder | None"] = None
+    _tree_contexts: ClassVar["list[TreeBuilder]"] = []
+    # _active_tree: ClassVar["TreeBuilder | None"] = None
+    # _previous_tree: ClassVar["list[TreeBuilder]"] = list()
     just_added: "Node | None" = None
 
     def __init__(
@@ -139,16 +136,22 @@ class TreeBuilder:
         self.outputs = OutputInterfaceContext(self)
         self._arrange = arrange
 
+    def activate_tree(self) -> None:
+        """Make this tree the active tree for all new node creation."""
+        TreeBuilder._tree_contexts.append(self)
+
+    def deactivate_tree(self) -> None:
+        """Whatever tree ws previously active is set to be the active one (or None if no previously active tree)."""
+        TreeBuilder._tree_contexts.pop()
+
     def __enter__(self):
-        TreeBuilder._previous_tree = TreeBuilder._active_tree
-        TreeBuilder._active_tree = self
+        self.activate_tree()
         return self
 
     def __exit__(self, *args):
         if self._arrange:
             self.arrange()
-        TreeBuilder._active_tree = TreeBuilder._previous_tree
-        TreeBuilder._previous_tree = None
+        self.deactivate_tree()
 
     @property
     def nodes(self) -> Nodes:
@@ -244,7 +247,9 @@ class NodeBuilder:
 
     def __init__(self):
         # Get active tree from context manager
-        tree = TreeBuilder._active_tree
+        tree = (
+            TreeBuilder._tree_contexts[-1] if len(TreeBuilder._tree_contexts) else None
+        )
         if tree is None:
             raise RuntimeError(
                 f"Node '{self.__class__.__name__}' must be created within a TreeBuilder context manager.\n"
