@@ -483,6 +483,37 @@ def test_auto_selection():
     )
 
 
+def test_nested_trees():
+    with TreeBuilder("Tree") as tree:
+        with TreeBuilder("Tree2") as tree2:
+            with TreeBuilder("Tree3") as tree3:
+                with tree3.outputs:
+                    _ = n.Cone() >> s.SocketGeometry("Cone")
+            group = n.Group()
+            group.node.node_tree = tree3.tree
+
+            with tree2.inputs:
+                items = (s.SocketInt("Count", 10) >> n.Points(), n.Cube(), group)
+
+            with tree2.outputs:
+                _ = n.JoinGeometry(*items) >> s.SocketGeometry("Output")
+
+        group = n.Group()
+        group.node.node_tree = tree2.tree
+
+        with tree.outputs:
+            _ = (
+                group
+                >> n.InstanceOnPoints(n.Grid(), instance=...)
+                >> s.SocketGeometry("Test")
+            )
+
+    assert len(tree3) == 2
+    assert len(tree2) == 6
+    assert len(tree2.tree.links) == 5
+    assert len(tree) == 4
+
+
 def test_add_all_nodes():
     with TreeBuilder():
         for name in dir(n):
