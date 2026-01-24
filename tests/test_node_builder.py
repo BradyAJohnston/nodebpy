@@ -508,6 +508,11 @@ def test_nested_trees():
                 >> s.SocketGeometry("Test")
             )
 
+    assert len(tree3) == 2
+    assert len(tree2) == 6
+    assert len(tree2.tree.links) == 5
+    assert len(tree) == 4
+
 
 def test_add_all_nodes():
     with TreeBuilder():
