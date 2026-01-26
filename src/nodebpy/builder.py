@@ -21,7 +21,6 @@ from .types import (
     TYPE_INPUT_ALL,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
-    NodeBooleanMathItems,
     StringInterfaceSubtypes,
     VectorInterfaceSubtypes,
     _AttributeDomains,
@@ -634,9 +633,9 @@ class DynamicInputsMixin:
                     target.inputs[target_name].socket,
                 )
 
-            for target_name, source_socket in new_sockets.items():
-                target_socket = target.inputs[target_name].socket
-                return (source_socket, target_socket)
+            # for target_name, source_socket in new_sockets.items():
+            #     target_socket = target.inputs[target_name].socket
+            #     return (source_socket, target_socket)
 
     # def _best_output_socket(self, type: str) -> NodeSocket:
     #     # compatible = SOCKET_COMPATIBILITY.get(type, ())

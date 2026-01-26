@@ -6,7 +6,9 @@ from ..builder import NodeBuilder
 
 
 class Viewer(NodeBuilder):
-    """Display the input data in the Spreadsheet Editor"""
+    """
+    Display the input data in the Spreadsheet Editor
+    """
 
     _bl_idname = "GeometryNodeViewer"
     node: bpy.types.GeometryNodeViewer

@@ -392,11 +392,11 @@ def test_mix_node():
         )
 
         selection = (
-            n.RandomValue.boolean(probability=0.3)
+            n.RandomValue.boolean(0.3)
             >> n.BooleanMath.l_not()
-            >> n.BooleanMath.l_and(n.RandomValue.boolean(probability=0.8))
-            >> n.BooleanMath.l_or(n.RandomValue.boolean(probability=0.5))
-            >> n.BooleanMath.equal(n.RandomValue.boolean(probability=0.4))
+            >> n.BooleanMath.l_and(n.RandomValue.boolean(0.8))
+            >> n.BooleanMath.l_or(n.RandomValue.boolean(0.5))
+            >> n.BooleanMath.equal(n.RandomValue.boolean(0.4))
             >> n.BooleanMath.l_not()
         )
 
@@ -422,7 +422,6 @@ def test_warning_innactive_socket():
     "Raises an error because we want to not let a user silently link sockets that won't do anything"
     with TreeBuilder():
         pos = n.Position()
-        mix = n.Mix.vector()
         # this works because by default we link to the currently active vector sockets
         n.Mix(a_vector=pos, data_type="VECTOR")
         # this now fails because we try to link to the innactive float sockets

@@ -11,7 +11,7 @@ Run this script from within Blender to generate node classes:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -83,16 +83,42 @@ class SocketInfo:
     always_enabled: bool = True
 
     def format_argument_string(self) -> str:
-        type_hint = get_socket_type_hint(self)
         param_name = get_socket_param_name(self)
-        return f"{param_name}: {type_hint} = {format_python_value(self.default_value)}"
+        return f"{param_name}: {self.type_hint} = {format_python_value(self.default_value)}"
+
+    @property
+    def type_hint(self) -> str:
+        """Get the Python type hint for a socket."""
+        type_map = {
+            "NodeSocketFloat": "TYPE_INPUT_VALUE",
+            "NodeSocketInt": "TYPE_INPUT_INT",
+            "NodeSocketBool": "TYPE_INPUT_BOOLEAN",
+            "NodeSocketVector": "TYPE_INPUT_VECTOR",
+            "NodeSocketColor": "TYPE_INPUT_COLOR",
+            "NodeSocketRotation": "TYPE_INPUT_ROTATION",
+            "NodeSocketMatrix": "TYPE_INPUT_MATRIX",
+            "NodeSocketString": "TYPE_INPUT_STRING",
+            "NodeSocketMenu": "TYPE_INPUT_MENU",
+            "NodeSocketObject": "TYPE_INPUT_OBJECT",
+            "NodeSocketGeometry": "TYPE_INPUT_GEOMETRY",
+            "NodeSocketCollection": "TYPE_INPUT_COLLECTION",
+            "NodeSocketImage": "TYPE_INPUT_IMAGE",
+            "NodeSocketMaterial": "TYPE_INPUT_MATERIAL",
+            "NodeSocketBundle": "TYPE_INPUT_BUNDLE",
+            "NodeSocketClosure": "TYPE_INPUT_CLOSURE",
+        }
+        # to handle all of the subtypes we have to iterate through and
+        # instead just check to see if the name is in the socket type
+        for key, item in type_map.items():
+            if key in self.bl_socket_type:
+                return item
+        raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
     def format_property(self) -> str:
         """Generate the property string for this socket."""
         prop_name = "{}_{}".format(
             "o" if self.is_output else "i", normalize_name(self.identifier)
         )
-        socket_type_annotation = get_socket_type_annotation(self)
         description = "{} socket: {}".format(
             "Output" if self.is_output else "Input", self.name
         )
@@ -101,7 +127,7 @@ class SocketInfo:
 
         return f'''
     @property
-    def {prop_name}(self) -> {socket_type_annotation}:
+    def {prop_name}(self) -> SocketLinker:
         """{description}"""
         return self._{"output" if self.is_output else "input"}("{self.identifier}")
 '''
@@ -114,7 +140,7 @@ class EnumInfo:
     identifier: str
     name: str
     description: str = ""
-    sockets: list[SocketInfo] | None = None
+    sockets: list[SocketInfo] = field(default_factory=lambda: list())
 
 
 @dataclass
@@ -125,7 +151,7 @@ class PropertyInfo:
     name: str
     prop_type: Literal["ENUM", "BOOLEAN", "INT", "FLOAT", "STRING", "COLOR", "VECTOR"]
     subtype: str | None = None
-    enum_items: list[EnumInfo] | None = None
+    enum_items: list[EnumInfo] = field(default_factory=lambda: list())
     default: Any = None
 
     def enum_values_to_literal(self) -> str:
@@ -209,8 +235,8 @@ class PropertyInfo:
 class NodeInfo:
     """Complete information about a node type."""
 
-    bl_idname: str  # e.g., "GeometryNodeSetPosition"
-    name: str  # Human-readable name
+    bl_idname: str  # blender RNA name "GeometryNodeSetPosition"
+    name: str  # Node display node "Set Position"
     color_tag: str  # e.g., "GEOMETRY", "CONVERTER", "INPUT"
     description: str
     inputs: list[SocketInfo]
@@ -219,8 +245,95 @@ class NodeInfo:
     domain_sockets: dict[str, list[SocketInfo]]
 
     @property
-    def class_name(self):
-        return python_class_name(self.name)
+    def node_docs_url(self) -> str | None:
+        "Find adn returl the URL for the online Blender documentation for this node"
+        return bpy.types.WM_OT_doc_view_manual._lookup_rna_url(  # type: ignore
+            f"bpy.types.{self.bl_idname}", verbose=False
+        )
+
+    @property
+    def node_image_url(self) -> str:
+        "Return the URL to a screenshot of the node from the online Blender documentation"
+        return f"https://docs.blender.org/manual/en/latest/_images/node-types_{self.bl_idname}.webp"
+
+    @property
+    def class_name(self) -> str:
+        """Convert 'set position' to 'SetPosition'.
+
+        Handles edge cases like '3D Cursor' -> 'Cursor3D' to ensure valid Python identifiers.
+        """
+        # Replace common separators with spaces
+        class_name = self.name.replace("_", " ").replace("-", " ")
+
+        # Remove any characters that aren't alphanumeric or spaces
+        # This handles cases like "Field Min&Max" -> "Field Min Max"
+        class_name = "".join(
+            c if c.isalnum() or c.isspace() else "" for c in class_name
+        )
+        class_name = class_name.title().replace(" ", "")
+
+        # special mapping to upper case for things like "UV"
+        replacements = {
+            "&": "And",
+            "Uv": "UV",
+            "Sdf": "SDF",
+            "3DCursor": "Cursor3D",
+            "GeometryNode": "",
+            "ShaderMath": "",
+            "FunctionNode": "",
+            "Node": "",
+            "Xyz": "XYZ",
+            "Id": "ID",
+            "Bézier": "Bezier",
+            "ImportStl": "ImportSTL",
+            "ImportObj": "ImportOBJ",
+            "ImportCsv": "ImportCSV",
+            "ImportPly": "ImportPLY",
+            "Vdb": "VDB",
+            "3DLocation": "Location3D",
+        }
+
+        # Apply replacements
+        for key, value in replacements.items():
+            class_name = class_name.replace(key, value)
+
+        return class_name
+
+    @property
+    def module_name(self) -> str:
+        """Determine the target filename for a node based on color_tag and special cases."""
+        # Special cases for zones
+        if any(
+            keyword in self.bl_idname for keyword in ["Repeat", "ForEach", "Simulation"]
+        ):
+            return "zone"
+
+        # Special cases for grid/volume nodes
+        if any(keyword in self.bl_idname for keyword in ["Volume", "Grid"]):
+            return "grid" if self.class_name != "Grid" else "geometry"
+
+        if "List" in self.bl_idname:
+            return "experimental"
+
+        # Map color_tag to filename
+        color_tag_to_filename = {
+            "GEOMETRY": "geometry",
+            "CONVERTER": "converter",
+            "INPUT": "input",
+            "OUTPUT": "output",
+            "ATTRIBUTE": "attribute",
+            "COLOR": "color",
+            "TEXTURE": "texture",
+            "GROUP": "group",
+            "INTERFACE": "interface",
+            "LAYOUT": "layout",
+            "VECTOR": "vector",
+        }
+
+        # Get filename from color_tag, default to utilities.py
+        filename = color_tag_to_filename.get(self.color_tag, "utilities.py")
+
+        return filename
 
     def generate_enum_class_methods(self) -> str:
         """Generate @classmethod convenience methods for enum operations."""
@@ -278,9 +391,8 @@ class NodeInfo:
                         and param_name != ""
                         and param_name != normalize_name(prop.identifier)
                     ):
-                        type_hint = get_socket_type_hint(socket)
                         input_params.append(
-                            f"{param_name}: {type_hint} = {format_python_value(socket.default_value)}"
+                            f"{param_name}: {socket.type_hint} = {format_python_value(socket.default_value)}"
                         )
                         # Use the same parameter name as in the constructor
                         call_params.append(f"{socket_name}={param_name}")
@@ -343,93 +455,6 @@ def get_socket_param_name(socket: SocketInfo, use_identifier: bool = False) -> s
     else:
         display_name = socket.label if socket.label else socket.name
         return normalize_name(display_name)
-
-
-def python_class_name(name: str) -> str:
-    """Convert 'set position' to 'SetPosition'.
-
-    Handles edge cases like '3D Cursor' -> 'Cursor3D' to ensure valid Python identifiers.
-    """
-    # Replace common separators with spaces
-    class_name = name.replace("_", " ").replace("-", " ")
-
-    # Remove any characters that aren't alphanumeric or spaces
-    # This handles cases like "Field Min&Max" -> "Field Min Max"
-    class_name = "".join(c if c.isalnum() or c.isspace() else "" for c in class_name)
-    class_name = class_name.title().replace(" ", "")
-
-    # special mapping to upper case for things like "UV"
-    replacements = {
-        "Uv": "UV",
-        "Sdf": "SDF",
-        "3DCursor": "Cursor3D",
-        "GeometryNode": "",
-        "ShaderMath": "",
-        "FunctionNode": "",
-        "Node": "",
-        "Xyz": "XYZ",
-        "Id": "ID",
-        "Bézier": "Bezier",
-        "ImportStl": "ImportSTL",
-        "ImportObj": "ImportOBJ",
-        "ImportCsv": "ImportCSV",
-        "ImportPly": "ImportPLY",
-        "Vdb": "VDB",
-        "3DLocation": "Location3D",
-    }
-
-    # Apply replacements
-    for key, value in replacements.items():
-        class_name = class_name.replace(key, value)
-
-    return class_name
-
-
-def get_socket_type_hint(socket_info: SocketInfo) -> str:
-    """Get the Python type hint for a socket."""
-    # Map Blender socket types to our type hints
-    type_map = {
-        "NodeSocketFloat": "TYPE_INPUT_VALUE",
-        "NodeSocketInt": "TYPE_INPUT_INT",
-        "NodeSocketBool": "TYPE_INPUT_BOOLEAN",
-        "NodeSocketVector": "TYPE_INPUT_VECTOR",
-        "NodeSocketColor": "TYPE_INPUT_COLOR",
-        "NodeSocketRotation": "TYPE_INPUT_ROTATION",
-        "NodeSocketMatrix": "TYPE_INPUT_MATRIX",
-        "NodeSocketString": "TYPE_INPUT_STRING",
-        "NodeSocketMenu": "TYPE_INPUT_MENU",
-        "NodeSocketObject": "TYPE_INPUT_OBJECT",
-        "NodeSocketGeometry": "TYPE_INPUT_GEOMETRY",
-        "NodeSocketCollection": "TYPE_INPUT_COLLECTION",
-        "NodeSocketImage": "TYPE_INPUT_IMAGE",
-        "NodeSocketMaterial": "TYPE_INPUT_MATERIAL",
-        "NodeSocketBundle": "TYPE_INPUT_BUNDLE",
-        "NodeSocketClosure": "TYPE_INPUT_CLOSURE",
-    }
-    for key in type_map.keys():
-        if key in socket_info.bl_socket_type:
-            return type_map[key]
-
-
-def get_socket_type_annotation(socket_info: SocketInfo) -> str:
-    """Get the Python type annotation for socket properties."""
-    # Map Blender socket types to SocketLinker for consistency
-    type_map = {
-        "NodeSocketGeometry": "SocketLinker",
-        "NodeSocketBool": "SocketLinker",
-        "NodeSocketVector": "SocketLinker",
-        "NodeSocketRotation": "SocketLinker",
-        "NodeSocketFloat": "SocketLinker",
-        "NodeSocketInt": "SocketLinker",
-        "NodeSocketString": "SocketLinker",
-        "NodeSocketColor": "SocketLinker",
-        "NodeSocketMaterial": "SocketLinker",
-        "NodeSocketImage": "SocketLinker",
-        "NodeSocketObject": "SocketLinker",
-        "NodeSocketCollection": "SocketLinker",
-    }
-
-    return type_map.get(socket_info.bl_socket_type, "SocketLinker")
 
 
 def format_python_value(value: Any) -> str:
@@ -614,13 +639,12 @@ def generate_node_class(node_info: NodeInfo) -> str:
 
     for socket in node_info.inputs:
         param_name = get_socket_param_name(socket, sockets_use_same_name)
-        type_hint = get_socket_type_hint(socket)
 
         if hasattr(socket, "default_value"):
             default = format_python_value(socket.default_value)
         else:
             default = "None"
-        init_params.append(f"{param_name}: {type_hint} = {default}")
+        init_params.append(f"{param_name}: {socket.type_hint} = {default}")
         establish_links_params.append((param_name, socket))
 
     # Add properties as parameters
@@ -678,8 +702,9 @@ def generate_node_class(node_info: NodeInfo) -> str:
     )
 
     # Build class
+    # """\n{node_info.description}\n[Blender Documentation]({node_info.node_docs_url})\n![]({node_info.node_image_url})\n"""
     class_code = f'''class {node_info.class_name}(NodeBuilder):
-    """{node_info.description}"""
+    """\n{node_info.description}\n"""
 
     _bl_idname = "{node_info.bl_idname}"
     node: {node_type_annotation}
@@ -742,43 +767,6 @@ from ..types import (
 )
 
 """
-
-
-def get_filename_for_node(node_info: NodeInfo) -> str:
-    """Determine the target filename for a node based on color_tag and special cases."""
-    # Special cases for zones
-    if any(
-        keyword in node_info.bl_idname
-        for keyword in ["Repeat", "ForEach", "Simulation"]
-    ):
-        return "zone"
-
-    # Special cases for grid/volume nodes
-    if any(keyword in node_info.bl_idname for keyword in ["Volume", "Grid"]):
-        return "grid" if node_info.class_name != "Grid" else "geometry"
-
-    if "List" in node_info.bl_idname:
-        return "experimental"
-
-    # Map color_tag to filename
-    color_tag_to_filename = {
-        "GEOMETRY": "geometry",
-        "CONVERTER": "converter",
-        "INPUT": "input",
-        "OUTPUT": "output",
-        "ATTRIBUTE": "attribute",
-        "COLOR": "color",
-        "TEXTURE": "texture",
-        "GROUP": "group",
-        "INTERFACE": "interface",
-        "LAYOUT": "layout",
-        "VECTOR": "vector",
-    }
-
-    # Get filename from color_tag, default to utilities.py
-    filename = color_tag_to_filename.get(node_info.color_tag, "utilities.py")
-
-    return filename
 
 
 class BaseModuleWriter:
@@ -861,7 +849,7 @@ class ModulesHandler(BaseModuleWriter):
     def add_node(self, node_info: NodeInfo | None) -> None:
         if not node_info:
             return
-        module_name = get_filename_for_node(node_info)
+        module_name = node_info.module_name
         if module_name not in self.modules:
             self.modules[module_name] = ModuleWriter(module_name)
         self.modules[module_name].add_node(node_info)

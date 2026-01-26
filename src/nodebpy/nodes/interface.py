@@ -14,7 +14,9 @@ from ..types import (
 
 
 class DialGizmo(NodeBuilder):
-    """Show a dial gizmo in the viewport for a value"""
+    """
+    Show a dial gizmo in the viewport for a value
+    """
 
     _bl_idname = "GeometryNodeGizmoDial"
     node: bpy.types.GeometryNodeGizmoDial
@@ -80,7 +82,9 @@ class DialGizmo(NodeBuilder):
 
 
 class EnableOutput(NodeBuilder):
-    """Either pass through the input value or output the fallback value"""
+    """
+    Either pass through the input value or output the fallback value
+    """
 
     _bl_idname = "NodeEnableOutput"
     node: bpy.types.Node
@@ -258,7 +262,9 @@ class EnableOutput(NodeBuilder):
 
 
 class GroupInput(NodeBuilder):
-    """Expose connected data from inside a node group as inputs to its interface"""
+    """
+    Expose connected data from inside a node group as inputs to its interface
+    """
 
     _bl_idname = "NodeGroupInput"
     node: bpy.types.Node
@@ -271,7 +277,9 @@ class GroupInput(NodeBuilder):
 
 
 class GroupOutput(NodeBuilder):
-    """Output data from inside of a node group"""
+    """
+    Output data from inside of a node group
+    """
 
     _bl_idname = "NodeGroupOutput"
     node: bpy.types.Node
@@ -292,7 +300,9 @@ class GroupOutput(NodeBuilder):
 
 
 class LinearGizmo(NodeBuilder):
-    """Show a linear gizmo in the viewport for a value"""
+    """
+    Show a linear gizmo in the viewport for a value
+    """
 
     _bl_idname = "GeometryNodeGizmoLinear"
     node: bpy.types.GeometryNodeGizmoLinear
@@ -350,7 +360,9 @@ class LinearGizmo(NodeBuilder):
 
 
 class TransformGizmo(NodeBuilder):
-    """Show a transform gizmo in the viewport"""
+    """
+    Show a transform gizmo in the viewport
+    """
 
     _bl_idname = "GeometryNodeGizmoTransform"
     node: bpy.types.GeometryNodeGizmoTransform
@@ -478,7 +490,9 @@ class TransformGizmo(NodeBuilder):
 
 
 class Warning(NodeBuilder):
-    """Create custom warnings in node groups"""
+    """
+    Create custom warnings in node groups
+    """
 
     _bl_idname = "GeometryNodeWarning"
     node: bpy.types.GeometryNodeWarning
