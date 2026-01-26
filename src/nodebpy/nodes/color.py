@@ -1,3 +1,4 @@
+
 import bpy
 
 from ..builder import NodeBuilder, SocketLinker
@@ -8,7 +9,9 @@ from ..types import (
 
 
 class Gamma(NodeBuilder):
-    """Apply a gamma correction"""
+    """
+    Apply a gamma correction
+    """
 
     _bl_idname = "ShaderNodeGamma"
     node: bpy.types.ShaderNodeGamma
@@ -40,7 +43,9 @@ class Gamma(NodeBuilder):
 
 
 class RgbCurves(NodeBuilder):
-    """Apply color corrections for each color channel"""
+    """
+    Apply color corrections for each color channel
+    """
 
     _bl_idname = "ShaderNodeRGBCurve"
     node: bpy.types.ShaderNodeRGBCurve

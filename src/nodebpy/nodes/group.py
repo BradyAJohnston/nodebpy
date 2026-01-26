@@ -1,10 +1,13 @@
+
 import bpy
 
 from ..builder import NodeBuilder
 
 
 class Group(NodeBuilder):
-    """Group node"""
+    """
+    Group node
+    """
 
     _bl_idname = "GeometryNodeGroup"
     node: bpy.types.GeometryNodeGroup

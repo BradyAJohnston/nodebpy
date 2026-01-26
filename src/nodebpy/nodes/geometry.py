@@ -19,7 +19,9 @@ from ..types import (
 
 
 class Arc(NodeBuilder):
-    """Generate a poly spline arc"""
+    """
+    Generate a poly spline arc
+    """
 
     _bl_idname = "GeometryNodeCurveArc"
     node: bpy.types.GeometryNodeCurveArc
@@ -135,7 +137,9 @@ class Arc(NodeBuilder):
 
 
 class BoundingBox(NodeBuilder):
-    """Calculate the limits of a geometry's positions and generate a box mesh with those dimensions"""
+    """
+    Calculate the limits of a geometry's positions and generate a box mesh with those dimensions
+    """
 
     _bl_idname = "GeometryNodeBoundBox"
     node: bpy.types.GeometryNodeBoundBox
@@ -177,7 +181,9 @@ class BoundingBox(NodeBuilder):
 
 
 class BezierSegment(NodeBuilder):
-    """Generate a 2D Bézier spline from the given control points and handles"""
+    """
+    Generate a 2D Bézier spline from the given control points and handles
+    """
 
     _bl_idname = "GeometryNodeCurvePrimitiveBezierSegment"
     node: bpy.types.GeometryNodeCurvePrimitiveBezierSegment
@@ -243,7 +249,9 @@ class BezierSegment(NodeBuilder):
 
 
 class Cone(NodeBuilder):
-    """Generate a cone mesh"""
+    """
+    Generate a cone mesh
+    """
 
     _bl_idname = "GeometryNodeMeshCone"
     node: bpy.types.GeometryNodeMeshCone
@@ -336,7 +344,9 @@ class Cone(NodeBuilder):
 
 
 class ConvexHull(NodeBuilder):
-    """Create a mesh that encloses all points in the input geometry with the smallest number of points"""
+    """
+    Create a mesh that encloses all points in the input geometry with the smallest number of points
+    """
 
     _bl_idname = "GeometryNodeConvexHull"
     node: bpy.types.GeometryNodeConvexHull
@@ -359,7 +369,9 @@ class ConvexHull(NodeBuilder):
 
 
 class Cube(NodeBuilder):
-    """Generate a cuboid mesh with variable side lengths and subdivisions"""
+    """
+    Generate a cuboid mesh with variable side lengths and subdivisions
+    """
 
     _bl_idname = "GeometryNodeMeshCube"
     node: bpy.types.GeometryNodeMeshCube
@@ -413,7 +425,9 @@ class Cube(NodeBuilder):
 
 
 class CurveCircle(NodeBuilder):
-    """Generate a poly spline circle"""
+    """
+    Generate a poly spline circle
+    """
 
     _bl_idname = "GeometryNodeCurvePrimitiveCircle"
     node: bpy.types.GeometryNodeCurvePrimitiveCircle
@@ -484,7 +498,9 @@ class CurveCircle(NodeBuilder):
 
 
 class CurveLength(NodeBuilder):
-    """Retrieve the length of all splines added together"""
+    """
+    Retrieve the length of all splines added together
+    """
 
     _bl_idname = "GeometryNodeCurveLength"
     node: bpy.types.GeometryNodeCurveLength
@@ -507,7 +523,9 @@ class CurveLength(NodeBuilder):
 
 
 class CurveLine(NodeBuilder):
-    """Generate a poly spline line with two points"""
+    """
+    Generate a poly spline line with two points
+    """
 
     _bl_idname = "GeometryNodeCurvePrimitiveLine"
     node: bpy.types.GeometryNodeCurvePrimitiveLine
@@ -566,7 +584,9 @@ class CurveLine(NodeBuilder):
 
 
 class CurveToMesh(NodeBuilder):
-    """Convert curves into a mesh, optionally with a custom profile shape defined by curves"""
+    """
+    Convert curves into a mesh, optionally with a custom profile shape defined by curves
+    """
 
     _bl_idname = "GeometryNodeCurveToMesh"
     node: bpy.types.GeometryNodeCurveToMesh
@@ -615,7 +635,9 @@ class CurveToMesh(NodeBuilder):
 
 
 class CurveToPoints(NodeBuilder):
-    """Generate a point cloud by sampling positions along curves"""
+    """
+    Generate a point cloud by sampling positions along curves
+    """
 
     _bl_idname = "GeometryNodeCurveToPoints"
     node: bpy.types.GeometryNodeCurveToPoints
@@ -678,7 +700,9 @@ class CurveToPoints(NodeBuilder):
 
 
 class CurvesToGreasePencil(NodeBuilder):
-    """Convert the curves in each top-level instance into Grease Pencil layer"""
+    """
+    Convert the curves in each top-level instance into Grease Pencil layer
+    """
 
     _bl_idname = "GeometryNodeCurvesToGreasePencil"
     node: bpy.types.GeometryNodeCurvesToGreasePencil
@@ -720,7 +744,9 @@ class CurvesToGreasePencil(NodeBuilder):
 
 
 class Cylinder(NodeBuilder):
-    """Generate a cylinder mesh"""
+    """
+    Generate a cylinder mesh
+    """
 
     _bl_idname = "GeometryNodeMeshCylinder"
     node: bpy.types.GeometryNodeMeshCylinder
@@ -806,7 +832,9 @@ class Cylinder(NodeBuilder):
 
 
 class DeformCurvesOnSurface(NodeBuilder):
-    """Translate and rotate curves based on changes between the object's original and evaluated surface mesh"""
+    """
+    Translate and rotate curves based on changes between the object's original and evaluated surface mesh
+    """
 
     _bl_idname = "GeometryNodeDeformCurvesOnSurface"
     node: bpy.types.GeometryNodeDeformCurvesOnSurface
@@ -829,7 +857,9 @@ class DeformCurvesOnSurface(NodeBuilder):
 
 
 class DeleteGeometry(NodeBuilder):
-    """Remove selected elements of a geometry"""
+    """
+    Remove selected elements of a geometry
+    """
 
     _bl_idname = "GeometryNodeDeleteGeometry"
     node: bpy.types.GeometryNodeDeleteGeometry
@@ -927,7 +957,9 @@ class DeleteGeometry(NodeBuilder):
 
 
 class DistributePointsOnFaces(NodeBuilder):
-    """Generate points spread out on the surface of a mesh"""
+    """
+    Generate points spread out on the surface of a mesh
+    """
 
     _bl_idname = "GeometryNodeDistributePointsOnFaces"
     node: bpy.types.GeometryNodeDistributePointsOnFaces
@@ -1027,7 +1059,9 @@ class DistributePointsOnFaces(NodeBuilder):
 
 
 class DualMesh(NodeBuilder):
-    """Convert Faces into vertices and vertices into faces"""
+    """
+    Convert Faces into vertices and vertices into faces
+    """
 
     _bl_idname = "GeometryNodeDualMesh"
     node: bpy.types.GeometryNodeDualMesh
@@ -1059,7 +1093,9 @@ class DualMesh(NodeBuilder):
 
 
 class DuplicateElements(NodeBuilder):
-    """Generate an arbitrary number copies of each selected input element"""
+    """
+    Generate an arbitrary number copies of each selected input element
+    """
 
     _bl_idname = "GeometryNodeDuplicateElements"
     node: bpy.types.GeometryNodeDuplicateElements
@@ -1184,7 +1220,9 @@ class DuplicateElements(NodeBuilder):
 
 
 class EdgePathsToCurves(NodeBuilder):
-    """Output curves following paths across mesh edges"""
+    """
+    Output curves following paths across mesh edges
+    """
 
     _bl_idname = "GeometryNodeEdgePathsToCurves"
     node: bpy.types.GeometryNodeEdgePathsToCurves
@@ -1226,7 +1264,9 @@ class EdgePathsToCurves(NodeBuilder):
 
 
 class ExtrudeMesh(NodeBuilder):
-    """Generate new vertices, edges, or faces from selected elements and move them based on an offset while keeping them connected by their boundary"""
+    """
+    Generate new vertices, edges, or faces from selected elements and move them based on an offset while keeping them connected by their boundary
+    """
 
     _bl_idname = "GeometryNodeExtrudeMesh"
     node: bpy.types.GeometryNodeExtrudeMesh
@@ -1302,7 +1342,9 @@ class ExtrudeMesh(NodeBuilder):
 
 
 class FillCurve(NodeBuilder):
-    """Generate a mesh on the XY plane with faces on the inside of input curves"""
+    """
+    Generate a mesh on the XY plane with faces on the inside of input curves
+    """
 
     _bl_idname = "GeometryNodeFillCurve"
     node: bpy.types.GeometryNodeFillCurve
@@ -1340,7 +1382,9 @@ class FillCurve(NodeBuilder):
 
 
 class FilletCurve(NodeBuilder):
-    """Round corners by generating circular arcs on each control point"""
+    """
+    Round corners by generating circular arcs on each control point
+    """
 
     _bl_idname = "GeometryNodeFilletCurve"
     node: bpy.types.GeometryNodeFilletCurve
@@ -1396,7 +1440,9 @@ class FilletCurve(NodeBuilder):
 
 
 class FlipFaces(NodeBuilder):
-    """Reverse the order of the vertices and edges of selected faces, flipping their normal direction"""
+    """
+    Reverse the order of the vertices and edges of selected faces, flipping their normal direction
+    """
 
     _bl_idname = "GeometryNodeFlipFaces"
     node: bpy.types.GeometryNodeFlipFaces
@@ -1428,7 +1474,9 @@ class FlipFaces(NodeBuilder):
 
 
 class GeometryProximity(NodeBuilder):
-    """Compute the closest location on the target geometry"""
+    """
+    Compute the closest location on the target geometry
+    """
 
     _bl_idname = "GeometryNodeProximity"
     node: bpy.types.GeometryNodeProximity
@@ -1497,7 +1545,9 @@ class GeometryProximity(NodeBuilder):
 
 
 class GreasePencilToCurves(NodeBuilder):
-    """Convert Grease Pencil layers into curve instances"""
+    """
+    Convert Grease Pencil layers into curve instances
+    """
 
     _bl_idname = "GeometryNodeGreasePencilToCurves"
     node: bpy.types.GeometryNodeGreasePencilToCurves
@@ -1539,7 +1589,9 @@ class GreasePencilToCurves(NodeBuilder):
 
 
 class Grid(NodeBuilder):
-    """Generate a planar mesh on the XY plane"""
+    """
+    Generate a planar mesh on the XY plane
+    """
 
     _bl_idname = "GeometryNodeMeshGrid"
     node: bpy.types.GeometryNodeMeshGrid
@@ -1593,7 +1645,9 @@ class Grid(NodeBuilder):
 
 
 class IcoSphere(NodeBuilder):
-    """Generate a spherical mesh that consists of equally sized triangles"""
+    """
+    Generate a spherical mesh that consists of equally sized triangles
+    """
 
     _bl_idname = "GeometryNodeMeshIcoSphere"
     node: bpy.types.GeometryNodeMeshIcoSphere
@@ -1630,7 +1684,9 @@ class IcoSphere(NodeBuilder):
 
 
 class InstanceOnPoints(NodeBuilder):
-    """Generate a reference to geometry at each of the input points, without duplicating its underlying data"""
+    """
+    Generate a reference to geometry at each of the input points, without duplicating its underlying data
+    """
 
     _bl_idname = "GeometryNodeInstanceOnPoints"
     node: bpy.types.GeometryNodeInstanceOnPoints
@@ -1700,8 +1756,10 @@ class InstanceOnPoints(NodeBuilder):
 
 
 class InstancesToPoints(NodeBuilder):
-    """Generate points at the origins of instances.
-    Note: Nested instances are not affected by this node"""
+    """
+    Generate points at the origins of instances.
+    Note: Nested instances are not affected by this node
+    """
 
     _bl_idname = "GeometryNodeInstancesToPoints"
     node: bpy.types.GeometryNodeInstancesToPoints
@@ -1750,7 +1808,9 @@ class InstancesToPoints(NodeBuilder):
 
 
 class InterpolateCurves(NodeBuilder):
-    """Generate new curves on points by interpolating between existing curves"""
+    """
+    Generate new curves on points by interpolating between existing curves
+    """
 
     _bl_idname = "GeometryNodeInterpolateCurves"
     node: bpy.types.GeometryNodeInterpolateCurves
@@ -1830,7 +1890,9 @@ class InterpolateCurves(NodeBuilder):
 
 
 class MaterialSelection(NodeBuilder):
-    """Provide a selection of faces that use the specified material"""
+    """
+    Provide a selection of faces that use the specified material
+    """
 
     _bl_idname = "GeometryNodeMaterialSelection"
     node: bpy.types.GeometryNodeMaterialSelection
@@ -1853,7 +1915,9 @@ class MaterialSelection(NodeBuilder):
 
 
 class MergeLayers(NodeBuilder):
-    """Join groups of Grease Pencil layers into one"""
+    """
+    Join groups of Grease Pencil layers into one
+    """
 
     _bl_idname = "GeometryNodeMergeLayers"
     node: bpy.types.GeometryNodeMergeLayers
@@ -1905,7 +1969,9 @@ class MergeLayers(NodeBuilder):
 
 
 class MergeByDistance(NodeBuilder):
-    """Merge vertices or points within a given distance"""
+    """
+    Merge vertices or points within a given distance
+    """
 
     _bl_idname = "GeometryNodeMergeByDistance"
     node: bpy.types.GeometryNodeMergeByDistance
@@ -1954,7 +2020,9 @@ class MergeByDistance(NodeBuilder):
 
 
 class MeshBoolean(NodeBuilder):
-    """Cut, subtract, or join multiple mesh inputs"""
+    """
+    Cut, subtract, or join multiple mesh inputs
+    """
 
     _bl_idname = "GeometryNodeMeshBoolean"
     node: bpy.types.GeometryNodeMeshBoolean
@@ -2045,7 +2113,9 @@ class MeshBoolean(NodeBuilder):
 
 
 class MeshCircle(NodeBuilder):
-    """Generate a circular ring of edges"""
+    """
+    Generate a circular ring of edges
+    """
 
     _bl_idname = "GeometryNodeMeshCircle"
     node: bpy.types.GeometryNodeMeshCircle
@@ -2087,7 +2157,9 @@ class MeshCircle(NodeBuilder):
 
 
 class MeshLine(NodeBuilder):
-    """Generate vertices in a line and connect them with edges"""
+    """
+    Generate vertices in a line and connect them with edges
+    """
 
     _bl_idname = "GeometryNodeMeshLine"
     node: bpy.types.GeometryNodeMeshLine
@@ -2156,7 +2228,9 @@ class MeshLine(NodeBuilder):
 
 
 class MeshToCurve(NodeBuilder):
-    """Generate a curve from a mesh"""
+    """
+    Generate a curve from a mesh
+    """
 
     _bl_idname = "GeometryNodeMeshToCurve"
     node: bpy.types.GeometryNodeMeshToCurve
@@ -2198,7 +2272,9 @@ class MeshToCurve(NodeBuilder):
 
 
 class MeshToPoints(NodeBuilder):
-    """Generate a point cloud from a mesh's vertices"""
+    """
+    Generate a point cloud from a mesh's vertices
+    """
 
     _bl_idname = "GeometryNodeMeshToPoints"
     node: bpy.types.GeometryNodeMeshToPoints
@@ -2257,7 +2333,9 @@ class MeshToPoints(NodeBuilder):
 
 
 class Points(NodeBuilder):
-    """Generate a point cloud with positions and radii defined by fields"""
+    """
+    Generate a point cloud with positions and radii defined by fields
+    """
 
     _bl_idname = "GeometryNodePoints"
     node: bpy.types.GeometryNodePoints
@@ -2295,7 +2373,9 @@ class Points(NodeBuilder):
 
 
 class PointsToCurves(NodeBuilder):
-    """Split all points to curve by its group ID and reorder by weight"""
+    """
+    Split all points to curve by its group ID and reorder by weight
+    """
 
     _bl_idname = "GeometryNodePointsToCurves"
     node: bpy.types.GeometryNodePointsToCurves
@@ -2337,7 +2417,9 @@ class PointsToCurves(NodeBuilder):
 
 
 class PointsToVertices(NodeBuilder):
-    """Generate a mesh vertex for each point cloud point"""
+    """
+    Generate a mesh vertex for each point cloud point
+    """
 
     _bl_idname = "GeometryNodePointsToVertices"
     node: bpy.types.GeometryNodePointsToVertices
@@ -2369,7 +2451,9 @@ class PointsToVertices(NodeBuilder):
 
 
 class QuadraticBezier(NodeBuilder):
-    """Generate a poly spline in a parabola shape with control points positions"""
+    """
+    Generate a poly spline in a parabola shape with control points positions
+    """
 
     _bl_idname = "GeometryNodeCurveQuadraticBezier"
     node: bpy.types.GeometryNodeCurveQuadraticBezier
@@ -2418,7 +2502,9 @@ class QuadraticBezier(NodeBuilder):
 
 
 class Quadrilateral(NodeBuilder):
-    """Generate a polygon with four points"""
+    """
+    Generate a polygon with four points
+    """
 
     _bl_idname = "GeometryNodeCurvePrimitiveQuadrilateral"
     node: bpy.types.GeometryNodeCurvePrimitiveQuadrilateral
@@ -2533,7 +2619,9 @@ class Quadrilateral(NodeBuilder):
 
 
 class Raycast(NodeBuilder):
-    """Cast rays from the context geometry onto a target geometry, and retrieve information from each hit point"""
+    """
+    Cast rays from the context geometry onto a target geometry, and retrieve information from each hit point
+    """
 
     _bl_idname = "GeometryNodeRaycast"
     node: bpy.types.GeometryNodeRaycast
@@ -2781,7 +2869,9 @@ class Raycast(NodeBuilder):
 
 
 class RealizeInstances(NodeBuilder):
-    """Convert instances into real geometry data"""
+    """
+    Convert instances into real geometry data
+    """
 
     _bl_idname = "GeometryNodeRealizeInstances"
     node: bpy.types.GeometryNodeRealizeInstances
@@ -2830,7 +2920,9 @@ class RealizeInstances(NodeBuilder):
 
 
 class ReplaceMaterial(NodeBuilder):
-    """Swap one material with another"""
+    """
+    Swap one material with another
+    """
 
     _bl_idname = "GeometryNodeReplaceMaterial"
     node: bpy.types.GeometryNodeReplaceMaterial
@@ -2868,7 +2960,9 @@ class ReplaceMaterial(NodeBuilder):
 
 
 class ResampleCurve(NodeBuilder):
-    """Generate a poly spline for each input spline"""
+    """
+    Generate a poly spline for each input spline
+    """
 
     _bl_idname = "GeometryNodeResampleCurve"
     node: bpy.types.GeometryNodeResampleCurve
@@ -2934,7 +3028,9 @@ class ResampleCurve(NodeBuilder):
 
 
 class ReverseCurve(NodeBuilder):
-    """Change the direction of curves by swapping their start and end data"""
+    """
+    Change the direction of curves by swapping their start and end data
+    """
 
     _bl_idname = "GeometryNodeReverseCurve"
     node: bpy.types.GeometryNodeReverseCurve
@@ -2966,7 +3062,9 @@ class ReverseCurve(NodeBuilder):
 
 
 class RotateInstances(NodeBuilder):
-    """Rotate geometry instances in local or global space"""
+    """
+    Rotate geometry instances in local or global space
+    """
 
     _bl_idname = "GeometryNodeRotateInstances"
     node: bpy.types.GeometryNodeRotateInstances
@@ -3022,7 +3120,9 @@ class RotateInstances(NodeBuilder):
 
 
 class SampleCurve(NodeBuilder):
-    """Retrieve data from a point on a curve at a certain distance from its start"""
+    """
+    Retrieve data from a point on a curve at a certain distance from its start
+    """
 
     _bl_idname = "GeometryNodeSampleCurve"
     node: bpy.types.GeometryNodeSampleCurve
@@ -3254,7 +3354,9 @@ class SampleCurve(NodeBuilder):
 
 
 class SampleIndex(NodeBuilder):
-    """Retrieve values from specific geometry elements"""
+    """
+    Retrieve values from specific geometry elements
+    """
 
     _bl_idname = "GeometryNodeSampleIndex"
     node: bpy.types.GeometryNodeSampleIndex
@@ -3480,7 +3582,9 @@ class SampleIndex(NodeBuilder):
 
 
 class SampleNearest(NodeBuilder):
-    """Find the element of a geometry closest to a position. Similar to the "Index of Nearest" node"""
+    """
+    Find the element of a geometry closest to a position. Similar to the "Index of Nearest" node
+    """
 
     _bl_idname = "GeometryNodeSampleNearest"
     node: bpy.types.GeometryNodeSampleNearest
@@ -3549,7 +3653,9 @@ class SampleNearest(NodeBuilder):
 
 
 class SampleNearestSurface(NodeBuilder):
-    """Calculate the interpolated value of a mesh attribute on the closest point of its surface"""
+    """
+    Calculate the interpolated value of a mesh attribute on the closest point of its surface
+    """
 
     _bl_idname = "GeometryNodeSampleNearestSurface"
     node: bpy.types.GeometryNodeSampleNearestSurface
@@ -3763,7 +3869,9 @@ class SampleNearestSurface(NodeBuilder):
 
 
 class SampleUVSurface(NodeBuilder):
-    """Calculate the interpolated values of a mesh attribute at a UV coordinate"""
+    """
+    Calculate the interpolated values of a mesh attribute at a UV coordinate
+    """
 
     _bl_idname = "GeometryNodeSampleUVSurface"
     node: bpy.types.GeometryNodeSampleUVSurface
@@ -3958,7 +4066,9 @@ class SampleUVSurface(NodeBuilder):
 
 
 class ScaleElements(NodeBuilder):
-    """Scale groups of connected edges and faces"""
+    """
+    Scale groups of connected edges and faces
+    """
 
     _bl_idname = "GeometryNodeScaleElements"
     node: bpy.types.GeometryNodeScaleElements
@@ -4069,7 +4179,9 @@ class ScaleElements(NodeBuilder):
 
 
 class ScaleInstances(NodeBuilder):
-    """Scale geometry instances in local or global space"""
+    """
+    Scale geometry instances in local or global space
+    """
 
     _bl_idname = "GeometryNodeScaleInstances"
     node: bpy.types.GeometryNodeScaleInstances
@@ -4125,7 +4237,9 @@ class ScaleInstances(NodeBuilder):
 
 
 class SeparateComponents(NodeBuilder):
-    """Split a geometry into a separate output for each type of data in the geometry"""
+    """
+    Split a geometry into a separate output for each type of data in the geometry
+    """
 
     _bl_idname = "GeometryNodeSeparateComponents"
     node: bpy.types.GeometryNodeSeparateComponents
@@ -4173,7 +4287,9 @@ class SeparateComponents(NodeBuilder):
 
 
 class SeparateGeometry(NodeBuilder):
-    """Split a geometry into two geometry outputs based on a selection"""
+    """
+    Split a geometry into two geometry outputs based on a selection
+    """
 
     _bl_idname = "GeometryNodeSeparateGeometry"
     node: bpy.types.GeometryNodeSeparateGeometry
@@ -4266,7 +4382,9 @@ class SeparateGeometry(NodeBuilder):
 
 
 class SetCurveNormal(NodeBuilder):
-    """Set the evaluation mode for curve normals"""
+    """
+    Set the evaluation mode for curve normals
+    """
 
     _bl_idname = "GeometryNodeSetCurveNormal"
     node: bpy.types.GeometryNodeSetCurveNormal
@@ -4315,7 +4433,9 @@ class SetCurveNormal(NodeBuilder):
 
 
 class SetCurveRadius(NodeBuilder):
-    """Set the radius of the curve at each control point"""
+    """
+    Set the radius of the curve at each control point
+    """
 
     _bl_idname = "GeometryNodeSetCurveRadius"
     node: bpy.types.GeometryNodeSetCurveRadius
@@ -4353,7 +4473,9 @@ class SetCurveRadius(NodeBuilder):
 
 
 class SetCurveTilt(NodeBuilder):
-    """Set the tilt angle at each curve control point"""
+    """
+    Set the tilt angle at each curve control point
+    """
 
     _bl_idname = "GeometryNodeSetCurveTilt"
     node: bpy.types.GeometryNodeSetCurveTilt
@@ -4391,7 +4513,9 @@ class SetCurveTilt(NodeBuilder):
 
 
 class SetFaceSet(NodeBuilder):
-    """Set sculpt face set values for faces"""
+    """
+    Set sculpt face set values for faces
+    """
 
     _bl_idname = "GeometryNodeToolSetFaceSet"
     node: bpy.types.GeometryNodeToolSetFaceSet
@@ -4429,7 +4553,9 @@ class SetFaceSet(NodeBuilder):
 
 
 class SetGeometryName(NodeBuilder):
-    """Set the name of a geometry for easier debugging"""
+    """
+    Set the name of a geometry for easier debugging
+    """
 
     _bl_idname = "GeometryNodeSetGeometryName"
     node: bpy.types.GeometryNodeSetGeometryName
@@ -4461,7 +4587,9 @@ class SetGeometryName(NodeBuilder):
 
 
 class SetGreasePencilColor(NodeBuilder):
-    """Set color and opacity attributes on Grease Pencil geometry"""
+    """
+    Set color and opacity attributes on Grease Pencil geometry
+    """
 
     _bl_idname = "GeometryNodeSetGreasePencilColor"
     node: bpy.types.GeometryNodeSetGreasePencilColor
@@ -4520,7 +4648,9 @@ class SetGreasePencilColor(NodeBuilder):
 
 
 class SetGreasePencilDepth(NodeBuilder):
-    """Set the Grease Pencil depth order to use"""
+    """
+    Set the Grease Pencil depth order to use
+    """
 
     _bl_idname = "GeometryNodeSetGreasePencilDepth"
     node: bpy.types.GeometryNodeSetGreasePencilDepth
@@ -4556,7 +4686,9 @@ class SetGreasePencilDepth(NodeBuilder):
 
 
 class SetGreasePencilSoftness(NodeBuilder):
-    """Set softness attribute on Grease Pencil geometry"""
+    """
+    Set softness attribute on Grease Pencil geometry
+    """
 
     _bl_idname = "GeometryNodeSetGreasePencilSoftness"
     node: bpy.types.GeometryNodeSetGreasePencilSoftness
@@ -4598,7 +4730,9 @@ class SetGreasePencilSoftness(NodeBuilder):
 
 
 class SetHandlePositions(NodeBuilder):
-    """Set the positions for the handles of Bézier curves"""
+    """
+    Set the positions for the handles of Bézier curves
+    """
 
     _bl_idname = "GeometryNodeSetCurveHandlePositions"
     node: bpy.types.GeometryNodeSetCurveHandlePositions
@@ -4657,7 +4791,9 @@ class SetHandlePositions(NodeBuilder):
 
 
 class SetID(NodeBuilder):
-    """Set the id attribute on the input geometry, mainly used internally for randomizing"""
+    """
+    Set the id attribute on the input geometry, mainly used internally for randomizing
+    """
 
     _bl_idname = "GeometryNodeSetID"
     node: bpy.types.GeometryNodeSetID
@@ -4695,7 +4831,9 @@ class SetID(NodeBuilder):
 
 
 class SetInstanceTransform(NodeBuilder):
-    """Set the transformation matrix of every instance"""
+    """
+    Set the transformation matrix of every instance
+    """
 
     _bl_idname = "GeometryNodeSetInstanceTransform"
     node: bpy.types.GeometryNodeSetInstanceTransform
@@ -4737,7 +4875,9 @@ class SetInstanceTransform(NodeBuilder):
 
 
 class SetMaterial(NodeBuilder):
-    """Assign a material to geometry elements"""
+    """
+    Assign a material to geometry elements
+    """
 
     _bl_idname = "GeometryNodeSetMaterial"
     node: bpy.types.GeometryNodeSetMaterial
@@ -4775,7 +4915,9 @@ class SetMaterial(NodeBuilder):
 
 
 class SetMaterialIndex(NodeBuilder):
-    """Set the material index for each selected geometry element"""
+    """
+    Set the material index for each selected geometry element
+    """
 
     _bl_idname = "GeometryNodeSetMaterialIndex"
     node: bpy.types.GeometryNodeSetMaterialIndex
@@ -4817,7 +4959,9 @@ class SetMaterialIndex(NodeBuilder):
 
 
 class SetMeshNormal(NodeBuilder):
-    """Store a normal vector for each mesh element"""
+    """
+    Store a normal vector for each mesh element
+    """
 
     _bl_idname = "GeometryNodeSetMeshNormal"
     node: bpy.types.GeometryNodeSetMeshNormal
@@ -4900,7 +5044,9 @@ class SetMeshNormal(NodeBuilder):
 
 
 class SetPointRadius(NodeBuilder):
-    """Set the display size of point cloud points"""
+    """
+    Set the display size of point cloud points
+    """
 
     _bl_idname = "GeometryNodeSetPointRadius"
     node: bpy.types.GeometryNodeSetPointRadius
@@ -4938,7 +5084,9 @@ class SetPointRadius(NodeBuilder):
 
 
 class SetPosition(NodeBuilder):
-    """Set the location of each point"""
+    """
+    Set the location of each point
+    """
 
     _bl_idname = "GeometryNodeSetPosition"
     node: bpy.types.GeometryNodeSetPosition
@@ -4987,7 +5135,9 @@ class SetPosition(NodeBuilder):
 
 
 class SetSelection(NodeBuilder):
-    """Set selection of the edited geometry, for tool execution"""
+    """
+    Set selection of the edited geometry, for tool execution
+    """
 
     _bl_idname = "GeometryNodeToolSetSelection"
     node: bpy.types.GeometryNodeToolSetSelection
@@ -5067,7 +5217,9 @@ class SetSelection(NodeBuilder):
 
 
 class SetShadeSmooth(NodeBuilder):
-    """Control the smoothness of mesh normals around each face by changing the "shade smooth" attribute"""
+    """
+    Control the smoothness of mesh normals around each face by changing the "shade smooth" attribute
+    """
 
     _bl_idname = "GeometryNodeSetShadeSmooth"
     node: bpy.types.GeometryNodeSetShadeSmooth
@@ -5149,7 +5301,9 @@ class SetShadeSmooth(NodeBuilder):
 
 
 class SetSplineCyclic(NodeBuilder):
-    """Control whether each spline loops back on itself by changing the "cyclic" attribute"""
+    """
+    Control whether each spline loops back on itself by changing the "cyclic" attribute
+    """
 
     _bl_idname = "GeometryNodeSetSplineCyclic"
     node: bpy.types.GeometryNodeSetSplineCyclic
@@ -5187,7 +5341,9 @@ class SetSplineCyclic(NodeBuilder):
 
 
 class SetSplineResolution(NodeBuilder):
-    """Control how many evaluated points should be generated on every curve segment"""
+    """
+    Control how many evaluated points should be generated on every curve segment
+    """
 
     _bl_idname = "GeometryNodeSetSplineResolution"
     node: bpy.types.GeometryNodeSetSplineResolution
@@ -5229,7 +5385,9 @@ class SetSplineResolution(NodeBuilder):
 
 
 class SetSplineType(NodeBuilder):
-    """Change the type of curves"""
+    """
+    Change the type of curves
+    """
 
     _bl_idname = "GeometryNodeCurveSplineType"
     node: bpy.types.GeometryNodeCurveSplineType
@@ -5271,7 +5429,9 @@ class SetSplineType(NodeBuilder):
 
 
 class SortElements(NodeBuilder):
-    """Rearrange geometry elements, changing their indices"""
+    """
+    Rearrange geometry elements, changing their indices
+    """
 
     _bl_idname = "GeometryNodeSortElements"
     node: bpy.types.GeometryNodeSortElements
@@ -5415,7 +5575,9 @@ class SortElements(NodeBuilder):
 
 
 class Spiral(NodeBuilder):
-    """Generate a poly spline in a spiral shape"""
+    """
+    Generate a poly spline in a spiral shape
+    """
 
     _bl_idname = "GeometryNodeCurveSpiral"
     node: bpy.types.GeometryNodeCurveSpiral
@@ -5478,7 +5640,9 @@ class Spiral(NodeBuilder):
 
 
 class SplitEdges(NodeBuilder):
-    """Duplicate mesh edges and break connections with the surrounding faces"""
+    """
+    Duplicate mesh edges and break connections with the surrounding faces
+    """
 
     _bl_idname = "GeometryNodeSplitEdges"
     node: bpy.types.GeometryNodeSplitEdges
@@ -5510,7 +5674,9 @@ class SplitEdges(NodeBuilder):
 
 
 class SplitToInstances(NodeBuilder):
-    """Create separate geometries containing the elements from the same group"""
+    """
+    Create separate geometries containing the elements from the same group
+    """
 
     _bl_idname = "GeometryNodeSplitToInstances"
     node: bpy.types.GeometryNodeSplitToInstances
@@ -5639,7 +5805,9 @@ class SplitToInstances(NodeBuilder):
 
 
 class Star(NodeBuilder):
-    """Generate a poly spline in a star pattern by connecting alternating points of two circles"""
+    """
+    Generate a poly spline in a star pattern by connecting alternating points of two circles
+    """
 
     _bl_idname = "GeometryNodeCurveStar"
     node: bpy.types.GeometryNodeCurveStar
@@ -5693,7 +5861,9 @@ class Star(NodeBuilder):
 
 
 class StringToCurves(NodeBuilder):
-    """Generate a paragraph of text with a specific font, using a curve instance to store each character"""
+    """
+    Generate a paragraph of text with a specific font, using a curve instance to store each character
+    """
 
     _bl_idname = "GeometryNodeStringToCurves"
     node: bpy.types.GeometryNodeStringToCurves
@@ -5854,7 +6024,9 @@ class StringToCurves(NodeBuilder):
 
 
 class SubdivideCurve(NodeBuilder):
-    """Dividing each curve segment into a specified number of pieces"""
+    """
+    Dividing each curve segment into a specified number of pieces
+    """
 
     _bl_idname = "GeometryNodeSubdivideCurve"
     node: bpy.types.GeometryNodeSubdivideCurve
@@ -5886,7 +6058,9 @@ class SubdivideCurve(NodeBuilder):
 
 
 class SubdivideMesh(NodeBuilder):
-    """Divide mesh faces into smaller ones without changing the shape or volume, using linear interpolation to place the new vertices"""
+    """
+    Divide mesh faces into smaller ones without changing the shape or volume, using linear interpolation to place the new vertices
+    """
 
     _bl_idname = "GeometryNodeSubdivideMesh"
     node: bpy.types.GeometryNodeSubdivideMesh
@@ -5918,7 +6092,9 @@ class SubdivideMesh(NodeBuilder):
 
 
 class SubdivisionSurface(NodeBuilder):
-    """Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision method"""
+    """
+    Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision method
+    """
 
     _bl_idname = "GeometryNodeSubdivisionSurface"
     node: bpy.types.GeometryNodeSubdivisionSurface
@@ -5988,7 +6164,9 @@ class SubdivisionSurface(NodeBuilder):
 
 
 class TransformGeometry(NodeBuilder):
-    """Translate, rotate or scale the geometry"""
+    """
+    Translate, rotate or scale the geometry
+    """
 
     _bl_idname = "GeometryNodeTransform"
     node: bpy.types.GeometryNodeTransform
@@ -6051,7 +6229,9 @@ class TransformGeometry(NodeBuilder):
 
 
 class TranslateInstances(NodeBuilder):
-    """Move top-level geometry instances in local or global space"""
+    """
+    Move top-level geometry instances in local or global space
+    """
 
     _bl_idname = "GeometryNodeTranslateInstances"
     node: bpy.types.GeometryNodeTranslateInstances
@@ -6100,7 +6280,9 @@ class TranslateInstances(NodeBuilder):
 
 
 class Triangulate(NodeBuilder):
-    """Convert all faces in a mesh to triangular faces"""
+    """
+    Convert all faces in a mesh to triangular faces
+    """
 
     _bl_idname = "GeometryNodeTriangulate"
     node: bpy.types.GeometryNodeTriangulate
@@ -6149,7 +6331,9 @@ class Triangulate(NodeBuilder):
 
 
 class TrimCurve(NodeBuilder):
-    """Shorten curves by removing portions at the start or end"""
+    """
+    Shorten curves by removing portions at the start or end
+    """
 
     _bl_idname = "GeometryNodeTrimCurve"
     node: bpy.types.GeometryNodeTrimCurve
@@ -6222,7 +6406,9 @@ class TrimCurve(NodeBuilder):
 
 
 class UVSphere(NodeBuilder):
-    """Generate a spherical mesh with quads, except for triangles at the top and bottom"""
+    """
+    Generate a spherical mesh with quads, except for triangles at the top and bottom
+    """
 
     _bl_idname = "GeometryNodeMeshUVSphere"
     node: bpy.types.GeometryNodeMeshUVSphere

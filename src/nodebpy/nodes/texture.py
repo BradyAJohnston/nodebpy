@@ -13,7 +13,9 @@ from ..types import (
 
 
 class BrickTexture(NodeBuilder):
-    """Generate a procedural texture producing bricks"""
+    """
+    Generate a procedural texture producing bricks
+    """
 
     _bl_idname = "ShaderNodeTexBrick"
     node: bpy.types.ShaderNodeTexBrick
@@ -149,7 +151,9 @@ class BrickTexture(NodeBuilder):
 
 
 class CheckerTexture(NodeBuilder):
-    """Generate a checkerboard texture"""
+    """
+    Generate a checkerboard texture
+    """
 
     _bl_idname = "ShaderNodeTexChecker"
     node: bpy.types.ShaderNodeTexChecker
@@ -203,7 +207,9 @@ class CheckerTexture(NodeBuilder):
 
 
 class GaborTexture(NodeBuilder):
-    """Generate Gabor noise"""
+    """
+    Generate Gabor noise
+    """
 
     _bl_idname = "ShaderNodeTexGabor"
     node: bpy.types.ShaderNodeTexGabor
@@ -286,7 +292,9 @@ class GaborTexture(NodeBuilder):
 
 
 class GradientTexture(NodeBuilder):
-    """Generate interpolated color and intensity values based on the input vector"""
+    """
+    Generate interpolated color and intensity values based on the input vector
+    """
 
     _bl_idname = "ShaderNodeTexGradient"
     node: bpy.types.ShaderNodeTexGradient
@@ -356,7 +364,9 @@ class GradientTexture(NodeBuilder):
 
 
 class ImageTexture(NodeBuilder):
-    """Sample values from an image texture"""
+    """
+    Sample values from an image texture
+    """
 
     _bl_idname = "GeometryNodeImageTexture"
     node: bpy.types.GeometryNodeImageTexture
@@ -419,7 +429,9 @@ class ImageTexture(NodeBuilder):
 
 
 class MagicTexture(NodeBuilder):
-    """Generate a psychedelic color texture"""
+    """
+    Generate a psychedelic color texture
+    """
 
     _bl_idname = "ShaderNodeTexMagic"
     node: bpy.types.ShaderNodeTexMagic
@@ -472,7 +484,9 @@ class MagicTexture(NodeBuilder):
 
 
 class NoiseTexture(NodeBuilder):
-    """Generate fractal Perlin noise"""
+    """
+    Generate fractal Perlin noise
+    """
 
     _bl_idname = "ShaderNodeTexNoise"
     node: bpy.types.ShaderNodeTexNoise
@@ -614,7 +628,9 @@ class NoiseTexture(NodeBuilder):
 
 
 class VoronoiTexture(NodeBuilder):
-    """Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells"""
+    """
+    Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells
+    """
 
     _bl_idname = "ShaderNodeTexVoronoi"
     node: bpy.types.ShaderNodeTexVoronoi
@@ -769,7 +785,9 @@ class VoronoiTexture(NodeBuilder):
 
 
 class WaveTexture(NodeBuilder):
-    """Generate procedural bands or rings with noise"""
+    """
+    Generate procedural bands or rings with noise
+    """
 
     _bl_idname = "ShaderNodeTexWave"
     node: bpy.types.ShaderNodeTexWave
@@ -884,7 +902,9 @@ class WaveTexture(NodeBuilder):
 
 
 class WhiteNoiseTexture(NodeBuilder):
-    """Calculate a random value or color based on an input seed"""
+    """
+    Calculate a random value or color based on an input seed
+    """
 
     _bl_idname = "ShaderNodeTexWhiteNoise"
     node: bpy.types.ShaderNodeTexWhiteNoise

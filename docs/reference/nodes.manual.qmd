@@ -446,12 +446,48 @@ data_type: _GridDataTypes = "FLOAT"
 
 | Name | Description |
 | --- | --- |
+| [boolean](#nodebpy.nodes.manual.FieldToGrid.boolean) |  |
 | [capture](#nodebpy.nodes.manual.FieldToGrid.capture) |  |
+| [float](#nodebpy.nodes.manual.FieldToGrid.float) |  |
+| [integer](#nodebpy.nodes.manual.FieldToGrid.integer) |  |
+| [vector](#nodebpy.nodes.manual.FieldToGrid.vector) |  |
+
+##### boolean { #nodebpy.nodes.manual.FieldToGrid.boolean }
+
+```python
+nodes.manual.FieldToGrid.boolean(*args, topology=None, **kwargs)
+```
+
+
 
 ##### capture { #nodebpy.nodes.manual.FieldToGrid.capture }
 
 ```python
 nodes.manual.FieldToGrid.capture(*args, **kwargs)
+```
+
+
+
+##### float { #nodebpy.nodes.manual.FieldToGrid.float }
+
+```python
+nodes.manual.FieldToGrid.float(*args, topology=None, **kwargs)
+```
+
+
+
+##### integer { #nodebpy.nodes.manual.FieldToGrid.integer }
+
+```python
+nodes.manual.FieldToGrid.integer(*args, topology=None, **kwargs)
+```
+
+
+
+##### vector { #nodebpy.nodes.manual.FieldToGrid.vector }
+
+```python
+nodes.manual.FieldToGrid.vector(*args, topology=None, **kwargs)
 ```
 
 
