@@ -134,3 +134,13 @@ actually build.
   - `TransformGeometry.matrix(CombineTrasnsform(translation=(0, 0, 1))`
   - `TransformGeoemtry.components(translation=(0, 0, 1))`
   - `TransformGeometry(translation=(0, 0, 1))`
+
+## Building
+
+Most node classes are generated automatically with this. The nodes in
+`nodes/manual.py` are currently manually specified due to varying
+complexities of particular nodes (usually lergacy).
+
+``` bash
+uv run generate.py && ruff format && ruff check --fix --unsafe-fixes
+```
