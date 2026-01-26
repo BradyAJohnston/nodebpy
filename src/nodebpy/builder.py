@@ -348,9 +348,8 @@ class NodeBuilder:
 
         raise SocketError("No compatible output sockets found")
 
-    @staticmethod
     def _find_best_socket_pair(
-        source: "NodeBuilder | NodeSocket", target: "NodeBuilder | NodeSocket"
+        self, source: "NodeBuilder | NodeSocket", target: "NodeBuilder | NodeSocket"
     ) -> tuple[NodeSocket, NodeSocket]:
         """Find the best possible compatible pair of sockets between two nodes, looking only at the
         the currently available outputs from the source and the inputs from the target"""
@@ -616,8 +615,8 @@ class DynamicInputsMixin:
         raise SocketError("No compatible socket found")
 
     def _find_best_socket_pair(
-        self, source: NodeBuilder, target: NodeBuilder
-    ) -> tuple[NodeSocket, NodeSocket] | None:
+        self, source: NodeBuilder | NodeSocket, target: NodeBuilder | NodeSocket
+    ) -> tuple[NodeSocket, NodeSocket]:
         try:
             return super()._find_best_socket_pair(source, target)
         except SocketError:

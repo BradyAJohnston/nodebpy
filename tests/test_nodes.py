@@ -450,3 +450,19 @@ def test_align_rotation_to_vector():
         artv2.i_rotation.socket.links[0].from_socket
         == tree.nodes["Axes to Rotation"].outputs[0]
     )
+
+
+def test_foreachgeometryelement_zone():
+    with TreeBuilder() as tree:
+        with tree.outputs:
+            out = s.SocketGeometry("Geometry")
+        cube = n.Cube()
+        zone = n.ForEachGeometryElementZone(cube, domain="FACE")
+        pos = zone.input.capture(n.Position())
+        norm = zone.input.capture(n.Normal())
+        transformed = n.Cone() >> n.TransformGeometry(
+            translation=pos, rotation=n.AlignRotationToVector(vector=norm), scale=0.4
+        )
+        # zone.output.capture_generated(pos.socket)
+        _ = transformed >> zone.output
+        _ = n.JoinGeometry(zone.output.o_generation, cube) >> out
