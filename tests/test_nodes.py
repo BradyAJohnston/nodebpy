@@ -463,6 +463,12 @@ def test_foreachgeometryelement_zone():
         transformed = n.Cone() >> n.TransformGeometry(
             translation=pos, rotation=n.AlignRotationToVector(vector=norm), scale=0.4
         )
-        # zone.output.capture_generated(pos.socket)
+        zone.output.capture(pos)
         _ = transformed >> zone.output
         _ = n.JoinGeometry(zone.output.o_generation, cube) >> out
+
+    assert all([i.socket_type == "VECTOR" for i in zone.input.items])
+    assert len(zone.input.items) == 2
+    assert len(zone.output.items) == 1
+    assert zone.output.items[0].socket_type == "VECTOR"
+    assert zone.output.node.inputs["Geometry"].links[0].from_node == transformed.node

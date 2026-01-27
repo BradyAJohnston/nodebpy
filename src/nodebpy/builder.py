@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
     from .nodes import Math, VectorMath
@@ -349,16 +349,19 @@ class NodeBuilder:
         raise SocketError("No compatible output sockets found")
 
     def _find_best_socket_pair(
-        self, source: "NodeBuilder | NodeSocket", target: "NodeBuilder | NodeSocket"
+        self,
+        source: "NodeBuilder | SocketLinker | NodeSocket",
+        target: "NodeBuilder | SocketLinker | NodeSocket",
     ) -> tuple[NodeSocket, NodeSocket]:
         """Find the best possible compatible pair of sockets between two nodes, looking only at the
         the currently available outputs from the source and the inputs from the target"""
         possible_combos = []
-        if isinstance(source, NodeBuilder):
+        if isinstance(source, (NodeBuilder, SocketLinker)):
             outputs = source._available_outputs
-        else:
+        elif isinstance(source, NodeSocket):
             outputs = [source]
-        if isinstance(target, NodeBuilder):
+
+        if isinstance(target, (NodeBuilder, SocketLinker)):
             inputs = target._available_inputs
         else:
             inputs = [target]
@@ -599,7 +602,9 @@ class DynamicInputsMixin:
     _socket_data_types: tuple[str]
     _type_map: dict[str, str] = {}
 
-    def _match_compatible_data(self, *sockets: NodeSocket) -> tuple[NodeSocket, str]:
+    def _match_compatible_data(
+        self, sockets: Iterable[NodeSocket]
+    ) -> tuple[NodeSocket, str]:
         possible = []
         for socket in sockets:
             compatible = SOCKET_COMPATIBILITY.get(socket.type, ())
@@ -658,7 +663,7 @@ class DynamicInputsMixin:
                 items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
-            socket_source, type = self._match_compatible_data(*source.node.outputs)
+            socket_source, type = self._match_compatible_data(source._available_outputs)
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)
@@ -677,6 +682,10 @@ class SocketLinker(NodeBuilder):
 
     @property
     def _available_outputs(self) -> list[NodeSocket]:
+        return [self.socket]
+
+    @property
+    def _available_inputs(self) -> list[NodeSocket]:
         return [self.socket]
 
     @property

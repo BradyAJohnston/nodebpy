@@ -304,7 +304,14 @@ class ForEachGeometryElementInput(BaseZoneInput):
         """Capture something as an input to the simulation"""
         item_dict = self._add_inputs(value)
         self._establish_links(**item_dict)
-        return SocketLinker(self.node.outputs[-2])
+        new_output_idx = [o.identifier for o in self.node.outputs].index(
+            "__extend__"
+        ) - 1
+        print(f"{new_output_idx=}")
+        output = self.node.outputs[new_output_idx]
+        print(f"{output=} {output.type=}")
+
+        return SocketLinker(output)
 
     @property
     def output(self) -> bpy.types.GeometryNodeForeachGeometryElementOutput:
@@ -398,7 +405,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
 
     def _add_socket_generated(self, name: str, type: _BakeDataTypes):
         """Add a socket to the zone"""
-        item = self.items.new(type, name)
+        item = self.items_generated.new(type, name)
         return self.inputs[item.name]
 
     @property
