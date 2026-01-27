@@ -450,3 +450,117 @@ def test_align_rotation_to_vector():
         artv2.i_rotation.socket.links[0].from_socket
         == tree.nodes["Axes to Rotation"].outputs[0]
     )
+
+
+def test_foreachgeometryelement_zone():
+    with TreeBuilder() as tree:
+        with tree.outputs:
+            out = s.SocketGeometry("Geometry")
+        cube = n.Cube()
+        zone = n.ForEachGeometryElementZone(
+            cube,
+            selection=n.Normal()
+            >> n.VectorMath.dot_product(..., (0, 0, 1))
+            >> n.Compare.greater_than.float(..., -0.1),
+            domain="FACE",
+        )
+        pos = zone.input.capture(n.Position())
+        norm = zone.input.capture(n.Normal())
+        transformed = n.Cone() >> n.TransformGeometry(
+            translation=pos,
+            rotation=n.AlignRotationToVector(
+                vector=norm + n.RandomValue.vector(min=-1, id=zone.index)
+            ),
+            scale=0.4,
+        )
+        zone.output.capture(pos)
+        zone.output.capture_generated(pos)
+        zone.output.capture_generated(transformed)
+        _ = transformed >> zone.output
+        _ = n.JoinGeometry(zone.output.o_generation, cube) >> out
+
+    input, output = zone
+    with pytest.raises(IndexError):
+        zone[2]
+
+    assert all([i.socket_type == "VECTOR" for i in zone.input.items])
+    assert len(zone.input.items) == 2
+    assert len(zone.output.items) == 1
+    assert zone.output.items[0].socket_type == "VECTOR"
+    assert zone.output.node.inputs["Geometry"].links[0].from_node == transformed.node
+    assert zone.input == input
+    assert zone.output == output
+    assert input.output == output.node
+    assert input.i_selection.socket.links[0].from_node == tree.nodes["Compare"]
+    assert tree.nodes["Compare"].data_type == "FLOAT"
+    assert tree.nodes["Compare"].operation == "GREATER_THAN"
+    assert len(zone.output.items_generated) == 3
+    assert zone.output.items_generated[1].socket_type == "VECTOR"
+    assert zone.output.items_generated[2].socket_type == "GEOMETRY"
+
+
+def test_boolean_math_methods():
+    with TreeBuilder(arrange=False) as tree:
+        _ = (
+            n.Boolean()
+            >> n.BooleanMath.not_and(..., True)
+            >> n.BooleanMath.l_not()
+            >> n.BooleanMath.nor()
+            >> n.BooleanMath.not_equal()
+            >> n.BooleanMath.imply()
+        )
+    assert len(tree) == 6
+
+
+def test_integer_math_methods():
+    with TreeBuilder(arrange=False) as tree:
+        _ = (
+            n.Integer(2444222)
+            >> n.IntegerMath.divide_round(2)
+            >> n.IntegerMath.divide_floor(3)
+            >> n.IntegerMath.divide_ceiling(10)
+            >> n.IntegerMath.floored_modulo(5)
+            >> n.IntegerMath.modulo(2)
+            >> n.IntegerMath.greatest_common_divisor(10)
+            >> n.IntegerMath.least_common_multiple(15)
+            >> n.IntegerMath.absolute()
+        )
+
+    assert len(tree) == 9
+
+
+def test_math_methods():
+    with TreeBuilder(arrange=False) as tree:
+        _ = (
+            n.Value(2.5)
+            >> n.Math.add(3.5)
+            >> n.Math.subtract(1.5)
+            >> n.Math.multiply(2.5)
+            >> n.Math.divide(4.5)
+            >> n.Math.power(2)
+            >> n.Math.logarithm(10)
+            >> n.Math.square_root()
+            >> n.Math.absolute()
+            >> n.Math.square_root()
+            >> n.Math.inverse_square_root()
+            >> n.Math.absolute()
+            >> n.Math.less_than(..., 1.5)
+            >> n.Math.greater_than(..., 1.5)
+            >> n.Math.sign()
+            >> n.Math.smooth_minimum()
+            >> n.Math.smooth_maximum()
+            >> n.Math.round()
+            >> n.Math.floored_modulo()
+            >> n.Math.truncated_modulo()
+            >> n.Math.floored_modulo()
+            >> n.Math.wrap()
+            >> n.Math.ping_pong()
+            >> n.Math.sine()
+            >> n.Math.hyperbolic_cosine()
+            >> n.Math.hyperbolic_tangent()
+            >> n.Math.hyperbolic_tangent()
+            >> n.Math.to_radians()
+            >> n.Math.to_degrees()
+        )
+
+    assert len(tree) == 29

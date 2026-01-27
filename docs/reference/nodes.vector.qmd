@@ -103,8 +103,10 @@ Perform vector math operation
 | [add](#nodebpy.nodes.vector.VectorMath.add) | Create Vector Math with operation 'Add'. |
 | [ceil](#nodebpy.nodes.vector.VectorMath.ceil) | Create Vector Math with operation 'Ceil'. |
 | [cosine](#nodebpy.nodes.vector.VectorMath.cosine) | Create Vector Math with operation 'Cosine'. |
+| [cross_product](#nodebpy.nodes.vector.VectorMath.cross_product) | Create Vector Math with operation 'Cross Product'. |
 | [distance](#nodebpy.nodes.vector.VectorMath.distance) | Create Vector Math with operation 'Distance'. |
 | [divide](#nodebpy.nodes.vector.VectorMath.divide) | Create Vector Math with operation 'Divide'. |
+| [dot_product](#nodebpy.nodes.vector.VectorMath.dot_product) | Create Vector Math with operation 'Dot Product'. |
 | [faceforward](#nodebpy.nodes.vector.VectorMath.faceforward) | Create Vector Math with operation 'Faceforward'. |
 | [floor](#nodebpy.nodes.vector.VectorMath.floor) | Create Vector Math with operation 'Floor'. |
 | [fraction](#nodebpy.nodes.vector.VectorMath.fraction) | Create Vector Math with operation 'Fraction'. |
@@ -113,6 +115,7 @@ Perform vector math operation
 | [minimum](#nodebpy.nodes.vector.VectorMath.minimum) | Create Vector Math with operation 'Minimum'. |
 | [modulo](#nodebpy.nodes.vector.VectorMath.modulo) | Create Vector Math with operation 'Modulo'. |
 | [multiply](#nodebpy.nodes.vector.VectorMath.multiply) | Create Vector Math with operation 'Multiply'. |
+| [multiply_add](#nodebpy.nodes.vector.VectorMath.multiply_add) | Create Vector Math with operation 'Multiply Add'. |
 | [normalize](#nodebpy.nodes.vector.VectorMath.normalize) | Create Vector Math with operation 'Normalize'. |
 | [power](#nodebpy.nodes.vector.VectorMath.power) | Create Vector Math with operation 'Power'. |
 | [project](#nodebpy.nodes.vector.VectorMath.project) | Create Vector Math with operation 'Project'. |
@@ -158,6 +161,14 @@ nodes.vector.VectorMath.cosine(vector=None)
 
 Create Vector Math with operation 'Cosine'.
 
+##### cross_product { #nodebpy.nodes.vector.VectorMath.cross_product }
+
+```python
+nodes.vector.VectorMath.cross_product(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Cross Product'.
+
 ##### distance { #nodebpy.nodes.vector.VectorMath.distance }
 
 ```python
@@ -173,6 +184,14 @@ nodes.vector.VectorMath.divide(vector=None, vector_001=None)
 ```
 
 Create Vector Math with operation 'Divide'.
+
+##### dot_product { #nodebpy.nodes.vector.VectorMath.dot_product }
+
+```python
+nodes.vector.VectorMath.dot_product(vector=None, vector_001=None)
+```
+
+Create Vector Math with operation 'Dot Product'.
 
 ##### faceforward { #nodebpy.nodes.vector.VectorMath.faceforward }
 
@@ -241,6 +260,18 @@ nodes.vector.VectorMath.multiply(vector=None, vector_001=None)
 ```
 
 Create Vector Math with operation 'Multiply'.
+
+##### multiply_add { #nodebpy.nodes.vector.VectorMath.multiply_add }
+
+```python
+nodes.vector.VectorMath.multiply_add(
+    vector=None,
+    vector_001=None,
+    vector_002=None,
+)
+```
+
+Create Vector Math with operation 'Multiply Add'.
 
 ##### normalize { #nodebpy.nodes.vector.VectorMath.normalize }
 

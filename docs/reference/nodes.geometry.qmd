@@ -1477,6 +1477,7 @@ Cast rays from the context geometry onto a target geometry, and retrieve informa
 | [color](#nodebpy.nodes.geometry.Raycast.color) | Create Raycast with operation 'Color'. |
 | [float](#nodebpy.nodes.geometry.Raycast.float) | Create Raycast with operation 'Float'. |
 | [integer](#nodebpy.nodes.geometry.Raycast.integer) | Create Raycast with operation 'Integer'. |
+| [matrix](#nodebpy.nodes.geometry.Raycast.matrix) | Create Raycast with operation '4x4 Matrix'. |
 | [quaternion](#nodebpy.nodes.geometry.Raycast.quaternion) | Create Raycast with operation 'Quaternion'. |
 | [vector](#nodebpy.nodes.geometry.Raycast.vector) | Create Raycast with operation 'Vector'. |
 
@@ -1539,6 +1540,21 @@ nodes.geometry.Raycast.integer(
 ```
 
 Create Raycast with operation 'Integer'.
+
+##### matrix { #nodebpy.nodes.geometry.Raycast.matrix }
+
+```python
+nodes.geometry.Raycast.matrix(
+    target_geometry=None,
+    attribute=None,
+    interpolation='Interpolated',
+    source_position=None,
+    ray_direction=None,
+    ray_length=100.0,
+)
+```
+
+Create Raycast with operation '4x4 Matrix'.
 
 ##### quaternion { #nodebpy.nodes.geometry.Raycast.quaternion }
 
@@ -1746,6 +1762,7 @@ Retrieve data from a point on a curve at a certain distance from its start
 | [color](#nodebpy.nodes.geometry.SampleCurve.color) | Create Sample Curve with operation 'Color'. |
 | [float](#nodebpy.nodes.geometry.SampleCurve.float) | Create Sample Curve with operation 'Float'. |
 | [integer](#nodebpy.nodes.geometry.SampleCurve.integer) | Create Sample Curve with operation 'Integer'. |
+| [matrix](#nodebpy.nodes.geometry.SampleCurve.matrix) | Create Sample Curve with operation '4x4 Matrix'. |
 | [quaternion](#nodebpy.nodes.geometry.SampleCurve.quaternion) | Create Sample Curve with operation 'Quaternion'. |
 | [vector](#nodebpy.nodes.geometry.SampleCurve.vector) | Create Sample Curve with operation 'Vector'. |
 
@@ -1800,6 +1817,19 @@ nodes.geometry.SampleCurve.integer(
 ```
 
 Create Sample Curve with operation 'Integer'.
+
+##### matrix { #nodebpy.nodes.geometry.SampleCurve.matrix }
+
+```python
+nodes.geometry.SampleCurve.matrix(
+    curves=None,
+    value=None,
+    length=0.0,
+    curve_index=0,
+)
+```
+
+Create Sample Curve with operation '4x4 Matrix'.
 
 ##### quaternion { #nodebpy.nodes.geometry.SampleCurve.quaternion }
 
@@ -1867,10 +1897,12 @@ Retrieve values from specific geometry elements
 | [color](#nodebpy.nodes.geometry.SampleIndex.color) | Create Sample Index with operation 'Color'. |
 | [edge](#nodebpy.nodes.geometry.SampleIndex.edge) | Create Sample Index with operation 'Edge'. |
 | [face](#nodebpy.nodes.geometry.SampleIndex.face) | Create Sample Index with operation 'Face'. |
+| [face_corner](#nodebpy.nodes.geometry.SampleIndex.face_corner) | Create Sample Index with operation 'Face Corner'. |
 | [float](#nodebpy.nodes.geometry.SampleIndex.float) | Create Sample Index with operation 'Float'. |
 | [instance](#nodebpy.nodes.geometry.SampleIndex.instance) | Create Sample Index with operation 'Instance'. |
 | [integer](#nodebpy.nodes.geometry.SampleIndex.integer) | Create Sample Index with operation 'Integer'. |
 | [layer](#nodebpy.nodes.geometry.SampleIndex.layer) | Create Sample Index with operation 'Layer'. |
+| [matrix](#nodebpy.nodes.geometry.SampleIndex.matrix) | Create Sample Index with operation '4x4 Matrix'. |
 | [point](#nodebpy.nodes.geometry.SampleIndex.point) | Create Sample Index with operation 'Point'. |
 | [quaternion](#nodebpy.nodes.geometry.SampleIndex.quaternion) | Create Sample Index with operation 'Quaternion'. |
 | [spline](#nodebpy.nodes.geometry.SampleIndex.spline) | Create Sample Index with operation 'Spline'. |
@@ -1908,6 +1940,14 @@ nodes.geometry.SampleIndex.face(geometry=None, value=None, index=0)
 
 Create Sample Index with operation 'Face'.
 
+##### face_corner { #nodebpy.nodes.geometry.SampleIndex.face_corner }
+
+```python
+nodes.geometry.SampleIndex.face_corner(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation 'Face Corner'.
+
 ##### float { #nodebpy.nodes.geometry.SampleIndex.float }
 
 ```python
@@ -1939,6 +1979,14 @@ nodes.geometry.SampleIndex.layer(geometry=None, value=None, index=0)
 ```
 
 Create Sample Index with operation 'Layer'.
+
+##### matrix { #nodebpy.nodes.geometry.SampleIndex.matrix }
+
+```python
+nodes.geometry.SampleIndex.matrix(geometry=None, value=None, index=0)
+```
+
+Create Sample Index with operation '4x4 Matrix'.
 
 ##### point { #nodebpy.nodes.geometry.SampleIndex.point }
 
@@ -2004,6 +2052,7 @@ Find the element of a geometry closest to a position. Similar to the "Index of N
 | --- | --- |
 | [edge](#nodebpy.nodes.geometry.SampleNearest.edge) | Create Sample Nearest with operation 'Edge'. |
 | [face](#nodebpy.nodes.geometry.SampleNearest.face) | Create Sample Nearest with operation 'Face'. |
+| [face_corner](#nodebpy.nodes.geometry.SampleNearest.face_corner) | Create Sample Nearest with operation 'Face Corner'. |
 | [point](#nodebpy.nodes.geometry.SampleNearest.point) | Create Sample Nearest with operation 'Point'. |
 
 ##### edge { #nodebpy.nodes.geometry.SampleNearest.edge }
@@ -2021,6 +2070,14 @@ nodes.geometry.SampleNearest.face(geometry=None, sample_position=None)
 ```
 
 Create Sample Nearest with operation 'Face'.
+
+##### face_corner { #nodebpy.nodes.geometry.SampleNearest.face_corner }
+
+```python
+nodes.geometry.SampleNearest.face_corner(geometry=None, sample_position=None)
+```
+
+Create Sample Nearest with operation 'Face Corner'.
 
 ##### point { #nodebpy.nodes.geometry.SampleNearest.point }
 
@@ -2071,6 +2128,7 @@ Calculate the interpolated value of a mesh attribute on the closest point of its
 | [color](#nodebpy.nodes.geometry.SampleNearestSurface.color) | Create Sample Nearest Surface with operation 'Color'. |
 | [float](#nodebpy.nodes.geometry.SampleNearestSurface.float) | Create Sample Nearest Surface with operation 'Float'. |
 | [integer](#nodebpy.nodes.geometry.SampleNearestSurface.integer) | Create Sample Nearest Surface with operation 'Integer'. |
+| [matrix](#nodebpy.nodes.geometry.SampleNearestSurface.matrix) | Create Sample Nearest Surface with operation '4x4 Matrix'. |
 | [quaternion](#nodebpy.nodes.geometry.SampleNearestSurface.quaternion) | Create Sample Nearest Surface with operation 'Quaternion'. |
 | [vector](#nodebpy.nodes.geometry.SampleNearestSurface.vector) | Create Sample Nearest Surface with operation 'Vector'. |
 
@@ -2129,6 +2187,20 @@ nodes.geometry.SampleNearestSurface.integer(
 ```
 
 Create Sample Nearest Surface with operation 'Integer'.
+
+##### matrix { #nodebpy.nodes.geometry.SampleNearestSurface.matrix }
+
+```python
+nodes.geometry.SampleNearestSurface.matrix(
+    mesh=None,
+    value=None,
+    group_id=0,
+    sample_position=None,
+    sample_group_id=0,
+)
+```
+
+Create Sample Nearest Surface with operation '4x4 Matrix'.
 
 ##### quaternion { #nodebpy.nodes.geometry.SampleNearestSurface.quaternion }
 
@@ -2197,6 +2269,7 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 | [color](#nodebpy.nodes.geometry.SampleUVSurface.color) | Create Sample UV Surface with operation 'Color'. |
 | [float](#nodebpy.nodes.geometry.SampleUVSurface.float) | Create Sample UV Surface with operation 'Float'. |
 | [integer](#nodebpy.nodes.geometry.SampleUVSurface.integer) | Create Sample UV Surface with operation 'Integer'. |
+| [matrix](#nodebpy.nodes.geometry.SampleUVSurface.matrix) | Create Sample UV Surface with operation '4x4 Matrix'. |
 | [quaternion](#nodebpy.nodes.geometry.SampleUVSurface.quaternion) | Create Sample UV Surface with operation 'Quaternion'. |
 | [vector](#nodebpy.nodes.geometry.SampleUVSurface.vector) | Create Sample UV Surface with operation 'Vector'. |
 
@@ -2251,6 +2324,19 @@ nodes.geometry.SampleUVSurface.integer(
 ```
 
 Create Sample UV Surface with operation 'Integer'.
+
+##### matrix { #nodebpy.nodes.geometry.SampleUVSurface.matrix }
+
+```python
+nodes.geometry.SampleUVSurface.matrix(
+    mesh=None,
+    value=None,
+    source_uv_map=None,
+    sample_uv=None,
+)
+```
+
+Create Sample UV Surface with operation '4x4 Matrix'.
 
 ##### quaternion { #nodebpy.nodes.geometry.SampleUVSurface.quaternion }
 
@@ -2826,6 +2912,7 @@ Store a normal vector for each mesh element
 | Name | Description |
 | --- | --- |
 | [face](#nodebpy.nodes.geometry.SetMeshNormal.face) | Create Set Mesh Normal with operation 'Face'. |
+| [face_corner](#nodebpy.nodes.geometry.SetMeshNormal.face_corner) | Create Set Mesh Normal with operation 'Face Corner'. |
 | [point](#nodebpy.nodes.geometry.SetMeshNormal.point) | Create Set Mesh Normal with operation 'Point'. |
 
 ##### face { #nodebpy.nodes.geometry.SetMeshNormal.face }
@@ -2835,6 +2922,14 @@ nodes.geometry.SetMeshNormal.face(mesh=None, custom_normal=None)
 ```
 
 Create Set Mesh Normal with operation 'Face'.
+
+##### face_corner { #nodebpy.nodes.geometry.SetMeshNormal.face_corner }
+
+```python
+nodes.geometry.SetMeshNormal.face_corner(mesh=None, custom_normal=None)
+```
+
+Create Set Mesh Normal with operation 'Face Corner'.
 
 ##### point { #nodebpy.nodes.geometry.SetMeshNormal.point }
 

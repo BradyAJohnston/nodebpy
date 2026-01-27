@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Literal
+from typing import Iterable
 
 import bpy
 
@@ -16,8 +16,6 @@ from ..types import (
 
 
 class BaseZone(DynamicInputsMixin, NodeBuilder, ABC):
-    _items_attribute: Literal["state_items", "repeat_items"]
-
     @property
     @abstractmethod
     def _items_node(
@@ -72,7 +70,11 @@ class BaseZoneInput(BaseZone, NodeBuilder, ABC):
     @property
     def output(
         self,
-    ) -> bpy.types.GeometryNodeSimulationOutput | bpy.types.GeometryNodeRepeatOutput:
+    ) -> (
+        bpy.types.GeometryNodeSimulationOutput
+        | bpy.types.GeometryNodeRepeatOutput
+        | bpy.types.GeometryNodeForeachGeometryElementOutput
+    ):
         return self.node.paired_output  # type: ignore
 
     def _add_socket(self, name: str, type: _BakeDataTypes):
@@ -99,7 +101,6 @@ class BaseZoneOutput(BaseZone, NodeBuilder, ABC):
 
 
 class BaseSimulationZone(BaseZone):
-    _items_attribute = "state_items"
     _socket_data_types = (
         "VALUE",
         "INT",
@@ -168,7 +169,6 @@ class SimulationZone:
 
 
 class BaseRepeatZone(BaseZone):
-    _items_attribute = "repeat_items"
     _socket_data_types = (
         "FLOAT",
         "INT",
@@ -207,12 +207,6 @@ class RepeatInput(BaseRepeatZone, BaseZoneInput):
     def o_iteration(self) -> SocketLinker:
         """Output socket: Iteration"""
         return self._output("Iteration")
-
-    @property
-    def output_node(self) -> bpy.types.GeometryNodeRepeatOutput:
-        zone_output = self.node.paired_output  # type: ignore
-        assert zone_output is not None
-        return zone_output  # type: ignore
 
 
 class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
@@ -253,24 +247,77 @@ class RepeatZone:
         return self.i, self.input, self.output
 
 
-class ForEachGeometryElementInput(NodeBuilder):
+class ForEachGeometryElementZone:
+    def __init__(
+        self,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ):
+        self.input = ForEachGeometryElementInput()
+        self.output = ForEachGeometryElementOutput()
+        self.input.node.pair_with_output(self.output.node)
+        self.output.domain = domain
+        self.input._establish_links(Geometry=geometry, Selection=selection)
+
+    @property
+    def index(self) -> SocketLinker:
+        return self.input.o_index
+
+    def __getitem__(self, index: int):
+        match index:
+            case 0:
+                return self.input
+            case 1:
+                return self.output
+            case _:
+                raise IndexError("ForEachZone has only two items")
+
+
+class ForEachGeometryElementInput(BaseZoneInput):
     """For Each Geometry Element Input node"""
+
+    _socket_data_types = (
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "MENU",
+    )
+    _type_map = {"VALUE": "FLOAT"}
 
     _bl_idname = "GeometryNodeForeachGeometryElementInput"
     node: bpy.types.GeometryNodeForeachGeometryElementInput
 
     def __init__(
-        self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        extend: LINKABLE | None = None,
-        **kwargs,
+        self, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
     ):
         super().__init__()
-        key_args = {"Geometry": geometry, "Selection": selection, "__extend__": extend}
-        key_args.update(kwargs)
-
+        key_args = {"Geometry": geometry, "Selection": selection}
         self._establish_links(**key_args)
+
+    def capture(
+        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
+    ) -> SocketLinker:
+        """Capture something as an input to the simulation"""
+        item_dict = self._add_inputs(value)
+        self._establish_links(**item_dict)
+        new_output_idx = [o.identifier for o in self.node.outputs].index(
+            "__extend__"
+        ) - 1
+        print(f"{new_output_idx=}")
+        output = self.node.outputs[new_output_idx]
+        print(f"{output=} {output.type=}")
+
+        return SocketLinker(output)
+
+    @property
+    def items(self) -> bpy.types.NodeGeometryForeachGeometryElementInputItems:
+        return self.output.input_items
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -283,57 +330,83 @@ class ForEachGeometryElementInput(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__")
-
-    @property
     def o_index(self) -> SocketLinker:
         """Output socket: Index"""
         return self._output("Index")
 
-    @property
-    def o_input_socket(self) -> SocketLinker:
-        """Output socket:"""
-        return self._output("__extend__")
 
-
-class ForEachGeometryElementOutput(NodeBuilder):
+class ForEachGeometryElementOutput(BaseZoneOutput):
     """For Each Geometry Element Output node"""
+
+    _socket_data_types = [
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+    ]
+    _type_map = {"VALUE": "FLOAT"}
 
     _bl_idname = "GeometryNodeForeachGeometryElementOutput"
     node: bpy.types.GeometryNodeForeachGeometryElementOutput
 
     def __init__(
         self,
-        extend_main: LINKABLE | None = None,
-        generation_0: LINKABLE = None,
-        extend_generation: LINKABLE | None = None,
-        active_input_index: int = 0,
-        active_generation_index: int = 0,
-        active_main_index: int = 0,
         domain: _AttributeDomains = "POINT",
-        inspection_index: int = 0,
         **kwargs,
     ):
         super().__init__()
-        key_args = {
-            "__extend__main": extend_main,
-            "Generation_0": generation_0,
-            "__extend__generation": extend_generation,
-        }
+        key_args = {}
         key_args.update(kwargs)
-        self.active_input_index = active_input_index
-        self.active_generation_index = active_generation_index
-        self.active_main_index = active_main_index
         self.domain = domain
-        self.inspection_index = inspection_index
         self._establish_links(**key_args)
 
     @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__main")
+    def items(self) -> bpy.types.NodeGeometryForeachGeometryElementMainItems:
+        return self.node.main_items
+
+    @property
+    def items_generated(
+        self,
+    ) -> bpy.types.NodeGeometryForeachGeometryElementGenerationItems:
+        return self.node.generation_items
+
+    def _latest(
+        self, suffix: str, sockets: Iterable[bpy.types.NodeSocket]
+    ) -> bpy.types.NodeSocket:
+        idx = [o.identifier for o in sockets].index(f"__extend__{suffix}") - 1
+        return sockets[idx]
+
+    def capture(
+        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
+    ) -> SocketLinker:
+        """Capture something as an input to the simulation"""
+        item_dict = self._add_inputs(value)
+        self._establish_links(**item_dict)
+        return SocketLinker(self._latest("main", self.node.outputs))
+
+    def capture_generated(self, value: LINKABLE) -> SocketLinker:
+        self._socket_data_types = self._socket_data_types + ["GEOMETRY"]
+        self._add_socket = self._add_socket_generated
+        item_dict = self._add_inputs(value)
+        self._establish_links(**item_dict)
+        self._socket_data_types = list(
+            [x for x in self._socket_data_types if x != "GEOMETRY"]
+        )
+        self._add_socket = self._add_socket_main
+        return SocketLinker(self._latest("generation", self.node.outputs))
+
+    def _add_socket_main(self, name: str, type: _BakeDataTypes):
+        """Add a socket to the zone"""
+        _ = self.items.new(type, name)
+        return self._latest("main", self.node.inputs)
+
+    def _add_socket_generated(self, name: str, type: _BakeDataTypes):
+        """Add a socket to the zone"""
+        _ = self.items_generated.new(type, name)
+        return self._latest("generation", self.node.inputs)
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -341,53 +414,14 @@ class ForEachGeometryElementOutput(NodeBuilder):
         return self._input("Generation_0")
 
     @property
-    def i_extend_generation(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__generation")
-
-    @property
     def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
         return self._output("Geometry")
 
     @property
-    def o_input_socket(self) -> SocketLinker:
-        """Output socket:"""
-        return self._output("__extend__main")
-
-    @property
-    def o_generation_0(self) -> SocketLinker:
+    def o_generation(self) -> SocketLinker:
         """Output socket: Geometry"""
         return self._output("Generation_0")
-
-    @property
-    def o_extend_generation(self) -> SocketLinker:
-        """Output socket:"""
-        return self._output("__extend__generation")
-
-    @property
-    def active_input_index(self) -> int:
-        return self.node.active_input_index
-
-    @active_input_index.setter
-    def active_input_index(self, value: int):
-        self.node.active_input_index = value
-
-    @property
-    def active_generation_index(self) -> int:
-        return self.node.active_generation_index
-
-    @active_generation_index.setter
-    def active_generation_index(self, value: int):
-        self.node.active_generation_index = value
-
-    @property
-    def active_main_index(self) -> int:
-        return self.node.active_main_index
-
-    @active_main_index.setter
-    def active_main_index(self, value: int):
-        self.node.active_main_index = value
 
     @property
     def domain(
@@ -401,11 +435,3 @@ class ForEachGeometryElementOutput(NodeBuilder):
         value: _AttributeDomains,
     ):
         self.node.domain = value
-
-    @property
-    def inspection_index(self) -> int:
-        return self.node.inspection_index
-
-    @inspection_index.setter
-    def inspection_index(self, value: int):
-        self.node.inspection_index = value

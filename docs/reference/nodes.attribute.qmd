@@ -170,17 +170,22 @@ Store the result of a field on a geometry as an attribute with the specified nam
 | Name | Description |
 | --- | --- |
 | [boolean](#nodebpy.nodes.attribute.StoreNamedAttribute.boolean) | Create Store Named Attribute with operation 'Boolean'. |
+| [byte_color](#nodebpy.nodes.attribute.StoreNamedAttribute.byte_color) | Create Store Named Attribute with operation 'Byte Color'. |
 | [color](#nodebpy.nodes.attribute.StoreNamedAttribute.color) | Create Store Named Attribute with operation 'Color'. |
 | [edge](#nodebpy.nodes.attribute.StoreNamedAttribute.edge) | Create Store Named Attribute with operation 'Edge'. |
 | [face](#nodebpy.nodes.attribute.StoreNamedAttribute.face) | Create Store Named Attribute with operation 'Face'. |
+| [face_corner](#nodebpy.nodes.attribute.StoreNamedAttribute.face_corner) | Create Store Named Attribute with operation 'Face Corner'. |
 | [float](#nodebpy.nodes.attribute.StoreNamedAttribute.float) | Create Store Named Attribute with operation 'Float'. |
 | [instance](#nodebpy.nodes.attribute.StoreNamedAttribute.instance) | Create Store Named Attribute with operation 'Instance'. |
+| [int8](#nodebpy.nodes.attribute.StoreNamedAttribute.int8) | Create Store Named Attribute with operation '8-Bit Integer'. |
 | [integer](#nodebpy.nodes.attribute.StoreNamedAttribute.integer) | Create Store Named Attribute with operation 'Integer'. |
 | [layer](#nodebpy.nodes.attribute.StoreNamedAttribute.layer) | Create Store Named Attribute with operation 'Layer'. |
+| [matrix](#nodebpy.nodes.attribute.StoreNamedAttribute.matrix) | Create Store Named Attribute with operation '4x4 Matrix'. |
 | [point](#nodebpy.nodes.attribute.StoreNamedAttribute.point) | Create Store Named Attribute with operation 'Point'. |
 | [quaternion](#nodebpy.nodes.attribute.StoreNamedAttribute.quaternion) | Create Store Named Attribute with operation 'Quaternion'. |
 | [spline](#nodebpy.nodes.attribute.StoreNamedAttribute.spline) | Create Store Named Attribute with operation 'Spline'. |
 | [vector](#nodebpy.nodes.attribute.StoreNamedAttribute.vector) | Create Store Named Attribute with operation 'Vector'. |
+| [vector2](#nodebpy.nodes.attribute.StoreNamedAttribute.vector2) | Create Store Named Attribute with operation '2D Vector'. |
 
 ##### boolean { #nodebpy.nodes.attribute.StoreNamedAttribute.boolean }
 
@@ -194,6 +199,19 @@ nodes.attribute.StoreNamedAttribute.boolean(
 ```
 
 Create Store Named Attribute with operation 'Boolean'.
+
+##### byte_color { #nodebpy.nodes.attribute.StoreNamedAttribute.byte_color }
+
+```python
+nodes.attribute.StoreNamedAttribute.byte_color(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Byte Color'.
 
 ##### color { #nodebpy.nodes.attribute.StoreNamedAttribute.color }
 
@@ -234,6 +252,19 @@ nodes.attribute.StoreNamedAttribute.face(
 
 Create Store Named Attribute with operation 'Face'.
 
+##### face_corner { #nodebpy.nodes.attribute.StoreNamedAttribute.face_corner }
+
+```python
+nodes.attribute.StoreNamedAttribute.face_corner(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation 'Face Corner'.
+
 ##### float { #nodebpy.nodes.attribute.StoreNamedAttribute.float }
 
 ```python
@@ -260,6 +291,19 @@ nodes.attribute.StoreNamedAttribute.instance(
 
 Create Store Named Attribute with operation 'Instance'.
 
+##### int8 { #nodebpy.nodes.attribute.StoreNamedAttribute.int8 }
+
+```python
+nodes.attribute.StoreNamedAttribute.int8(
+    geometry=None,
+    selection=True,
+    name='',
+    value=0,
+)
+```
+
+Create Store Named Attribute with operation '8-Bit Integer'.
+
 ##### integer { #nodebpy.nodes.attribute.StoreNamedAttribute.integer }
 
 ```python
@@ -285,6 +329,19 @@ nodes.attribute.StoreNamedAttribute.layer(
 ```
 
 Create Store Named Attribute with operation 'Layer'.
+
+##### matrix { #nodebpy.nodes.attribute.StoreNamedAttribute.matrix }
+
+```python
+nodes.attribute.StoreNamedAttribute.matrix(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation '4x4 Matrix'.
 
 ##### point { #nodebpy.nodes.attribute.StoreNamedAttribute.point }
 
@@ -337,3 +394,16 @@ nodes.attribute.StoreNamedAttribute.vector(
 ```
 
 Create Store Named Attribute with operation 'Vector'.
+
+##### vector2 { #nodebpy.nodes.attribute.StoreNamedAttribute.vector2 }
+
+```python
+nodes.attribute.StoreNamedAttribute.vector2(
+    geometry=None,
+    selection=True,
+    name='',
+    value=None,
+)
+```
+
+Create Store Named Attribute with operation '2D Vector'.

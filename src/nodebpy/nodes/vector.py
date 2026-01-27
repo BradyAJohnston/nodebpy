@@ -194,6 +194,28 @@ class VectorMath(NodeBuilder):
         return cls(operation="DIVIDE", vector=vector, vector_001=vector_001)
 
     @classmethod
+    def multiply_add(
+        cls,
+        vector: TYPE_INPUT_VECTOR = None,
+        vector_001: TYPE_INPUT_VECTOR = None,
+        vector_002: TYPE_INPUT_VECTOR = None,
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Multiply Add'."""
+        return cls(
+            operation="MULTIPLY_ADD",
+            vector=vector,
+            vector_001=vector_001,
+            vector_002=vector_002,
+        )
+
+    @classmethod
+    def cross_product(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Cross Product'."""
+        return cls(operation="CROSS_PRODUCT", vector=vector, vector_001=vector_001)
+
+    @classmethod
     def project(
         cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
     ) -> "VectorMath":
@@ -233,6 +255,13 @@ class VectorMath(NodeBuilder):
             vector_001=vector_001,
             vector_002=vector_002,
         )
+
+    @classmethod
+    def dot_product(
+        cls, vector: TYPE_INPUT_VECTOR = None, vector_001: TYPE_INPUT_VECTOR = None
+    ) -> "VectorMath":
+        """Create Vector Math with operation 'Dot Product'."""
+        return cls(operation="DOT_PRODUCT", vector=vector, vector_001=vector_001)
 
     @classmethod
     def distance(

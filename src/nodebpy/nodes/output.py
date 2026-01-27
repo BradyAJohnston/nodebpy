@@ -47,6 +47,11 @@ class Viewer(NodeBuilder):
         return cls(domain="FACE")
 
     @classmethod
+    def face_corner(cls) -> "Viewer":
+        """Create Viewer with operation 'Face Corner'."""
+        return cls(domain="CORNER")
+
+    @classmethod
     def spline(cls) -> "Viewer":
         """Create Viewer with operation 'Spline'."""
         return cls(domain="CURVE")
