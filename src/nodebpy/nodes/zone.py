@@ -400,8 +400,8 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
 
     def _add_socket_main(self, name: str, type: _BakeDataTypes):
         """Add a socket to the zone"""
-        item = self.items.new(type, name)
-        return self.inputs[item.name]
+        _ = self.items.new(type, name)
+        return self._latest("main", self.node.inputs)
 
     def _add_socket_generated(self, name: str, type: _BakeDataTypes):
         """Add a socket to the zone"""

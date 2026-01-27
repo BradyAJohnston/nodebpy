@@ -497,3 +497,70 @@ def test_foreachgeometryelement_zone():
     assert len(zone.output.items_generated) == 3
     assert zone.output.items_generated[1].socket_type == "VECTOR"
     assert zone.output.items_generated[2].socket_type == "GEOMETRY"
+
+
+def test_boolean_math_methods():
+    with TreeBuilder(arrange=False) as tree:
+        _ = (
+            n.Boolean()
+            >> n.BooleanMath.not_and(..., True)
+            >> n.BooleanMath.l_not()
+            >> n.BooleanMath.nor()
+            >> n.BooleanMath.not_equal()
+            >> n.BooleanMath.imply()
+        )
+    assert len(tree) == 6
+
+
+def test_integer_math_methods():
+    with TreeBuilder(arrange=False) as tree:
+        _ = (
+            n.Integer(2444222)
+            >> n.IntegerMath.divide_round(2)
+            >> n.IntegerMath.divide_floor(3)
+            >> n.IntegerMath.divide_ceiling(10)
+            >> n.IntegerMath.floored_modulo(5)
+            >> n.IntegerMath.modulo(2)
+            >> n.IntegerMath.greatest_common_divisor(10)
+            >> n.IntegerMath.least_common_multiple(15)
+            >> n.IntegerMath.absolute()
+        )
+
+    assert len(tree) == 9
+
+
+def test_math_methods():
+    with TreeBuilder(arrange=False) as tree:
+        _ = (
+            n.Value(2.5)
+            >> n.Math.add(3.5)
+            >> n.Math.subtract(1.5)
+            >> n.Math.multiply(2.5)
+            >> n.Math.divide(4.5)
+            >> n.Math.power(2)
+            >> n.Math.logarithm(10)
+            >> n.Math.square_root()
+            >> n.Math.absolute()
+            >> n.Math.square_root()
+            >> n.Math.inverse_square_root()
+            >> n.Math.absolute()
+            >> n.Math.less_than(..., 1.5)
+            >> n.Math.greater_than(..., 1.5)
+            >> n.Math.sign()
+            >> n.Math.smooth_minimum()
+            >> n.Math.smooth_maximum()
+            >> n.Math.round()
+            >> n.Math.floored_modulo()
+            >> n.Math.truncated_modulo()
+            >> n.Math.floored_modulo()
+            >> n.Math.wrap()
+            >> n.Math.ping_pong()
+            >> n.Math.sine()
+            >> n.Math.hyperbolic_cosine()
+            >> n.Math.hyperbolic_tangent()
+            >> n.Math.hyperbolic_tangent()
+            >> n.Math.to_radians()
+            >> n.Math.to_degrees()
+        )
+
+    assert len(tree) == 29
