@@ -474,6 +474,8 @@ def test_foreachgeometryelement_zone():
             scale=0.4,
         )
         zone.output.capture(pos)
+        zone.output.capture_generated(pos)
+        zone.output.capture_generated(transformed)
         _ = transformed >> zone.output
         _ = n.JoinGeometry(zone.output.o_generation, cube) >> out
 
@@ -486,9 +488,12 @@ def test_foreachgeometryelement_zone():
     assert len(zone.output.items) == 1
     assert zone.output.items[0].socket_type == "VECTOR"
     assert zone.output.node.inputs["Geometry"].links[0].from_node == transformed.node
-    assert zone.input.output == zone.output.node
     assert zone.input == input
     assert zone.output == output
+    assert input.output == output.node
     assert input.i_selection.socket.links[0].from_node == tree.nodes["Compare"]
     assert tree.nodes["Compare"].data_type == "FLOAT"
     assert tree.nodes["Compare"].operation == "GREATER_THAN"
+    assert len(zone.output.items_generated) == 3
+    assert zone.output.items_generated[1].socket_type == "VECTOR"
+    assert zone.output.items_generated[2].socket_type == "GEOMETRY"

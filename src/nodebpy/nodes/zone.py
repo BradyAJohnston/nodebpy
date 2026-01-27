@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Iterable
 
 import bpy
 
@@ -315,10 +316,6 @@ class ForEachGeometryElementInput(BaseZoneInput):
         return SocketLinker(output)
 
     @property
-    def output(self) -> bpy.types.GeometryNodeForeachGeometryElementOutput:
-        return self.node.paired_output  # type: ignore
-
-    @property
     def items(self) -> bpy.types.NodeGeometryForeachGeometryElementInputItems:
         return self.output.input_items
 
@@ -376,17 +373,19 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     ) -> bpy.types.NodeGeometryForeachGeometryElementGenerationItems:
         return self.node.generation_items
 
+    def _latest(
+        self, suffix: str, sockets: Iterable[bpy.types.NodeSocket]
+    ) -> bpy.types.NodeSocket:
+        idx = [o.identifier for o in sockets].index(f"__extend__{suffix}") - 1
+        return sockets[idx]
+
     def capture(
         self, value: LINKABLE, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
         """Capture something as an input to the simulation"""
         item_dict = self._add_inputs(value)
         self._establish_links(**item_dict)
-        # we have to do a convoluted lookup to get the most recently added socket
-        new_output_idx = [o.identifier for o in self.node.outputs].index(
-            "__extend__main"
-        ) - 1
-        return SocketLinker(self.node.outputs[new_output_idx])
+        return SocketLinker(self._latest("main", self.node.outputs))
 
     def capture_generated(self, value: LINKABLE) -> SocketLinker:
         self._socket_data_types = self._socket_data_types + ["GEOMETRY"]
@@ -397,7 +396,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
             [x for x in self._socket_data_types if x != "GEOMETRY"]
         )
         self._add_socket = self._add_socket_main
-        return SocketLinker(self.node.outputs[-2])
+        return SocketLinker(self._latest("generation", self.node.outputs))
 
     def _add_socket_main(self, name: str, type: _BakeDataTypes):
         """Add a socket to the zone"""
@@ -406,8 +405,8 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
 
     def _add_socket_generated(self, name: str, type: _BakeDataTypes):
         """Add a socket to the zone"""
-        item = self.items_generated.new(type, name)
-        return self.inputs[item.name]
+        _ = self.items_generated.new(type, name)
+        return self._latest("generation", self.node.inputs)
 
     @property
     def i_geometry(self) -> SocketLinker:
