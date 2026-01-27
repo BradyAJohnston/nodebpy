@@ -203,6 +203,11 @@ class BitMath(NodeBuilder):
         return cls(operation="OR", a=a, b=b)
 
     @classmethod
+    def exclusive_or(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+        """Create Bit Math with operation 'Exclusive Or'."""
+        return cls(operation="XOR", a=a, b=b)
+
+    @classmethod
     def l_not(cls, a: TYPE_INPUT_INT = 0) -> "BitMath":
         """Create Bit Math with operation 'Not'."""
         return cls(operation="NOT", a=a)
@@ -317,6 +322,15 @@ class BooleanMath(NodeBuilder):
         return cls(operation="NOT", boolean=boolean)
 
     @classmethod
+    def not_and(
+        cls,
+        boolean: TYPE_INPUT_BOOLEAN = False,
+        boolean_001: TYPE_INPUT_BOOLEAN = False,
+    ) -> "BooleanMath":
+        """Create Boolean Math with operation 'Not And'."""
+        return cls(operation="NAND", boolean=boolean, boolean_001=boolean_001)
+
+    @classmethod
     def nor(
         cls,
         boolean: TYPE_INPUT_BOOLEAN = False,
@@ -333,6 +347,15 @@ class BooleanMath(NodeBuilder):
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'Equal'."""
         return cls(operation="XNOR", boolean=boolean, boolean_001=boolean_001)
+
+    @classmethod
+    def not_equal(
+        cls,
+        boolean: TYPE_INPUT_BOOLEAN = False,
+        boolean_001: TYPE_INPUT_BOOLEAN = False,
+    ) -> "BooleanMath":
+        """Create Boolean Math with operation 'Not Equal'."""
+        return cls(operation="XOR", boolean=boolean, boolean_001=boolean_001)
 
     @classmethod
     def imply(
@@ -1108,6 +1131,21 @@ class IntegerMath(NodeBuilder):
         return cls(operation="DIVIDE", value=value, value_001=value_001)
 
     @classmethod
+    def multiply_add(
+        cls,
+        value: TYPE_INPUT_INT = 0,
+        value_001: TYPE_INPUT_INT = 0,
+        value_002: TYPE_INPUT_INT = 0,
+    ) -> "IntegerMath":
+        """Create Integer Math with operation 'Multiply Add'."""
+        return cls(
+            operation="MULTIPLY_ADD",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
+
+    @classmethod
     def absolute(cls, value: TYPE_INPUT_INT = 0) -> "IntegerMath":
         """Create Integer Math with operation 'Absolute'."""
         return cls(operation="ABSOLUTE", value=value)
@@ -1144,11 +1182,53 @@ class IntegerMath(NodeBuilder):
         return cls(operation="SIGN", value=value)
 
     @classmethod
+    def divide_round(
+        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+    ) -> "IntegerMath":
+        """Create Integer Math with operation 'Divide Round'."""
+        return cls(operation="DIVIDE_ROUND", value=value, value_001=value_001)
+
+    @classmethod
+    def divide_floor(
+        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+    ) -> "IntegerMath":
+        """Create Integer Math with operation 'Divide Floor'."""
+        return cls(operation="DIVIDE_FLOOR", value=value, value_001=value_001)
+
+    @classmethod
+    def divide_ceiling(
+        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+    ) -> "IntegerMath":
+        """Create Integer Math with operation 'Divide Ceiling'."""
+        return cls(operation="DIVIDE_CEIL", value=value, value_001=value_001)
+
+    @classmethod
+    def floored_modulo(
+        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+    ) -> "IntegerMath":
+        """Create Integer Math with operation 'Floored Modulo'."""
+        return cls(operation="FLOORED_MODULO", value=value, value_001=value_001)
+
+    @classmethod
     def modulo(
         cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Modulo'."""
         return cls(operation="MODULO", value=value, value_001=value_001)
+
+    @classmethod
+    def greatest_common_divisor(
+        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+    ) -> "IntegerMath":
+        """Create Integer Math with operation 'Greatest Common Divisor'."""
+        return cls(operation="GCD", value=value, value_001=value_001)
+
+    @classmethod
+    def least_common_multiple(
+        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+    ) -> "IntegerMath":
+        """Create Integer Math with operation 'Least Common Multiple'."""
+        return cls(operation="LCM", value=value, value_001=value_001)
 
     @property
     def i_value(self) -> SocketLinker:
@@ -1622,6 +1702,21 @@ class Math(NodeBuilder):
         return cls(operation="DIVIDE", value=value, value_001=value_001)
 
     @classmethod
+    def multiply_add(
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
+    ) -> "Math":
+        """Create Math with operation 'Multiply Add'."""
+        return cls(
+            operation="MULTIPLY_ADD",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
+
+    @classmethod
     def power(
         cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
     ) -> "Math":
@@ -1634,6 +1729,16 @@ class Math(NodeBuilder):
     ) -> "Math":
         """Create Math with operation 'Logarithm'."""
         return cls(operation="LOGARITHM", value=value, value_001=value_001)
+
+    @classmethod
+    def square_root(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+        """Create Math with operation 'Square Root'."""
+        return cls(operation="SQRT", value=value)
+
+    @classmethod
+    def inverse_square_root(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+        """Create Math with operation 'Inverse Square Root'."""
+        return cls(operation="INVERSE_SQRT", value=value)
 
     @classmethod
     def absolute(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
@@ -1660,6 +1765,20 @@ class Math(NodeBuilder):
         return cls(operation="MAXIMUM", value=value, value_001=value_001)
 
     @classmethod
+    def less_than(
+        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+    ) -> "Math":
+        """Create Math with operation 'Less Than'."""
+        return cls(operation="LESS_THAN", value=value, value_001=value_001)
+
+    @classmethod
+    def greater_than(
+        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+    ) -> "Math":
+        """Create Math with operation 'Greater Than'."""
+        return cls(operation="GREATER_THAN", value=value, value_001=value_001)
+
+    @classmethod
     def sign(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
         """Create Math with operation 'Sign'."""
         return cls(operation="SIGN", value=value)
@@ -1674,6 +1793,36 @@ class Math(NodeBuilder):
         """Create Math with operation 'Compare'."""
         return cls(
             operation="COMPARE", value=value, value_001=value_001, value_002=value_002
+        )
+
+    @classmethod
+    def smooth_minimum(
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
+    ) -> "Math":
+        """Create Math with operation 'Smooth Minimum'."""
+        return cls(
+            operation="SMOOTH_MIN",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+        )
+
+    @classmethod
+    def smooth_maximum(
+        cls,
+        value: TYPE_INPUT_VALUE = 0.5,
+        value_001: TYPE_INPUT_VALUE = 0.5,
+        value_002: TYPE_INPUT_VALUE = 0.5,
+    ) -> "Math":
+        """Create Math with operation 'Smooth Maximum'."""
+        return cls(
+            operation="SMOOTH_MAX",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
         )
 
     @classmethod
@@ -1702,6 +1851,20 @@ class Math(NodeBuilder):
         return cls(operation="FRACT", value=value)
 
     @classmethod
+    def truncated_modulo(
+        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+    ) -> "Math":
+        """Create Math with operation 'Truncated Modulo'."""
+        return cls(operation="MODULO", value=value, value_001=value_001)
+
+    @classmethod
+    def floored_modulo(
+        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+    ) -> "Math":
+        """Create Math with operation 'Floored Modulo'."""
+        return cls(operation="FLOORED_MODULO", value=value, value_001=value_001)
+
+    @classmethod
     def wrap(
         cls,
         value: TYPE_INPUT_VALUE = 0.5,
@@ -1719,6 +1882,13 @@ class Math(NodeBuilder):
     ) -> "Math":
         """Create Math with operation 'Snap'."""
         return cls(operation="SNAP", value=value, value_001=value_001)
+
+    @classmethod
+    def ping_pong(
+        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+    ) -> "Math":
+        """Create Math with operation 'Ping-Pong'."""
+        return cls(operation="PINGPONG", value=value, value_001=value_001)
 
     @classmethod
     def sine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
@@ -1756,6 +1926,31 @@ class Math(NodeBuilder):
     ) -> "Math":
         """Create Math with operation 'Arctan2'."""
         return cls(operation="ARCTAN2", value=value, value_001=value_001)
+
+    @classmethod
+    def hyperbolic_sine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+        """Create Math with operation 'Hyperbolic Sine'."""
+        return cls(operation="SINH", value=value)
+
+    @classmethod
+    def hyperbolic_cosine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+        """Create Math with operation 'Hyperbolic Cosine'."""
+        return cls(operation="COSH", value=value)
+
+    @classmethod
+    def hyperbolic_tangent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+        """Create Math with operation 'Hyperbolic Tangent'."""
+        return cls(operation="TANH", value=value)
+
+    @classmethod
+    def to_radians(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+        """Create Math with operation 'To Radians'."""
+        return cls(operation="RADIANS", value=value)
+
+    @classmethod
+    def to_degrees(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+        """Create Math with operation 'To Degrees'."""
+        return cls(operation="DEGREES", value=value)
 
     @property
     def i_value(self) -> SocketLinker:

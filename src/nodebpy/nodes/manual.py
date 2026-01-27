@@ -35,6 +35,9 @@ from ..types import (
     _is_default_value,
 )
 from .zone import (
+    ForEachGeometryElementInput,
+    ForEachGeometryElementOutput,
+    ForEachGeometryElementZone,
     RepeatInput,
     RepeatOutput,
     RepeatZone,
@@ -50,6 +53,9 @@ __all__ = (
     "SimulationInput",
     "SimulationOutput",
     "SimulationZone",
+    "ForEachGeometryElementInput",
+    "ForEachGeometryElementOutput",
+    "ForEachGeometryElementZone",
     "GeometryToInstance",
     "SDFGridBoolean",
     #
@@ -64,12 +70,6 @@ __all__ = (
     "Bake",
     "JoinStrings",
     "GeometryToInstance",
-    "RepeatInput",
-    "RepeatOutput",
-    "RepeatZone",
-    "SimulationInput",
-    "SimulationOutput",
-    "SimulationZone",
     "FormatString",
     "Value",
     "AccumulateField",

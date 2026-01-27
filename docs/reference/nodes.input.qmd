@@ -1174,6 +1174,7 @@ Retrieve the data of a specified attribute
 | [color](#nodebpy.nodes.input.NamedAttribute.color) | Create Named Attribute with operation 'Color'. |
 | [float](#nodebpy.nodes.input.NamedAttribute.float) | Create Named Attribute with operation 'Float'. |
 | [integer](#nodebpy.nodes.input.NamedAttribute.integer) | Create Named Attribute with operation 'Integer'. |
+| [matrix](#nodebpy.nodes.input.NamedAttribute.matrix) | Create Named Attribute with operation '4x4 Matrix'. |
 | [quaternion](#nodebpy.nodes.input.NamedAttribute.quaternion) | Create Named Attribute with operation 'Quaternion'. |
 | [vector](#nodebpy.nodes.input.NamedAttribute.vector) | Create Named Attribute with operation 'Vector'. |
 
@@ -1208,6 +1209,14 @@ nodes.input.NamedAttribute.integer(name='')
 ```
 
 Create Named Attribute with operation 'Integer'.
+
+##### matrix { #nodebpy.nodes.input.NamedAttribute.matrix }
+
+```python
+nodes.input.NamedAttribute.matrix(name='')
+```
+
+Create Named Attribute with operation '4x4 Matrix'.
 
 ##### quaternion { #nodebpy.nodes.input.NamedAttribute.quaternion }
 

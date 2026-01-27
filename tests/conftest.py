@@ -39,12 +39,15 @@ def clean_and_save(request):
         with tree.outputs:
             ong = s.SocketGeometry()
 
-        _ = ing >> ong
-
         for i, name in enumerate(tree_names):
             node = n.Group()
             node.node.node_tree = bpy.data.node_groups[name]
             node.node.location = (0, 200 * i)
+
+        if node.node.outputs and node.node.outputs[0].type == "GEOMETRY":
+            node >> ong
+        else:
+            _ = ing >> ong
 
     mod.node_group = tree.tree
 
