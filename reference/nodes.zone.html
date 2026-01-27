@@ -265,6 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.zone.BaseZoneOutput" id="toc-nodebpy.nodes.zone.BaseZoneOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.zone.BaseZoneOutput">BaseZoneOutput</a></li>
   <li><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput" id="toc-nodebpy.nodes.zone.ForEachGeometryElementInput" class="nav-link" data-scroll-target="#nodebpy.nodes.zone.ForEachGeometryElementInput">ForEachGeometryElementInput</a></li>
   <li><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput" id="toc-nodebpy.nodes.zone.ForEachGeometryElementOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.zone.ForEachGeometryElementOutput">ForEachGeometryElementOutput</a></li>
+  <li><a href="#nodebpy.nodes.zone.ForEachGeometryElementZone" id="toc-nodebpy.nodes.zone.ForEachGeometryElementZone" class="nav-link" data-scroll-target="#nodebpy.nodes.zone.ForEachGeometryElementZone">ForEachGeometryElementZone</a></li>
   <li><a href="#nodebpy.nodes.zone.RepeatInput" id="toc-nodebpy.nodes.zone.RepeatInput" class="nav-link" data-scroll-target="#nodebpy.nodes.zone.RepeatInput">RepeatInput</a></li>
   <li><a href="#nodebpy.nodes.zone.RepeatOutput" id="toc-nodebpy.nodes.zone.RepeatOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.zone.RepeatOutput">RepeatOutput</a></li>
   <li><a href="#nodebpy.nodes.zone.RepeatZone" id="toc-nodebpy.nodes.zone.RepeatZone" class="nav-link" data-scroll-target="#nodebpy.nodes.zone.RepeatZone">RepeatZone</a></li>
@@ -324,26 +325,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>For Each Geometry Element Output node</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementZone">ForEachGeometryElementZone</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.zone.RepeatInput">RepeatInput</a></td>
 <td>Repeat Input node</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.zone.RepeatOutput">RepeatOutput</a></td>
 <td>Repeat Output node</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.zone.RepeatZone">RepeatZone</a></td>
 <td>Wrapper that supports both direct unpacking and iteration</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.zone.SimulationInput">SimulationInput</a></td>
 <td>Simulation Input node</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.zone.SimulationOutput">SimulationOutput</a></td>
 <td>Simulation Output node</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.zone.SimulationZone">SimulationZone</a></td>
 <td></td>
 </tr>
@@ -692,12 +697,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.zone.ForEachGeometryElementInput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.ForEachGeometryElementInput">ForEachGeometryElementInput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.ForEachGeometryElementInput(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    extend<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.ForEachGeometryElementInput(geometry<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>For Each Geometry Element Input node</p>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
@@ -714,28 +714,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Input socket: Geometry</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.i_input_socket">i_input_socket</a></td>
-<td>Input socket:</td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.i_selection">i_selection</a></td>
 <td>Input socket: Selection</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.inputs">inputs</a></td>
+<td>Get all input sockets based on items collection</td>
+</tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.items">items</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.name">name</a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.node">node</a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.o_index">o_index</a></td>
 <td>Output socket: Index</td>
 </tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.output">output</a></td>
+<td></td>
+</tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.o_input_socket">o_input_socket</a></td>
-<td>Output socket:</td>
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.outputs">outputs</a></td>
+<td>Get all output sockets based on items collection</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.tree">tree</a></td>
@@ -748,20 +756,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods-5" class="level4">
+<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementInput.capture">capture</a></td>
+<td>Capture something as an input to the simulation</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.zone.ForEachGeometryElementInput.capture" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.zone.ForEachGeometryElementInput.capture">capture</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.ForEachGeometryElementInput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Capture something as an input to the simulation</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.zone.ForEachGeometryElementOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.ForEachGeometryElementOutput">ForEachGeometryElementOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.ForEachGeometryElementOutput(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    extend_main<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    generation_0<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    extend_generation<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    active_input_index<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    active_generation_index<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    active_main_index<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    inspection_index<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.ForEachGeometryElementOutput(domain<span class="op">=</span><span class="st">'POINT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>For Each Geometry Element Output node</p>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
@@ -774,51 +794,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.active_generation_index">active_generation_index</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.active_input_index">active_input_index</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.active_main_index">active_main_index</a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.domain">domain</a></td>
 <td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.i_extend_generation">i_extend_generation</a></td>
-<td>Input socket:</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.i_geometry">i_geometry</a></td>
 <td>Input socket: Geometry</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.i_input_socket">i_input_socket</a></td>
-<td>Input socket:</td>
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.inputs">inputs</a></td>
+<td>Get all input sockets based on items collection</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.inspection_index">inspection_index</a></td>
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.items">items</a></td>
 <td></td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.items_generated">items_generated</a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.name">name</a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.node">node</a></td>
 <td></td>
 </tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_extend_generation">o_extend_generation</a></td>
-<td>Output socket:</td>
-</tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_generation_0">o_generation_0</a></td>
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_generation">o_generation</a></td>
 <td>Output socket: Geometry</td>
 </tr>
 <tr class="odd">
@@ -826,8 +830,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Output socket: Geometry</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.o_input_socket">o_input_socket</a></td>
-<td>Output socket:</td>
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.outputs">outputs</a></td>
+<td>Get all output sockets based on items collection</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.tree">tree</a></td>
@@ -840,13 +844,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods-6" class="level4">
+<h4 class="anchored" data-anchor-id="methods-6">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.capture">capture</a></td>
+<td>Capture something as an input to the simulation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementOutput.capture_generated">capture_generated</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.zone.ForEachGeometryElementOutput.capture" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.zone.ForEachGeometryElementOutput.capture">capture</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.ForEachGeometryElementOutput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Capture something as an input to the simulation</p>
+</section>
+<section id="nodebpy.nodes.zone.ForEachGeometryElementOutput.capture_generated" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.zone.ForEachGeometryElementOutput.capture_generated">capture_generated</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.ForEachGeometryElementOutput.capture_generated(value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.zone.ForEachGeometryElementZone" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.ForEachGeometryElementZone">ForEachGeometryElementZone</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.ForEachGeometryElementZone(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementZone.index">index</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementZone.input">input</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.zone.ForEachGeometryElementZone.output">output</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="nodebpy.nodes.zone.RepeatInput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.RepeatInput">RepeatInput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatInput(iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatInput(iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Repeat Input node</p>
-<section id="attributes-7" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -880,26 +948,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.zone.RepeatInput.output_node">output_node</a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.zone.RepeatInput.outputs">outputs</a></td>
 <td>Get all output sockets based on items collection</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.zone.RepeatInput.tree">tree</a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.zone.RepeatInput.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="methods-5" class="level4">
-<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
+<section id="methods-7" class="level4">
+<h4 class="anchored" data-anchor-id="methods-7">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -916,17 +980,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.zone.RepeatInput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.zone.RepeatInput.capture">capture</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatInput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatInput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Capture something as an input to the simulation</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.zone.RepeatOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.RepeatOutput">RepeatOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatOutput()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatOutput()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Repeat Output node</p>
-<section id="attributes-8" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -966,8 +1030,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-6" class="level4">
-<h4 class="anchored" data-anchor-id="methods-6">Methods</h4>
+<section id="methods-8" class="level4">
+<h4 class="anchored" data-anchor-id="methods-8">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -984,17 +1048,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.zone.RepeatOutput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.zone.RepeatOutput.capture">capture</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatOutput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatOutput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Capture something as an input to the simulation</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.zone.RepeatZone" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.RepeatZone">RepeatZone</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatZone(iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.RepeatZone(iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Wrapper that supports both direct unpacking and iteration</p>
-<section id="attributes-9" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1021,10 +1085,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.zone.SimulationInput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.SimulationInput">SimulationInput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationInput()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationInput()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Simulation Input node</p>
-<section id="attributes-10" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1072,8 +1136,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-7" class="level4">
-<h4 class="anchored" data-anchor-id="methods-7">Methods</h4>
+<section id="methods-9" class="level4">
+<h4 class="anchored" data-anchor-id="methods-9">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1090,17 +1154,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.zone.SimulationInput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.zone.SimulationInput.capture">capture</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationInput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationInput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Capture something as an input to the simulation</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.zone.SimulationOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.SimulationOutput">SimulationOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationOutput()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationOutput()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Simulation Output node</p>
-<section id="attributes-11" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1144,8 +1208,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-8" class="level4">
-<h4 class="anchored" data-anchor-id="methods-8">Methods</h4>
+<section id="methods-10" class="level4">
+<h4 class="anchored" data-anchor-id="methods-10">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1162,16 +1226,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.zone.SimulationOutput.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.zone.SimulationOutput.capture">capture</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationOutput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationOutput.capture(value, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Capture something as an input to the simulation</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.zone.SimulationZone" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.zone.SimulationZone">SimulationZone</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationZone(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="attributes-12" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationZone(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1191,8 +1255,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-9" class="level4">
-<h4 class="anchored" data-anchor-id="methods-9">Methods</h4>
+<section id="methods-11" class="level4">
+<h4 class="anchored" data-anchor-id="methods-11">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1209,7 +1273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.zone.SimulationZone.delta_time" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.zone.SimulationZone.delta_time">delta_time</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationZone.delta_time()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nodes.zone.SimulationZone.delta_time()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
