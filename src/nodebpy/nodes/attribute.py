@@ -11,6 +11,7 @@ from ..types import (
     TYPE_INPUT_STRING,
     TYPE_INPUT_ROTATION,
     TYPE_INPUT_COLOR,
+    TYPE_INPUT_MATRIX,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
@@ -369,6 +370,74 @@ class StoreNamedAttribute(NodeBuilder):
         )
 
     @classmethod
+    def matrix(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_MATRIX = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation '4x4 Matrix'."""
+        return cls(
+            data_type="FLOAT4X4",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def int8(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_INT = 0,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation '8-Bit Integer'."""
+        return cls(
+            data_type="INT8",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def vector2(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_VECTOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation '2D Vector'."""
+        return cls(
+            data_type="FLOAT2",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def byte_color(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Byte Color'."""
+        return cls(
+            data_type="BYTE_COLOR",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
     def point(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
@@ -413,6 +482,23 @@ class StoreNamedAttribute(NodeBuilder):
         """Create Store Named Attribute with operation 'Face'."""
         return cls(
             domain="FACE",
+            geometry=geometry,
+            selection=selection,
+            name=name,
+            value=value,
+        )
+
+    @classmethod
+    def face_corner(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        selection: TYPE_INPUT_BOOLEAN = True,
+        name: TYPE_INPUT_STRING = "",
+        value: TYPE_INPUT_COLOR = None,
+    ) -> "StoreNamedAttribute":
+        """Create Store Named Attribute with operation 'Face Corner'."""
+        return cls(
+            domain="CORNER",
             geometry=geometry,
             selection=selection,
             name=name,

@@ -2783,6 +2783,27 @@ class Raycast(NodeBuilder):
             ray_length=ray_length,
         )
 
+    @classmethod
+    def matrix(
+        cls,
+        target_geometry: TYPE_INPUT_GEOMETRY = None,
+        attribute: TYPE_INPUT_MATRIX = None,
+        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        source_position: TYPE_INPUT_VECTOR = None,
+        ray_direction: TYPE_INPUT_VECTOR = None,
+        ray_length: TYPE_INPUT_VALUE = 100.0,
+    ) -> "Raycast":
+        """Create Raycast with operation '4x4 Matrix'."""
+        return cls(
+            data_type="FLOAT4X4",
+            target_geometry=target_geometry,
+            attribute=attribute,
+            interpolation=interpolation,
+            source_position=source_position,
+            ray_direction=ray_direction,
+            ray_length=ray_length,
+        )
+
     @property
     def i_target_geometry(self) -> SocketLinker:
         """Input socket: Target Geometry"""
@@ -3262,6 +3283,23 @@ class SampleCurve(NodeBuilder):
             curve_index=curve_index,
         )
 
+    @classmethod
+    def matrix(
+        cls,
+        curves: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        length: TYPE_INPUT_VALUE = 0.0,
+        curve_index: TYPE_INPUT_INT = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation '4x4 Matrix'."""
+        return cls(
+            data_type="FLOAT4X4",
+            curves=curves,
+            value=value,
+            length=length,
+            curve_index=curve_index,
+        )
+
     @property
     def i_curves(self) -> SocketLinker:
         """Input socket: Curves"""
@@ -3451,6 +3489,16 @@ class SampleIndex(NodeBuilder):
         return cls(data_type="QUATERNION", geometry=geometry, value=value, index=index)
 
     @classmethod
+    def matrix(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation '4x4 Matrix'."""
+        return cls(data_type="FLOAT4X4", geometry=geometry, value=value, index=index)
+
+    @classmethod
     def point(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
@@ -3479,6 +3527,16 @@ class SampleIndex(NodeBuilder):
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, value=value, index=index)
+
+    @classmethod
+    def face_corner(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        index: TYPE_INPUT_INT = 0,
+    ) -> "SampleIndex":
+        """Create Sample Index with operation 'Face Corner'."""
+        return cls(domain="CORNER", geometry=geometry, value=value, index=index)
 
     @classmethod
     def spline(
@@ -3627,6 +3685,15 @@ class SampleNearest(NodeBuilder):
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, sample_position=sample_position)
+
+    @classmethod
+    def face_corner(
+        cls,
+        geometry: TYPE_INPUT_GEOMETRY = None,
+        sample_position: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleNearest":
+        """Create Sample Nearest with operation 'Face Corner'."""
+        return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
 
     @property
     def i_geometry(self) -> SocketLinker:
@@ -3796,6 +3863,25 @@ class SampleNearestSurface(NodeBuilder):
         """Create Sample Nearest Surface with operation 'Quaternion'."""
         return cls(
             data_type="QUATERNION",
+            mesh=mesh,
+            value=value,
+            group_id=group_id,
+            sample_position=sample_position,
+            sample_group_id=sample_group_id,
+        )
+
+    @classmethod
+    def matrix(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        group_id: TYPE_INPUT_INT = 0,
+        sample_position: TYPE_INPUT_VECTOR = None,
+        sample_group_id: TYPE_INPUT_INT = 0,
+    ) -> "SampleNearestSurface":
+        """Create Sample Nearest Surface with operation '4x4 Matrix'."""
+        return cls(
+            data_type="FLOAT4X4",
             mesh=mesh,
             value=value,
             group_id=group_id,
@@ -3999,6 +4085,23 @@ class SampleUVSurface(NodeBuilder):
         """Create Sample UV Surface with operation 'Quaternion'."""
         return cls(
             data_type="QUATERNION",
+            mesh=mesh,
+            value=value,
+            source_uv_map=source_uv_map,
+            sample_uv=sample_uv,
+        )
+
+    @classmethod
+    def matrix(
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        value: TYPE_INPUT_MATRIX = None,
+        source_uv_map: TYPE_INPUT_VECTOR = None,
+        sample_uv: TYPE_INPUT_VECTOR = None,
+    ) -> "SampleUVSurface":
+        """Create Sample UV Surface with operation '4x4 Matrix'."""
+        return cls(
+            data_type="FLOAT4X4",
             mesh=mesh,
             value=value,
             source_uv_map=source_uv_map,
@@ -5000,6 +5103,13 @@ class SetMeshNormal(NodeBuilder):
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Face'."""
         return cls(domain="FACE", mesh=mesh, custom_normal=custom_normal)
+
+    @classmethod
+    def face_corner(
+        cls, mesh: TYPE_INPUT_GEOMETRY = None, custom_normal: TYPE_INPUT_VECTOR = None
+    ) -> "SetMeshNormal":
+        """Create Set Mesh Normal with operation 'Face Corner'."""
+        return cls(domain="CORNER", mesh=mesh, custom_normal=custom_normal)
 
     @property
     def i_mesh(self) -> SocketLinker:

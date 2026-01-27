@@ -260,6 +260,7 @@ class ForEachGeometryElementZone:
         self.output.domain = domain
         self.input._establish_links(Geometry=geometry, Selection=selection)
 
+    @property
     def index(self) -> SocketLinker:
         return self.input.o_index
 

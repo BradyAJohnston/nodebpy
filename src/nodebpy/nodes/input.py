@@ -1591,6 +1591,11 @@ class NamedAttribute(NodeBuilder):
         """Create Named Attribute with operation 'Quaternion'."""
         return cls(data_type="QUATERNION", name=name)
 
+    @classmethod
+    def matrix(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+        """Create Named Attribute with operation '4x4 Matrix'."""
+        return cls(data_type="FLOAT4X4", name=name)
+
     @property
     def i_name(self) -> SocketLinker:
         """Input socket: Name"""

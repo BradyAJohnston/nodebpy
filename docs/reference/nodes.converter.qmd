@@ -169,11 +169,20 @@ Perform bitwise operations on 32-bit integers
 
 | Name | Description |
 | --- | --- |
+| [exclusive_or](#nodebpy.nodes.converter.BitMath.exclusive_or) | Create Bit Math with operation 'Exclusive Or'. |
 | [l_and](#nodebpy.nodes.converter.BitMath.l_and) | Create Bit Math with operation 'And'. |
 | [l_not](#nodebpy.nodes.converter.BitMath.l_not) | Create Bit Math with operation 'Not'. |
 | [l_or](#nodebpy.nodes.converter.BitMath.l_or) | Create Bit Math with operation 'Or'. |
 | [rotate](#nodebpy.nodes.converter.BitMath.rotate) | Create Bit Math with operation 'Rotate'. |
 | [shift](#nodebpy.nodes.converter.BitMath.shift) | Create Bit Math with operation 'Shift'. |
+
+##### exclusive_or { #nodebpy.nodes.converter.BitMath.exclusive_or }
+
+```python
+nodes.converter.BitMath.exclusive_or(a=0, b=0)
+```
+
+Create Bit Math with operation 'Exclusive Or'.
 
 ##### l_and { #nodebpy.nodes.converter.BitMath.l_and }
 
@@ -270,6 +279,8 @@ Perform a logical operation on the given boolean inputs
 | [l_not](#nodebpy.nodes.converter.BooleanMath.l_not) | Create Boolean Math with operation 'Not'. |
 | [l_or](#nodebpy.nodes.converter.BooleanMath.l_or) | Create Boolean Math with operation 'Or'. |
 | [nor](#nodebpy.nodes.converter.BooleanMath.nor) | Create Boolean Math with operation 'Nor'. |
+| [not_and](#nodebpy.nodes.converter.BooleanMath.not_and) | Create Boolean Math with operation 'Not And'. |
+| [not_equal](#nodebpy.nodes.converter.BooleanMath.not_equal) | Create Boolean Math with operation 'Not Equal'. |
 | [subtract](#nodebpy.nodes.converter.BooleanMath.subtract) | Create Boolean Math with operation 'Subtract'. |
 
 ##### equal { #nodebpy.nodes.converter.BooleanMath.equal }
@@ -319,6 +330,22 @@ nodes.converter.BooleanMath.nor(boolean=False, boolean_001=False)
 ```
 
 Create Boolean Math with operation 'Nor'.
+
+##### not_and { #nodebpy.nodes.converter.BooleanMath.not_and }
+
+```python
+nodes.converter.BooleanMath.not_and(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'Not And'.
+
+##### not_equal { #nodebpy.nodes.converter.BooleanMath.not_equal }
+
+```python
+nodes.converter.BooleanMath.not_equal(boolean=False, boolean_001=False)
+```
+
+Create Boolean Math with operation 'Not Equal'.
 
 ##### subtract { #nodebpy.nodes.converter.BooleanMath.subtract }
 
@@ -737,10 +764,17 @@ Perform various math operations on the given integer inputs
 | [absolute](#nodebpy.nodes.converter.IntegerMath.absolute) | Create Integer Math with operation 'Absolute'. |
 | [add](#nodebpy.nodes.converter.IntegerMath.add) | Create Integer Math with operation 'Add'. |
 | [divide](#nodebpy.nodes.converter.IntegerMath.divide) | Create Integer Math with operation 'Divide'. |
+| [divide_ceiling](#nodebpy.nodes.converter.IntegerMath.divide_ceiling) | Create Integer Math with operation 'Divide Ceiling'. |
+| [divide_floor](#nodebpy.nodes.converter.IntegerMath.divide_floor) | Create Integer Math with operation 'Divide Floor'. |
+| [divide_round](#nodebpy.nodes.converter.IntegerMath.divide_round) | Create Integer Math with operation 'Divide Round'. |
+| [floored_modulo](#nodebpy.nodes.converter.IntegerMath.floored_modulo) | Create Integer Math with operation 'Floored Modulo'. |
+| [greatest_common_divisor](#nodebpy.nodes.converter.IntegerMath.greatest_common_divisor) | Create Integer Math with operation 'Greatest Common Divisor'. |
+| [least_common_multiple](#nodebpy.nodes.converter.IntegerMath.least_common_multiple) | Create Integer Math with operation 'Least Common Multiple'. |
 | [maximum](#nodebpy.nodes.converter.IntegerMath.maximum) | Create Integer Math with operation 'Maximum'. |
 | [minimum](#nodebpy.nodes.converter.IntegerMath.minimum) | Create Integer Math with operation 'Minimum'. |
 | [modulo](#nodebpy.nodes.converter.IntegerMath.modulo) | Create Integer Math with operation 'Modulo'. |
 | [multiply](#nodebpy.nodes.converter.IntegerMath.multiply) | Create Integer Math with operation 'Multiply'. |
+| [multiply_add](#nodebpy.nodes.converter.IntegerMath.multiply_add) | Create Integer Math with operation 'Multiply Add'. |
 | [negate](#nodebpy.nodes.converter.IntegerMath.negate) | Create Integer Math with operation 'Negate'. |
 | [power](#nodebpy.nodes.converter.IntegerMath.power) | Create Integer Math with operation 'Power'. |
 | [sign](#nodebpy.nodes.converter.IntegerMath.sign) | Create Integer Math with operation 'Sign'. |
@@ -769,6 +803,54 @@ nodes.converter.IntegerMath.divide(value=0, value_001=0)
 ```
 
 Create Integer Math with operation 'Divide'.
+
+##### divide_ceiling { #nodebpy.nodes.converter.IntegerMath.divide_ceiling }
+
+```python
+nodes.converter.IntegerMath.divide_ceiling(value=0, value_001=0)
+```
+
+Create Integer Math with operation 'Divide Ceiling'.
+
+##### divide_floor { #nodebpy.nodes.converter.IntegerMath.divide_floor }
+
+```python
+nodes.converter.IntegerMath.divide_floor(value=0, value_001=0)
+```
+
+Create Integer Math with operation 'Divide Floor'.
+
+##### divide_round { #nodebpy.nodes.converter.IntegerMath.divide_round }
+
+```python
+nodes.converter.IntegerMath.divide_round(value=0, value_001=0)
+```
+
+Create Integer Math with operation 'Divide Round'.
+
+##### floored_modulo { #nodebpy.nodes.converter.IntegerMath.floored_modulo }
+
+```python
+nodes.converter.IntegerMath.floored_modulo(value=0, value_001=0)
+```
+
+Create Integer Math with operation 'Floored Modulo'.
+
+##### greatest_common_divisor { #nodebpy.nodes.converter.IntegerMath.greatest_common_divisor }
+
+```python
+nodes.converter.IntegerMath.greatest_common_divisor(value=0, value_001=0)
+```
+
+Create Integer Math with operation 'Greatest Common Divisor'.
+
+##### least_common_multiple { #nodebpy.nodes.converter.IntegerMath.least_common_multiple }
+
+```python
+nodes.converter.IntegerMath.least_common_multiple(value=0, value_001=0)
+```
+
+Create Integer Math with operation 'Least Common Multiple'.
 
 ##### maximum { #nodebpy.nodes.converter.IntegerMath.maximum }
 
@@ -801,6 +883,14 @@ nodes.converter.IntegerMath.multiply(value=0, value_001=0)
 ```
 
 Create Integer Math with operation 'Multiply'.
+
+##### multiply_add { #nodebpy.nodes.converter.IntegerMath.multiply_add }
+
+```python
+nodes.converter.IntegerMath.multiply_add(value=0, value_001=0, value_002=0)
+```
+
+Create Integer Math with operation 'Multiply Add'.
 
 ##### negate { #nodebpy.nodes.converter.IntegerMath.negate }
 
@@ -1045,19 +1135,34 @@ Perform math operations
 | [divide](#nodebpy.nodes.converter.Math.divide) | Create Math with operation 'Divide'. |
 | [exponent](#nodebpy.nodes.converter.Math.exponent) | Create Math with operation 'Exponent'. |
 | [floor](#nodebpy.nodes.converter.Math.floor) | Create Math with operation 'Floor'. |
+| [floored_modulo](#nodebpy.nodes.converter.Math.floored_modulo) | Create Math with operation 'Floored Modulo'. |
 | [fraction](#nodebpy.nodes.converter.Math.fraction) | Create Math with operation 'Fraction'. |
+| [greater_than](#nodebpy.nodes.converter.Math.greater_than) | Create Math with operation 'Greater Than'. |
+| [hyperbolic_cosine](#nodebpy.nodes.converter.Math.hyperbolic_cosine) | Create Math with operation 'Hyperbolic Cosine'. |
+| [hyperbolic_sine](#nodebpy.nodes.converter.Math.hyperbolic_sine) | Create Math with operation 'Hyperbolic Sine'. |
+| [hyperbolic_tangent](#nodebpy.nodes.converter.Math.hyperbolic_tangent) | Create Math with operation 'Hyperbolic Tangent'. |
+| [inverse_square_root](#nodebpy.nodes.converter.Math.inverse_square_root) | Create Math with operation 'Inverse Square Root'. |
+| [less_than](#nodebpy.nodes.converter.Math.less_than) | Create Math with operation 'Less Than'. |
 | [logarithm](#nodebpy.nodes.converter.Math.logarithm) | Create Math with operation 'Logarithm'. |
 | [maximum](#nodebpy.nodes.converter.Math.maximum) | Create Math with operation 'Maximum'. |
 | [minimum](#nodebpy.nodes.converter.Math.minimum) | Create Math with operation 'Minimum'. |
 | [multiply](#nodebpy.nodes.converter.Math.multiply) | Create Math with operation 'Multiply'. |
+| [multiply_add](#nodebpy.nodes.converter.Math.multiply_add) | Create Math with operation 'Multiply Add'. |
+| [ping_pong](#nodebpy.nodes.converter.Math.ping_pong) | Create Math with operation 'Ping-Pong'. |
 | [power](#nodebpy.nodes.converter.Math.power) | Create Math with operation 'Power'. |
 | [round](#nodebpy.nodes.converter.Math.round) | Create Math with operation 'Round'. |
 | [sign](#nodebpy.nodes.converter.Math.sign) | Create Math with operation 'Sign'. |
 | [sine](#nodebpy.nodes.converter.Math.sine) | Create Math with operation 'Sine'. |
+| [smooth_maximum](#nodebpy.nodes.converter.Math.smooth_maximum) | Create Math with operation 'Smooth Maximum'. |
+| [smooth_minimum](#nodebpy.nodes.converter.Math.smooth_minimum) | Create Math with operation 'Smooth Minimum'. |
 | [snap](#nodebpy.nodes.converter.Math.snap) | Create Math with operation 'Snap'. |
+| [square_root](#nodebpy.nodes.converter.Math.square_root) | Create Math with operation 'Square Root'. |
 | [subtract](#nodebpy.nodes.converter.Math.subtract) | Create Math with operation 'Subtract'. |
 | [tangent](#nodebpy.nodes.converter.Math.tangent) | Create Math with operation 'Tangent'. |
+| [to_degrees](#nodebpy.nodes.converter.Math.to_degrees) | Create Math with operation 'To Degrees'. |
+| [to_radians](#nodebpy.nodes.converter.Math.to_radians) | Create Math with operation 'To Radians'. |
 | [truncate](#nodebpy.nodes.converter.Math.truncate) | Create Math with operation 'Truncate'. |
+| [truncated_modulo](#nodebpy.nodes.converter.Math.truncated_modulo) | Create Math with operation 'Truncated Modulo'. |
 | [wrap](#nodebpy.nodes.converter.Math.wrap) | Create Math with operation 'Wrap'. |
 
 ##### absolute { #nodebpy.nodes.converter.Math.absolute }
@@ -1156,6 +1261,14 @@ nodes.converter.Math.floor(value=0.5)
 
 Create Math with operation 'Floor'.
 
+##### floored_modulo { #nodebpy.nodes.converter.Math.floored_modulo }
+
+```python
+nodes.converter.Math.floored_modulo(value=0.5, value_001=0.5)
+```
+
+Create Math with operation 'Floored Modulo'.
+
 ##### fraction { #nodebpy.nodes.converter.Math.fraction }
 
 ```python
@@ -1163,6 +1276,54 @@ nodes.converter.Math.fraction(value=0.5)
 ```
 
 Create Math with operation 'Fraction'.
+
+##### greater_than { #nodebpy.nodes.converter.Math.greater_than }
+
+```python
+nodes.converter.Math.greater_than(value=0.5, value_001=0.5)
+```
+
+Create Math with operation 'Greater Than'.
+
+##### hyperbolic_cosine { #nodebpy.nodes.converter.Math.hyperbolic_cosine }
+
+```python
+nodes.converter.Math.hyperbolic_cosine(value=0.5)
+```
+
+Create Math with operation 'Hyperbolic Cosine'.
+
+##### hyperbolic_sine { #nodebpy.nodes.converter.Math.hyperbolic_sine }
+
+```python
+nodes.converter.Math.hyperbolic_sine(value=0.5)
+```
+
+Create Math with operation 'Hyperbolic Sine'.
+
+##### hyperbolic_tangent { #nodebpy.nodes.converter.Math.hyperbolic_tangent }
+
+```python
+nodes.converter.Math.hyperbolic_tangent(value=0.5)
+```
+
+Create Math with operation 'Hyperbolic Tangent'.
+
+##### inverse_square_root { #nodebpy.nodes.converter.Math.inverse_square_root }
+
+```python
+nodes.converter.Math.inverse_square_root(value=0.5)
+```
+
+Create Math with operation 'Inverse Square Root'.
+
+##### less_than { #nodebpy.nodes.converter.Math.less_than }
+
+```python
+nodes.converter.Math.less_than(value=0.5, value_001=0.5)
+```
+
+Create Math with operation 'Less Than'.
 
 ##### logarithm { #nodebpy.nodes.converter.Math.logarithm }
 
@@ -1196,6 +1357,22 @@ nodes.converter.Math.multiply(value=0.5, value_001=0.5)
 
 Create Math with operation 'Multiply'.
 
+##### multiply_add { #nodebpy.nodes.converter.Math.multiply_add }
+
+```python
+nodes.converter.Math.multiply_add(value=0.5, value_001=0.5, value_002=0.5)
+```
+
+Create Math with operation 'Multiply Add'.
+
+##### ping_pong { #nodebpy.nodes.converter.Math.ping_pong }
+
+```python
+nodes.converter.Math.ping_pong(value=0.5, value_001=0.5)
+```
+
+Create Math with operation 'Ping-Pong'.
+
 ##### power { #nodebpy.nodes.converter.Math.power }
 
 ```python
@@ -1228,6 +1405,22 @@ nodes.converter.Math.sine(value=0.5)
 
 Create Math with operation 'Sine'.
 
+##### smooth_maximum { #nodebpy.nodes.converter.Math.smooth_maximum }
+
+```python
+nodes.converter.Math.smooth_maximum(value=0.5, value_001=0.5, value_002=0.5)
+```
+
+Create Math with operation 'Smooth Maximum'.
+
+##### smooth_minimum { #nodebpy.nodes.converter.Math.smooth_minimum }
+
+```python
+nodes.converter.Math.smooth_minimum(value=0.5, value_001=0.5, value_002=0.5)
+```
+
+Create Math with operation 'Smooth Minimum'.
+
 ##### snap { #nodebpy.nodes.converter.Math.snap }
 
 ```python
@@ -1235,6 +1428,14 @@ nodes.converter.Math.snap(value=0.5, value_001=0.5)
 ```
 
 Create Math with operation 'Snap'.
+
+##### square_root { #nodebpy.nodes.converter.Math.square_root }
+
+```python
+nodes.converter.Math.square_root(value=0.5)
+```
+
+Create Math with operation 'Square Root'.
 
 ##### subtract { #nodebpy.nodes.converter.Math.subtract }
 
@@ -1252,6 +1453,22 @@ nodes.converter.Math.tangent(value=0.5)
 
 Create Math with operation 'Tangent'.
 
+##### to_degrees { #nodebpy.nodes.converter.Math.to_degrees }
+
+```python
+nodes.converter.Math.to_degrees(value=0.5)
+```
+
+Create Math with operation 'To Degrees'.
+
+##### to_radians { #nodebpy.nodes.converter.Math.to_radians }
+
+```python
+nodes.converter.Math.to_radians(value=0.5)
+```
+
+Create Math with operation 'To Radians'.
+
 ##### truncate { #nodebpy.nodes.converter.Math.truncate }
 
 ```python
@@ -1259,6 +1476,14 @@ nodes.converter.Math.truncate(value=0.5)
 ```
 
 Create Math with operation 'Truncate'.
+
+##### truncated_modulo { #nodebpy.nodes.converter.Math.truncated_modulo }
+
+```python
+nodes.converter.Math.truncated_modulo(value=0.5, value_001=0.5)
+```
+
+Create Math with operation 'Truncated Modulo'.
 
 ##### wrap { #nodebpy.nodes.converter.Math.wrap }
 

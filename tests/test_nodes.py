@@ -457,18 +457,38 @@ def test_foreachgeometryelement_zone():
         with tree.outputs:
             out = s.SocketGeometry("Geometry")
         cube = n.Cube()
-        zone = n.ForEachGeometryElementZone(cube, domain="FACE")
+        zone = n.ForEachGeometryElementZone(
+            cube,
+            selection=n.Normal()
+            >> n.VectorMath.dot_product(..., (0, 0, 1))
+            >> n.Compare.greater_than.float(..., -0.1),
+            domain="FACE",
+        )
         pos = zone.input.capture(n.Position())
         norm = zone.input.capture(n.Normal())
         transformed = n.Cone() >> n.TransformGeometry(
-            translation=pos, rotation=n.AlignRotationToVector(vector=norm), scale=0.4
+            translation=pos,
+            rotation=n.AlignRotationToVector(
+                vector=norm + n.RandomValue.vector(min=-1, id=zone.index)
+            ),
+            scale=0.4,
         )
         zone.output.capture(pos)
         _ = transformed >> zone.output
         _ = n.JoinGeometry(zone.output.o_generation, cube) >> out
+
+    input, output = zone
+    with pytest.raises(IndexError):
+        zone[2]
 
     assert all([i.socket_type == "VECTOR" for i in zone.input.items])
     assert len(zone.input.items) == 2
     assert len(zone.output.items) == 1
     assert zone.output.items[0].socket_type == "VECTOR"
     assert zone.output.node.inputs["Geometry"].links[0].from_node == transformed.node
+    assert zone.input.output == zone.output.node
+    assert zone.input == input
+    assert zone.output == output
+    assert input.i_selection.socket.links[0].from_node == tree.nodes["Compare"]
+    assert tree.nodes["Compare"].data_type == "FLOAT"
+    assert tree.nodes["Compare"].operation == "GREATER_THAN"

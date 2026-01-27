@@ -354,7 +354,14 @@ class NodeInfo:
             # assert operation_enum.enum_items
             for enum in prop.enum_items:
                 # Handle special cases for better naming
-                method_name = enum.name.lower()
+                method_name = (
+                    enum.name.lower()
+                    .replace(" ", "_")
+                    .replace("-", "_")
+                    .replace("4x4_matrix", "matrix")
+                    .replace("8_bit_integer", "int8")
+                    .replace("2d_vector", "vector2")
+                )
                 # method_name = method_name.replace("_", "")
                 if method_name == "and":
                     method_name = "l_and"
@@ -366,9 +373,9 @@ class NodeInfo:
                     # Add underscore suffix to avoid Python keyword conflicts for others
                     method_name = f"{method_name}"
 
-                # Skip invalid method names
-                if not method_name.replace("_", "").replace("l", "").isalnum():
-                    continue
+                # # Skip invalid method names
+                # if not method_name.replace("_", "").replace("l", "").isalnum():
+                #     continue
 
                 # Generate method signature based on node inputs (excluding operation socket)
                 input_params = ["cls"]
