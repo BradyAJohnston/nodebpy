@@ -36,18 +36,16 @@ be linked to the previous node via the inferred or specified socket.
 ``` python
 from nodebpy import TreeBuilder, nodes as n, sockets as s
 
-with TreeBuilder("AnotherTree") as tree:
+with TreeBuilder("AnotherTree", collapse=True) as tree:
     with tree.inputs:
         count = s.SocketInt("Count", 10)
     with tree.outputs:
         instances = s.SocketGeometry("Instances")
 
     rotation = (
-        n.RandomValue.vector(min=(-1, -1, -1), seed=2)
+        n.RandomValue.vector(min=-1, seed=2)
         >> n.AlignRotationToVector()
-        >> n.RotateRotation(
-            rotate_by=n.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
-        )
+        >> n.RotateRotation(rotate_by=n.AxisAngleToRotation(angle=0.3))
     )
 
     _ = (
@@ -62,57 +60,9 @@ with TreeBuilder("AnotherTree") as tree:
         >> n.InstanceOnPoints(n.Cube(), instance=...)
         >> instances
     )
-
-tree
 ```
 
-``` mermaid
-graph LR
-    N0("NodeGroupInput"):::default-node
-    N1("RandomValue<br/><small>(-1,-1,-1) seed:2</small>"):::converter-node
-    N2("RandomValue<br/><small>(-1,-1,-1)</small>"):::converter-node
-    N3("AlignRotationToVector"):::converter-node
-    N4("AxisAngleToRotation<br/><small>(0,0,1)</small>"):::converter-node
-    N5("InputPosition"):::input-node
-    N6("Points"):::geometry-node
-    N7("MeshCube"):::geometry-node
-    N8("RotateRotation"):::converter-node
-    N9("VectorMath<br/><small>×2</small>"):::vector-node
-    N10("InstanceOnPoints"):::geometry-node
-    N11("VectorMath<br/><small>(0,0.2,0.3)</small>"):::vector-node
-    N12("SetPosition<br/><small>+(0,0,0.1)</small>"):::geometry-node
-    N13("MeshCube"):::geometry-node
-    N14("RealizeInstances"):::geometry-node
-    N15("InstanceOnPoints"):::geometry-node
-    N16("NodeGroupOutput"):::default-node
-    N1 -->|"Value>>Vector"| N3
-    N4 -->|"Rotation>>Rotate By"| N8
-    N3 -->|"Rotation>>Rotation"| N8
-    N2 -->|"Value>>Position"| N6
-    N0 -->|"Count>>Count"| N6
-    N7 -->|"Mesh>>Instance"| N10
-    N8 -->|"Rotation>>Rotation"| N10
-    N6 -->|"Points>>Points"| N10
-    N5 -->|"Position>>Vector"| N9
-    N9 -->|"Vector>>Vector"| N11
-    N11 -->|"Vector>>Position"| N12
-    N10 -->|"Instances>>Geometry"| N12
-    N12 -->|"Geometry>>Geometry"| N14
-    N13 -->|"Mesh>>Points"| N15
-    N14 -->|"Geometry>>Instance"| N15
-    N15 -->|"Instances>>Instances"| N16
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
-```
-
-![](docs/images/paste-2.png)
+![](docs/images/paste-1.png)
 
 # Design Considerations
 

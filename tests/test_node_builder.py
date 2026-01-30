@@ -430,24 +430,21 @@ def test_warning_innactive_socket():
 
 
 def test_readme_tree():
-    with TreeBuilder("AnotherTree") as tree:
+    with TreeBuilder("AnotherTree", collapse=True) as tree:
         with tree.inputs:
-            count = s.SocketInt("Count")
+            count = s.SocketInt("Count", 10)
         with tree.outputs:
             instances = s.SocketGeometry("Instances")
 
         rotation = (
-            n.RandomValue.vector(min=(-1, -1, -1), seed=2)
+            n.RandomValue.vector(min=-1, seed=2)
             >> n.AlignRotationToVector()
-            >> n.RotateRotation(
-                rotate_by=n.AxisAngleToRotation(angle=0.3),
-                rotation_space="LOCAL",
-            )
+            >> n.RotateRotation(rotate_by=n.AxisAngleToRotation(angle=0.3))
         )
 
         _ = (
             count
-            >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
+            >> n.Points(position=n.RandomValue.vector(min=-1))
             >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
             >> n.SetPosition(
                 position=n.Position() * 2.0 + (0, 0.2, 0.3),

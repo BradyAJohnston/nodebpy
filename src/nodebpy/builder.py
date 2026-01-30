@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 
 import arrangebpy
 import bpy
+import numpy as np
 from bpy.types import (
     GeometryNodeTree,
     Node,
@@ -117,12 +118,15 @@ class TreeBuilder:
     """Builder for creating Blender geometry node trees with a clean Python API."""
 
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
-    # _active_tree: ClassVar["TreeBuilder | None"] = None
-    # _previous_tree: ClassVar["list[TreeBuilder]"] = list()
     just_added: "Node | None" = None
+    collapse: bool = False
 
     def __init__(
-        self, tree: GeometryNodeTree | str = "Geometry Nodes", arrange: bool = True
+        self,
+        tree: GeometryNodeTree | str = "Geometry Nodes",
+        *,
+        collapse: bool = False,
+        arrange: bool = True,
     ):
         if isinstance(tree, str):
             self.tree = bpy.data.node_groups.new(tree, "GeometryNodeTree")
@@ -134,6 +138,7 @@ class TreeBuilder:
         self.inputs = InputInterfaceContext(self)
         self.outputs = OutputInterfaceContext(self)
         self._arrange = arrange
+        self.collapse = collapse
 
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""
@@ -230,7 +235,9 @@ class TreeBuilder:
         return link
 
     def add(self, name: str) -> Node:
-        return self.tree.nodes.new(name)
+        node = self.tree.nodes.new(name)
+        node.hide = self.collapse
+        return node
 
 
 class NodeBuilder:
