@@ -22,24 +22,21 @@ By default the operator attempts to link the first output of the previous node w
 You can override this behaviour by being explicit with the socket you are passing out (`AccumulateField().o_total`) or using the `...` for the inputs into the next node.
 The dots can appear at multiple locations and each input will be linked to the previous node via the inferred or specified socket.
 
-
 # Example Node Tree
 
 ```{python}
 from nodebpy import TreeBuilder, nodes as n, sockets as s
 
-with TreeBuilder("AnotherTree") as tree:
+with TreeBuilder("AnotherTree", collapse=True) as tree:
     with tree.inputs:
         count = s.SocketInt("Count", 10)
     with tree.outputs:
         instances = s.SocketGeometry("Instances")
 
     rotation = (
-        n.RandomValue.vector(min=(-1, -1, -1), seed=2)
+        n.RandomValue.vector(min=-1, seed=2)
         >> n.AlignRotationToVector()
-        >> n.RotateRotation(
-            rotate_by=n.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
-        )
+        >> n.RotateRotation(rotate_by=n.AxisAngleToRotation(angle=0.3))
     )
 
     _ = (
@@ -54,36 +51,31 @@ with TreeBuilder("AnotherTree") as tree:
         >> n.InstanceOnPoints(n.Cube(), instance=...)
         >> instances
     )
-
-tree
 ```
-
 
 ![](docs/images/paste-2.png)
 
 # Design Considerations
 
-Whenever possible, support IDE auto-complete and have useful types. We should know as much
-ahead of time as possible if our network will actually build.
+Whenever possible, support IDE auto-complete and have useful types.
+We should know as much ahead of time as possible if our network will actually build.
 
-- Stick as closely to Geometry Nodes naming as possible
-    - `RandomValue` creates a random value node
-        - `RandomValue.vector()` creates it set to `"VECTOR"` data type and provides arguments for IDE auto-complete
-- Inputs and outputs from a node are prefixed with `i_*` and `o_`:
-    - `AccumulateField().o_total` returns the output `Total` socket
-    - `AccumulateField().i_value` returns the input `Value` socket
-- If inputs are subject to change depending on enums, provide separate constructor methods that provide related inputs as arguments. There should be no guessing involved and IDEs should provide documentation for what is required:
-    - `TransformGeometry.matrix(CombineTrasnsform(translation=(0, 0, 1))`
-    - `TransformGeoemtry.components(translation=(0, 0, 1))`
-    - `TransformGeometry(translation=(0, 0, 1))`
-
-
+-   Stick as closely to Geometry Nodes naming as possible
+    -   `RandomValue` creates a random value node
+        -   `RandomValue.vector()` creates it set to `"VECTOR"` data type and provides arguments for IDE auto-complete
+-   Inputs and outputs from a node are prefixed with `i_*` and `o_`:
+    -   `AccumulateField().o_total` returns the output `Total` socket
+    -   `AccumulateField().i_value` returns the input `Value` socket
+-   If inputs are subject to change depending on enums, provide separate constructor methods that provide related inputs as arguments. There should be no guessing involved and IDEs should provide documentation for what is required:
+    -   `TransformGeometry.matrix(CombineTrasnsform(translation=(0, 0, 1))`
+    -   `TransformGeoemtry.components(translation=(0, 0, 1))`
+    -   `TransformGeometry(translation=(0, 0, 1))`
 
 ## Building
 
 Most node classes are generated automatically with this.
 The nodes in `nodes/manual.py` are currently manually specified due to varying complexities of particular nodes (usually lergacy).
 
-```bash
+``` bash
 uv run generate.py && ruff format && ruff check --fix --unsafe-fixes
 ```
