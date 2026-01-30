@@ -62,7 +62,7 @@ with TreeBuilder("AnotherTree", collapse=True) as tree:
     )
 ```
 
-![](docs/images/paste-2.png)
+![](docs/images/paste-1.png)
 
 # Design Considerations
 
