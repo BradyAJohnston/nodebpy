@@ -500,7 +500,7 @@ def test_foreachgeometryelement_zone():
 
 
 def test_boolean_math_methods():
-    with TreeBuilder(arrange=False) as tree:
+    with TreeBuilder(arrange=False, collapse=True) as tree:
         _ = (
             n.Boolean()
             >> n.BooleanMath.not_and(..., True)
