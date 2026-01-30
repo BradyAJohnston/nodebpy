@@ -7,7 +7,6 @@ if TYPE_CHECKING:
 
 import arrangebpy
 import bpy
-import numpy as np
 from bpy.types import (
     GeometryNodeTree,
     Node,
