@@ -234,10 +234,8 @@ class TreeBuilder:
 
         return link
 
-    def add(self, name: str, location: tuple[float, float] | None = None) -> Node:
+    def add(self, name: str) -> Node:
         node = self.tree.nodes.new(name)
-        if location is not None:
-            node.location = location
         node.hide = self.collapse
         return node
 
