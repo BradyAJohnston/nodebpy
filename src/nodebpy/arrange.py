@@ -1,5 +1,6 @@
 import typing
 from collections import Counter, deque
+
 import bpy
 from mathutils import Vector
 
@@ -243,7 +244,7 @@ def position_nodes_in_columns(
     spacing : tuple of float, optional
         Tuple of (horizontal, vertical) spacing between nodes, by default (50, 25)
     """
-    interface_scale = bpy.context.preferences.view.ui_scale
+    interface_scale = 1.0
     non_geo_offset = 20 + 28 * 2  # header + 2 socket heights
 
     # position nodes column by column

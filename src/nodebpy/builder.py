@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
 if TYPE_CHECKING:
     from .nodes import Math, VectorMath
 
-import arrangebpy
 import bpy
 from bpy.types import (
     GeometryNodeTree,
@@ -14,6 +13,7 @@ from bpy.types import (
     NodeSocket,
 )
 
+from .lib.nodearrange.arrange import sugiyama
 from .types import (
     LINKABLE,
     SOCKET_COMPATIBILITY,
@@ -139,6 +139,10 @@ class TreeBuilder:
         self._arrange = arrange
         self.collapse = collapse
 
+    @property
+    def nodes(self) -> Nodes:
+        return self.tree.nodes
+
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""
         TreeBuilder._tree_contexts.append(self)
@@ -156,18 +160,12 @@ class TreeBuilder:
             self.arrange()
         self.deactivate_tree()
 
-    @property
-    def nodes(self) -> Nodes:
-        return self.tree.nodes
-
     def __len__(self) -> int:
         return len(self.nodes)
 
     def arrange(self):
-        settings = arrangebpy.LayoutSettings(
-            horizontal_spacing=200, vertical_spacing=200, align_top_layer=True
-        )
-        arrangebpy.sugiyama_layout(self.tree, settings)
+        sugiyama.sugiyama_layout(self.tree)
+        sugiyama.config.reset()
 
     def _repr_markdown_(self) -> str | None:
         """
