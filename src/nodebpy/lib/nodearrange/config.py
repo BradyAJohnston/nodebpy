@@ -26,7 +26,7 @@ class Settings:
     direction: Literal["LEFT_DOWN", "RIGHT_DOWN", "BALANCED", "LEFT_UP", "RIGHT_UP"] = (
         "LEFT_UP"
     )
-    socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "FULL"
+    socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "MODERATE"
     add_reroutes: bool = True
     keep_reroutes_outside_frames: bool = False
     stack_collapsed: bool = True
