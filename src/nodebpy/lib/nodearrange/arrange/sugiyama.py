@@ -79,7 +79,7 @@ def get_multidigraph() -> nx.MultiDiGraph[Node]:
 
 
 def save_multi_input_orders(G: nx.MultiDiGraph[Node]) -> None:
-    links = {(l.from_socket, l.to_socket): l for l in get_ntree().links}
+    links = {(link.from_socket, link.to_socket): link for link in get_ntree().links}
     for v, w, d in G.edges.data():
         to_socket = d[TO_SOCKET]
 
@@ -104,7 +104,9 @@ def add_columns(G: nx.DiGraph[Node]) -> None:
     columns = [list(c) for c in group_by(G, key=lambda v: v.rank, sort=True)]
     G.graph["columns"] = columns
 
-    y_loc = lambda v: abs_loc(v.node).y if is_real(v) and nx.is_isolate(G, v) else 0
+    def y_loc(v):
+        return abs_loc(v.node).y if is_real(v) and nx.is_isolate(G, v) else 0
+
     for col in columns:
         col.sort(key=node_name)
         col.sort(key=y_loc, reverse=True)

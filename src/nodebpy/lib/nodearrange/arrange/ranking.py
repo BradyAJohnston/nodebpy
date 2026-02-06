@@ -47,10 +47,10 @@ def get_slack(e: MultiEdge) -> int:
 
 
 def tight_tree(
-  H: nx.MultiDiGraph[Node],
-  T: nx.MultiDiGraph[Node],
-  v: Node,
-  visited: set[MultiEdge] | None = None,
+    H: nx.MultiDiGraph[Node],
+    T: nx.MultiDiGraph[Node],
+    v: Node,
+    visited: set[MultiEdge] | None = None,
 ) -> int:
     if visited is None:
         visited = set()
@@ -109,22 +109,22 @@ def compute_cut_values(H: nx.MultiDiGraph[Node], T: nx.MultiDiGraph[Node]) -> No
         while len(unknown_cut_values[v]) == 1:
             to_determine = unknown_cut_values[v][0]
             d = T.edges[to_determine]
-            d['cut_value'] = H.edges[to_determine]['weight']
+            d["cut_value"] = H.edges[to_determine]["weight"]
             u, w, _ = to_determine
             for e in get_adj_edges_H(H, v):
                 if e == to_determine:
                     continue
 
-                weight = H.edges[e]['weight']
+                weight = H.edges[e]["weight"]
                 if e in T.edges:
                     if u == e[0] or w == e[1]:
-                        d['cut_value'] -= T.edges[e]['cut_value'] - weight
+                        d["cut_value"] -= T.edges[e]["cut_value"] - weight
                     else:
-                        d['cut_value'] += T.edges[e]['cut_value'] - weight
+                        d["cut_value"] += T.edges[e]["cut_value"] - weight
                 else:
                     if (v == u and e[0] != v) or (v != u and e[0] == v):
                         weight = -weight
-                    d['cut_value'] += weight
+                    d["cut_value"] += weight
 
             unknown_cut_values[u].remove(to_determine)
             unknown_cut_values[w].remove(to_determine)
@@ -141,7 +141,9 @@ def feasible_tree(H: nx.MultiDiGraph[Node]) -> nx.MultiDiGraph[Node]:
     v_root = next(iter(H))
 
     while tight_tree(H, T, v_root) < len(H):
-        incident_edges = [(u, v, k) for u, v, k in H.edges(keys=True) if (u in T) ^ (v in T)]
+        incident_edges = [
+            (u, v, k) for u, v, k in H.edges(keys=True) if (u in T) ^ (v in T)
+        ]
         e = min(incident_edges, key=get_slack)
         slack = -get_slack(e) if e[1] in T else get_slack(e)
         for v in T:
@@ -154,28 +156,38 @@ def feasible_tree(H: nx.MultiDiGraph[Node]) -> nx.MultiDiGraph[Node]:
 
 
 def leave_edge(T: nx.MultiDiGraph[Node]) -> MultiEdge | None:
-    return next(((u, v, k) for u, v, k, c in T.edges.data('cut_value', keys=True) if c < 0), None)
+    return next(
+        ((u, v, k) for u, v, k, c in T.edges.data("cut_value", keys=True) if c < 0),
+        None,
+    )
 
 
 def is_in_head(v: Node, e: MultiEdge) -> bool:
     u, w, _ = e
 
-    if u.lowest_po_num <= v.po_num and v.po_num <= u.po_num and w.lowest_po_num <= v.po_num and v.po_num <= w.po_num:
+    if (
+        u.lowest_po_num <= v.po_num
+        and v.po_num <= u.po_num
+        and w.lowest_po_num <= v.po_num
+        and v.po_num <= w.po_num
+    ):
         return u.po_num >= w.po_num
 
     return u.po_num < w.po_num
 
 
 def enter_edge(H: nx.MultiDiGraph[Node], e: MultiEdge) -> MultiEdge:
-    edges = [f for f in H.edges(keys=True) if is_in_head(f[0], e) and not is_in_head(f[1], e)]
+    edges = [
+        f for f in H.edges(keys=True) if is_in_head(f[0], e) and not is_in_head(f[1], e)
+    ]
     return min(edges, key=get_slack)
 
 
 def exchange(
-  H: nx.MultiDiGraph[Node],
-  T: nx.MultiDiGraph[Node],
-  leave: MultiEdge,
-  enter: MultiEdge,
+    H: nx.MultiDiGraph[Node],
+    T: nx.MultiDiGraph[Node],
+    leave: MultiEdge,
+    enter: MultiEdge,
 ) -> None:
     T.remove_edge(*leave)
     T.add_edge(*enter)
@@ -242,7 +254,7 @@ def compute_ranks(CG: ClusterGraph) -> None:
             c.nesting_level = i
 
     H = get_nesting_graph(CG)
-    nx.set_edge_attributes(H, 1, 'weight')  # type: ignore
+    nx.set_edge_attributes(H, 1, "weight")  # type: ignore
 
     T = feasible_tree(H)
     i = 0

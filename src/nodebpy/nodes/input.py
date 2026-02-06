@@ -207,26 +207,6 @@ class CameraInfo(NodeBuilder):
         return self._output("Orthographic Scale")
 
 
-class Collection(NodeBuilder):
-    """
-    Output a single collection
-    """
-
-    _bl_idname = "GeometryNodeInputCollection"
-    node: bpy.types.GeometryNodeInputCollection
-
-    def __init__(self):
-        super().__init__()
-        key_args = {}
-
-        self._establish_links(**key_args)
-
-    @property
-    def o_collection(self) -> SocketLinker:
-        """Output socket: Collection"""
-        return self._output("Collection")
-
-
 class CollectionInfo(NodeBuilder):
     """
     Retrieve geometry instances from a collection
@@ -1434,26 +1414,6 @@ class IsViewport(NodeBuilder):
         return self._output("Is Viewport")
 
 
-class Material(NodeBuilder):
-    """
-    Output a single material
-    """
-
-    _bl_idname = "GeometryNodeInputMaterial"
-    node: bpy.types.GeometryNodeInputMaterial
-
-    def __init__(self):
-        super().__init__()
-        key_args = {}
-
-        self._establish_links(**key_args)
-
-    @property
-    def o_material(self) -> SocketLinker:
-        """Output socket: Material"""
-        return self._output("Material")
-
-
 class MaterialIndex(NodeBuilder):
     """
     Retrieve the index of the material used for each element in the geometry's list of materials
@@ -1697,26 +1657,6 @@ class Normal(NodeBuilder):
     @legacy_corner_normals.setter
     def legacy_corner_normals(self, value: bool):
         self.node.legacy_corner_normals = value
-
-
-class Object(NodeBuilder):
-    """
-    Output a single object
-    """
-
-    _bl_idname = "GeometryNodeInputObject"
-    node: bpy.types.GeometryNodeInputObject
-
-    def __init__(self):
-        super().__init__()
-        key_args = {}
-
-        self._establish_links(**key_args)
-
-    @property
-    def o_object(self) -> SocketLinker:
-        """Output socket: Object"""
-        return self._output("Object")
 
 
 class ObjectInfo(NodeBuilder):

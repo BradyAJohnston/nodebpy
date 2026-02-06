@@ -13,22 +13,22 @@ from mathutils.geometry import intersect_line_line_2d
 from .. import config
 from ..utils import frame_padding, group_by
 from .graph import (
-  FROM_SOCKET,
-  TO_SOCKET,
-  Cluster,
-  Kind,
-  MultiEdge,
-  Node,
-  Socket,
-  add_dummy_nodes_to_edge,
-  lowest_common_cluster,
+    FROM_SOCKET,
+    TO_SOCKET,
+    Cluster,
+    Kind,
+    MultiEdge,
+    Node,
+    Socket,
+    add_dummy_nodes_to_edge,
+    lowest_common_cluster,
 )
 
 
 def frame_padding_of_col(
-  columns: Sequence[Collection[Node]],
-  i: int,
-  T: nx.DiGraph[Node | Cluster],
+    columns: Sequence[Collection[Node]],
+    i: int,
+    T: nx.DiGraph[Node | Cluster],
 ) -> float:
     col = columns[i]
 
@@ -45,17 +45,17 @@ def frame_padding_of_col(
     ST2 = T.subgraph(chain(clusters2, *[nx.ancestors(T, c) for c in clusters2])).copy()
 
     for *e, d in ST1.edges(data=True):
-        d['weight'] = int(e not in ST2.edges)  # type: ignore
+        d["weight"] = int(e not in ST2.edges)  # type: ignore
 
     for *e, d in ST2.edges(data=True):
-        d['weight'] = int(e not in ST1.edges)  # type: ignore
+        d["weight"] = int(e not in ST1.edges)  # type: ignore
 
     dist = nx.dag_longest_path_length(ST1) + nx.dag_longest_path_length(ST2)  # type: ignore
     return frame_padding() * dist
 
 
 def assign_x_coords(G: nx.DiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:
-    columns: list[list[Node]] = G.graph['columns']
+    columns: list[list[Node]] = G.graph["columns"]
     x = 0
     for i, col in enumerate(columns):
         max_width = max([v.width for v in col])
@@ -64,9 +64,13 @@ def assign_x_coords(G: nx.DiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:
             v.x = x if v.is_reroute else x - (v.width - max_width) / 2
 
         # https://doi.org/10.7155/jgaa.00220 (p. 139)
-        delta_i = sum([
-          1 for *_, d in G.out_edges(col, data=True)
-          if abs(d[TO_SOCKET].y - d[FROM_SOCKET].y) >= config.MARGIN.x * 3])
+        delta_i = sum(
+            [
+                1
+                for *_, d in G.out_edges(col, data=True)
+                if abs(d[TO_SOCKET].y - d[FROM_SOCKET].y) >= config.MARGIN.x * 3
+            ]
+        )
         spacing = (1 + min(delta_i / 4, 2)) * config.MARGIN.x
         x += max_width + spacing + frame_padding_of_col(columns, i, T)
 
@@ -109,13 +113,16 @@ def is_unnecessary_bend_point(socket: Socket, other_socket: Socket) -> bool:
 
 
 def add_bend_points(
-  G: nx.MultiDiGraph[Node],
-  v: Node,
-  bend_points: defaultdict[MultiEdge, list[Node]],
+    G: nx.MultiDiGraph[Node],
+    v: Node,
+    bend_points: defaultdict[MultiEdge, list[Node]],
 ) -> None:
     d: dict[str, Socket]
     largest = max(v.col, key=lambda w: w.width)
-    for u, w, k, d in *G.out_edges(v, data=True, keys=True), *G.in_edges(v, data=True, keys=True):
+    for u, w, k, d in (
+        *G.out_edges(v, data=True, keys=True),
+        *G.in_edges(v, data=True, keys=True),
+    ):
         socket = d[FROM_SOCKET] if v == u else d[TO_SOCKET]
         bend_point = Node(type=Kind.DUMMY)
         bend_point.x = largest.x + largest.width if socket.is_output else largest.x
@@ -136,8 +143,8 @@ def add_bend_points(
 
 
 def node_overlaps_edge(
-  v: Node,
-  edge_line: tuple[tuple[float, float], tuple[float, float]],
+    v: Node,
+    edge_line: tuple[tuple[float, float], tuple[float, float]],
 ) -> bool:
     if v.is_reroute:
         return False
@@ -147,8 +154,8 @@ def node_overlaps_edge(
         return True
 
     bottom_line = (
-      (v.x, v.y - v.height),
-      (v.x + v.width, v.y - v.height),
+        (v.x, v.y - v.height),
+        (v.x + v.width, v.y - v.height),
     )
     if intersect_line_line_2d(*edge_line, *bottom_line):
         return True
@@ -158,13 +165,16 @@ def node_overlaps_edge(
 
 def route_edges(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:
     bend_points = defaultdict(list)
-    for v in chain(*G.graph['columns']):
+    for v in chain(*G.graph["columns"]):
         add_bend_points(G, v, bend_points)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     edge_of = {b: e for e, d in bend_points.items() for b in d}
-    key = lambda b: (G.edges[edge_of[b]][FROM_SOCKET], b.x, b.y)
+
+    def key(b):
+        return (G.edges[edge_of[b]][FROM_SOCKET], b.x, b.y)
+
     for (target, *redundant), (from_socket, *_) in group_by(edge_of, key=key).items():
         for b in redundant:
             dummy_nodes = bend_points[edge_of[b]]

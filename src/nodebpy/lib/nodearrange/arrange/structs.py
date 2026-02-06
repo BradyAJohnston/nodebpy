@@ -23,7 +23,7 @@ class bNodeStack(ctypes.Structure):
 
 
 class bNodeSocketRuntimeHandle(ctypes.Structure):
-    if platform.system() == 'Windows':
+    if platform.system() == "Windows":
         _pad0: ctypes.c_char * 8
     declaration: ctypes.c_void_p
     changed_flag: ctypes.c_uint32
@@ -128,5 +128,12 @@ class bNode(ctypes.Structure):
     runtime: ctypes.POINTER(bNodeRuntime)
 
 
-for cls in (bNodeStack, bNodeSocketRuntimeHandle, bNodeSocket, rctf, bNodeRuntime, bNode):
+for cls in (
+    bNodeStack,
+    bNodeSocketRuntimeHandle,
+    bNodeSocket,
+    rctf,
+    bNodeRuntime,
+    bNode,
+):
     cls._fields_ = [(k, eval(v)) for k, v in cls.__annotations__.items()]

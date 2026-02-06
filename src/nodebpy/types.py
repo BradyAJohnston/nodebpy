@@ -4,6 +4,8 @@ import typing
 from typing import Literal
 
 from bpy.types import (
+    Collection,
+    Material,
     NodeSocket,
     NodeSocketBool,
     NodeSocketBundle,
@@ -20,6 +22,7 @@ from bpy.types import (
     NodeSocketObject,
     NodeSocketString,
     NodeSocketVector,
+    Object,
 )
 from mathutils import Euler
 
@@ -60,10 +63,10 @@ TYPE_INPUT_COLOR = typing.Union[
 ]
 TYPE_INPUT_STRING = typing.Union[str, LINKABLE, NodeSocketString]
 TYPE_INPUT_GEOMETRY = typing.Union[LINKABLE, NodeSocketGeometry]
-TYPE_INPUT_OBJECT = typing.Union[LINKABLE, NodeSocketObject]
-TYPE_INPUT_MATERIAL = typing.Union[LINKABLE, NodeSocketMaterial]
+TYPE_INPUT_OBJECT = typing.Union[LINKABLE, NodeSocketObject, Object]
+TYPE_INPUT_MATERIAL = typing.Union[LINKABLE, NodeSocketMaterial, Material]
 TYPE_INPUT_IMAGE = typing.Union[LINKABLE, NodeSocketImage]
-TYPE_INPUT_COLLECTION = typing.Union[LINKABLE, NodeSocketCollection]
+TYPE_INPUT_COLLECTION = typing.Union[LINKABLE, NodeSocketCollection, Collection]
 TYPE_INPUT_MATRIX = typing.Union[LINKABLE, NodeSocketMatrix]
 TYPE_INPUT_GRID = typing.Union[
     TYPE_INPUT_VALUE, TYPE_INPUT_VECTOR, TYPE_INPUT_BOOLEAN, TYPE_INPUT_INT

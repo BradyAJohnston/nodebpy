@@ -1,5 +1,6 @@
 import itertools
 
+import bpy
 import pytest
 
 from nodebpy import TreeBuilder
@@ -564,3 +565,29 @@ def test_math_methods():
         )
 
     assert len(tree) == 29
+
+
+def test_inputs():
+    with TreeBuilder() as tree:
+        _ = n.ObjectInfo(bpy.data.objects["Cube"])
+        object = n.Object(bpy.data.objects["Cube"]) >> n.ObjectInfo()
+        material = n.SetMaterial(
+            object, material=n.Material(bpy.data.materials["Material"])
+        )
+        coll = n.CollectionInfo(
+            n.Collection(bpy.data.collections.new("TestColelction"))
+        )
+
+    assert len(tree) == 7
+    assert (
+        object.node.inputs[0].links[0].from_socket.default_value
+        == bpy.data.objects["Cube"]
+    )
+    assert (
+        material.i_material.links[0].from_socket.default_value
+        == bpy.data.materials["Material"]
+    )
+    assert (
+        coll.i_collection.links[0].from_socket.default_value
+        == bpy.data.collections["TestColelction"]
+    )

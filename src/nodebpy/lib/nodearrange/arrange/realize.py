@@ -13,17 +13,17 @@ from mathutils import Vector
 from .. import config
 from ..utils import get_ntree, move
 from .graph import (
-  FROM_SOCKET,
-  TO_SOCKET,
-  Cluster,
-  ClusterGraph,
-  Kind,
-  Node,
-  Socket,
-  add_dummy_edge,
-  get_reroute_paths,
-  is_real,
-  socket_graph,
+    FROM_SOCKET,
+    TO_SOCKET,
+    Cluster,
+    ClusterGraph,
+    Kind,
+    Node,
+    Socket,
+    add_dummy_edge,
+    get_reroute_paths,
+    is_real,
+    socket_graph,
 )
 
 
@@ -39,10 +39,12 @@ def is_safe_to_remove(v: Node) -> bool:
             return False
 
     return all(
-      s.node.select for s in chain(
-      config.linked_sockets[v.node.inputs[0]],
-      config.linked_sockets[v.node.outputs[0]],
-      ))
+        s.node.select
+        for s in chain(
+            config.linked_sockets[v.node.inputs[0]],
+            config.linked_sockets[v.node.outputs[0]],
+        )
+    )
 
 
 def dissolve_reroute_edges(G: nx.DiGraph[Node], path: list[Node]) -> None:
@@ -70,9 +72,9 @@ def dissolve_reroute_edges(G: nx.DiGraph[Node], path: list[Node]) -> None:
 
 
 def remove_reroutes(CG: ClusterGraph) -> None:
-    reroute_clusters = {#
-      c for c in CG.S
-      if all(v.type != Kind.CLUSTER and v.is_reroute for v in CG.T[c])}
+    reroute_clusters = {  #
+        c for c in CG.S if all(v.type != Kind.CLUSTER and v.is_reroute for v in CG.T[c])
+    }
     for path in get_reroute_paths(CG, is_safe_to_remove):
         if path[0].cluster in reroute_clusters:
             if len(path) > 2:
@@ -89,8 +91,12 @@ _Y_TOL = 5
 
 def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
     G = CG.G
-    pred_output = lambda w: next(iter(G.in_edges(w, data=FROM_SOCKET)))[2]
-    succ_input = lambda w: next(iter(G.out_edges(w, data=TO_SOCKET)))[2]
+
+    def pred_output(w):
+        return next(iter(G.in_edges(w, data=FROM_SOCKET)))[2]
+
+    def succ_input(w):
+        return next(iter(G.out_edges(w, data=TO_SOCKET)))[2]
 
     if len(path) == 1:
         v = path[0]
@@ -114,7 +120,9 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
     else:
         p = Socket(u, 0, True)
 
-    if G.out_degree[v] == 1 and isclose(v.y, (q := succ_input(v)).y, rel_tol=0, abs_tol=_Y_TOL):
+    if G.out_degree[v] == 1 and isclose(
+        v.y, (q := succ_input(v)).y, rel_tol=0, abs_tol=_Y_TOL
+    ):
         between.append(v)
     else:
         q = Socket(v, 0, False)
@@ -128,7 +136,7 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
 
 
 def add_reroute(v: Node) -> None:
-    reroute = get_ntree().nodes.new(type='NodeReroute')
+    reroute = get_ntree().nodes.new(type="NodeReroute")
     assert v.cluster
     reroute.parent = v.cluster.node
     config.selected.append(reroute)
@@ -161,25 +169,37 @@ def restore_multi_input_orders(G: nx.MultiDiGraph[Node]) -> None:
         multi_input = socket.bpy
         assert multi_input
 
-        as_links = {l.from_socket: l for l in links if l.to_socket == multi_input}
+        as_links = {
+            link.from_socket: link for link in links if link.to_socket == multi_input
+        }
 
         for output in {s.bpy for s in H.pred[socket]} - as_links.keys():
             assert output
             as_links[output] = links.new(output, multi_input)
 
-        if len(as_links) != len({l.multi_input_sort_id for l in as_links.values()}):
+        if len(as_links) != len(
+            {link.multi_input_sort_id for link in as_links.values()}
+        ):
             for link in as_links.values():
                 links.remove(link)
 
             for output in as_links:
                 as_links[output] = links.new(output, multi_input)
 
-        SH = H.subgraph({i[0] for i in sort_ids} | {socket} | {v for v in H if v.owner.is_reroute})
+        SH = H.subgraph(
+            {i[0] for i in sort_ids} | {socket} | {v for v in H if v.owner.is_reroute}
+        )
         seen = set()
         for base_from_socket, sort_id in sort_ids:
-            other = min(as_links.values(), key=lambda l: abs(l.multi_input_sort_id - sort_id))
+            other = min(
+                as_links.values(),
+                key=lambda link: abs(link.multi_input_sort_id - sort_id),
+            )
             from_socket = next(
-              s for s, t in nx.edge_dfs(SH, base_from_socket) if t == socket and s not in seen)
+                s
+                for s, t in nx.edge_dfs(SH, base_from_socket)
+                if t == socket and s not in seen
+            )
             as_links[from_socket.bpy].swap_multi_input_sort_id(other)  # type: ignore
             seen.add(from_socket)
 
