@@ -171,8 +171,10 @@ def route_edges(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     edge_of = {b: e for e, d in bend_points.items() for b in d}
+
     def key(b):
         return (G.edges[edge_of[b]][FROM_SOCKET], b.x, b.y)
+
     for (target, *redundant), (from_socket, *_) in group_by(edge_of, key=key).items():
         for b in redundant:
             dummy_nodes = bend_points[edge_of[b]]

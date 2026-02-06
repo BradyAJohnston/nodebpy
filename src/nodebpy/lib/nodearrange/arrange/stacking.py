@@ -44,7 +44,6 @@ T = TypeVar("T", bound=Hashable)
 def deterministic_hopcroft_karp_matching(
     G: nx.Graph[T], top_nodes: Iterable[T]
 ) -> dict[T, T]:
-
     def bfs() -> bool:
         for u in pair_U:
             if pair_U[u] is None:

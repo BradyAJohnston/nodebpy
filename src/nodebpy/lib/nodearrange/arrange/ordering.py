@@ -216,8 +216,10 @@ class _CrossingReductionGraph:
         G_h.add_nodes_from(fixed_col)
 
         self.expanded_fixed_col = fixed_col.copy()
+
         def pos(v):
             return v.col.index(v) if v.type != Kind.CLUSTER else inf
+
         self.reduced_free_col = sorted(free_LT[h], key=pos)
 
         self._insert_border_edges(is_forwards)
@@ -348,7 +350,6 @@ def find_violated_constraint(
 
 
 def handle_constraints(H: _CrossingReductionGraph) -> None:
-
     # Optimization: don't pass constraints to `nx.DiGraph` constructor
     GC = nx.DiGraph()
     GC.add_edges_from(pairwise(H.constrained_clusters))
