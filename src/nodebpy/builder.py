@@ -685,6 +685,12 @@ class SocketLinker(NodeBuilder):
         self._tree = TreeBuilder(socket.node.id_data)  # type: ignore
 
     @property
+    def links(self) -> bpy.types.NodeLinks:
+        links = self.socket.links
+        assert links
+        return links
+
+    @property
     def _available_outputs(self) -> list[NodeSocket]:
         return [self.socket]
 

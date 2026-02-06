@@ -171,11 +171,11 @@ class Collection(NodeBuilder):
     @property
     def collection(self) -> bpy.types.Collection | None:
         """Input socket: Collection"""
-        return self.node.inputs[0].default_value
+        return self.node.outputs[0].default_value
 
     @collection.setter
     def collection(self, value: bpy.types.Collection | None):
-        self.node.inputs[0].default_value = value
+        self.node.outputs[0].default_value = value
 
     @property
     def o_collection(self) -> SocketLinker:
