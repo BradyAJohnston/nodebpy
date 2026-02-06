@@ -81,18 +81,6 @@ wheels = [
 ]
 
 [[package]]
-name = "arrangebpy"
-version = "0.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "networkx" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/fd/d11c47a133f09e76d252497ee223c22de7ab53f056b78e3cb66774ffa306/arrangebpy-0.1.0.tar.gz", hash = "sha256:230f57781838889aa2a10c71cea2d435eb0b27bf13fdcfe5ec22e093b36bafe6", size = 63591, upload-time = "2026-01-15T12:11:12.953Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/06/18/3eee56801d93e678c07cdf39aaad81513f4fb8572244e0b0178cc383e3bf/arrangebpy-0.1.0-py3-none-any.whl", hash = "sha256:ce383bb51bf95b8c7c70a2b0b2197f782a8e9ede2bacb18616f87077e5f05bfd", size = 67484, upload-time = "2026-01-15T12:11:11.497Z" },
-]
-
-[[package]]
 name = "arrow"
 version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1300,7 +1288,7 @@ name = "nodebpy"
 version = "0.3.1"
 source = { editable = "." }
 dependencies = [
-    { name = "arrangebpy" },
+    { name = "networkx" },
 ]
 
 [package.optional-dependencies]
@@ -1324,11 +1312,11 @@ jupyter = [
 
 [package.metadata]
 requires-dist = [
-    { name = "arrangebpy", specifier = ">=0.1.0" },
     { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.0.0" },
     { name = "fake-bpy-module", marker = "extra == 'dev'", specifier = ">=20260113" },
     { name = "ipython", marker = "extra == 'jupyter'", specifier = ">=8.0.0" },
     { name = "jsondiff", marker = "extra == 'dev'", specifier = ">=2.2.1" },
+    { name = "networkx", specifier = ">=3.6.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.2" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "quarto-cli", marker = "extra == 'dev'", specifier = ">=1.8.26" },
