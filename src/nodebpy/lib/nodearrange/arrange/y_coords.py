@@ -20,16 +20,16 @@ from .graph import FROM_SOCKET, TO_SOCKET, Cluster, Edge, Kind, Node, Socket
 
 
 def marked_conflicts(
-  G: nx.DiGraph[Node],
-  *,
-  should_ensure_alignment: Callable[[Node], Any],
+    G: nx.DiGraph[Node],
+    *,
+    should_ensure_alignment: Callable[[Node], Any],
 ) -> set[frozenset[Node]]:
-    columns = G.graph['columns']
+    columns = G.graph["columns"]
     marked_edges = set()
     for i, col in enumerate(columns[1:], 1):
         k_0 = 0
-        l = 0
-        for l_1, u in enumerate(col):
+        link = 0
+        for link_1, u in enumerate(col):
             if should_ensure_alignment(u):
                 upper_nbr = next(iter(G.pred[u]))
                 k_1 = upper_nbr.col.index(upper_nbr)
@@ -38,9 +38,9 @@ def marked_conflicts(
             else:
                 continue
 
-            while l <= l_1:
-                v = col[l]
-                l += 1
+            while link <= link_1:
+                v = col[link]
+                link += 1
 
                 if should_ensure_alignment(v):
                     continue
@@ -56,16 +56,16 @@ def marked_conflicts(
 
 
 def horizontal_alignment(
-  G: nx.DiGraph[Node],
-  marked_edges: Collection[frozenset[Node]],
-  marked_nodes: Collection[Node],
+    G: nx.DiGraph[Node],
+    marked_edges: Collection[frozenset[Node]],
+    marked_nodes: Collection[Node],
 ) -> None:
-    for col in G.graph['columns']:
+    for col in G.graph["columns"]:
         prev_i = -1
         for v in col:
             predecessors = sorted(G.pred[v], key=lambda u: u.col.index(u))
             m = (len(predecessors) - 1) / 2
-            for u in predecessors[floor(m):ceil(m) + 1]:
+            for u in predecessors[floor(m) : ceil(m) + 1]:
                 i = u.col.index(u)
 
                 if v.aligned != v or {u, v} in marked_edges or prev_i >= i:
@@ -91,10 +91,10 @@ def should_use_inner_shift(v: Node, w: Node, is_right: bool) -> bool:
     if v.is_reroute or w.is_reroute:
         return True
 
-    if config.SETTINGS.socket_alignment == 'NONE':
+    if config.SETTINGS.socket_alignment == "NONE":
         return False
 
-    if config.SETTINGS.socket_alignment == 'FULL':
+    if config.SETTINGS.socket_alignment == "FULL":
         return True
 
     if v.cluster != w.cluster or Kind.STACK in {v.type, w.type}:
@@ -103,7 +103,7 @@ def should_use_inner_shift(v: Node, w: Node, is_right: bool) -> bool:
     if not is_right:
         v, w = w, v
 
-    if v.height > w.height and not getattr(w.node, 'hide', False):
+    if v.height > w.height and not getattr(w.node, "hide", False):
         return False
 
     return abs(v.height - w.height) > fmean((v.height, w.height)) / 2
@@ -151,7 +151,9 @@ def place_block(v: Node, is_up: bool) -> None:
             v.sink = u.sink
 
         if v.sink == u.sink:
-            delta_l = n.height + config.MARGIN.y if is_up else w.height + config.MARGIN.y
+            delta_l = (
+                n.height + config.MARGIN.y if is_up else w.height + config.MARGIN.y
+            )
             s_b = u.y + n.inner_shift - w.inner_shift + delta_l
             v.y = s_b if initial else max(v.y, s_b)
             initial = False
@@ -166,7 +168,7 @@ def vertical_compaction(G: nx.DiGraph[Node], is_up: bool) -> None:
         if v.root == v:
             place_block(v, is_up)
 
-    columns = G.graph['columns']
+    columns = G.graph["columns"]
     neighborings: defaultdict[tuple[Node, ...], set[Edge]] = defaultdict(set)
 
     for col in columns:
@@ -179,7 +181,9 @@ def vertical_compaction(G: nx.DiGraph[Node], is_up: bool) -> None:
             col[0].sink.shift = 0
 
         for u, v in neighborings[tuple(col)]:
-            delta_l = u.height + config.MARGIN.y if is_up else v.height + config.MARGIN.y
+            delta_l = (
+                u.height + config.MARGIN.y if is_up else v.height + config.MARGIN.y
+            )
             s_c = v.y + v.inner_shift - u.y - u.inner_shift - delta_l
             u.sink.shift = min(u.sink.shift, v.sink.shift + s_c)
 
@@ -189,7 +193,7 @@ def vertical_compaction(G: nx.DiGraph[Node], is_up: bool) -> None:
 
 def get_merged_lines(lines: Iterable[tuple[float, float]]) -> list[tuple[float, float]]:
     merged = []
-    for line in sorted(lines, key=lambda l: l[0]):
+    for line in sorted(lines, key=lambda line: line[0]):
         if merged and merged[-1][1] >= line[0]:
             a, b = merged[-1]
             merged[-1] = (a, max(b, line[1]))
@@ -199,7 +203,9 @@ def get_merged_lines(lines: Iterable[tuple[float, float]]) -> list[tuple[float, 
     return merged
 
 
-def has_large_gaps_in_frame(cluster: Cluster, T: nx.DiGraph[Cluster | Node], is_up: bool) -> bool:
+def has_large_gaps_in_frame(
+    cluster: Cluster, T: nx.DiGraph[Cluster | Node], is_up: bool
+) -> bool:
     lines = []
     for v in T[cluster]:
         if v.type == Kind.VERTICAL_BORDER:
@@ -208,7 +214,9 @@ def has_large_gaps_in_frame(cluster: Cluster, T: nx.DiGraph[Cluster | Node], is_
         if v.type != Kind.CLUSTER:
             line = (v.y, v.y + v.height) if is_up else (v.y - v.height, v.y)
         else:
-            vertical_border_roots = {w.root for w in T[v] if w.type == Kind.VERTICAL_BORDER}
+            vertical_border_roots = {
+                w.root for w in T[v] if w.type == Kind.VERTICAL_BORDER
+            }
             w, z = sorted(vertical_border_roots, key=lambda w: w.y)
             line = (w.y, z.y + z.height) if is_up else (w.y - w.height, z.y)
 
@@ -219,10 +227,10 @@ def has_large_gaps_in_frame(cluster: Cluster, T: nx.DiGraph[Cluster | Node], is_
 
 
 def get_marked_nodes(
-  G: nx.DiGraph[Node],
-  T: nx.DiGraph[Node | Cluster],
-  old_marked_nodes: set[Node],
-  is_up: bool,
+    G: nx.DiGraph[Node],
+    T: nx.DiGraph[Node | Cluster],
+    old_marked_nodes: set[Node],
+    is_up: bool,
 ) -> set[Node]:
     marked_nodes = set()
     for cluster in T:
@@ -230,13 +238,13 @@ def get_marked_nodes(
             continue
 
         descendant_clusters = cast(
-          set[Cluster],
-          (nx.descendants(T, cluster) & (T.nodes - G.nodes)) | {cluster},
+            set[Cluster],
+            (nx.descendants(T, cluster) & (T.nodes - G.nodes)) | {cluster},
         )
         for nested_cluster in sorted(
-          descendant_clusters,
-          key=lambda c: cast(int, c.nesting_level),
-          reverse=True,
+            descendant_clusters,
+            key=lambda c: cast(int, c.nesting_level),
+            reverse=True,
         ):
             children = {v for v in T[nested_cluster] if v.type != Kind.CLUSTER}
 
@@ -253,7 +261,11 @@ def get_marked_nodes(
             for root in {v.root for v in children}:
                 b = tuple(iter_block(root))
                 for u, v in pairwise(b):
-                    if u.is_reroute and v.is_reroute and (u in children != v in children):
+                    if (
+                        u.is_reroute
+                        and v.is_reroute
+                        and (u in children != v in children)
+                    ):
                         break
                 else:
                     marked_nodes.update(children.intersection(b))
@@ -262,11 +274,10 @@ def get_marked_nodes(
 
 
 def balance(G: nx.DiGraph[Node], layouts: list[list[float]]) -> None:
-
     def min_y(layout: Sequence[float]) -> float:
         return min([y - v.height for v, y in zip(G, layout)])
 
-    smallest_layout = min(layouts, key=lambda l: max(l) - min_y(l))
+    smallest_layout = min(layouts, key=lambda layout: max(layout) - min_y(layout))
 
     movement = min_y(smallest_layout)
     for i in range(len(smallest_layout)):
@@ -283,18 +294,26 @@ def balance(G: nx.DiGraph[Node], layouts: list[list[float]]) -> None:
 
 
 _ITER_LIMIT = 20
-_DIRECTION_TO_IDX = {'RIGHT_DOWN': 0, 'RIGHT_UP': 1, 'LEFT_DOWN': 2, 'LEFT_UP': 3}
+_DIRECTION_TO_IDX = {"RIGHT_DOWN": 0, "RIGHT_UP": 1, "LEFT_DOWN": 2, "LEFT_UP": 3}
 
 
 def bk_assign_y_coords(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:
-    columns = G.graph['columns']
+    columns = G.graph["columns"]
     for col in columns:
         col.reverse()
 
-    is_incident_to_inner_segment = lambda v: v.is_reroute and any(u.is_reroute for u in G.pred[v])
-    is_incident_to_vertical_border = lambda v: v.type == Kind.VERTICAL_BORDER and G.pred[v]
-    marked_edges = marked_conflicts(G, should_ensure_alignment=is_incident_to_inner_segment)
-    marked_edges |= marked_conflicts(G, should_ensure_alignment=is_incident_to_vertical_border)
+    def is_incident_to_inner_segment(v):
+        return v.is_reroute and any(u.is_reroute for u in G.pred[v])
+
+    def is_incident_to_vertical_border(v):
+        return v.type == Kind.VERTICAL_BORDER and G.pred[v]
+
+    marked_edges = marked_conflicts(
+        G, should_ensure_alignment=is_incident_to_inner_segment
+    )
+    marked_edges |= marked_conflicts(
+        G, should_ensure_alignment=is_incident_to_vertical_border
+    )
 
     layouts = []
     for dir_x in (-1, 1):
@@ -327,10 +346,10 @@ def bk_assign_y_coords(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) 
     for col in columns:
         col.reverse()
 
-    if config.SETTINGS.direction == 'BALANCED':
+    if config.SETTINGS.direction == "BALANCED":
         balance(G, layouts)
         for i, v in enumerate(G):
-            values = [l[i] for l in layouts]
+            values = [layout[i] for layout in layouts]
             values.sort()
             v.y = fmean(values[1:3])
     else:
