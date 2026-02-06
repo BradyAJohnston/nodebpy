@@ -10,7 +10,6 @@ from itertools import chain, pairwise, product
 from math import inf
 from typing import Any, Literal, Sequence, TypeGuard
 
-import bpy
 import networkx as nx
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeFrame, NodeSocket
@@ -244,7 +243,11 @@ def add_dummy_nodes_to_edge(
     if d[TO_SOCKET].bpy.is_multi_input:
         target_link = (d[FROM_SOCKET].bpy, d[TO_SOCKET].bpy)
         links.remove(
-            next(l for l in links if (l.from_socket, l.to_socket) == target_link)
+            next(
+                link
+                for link in links
+                if (link.from_socket, link.to_socket) == target_link
+            )
         )
 
 

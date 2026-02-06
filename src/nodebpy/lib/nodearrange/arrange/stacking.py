@@ -13,19 +13,19 @@ import networkx as nx
 from .. import config
 from ..utils import get_top
 from .graph import (
-  FROM_SOCKET,
-  TO_SOCKET,
-  Cluster,
-  ClusterGraph,
-  Edge,
-  Kind,
-  MultiEdge,
-  Node,
-  Socket,
-  get_socket_y,
-  is_real,
-  node_name,
-  opposite,
+    FROM_SOCKET,
+    TO_SOCKET,
+    Cluster,
+    ClusterGraph,
+    Edge,
+    Kind,
+    MultiEdge,
+    Node,
+    Socket,
+    get_socket_y,
+    is_real,
+    node_name,
+    opposite,
 )
 
 
@@ -36,13 +36,14 @@ class NodeStack:
     stack_sockets_to_originals: dict[Socket, Socket] = field(default_factory=dict)
 
 
-T = TypeVar('T', bound=Hashable)
+T = TypeVar("T", bound=Hashable)
 
 
 # Adapted from NetworkX, to make it deterministic:
 # https://github.com/networkx/networkx/blob/36e8a1ee85ca0ab4195a486451ca7d72153e2e00/networkx/algorithms/bipartite/matching.py#L59
-def deterministic_hopcroft_karp_matching(G: nx.Graph[T], top_nodes: Iterable[T]) -> dict[T, T]:
-
+def deterministic_hopcroft_karp_matching(
+    G: nx.Graph[T], top_nodes: Iterable[T]
+) -> dict[T, T]:
     def bfs() -> bool:
         for u in pair_U:
             if pair_U[u] is None:
@@ -93,14 +94,14 @@ def max_linear_branching(G: nx.MultiDiGraph[Node]) -> nx.MultiDiGraph[Node]:
     nodes = sorted(G, key=node_name)
     edges = sorted(G.edges(keys=False), key=lambda e: node_name(e[0]) + node_name(e[1]))
 
-    out_nodes = [(v, 'out') for v in nodes]
-    in_nodes = [(v, 'in') for v in nodes]
+    out_nodes = [(v, "out") for v in nodes]
+    in_nodes = [(v, "in") for v in nodes]
 
     B: nx.Graph[tuple[Node, str]] = nx.Graph()
     B.add_nodes_from(out_nodes, bipartite=0)
     B.add_nodes_from(in_nodes, bipartite=1)
     for u, v in edges:
-        B.add_edge((u, 'out'), (v, 'in'))
+        B.add_edge((u, "out"), (v, "in"))
 
     matching = deterministic_hopcroft_karp_matching(B, out_nodes)
     H = nx.MultiDiGraph()
@@ -112,7 +113,7 @@ def max_linear_branching(G: nx.MultiDiGraph[Node]) -> nx.MultiDiGraph[Node]:
     return H
 
 
-_WEIGHT = 'weight'
+_WEIGHT = "weight"
 
 
 # http://dx.doi.org/10.1016/S0020-0190(02)00491-X
@@ -139,8 +140,8 @@ def minimum_feedback_arc_set(G: nx.MultiDiGraph[Node]) -> set[MultiEdge]:
 
 
 def edges_preventing_acyclic_contraction(
-  G: nx.MultiDiGraph[Node],
-  K: nx.MultiDiGraph[Node],
+    G: nx.MultiDiGraph[Node],
+    K: nx.MultiDiGraph[Node],
 ) -> list[Edge]:
     G_ = G.copy()
     for u, v, k, d in tuple(G_.edges(data=True, keys=True)):
@@ -156,15 +157,17 @@ def edges_preventing_acyclic_contraction(
 
 
 def relabel_sockets(
-  edges: nx.classes.reportviews.OutMultiEdgeView[Node],
-  v: Node,
-  node_stack: NodeStack,
-  y: float,
+    edges: nx.classes.reportviews.OutMultiEdgeView[Node],
+    v: Node,
+    node_stack: NodeStack,
+    y: float,
 ) -> None:
     assert is_real(v)
-    external_edges = [#
-      (u, w, d) for u, w, d in edges(v, data=True)
-      if opposite(v, (u, w)) not in node_stack.path]
+    external_edges = [  #
+        (u, w, d)
+        for u, w, d in edges(v, data=True)
+        if opposite(v, (u, w)) not in node_stack.path
+    ]
 
     if not external_edges:
         return
@@ -177,10 +180,10 @@ def relabel_sockets(
         sockets = node_stack.stack_sockets_to_originals
         i = max([s.idx for s in sockets], default=-1) + 1
         socket = Socket(
-          node_stack.rep_node,
-          i,
-          is_output,
-          get_socket_y(d[attr].bpy) - get_top(v.node) - y,
+            node_stack.rep_node,
+            i,
+            is_output,
+            get_socket_y(d[attr].bpy) - get_top(v.node) - y,
         )
         sockets[socket] = d[attr]
         d[attr] = socket
@@ -190,11 +193,13 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     G = CG.G
     T = CG.T
 
-    collapsed_math_nodes = [ # yapf: disable
-      v for v in G
-      if is_real(v)
-      and v.node.hide
-      and v.node.bl_idname in {'ShaderNodeMath', 'ShaderNodeVectorMath'}]
+    collapsed_math_nodes = [  # yapf: disable
+        v
+        for v in G
+        if is_real(v)
+        and v.node.hide
+        and v.node.bl_idname in {"ShaderNodeMath", "ShaderNodeVectorMath"}
+    ]
     H: nx.MultiDiGraph[Node] = nx.MultiDiGraph(G.subgraph(collapsed_math_nodes))
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,8 +250,10 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        for u, v, k, d in *G.in_edges(path, keys=True, data=True), *G.out_edges(path, keys=True,
-          data=True):
+        for u, v, k, d in (
+            *G.in_edges(path, keys=True, data=True),
+            *G.out_edges(path, keys=True, data=True),
+        ):
             if u in path and v in path:
                 continue
 
@@ -279,10 +286,10 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
 
                 G.remove_edge(rep_node, v, k)
                 G.add_edge(
-                  original_socket.owner,
-                  v,
-                  from_socket=original_socket,
-                  to_socket=d[TO_SOCKET],
+                    original_socket.owner,
+                    v,
+                    from_socket=original_socket,
+                    to_socket=d[TO_SOCKET],
                 )
         else:
             for u, _, k, d in G.in_edges(rep_node, data=True, keys=True):
@@ -290,10 +297,10 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
                     break
             G.remove_edge(u, rep_node, k)
             G.add_edge(
-              u,
-              original_socket.owner,
-              from_socket=d[FROM_SOCKET],
-              to_socket=original_socket,
+                u,
+                original_socket.owner,
+                from_socket=d[FROM_SOCKET],
+                to_socket=original_socket,
             )
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
