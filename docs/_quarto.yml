@@ -41,8 +41,8 @@ quartodoc:
     include_empty: true
 
   sections:
-    - title: Some functions
-      desc: Functions to inspect docstrings.
+    - title: Geometry Nodes
+      desc: Nodes use in Geometry Nodes trees.
       contents:
         - nodes.geometry.input
         - nodes.geometry.attribute
@@ -56,3 +56,8 @@ quartodoc:
         - nodes.geometry.vector
         - nodes.geometry.manual
         - nodes.geometry.zone
+
+    - title: Shader Nodes
+      desc: Nodes use in Material / Shader node trees
+      contents:
+        - nodes.shader
