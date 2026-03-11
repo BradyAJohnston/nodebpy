@@ -315,13 +315,7 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str]] = {
         "INT",
         "BOOLEAN",
     ),
-    "RGBA": (
-        "RGBA",
-        "VECTOR",
-        "VALUE",
-        "INT",
-        "BOOLEAN",
-    ),
+    "RGBA": ("RGBA", "VECTOR", "VALUE", "INT", "BOOLEAN", "SHADER"),
     "ROTATION": (
         "ROTATION",
         "MATRIX",
@@ -340,6 +334,7 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str]] = {
     "MATERIAL": ("MATERIAL",),
     "BUNDLE": ("BUNDLE",),
     "CLOSURE": ("CLOSURE",),
+    "SHADER": ("SHADER",),
 }
 
 

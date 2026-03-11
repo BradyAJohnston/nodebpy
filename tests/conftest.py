@@ -3,7 +3,7 @@ from pathlib import Path
 import bpy
 import pytest
 
-from nodebpy import TreeBuilder
+from nodebpy import TreeBuilder, shader
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import sockets as s
@@ -61,16 +61,14 @@ def clean_and_save(request):
     ]
 
     if shader_tree_names:
-        cube = bpy.data.objects["Cube"]
-        mat = bpy.data.materials.new("StoreShaderTrees")
-        mat.use_nodes = True
-        cube.data.materials.append(mat)
-        node_tree = mat.node_tree
-        for i, name in enumerate(shader_tree_names):
-            group_node = node_tree.nodes.new("ShaderNodeGroup")
-
-            group_node.node_tree = bpy.data.node_groups[name]
-            group_node.location = (0, 200 * i)
+        assert bpy.data.objects.get("Cube")
+        node_tree = bpy.data.materials["Material"].node_tree
+        assert node_tree
+        with TreeBuilder.shader(node_tree) as tree:
+            for i, name in enumerate(shader_tree_names):
+                group_node = shader.Group()
+                group_node.node.node_tree = bpy.data.node_groups[name]  # type: ignore
+                group_node.node.location = (0, 200 * i)
 
     # --- Compositor node trees: store via the scene compositor ---
     compositor_tree_names = [
@@ -83,7 +81,7 @@ def clean_and_save(request):
         with TreeBuilder.compositor("CompHoldingTree") as tree:
             for i, name in enumerate(compositor_tree_names):
                 group = c.Group()
-                group.node.node_tree = bpy.data.node_groups[name]
+                group.node.node_tree = bpy.data.node_groups[name]  # type: ignore
         bpy.context.scene.compositing_node_group = tree.tree
 
     # save a .blendfile for inspection with the current tests' nodes and also

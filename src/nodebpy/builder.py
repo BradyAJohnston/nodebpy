@@ -7,10 +7,13 @@ if TYPE_CHECKING:
 
 import bpy
 from bpy.types import (
+    CompositorNodeTree,
+    GeometryNodeTree,
     Node,
     Nodes,
     NodeSocket,
     NodeTree,
+    ShaderNodeTree,
 )
 
 from .lib.nodearrange import arrange
@@ -127,7 +130,9 @@ class TreeBuilder:
         self,
         tree: NodeTree | str = "Geometry Nodes",
         *,
-        tree_type: str = "GeometryNodeTree",
+        tree_type: Literal[
+            "GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"
+        ] = "GeometryNodeTree",
         collapse: bool = False,
         arrange: bool = True,
         fake_user: bool = False,
@@ -147,7 +152,7 @@ class TreeBuilder:
     @classmethod
     def geometry(
         cls,
-        name: str = "Geometry Nodes",
+        name: GeometryNodeTree | str = "Geometry Nodes",
         *,
         collapse: bool = False,
         arrange: bool = True,
@@ -165,7 +170,7 @@ class TreeBuilder:
     @classmethod
     def shader(
         cls,
-        name: str = "Shader Nodes",
+        name: ShaderNodeTree | str = "Shader Nodes",
         *,
         collapse: bool = False,
         arrange: bool = True,
@@ -183,7 +188,7 @@ class TreeBuilder:
     @classmethod
     def compositor(
         cls,
-        name: str = "Compositor Nodes",
+        name: CompositorNodeTree | str = "Compositor Nodes",
         *,
         collapse: bool = False,
         arrange: bool = True,
@@ -1268,6 +1273,29 @@ class SocketClosure(SocketBase):
     def __init__(
         self,
         name: str = "Closure",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ):
+        super().__init__(name, description)
+        self._set_values(
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+
+class SocketShader(SocketBase):
+    """Shader that is the final output for a material"""
+
+    _bl_socket_type: str = "NodeSocketShader"
+    socket: bpy.types.NodeTreeInterfaceSocketShader
+
+    def __init__(
+        self,
+        name: str = "Shader",
         description: str = "",
         *,
         optional_label: bool = False,
