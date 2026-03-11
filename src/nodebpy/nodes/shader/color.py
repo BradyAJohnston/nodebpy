@@ -1,0 +1,252 @@
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_VALUE,
+)
+
+
+class Brightnesscontrast(NodeBuilder):
+    """
+    Control the brightness and contrast of the input color
+    """
+
+    _bl_idname = "ShaderNodeBrightContrast"
+    node: bpy.types.ShaderNodeBrightContrast
+
+    def __init__(
+        self,
+        color: TYPE_INPUT_COLOR = None,
+        bright: TYPE_INPUT_VALUE = 0.0,
+        contrast: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {"Color": color, "Bright": bright, "Contrast": contrast}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def i_bright(self) -> SocketLinker:
+        """Input socket: Brightness"""
+        return self._input("Bright")
+
+    @property
+    def i_contrast(self) -> SocketLinker:
+        """Input socket: Contrast"""
+        return self._input("Contrast")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class Gamma(NodeBuilder):
+    """
+    Apply a gamma correction
+    """
+
+    _bl_idname = "ShaderNodeGamma"
+    node: bpy.types.ShaderNodeGamma
+
+    def __init__(
+        self,
+        color: TYPE_INPUT_COLOR = None,
+        gamma: TYPE_INPUT_VALUE = 1.0,
+    ):
+        super().__init__()
+        key_args = {"Color": color, "Gamma": gamma}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def i_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Gamma")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class Huesaturationvalue(NodeBuilder):
+    """
+    Apply a color transformation in the HSV color model
+    """
+
+    _bl_idname = "ShaderNodeHueSaturation"
+    node: bpy.types.ShaderNodeHueSaturation
+
+    def __init__(
+        self,
+        hue: TYPE_INPUT_VALUE = 0.5,
+        saturation: TYPE_INPUT_VALUE = 1.0,
+        value: TYPE_INPUT_VALUE = 1.0,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        color: TYPE_INPUT_COLOR = None,
+    ):
+        super().__init__()
+        key_args = {
+            "Hue": hue,
+            "Saturation": saturation,
+            "Value": value,
+            "Fac": fac,
+            "Color": color,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_hue(self) -> SocketLinker:
+        """Input socket: Hue"""
+        return self._input("Hue")
+
+    @property
+    def i_saturation(self) -> SocketLinker:
+        """Input socket: Saturation"""
+        return self._input("Saturation")
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class InvertColor(NodeBuilder):
+    """
+    Invert a color, producing a negative
+    """
+
+    _bl_idname = "ShaderNodeInvert"
+    node: bpy.types.ShaderNodeInvert
+
+    def __init__(
+        self,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        color: TYPE_INPUT_COLOR = None,
+    ):
+        super().__init__()
+        key_args = {"Fac": fac, "Color": color}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class LightFalloff(NodeBuilder):
+    """
+    Manipulate how light intensity decreases over distance. Typically used for non-physically-based effects; in reality light always falls off quadratically
+    """
+
+    _bl_idname = "ShaderNodeLightFalloff"
+    node: bpy.types.ShaderNodeLightFalloff
+
+    def __init__(
+        self,
+        strength: TYPE_INPUT_VALUE = 100.0,
+        smooth: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {"Strength": strength, "Smooth": smooth}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_strength(self) -> SocketLinker:
+        """Input socket: Strength"""
+        return self._input("Strength")
+
+    @property
+    def i_smooth(self) -> SocketLinker:
+        """Input socket: Smooth"""
+        return self._input("Smooth")
+
+    @property
+    def o_quadratic(self) -> SocketLinker:
+        """Output socket: Quadratic"""
+        return self._output("Quadratic")
+
+    @property
+    def o_linear(self) -> SocketLinker:
+        """Output socket: Linear"""
+        return self._output("Linear")
+
+    @property
+    def o_constant(self) -> SocketLinker:
+        """Output socket: Constant"""
+        return self._output("Constant")
+
+
+class RgbCurves(NodeBuilder):
+    """
+    Apply color corrections for each color channel
+    """
+
+    _bl_idname = "ShaderNodeRGBCurve"
+    node: bpy.types.ShaderNodeRGBCurve
+
+    def __init__(
+        self,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        color: TYPE_INPUT_COLOR = None,
+    ):
+        super().__init__()
+        key_args = {"Fac": fac, "Color": color}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")

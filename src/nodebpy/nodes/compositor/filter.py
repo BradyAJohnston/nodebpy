@@ -1,0 +1,1065 @@
+from typing import Literal
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_VECTOR,
+)
+
+
+class AntiAliasing(NodeBuilder):
+    """
+    Smooth away jagged edges
+    """
+
+    _bl_idname = "CompositorNodeAntiAliasing"
+    node: bpy.types.CompositorNodeAntiAliasing
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        threshold: TYPE_INPUT_VALUE = 0.2,
+        contrast_limit: TYPE_INPUT_VALUE = 2.0,
+        corner_rounding: TYPE_INPUT_VALUE = 0.25,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Threshold": threshold,
+            "Contrast Limit": contrast_limit,
+            "Corner Rounding": corner_rounding,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_threshold(self) -> SocketLinker:
+        """Input socket: Threshold"""
+        return self._input("Threshold")
+
+    @property
+    def i_contrast_limit(self) -> SocketLinker:
+        """Input socket: Contrast Limit"""
+        return self._input("Contrast Limit")
+
+    @property
+    def i_corner_rounding(self) -> SocketLinker:
+        """Input socket: Corner Rounding"""
+        return self._input("Corner Rounding")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class BilateralBlur(NodeBuilder):
+    """
+    Adaptively blur image, while retaining sharp edges
+    """
+
+    _bl_idname = "CompositorNodeBilateralblur"
+    node: bpy.types.CompositorNodeBilateralblur
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        determinator: TYPE_INPUT_COLOR = None,
+        size: TYPE_INPUT_INT = 0,
+        threshold: TYPE_INPUT_VALUE = 0.1,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Determinator": determinator,
+            "Size": size,
+            "Threshold": threshold,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_determinator(self) -> SocketLinker:
+        """Input socket: Determinator"""
+        return self._input("Determinator")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def i_threshold(self) -> SocketLinker:
+        """Input socket: Threshold"""
+        return self._input("Threshold")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Blur(NodeBuilder):
+    """
+    Blur an image, using several blur modes
+    """
+
+    _bl_idname = "CompositorNodeBlur"
+    node: bpy.types.CompositorNodeBlur
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        size: TYPE_INPUT_VECTOR = None,
+        type: TYPE_INPUT_MENU = "Gaussian",
+        extend_bounds: TYPE_INPUT_BOOLEAN = False,
+        separable: TYPE_INPUT_BOOLEAN = True,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Size": size,
+            "Type": type,
+            "Extend Bounds": extend_bounds,
+            "Separable": separable,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_extend_bounds(self) -> SocketLinker:
+        """Input socket: Extend Bounds"""
+        return self._input("Extend Bounds")
+
+    @property
+    def i_separable(self) -> SocketLinker:
+        """Input socket: Separable"""
+        return self._input("Separable")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class BokehBlur(NodeBuilder):
+    """
+    Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region is defined in the compositor
+    """
+
+    _bl_idname = "CompositorNodeBokehBlur"
+    node: bpy.types.CompositorNodeBokehBlur
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        bokeh: TYPE_INPUT_COLOR = None,
+        size: TYPE_INPUT_VALUE = 0.0,
+        mask: TYPE_INPUT_VALUE = 1.0,
+        extend_bounds: TYPE_INPUT_BOOLEAN = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Bokeh": bokeh,
+            "Size": size,
+            "Mask": mask,
+            "Extend Bounds": extend_bounds,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_bokeh(self) -> SocketLinker:
+        """Input socket: Bokeh"""
+        return self._input("Bokeh")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def i_mask(self) -> SocketLinker:
+        """Input socket: Mask"""
+        return self._input("Mask")
+
+    @property
+    def i_extend_bounds(self) -> SocketLinker:
+        """Input socket: Extend Bounds"""
+        return self._input("Extend Bounds")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Convolve(NodeBuilder):
+    """
+    Convolves an image with a kernel
+    """
+
+    _bl_idname = "CompositorNodeConvolve"
+    node: bpy.types.CompositorNodeConvolve
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        kernel_data_type: TYPE_INPUT_MENU = "Float",
+        float_kernel: TYPE_INPUT_VALUE = 0.0,
+        color_kernel: TYPE_INPUT_COLOR = None,
+        normalize_kernel: TYPE_INPUT_BOOLEAN = True,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Kernel Data Type": kernel_data_type,
+            "Float Kernel": float_kernel,
+            "Color Kernel": color_kernel,
+            "Normalize Kernel": normalize_kernel,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_kernel_data_type(self) -> SocketLinker:
+        """Input socket: Kernel Data Type"""
+        return self._input("Kernel Data Type")
+
+    @property
+    def i_float_kernel(self) -> SocketLinker:
+        """Input socket: Kernel"""
+        return self._input("Float Kernel")
+
+    @property
+    def i_color_kernel(self) -> SocketLinker:
+        """Input socket: Kernel"""
+        return self._input("Color Kernel")
+
+    @property
+    def i_normalize_kernel(self) -> SocketLinker:
+        """Input socket: Normalize Kernel"""
+        return self._input("Normalize Kernel")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Defocus(NodeBuilder):
+    """
+    Apply depth of field in 2D, using a Z depth map or mask
+    """
+
+    _bl_idname = "CompositorNodeDefocus"
+    node: bpy.types.CompositorNodeDefocus
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        z: TYPE_INPUT_VALUE = 1.0,
+        *,
+        bokeh: Literal[
+            "OCTAGON", "HEPTAGON", "HEXAGON", "PENTAGON", "SQUARE", "TRIANGLE", "CIRCLE"
+        ] = "CIRCLE",
+        angle: float = 0.0,
+        f_stop: float = 0.0,
+        blur_max: float = 0.0,
+        use_zbuffer: bool = False,
+        z_scale: float = 0.0,
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Z": z}
+        self.bokeh = bokeh
+        self.angle = angle
+        self.f_stop = f_stop
+        self.blur_max = blur_max
+        self.use_zbuffer = use_zbuffer
+        self.z_scale = z_scale
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_z(self) -> SocketLinker:
+        """Input socket: Z"""
+        return self._input("Z")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+    @property
+    def bokeh(
+        self,
+    ) -> Literal[
+        "OCTAGON", "HEPTAGON", "HEXAGON", "PENTAGON", "SQUARE", "TRIANGLE", "CIRCLE"
+    ]:
+        return self.node.bokeh
+
+    @bokeh.setter
+    def bokeh(
+        self,
+        value: Literal[
+            "OCTAGON", "HEPTAGON", "HEXAGON", "PENTAGON", "SQUARE", "TRIANGLE", "CIRCLE"
+        ],
+    ):
+        self.node.bokeh = value
+
+    @property
+    def angle(self) -> float:
+        return self.node.angle
+
+    @angle.setter
+    def angle(self, value: float):
+        self.node.angle = value
+
+    @property
+    def f_stop(self) -> float:
+        return self.node.f_stop
+
+    @f_stop.setter
+    def f_stop(self, value: float):
+        self.node.f_stop = value
+
+    @property
+    def blur_max(self) -> float:
+        return self.node.blur_max
+
+    @blur_max.setter
+    def blur_max(self, value: float):
+        self.node.blur_max = value
+
+    @property
+    def use_zbuffer(self) -> bool:
+        return self.node.use_zbuffer
+
+    @use_zbuffer.setter
+    def use_zbuffer(self, value: bool):
+        self.node.use_zbuffer = value
+
+    @property
+    def z_scale(self) -> float:
+        return self.node.z_scale
+
+    @z_scale.setter
+    def z_scale(self, value: float):
+        self.node.z_scale = value
+
+
+class Denoise(NodeBuilder):
+    """
+    Denoise renders from Cycles and other ray tracing renderers
+    """
+
+    _bl_idname = "CompositorNodeDenoise"
+    node: bpy.types.CompositorNodeDenoise
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        albedo: TYPE_INPUT_COLOR = None,
+        normal: TYPE_INPUT_VECTOR = None,
+        hdr: TYPE_INPUT_BOOLEAN = True,
+        prefilter: TYPE_INPUT_MENU = "Accurate",
+        quality: TYPE_INPUT_MENU = "Follow Scene",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Albedo": albedo,
+            "Normal": normal,
+            "HDR": hdr,
+            "Prefilter": prefilter,
+            "Quality": quality,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_albedo(self) -> SocketLinker:
+        """Input socket: Albedo"""
+        return self._input("Albedo")
+
+    @property
+    def i_normal(self) -> SocketLinker:
+        """Input socket: Normal"""
+        return self._input("Normal")
+
+    @property
+    def i_hdr(self) -> SocketLinker:
+        """Input socket: HDR"""
+        return self._input("HDR")
+
+    @property
+    def i_prefilter(self) -> SocketLinker:
+        """Input socket: Prefilter"""
+        return self._input("Prefilter")
+
+    @property
+    def i_quality(self) -> SocketLinker:
+        """Input socket: Quality"""
+        return self._input("Quality")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Despeckle(NodeBuilder):
+    """
+    Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched
+    """
+
+    _bl_idname = "CompositorNodeDespeckle"
+    node: bpy.types.CompositorNodeDespeckle
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        color_threshold: TYPE_INPUT_VALUE = 0.5,
+        neighbor_threshold: TYPE_INPUT_VALUE = 0.5,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Fac": fac,
+            "Color Threshold": color_threshold,
+            "Neighbor Threshold": neighbor_threshold,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_color_threshold(self) -> SocketLinker:
+        """Input socket: Color Threshold"""
+        return self._input("Color Threshold")
+
+    @property
+    def i_neighbor_threshold(self) -> SocketLinker:
+        """Input socket: Neighbor Threshold"""
+        return self._input("Neighbor Threshold")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Dilateerode(NodeBuilder):
+    """
+    Expand and shrink masks
+    """
+
+    _bl_idname = "CompositorNodeDilateErode"
+    node: bpy.types.CompositorNodeDilateErode
+
+    def __init__(
+        self,
+        mask: TYPE_INPUT_VALUE = 0.0,
+        size: TYPE_INPUT_INT = 0,
+        type: TYPE_INPUT_MENU = "Steps",
+        falloff_size: TYPE_INPUT_VALUE = 0.0,
+        falloff: TYPE_INPUT_MENU = "Smooth",
+    ):
+        super().__init__()
+        key_args = {
+            "Mask": mask,
+            "Size": size,
+            "Type": type,
+            "Falloff Size": falloff_size,
+            "Falloff": falloff,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_mask(self) -> SocketLinker:
+        """Input socket: Mask"""
+        return self._input("Mask")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_falloff_size(self) -> SocketLinker:
+        """Input socket: Falloff Size"""
+        return self._input("Falloff Size")
+
+    @property
+    def i_falloff(self) -> SocketLinker:
+        """Input socket: Falloff"""
+        return self._input("Falloff")
+
+    @property
+    def o_mask(self) -> SocketLinker:
+        """Output socket: Mask"""
+        return self._output("Mask")
+
+
+class DirectionalBlur(NodeBuilder):
+    """
+    Blur an image along a direction
+    """
+
+    _bl_idname = "CompositorNodeDBlur"
+    node: bpy.types.CompositorNodeDBlur
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        samples: TYPE_INPUT_INT = 1,
+        center: TYPE_INPUT_VECTOR = None,
+        rotation: TYPE_INPUT_VALUE = 0.0,
+        scale: TYPE_INPUT_VALUE = 1.0,
+        translation_amount: TYPE_INPUT_VALUE = 0.0,
+        translation_direction: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Samples": samples,
+            "Center": center,
+            "Rotation": rotation,
+            "Scale": scale,
+            "Translation Amount": translation_amount,
+            "Translation Direction": translation_direction,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_samples(self) -> SocketLinker:
+        """Input socket: Samples"""
+        return self._input("Samples")
+
+    @property
+    def i_center(self) -> SocketLinker:
+        """Input socket: Center"""
+        return self._input("Center")
+
+    @property
+    def i_rotation(self) -> SocketLinker:
+        """Input socket: Rotation"""
+        return self._input("Rotation")
+
+    @property
+    def i_scale(self) -> SocketLinker:
+        """Input socket: Scale"""
+        return self._input("Scale")
+
+    @property
+    def i_translation_amount(self) -> SocketLinker:
+        """Input socket: Amount"""
+        return self._input("Translation Amount")
+
+    @property
+    def i_translation_direction(self) -> SocketLinker:
+        """Input socket: Direction"""
+        return self._input("Translation Direction")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Filter(NodeBuilder):
+    """
+    Apply common image enhancement filters
+    """
+
+    _bl_idname = "CompositorNodeFilter"
+    node: bpy.types.CompositorNodeFilter
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        type: TYPE_INPUT_MENU = "Soften",
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Fac": fac, "Type": type}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Glare(NodeBuilder):
+    """
+    Add lens flares, fog and glows around bright parts of the image
+    """
+
+    _bl_idname = "CompositorNodeGlare"
+    node: bpy.types.CompositorNodeGlare
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        type: TYPE_INPUT_MENU = "Streaks",
+        quality: TYPE_INPUT_MENU = "Medium",
+        highlights_threshold: TYPE_INPUT_VALUE = 1.0,
+        highlights_smoothness: TYPE_INPUT_VALUE = 0.1,
+        clamp_highlights: TYPE_INPUT_BOOLEAN = False,
+        maximum_highlights: TYPE_INPUT_VALUE = 10.0,
+        strength: TYPE_INPUT_VALUE = 1.0,
+        saturation: TYPE_INPUT_VALUE = 1.0,
+        tint: TYPE_INPUT_COLOR = None,
+        size: TYPE_INPUT_VALUE = 0.5,
+        streaks: TYPE_INPUT_INT = 4,
+        streaks_angle: TYPE_INPUT_VALUE = 0.0,
+        iterations: TYPE_INPUT_INT = 3,
+        fade: TYPE_INPUT_VALUE = 0.9,
+        color_modulation: TYPE_INPUT_VALUE = 0.25,
+        diagonal_star: TYPE_INPUT_BOOLEAN = True,
+        sun_position: TYPE_INPUT_VECTOR = None,
+        jitter: TYPE_INPUT_VALUE = 0.0,
+        kernel_data_type: TYPE_INPUT_MENU = "Float",
+        float_kernel: TYPE_INPUT_VALUE = 0.0,
+        color_kernel: TYPE_INPUT_COLOR = None,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Type": type,
+            "Quality": quality,
+            "Highlights Threshold": highlights_threshold,
+            "Highlights Smoothness": highlights_smoothness,
+            "Clamp Highlights": clamp_highlights,
+            "Maximum Highlights": maximum_highlights,
+            "Strength": strength,
+            "Saturation": saturation,
+            "Tint": tint,
+            "Size": size,
+            "Streaks": streaks,
+            "Streaks Angle": streaks_angle,
+            "Iterations": iterations,
+            "Fade": fade,
+            "Color Modulation": color_modulation,
+            "Diagonal Star": diagonal_star,
+            "Sun Position": sun_position,
+            "Jitter": jitter,
+            "Kernel Data Type": kernel_data_type,
+            "Float Kernel": float_kernel,
+            "Color Kernel": color_kernel,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_quality(self) -> SocketLinker:
+        """Input socket: Quality"""
+        return self._input("Quality")
+
+    @property
+    def i_highlights_threshold(self) -> SocketLinker:
+        """Input socket: Threshold"""
+        return self._input("Highlights Threshold")
+
+    @property
+    def i_highlights_smoothness(self) -> SocketLinker:
+        """Input socket: Smoothness"""
+        return self._input("Highlights Smoothness")
+
+    @property
+    def i_clamp_highlights(self) -> SocketLinker:
+        """Input socket: Clamp"""
+        return self._input("Clamp Highlights")
+
+    @property
+    def i_maximum_highlights(self) -> SocketLinker:
+        """Input socket: Maximum"""
+        return self._input("Maximum Highlights")
+
+    @property
+    def i_strength(self) -> SocketLinker:
+        """Input socket: Strength"""
+        return self._input("Strength")
+
+    @property
+    def i_saturation(self) -> SocketLinker:
+        """Input socket: Saturation"""
+        return self._input("Saturation")
+
+    @property
+    def i_tint(self) -> SocketLinker:
+        """Input socket: Tint"""
+        return self._input("Tint")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def i_streaks(self) -> SocketLinker:
+        """Input socket: Streaks"""
+        return self._input("Streaks")
+
+    @property
+    def i_streaks_angle(self) -> SocketLinker:
+        """Input socket: Streaks Angle"""
+        return self._input("Streaks Angle")
+
+    @property
+    def i_iterations(self) -> SocketLinker:
+        """Input socket: Iterations"""
+        return self._input("Iterations")
+
+    @property
+    def i_fade(self) -> SocketLinker:
+        """Input socket: Fade"""
+        return self._input("Fade")
+
+    @property
+    def i_color_modulation(self) -> SocketLinker:
+        """Input socket: Color Modulation"""
+        return self._input("Color Modulation")
+
+    @property
+    def i_diagonal_star(self) -> SocketLinker:
+        """Input socket: Diagonal"""
+        return self._input("Diagonal Star")
+
+    @property
+    def i_sun_position(self) -> SocketLinker:
+        """Input socket: Sun Position"""
+        return self._input("Sun Position")
+
+    @property
+    def i_jitter(self) -> SocketLinker:
+        """Input socket: Jitter"""
+        return self._input("Jitter")
+
+    @property
+    def i_kernel_data_type(self) -> SocketLinker:
+        """Input socket: Kernel Data Type"""
+        return self._input("Kernel Data Type")
+
+    @property
+    def i_float_kernel(self) -> SocketLinker:
+        """Input socket: Kernel"""
+        return self._input("Float Kernel")
+
+    @property
+    def i_color_kernel(self) -> SocketLinker:
+        """Input socket: Kernel"""
+        return self._input("Color Kernel")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+    @property
+    def o_glare(self) -> SocketLinker:
+        """Output socket: Glare"""
+        return self._output("Glare")
+
+    @property
+    def o_highlights(self) -> SocketLinker:
+        """Output socket: Highlights"""
+        return self._output("Highlights")
+
+
+class Inpaint(NodeBuilder):
+    """
+    Extend borders of an image into transparent or masked regions
+    """
+
+    _bl_idname = "CompositorNodeInpaint"
+    node: bpy.types.CompositorNodeInpaint
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        size: TYPE_INPUT_INT = 0,
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Size": size}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Kuwahara(NodeBuilder):
+    """
+    Apply smoothing filter that preserves edges, for stylized and painterly effects
+    """
+
+    _bl_idname = "CompositorNodeKuwahara"
+    node: bpy.types.CompositorNodeKuwahara
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        size: TYPE_INPUT_VALUE = 6.0,
+        type: TYPE_INPUT_MENU = "Anisotropic",
+        uniformity: TYPE_INPUT_INT = 4,
+        sharpness: TYPE_INPUT_VALUE = 1.0,
+        eccentricity: TYPE_INPUT_VALUE = 1.0,
+        high_precision: TYPE_INPUT_BOOLEAN = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Size": size,
+            "Type": type,
+            "Uniformity": uniformity,
+            "Sharpness": sharpness,
+            "Eccentricity": eccentricity,
+            "High Precision": high_precision,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_uniformity(self) -> SocketLinker:
+        """Input socket: Uniformity"""
+        return self._input("Uniformity")
+
+    @property
+    def i_sharpness(self) -> SocketLinker:
+        """Input socket: Sharpness"""
+        return self._input("Sharpness")
+
+    @property
+    def i_eccentricity(self) -> SocketLinker:
+        """Input socket: Eccentricity"""
+        return self._input("Eccentricity")
+
+    @property
+    def i_high_precision(self) -> SocketLinker:
+        """Input socket: High Precision"""
+        return self._input("High Precision")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Pixelate(NodeBuilder):
+    """
+    Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance
+    """
+
+    _bl_idname = "CompositorNodePixelate"
+    node: bpy.types.CompositorNodePixelate
+
+    def __init__(
+        self,
+        color: TYPE_INPUT_COLOR = None,
+        size: TYPE_INPUT_INT = 1,
+    ):
+        super().__init__()
+        key_args = {"Color": color, "Size": size}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class VectorBlur(NodeBuilder):
+    """
+    Uses the vector speed render pass to blur the image pixels in 2D
+    """
+
+    _bl_idname = "CompositorNodeVecBlur"
+    node: bpy.types.CompositorNodeVecBlur
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        speed: TYPE_INPUT_VECTOR = None,
+        z: TYPE_INPUT_VALUE = 0.0,
+        samples: TYPE_INPUT_INT = 32,
+        shutter: TYPE_INPUT_VALUE = 0.5,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Speed": speed,
+            "Z": z,
+            "Samples": samples,
+            "Shutter": shutter,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_speed(self) -> SocketLinker:
+        """Input socket: Speed"""
+        return self._input("Speed")
+
+    @property
+    def i_z(self) -> SocketLinker:
+        """Input socket: Z"""
+        return self._input("Z")
+
+    @property
+    def i_samples(self) -> SocketLinker:
+        """Input socket: Samples"""
+        return self._input("Samples")
+
+    @property
+    def i_shutter(self) -> SocketLinker:
+        """Input socket: Shutter"""
+        return self._input("Shutter")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")

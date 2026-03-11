@@ -1,0 +1,55 @@
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_INT,
+)
+
+
+class RepeatInput(NodeBuilder):
+    """
+    Repeat Input node
+    """
+
+    _bl_idname = "GeometryNodeRepeatInput"
+    node: bpy.types.GeometryNodeRepeatInput
+
+    def __init__(self, iterations: TYPE_INPUT_INT = 1):
+        super().__init__()
+        key_args = {"Iterations": iterations}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_iterations(self) -> SocketLinker:
+        """Input socket: Iterations"""
+        return self._input("Iterations")
+
+    @property
+    def o_iteration(self) -> SocketLinker:
+        """Output socket: Iteration"""
+        return self._output("Iteration")
+
+
+class RepeatOutput(NodeBuilder):
+    """
+    Repeat Output node
+    """
+
+    _bl_idname = "GeometryNodeRepeatOutput"
+    node: bpy.types.GeometryNodeRepeatOutput
+
+    def __init__(self, inspection_index: int = 0):
+        super().__init__()
+        key_args = {}
+        self.inspection_index = inspection_index
+        self._establish_links(**key_args)
+
+    @property
+    def inspection_index(self) -> int:
+        return self.node.inspection_index
+
+    @inspection_index.setter
+    def inspection_index(self, value: int):
+        self.node.inspection_index = value

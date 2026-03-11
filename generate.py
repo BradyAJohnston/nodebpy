@@ -1,11 +1,12 @@
 """
-Code generator for Blender geometry node classes.
+Code generator for Blender node classes.
 
 This script introspects Blender's node registry and generates Python classes
-for all geometry nodes with proper type hints and autocomplete support.
+for geometry, shader, and compositor nodes with proper type hints and
+autocomplete support.
 
 Run this script from within Blender to generate node classes:
-    blender --background --python generator.py
+    blender --background --python generate.py
 
 """
 
@@ -20,55 +21,123 @@ from bpy.types import bpy_prop_array
 from mathutils import Euler, Vector
 from typing_extensions import Literal
 
-NODES_TO_SKIP = [
-    "AlignEulerToVector",
-    "Legacy",
-    "Closure",
-    "Simulation",
-    "For Each",
-    "Frame",
-    "GridBoolean",
-    "Reroute",
-    #
-    "FieldMinAndMax",
-]
+# ---------------------------------------------------------------------------
+# Tree-type configuration
+# ---------------------------------------------------------------------------
+
+TREE_TYPES = ("GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree")
 
 
-MANUALLY_DEFINED = (
-    "SetHandleType",
-    "HandleTypeSelection",
-    "IndexSwitch",
-    "MenuSwitch",
-    "CaptureAttribute",
-    "FieldToGrid",
-    "JoinGeometry",
-    "SDFGridBoolean",
-    "Bake",
-    "JoinStrings",
-    "GeometryToInstance",
-    "RepeatInput",
-    "RepeatOutput",
-    "RepeatZone",
-    "SimulationInput",
-    "SimulationOutput",
-    "SimulationZone",
-    "ForEachGeometryElementInput",
-    "ForEachGeometryElementOutput",
-    "ForEachGeometryElementZone",
-    "FormatString",
-    "Collection",
-    "Material",
-    "Object",
-    "Value",
-    "AccumulateField",
-    "EvaluateAtIndex",
-    "FieldAverage",
-    "FieldMinAndMax",
-    "EvaluateOnDomain",
-    "FieldVariance",
-    "Compare",
-    "AttributeStatistic",
+@dataclass
+class TreeTypeConfig:
+    """Configuration for generating node classes for a specific tree type."""
+
+    tree_type: str  # e.g. "GeometryNodeTree"
+    output_dir_name: str  # e.g. "geometry"
+    nodes_to_skip: list[str]
+    manually_defined: tuple[str, ...]
+    # Prefixes stripped from bl_idname when generating Python class names.
+    # Order matters – longer/more-specific prefixes first.
+    class_name_prefix_strips: list[str]
+
+    @property
+    def output_dir(self) -> Path:
+        return Path(__file__).parent / f"src/nodebpy/nodes/{self.output_dir_name}/"
+
+
+GEOMETRY_CONFIG = TreeTypeConfig(
+    tree_type="GeometryNodeTree",
+    output_dir_name="geometry",
+    nodes_to_skip=[
+        "AlignEulerToVector",
+        "Legacy",
+        "Closure",
+        "Simulation",
+        "For Each",
+        "Frame",
+        "GridBoolean",
+        "Reroute",
+        "FieldMinAndMax",
+    ],
+    manually_defined=(
+        "SetHandleType",
+        "HandleTypeSelection",
+        "IndexSwitch",
+        "MenuSwitch",
+        "CaptureAttribute",
+        "FieldToGrid",
+        "JoinGeometry",
+        "SDFGridBoolean",
+        "Bake",
+        "JoinStrings",
+        "GeometryToInstance",
+        "RepeatInput",
+        "RepeatOutput",
+        "RepeatZone",
+        "SimulationInput",
+        "SimulationOutput",
+        "SimulationZone",
+        "ForEachGeometryElementInput",
+        "ForEachGeometryElementOutput",
+        "ForEachGeometryElementZone",
+        "FormatString",
+        "Collection",
+        "Material",
+        "Object",
+        "Value",
+        "AccumulateField",
+        "EvaluateAtIndex",
+        "FieldAverage",
+        "FieldMinAndMax",
+        "EvaluateOnDomain",
+        "FieldVariance",
+        "Compare",
+        "AttributeStatistic",
+    ),
+    class_name_prefix_strips=[
+        "GeometryNode",
+        "ShaderMath",
+        "FunctionNode",
+        "Node",
+    ],
 )
+
+SHADER_CONFIG = TreeTypeConfig(
+    tree_type="ShaderNodeTree",
+    output_dir_name="shader",
+    nodes_to_skip=[
+        "Legacy",
+        "Frame",
+        "Reroute",
+    ],
+    manually_defined=(),
+    class_name_prefix_strips=[
+        "ShaderNode",
+        "Node",
+    ],
+)
+
+COMPOSITOR_CONFIG = TreeTypeConfig(
+    tree_type="CompositorNodeTree",
+    output_dir_name="compositor",
+    nodes_to_skip=[
+        "Legacy",
+        "Frame",
+        "Reroute",
+    ],
+    manually_defined=(),
+    class_name_prefix_strips=[
+        "CompositorNode",
+        "Node",
+    ],
+)
+
+ALL_CONFIGS = [GEOMETRY_CONFIG, SHADER_CONFIG, COMPOSITOR_CONFIG]
+
+
+# ---------------------------------------------------------------------------
+# Data classes
+# ---------------------------------------------------------------------------
 
 
 @dataclass
@@ -112,6 +181,10 @@ class SocketInfo:
             "NodeSocketMaterial": "TYPE_INPUT_MATERIAL",
             "NodeSocketBundle": "TYPE_INPUT_BUNDLE",
             "NodeSocketClosure": "TYPE_INPUT_CLOSURE",
+            # Shader trees use NodeSocketShader for BSDF/closure outputs
+            "NodeSocketShader": "TYPE_INPUT_SHADER",
+            # Virtual sockets adapt to whatever is connected
+            "NodeSocketVirtual": "LINKABLE",
         }
         # to handle all of the subtypes we have to iterate through and
         # instead just check to see if the name is in the socket type
@@ -161,8 +234,8 @@ class PropertyInfo:
     default: Any = None
 
     def enum_values_to_literal(self) -> str:
-        if self.enum_items is None:
-            return ""
+        if not self.enum_items:
+            return "str"
         return (
             f"Literal[{', '.join(repr(item.identifier) for item in self.enum_items)}]"
         )
@@ -249,6 +322,7 @@ class NodeInfo:
     outputs: list[SocketInfo]
     properties: list[PropertyInfo]
     domain_sockets: dict[str, list[SocketInfo]]
+    tree_types: list[str] = field(default_factory=list)
 
     @property
     def node_docs_url(self) -> str | None:
@@ -262,32 +336,23 @@ class NodeInfo:
         "Return the URL to a screenshot of the node from the online Blender documentation"
         return f"https://docs.blender.org/manual/en/latest/_images/node-types_{self.bl_idname}.webp"
 
-    @property
-    def class_name(self) -> str:
-        """Convert 'set position' to 'SetPosition'.
-
-        Handles edge cases like '3D Cursor' -> 'Cursor3D' to ensure valid Python identifiers.
-        """
+    def class_name_for_config(self, config: TreeTypeConfig) -> str:
+        """Generate a Python class name using the given config's prefix strips."""
         # Replace common separators with spaces
         class_name = self.name.replace("_", " ").replace("-", " ")
 
         # Remove any characters that aren't alphanumeric or spaces
-        # This handles cases like "Field Min&Max" -> "Field Min Max"
         class_name = "".join(
             c if c.isalnum() or c.isspace() else "" for c in class_name
         )
         class_name = class_name.title().replace(" ", "")
 
-        # special mapping to upper case for things like "UV"
+        # Static replacements shared across all tree types
         replacements = {
             "&": "And",
             "Uv": "UV",
             "Sdf": "SDF",
             "3DCursor": "Cursor3D",
-            "GeometryNode": "",
-            "ShaderMath": "",
-            "FunctionNode": "",
-            "Node": "",
             "Xyz": "XYZ",
             "Id": "ID",
             "Bézier": "Bezier",
@@ -299,11 +364,19 @@ class NodeInfo:
             "3DLocation": "Location3D",
         }
 
-        # Apply replacements
+        # Add prefix strips from config
+        for prefix in config.class_name_prefix_strips:
+            replacements[prefix] = ""
+
         for key, value in replacements.items():
             class_name = class_name.replace(key, value)
 
         return class_name
+
+    @property
+    def class_name(self) -> str:
+        """Fallback that uses geometry config. Prefer class_name_for_config()."""
+        return self.class_name_for_config(GEOMETRY_CONFIG)
 
     @property
     def module_name(self) -> str:
@@ -321,29 +394,39 @@ class NodeInfo:
         if "List" in self.bl_idname:
             return "experimental"
 
-        # Map color_tag to filename
+        # Map color_tag to filename – covers geometry, shader, and compositor tags
         color_tag_to_filename = {
-            "GEOMETRY": "geometry",
+            # Shared across tree types
             "CONVERTER": "converter",
             "INPUT": "input",
             "OUTPUT": "output",
-            "ATTRIBUTE": "attribute",
             "COLOR": "color",
             "TEXTURE": "texture",
             "GROUP": "group",
             "INTERFACE": "interface",
             "LAYOUT": "layout",
             "VECTOR": "vector",
+            "SCRIPT": "script",
+            # Geometry-specific
+            "GEOMETRY": "geometry",
+            "ATTRIBUTE": "attribute",
+            # Shader-specific
+            "SHADER": "shader",
+            "OP_COLOR": "color",
+            # Compositor-specific
+            "FILTER": "filter",
+            "MATTE": "matte",
+            "DISTORT": "distort",
         }
 
-        # Get filename from color_tag, default to utilities.py
-        filename = color_tag_to_filename.get(self.color_tag, "utilities.py")
+        filename = color_tag_to_filename.get(self.color_tag, "utilities")
 
         return filename
 
-    def generate_enum_class_methods(self) -> str:
+    def generate_enum_class_methods(self, config: TreeTypeConfig | None = None) -> str:
         """Generate @classmethod convenience methods for enum operations."""
         methods = []
+        cls_name = self.class_name_for_config(config) if config else self.class_name
 
         for prop in self.properties:
             if prop.identifier not in [
@@ -424,13 +507,18 @@ class NodeInfo:
     @classmethod
     def {method_name}(
         {params_str}
-    ) -> "{self.class_name}":
+    ) -> "{cls_name}":
         """Create {self.name} with operation '{enum.name}'."""
         return cls({call_params_str})'''
 
                 methods.append(method)
 
         return "".join(methods)
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 
 
 def normalize_name(name: str) -> str:
@@ -494,6 +582,11 @@ def format_python_value(value: Any) -> str:
             return "None"
 
 
+# ---------------------------------------------------------------------------
+# Introspection
+# ---------------------------------------------------------------------------
+
+
 def collect_socket_info(
     sockets: bpy.types.bpy_prop_collection[bpy.types.NodeSocket],
     hidden=False,
@@ -502,9 +595,9 @@ def collect_socket_info(
     """Extract socket infos for a current node state"""
     inputs = []
     for socket in sockets:
-        # GN switch sockets are innactive one or the other so we have to
-        # be explicit to capture all of them
-        if socket.node.bl_idname != "GeometryNodeSwitch":
+        # Switch-type nodes have sockets that are inactive one or the other
+        # so we have to be explicit to capture all of them
+        if "Switch" not in socket.node.bl_idname:
             if (socket.is_inactive and not hidden) or "__extend__" in socket.identifier:
                 continue
 
@@ -598,11 +691,16 @@ def collect_property_info(node, node_type):
     return properties
 
 
-def introspect_node(node_type: type) -> NodeInfo | None:
-    """Introspect a Blender node type and extract all information."""
+def introspect_node(node_type: type, tree_type: str) -> NodeInfo | None:
+    """Introspect a Blender node type and extract all information.
+
+    Args:
+        node_type: The bpy.types node class to introspect.
+        tree_type: The node tree type string (e.g. "GeometryNodeTree").
+    """
     try:
-        # Create temporary node group to instantiate the node"
-        temp_tree = bpy.data.node_groups.new("temp", "GeometryNodeTree")
+        # Create temporary node group to instantiate the node
+        temp_tree = bpy.data.node_groups.new("temp", tree_type)
         node: bpy.types.Node = temp_tree.nodes.new(node_type.__name__)
 
         # Extract basic info
@@ -614,8 +712,6 @@ def introspect_node(node_type: type) -> NodeInfo | None:
         inputs = collect_socket_info(node.inputs, hidden=True)
         outputs = collect_socket_info(node.outputs, hidden=True, is_output=True)
         properties = collect_property_info(node, node_type)
-
-        # Extract properties (enum menus, boolean flags, etc.)
 
         # Clean up
         bpy.data.node_groups.remove(temp_tree)
@@ -632,16 +728,36 @@ def introspect_node(node_type: type) -> NodeInfo | None:
         )
 
     except RuntimeError as e:
-        print(f"Error introspecting {node_type.__name__}: {e}")
+        print(f"Error introspecting {node_type.__name__} in {tree_type}: {e}")
         return None
 
 
-def generate_node_class(node_info: NodeInfo) -> str:
-    """Generate Python class code for a node.
+def probe_node_tree_compatibility(node_type: type) -> list[str]:
+    """Try adding a node to each tree type and return which ones succeed."""
+    compatible = []
+    for tree_type in TREE_TYPES:
+        try:
+            temp_tree = bpy.data.node_groups.new("probe", tree_type)
+            temp_tree.nodes.new(node_type.__name__)
+            bpy.data.node_groups.remove(temp_tree)
+            compatible.append(tree_type)
+        except RuntimeError:
+            # Clean up on failure too
+            try:
+                bpy.data.node_groups.remove(temp_tree)
+            except Exception:
+                pass
+    return compatible
 
-    Returns:
-        tuple[str, bool]: (generated code, has_dynamic_sockets)
-    """
+
+# ---------------------------------------------------------------------------
+# Code generation
+# ---------------------------------------------------------------------------
+
+
+def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
+    """Generate Python class code for a node."""
+    class_name = node_info.class_name_for_config(config)
 
     init_params = ["self"]
     establish_links_params = []
@@ -705,18 +821,19 @@ def generate_node_class(node_info: NodeInfo) -> str:
     property_accessors = [
         prop.format_property_accessors() for prop in node_info.properties
     ]
-    enum_methods = node_info.generate_enum_class_methods()
+    enum_methods = node_info.generate_enum_class_methods(config)
 
     # Add node type annotation
     node_type_annotation = (
         f"bpy.types.{node_info.bl_idname}"
-        if node_info.bl_idname.startswith(("Geometry", "Function", "Shader"))
+        if node_info.bl_idname.startswith(
+            ("Geometry", "Function", "Shader", "Compositor")
+        )
         else "bpy.types.Node"
     )
 
     # Build class
-    # """\n{node_info.description}\n[Blender Documentation]({node_info.node_docs_url})\n![]({node_info.node_image_url})\n"""
-    class_code = f'''class {node_info.class_name}(NodeBuilder):
+    class_code = f'''class {class_name}(NodeBuilder):
     """\n{node_info.description}\n"""
 
     _bl_idname = "{node_info.bl_idname}"
@@ -758,8 +875,8 @@ def generate_file_header() -> str:
 
 import bpy
 
-from ..builder import NodeBuilder, SocketLinker
-from ..types import (
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
     LINKABLE,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_GEOMETRY,
@@ -771,6 +888,7 @@ from ..types import (
     TYPE_INPUT_MATRIX,
     TYPE_INPUT_BUNDLE,
     TYPE_INPUT_CLOSURE,
+    TYPE_INPUT_SHADER,
     TYPE_INPUT_OBJECT,
     TYPE_INPUT_COLLECTION,
     TYPE_INPUT_IMAGE,
@@ -782,37 +900,36 @@ from ..types import (
 """
 
 
-class BaseModuleWriter:
-    output_dir = Path(__file__).parent / "src/nodebpy/nodes/"
+# ---------------------------------------------------------------------------
+# Module writers
+# ---------------------------------------------------------------------------
 
 
-class ModuleWriter(BaseModuleWriter):
-    def __init__(self, module_name: str):
+class ModuleWriter:
+    def __init__(self, module_name: str, output_dir: Path):
         self.module_name = module_name
+        self.output_dir = output_dir
         self.node_list: list[NodeInfo] = list()
 
     @property
     def filename(self):
         return f"{self.module_name}.py"
 
-    def write(self):
+    def write(self, config: TreeTypeConfig):
         module_path = self.output_dir / self.filename
         with open(module_path, "w") as file:
-            file.write(self.generate_content())
+            file.write(self.generate_content(config))
 
-    def generate_content(self) -> str:
+    def generate_content(self, config: TreeTypeConfig) -> str:
         print(f"Generating {self.filename} with {len(self.nodes)} nodes...")
         string = ""
         string += generate_file_header()
         string += "\n\n"
 
         for node_info in self.nodes:
-            # try:
-            class_code = generate_node_class(node_info)
+            class_code = generate_node_class(node_info, config)
             string += class_code
             string += "\n\n"
-            # except Exception as e:
-            #     print(f"  Error generating {node_info.name}: {e}")
 
         return string
 
@@ -824,29 +941,37 @@ class ModuleWriter(BaseModuleWriter):
         self.node_list.append(node_info)
 
 
-class ModulesHandler(BaseModuleWriter):
-    def __init__(self):
-        super().__init__()
+class ModulesHandler:
+    def __init__(self, config: TreeTypeConfig):
+        self.config = config
+        self.output_dir = config.output_dir
         self.modules: dict[str, ModuleWriter] = {}
+        # Track class names to detect duplicates across modules
+        self._class_names: dict[str, NodeInfo] = {}
 
     def write(self):
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         self.write_modules()
         self.write_init()
 
     def write_modules(self):
         for module_name, module_writer in self.modules.items():
-            module_writer.write()
+            module_writer.write(self.config)
 
     def generate_init(self):
         string = '"""Auto-generated init file from generate.py"""\n\n'
         all = []
-        string += f"from .manual import ({', '.join(MANUALLY_DEFINED)})\n"
-        all += [name for name in MANUALLY_DEFINED]
+        if self.config.manually_defined:
+            string += (
+                f"from .manual import ({', '.join(self.config.manually_defined)})\n"
+            )
+            all += [name for name in self.config.manually_defined]
         for writer in self.modules.values():
             nodes = writer.nodes
-            all += [node.class_name for node in nodes]
+            class_names = [node.class_name_for_config(self.config) for node in nodes]
+            all += class_names
             string += "from .{} import ({})\n".format(
-                writer.module_name, ",\n".join([node.class_name for node in nodes])
+                writer.module_name, ",\n".join(class_names)
             )
         all.sort()
         all_string = "\n__all__ = ({})".format(
@@ -862,57 +987,97 @@ class ModulesHandler(BaseModuleWriter):
     def add_node(self, node_info: NodeInfo | None) -> None:
         if not node_info:
             return
+        cls_name = node_info.class_name_for_config(self.config)
+        if cls_name in self._class_names:
+            existing = self._class_names[cls_name]
+            print(
+                f"  Duplicate class name '{cls_name}': "
+                f"{node_info.bl_idname} vs {existing.bl_idname} — skipping {node_info.bl_idname}"
+            )
+            return
+        self._class_names[cls_name] = node_info
         module_name = node_info.module_name
         if module_name not in self.modules:
-            self.modules[module_name] = ModuleWriter(module_name)
+            self.modules[module_name] = ModuleWriter(module_name, self.output_dir)
         self.modules[module_name].add_node(node_info)
 
     def count_nodes(self) -> int:
         return sum(len(module.nodes) for module in self.modules.values())
 
 
+# ---------------------------------------------------------------------------
+# Main entry point
+# ---------------------------------------------------------------------------
+
+
 def generate_all():
     """Generate all node classes and write to files."""
-    handler = ModulesHandler()
-
-    print(f"Generating node classes to {handler.output_dir}")
 
     all_nodes = get_node_names()
-    print(f"Found {len(all_nodes)} geometry nodes")
+    print(f"Found {len(all_nodes)} total node types in bpy.types")
 
-    node_infos = []
-    skipped_count = 0
-
+    # --- Phase 1: probe tree-type compatibility for every node ---
+    print("\n--- Probing node tree compatibility ---")
+    node_compatibility: dict[str, list[str]] = {}
     for node_type in all_nodes:
-        if (
-            any([n in node_type.__name__ for n in NODES_TO_SKIP])
-            or any([n in node_type.bl_rna.name for n in NODES_TO_SKIP])
-            or any(
-                [
+        compatible = probe_node_tree_compatibility(node_type)
+        if compatible:
+            node_compatibility[node_type.__name__] = compatible
+
+    # Report multi-tree nodes
+    multi_tree_nodes: dict[str, list[str]] = {
+        name: trees for name, trees in node_compatibility.items() if len(trees) > 1
+    }
+    if multi_tree_nodes:
+        print(f"\nNodes compatible with multiple tree types ({len(multi_tree_nodes)}):")
+        for name, trees in sorted(multi_tree_nodes.items()):
+            tree_labels = [t.replace("NodeTree", "") for t in trees]
+            print(f"  {name}: {', '.join(tree_labels)}")
+
+    # --- Phase 2: generate per-tree-type ---
+    for config in ALL_CONFIGS:
+        print(f"\n{'=' * 60}")
+        print(f"Generating {config.output_dir_name} nodes ({config.tree_type})")
+        print(f"{'=' * 60}")
+
+        handler = ModulesHandler(config)
+        skipped_count = 0
+
+        for node_type in all_nodes:
+            # Skip nodes that can't be added to this tree type
+            if config.tree_type not in node_compatibility.get(node_type.__name__, []):
+                continue
+
+            if (
+                any(n in node_type.__name__ for n in config.nodes_to_skip)
+                or any(n in node_type.bl_rna.name for n in config.nodes_to_skip)
+                or any(
                     n
                     == node_type.bl_rna.name.title()
                     .replace(" ", "")
                     .replace("Sdf", "SDF")
-                    for n in MANUALLY_DEFINED
-                ]
-            )
-        ):
-            print(f"  Skipping manually specified node: {node_type.__name__}")
-            skipped_count += 1
-            continue
+                    for n in config.manually_defined
+                )
+            ):
+                print(f"  Skipping: {node_type.__name__}")
+                skipped_count += 1
+                continue
 
-        handler.add_node(introspect_node(node_type))
+            node_info = introspect_node(node_type, config.tree_type)
+            if node_info:
+                node_info.tree_types = node_compatibility.get(node_type.__name__, [])
+            handler.add_node(node_info)
 
-    print(f"Successfully introspected {handler.count_nodes()} nodes")
-    print(f"Skipped {skipped_count} manually specified nodes")
+        print(f"Successfully introspected {handler.count_nodes()} nodes")
+        print(f"Skipped {skipped_count} nodes")
 
-    handler.write()
+        handler.write()
 
-    print("\nGeneration complete!")
-    print(f"Generated {len(handler.modules)} files:")
-    for filename in sorted(handler.modules.keys()):
-        print(f"  - {filename}")
-    print(f"\nTotal: {len(node_infos)} node classes")
+        print(f"Generated {len(handler.modules)} module files:")
+        for filename in sorted(handler.modules.keys()):
+            print(f"  - {filename}")
+
+    print("\n--- Generation complete! ---")
 
 
 if __name__ == "__main__":

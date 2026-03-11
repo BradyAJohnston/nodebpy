@@ -74,6 +74,7 @@ TYPE_INPUT_GRID = typing.Union[
 TYPE_INPUT_MENU = typing.Union[LINKABLE, NodeSocketMenu]
 TYPE_INPUT_BUNDLE = typing.Union[LINKABLE, NodeSocketBundle]
 TYPE_INPUT_CLOSURE = typing.Union[LINKABLE, NodeSocketClosure]
+TYPE_INPUT_SHADER = typing.Union[LINKABLE]  # NodeSocketShader (BSDF/shader closures)
 
 TYPE_INPUT_DATA = typing.Union[
     TYPE_INPUT_VALUE,

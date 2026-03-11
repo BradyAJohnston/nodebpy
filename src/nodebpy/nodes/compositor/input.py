@@ -1,0 +1,743 @@
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_VALUE,
+)
+
+
+class BokehImage(NodeBuilder):
+    """
+    Generate image with bokeh shape for use with the Bokeh Blur filter node
+    """
+
+    _bl_idname = "CompositorNodeBokehImage"
+    node: bpy.types.CompositorNodeBokehImage
+
+    def __init__(
+        self,
+        flaps: TYPE_INPUT_INT = 5,
+        angle: TYPE_INPUT_VALUE = 0.0,
+        roundness: TYPE_INPUT_VALUE = 0.0,
+        catadioptric_size: TYPE_INPUT_VALUE = 0.0,
+        color_shift: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {
+            "Flaps": flaps,
+            "Angle": angle,
+            "Roundness": roundness,
+            "Catadioptric Size": catadioptric_size,
+            "Color Shift": color_shift,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_flaps(self) -> SocketLinker:
+        """Input socket: Flaps"""
+        return self._input("Flaps")
+
+    @property
+    def i_angle(self) -> SocketLinker:
+        """Input socket: Angle"""
+        return self._input("Angle")
+
+    @property
+    def i_roundness(self) -> SocketLinker:
+        """Input socket: Roundness"""
+        return self._input("Roundness")
+
+    @property
+    def i_catadioptric_size(self) -> SocketLinker:
+        """Input socket: Catadioptric Size"""
+        return self._input("Catadioptric Size")
+
+    @property
+    def i_color_shift(self) -> SocketLinker:
+        """Input socket: Color Shift"""
+        return self._input("Color Shift")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Color(NodeBuilder):
+    """
+    A color picker
+    """
+
+    _bl_idname = "CompositorNodeRGB"
+    node: bpy.types.CompositorNodeRGB
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class Image(NodeBuilder):
+    """
+    Input image or movie file
+    """
+
+    _bl_idname = "CompositorNodeImage"
+    node: bpy.types.CompositorNodeImage
+
+    def __init__(
+        self,
+        frame_duration: int = 0,
+        frame_start: int = 0,
+        frame_offset: int = 0,
+        use_cyclic: bool = False,
+        use_auto_refresh: bool = False,
+        layer: str = "",
+        has_layers: bool = False,
+        view: str = "",
+        has_views: bool = False,
+    ):
+        super().__init__()
+        key_args = {}
+        self.frame_duration = frame_duration
+        self.frame_start = frame_start
+        self.frame_offset = frame_offset
+        self.use_cyclic = use_cyclic
+        self.use_auto_refresh = use_auto_refresh
+        self.layer = layer
+        self.has_layers = has_layers
+        self.view = view
+        self.has_views = has_views
+        self._establish_links(**key_args)
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+    @property
+    def o_alpha(self) -> SocketLinker:
+        """Output socket: Alpha"""
+        return self._output("Alpha")
+
+    @property
+    def frame_duration(self) -> int:
+        return self.node.frame_duration
+
+    @frame_duration.setter
+    def frame_duration(self, value: int):
+        self.node.frame_duration = value
+
+    @property
+    def frame_start(self) -> int:
+        return self.node.frame_start
+
+    @frame_start.setter
+    def frame_start(self, value: int):
+        self.node.frame_start = value
+
+    @property
+    def frame_offset(self) -> int:
+        return self.node.frame_offset
+
+    @frame_offset.setter
+    def frame_offset(self, value: int):
+        self.node.frame_offset = value
+
+    @property
+    def use_cyclic(self) -> bool:
+        return self.node.use_cyclic
+
+    @use_cyclic.setter
+    def use_cyclic(self, value: bool):
+        self.node.use_cyclic = value
+
+    @property
+    def use_auto_refresh(self) -> bool:
+        return self.node.use_auto_refresh
+
+    @use_auto_refresh.setter
+    def use_auto_refresh(self, value: bool):
+        self.node.use_auto_refresh = value
+
+    @property
+    def layer(self) -> str:
+        return self.node.layer
+
+    @layer.setter
+    def layer(self, value: str):
+        self.node.layer = value
+
+    @property
+    def has_layers(self) -> bool:
+        return self.node.has_layers
+
+    @has_layers.setter
+    def has_layers(self, value: bool):
+        self.node.has_layers = value
+
+    @property
+    def view(self) -> str:
+        return self.node.view
+
+    @view.setter
+    def view(self, value: str):
+        self.node.view = value
+
+    @property
+    def has_views(self) -> bool:
+        return self.node.has_views
+
+    @has_views.setter
+    def has_views(self, value: bool):
+        self.node.has_views = value
+
+
+class ImageCoordinates(NodeBuilder):
+    """
+    Returns the coordinates of the pixels of an image
+    """
+
+    _bl_idname = "CompositorNodeImageCoordinates"
+    node: bpy.types.CompositorNodeImageCoordinates
+
+    def __init__(self, image: TYPE_INPUT_COLOR = None):
+        super().__init__()
+        key_args = {"Image": image}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def o_uniform(self) -> SocketLinker:
+        """Output socket: Uniform"""
+        return self._output("Uniform")
+
+    @property
+    def o_normalized(self) -> SocketLinker:
+        """Output socket: Normalized"""
+        return self._output("Normalized")
+
+    @property
+    def o_pixel(self) -> SocketLinker:
+        """Output socket: Pixel"""
+        return self._output("Pixel")
+
+
+class ImageInfo(NodeBuilder):
+    """
+    Returns information about an image
+    """
+
+    _bl_idname = "CompositorNodeImageInfo"
+    node: bpy.types.CompositorNodeImageInfo
+
+    def __init__(self, image: TYPE_INPUT_COLOR = None):
+        super().__init__()
+        key_args = {"Image": image}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def o_dimensions(self) -> SocketLinker:
+        """Output socket: Dimensions"""
+        return self._output("Dimensions")
+
+    @property
+    def o_resolution(self) -> SocketLinker:
+        """Output socket: Resolution"""
+        return self._output("Resolution")
+
+    @property
+    def o_location(self) -> SocketLinker:
+        """Output socket: Location"""
+        return self._output("Location")
+
+    @property
+    def o_rotation(self) -> SocketLinker:
+        """Output socket: Rotation"""
+        return self._output("Rotation")
+
+    @property
+    def o_scale(self) -> SocketLinker:
+        """Output socket: Scale"""
+        return self._output("Scale")
+
+
+class Mask(NodeBuilder):
+    """
+    Input mask from a mask data-block, created in the image editor
+    """
+
+    _bl_idname = "CompositorNodeMask"
+    node: bpy.types.CompositorNodeMask
+
+    def __init__(
+        self,
+        size_source: TYPE_INPUT_MENU = "Scene Size",
+        size_x: TYPE_INPUT_INT = 256,
+        size_y: TYPE_INPUT_INT = 256,
+        feather: TYPE_INPUT_BOOLEAN = True,
+        motion_blur: TYPE_INPUT_BOOLEAN = False,
+        motion_blur_samples: TYPE_INPUT_INT = 16,
+        motion_blur_shutter: TYPE_INPUT_VALUE = 0.5,
+    ):
+        super().__init__()
+        key_args = {
+            "Size Source": size_source,
+            "Size X": size_x,
+            "Size Y": size_y,
+            "Feather": feather,
+            "Motion Blur": motion_blur,
+            "Motion Blur Samples": motion_blur_samples,
+            "Motion Blur Shutter": motion_blur_shutter,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_size_source(self) -> SocketLinker:
+        """Input socket: Size Source"""
+        return self._input("Size Source")
+
+    @property
+    def i_size_x(self) -> SocketLinker:
+        """Input socket: Size X"""
+        return self._input("Size X")
+
+    @property
+    def i_size_y(self) -> SocketLinker:
+        """Input socket: Size Y"""
+        return self._input("Size Y")
+
+    @property
+    def i_feather(self) -> SocketLinker:
+        """Input socket: Feather"""
+        return self._input("Feather")
+
+    @property
+    def i_motion_blur(self) -> SocketLinker:
+        """Input socket: Motion Blur"""
+        return self._input("Motion Blur")
+
+    @property
+    def i_motion_blur_samples(self) -> SocketLinker:
+        """Input socket: Samples"""
+        return self._input("Motion Blur Samples")
+
+    @property
+    def i_motion_blur_shutter(self) -> SocketLinker:
+        """Input socket: Shutter"""
+        return self._input("Motion Blur Shutter")
+
+    @property
+    def o_mask(self) -> SocketLinker:
+        """Output socket: Mask"""
+        return self._output("Mask")
+
+
+class MovieClip(NodeBuilder):
+    """
+    Input image or movie from a movie clip data-block, typically used for motion tracking
+    """
+
+    _bl_idname = "CompositorNodeMovieClip"
+    node: bpy.types.CompositorNodeMovieClip
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+    @property
+    def o_alpha(self) -> SocketLinker:
+        """Output socket: Alpha"""
+        return self._output("Alpha")
+
+    @property
+    def o_offset_x(self) -> SocketLinker:
+        """Output socket: Offset X"""
+        return self._output("Offset X")
+
+    @property
+    def o_offset_y(self) -> SocketLinker:
+        """Output socket: Offset Y"""
+        return self._output("Offset Y")
+
+    @property
+    def o_scale(self) -> SocketLinker:
+        """Output socket: Scale"""
+        return self._output("Scale")
+
+    @property
+    def o_angle(self) -> SocketLinker:
+        """Output socket: Angle"""
+        return self._output("Angle")
+
+
+class Normal(NodeBuilder):
+    """
+    Input normalized normal values to other nodes in the tree
+    """
+
+    _bl_idname = "CompositorNodeNormal"
+    node: bpy.types.CompositorNodeNormal
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_normal(self) -> SocketLinker:
+        """Output socket: Normal"""
+        return self._output("Normal")
+
+
+class RenderLayers(NodeBuilder):
+    """
+    Input render passes from a scene render
+    """
+
+    _bl_idname = "CompositorNodeRLayers"
+    node: bpy.types.CompositorNodeRLayers
+
+    def __init__(self, layer: str = "ViewLayer"):
+        super().__init__()
+        key_args = {}
+        self.layer = layer
+        self._establish_links(**key_args)
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+    @property
+    def o_alpha(self) -> SocketLinker:
+        """Output socket: Alpha"""
+        return self._output("Alpha")
+
+    @property
+    def o_depth(self) -> SocketLinker:
+        """Output socket: Depth"""
+        return self._output("Depth")
+
+    @property
+    def o_normal(self) -> SocketLinker:
+        """Output socket: Normal"""
+        return self._output("Normal")
+
+    @property
+    def o_uv(self) -> SocketLinker:
+        """Output socket: UV"""
+        return self._output("UV")
+
+    @property
+    def o_vector(self) -> SocketLinker:
+        """Output socket: Vector"""
+        return self._output("Vector")
+
+    @property
+    def o_position(self) -> SocketLinker:
+        """Output socket: Position"""
+        return self._output("Position")
+
+    @property
+    def o_deprecated(self) -> SocketLinker:
+        """Output socket: Deprecated"""
+        return self._output("Deprecated")
+
+    @property
+    def o_deprecated_001(self) -> SocketLinker:
+        """Output socket: Deprecated"""
+        return self._output("Deprecated_001")
+
+    @property
+    def o_shadow(self) -> SocketLinker:
+        """Output socket: Shadow"""
+        return self._output("Shadow")
+
+    @property
+    def o_ambient_occlusion(self) -> SocketLinker:
+        """Output socket: Ambient Occlusion"""
+        return self._output("Ambient Occlusion")
+
+    @property
+    def o_deprecated_002(self) -> SocketLinker:
+        """Output socket: Deprecated"""
+        return self._output("Deprecated_002")
+
+    @property
+    def o_deprecated_003(self) -> SocketLinker:
+        """Output socket: Deprecated"""
+        return self._output("Deprecated_003")
+
+    @property
+    def o_deprecated_004(self) -> SocketLinker:
+        """Output socket: Deprecated"""
+        return self._output("Deprecated_004")
+
+    @property
+    def o_object_index(self) -> SocketLinker:
+        """Output socket: Object Index"""
+        return self._output("Object Index")
+
+    @property
+    def o_material_index(self) -> SocketLinker:
+        """Output socket: Material Index"""
+        return self._output("Material Index")
+
+    @property
+    def o_mist(self) -> SocketLinker:
+        """Output socket: Mist"""
+        return self._output("Mist")
+
+    @property
+    def o_emission(self) -> SocketLinker:
+        """Output socket: Emission"""
+        return self._output("Emission")
+
+    @property
+    def o_environment(self) -> SocketLinker:
+        """Output socket: Environment"""
+        return self._output("Environment")
+
+    @property
+    def o_diffuse_direct(self) -> SocketLinker:
+        """Output socket: Diffuse Direct"""
+        return self._output("Diffuse Direct")
+
+    @property
+    def o_diffuse_indirect(self) -> SocketLinker:
+        """Output socket: Diffuse Indirect"""
+        return self._output("Diffuse Indirect")
+
+    @property
+    def o_diffuse_color(self) -> SocketLinker:
+        """Output socket: Diffuse Color"""
+        return self._output("Diffuse Color")
+
+    @property
+    def o_glossy_direct(self) -> SocketLinker:
+        """Output socket: Glossy Direct"""
+        return self._output("Glossy Direct")
+
+    @property
+    def o_glossy_indirect(self) -> SocketLinker:
+        """Output socket: Glossy Indirect"""
+        return self._output("Glossy Indirect")
+
+    @property
+    def o_glossy_color(self) -> SocketLinker:
+        """Output socket: Glossy Color"""
+        return self._output("Glossy Color")
+
+    @property
+    def o_transmission_direct(self) -> SocketLinker:
+        """Output socket: Transmission Direct"""
+        return self._output("Transmission Direct")
+
+    @property
+    def o_transmission_indirect(self) -> SocketLinker:
+        """Output socket: Transmission Indirect"""
+        return self._output("Transmission Indirect")
+
+    @property
+    def o_transmission_color(self) -> SocketLinker:
+        """Output socket: Transmission Color"""
+        return self._output("Transmission Color")
+
+    @property
+    def o_subsurface_direct(self) -> SocketLinker:
+        """Output socket: Subsurface Direct"""
+        return self._output("Subsurface Direct")
+
+    @property
+    def o_subsurface_indirect(self) -> SocketLinker:
+        """Output socket: Subsurface Indirect"""
+        return self._output("Subsurface Indirect")
+
+    @property
+    def o_subsurface_color(self) -> SocketLinker:
+        """Output socket: Subsurface Color"""
+        return self._output("Subsurface Color")
+
+    @property
+    def layer(self) -> str:
+        return self.node.layer
+
+    @layer.setter
+    def layer(self, value: str):
+        self.node.layer = value
+
+
+class SceneTime(NodeBuilder):
+    """
+    Input the current scene time in seconds or frames
+    """
+
+    _bl_idname = "CompositorNodeSceneTime"
+    node: bpy.types.CompositorNodeSceneTime
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_seconds(self) -> SocketLinker:
+        """Output socket: Seconds"""
+        return self._output("Seconds")
+
+    @property
+    def o_frame(self) -> SocketLinker:
+        """Output socket: Frame"""
+        return self._output("Frame")
+
+
+class TimeCurve(NodeBuilder):
+    """
+    Generate a factor value (from 0.0 to 1.0) between scene start and end time, using a curve mapping
+    """
+
+    _bl_idname = "CompositorNodeTime"
+    node: bpy.types.CompositorNodeTime
+
+    def __init__(
+        self,
+        start_frame: TYPE_INPUT_INT = 1,
+        end_frame: TYPE_INPUT_INT = 250,
+    ):
+        super().__init__()
+        key_args = {"Start Frame": start_frame, "End Frame": end_frame}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_start_frame(self) -> SocketLinker:
+        """Input socket: Start Frame"""
+        return self._input("Start Frame")
+
+    @property
+    def i_end_frame(self) -> SocketLinker:
+        """Input socket: End Frame"""
+        return self._input("End Frame")
+
+    @property
+    def o_fac(self) -> SocketLinker:
+        """Output socket: Factor"""
+        return self._output("Fac")
+
+
+class TrackPosition(NodeBuilder):
+    """
+    Provide information about motion tracking points, such as x and y values
+    """
+
+    _bl_idname = "CompositorNodeTrackPos"
+    node: bpy.types.CompositorNodeTrackPos
+
+    def __init__(
+        self,
+        mode: TYPE_INPUT_MENU = "Absolute",
+        frame: TYPE_INPUT_INT = 0,
+        *,
+        tracking_object: str = "",
+        track_name: str = "",
+    ):
+        super().__init__()
+        key_args = {"Mode": mode, "Frame": frame}
+        self.tracking_object = tracking_object
+        self.track_name = track_name
+        self._establish_links(**key_args)
+
+    @property
+    def i_mode(self) -> SocketLinker:
+        """Input socket: Mode"""
+        return self._input("Mode")
+
+    @property
+    def i_frame(self) -> SocketLinker:
+        """Input socket: Frame"""
+        return self._input("Frame")
+
+    @property
+    def o_x(self) -> SocketLinker:
+        """Output socket: X"""
+        return self._output("X")
+
+    @property
+    def o_y(self) -> SocketLinker:
+        """Output socket: Y"""
+        return self._output("Y")
+
+    @property
+    def o_speed(self) -> SocketLinker:
+        """Output socket: Speed"""
+        return self._output("Speed")
+
+    @property
+    def tracking_object(self) -> str:
+        return self.node.tracking_object
+
+    @tracking_object.setter
+    def tracking_object(self, value: str):
+        self.node.tracking_object = value
+
+    @property
+    def track_name(self) -> str:
+        return self.node.track_name
+
+    @track_name.setter
+    def track_name(self, value: str):
+        self.node.track_name = value
+
+
+class Value(NodeBuilder):
+    """
+    Input numerical values to other nodes in the tree
+    """
+
+    _bl_idname = "ShaderNodeValue"
+    node: bpy.types.ShaderNodeValue
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")

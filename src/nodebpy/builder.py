@@ -7,10 +7,10 @@ if TYPE_CHECKING:
 
 import bpy
 from bpy.types import (
-    GeometryNodeTree,
     Node,
     Nodes,
     NodeSocket,
+    NodeTree,
 )
 
 from .lib.nodearrange import arrange
@@ -64,9 +64,9 @@ class SocketContext:
         self.builder = tree_builder
 
     @property
-    def tree(self) -> GeometryNodeTree:
+    def tree(self) -> NodeTree:
         tree = self.builder.tree
-        assert tree is not None and isinstance(tree, GeometryNodeTree)
+        assert tree is not None
         return tree
 
     @property
@@ -114,7 +114,10 @@ class OutputInterfaceContext(DirectionalContext):
 
 
 class TreeBuilder:
-    """Builder for creating Blender geometry node trees with a clean Python API."""
+    """Builder for creating Blender node trees with a clean Python API.
+
+    Supports geometry, shader, and compositor node trees.
+    """
 
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
     just_added: "Node | None" = None
@@ -122,15 +125,16 @@ class TreeBuilder:
 
     def __init__(
         self,
-        tree: GeometryNodeTree | str = "Geometry Nodes",
+        tree: NodeTree | str = "Geometry Nodes",
         *,
+        tree_type: str = "GeometryNodeTree",
         collapse: bool = False,
         arrange: bool = True,
+        fake_user: bool = False,
     ):
         if isinstance(tree, str):
-            self.tree = bpy.data.node_groups.new(tree, "GeometryNodeTree")
+            self.tree = bpy.data.node_groups.new(tree, tree_type)
         else:
-            assert isinstance(tree, GeometryNodeTree)
             self.tree = tree
 
         # Create socket accessors for named access
@@ -138,10 +142,73 @@ class TreeBuilder:
         self.outputs = OutputInterfaceContext(self)
         self._arrange = arrange
         self.collapse = collapse
+        self.fake_user = fake_user
+
+    @classmethod
+    def geometry(
+        cls,
+        name: str = "Geometry Nodes",
+        *,
+        collapse: bool = False,
+        arrange: bool = True,
+        fake_user: bool = False,
+    ) -> "TreeBuilder":
+        """Create a geometry node tree."""
+        return cls(
+            name,
+            tree_type="GeometryNodeTree",
+            collapse=collapse,
+            arrange=arrange,
+            fake_user=fake_user,
+        )
+
+    @classmethod
+    def shader(
+        cls,
+        name: str = "Shader Nodes",
+        *,
+        collapse: bool = False,
+        arrange: bool = True,
+        fake_user: bool = False,
+    ) -> "TreeBuilder":
+        """Create a shader node tree."""
+        return cls(
+            name,
+            tree_type="ShaderNodeTree",
+            collapse=collapse,
+            arrange=arrange,
+            fake_user=fake_user,
+        )
+
+    @classmethod
+    def compositor(
+        cls,
+        name: str = "Compositor Nodes",
+        *,
+        collapse: bool = False,
+        arrange: bool = True,
+        fake_user: bool = False,
+    ) -> "TreeBuilder":
+        """Create a compositor node tree."""
+        return cls(
+            name,
+            tree_type="CompositorNodeTree",
+            collapse=collapse,
+            arrange=arrange,
+            fake_user=fake_user,
+        )
 
     @property
     def nodes(self) -> Nodes:
         return self.tree.nodes
+
+    @property
+    def fake_user(self) -> bool:
+        return self.tree.use_fake_user
+
+    @fake_user.setter
+    def fake_user(self, value: bool) -> None:
+        self.tree.use_extra_user = value
 
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""

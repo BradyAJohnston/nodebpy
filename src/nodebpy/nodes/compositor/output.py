@@ -1,0 +1,96 @@
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_COLOR,
+)
+
+
+class FileOutput(NodeBuilder):
+    """
+    Write image file to disk
+    """
+
+    _bl_idname = "CompositorNodeOutputFile"
+    node: bpy.types.CompositorNodeOutputFile
+
+    def __init__(
+        self,
+        active_item_index: int = 0,
+        directory: str = "",
+        file_name: str = "",
+        save_as_render: bool = False,
+    ):
+        super().__init__()
+        key_args = {}
+        self.active_item_index = active_item_index
+        self.directory = directory
+        self.file_name = file_name
+        self.save_as_render = save_as_render
+        self._establish_links(**key_args)
+
+    @property
+    def active_item_index(self) -> int:
+        return self.node.active_item_index
+
+    @active_item_index.setter
+    def active_item_index(self, value: int):
+        self.node.active_item_index = value
+
+    @property
+    def directory(self) -> str:
+        return self.node.directory
+
+    @directory.setter
+    def directory(self, value: str):
+        self.node.directory = value
+
+    @property
+    def file_name(self) -> str:
+        return self.node.file_name
+
+    @file_name.setter
+    def file_name(self, value: str):
+        self.node.file_name = value
+
+    @property
+    def save_as_render(self) -> bool:
+        return self.node.save_as_render
+
+    @save_as_render.setter
+    def save_as_render(self, value: bool):
+        self.node.save_as_render = value
+
+
+class Viewer(NodeBuilder):
+    """
+    Visualize data from inside a node graph, in the image editor or as a backdrop
+    """
+
+    _bl_idname = "CompositorNodeViewer"
+    node: bpy.types.CompositorNodeViewer
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        *,
+        ui_shortcut: int = 0,
+    ):
+        super().__init__()
+        key_args = {"Image": image}
+        self.ui_shortcut = ui_shortcut
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def ui_shortcut(self) -> int:
+        return self.node.ui_shortcut
+
+    @ui_shortcut.setter
+    def ui_shortcut(self, value: int):
+        self.node.ui_shortcut = value

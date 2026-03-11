@@ -1,0 +1,108 @@
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+
+
+class ClosureInput(NodeBuilder):
+    """
+    Closure Input node
+    """
+
+    _bl_idname = "NodeClosureInput"
+    node: bpy.types.Node
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class ClosureOutput(NodeBuilder):
+    """
+    Closure Output node
+    """
+
+    _bl_idname = "NodeClosureOutput"
+    node: bpy.types.Node
+
+    def __init__(
+        self,
+        active_input_index: int = 0,
+        active_output_index: int = 0,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        key_args = {}
+        self.active_input_index = active_input_index
+        self.active_output_index = active_output_index
+        self.define_signature = define_signature
+        self._establish_links(**key_args)
+
+    @property
+    def o_closure(self) -> SocketLinker:
+        """Output socket: Closure"""
+        return self._output("Closure")
+
+    @property
+    def active_input_index(self) -> int:
+        return self.node.active_input_index
+
+    @active_input_index.setter
+    def active_input_index(self, value: int):
+        self.node.active_input_index = value
+
+    @property
+    def active_output_index(self) -> int:
+        return self.node.active_output_index
+
+    @active_output_index.setter
+    def active_output_index(self, value: int):
+        self.node.active_output_index = value
+
+    @property
+    def define_signature(self) -> bool:
+        return self.node.define_signature
+
+    @define_signature.setter
+    def define_signature(self, value: bool):
+        self.node.define_signature = value
+
+
+class GroupInput(NodeBuilder):
+    """
+    Expose connected data from inside a node group as inputs to its interface
+    """
+
+    _bl_idname = "NodeGroupInput"
+    node: bpy.types.Node
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class GroupOutput(NodeBuilder):
+    """
+    Output data from inside of a node group
+    """
+
+    _bl_idname = "NodeGroupOutput"
+    node: bpy.types.Node
+
+    def __init__(self, is_active_output: bool = False):
+        super().__init__()
+        key_args = {}
+        self.is_active_output = is_active_output
+        self._establish_links(**key_args)
+
+    @property
+    def is_active_output(self) -> bool:
+        return self.node.is_active_output
+
+    @is_active_output.setter
+    def is_active_output(self, value: bool):
+        self.node.is_active_output = value

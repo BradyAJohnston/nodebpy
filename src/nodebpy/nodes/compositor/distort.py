@@ -1,0 +1,831 @@
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_VECTOR,
+)
+
+
+class CornerPin(NodeBuilder):
+    """
+    Plane warp transformation using explicit corner values
+    """
+
+    _bl_idname = "CompositorNodeCornerPin"
+    node: bpy.types.CompositorNodeCornerPin
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        upper_left: TYPE_INPUT_VECTOR = None,
+        upper_right: TYPE_INPUT_VECTOR = None,
+        lower_left: TYPE_INPUT_VECTOR = None,
+        lower_right: TYPE_INPUT_VECTOR = None,
+        interpolation: TYPE_INPUT_MENU = "Bilinear",
+        extension_x: TYPE_INPUT_MENU = "Clip",
+        extension_y: TYPE_INPUT_MENU = "Clip",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Upper Left": upper_left,
+            "Upper Right": upper_right,
+            "Lower Left": lower_left,
+            "Lower Right": lower_right,
+            "Interpolation": interpolation,
+            "Extension X": extension_x,
+            "Extension Y": extension_y,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_upper_left(self) -> SocketLinker:
+        """Input socket: Upper Left"""
+        return self._input("Upper Left")
+
+    @property
+    def i_upper_right(self) -> SocketLinker:
+        """Input socket: Upper Right"""
+        return self._input("Upper Right")
+
+    @property
+    def i_lower_left(self) -> SocketLinker:
+        """Input socket: Lower Left"""
+        return self._input("Lower Left")
+
+    @property
+    def i_lower_right(self) -> SocketLinker:
+        """Input socket: Lower Right"""
+        return self._input("Lower Right")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def i_extension_x(self) -> SocketLinker:
+        """Input socket: Extension X"""
+        return self._input("Extension X")
+
+    @property
+    def i_extension_y(self) -> SocketLinker:
+        """Input socket: Extension Y"""
+        return self._input("Extension Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+    @property
+    def o_plane(self) -> SocketLinker:
+        """Output socket: Plane"""
+        return self._output("Plane")
+
+
+class Crop(NodeBuilder):
+    """
+    Crops image to a smaller region, either making the cropped area transparent or resizing the image
+    """
+
+    _bl_idname = "CompositorNodeCrop"
+    node: bpy.types.CompositorNodeCrop
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        x: TYPE_INPUT_INT = 0,
+        y: TYPE_INPUT_INT = 0,
+        width: TYPE_INPUT_INT = 1920,
+        height: TYPE_INPUT_INT = 1080,
+        alpha_crop: TYPE_INPUT_BOOLEAN = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "X": x,
+            "Y": y,
+            "Width": width,
+            "Height": height,
+            "Alpha Crop": alpha_crop,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_x(self) -> SocketLinker:
+        """Input socket: X"""
+        return self._input("X")
+
+    @property
+    def i_y(self) -> SocketLinker:
+        """Input socket: Y"""
+        return self._input("Y")
+
+    @property
+    def i_width(self) -> SocketLinker:
+        """Input socket: Width"""
+        return self._input("Width")
+
+    @property
+    def i_height(self) -> SocketLinker:
+        """Input socket: Height"""
+        return self._input("Height")
+
+    @property
+    def i_alpha_crop(self) -> SocketLinker:
+        """Input socket: Alpha Crop"""
+        return self._input("Alpha Crop")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Displace(NodeBuilder):
+    """
+    Displace pixel position using an offset vector
+    """
+
+    _bl_idname = "CompositorNodeDisplace"
+    node: bpy.types.CompositorNodeDisplace
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        displacement: TYPE_INPUT_VECTOR = None,
+        interpolation: TYPE_INPUT_MENU = "Bilinear",
+        extension_x: TYPE_INPUT_MENU = "Clip",
+        extension_y: TYPE_INPUT_MENU = "Clip",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Displacement": displacement,
+            "Interpolation": interpolation,
+            "Extension X": extension_x,
+            "Extension Y": extension_y,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_displacement(self) -> SocketLinker:
+        """Input socket: Displacement"""
+        return self._input("Displacement")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def i_extension_x(self) -> SocketLinker:
+        """Input socket: Extension X"""
+        return self._input("Extension X")
+
+    @property
+    def i_extension_y(self) -> SocketLinker:
+        """Input socket: Extension Y"""
+        return self._input("Extension Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Flip(NodeBuilder):
+    """
+    Flip an image along a defined axis
+    """
+
+    _bl_idname = "CompositorNodeFlip"
+    node: bpy.types.CompositorNodeFlip
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        flip_x: TYPE_INPUT_BOOLEAN = False,
+        flip_y: TYPE_INPUT_BOOLEAN = False,
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Flip X": flip_x, "Flip Y": flip_y}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_flip_x(self) -> SocketLinker:
+        """Input socket: Flip X"""
+        return self._input("Flip X")
+
+    @property
+    def i_flip_y(self) -> SocketLinker:
+        """Input socket: Flip Y"""
+        return self._input("Flip Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class LensDistortion(NodeBuilder):
+    """
+    Simulate distortion and dispersion from camera lenses
+    """
+
+    _bl_idname = "CompositorNodeLensdist"
+    node: bpy.types.CompositorNodeLensdist
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        type: TYPE_INPUT_MENU = "Radial",
+        distortion: TYPE_INPUT_VALUE = 0.0,
+        dispersion: TYPE_INPUT_VALUE = 0.0,
+        jitter: TYPE_INPUT_BOOLEAN = False,
+        fit: TYPE_INPUT_BOOLEAN = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Type": type,
+            "Distortion": distortion,
+            "Dispersion": dispersion,
+            "Jitter": jitter,
+            "Fit": fit,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_distortion(self) -> SocketLinker:
+        """Input socket: Distortion"""
+        return self._input("Distortion")
+
+    @property
+    def i_dispersion(self) -> SocketLinker:
+        """Input socket: Dispersion"""
+        return self._input("Dispersion")
+
+    @property
+    def i_jitter(self) -> SocketLinker:
+        """Input socket: Jitter"""
+        return self._input("Jitter")
+
+    @property
+    def i_fit(self) -> SocketLinker:
+        """Input socket: Fit"""
+        return self._input("Fit")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class MapUV(NodeBuilder):
+    """
+    Map a texture using UV coordinates, to apply a texture to objects in compositing
+    """
+
+    _bl_idname = "CompositorNodeMapUV"
+    node: bpy.types.CompositorNodeMapUV
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        uv: TYPE_INPUT_VECTOR = None,
+        interpolation: TYPE_INPUT_MENU = "Bilinear",
+        extension_x: TYPE_INPUT_MENU = "Clip",
+        extension_y: TYPE_INPUT_MENU = "Clip",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "UV": uv,
+            "Interpolation": interpolation,
+            "Extension X": extension_x,
+            "Extension Y": extension_y,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_uv(self) -> SocketLinker:
+        """Input socket: UV"""
+        return self._input("UV")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def i_extension_x(self) -> SocketLinker:
+        """Input socket: Extension X"""
+        return self._input("Extension X")
+
+    @property
+    def i_extension_y(self) -> SocketLinker:
+        """Input socket: Extension Y"""
+        return self._input("Extension Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class MovieDistortion(NodeBuilder):
+    """
+    Remove lens distortion from footage, using motion tracking camera lens settings
+    """
+
+    _bl_idname = "CompositorNodeMovieDistortion"
+    node: bpy.types.CompositorNodeMovieDistortion
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        type: TYPE_INPUT_MENU = "Undistort",
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Type": type}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class PlaneTrackDeform(NodeBuilder):
+    """
+    Replace flat planes in footage by another image, detected by plane tracks from motion tracking
+    """
+
+    _bl_idname = "CompositorNodePlaneTrackDeform"
+    node: bpy.types.CompositorNodePlaneTrackDeform
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        motion_blur: TYPE_INPUT_BOOLEAN = False,
+        motion_blur_samples: TYPE_INPUT_INT = 16,
+        motion_blur_shutter: TYPE_INPUT_VALUE = 0.5,
+        *,
+        tracking_object: str = "",
+        plane_track_name: str = "",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Motion Blur": motion_blur,
+            "Motion Blur Samples": motion_blur_samples,
+            "Motion Blur Shutter": motion_blur_shutter,
+        }
+        self.tracking_object = tracking_object
+        self.plane_track_name = plane_track_name
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_motion_blur(self) -> SocketLinker:
+        """Input socket: Motion Blur"""
+        return self._input("Motion Blur")
+
+    @property
+    def i_motion_blur_samples(self) -> SocketLinker:
+        """Input socket: Samples"""
+        return self._input("Motion Blur Samples")
+
+    @property
+    def i_motion_blur_shutter(self) -> SocketLinker:
+        """Input socket: Shutter"""
+        return self._input("Motion Blur Shutter")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+    @property
+    def o_plane(self) -> SocketLinker:
+        """Output socket: Plane"""
+        return self._output("Plane")
+
+    @property
+    def tracking_object(self) -> str:
+        return self.node.tracking_object
+
+    @tracking_object.setter
+    def tracking_object(self, value: str):
+        self.node.tracking_object = value
+
+    @property
+    def plane_track_name(self) -> str:
+        return self.node.plane_track_name
+
+    @plane_track_name.setter
+    def plane_track_name(self, value: str):
+        self.node.plane_track_name = value
+
+
+class Rotate(NodeBuilder):
+    """
+    Rotate image by specified angle
+    """
+
+    _bl_idname = "CompositorNodeRotate"
+    node: bpy.types.CompositorNodeRotate
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        angle: TYPE_INPUT_VALUE = 0.0,
+        interpolation: TYPE_INPUT_MENU = "Bilinear",
+        extension_x: TYPE_INPUT_MENU = "Clip",
+        extension_y: TYPE_INPUT_MENU = "Clip",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Angle": angle,
+            "Interpolation": interpolation,
+            "Extension X": extension_x,
+            "Extension Y": extension_y,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_angle(self) -> SocketLinker:
+        """Input socket: Angle"""
+        return self._input("Angle")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def i_extension_x(self) -> SocketLinker:
+        """Input socket: Extension X"""
+        return self._input("Extension X")
+
+    @property
+    def i_extension_y(self) -> SocketLinker:
+        """Input socket: Extension Y"""
+        return self._input("Extension Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Scale(NodeBuilder):
+    """
+    Change the size of the image
+    """
+
+    _bl_idname = "CompositorNodeScale"
+    node: bpy.types.CompositorNodeScale
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        type: TYPE_INPUT_MENU = "Relative",
+        x: TYPE_INPUT_VALUE = 1.0,
+        y: TYPE_INPUT_VALUE = 1.0,
+        frame_type: TYPE_INPUT_MENU = "Stretch",
+        interpolation: TYPE_INPUT_MENU = "Bilinear",
+        extension_x: TYPE_INPUT_MENU = "Clip",
+        extension_y: TYPE_INPUT_MENU = "Clip",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Type": type,
+            "X": x,
+            "Y": y,
+            "Frame Type": frame_type,
+            "Interpolation": interpolation,
+            "Extension X": extension_x,
+            "Extension Y": extension_y,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_x(self) -> SocketLinker:
+        """Input socket: X"""
+        return self._input("X")
+
+    @property
+    def i_y(self) -> SocketLinker:
+        """Input socket: Y"""
+        return self._input("Y")
+
+    @property
+    def i_frame_type(self) -> SocketLinker:
+        """Input socket: Frame Type"""
+        return self._input("Frame Type")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def i_extension_x(self) -> SocketLinker:
+        """Input socket: Extension X"""
+        return self._input("Extension X")
+
+    @property
+    def i_extension_y(self) -> SocketLinker:
+        """Input socket: Extension Y"""
+        return self._input("Extension Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Stabilize2D(NodeBuilder):
+    """
+    Stabilize footage using 2D stabilization motion tracking settings
+    """
+
+    _bl_idname = "CompositorNodeStabilize"
+    node: bpy.types.CompositorNodeStabilize
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        invert: TYPE_INPUT_BOOLEAN = False,
+        interpolation: TYPE_INPUT_MENU = "Bilinear",
+        extension_x: TYPE_INPUT_MENU = "Clip",
+        extension_y: TYPE_INPUT_MENU = "Clip",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Invert": invert,
+            "Interpolation": interpolation,
+            "Extension X": extension_x,
+            "Extension Y": extension_y,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_invert(self) -> SocketLinker:
+        """Input socket: Invert"""
+        return self._input("Invert")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def i_extension_x(self) -> SocketLinker:
+        """Input socket: Extension X"""
+        return self._input("Extension X")
+
+    @property
+    def i_extension_y(self) -> SocketLinker:
+        """Input socket: Extension Y"""
+        return self._input("Extension Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Transform(NodeBuilder):
+    """
+    Scale, translate and rotate an image
+    """
+
+    _bl_idname = "CompositorNodeTransform"
+    node: bpy.types.CompositorNodeTransform
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        x: TYPE_INPUT_VALUE = 0.0,
+        y: TYPE_INPUT_VALUE = 0.0,
+        angle: TYPE_INPUT_VALUE = 0.0,
+        scale: TYPE_INPUT_VALUE = 1.0,
+        interpolation: TYPE_INPUT_MENU = "Bilinear",
+        extension_x: TYPE_INPUT_MENU = "Clip",
+        extension_y: TYPE_INPUT_MENU = "Clip",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "X": x,
+            "Y": y,
+            "Angle": angle,
+            "Scale": scale,
+            "Interpolation": interpolation,
+            "Extension X": extension_x,
+            "Extension Y": extension_y,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_x(self) -> SocketLinker:
+        """Input socket: X"""
+        return self._input("X")
+
+    @property
+    def i_y(self) -> SocketLinker:
+        """Input socket: Y"""
+        return self._input("Y")
+
+    @property
+    def i_angle(self) -> SocketLinker:
+        """Input socket: Angle"""
+        return self._input("Angle")
+
+    @property
+    def i_scale(self) -> SocketLinker:
+        """Input socket: Scale"""
+        return self._input("Scale")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def i_extension_x(self) -> SocketLinker:
+        """Input socket: Extension X"""
+        return self._input("Extension X")
+
+    @property
+    def i_extension_y(self) -> SocketLinker:
+        """Input socket: Extension Y"""
+        return self._input("Extension Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Translate(NodeBuilder):
+    """
+    Offset an image
+    """
+
+    _bl_idname = "CompositorNodeTranslate"
+    node: bpy.types.CompositorNodeTranslate
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        x: TYPE_INPUT_VALUE = 0.0,
+        y: TYPE_INPUT_VALUE = 0.0,
+        interpolation: TYPE_INPUT_MENU = "Bilinear",
+        extension_x: TYPE_INPUT_MENU = "Clip",
+        extension_y: TYPE_INPUT_MENU = "Clip",
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "X": x,
+            "Y": y,
+            "Interpolation": interpolation,
+            "Extension X": extension_x,
+            "Extension Y": extension_y,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_x(self) -> SocketLinker:
+        """Input socket: X"""
+        return self._input("X")
+
+    @property
+    def i_y(self) -> SocketLinker:
+        """Input socket: Y"""
+        return self._input("Y")
+
+    @property
+    def i_interpolation(self) -> SocketLinker:
+        """Input socket: Interpolation"""
+        return self._input("Interpolation")
+
+    @property
+    def i_extension_x(self) -> SocketLinker:
+        """Input socket: Extension X"""
+        return self._input("Extension X")
+
+    @property
+    def i_extension_y(self) -> SocketLinker:
+        """Input socket: Extension Y"""
+        return self._input("Extension Y")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")

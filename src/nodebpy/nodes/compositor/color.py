@@ -1,0 +1,958 @@
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_VALUE,
+)
+
+
+class AlphaOver(NodeBuilder):
+    """
+    Overlay a foreground image onto a background image
+    """
+
+    _bl_idname = "CompositorNodeAlphaOver"
+    node: bpy.types.CompositorNodeAlphaOver
+
+    def __init__(
+        self,
+        background: TYPE_INPUT_COLOR = None,
+        foreground: TYPE_INPUT_COLOR = None,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        type: TYPE_INPUT_MENU = "Over",
+        straight_alpha: TYPE_INPUT_BOOLEAN = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Background": background,
+            "Foreground": foreground,
+            "Fac": fac,
+            "Type": type,
+            "Straight Alpha": straight_alpha,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_background(self) -> SocketLinker:
+        """Input socket: Background"""
+        return self._input("Background")
+
+    @property
+    def i_foreground(self) -> SocketLinker:
+        """Input socket: Foreground"""
+        return self._input("Foreground")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_straight_alpha(self) -> SocketLinker:
+        """Input socket: Straight Alpha"""
+        return self._input("Straight Alpha")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Brightnesscontrast(NodeBuilder):
+    """
+    Adjust brightness and contrast
+    """
+
+    _bl_idname = "CompositorNodeBrightContrast"
+    node: bpy.types.CompositorNodeBrightContrast
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        bright: TYPE_INPUT_VALUE = 0.0,
+        contrast: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Bright": bright, "Contrast": contrast}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_bright(self) -> SocketLinker:
+        """Input socket: Brightness"""
+        return self._input("Bright")
+
+    @property
+    def i_contrast(self) -> SocketLinker:
+        """Input socket: Contrast"""
+        return self._input("Contrast")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class ColorBalance(NodeBuilder):
+    """
+    Adjust color and values
+    """
+
+    _bl_idname = "CompositorNodeColorBalance"
+    node: bpy.types.CompositorNodeColorBalance
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        type: TYPE_INPUT_MENU = "Lift/Gamma/Gain",
+        base_lift: TYPE_INPUT_VALUE = 0.0,
+        color_lift: TYPE_INPUT_COLOR = None,
+        base_gamma: TYPE_INPUT_VALUE = 1.0,
+        color_gamma: TYPE_INPUT_COLOR = None,
+        base_gain: TYPE_INPUT_VALUE = 1.0,
+        color_gain: TYPE_INPUT_COLOR = None,
+        base_offset: TYPE_INPUT_VALUE = 0.0,
+        color_offset: TYPE_INPUT_COLOR = None,
+        base_power: TYPE_INPUT_VALUE = 1.0,
+        color_power: TYPE_INPUT_COLOR = None,
+        base_slope: TYPE_INPUT_VALUE = 1.0,
+        color_slope: TYPE_INPUT_COLOR = None,
+        input_temperature: TYPE_INPUT_VALUE = 6500.0,
+        input_tint: TYPE_INPUT_VALUE = 10.0,
+        output_temperature: TYPE_INPUT_VALUE = 6500.0,
+        output_tint: TYPE_INPUT_VALUE = 10.0,
+        *,
+        input_whitepoint: tuple[float, float, float, float] = (
+            0.735,
+            0.735,
+            0.735,
+            1.0,
+        ),
+        output_whitepoint: tuple[float, float, float, float] = (
+            0.735,
+            0.735,
+            0.735,
+            1.0,
+        ),
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Fac": fac,
+            "Type": type,
+            "Base Lift": base_lift,
+            "Color Lift": color_lift,
+            "Base Gamma": base_gamma,
+            "Color Gamma": color_gamma,
+            "Base Gain": base_gain,
+            "Color Gain": color_gain,
+            "Base Offset": base_offset,
+            "Color Offset": color_offset,
+            "Base Power": base_power,
+            "Color Power": color_power,
+            "Base Slope": base_slope,
+            "Color Slope": color_slope,
+            "Input Temperature": input_temperature,
+            "Input Tint": input_tint,
+            "Output Temperature": output_temperature,
+            "Output Tint": output_tint,
+        }
+        self.input_whitepoint = input_whitepoint
+        self.output_whitepoint = output_whitepoint
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_base_lift(self) -> SocketLinker:
+        """Input socket: Lift"""
+        return self._input("Base Lift")
+
+    @property
+    def i_color_lift(self) -> SocketLinker:
+        """Input socket: Lift"""
+        return self._input("Color Lift")
+
+    @property
+    def i_base_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Base Gamma")
+
+    @property
+    def i_color_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Color Gamma")
+
+    @property
+    def i_base_gain(self) -> SocketLinker:
+        """Input socket: Gain"""
+        return self._input("Base Gain")
+
+    @property
+    def i_color_gain(self) -> SocketLinker:
+        """Input socket: Gain"""
+        return self._input("Color Gain")
+
+    @property
+    def i_base_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Base Offset")
+
+    @property
+    def i_color_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Color Offset")
+
+    @property
+    def i_base_power(self) -> SocketLinker:
+        """Input socket: Power"""
+        return self._input("Base Power")
+
+    @property
+    def i_color_power(self) -> SocketLinker:
+        """Input socket: Power"""
+        return self._input("Color Power")
+
+    @property
+    def i_base_slope(self) -> SocketLinker:
+        """Input socket: Slope"""
+        return self._input("Base Slope")
+
+    @property
+    def i_color_slope(self) -> SocketLinker:
+        """Input socket: Slope"""
+        return self._input("Color Slope")
+
+    @property
+    def i_input_temperature(self) -> SocketLinker:
+        """Input socket: Temperature"""
+        return self._input("Input Temperature")
+
+    @property
+    def i_input_tint(self) -> SocketLinker:
+        """Input socket: Tint"""
+        return self._input("Input Tint")
+
+    @property
+    def i_output_temperature(self) -> SocketLinker:
+        """Input socket: Temperature"""
+        return self._input("Output Temperature")
+
+    @property
+    def i_output_tint(self) -> SocketLinker:
+        """Input socket: Tint"""
+        return self._input("Output Tint")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+    @property
+    def input_whitepoint(self) -> tuple[float, float, float, float]:
+        return self.node.input_whitepoint
+
+    @input_whitepoint.setter
+    def input_whitepoint(self, value: tuple[float, float, float, float]):
+        self.node.input_whitepoint = value
+
+    @property
+    def output_whitepoint(self) -> tuple[float, float, float, float]:
+        return self.node.output_whitepoint
+
+    @output_whitepoint.setter
+    def output_whitepoint(self, value: tuple[float, float, float, float]):
+        self.node.output_whitepoint = value
+
+
+class ColorCorrection(NodeBuilder):
+    """
+    Adjust the color of an image, separately in several tonal ranges (highlights, midtones and shadows)
+    """
+
+    _bl_idname = "CompositorNodeColorCorrection"
+    node: bpy.types.CompositorNodeColorCorrection
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        mask: TYPE_INPUT_VALUE = 1.0,
+        master_saturation: TYPE_INPUT_VALUE = 1.0,
+        master_contrast: TYPE_INPUT_VALUE = 1.0,
+        master_gamma: TYPE_INPUT_VALUE = 1.0,
+        master_gain: TYPE_INPUT_VALUE = 1.0,
+        master_offset: TYPE_INPUT_VALUE = 0.0,
+        highlights_saturation: TYPE_INPUT_VALUE = 1.0,
+        highlights_contrast: TYPE_INPUT_VALUE = 1.0,
+        highlights_gamma: TYPE_INPUT_VALUE = 1.0,
+        highlights_gain: TYPE_INPUT_VALUE = 1.0,
+        highlights_offset: TYPE_INPUT_VALUE = 0.0,
+        midtones_saturation: TYPE_INPUT_VALUE = 1.0,
+        midtones_contrast: TYPE_INPUT_VALUE = 1.0,
+        midtones_gamma: TYPE_INPUT_VALUE = 1.0,
+        midtones_gain: TYPE_INPUT_VALUE = 1.0,
+        midtones_offset: TYPE_INPUT_VALUE = 0.0,
+        shadows_saturation: TYPE_INPUT_VALUE = 1.0,
+        shadows_contrast: TYPE_INPUT_VALUE = 1.0,
+        shadows_gamma: TYPE_INPUT_VALUE = 1.0,
+        shadows_gain: TYPE_INPUT_VALUE = 1.0,
+        shadows_offset: TYPE_INPUT_VALUE = 0.0,
+        midtones_start: TYPE_INPUT_VALUE = 0.2,
+        midtones_end: TYPE_INPUT_VALUE = 0.7,
+        apply_on_red: TYPE_INPUT_BOOLEAN = True,
+        apply_on_green: TYPE_INPUT_BOOLEAN = True,
+        apply_on_blue: TYPE_INPUT_BOOLEAN = True,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Mask": mask,
+            "Master Saturation": master_saturation,
+            "Master Contrast": master_contrast,
+            "Master Gamma": master_gamma,
+            "Master Gain": master_gain,
+            "Master Offset": master_offset,
+            "Highlights Saturation": highlights_saturation,
+            "Highlights Contrast": highlights_contrast,
+            "Highlights Gamma": highlights_gamma,
+            "Highlights Gain": highlights_gain,
+            "Highlights Offset": highlights_offset,
+            "Midtones Saturation": midtones_saturation,
+            "Midtones Contrast": midtones_contrast,
+            "Midtones Gamma": midtones_gamma,
+            "Midtones Gain": midtones_gain,
+            "Midtones Offset": midtones_offset,
+            "Shadows Saturation": shadows_saturation,
+            "Shadows Contrast": shadows_contrast,
+            "Shadows Gamma": shadows_gamma,
+            "Shadows Gain": shadows_gain,
+            "Shadows Offset": shadows_offset,
+            "Midtones Start": midtones_start,
+            "Midtones End": midtones_end,
+            "Apply On Red": apply_on_red,
+            "Apply On Green": apply_on_green,
+            "Apply On Blue": apply_on_blue,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_mask(self) -> SocketLinker:
+        """Input socket: Mask"""
+        return self._input("Mask")
+
+    @property
+    def i_master_saturation(self) -> SocketLinker:
+        """Input socket: Saturation"""
+        return self._input("Master Saturation")
+
+    @property
+    def i_master_contrast(self) -> SocketLinker:
+        """Input socket: Contrast"""
+        return self._input("Master Contrast")
+
+    @property
+    def i_master_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Master Gamma")
+
+    @property
+    def i_master_gain(self) -> SocketLinker:
+        """Input socket: Gain"""
+        return self._input("Master Gain")
+
+    @property
+    def i_master_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Master Offset")
+
+    @property
+    def i_highlights_saturation(self) -> SocketLinker:
+        """Input socket: Saturation"""
+        return self._input("Highlights Saturation")
+
+    @property
+    def i_highlights_contrast(self) -> SocketLinker:
+        """Input socket: Contrast"""
+        return self._input("Highlights Contrast")
+
+    @property
+    def i_highlights_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Highlights Gamma")
+
+    @property
+    def i_highlights_gain(self) -> SocketLinker:
+        """Input socket: Gain"""
+        return self._input("Highlights Gain")
+
+    @property
+    def i_highlights_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Highlights Offset")
+
+    @property
+    def i_midtones_saturation(self) -> SocketLinker:
+        """Input socket: Saturation"""
+        return self._input("Midtones Saturation")
+
+    @property
+    def i_midtones_contrast(self) -> SocketLinker:
+        """Input socket: Contrast"""
+        return self._input("Midtones Contrast")
+
+    @property
+    def i_midtones_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Midtones Gamma")
+
+    @property
+    def i_midtones_gain(self) -> SocketLinker:
+        """Input socket: Gain"""
+        return self._input("Midtones Gain")
+
+    @property
+    def i_midtones_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Midtones Offset")
+
+    @property
+    def i_shadows_saturation(self) -> SocketLinker:
+        """Input socket: Saturation"""
+        return self._input("Shadows Saturation")
+
+    @property
+    def i_shadows_contrast(self) -> SocketLinker:
+        """Input socket: Contrast"""
+        return self._input("Shadows Contrast")
+
+    @property
+    def i_shadows_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Shadows Gamma")
+
+    @property
+    def i_shadows_gain(self) -> SocketLinker:
+        """Input socket: Gain"""
+        return self._input("Shadows Gain")
+
+    @property
+    def i_shadows_offset(self) -> SocketLinker:
+        """Input socket: Offset"""
+        return self._input("Shadows Offset")
+
+    @property
+    def i_midtones_start(self) -> SocketLinker:
+        """Input socket: Midtones Start"""
+        return self._input("Midtones Start")
+
+    @property
+    def i_midtones_end(self) -> SocketLinker:
+        """Input socket: Midtones End"""
+        return self._input("Midtones End")
+
+    @property
+    def i_apply_on_red(self) -> SocketLinker:
+        """Input socket: Red"""
+        return self._input("Apply On Red")
+
+    @property
+    def i_apply_on_green(self) -> SocketLinker:
+        """Input socket: Green"""
+        return self._input("Apply On Green")
+
+    @property
+    def i_apply_on_blue(self) -> SocketLinker:
+        """Input socket: Blue"""
+        return self._input("Apply On Blue")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class DepthCombine(NodeBuilder):
+    """
+    Combine two images using depth maps
+    """
+
+    _bl_idname = "CompositorNodeZcombine"
+    node: bpy.types.CompositorNodeZcombine
+
+    def __init__(
+        self,
+        a: TYPE_INPUT_COLOR = None,
+        depth_a: TYPE_INPUT_VALUE = 1.0,
+        b: TYPE_INPUT_COLOR = None,
+        depth_b: TYPE_INPUT_VALUE = 1.0,
+        use_alpha: TYPE_INPUT_BOOLEAN = False,
+        anti_alias: TYPE_INPUT_BOOLEAN = True,
+    ):
+        super().__init__()
+        key_args = {
+            "A": a,
+            "Depth A": depth_a,
+            "B": b,
+            "Depth B": depth_b,
+            "Use Alpha": use_alpha,
+            "Anti-Alias": anti_alias,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_a(self) -> SocketLinker:
+        """Input socket: A"""
+        return self._input("A")
+
+    @property
+    def i_depth_a(self) -> SocketLinker:
+        """Input socket: Depth A"""
+        return self._input("Depth A")
+
+    @property
+    def i_b(self) -> SocketLinker:
+        """Input socket: B"""
+        return self._input("B")
+
+    @property
+    def i_depth_b(self) -> SocketLinker:
+        """Input socket: Depth B"""
+        return self._input("Depth B")
+
+    @property
+    def i_use_alpha(self) -> SocketLinker:
+        """Input socket: Use Alpha"""
+        return self._input("Use Alpha")
+
+    @property
+    def i_anti_alias(self) -> SocketLinker:
+        """Input socket: Anti-Alias"""
+        return self._input("Anti-Alias")
+
+    @property
+    def o_result(self) -> SocketLinker:
+        """Output socket: Result"""
+        return self._output("Result")
+
+    @property
+    def o_depth(self) -> SocketLinker:
+        """Output socket: Depth"""
+        return self._output("Depth")
+
+
+class Exposure(NodeBuilder):
+    """
+    Adjust brightness using a camera exposure parameter
+    """
+
+    _bl_idname = "CompositorNodeExposure"
+    node: bpy.types.CompositorNodeExposure
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        exposure: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Exposure": exposure}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_exposure(self) -> SocketLinker:
+        """Input socket: Exposure"""
+        return self._input("Exposure")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Gamma(NodeBuilder):
+    """
+    Apply a gamma correction
+    """
+
+    _bl_idname = "ShaderNodeGamma"
+    node: bpy.types.ShaderNodeGamma
+
+    def __init__(
+        self,
+        color: TYPE_INPUT_COLOR = None,
+        gamma: TYPE_INPUT_VALUE = 1.0,
+    ):
+        super().__init__()
+        key_args = {"Color": color, "Gamma": gamma}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def i_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Gamma")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class HueCorrect(NodeBuilder):
+    """
+    Adjust hue, saturation, and value with a curve
+    """
+
+    _bl_idname = "CompositorNodeHueCorrect"
+    node: bpy.types.CompositorNodeHueCorrect
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        fac: TYPE_INPUT_VALUE = 1.0,
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Fac": fac}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Huesaturationvalue(NodeBuilder):
+    """
+    Apply a color transformation in the HSV color model
+    """
+
+    _bl_idname = "CompositorNodeHueSat"
+    node: bpy.types.CompositorNodeHueSat
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        hue: TYPE_INPUT_VALUE = 0.5,
+        saturation: TYPE_INPUT_VALUE = 1.0,
+        value: TYPE_INPUT_VALUE = 1.0,
+        fac: TYPE_INPUT_VALUE = 1.0,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Hue": hue,
+            "Saturation": saturation,
+            "Value": value,
+            "Fac": fac,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_hue(self) -> SocketLinker:
+        """Input socket: Hue"""
+        return self._input("Hue")
+
+    @property
+    def i_saturation(self) -> SocketLinker:
+        """Input socket: Saturation"""
+        return self._input("Saturation")
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class InvertColor(NodeBuilder):
+    """
+    Invert colors, producing a negative
+    """
+
+    _bl_idname = "CompositorNodeInvert"
+    node: bpy.types.CompositorNodeInvert
+
+    def __init__(
+        self,
+        color: TYPE_INPUT_COLOR = None,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        invert_color: TYPE_INPUT_BOOLEAN = True,
+        invert_alpha: TYPE_INPUT_BOOLEAN = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Color": color,
+            "Fac": fac,
+            "Invert Color": invert_color,
+            "Invert Alpha": invert_alpha,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_invert_color(self) -> SocketLinker:
+        """Input socket: Invert Color"""
+        return self._input("Invert Color")
+
+    @property
+    def i_invert_alpha(self) -> SocketLinker:
+        """Input socket: Invert Alpha"""
+        return self._input("Invert Alpha")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class Posterize(NodeBuilder):
+    """
+    Reduce number of colors in an image, converting smooth gradients into sharp transitions
+    """
+
+    _bl_idname = "CompositorNodePosterize"
+    node: bpy.types.CompositorNodePosterize
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        steps: TYPE_INPUT_VALUE = 8.0,
+    ):
+        super().__init__()
+        key_args = {"Image": image, "Steps": steps}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_steps(self) -> SocketLinker:
+        """Input socket: Steps"""
+        return self._input("Steps")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class RgbCurves(NodeBuilder):
+    """
+    Perform level adjustments on each color channel of an image
+    """
+
+    _bl_idname = "CompositorNodeCurveRGB"
+    node: bpy.types.CompositorNodeCurveRGB
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        fac: TYPE_INPUT_VALUE = 1.0,
+        black_level: TYPE_INPUT_COLOR = None,
+        white_level: TYPE_INPUT_COLOR = None,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Fac": fac,
+            "Black Level": black_level,
+            "White Level": white_level,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_fac(self) -> SocketLinker:
+        """Input socket: Factor"""
+        return self._input("Fac")
+
+    @property
+    def i_black_level(self) -> SocketLinker:
+        """Input socket: Black Level"""
+        return self._input("Black Level")
+
+    @property
+    def i_white_level(self) -> SocketLinker:
+        """Input socket: White Level"""
+        return self._input("White Level")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")
+
+
+class Tonemap(NodeBuilder):
+    """
+    Map one set of colors to another in order to approximate the appearance of high dynamic range
+    """
+
+    _bl_idname = "CompositorNodeTonemap"
+    node: bpy.types.CompositorNodeTonemap
+
+    def __init__(
+        self,
+        image: TYPE_INPUT_COLOR = None,
+        type: TYPE_INPUT_MENU = "R/D Photoreceptor",
+        key: TYPE_INPUT_VALUE = 0.18,
+        balance: TYPE_INPUT_VALUE = 1.0,
+        gamma: TYPE_INPUT_VALUE = 1.0,
+        intensity: TYPE_INPUT_VALUE = 0.0,
+        contrast: TYPE_INPUT_VALUE = 0.0,
+        light_adaptation: TYPE_INPUT_VALUE = 0.0,
+        chromatic_adaptation: TYPE_INPUT_VALUE = 0.0,
+    ):
+        super().__init__()
+        key_args = {
+            "Image": image,
+            "Type": type,
+            "Key": key,
+            "Balance": balance,
+            "Gamma": gamma,
+            "Intensity": intensity,
+            "Contrast": contrast,
+            "Light Adaptation": light_adaptation,
+            "Chromatic Adaptation": chromatic_adaptation,
+        }
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_image(self) -> SocketLinker:
+        """Input socket: Image"""
+        return self._input("Image")
+
+    @property
+    def i_type(self) -> SocketLinker:
+        """Input socket: Type"""
+        return self._input("Type")
+
+    @property
+    def i_key(self) -> SocketLinker:
+        """Input socket: Key"""
+        return self._input("Key")
+
+    @property
+    def i_balance(self) -> SocketLinker:
+        """Input socket: Balance"""
+        return self._input("Balance")
+
+    @property
+    def i_gamma(self) -> SocketLinker:
+        """Input socket: Gamma"""
+        return self._input("Gamma")
+
+    @property
+    def i_intensity(self) -> SocketLinker:
+        """Input socket: Intensity"""
+        return self._input("Intensity")
+
+    @property
+    def i_contrast(self) -> SocketLinker:
+        """Input socket: Contrast"""
+        return self._input("Contrast")
+
+    @property
+    def i_light_adaptation(self) -> SocketLinker:
+        """Input socket: Light Adaptation"""
+        return self._input("Light Adaptation")
+
+    @property
+    def i_chromatic_adaptation(self) -> SocketLinker:
+        """Input socket: Chromatic Adaptation"""
+        return self._input("Chromatic Adaptation")
+
+    @property
+    def o_image(self) -> SocketLinker:
+        """Output socket: Image"""
+        return self._output("Image")

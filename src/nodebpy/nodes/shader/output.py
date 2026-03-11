@@ -1,0 +1,370 @@
+from typing import Literal
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_SHADER,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_VECTOR,
+)
+
+
+class AovOutput(NodeBuilder):
+    """
+    Arbitrary Output Variables.
+    Provide custom render passes for arbitrary shader node outputs
+    """
+
+    _bl_idname = "ShaderNodeOutputAOV"
+    node: bpy.types.ShaderNodeOutputAOV
+
+    def __init__(
+        self,
+        color: TYPE_INPUT_COLOR = None,
+        value: TYPE_INPUT_VALUE = 0.0,
+        *,
+        aov_name: str = "",
+    ):
+        super().__init__()
+        key_args = {"Color": color, "Value": value}
+        self.aov_name = aov_name
+        self._establish_links(**key_args)
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def i_value(self) -> SocketLinker:
+        """Input socket: Value"""
+        return self._input("Value")
+
+    @property
+    def aov_name(self) -> str:
+        return self.node.aov_name
+
+    @aov_name.setter
+    def aov_name(self, value: str):
+        self.node.aov_name = value
+
+
+class LightOutput(NodeBuilder):
+    """
+    Output light information to a light object
+    """
+
+    _bl_idname = "ShaderNodeOutputLight"
+    node: bpy.types.ShaderNodeOutputLight
+
+    def __init__(
+        self,
+        surface: TYPE_INPUT_SHADER = None,
+        *,
+        is_active_output: bool = False,
+        target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
+    ):
+        super().__init__()
+        key_args = {"Surface": surface}
+        self.is_active_output = is_active_output
+        self.target = target
+        self._establish_links(**key_args)
+
+    @property
+    def i_surface(self) -> SocketLinker:
+        """Input socket: Surface"""
+        return self._input("Surface")
+
+    @property
+    def is_active_output(self) -> bool:
+        return self.node.is_active_output
+
+    @is_active_output.setter
+    def is_active_output(self, value: bool):
+        self.node.is_active_output = value
+
+    @property
+    def target(self) -> Literal["ALL", "EEVEE", "CYCLES"]:
+        return self.node.target
+
+    @target.setter
+    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]):
+        self.node.target = value
+
+
+class LineStyleOutput(NodeBuilder):
+    """
+    Control the mixing of texture information into the base color of line styles
+    """
+
+    _bl_idname = "ShaderNodeOutputLineStyle"
+    node: bpy.types.ShaderNodeOutputLineStyle
+
+    def __init__(
+        self,
+        color: TYPE_INPUT_COLOR = None,
+        color_fac: TYPE_INPUT_VALUE = 1.0,
+        alpha: TYPE_INPUT_VALUE = 1.0,
+        alpha_fac: TYPE_INPUT_VALUE = 1.0,
+        *,
+        is_active_output: bool = False,
+        target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MULTIPLY",
+        use_alpha: bool = False,
+        use_clamp: bool = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Color": color,
+            "Color Fac": color_fac,
+            "Alpha": alpha,
+            "Alpha Fac": alpha_fac,
+        }
+        self.is_active_output = is_active_output
+        self.target = target
+        self.blend_type = blend_type
+        self.use_alpha = use_alpha
+        self.use_clamp = use_clamp
+        self._establish_links(**key_args)
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def i_color_fac(self) -> SocketLinker:
+        """Input socket: Color Fac"""
+        return self._input("Color Fac")
+
+    @property
+    def i_alpha(self) -> SocketLinker:
+        """Input socket: Alpha"""
+        return self._input("Alpha")
+
+    @property
+    def i_alpha_fac(self) -> SocketLinker:
+        """Input socket: Alpha Fac"""
+        return self._input("Alpha Fac")
+
+    @property
+    def is_active_output(self) -> bool:
+        return self.node.is_active_output
+
+    @is_active_output.setter
+    def is_active_output(self, value: bool):
+        self.node.is_active_output = value
+
+    @property
+    def target(self) -> Literal["ALL", "EEVEE", "CYCLES"]:
+        return self.node.target
+
+    @target.setter
+    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]):
+        self.node.target = value
+
+    @property
+    def blend_type(
+        self,
+    ) -> Literal[
+        "MIX",
+        "DARKEN",
+        "MULTIPLY",
+        "BURN",
+        "LIGHTEN",
+        "SCREEN",
+        "DODGE",
+        "ADD",
+        "OVERLAY",
+        "SOFT_LIGHT",
+        "LINEAR_LIGHT",
+        "DIFFERENCE",
+        "EXCLUSION",
+        "SUBTRACT",
+        "DIVIDE",
+        "HUE",
+        "SATURATION",
+        "COLOR",
+        "VALUE",
+    ]:
+        return self.node.blend_type
+
+    @blend_type.setter
+    def blend_type(
+        self,
+        value: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ],
+    ):
+        self.node.blend_type = value
+
+    @property
+    def use_alpha(self) -> bool:
+        return self.node.use_alpha
+
+    @use_alpha.setter
+    def use_alpha(self, value: bool):
+        self.node.use_alpha = value
+
+    @property
+    def use_clamp(self) -> bool:
+        return self.node.use_clamp
+
+    @use_clamp.setter
+    def use_clamp(self, value: bool):
+        self.node.use_clamp = value
+
+
+class MaterialOutput(NodeBuilder):
+    """
+    Output surface material information for use in rendering
+    """
+
+    _bl_idname = "ShaderNodeOutputMaterial"
+    node: bpy.types.ShaderNodeOutputMaterial
+
+    def __init__(
+        self,
+        surface: TYPE_INPUT_SHADER = None,
+        volume: TYPE_INPUT_SHADER = None,
+        displacement: TYPE_INPUT_VECTOR = None,
+        thickness: TYPE_INPUT_VALUE = 0.0,
+        *,
+        is_active_output: bool = False,
+        target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
+    ):
+        super().__init__()
+        key_args = {
+            "Surface": surface,
+            "Volume": volume,
+            "Displacement": displacement,
+            "Thickness": thickness,
+        }
+        self.is_active_output = is_active_output
+        self.target = target
+        self._establish_links(**key_args)
+
+    @property
+    def i_surface(self) -> SocketLinker:
+        """Input socket: Surface"""
+        return self._input("Surface")
+
+    @property
+    def i_volume(self) -> SocketLinker:
+        """Input socket: Volume"""
+        return self._input("Volume")
+
+    @property
+    def i_displacement(self) -> SocketLinker:
+        """Input socket: Displacement"""
+        return self._input("Displacement")
+
+    @property
+    def i_thickness(self) -> SocketLinker:
+        """Input socket: Thickness"""
+        return self._input("Thickness")
+
+    @property
+    def is_active_output(self) -> bool:
+        return self.node.is_active_output
+
+    @is_active_output.setter
+    def is_active_output(self, value: bool):
+        self.node.is_active_output = value
+
+    @property
+    def target(self) -> Literal["ALL", "EEVEE", "CYCLES"]:
+        return self.node.target
+
+    @target.setter
+    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]):
+        self.node.target = value
+
+
+class WorldOutput(NodeBuilder):
+    """
+    Output light color information to the scene's World
+    """
+
+    _bl_idname = "ShaderNodeOutputWorld"
+    node: bpy.types.ShaderNodeOutputWorld
+
+    def __init__(
+        self,
+        surface: TYPE_INPUT_SHADER = None,
+        volume: TYPE_INPUT_SHADER = None,
+        *,
+        is_active_output: bool = False,
+        target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
+    ):
+        super().__init__()
+        key_args = {"Surface": surface, "Volume": volume}
+        self.is_active_output = is_active_output
+        self.target = target
+        self._establish_links(**key_args)
+
+    @property
+    def i_surface(self) -> SocketLinker:
+        """Input socket: Surface"""
+        return self._input("Surface")
+
+    @property
+    def i_volume(self) -> SocketLinker:
+        """Input socket: Volume"""
+        return self._input("Volume")
+
+    @property
+    def is_active_output(self) -> bool:
+        return self.node.is_active_output
+
+    @is_active_output.setter
+    def is_active_output(self, value: bool):
+        self.node.is_active_output = value
+
+    @property
+    def target(self) -> Literal["ALL", "EEVEE", "CYCLES"]:
+        return self.node.target
+
+    @target.setter
+    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]):
+        self.node.target = value

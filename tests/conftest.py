@@ -6,6 +6,7 @@ import pytest
 from nodebpy import TreeBuilder
 from nodebpy import nodes as n
 from nodebpy import sockets as s
+from nodebpy.nodes import compositor as c
 
 from .snapshots import TreeBuilderSnapshotExtension
 
@@ -24,32 +25,66 @@ def clean_and_save(request):
 
     # After each test: save the current file to a location for potential inspection
     # we have to make sure the node trees are used somewhere or they will be purged on save
-    tree_names = [
+
+    # --- Geometry node trees: store via a modifier on the Cube ---
+    geo_tree_names = [
         tree.name
         for tree in bpy.data.node_groups
         if tree.bl_idname == "GeometryNodeTree"
     ]
 
-    bpy.data.objects["Cube"].modifiers.clear()
-    bpy.data.objects["Cube"].modifiers.new("StoreTrees", "NODES")
-    mod: bpy.types.NodesModifier = bpy.data.objects["Cube"].modifiers["StoreTrees"]  # type: ignore
-    with TreeBuilder("StoredTrees") as tree:
-        with tree.inputs:
-            ing = s.SocketGeometry()
-        with tree.outputs:
-            ong = s.SocketGeometry()
+    if geo_tree_names:
+        bpy.data.objects["Cube"].modifiers.clear()
+        bpy.data.objects["Cube"].modifiers.new("StoreTrees", "NODES")
+        mod: bpy.types.NodesModifier = bpy.data.objects["Cube"].modifiers["StoreTrees"]  # type: ignore
+        with TreeBuilder("StoredTrees") as tree:
+            with tree.inputs:
+                ing = s.SocketGeometry()
+            with tree.outputs:
+                ong = s.SocketGeometry()
 
-        for i, name in enumerate(tree_names):
-            node = n.Group()
-            node.node.node_tree = bpy.data.node_groups[name]
-            node.node.location = (0, 200 * i)
+            for i, name in enumerate(geo_tree_names):
+                node = n.Group()
+                node.node.node_tree = bpy.data.node_groups[name]
+                node.node.location = (0, 200 * i)
 
-        if node.node.outputs and node.node.outputs[0].type == "GEOMETRY":
-            node >> ong
-        else:
-            _ = ing >> ong
+            if node.node.outputs and node.node.outputs[0].type == "GEOMETRY":
+                node >> ong
+            else:
+                _ = ing >> ong
 
-    mod.node_group = tree.tree
+        mod.node_group = tree.tree
+
+    # --- Shader node trees: store via a material on the Cube ---
+    shader_tree_names = [
+        tree.name for tree in bpy.data.node_groups if tree.bl_idname == "ShaderNodeTree"
+    ]
+
+    if shader_tree_names:
+        cube = bpy.data.objects["Cube"]
+        mat = bpy.data.materials.new("StoreShaderTrees")
+        mat.use_nodes = True
+        cube.data.materials.append(mat)
+        node_tree = mat.node_tree
+        for i, name in enumerate(shader_tree_names):
+            group_node = node_tree.nodes.new("ShaderNodeGroup")
+
+            group_node.node_tree = bpy.data.node_groups[name]
+            group_node.location = (0, 200 * i)
+
+    # --- Compositor node trees: store via the scene compositor ---
+    compositor_tree_names = [
+        tree.name
+        for tree in bpy.data.node_groups
+        if tree.bl_idname == "CompositorNodeTree"
+    ]
+
+    if compositor_tree_names:
+        with TreeBuilder.compositor("CompHoldingTree") as tree:
+            for i, name in enumerate(compositor_tree_names):
+                g = c.Group()
+                g.node.node_tree = bpy.data.node_groups[name]
+        bpy.context.scene.compositing_node_group = tree.tree
 
     # save a .blendfile for inspection with the current tests' nodes and also
     # named after the current test function

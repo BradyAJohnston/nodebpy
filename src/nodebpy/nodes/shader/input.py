@@ -1,0 +1,915 @@
+from typing import Literal
+
+import bpy
+
+from ...builder import NodeBuilder, SocketLinker
+from ...types import (
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_VECTOR,
+)
+
+
+class AmbientOcclusion(NodeBuilder):
+    """
+    Compute how much the hemisphere above the shading point is occluded, for example to add weathering effects to corners.
+    Note: For Cycles, this may slow down renders significantly
+    """
+
+    _bl_idname = "ShaderNodeAmbientOcclusion"
+    node: bpy.types.ShaderNodeAmbientOcclusion
+
+    def __init__(
+        self,
+        color: TYPE_INPUT_COLOR = None,
+        distance: TYPE_INPUT_VALUE = 1.0,
+        normal: TYPE_INPUT_VECTOR = None,
+        *,
+        samples: int = 0,
+        inside: bool = False,
+        only_local: bool = False,
+    ):
+        super().__init__()
+        key_args = {"Color": color, "Distance": distance, "Normal": normal}
+        self.samples = samples
+        self.inside = inside
+        self.only_local = only_local
+        self._establish_links(**key_args)
+
+    @property
+    def i_color(self) -> SocketLinker:
+        """Input socket: Color"""
+        return self._input("Color")
+
+    @property
+    def i_distance(self) -> SocketLinker:
+        """Input socket: Distance"""
+        return self._input("Distance")
+
+    @property
+    def i_normal(self) -> SocketLinker:
+        """Input socket: Normal"""
+        return self._input("Normal")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+    @property
+    def o_ao(self) -> SocketLinker:
+        """Output socket: AO"""
+        return self._output("AO")
+
+    @property
+    def samples(self) -> int:
+        return self.node.samples
+
+    @samples.setter
+    def samples(self, value: int):
+        self.node.samples = value
+
+    @property
+    def inside(self) -> bool:
+        return self.node.inside
+
+    @inside.setter
+    def inside(self, value: bool):
+        self.node.inside = value
+
+    @property
+    def only_local(self) -> bool:
+        return self.node.only_local
+
+    @only_local.setter
+    def only_local(self, value: bool):
+        self.node.only_local = value
+
+
+class Attribute(NodeBuilder):
+    """
+    Retrieve attributes attached to objects or geometry
+    """
+
+    _bl_idname = "ShaderNodeAttribute"
+    node: bpy.types.ShaderNodeAttribute
+
+    def __init__(
+        self,
+        attribute_type: Literal[
+            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"
+        ] = "GEOMETRY",
+        attribute_name: str = "",
+    ):
+        super().__init__()
+        key_args = {}
+        self.attribute_type = attribute_type
+        self.attribute_name = attribute_name
+        self._establish_links(**key_args)
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+    @property
+    def o_vector(self) -> SocketLinker:
+        """Output socket: Vector"""
+        return self._output("Vector")
+
+    @property
+    def o_fac(self) -> SocketLinker:
+        """Output socket: Factor"""
+        return self._output("Fac")
+
+    @property
+    def o_alpha(self) -> SocketLinker:
+        """Output socket: Alpha"""
+        return self._output("Alpha")
+
+    @property
+    def attribute_type(
+        self,
+    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]:
+        return self.node.attribute_type
+
+    @attribute_type.setter
+    def attribute_type(
+        self, value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]
+    ):
+        self.node.attribute_type = value
+
+    @property
+    def attribute_name(self) -> str:
+        return self.node.attribute_name
+
+    @attribute_name.setter
+    def attribute_name(self, value: str):
+        self.node.attribute_name = value
+
+
+class Bevel(NodeBuilder):
+    """
+    Generates normals with round corners.
+    Note: only supported in Cycles, and may slow down renders
+    """
+
+    _bl_idname = "ShaderNodeBevel"
+    node: bpy.types.ShaderNodeBevel
+
+    def __init__(
+        self,
+        radius: TYPE_INPUT_VALUE = 0.05,
+        normal: TYPE_INPUT_VECTOR = None,
+        *,
+        samples: int = 0,
+    ):
+        super().__init__()
+        key_args = {"Radius": radius, "Normal": normal}
+        self.samples = samples
+        self._establish_links(**key_args)
+
+    @property
+    def i_radius(self) -> SocketLinker:
+        """Input socket: Radius"""
+        return self._input("Radius")
+
+    @property
+    def i_normal(self) -> SocketLinker:
+        """Input socket: Normal"""
+        return self._input("Normal")
+
+    @property
+    def o_normal(self) -> SocketLinker:
+        """Output socket: Normal"""
+        return self._output("Normal")
+
+    @property
+    def samples(self) -> int:
+        return self.node.samples
+
+    @samples.setter
+    def samples(self, value: int):
+        self.node.samples = value
+
+
+class CameraData(NodeBuilder):
+    """
+    Retrieve information about the camera and how it relates to the current shading point's position
+    """
+
+    _bl_idname = "ShaderNodeCameraData"
+    node: bpy.types.ShaderNodeCameraData
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_view_vector(self) -> SocketLinker:
+        """Output socket: View Vector"""
+        return self._output("View Vector")
+
+    @property
+    def o_view_z_depth(self) -> SocketLinker:
+        """Output socket: View Z Depth"""
+        return self._output("View Z Depth")
+
+    @property
+    def o_view_distance(self) -> SocketLinker:
+        """Output socket: View Distance"""
+        return self._output("View Distance")
+
+
+class Color(NodeBuilder):
+    """
+    A color picker
+    """
+
+    _bl_idname = "ShaderNodeRGB"
+    node: bpy.types.ShaderNodeRGB
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+
+class ColorAttribute(NodeBuilder):
+    """
+    Retrieve a color attribute, or the default fallback if none is specified
+    """
+
+    _bl_idname = "ShaderNodeVertexColor"
+    node: bpy.types.ShaderNodeVertexColor
+
+    def __init__(self, layer_name: str = ""):
+        super().__init__()
+        key_args = {}
+        self.layer_name = layer_name
+        self._establish_links(**key_args)
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+    @property
+    def o_alpha(self) -> SocketLinker:
+        """Output socket: Alpha"""
+        return self._output("Alpha")
+
+    @property
+    def layer_name(self) -> str:
+        return self.node.layer_name
+
+    @layer_name.setter
+    def layer_name(self, value: str):
+        self.node.layer_name = value
+
+
+class CurvesInfo(NodeBuilder):
+    """
+    Retrieve hair curve information
+    """
+
+    _bl_idname = "ShaderNodeHairInfo"
+    node: bpy.types.ShaderNodeHairInfo
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_is_strand(self) -> SocketLinker:
+        """Output socket: Is Strand"""
+        return self._output("Is Strand")
+
+    @property
+    def o_intercept(self) -> SocketLinker:
+        """Output socket: Intercept"""
+        return self._output("Intercept")
+
+    @property
+    def o_length(self) -> SocketLinker:
+        """Output socket: Length"""
+        return self._output("Length")
+
+    @property
+    def o_thickness(self) -> SocketLinker:
+        """Output socket: Thickness"""
+        return self._output("Thickness")
+
+    @property
+    def o_tangent_normal(self) -> SocketLinker:
+        """Output socket: Tangent Normal"""
+        return self._output("Tangent Normal")
+
+    @property
+    def o_random(self) -> SocketLinker:
+        """Output socket: Random"""
+        return self._output("Random")
+
+
+class Fresnel(NodeBuilder):
+    """
+    Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations.
+    Typically used for mixing reflections at grazing angles
+    """
+
+    _bl_idname = "ShaderNodeFresnel"
+    node: bpy.types.ShaderNodeFresnel
+
+    def __init__(
+        self,
+        ior: TYPE_INPUT_VALUE = 1.5,
+        normal: TYPE_INPUT_VECTOR = None,
+    ):
+        super().__init__()
+        key_args = {"IOR": ior, "Normal": normal}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_ior(self) -> SocketLinker:
+        """Input socket: IOR"""
+        return self._input("IOR")
+
+    @property
+    def i_normal(self) -> SocketLinker:
+        """Input socket: Normal"""
+        return self._input("Normal")
+
+    @property
+    def o_fac(self) -> SocketLinker:
+        """Output socket: Factor"""
+        return self._output("Fac")
+
+
+class Geometry(NodeBuilder):
+    """
+    Retrieve geometric information about the current shading point
+    """
+
+    _bl_idname = "ShaderNodeNewGeometry"
+    node: bpy.types.ShaderNodeNewGeometry
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_position(self) -> SocketLinker:
+        """Output socket: Position"""
+        return self._output("Position")
+
+    @property
+    def o_normal(self) -> SocketLinker:
+        """Output socket: Normal"""
+        return self._output("Normal")
+
+    @property
+    def o_tangent(self) -> SocketLinker:
+        """Output socket: Tangent"""
+        return self._output("Tangent")
+
+    @property
+    def o_true_normal(self) -> SocketLinker:
+        """Output socket: True Normal"""
+        return self._output("True Normal")
+
+    @property
+    def o_incoming(self) -> SocketLinker:
+        """Output socket: Incoming"""
+        return self._output("Incoming")
+
+    @property
+    def o_parametric(self) -> SocketLinker:
+        """Output socket: Parametric"""
+        return self._output("Parametric")
+
+    @property
+    def o_backfacing(self) -> SocketLinker:
+        """Output socket: Backfacing"""
+        return self._output("Backfacing")
+
+    @property
+    def o_pointiness(self) -> SocketLinker:
+        """Output socket: Pointiness"""
+        return self._output("Pointiness")
+
+    @property
+    def o_random_per_island(self) -> SocketLinker:
+        """Output socket: Random Per Island"""
+        return self._output("Random Per Island")
+
+
+class LayerWeight(NodeBuilder):
+    """
+    Produce a blending factor depending on the angle between the surface normal and the view direction.
+    Typically used for layering shaders with the Mix Shader node
+    """
+
+    _bl_idname = "ShaderNodeLayerWeight"
+    node: bpy.types.ShaderNodeLayerWeight
+
+    def __init__(
+        self,
+        blend: TYPE_INPUT_VALUE = 0.5,
+        normal: TYPE_INPUT_VECTOR = None,
+    ):
+        super().__init__()
+        key_args = {"Blend": blend, "Normal": normal}
+
+        self._establish_links(**key_args)
+
+    @property
+    def i_blend(self) -> SocketLinker:
+        """Input socket: Blend"""
+        return self._input("Blend")
+
+    @property
+    def i_normal(self) -> SocketLinker:
+        """Input socket: Normal"""
+        return self._input("Normal")
+
+    @property
+    def o_fresnel(self) -> SocketLinker:
+        """Output socket: Fresnel"""
+        return self._output("Fresnel")
+
+    @property
+    def o_facing(self) -> SocketLinker:
+        """Output socket: Facing"""
+        return self._output("Facing")
+
+
+class LightPath(NodeBuilder):
+    """
+    Retrieve the type of incoming ray for which the shader is being executed.
+    Typically used for non-physically-based tricks
+    """
+
+    _bl_idname = "ShaderNodeLightPath"
+    node: bpy.types.ShaderNodeLightPath
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_is_camera_ray(self) -> SocketLinker:
+        """Output socket: Is Camera Ray"""
+        return self._output("Is Camera Ray")
+
+    @property
+    def o_is_shadow_ray(self) -> SocketLinker:
+        """Output socket: Is Shadow Ray"""
+        return self._output("Is Shadow Ray")
+
+    @property
+    def o_is_diffuse_ray(self) -> SocketLinker:
+        """Output socket: Is Diffuse Ray"""
+        return self._output("Is Diffuse Ray")
+
+    @property
+    def o_is_glossy_ray(self) -> SocketLinker:
+        """Output socket: Is Glossy Ray"""
+        return self._output("Is Glossy Ray")
+
+    @property
+    def o_is_singular_ray(self) -> SocketLinker:
+        """Output socket: Is Singular Ray"""
+        return self._output("Is Singular Ray")
+
+    @property
+    def o_is_reflection_ray(self) -> SocketLinker:
+        """Output socket: Is Reflection Ray"""
+        return self._output("Is Reflection Ray")
+
+    @property
+    def o_is_transmission_ray(self) -> SocketLinker:
+        """Output socket: Is Transmission Ray"""
+        return self._output("Is Transmission Ray")
+
+    @property
+    def o_is_volume_scatter_ray(self) -> SocketLinker:
+        """Output socket: Is Volume Scatter Ray"""
+        return self._output("Is Volume Scatter Ray")
+
+    @property
+    def o_ray_length(self) -> SocketLinker:
+        """Output socket: Ray Length"""
+        return self._output("Ray Length")
+
+    @property
+    def o_ray_depth(self) -> SocketLinker:
+        """Output socket: Ray Depth"""
+        return self._output("Ray Depth")
+
+    @property
+    def o_diffuse_depth(self) -> SocketLinker:
+        """Output socket: Diffuse Depth"""
+        return self._output("Diffuse Depth")
+
+    @property
+    def o_glossy_depth(self) -> SocketLinker:
+        """Output socket: Glossy Depth"""
+        return self._output("Glossy Depth")
+
+    @property
+    def o_transparent_depth(self) -> SocketLinker:
+        """Output socket: Transparent Depth"""
+        return self._output("Transparent Depth")
+
+    @property
+    def o_transmission_depth(self) -> SocketLinker:
+        """Output socket: Transmission Depth"""
+        return self._output("Transmission Depth")
+
+    @property
+    def o_portal_depth(self) -> SocketLinker:
+        """Output socket: Portal Depth"""
+        return self._output("Portal Depth")
+
+
+class ObjectInfo(NodeBuilder):
+    """
+    Retrieve information about the object instance
+    """
+
+    _bl_idname = "ShaderNodeObjectInfo"
+    node: bpy.types.ShaderNodeObjectInfo
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_location(self) -> SocketLinker:
+        """Output socket: Location"""
+        return self._output("Location")
+
+    @property
+    def o_color(self) -> SocketLinker:
+        """Output socket: Color"""
+        return self._output("Color")
+
+    @property
+    def o_alpha(self) -> SocketLinker:
+        """Output socket: Alpha"""
+        return self._output("Alpha")
+
+    @property
+    def o_object_index(self) -> SocketLinker:
+        """Output socket: Object Index"""
+        return self._output("Object Index")
+
+    @property
+    def o_material_index(self) -> SocketLinker:
+        """Output socket: Material Index"""
+        return self._output("Material Index")
+
+    @property
+    def o_random(self) -> SocketLinker:
+        """Output socket: Random"""
+        return self._output("Random")
+
+
+class ParticleInfo(NodeBuilder):
+    """
+    Retrieve the data of the particle that spawned the object instance, for example to give variation to multiple instances of an object
+    """
+
+    _bl_idname = "ShaderNodeParticleInfo"
+    node: bpy.types.ShaderNodeParticleInfo
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_index(self) -> SocketLinker:
+        """Output socket: Index"""
+        return self._output("Index")
+
+    @property
+    def o_random(self) -> SocketLinker:
+        """Output socket: Random"""
+        return self._output("Random")
+
+    @property
+    def o_age(self) -> SocketLinker:
+        """Output socket: Age"""
+        return self._output("Age")
+
+    @property
+    def o_lifetime(self) -> SocketLinker:
+        """Output socket: Lifetime"""
+        return self._output("Lifetime")
+
+    @property
+    def o_location(self) -> SocketLinker:
+        """Output socket: Location"""
+        return self._output("Location")
+
+    @property
+    def o_size(self) -> SocketLinker:
+        """Output socket: Size"""
+        return self._output("Size")
+
+    @property
+    def o_velocity(self) -> SocketLinker:
+        """Output socket: Velocity"""
+        return self._output("Velocity")
+
+    @property
+    def o_angular_velocity(self) -> SocketLinker:
+        """Output socket: Angular Velocity"""
+        return self._output("Angular Velocity")
+
+
+class PointInfo(NodeBuilder):
+    """
+    Retrieve information about points in a point cloud
+    """
+
+    _bl_idname = "ShaderNodePointInfo"
+    node: bpy.types.ShaderNodePointInfo
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_position(self) -> SocketLinker:
+        """Output socket: Position"""
+        return self._output("Position")
+
+    @property
+    def o_radius(self) -> SocketLinker:
+        """Output socket: Radius"""
+        return self._output("Radius")
+
+    @property
+    def o_random(self) -> SocketLinker:
+        """Output socket: Random"""
+        return self._output("Random")
+
+
+class Tangent(NodeBuilder):
+    """
+    Generate a tangent direction for the Anisotropic BSDF
+    """
+
+    _bl_idname = "ShaderNodeTangent"
+    node: bpy.types.ShaderNodeTangent
+
+    def __init__(
+        self,
+        direction_type: Literal["RADIAL", "UV_MAP"] = "RADIAL",
+        axis: Literal["X", "Y", "Z"] = "Z",
+        uv_map: str = "",
+    ):
+        super().__init__()
+        key_args = {}
+        self.direction_type = direction_type
+        self.axis = axis
+        self.uv_map = uv_map
+        self._establish_links(**key_args)
+
+    @property
+    def o_tangent(self) -> SocketLinker:
+        """Output socket: Tangent"""
+        return self._output("Tangent")
+
+    @property
+    def direction_type(self) -> Literal["RADIAL", "UV_MAP"]:
+        return self.node.direction_type
+
+    @direction_type.setter
+    def direction_type(self, value: Literal["RADIAL", "UV_MAP"]):
+        self.node.direction_type = value
+
+    @property
+    def axis(self) -> Literal["X", "Y", "Z"]:
+        return self.node.axis
+
+    @axis.setter
+    def axis(self, value: Literal["X", "Y", "Z"]):
+        self.node.axis = value
+
+    @property
+    def uv_map(self) -> str:
+        return self.node.uv_map
+
+    @uv_map.setter
+    def uv_map(self, value: str):
+        self.node.uv_map = value
+
+
+class TextureCoordinate(NodeBuilder):
+    """
+    Retrieve multiple types of texture coordinates.
+    Typically used as inputs for texture nodes
+    """
+
+    _bl_idname = "ShaderNodeTexCoord"
+    node: bpy.types.ShaderNodeTexCoord
+
+    def __init__(self, from_instancer: bool = False):
+        super().__init__()
+        key_args = {}
+        self.from_instancer = from_instancer
+        self._establish_links(**key_args)
+
+    @property
+    def o_generated(self) -> SocketLinker:
+        """Output socket: Generated"""
+        return self._output("Generated")
+
+    @property
+    def o_normal(self) -> SocketLinker:
+        """Output socket: Normal"""
+        return self._output("Normal")
+
+    @property
+    def o_uv(self) -> SocketLinker:
+        """Output socket: UV"""
+        return self._output("UV")
+
+    @property
+    def o_object(self) -> SocketLinker:
+        """Output socket: Object"""
+        return self._output("Object")
+
+    @property
+    def o_camera(self) -> SocketLinker:
+        """Output socket: Camera"""
+        return self._output("Camera")
+
+    @property
+    def o_window(self) -> SocketLinker:
+        """Output socket: Window"""
+        return self._output("Window")
+
+    @property
+    def o_reflection(self) -> SocketLinker:
+        """Output socket: Reflection"""
+        return self._output("Reflection")
+
+    @property
+    def from_instancer(self) -> bool:
+        return self.node.from_instancer
+
+    @from_instancer.setter
+    def from_instancer(self, value: bool):
+        self.node.from_instancer = value
+
+
+class UVAlongStroke(NodeBuilder):
+    """
+    UV coordinates that map a texture along the stroke length
+    """
+
+    _bl_idname = "ShaderNodeUVAlongStroke"
+    node: bpy.types.ShaderNodeUVAlongStroke
+
+    def __init__(self, use_tips: bool = False):
+        super().__init__()
+        key_args = {}
+        self.use_tips = use_tips
+        self._establish_links(**key_args)
+
+    @property
+    def o_uv(self) -> SocketLinker:
+        """Output socket: UV"""
+        return self._output("UV")
+
+    @property
+    def use_tips(self) -> bool:
+        return self.node.use_tips
+
+    @use_tips.setter
+    def use_tips(self, value: bool):
+        self.node.use_tips = value
+
+
+class UVMap(NodeBuilder):
+    """
+    Retrieve a UV map from the geometry, or the default fallback if none is specified
+    """
+
+    _bl_idname = "ShaderNodeUVMap"
+    node: bpy.types.ShaderNodeUVMap
+
+    def __init__(
+        self,
+        from_instancer: bool = False,
+        uv_map: str = "",
+    ):
+        super().__init__()
+        key_args = {}
+        self.from_instancer = from_instancer
+        self.uv_map = uv_map
+        self._establish_links(**key_args)
+
+    @property
+    def o_uv(self) -> SocketLinker:
+        """Output socket: UV"""
+        return self._output("UV")
+
+    @property
+    def from_instancer(self) -> bool:
+        return self.node.from_instancer
+
+    @from_instancer.setter
+    def from_instancer(self, value: bool):
+        self.node.from_instancer = value
+
+    @property
+    def uv_map(self) -> str:
+        return self.node.uv_map
+
+    @uv_map.setter
+    def uv_map(self, value: str):
+        self.node.uv_map = value
+
+
+class Value(NodeBuilder):
+    """
+    Input numerical values to other nodes in the tree
+    """
+
+    _bl_idname = "ShaderNodeValue"
+    node: bpy.types.ShaderNodeValue
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    @property
+    def o_value(self) -> SocketLinker:
+        """Output socket: Value"""
+        return self._output("Value")
+
+
+class Wireframe(NodeBuilder):
+    """
+    Retrieve the edges of an object as it appears to Cycles.
+    Note: as meshes are triangulated before being processed by Cycles, topology will always appear triangulated
+    """
+
+    _bl_idname = "ShaderNodeWireframe"
+    node: bpy.types.ShaderNodeWireframe
+
+    def __init__(
+        self,
+        size: TYPE_INPUT_VALUE = 0.01,
+        *,
+        use_pixel_size: bool = False,
+    ):
+        super().__init__()
+        key_args = {"Size": size}
+        self.use_pixel_size = use_pixel_size
+        self._establish_links(**key_args)
+
+    @property
+    def i_size(self) -> SocketLinker:
+        """Input socket: Size"""
+        return self._input("Size")
+
+    @property
+    def o_fac(self) -> SocketLinker:
+        """Output socket: Factor"""
+        return self._output("Fac")
+
+    @property
+    def use_pixel_size(self) -> bool:
+        return self.node.use_pixel_size
+
+    @use_pixel_size.setter
+    def use_pixel_size(self, value: bool):
+        self.node.use_pixel_size = value
