@@ -9,7 +9,7 @@ from ...builder import NodeBuilder
 
 class Script(NodeBuilder):
     """
-    Generate an OSL shader from a file or text data-block.
+        Generate an OSL shader from a file or text data-block.
     Note: OSL shaders are not supported on all GPU backends
     """
 

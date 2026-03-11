@@ -5,6 +5,7 @@ from typing import Literal
 import bpy
 
 from ...builder import NodeBuilder, SocketLinker
+
 from ...types import (
     TYPE_INPUT_COLOR,
     TYPE_INPUT_SHADER,
@@ -15,7 +16,7 @@ from ...types import (
 
 class AovOutput(NodeBuilder):
     """
-    Arbitrary Output Variables.
+        Arbitrary Output Variables.
     Provide custom render passes for arbitrary shader node outputs
     """
 

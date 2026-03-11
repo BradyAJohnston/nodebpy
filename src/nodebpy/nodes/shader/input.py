@@ -5,6 +5,7 @@ from typing import Literal
 import bpy
 
 from ...builder import NodeBuilder, SocketLinker
+
 from ...types import (
     TYPE_INPUT_COLOR,
     TYPE_INPUT_VALUE,
@@ -14,7 +15,7 @@ from ...types import (
 
 class AmbientOcclusion(NodeBuilder):
     """
-    Compute how much the hemisphere above the shading point is occluded, for example to add weathering effects to corners.
+        Compute how much the hemisphere above the shading point is occluded, for example to add weathering effects to corners.
     Note: For Cycles, this may slow down renders significantly
     """
 
@@ -152,7 +153,7 @@ class Attribute(NodeBuilder):
 
 class Bevel(NodeBuilder):
     """
-    Generates normals with round corners.
+        Generates normals with round corners.
     Note: only supported in Cycles, and may slow down renders
     """
 
@@ -325,7 +326,7 @@ class CurvesInfo(NodeBuilder):
 
 class Fresnel(NodeBuilder):
     """
-    Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations.
+        Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations.
     Typically used for mixing reflections at grazing angles
     """
 
@@ -420,7 +421,7 @@ class Geometry(NodeBuilder):
 
 class LayerWeight(NodeBuilder):
     """
-    Produce a blending factor depending on the angle between the surface normal and the view direction.
+        Produce a blending factor depending on the angle between the surface normal and the view direction.
     Typically used for layering shaders with the Mix Shader node
     """
 
@@ -460,7 +461,7 @@ class LayerWeight(NodeBuilder):
 
 class LightPath(NodeBuilder):
     """
-    Retrieve the type of incoming ray for which the shader is being executed.
+        Retrieve the type of incoming ray for which the shader is being executed.
     Typically used for non-physically-based tricks
     """
 
@@ -732,7 +733,7 @@ class Tangent(NodeBuilder):
 
 class TextureCoordinate(NodeBuilder):
     """
-    Retrieve multiple types of texture coordinates.
+        Retrieve multiple types of texture coordinates.
     Typically used as inputs for texture nodes
     """
 
@@ -880,7 +881,7 @@ class Value(NodeBuilder):
 
 class Wireframe(NodeBuilder):
     """
-    Retrieve the edges of an object as it appears to Cycles.
+        Retrieve the edges of an object as it appears to Cycles.
     Note: as meshes are triangulated before being processed by Cycles, topology will always appear triangulated
     """
 

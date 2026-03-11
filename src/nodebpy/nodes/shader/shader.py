@@ -5,6 +5,7 @@ from typing import Literal
 import bpy
 
 from ...builder import NodeBuilder, SocketLinker
+
 from ...types import (
     TYPE_INPUT_COLOR,
     TYPE_INPUT_SHADER,
@@ -49,7 +50,7 @@ class AddShader(NodeBuilder):
 
 class Background(NodeBuilder):
     """
-    Add background light emission.
+        Add background light emission.
     Note: This node should only be used for the world surface output
     """
 
@@ -426,7 +427,7 @@ class HairBsdf(NodeBuilder):
 
 class Holdout(NodeBuilder):
     """
-    Create a "hole" in the image with zero alpha transparency, which is useful for compositing.
+        Create a "hole" in the image with zero alpha transparency, which is useful for compositing.
     Note: the holdout shader can only create alpha when transparency is enabled in the film settings
     """
 
@@ -1171,7 +1172,7 @@ class RefractionBsdf(NodeBuilder):
 
 class SheenBsdf(NodeBuilder):
     """
-    Reflection for materials such as cloth.
+        Reflection for materials such as cloth.
     Typically mixed with other shaders (such as a Diffuse Shader) and is not particularly useful on its own
     """
 
@@ -1326,7 +1327,7 @@ class SpecularBsdf(NodeBuilder):
 
 class SubsurfaceScattering(NodeBuilder):
     """
-    Subsurface multiple scattering shader to simulate light entering the surface and bouncing internally.
+        Subsurface multiple scattering shader to simulate light entering the surface and bouncing internally.
     Typically used for materials such as skin, wax, marble or milk
     """
 

@@ -5,15 +5,16 @@ from typing import Literal
 import bpy
 
 from ...builder import NodeBuilder, SocketLinker
+
 from ...types import (
     LINKABLE,
     TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_BUNDLE,
+    TYPE_INPUT_CLOSURE,
+    TYPE_INPUT_COLOR,
     TYPE_INPUT_INT,
     TYPE_INPUT_MENU,
     TYPE_INPUT_ROTATION,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_BUNDLE,
-    TYPE_INPUT_CLOSURE,
     TYPE_INPUT_SHADER,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
@@ -1607,7 +1608,7 @@ class SeparateXYZ(NodeBuilder):
 
 class ShaderToRgb(NodeBuilder):
     """
-    Convert rendering effect (such as light and shadow) to color. Typically used for non-photorealistic rendering, to apply additional effects on the output of BSDFs.
+        Convert rendering effect (such as light and shadow) to color. Typically used for non-photorealistic rendering, to apply additional effects on the output of BSDFs.
     Note: only supported in EEVEE
     """
 

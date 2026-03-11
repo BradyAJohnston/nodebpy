@@ -5,6 +5,7 @@ from typing import Literal
 import bpy
 
 from ...builder import NodeBuilder, SocketLinker
+
 from ...types import (
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_VALUE,

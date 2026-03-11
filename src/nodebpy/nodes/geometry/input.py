@@ -5,14 +5,15 @@ from typing import Literal
 import bpy
 
 from ...builder import NodeBuilder, SocketLinker
+
 from ...types import (
     TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_OBJECT,
     TYPE_INPUT_COLLECTION,
     TYPE_INPUT_IMAGE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_OBJECT,
+    TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
