@@ -55,6 +55,8 @@ quartodoc:
         ####################
         - nodes.geometry.vector
         - nodes.geometry.manual
+    - subtitle: Zonesin GN
+      contents:
         - nodes.geometry.zone
 
     - title: Shader Nodes

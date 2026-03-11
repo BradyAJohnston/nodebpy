@@ -19,7 +19,7 @@ JSON_DIR = CURRENT / "clippings"
 def clean_and_save(request):
     """Cleans the Blender file before each test and saves it after."""
     # Before each test: load a clean home file
-    bpy.ops.wm.read_homefile(filepath=str(CURRENT / "test_startup.blend"))
+    bpy.ops.wm.read_homefile(filepath=str(CURRENT / "data/test_startup.blend"))
 
     yield
 
