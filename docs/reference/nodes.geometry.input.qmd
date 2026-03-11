@@ -1,0 +1,1679 @@
+# nodes.geometry.input { #nodebpy.nodes.geometry.input }
+
+`nodes.geometry.input`
+
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [ActiveCamera](#nodebpy.nodes.geometry.input.ActiveCamera) | Retrieve the scene's active camera |
+| [ActiveElement](#nodebpy.nodes.geometry.input.ActiveElement) | Active element indices of the edited geometry, for tool execution |
+| [Boolean](#nodebpy.nodes.geometry.input.Boolean) | Provide a True/False value that can be connected to other nodes in the tree |
+| [CameraInfo](#nodebpy.nodes.geometry.input.CameraInfo) | Retrieve information from a camera object |
+| [CollectionInfo](#nodebpy.nodes.geometry.input.CollectionInfo) | Retrieve geometry instances from a collection |
+| [Color](#nodebpy.nodes.geometry.input.Color) | Output a color value chosen with the color picker widget |
+| [CornersOfEdge](#nodebpy.nodes.geometry.input.CornersOfEdge) | Retrieve face corners connected to edges |
+| [CornersOfFace](#nodebpy.nodes.geometry.input.CornersOfFace) | Retrieve corners that make up a face |
+| [CornersOfVertex](#nodebpy.nodes.geometry.input.CornersOfVertex) | Retrieve face corners connected to vertices |
+| [Cursor3D](#nodebpy.nodes.geometry.input.Cursor3D) | The scene's 3D cursor location and rotation |
+| [CurveHandlePositions](#nodebpy.nodes.geometry.input.CurveHandlePositions) | Retrieve the position of each Bézier control point's handles |
+| [CurveOfPoint](#nodebpy.nodes.geometry.input.CurveOfPoint) | Retrieve the curve a control point is part of |
+| [CurveTangent](#nodebpy.nodes.geometry.input.CurveTangent) | Retrieve the direction of curves at each control point |
+| [CurveTilt](#nodebpy.nodes.geometry.input.CurveTilt) | Retrieve the angle at each control point used to twist the curve's normal around its tangent |
+| [EdgeAngle](#nodebpy.nodes.geometry.input.EdgeAngle) | The angle between the normals of connected manifold faces |
+| [EdgeNeighbors](#nodebpy.nodes.geometry.input.EdgeNeighbors) | Retrieve the number of faces that use each edge as one of their sides |
+| [EdgePathsToSelection](#nodebpy.nodes.geometry.input.EdgePathsToSelection) | Output a selection of edges by following paths across mesh edges |
+| [EdgeVertices](#nodebpy.nodes.geometry.input.EdgeVertices) | Retrieve topology information relating to each edge of a mesh |
+| [EdgesOfCorner](#nodebpy.nodes.geometry.input.EdgesOfCorner) | Retrieve the edges on both sides of a face corner |
+| [EdgesOfVertex](#nodebpy.nodes.geometry.input.EdgesOfVertex) | Retrieve the edges connected to each vertex |
+| [EdgesToFaceGroups](#nodebpy.nodes.geometry.input.EdgesToFaceGroups) | Group faces into regions surrounded by the selected boundary edges |
+| [EndpointSelection](#nodebpy.nodes.geometry.input.EndpointSelection) | Provide a selection for an arbitrary number of endpoints in each spline |
+| [FaceArea](#nodebpy.nodes.geometry.input.FaceArea) | Calculate the surface area of a mesh's faces |
+| [FaceGroupBoundaries](#nodebpy.nodes.geometry.input.FaceGroupBoundaries) | Find edges on the boundaries between groups of faces with the same ID value |
+| [FaceNeighbors](#nodebpy.nodes.geometry.input.FaceNeighbors) | Retrieve topology information relating to each face of a mesh |
+| [FaceOfCorner](#nodebpy.nodes.geometry.input.FaceOfCorner) | Retrieve the face each face corner is part of |
+| [FaceSet](#nodebpy.nodes.geometry.input.FaceSet) | Each face's sculpt face set value |
+| [ID](#nodebpy.nodes.geometry.input.ID) | Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist |
+| [Image](#nodebpy.nodes.geometry.input.Image) | Input an image data-block |
+| [ImageInfo](#nodebpy.nodes.geometry.input.ImageInfo) | Retrieve information about an image |
+| [ImportCSV](#nodebpy.nodes.geometry.input.ImportCSV) | Import geometry from an CSV file |
+| [ImportOBJ](#nodebpy.nodes.geometry.input.ImportOBJ) | Import geometry from an OBJ file |
+| [ImportPLY](#nodebpy.nodes.geometry.input.ImportPLY) | Import a point cloud from a PLY file |
+| [ImportSTL](#nodebpy.nodes.geometry.input.ImportSTL) | Import a mesh from an STL file |
+| [ImportText](#nodebpy.nodes.geometry.input.ImportText) | Import a string from a text file |
+| [ImportVDB](#nodebpy.nodes.geometry.input.ImportVDB) | Import volume data from a .vdb file |
+| [Index](#nodebpy.nodes.geometry.input.Index) | Retrieve an integer value indicating the position of each element in the list, starting at zero |
+| [InstanceBounds](#nodebpy.nodes.geometry.input.InstanceBounds) | Calculate position bounds of each instance's geometry set |
+| [InstanceRotation](#nodebpy.nodes.geometry.input.InstanceRotation) | Retrieve the rotation of each instance in the geometry |
+| [InstanceScale](#nodebpy.nodes.geometry.input.InstanceScale) | Retrieve the scale of each instance in the geometry |
+| [InstanceTransform](#nodebpy.nodes.geometry.input.InstanceTransform) | Retrieve the full transformation of each instance in the geometry |
+| [Integer](#nodebpy.nodes.geometry.input.Integer) | Provide an integer value that can be connected to other nodes in the tree |
+| [IsEdgeSmooth](#nodebpy.nodes.geometry.input.IsEdgeSmooth) | Retrieve whether each edge is marked for smooth or split normals |
+| [IsFacePlanar](#nodebpy.nodes.geometry.input.IsFacePlanar) | Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal |
+| [IsFaceSmooth](#nodebpy.nodes.geometry.input.IsFaceSmooth) | Retrieve whether each face is marked for smooth or sharp normals |
+| [IsSplineCyclic](#nodebpy.nodes.geometry.input.IsSplineCyclic) | Retrieve whether each spline endpoint connects to the beginning |
+| [IsViewport](#nodebpy.nodes.geometry.input.IsViewport) | Retrieve whether the nodes are being evaluated for the viewport rather than the final render |
+| [MaterialIndex](#nodebpy.nodes.geometry.input.MaterialIndex) | Retrieve the index of the material used for each element in the geometry's list of materials |
+| [MeshIsland](#nodebpy.nodes.geometry.input.MeshIsland) | Retrieve information about separate connected regions in a mesh |
+| [MousePosition](#nodebpy.nodes.geometry.input.MousePosition) | Retrieve the position of the mouse cursor |
+| [NamedAttribute](#nodebpy.nodes.geometry.input.NamedAttribute) | Retrieve the data of a specified attribute |
+| [NamedLayerSelection](#nodebpy.nodes.geometry.input.NamedLayerSelection) | Output a selection of a Grease Pencil layer |
+| [Normal](#nodebpy.nodes.geometry.input.Normal) | Retrieve a unit length vector indicating the direction pointing away from the geometry at each element |
+| [ObjectInfo](#nodebpy.nodes.geometry.input.ObjectInfo) | Retrieve information from an object |
+| [OffsetCornerInFace](#nodebpy.nodes.geometry.input.OffsetCornerInFace) | Retrieve corners in the same face as another |
+| [OffsetPointInCurve](#nodebpy.nodes.geometry.input.OffsetPointInCurve) | Offset a control point index within its curve |
+| [PointsOfCurve](#nodebpy.nodes.geometry.input.PointsOfCurve) | Retrieve a point index within a curve |
+| [Position](#nodebpy.nodes.geometry.input.Position) | Retrieve a vector indicating the location of each element |
+| [Radius](#nodebpy.nodes.geometry.input.Radius) | Retrieve the radius at each point on curve or point cloud geometry |
+| [Rotation](#nodebpy.nodes.geometry.input.Rotation) | Provide a rotation value that can be connected to other nodes in the tree |
+| [SceneTime](#nodebpy.nodes.geometry.input.SceneTime) | Retrieve the current time in the scene's animation in units of seconds or frames |
+| [Selection](#nodebpy.nodes.geometry.input.Selection) | User selection of the edited geometry, for tool execution |
+| [SelfObject](#nodebpy.nodes.geometry.input.SelfObject) | Retrieve the object that contains the geometry nodes modifier currently being executed |
+| [ShortestEdgePaths](#nodebpy.nodes.geometry.input.ShortestEdgePaths) | Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge |
+| [SpecialCharacters](#nodebpy.nodes.geometry.input.SpecialCharacters) | Output string characters that cannot be typed directly with the keyboard |
+| [SplineLength](#nodebpy.nodes.geometry.input.SplineLength) | Retrieve the total length of each spline, as a distance or as a number of points |
+| [SplineParameter](#nodebpy.nodes.geometry.input.SplineParameter) | Retrieve how far along each spline a control point is |
+| [SplineResolution](#nodebpy.nodes.geometry.input.SplineResolution) | Retrieve the number of evaluated points that will be generated for every control point on curves |
+| [String](#nodebpy.nodes.geometry.input.String) | Provide a string value that can be connected to other nodes in the tree |
+| [UVTangent](#nodebpy.nodes.geometry.input.UVTangent) | Generate tangent directions based on a UV map |
+| [Vector](#nodebpy.nodes.geometry.input.Vector) | Provide a vector value that can be connected to other nodes in the tree |
+| [VertexNeighbors](#nodebpy.nodes.geometry.input.VertexNeighbors) | Retrieve topology information relating to each vertex of a mesh |
+| [VertexOfCorner](#nodebpy.nodes.geometry.input.VertexOfCorner) | Retrieve the vertex each face corner is attached to |
+| [ViewportTransform](#nodebpy.nodes.geometry.input.ViewportTransform) | Retrieve the view direction and location of the 3D viewport |
+| [VoxelIndex](#nodebpy.nodes.geometry.input.VoxelIndex) | Retrieve the integer coordinates of the voxel that the field is evaluated on |
+
+### ActiveCamera { #nodebpy.nodes.geometry.input.ActiveCamera }
+
+```python
+nodes.geometry.input.ActiveCamera()
+```
+
+Retrieve the scene's active camera
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.ActiveCamera.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ActiveCamera.node) |  |
+| [o_active_camera](#nodebpy.nodes.geometry.input.ActiveCamera.o_active_camera) | Output socket: Active Camera |
+| [tree](#nodebpy.nodes.geometry.input.ActiveCamera.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ActiveCamera.type) |  |
+
+### ActiveElement { #nodebpy.nodes.geometry.input.ActiveElement }
+
+```python
+nodes.geometry.input.ActiveElement(domain='POINT')
+```
+
+Active element indices of the edited geometry, for tool execution
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [domain](#nodebpy.nodes.geometry.input.ActiveElement.domain) |  |
+| [name](#nodebpy.nodes.geometry.input.ActiveElement.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ActiveElement.node) |  |
+| [o_exists](#nodebpy.nodes.geometry.input.ActiveElement.o_exists) | Output socket: Exists |
+| [o_index](#nodebpy.nodes.geometry.input.ActiveElement.o_index) | Output socket: Index |
+| [tree](#nodebpy.nodes.geometry.input.ActiveElement.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ActiveElement.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [edge](#nodebpy.nodes.geometry.input.ActiveElement.edge) | Create Active Element with operation 'Edge'. |
+| [face](#nodebpy.nodes.geometry.input.ActiveElement.face) | Create Active Element with operation 'Face'. |
+| [layer](#nodebpy.nodes.geometry.input.ActiveElement.layer) | Create Active Element with operation 'Layer'. |
+| [point](#nodebpy.nodes.geometry.input.ActiveElement.point) | Create Active Element with operation 'Point'. |
+
+##### edge { #nodebpy.nodes.geometry.input.ActiveElement.edge }
+
+```python
+nodes.geometry.input.ActiveElement.edge()
+```
+
+Create Active Element with operation 'Edge'.
+
+##### face { #nodebpy.nodes.geometry.input.ActiveElement.face }
+
+```python
+nodes.geometry.input.ActiveElement.face()
+```
+
+Create Active Element with operation 'Face'.
+
+##### layer { #nodebpy.nodes.geometry.input.ActiveElement.layer }
+
+```python
+nodes.geometry.input.ActiveElement.layer()
+```
+
+Create Active Element with operation 'Layer'.
+
+##### point { #nodebpy.nodes.geometry.input.ActiveElement.point }
+
+```python
+nodes.geometry.input.ActiveElement.point()
+```
+
+Create Active Element with operation 'Point'.
+
+### Boolean { #nodebpy.nodes.geometry.input.Boolean }
+
+```python
+nodes.geometry.input.Boolean(boolean=False)
+```
+
+Provide a True/False value that can be connected to other nodes in the tree
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.geometry.input.Boolean.boolean) |  |
+| [name](#nodebpy.nodes.geometry.input.Boolean.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Boolean.node) |  |
+| [o_boolean](#nodebpy.nodes.geometry.input.Boolean.o_boolean) | Output socket: Boolean |
+| [tree](#nodebpy.nodes.geometry.input.Boolean.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Boolean.type) |  |
+
+### CameraInfo { #nodebpy.nodes.geometry.input.CameraInfo }
+
+```python
+nodes.geometry.input.CameraInfo(camera=None)
+```
+
+Retrieve information from a camera object
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_camera](#nodebpy.nodes.geometry.input.CameraInfo.i_camera) | Input socket: Camera |
+| [name](#nodebpy.nodes.geometry.input.CameraInfo.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CameraInfo.node) |  |
+| [o_clip_end](#nodebpy.nodes.geometry.input.CameraInfo.o_clip_end) | Output socket: Clip End |
+| [o_clip_start](#nodebpy.nodes.geometry.input.CameraInfo.o_clip_start) | Output socket: Clip Start |
+| [o_focal_length](#nodebpy.nodes.geometry.input.CameraInfo.o_focal_length) | Output socket: Focal Length |
+| [o_focus_distance](#nodebpy.nodes.geometry.input.CameraInfo.o_focus_distance) | Output socket: Focus Distance |
+| [o_is_orthographic](#nodebpy.nodes.geometry.input.CameraInfo.o_is_orthographic) | Output socket: Is Orthographic |
+| [o_orthographic_scale](#nodebpy.nodes.geometry.input.CameraInfo.o_orthographic_scale) | Output socket: Orthographic Scale |
+| [o_projection_matrix](#nodebpy.nodes.geometry.input.CameraInfo.o_projection_matrix) | Output socket: Projection Matrix |
+| [o_sensor](#nodebpy.nodes.geometry.input.CameraInfo.o_sensor) | Output socket: Sensor |
+| [o_shift](#nodebpy.nodes.geometry.input.CameraInfo.o_shift) | Output socket: Shift |
+| [tree](#nodebpy.nodes.geometry.input.CameraInfo.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CameraInfo.type) |  |
+
+### CollectionInfo { #nodebpy.nodes.geometry.input.CollectionInfo }
+
+```python
+nodes.geometry.input.CollectionInfo(
+    collection=None,
+    separate_children=False,
+    reset_children=False,
+    *,
+    transform_space='ORIGINAL',
+)
+```
+
+Retrieve geometry instances from a collection
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_collection](#nodebpy.nodes.geometry.input.CollectionInfo.i_collection) | Input socket: Collection |
+| [i_reset_children](#nodebpy.nodes.geometry.input.CollectionInfo.i_reset_children) | Input socket: Reset Children |
+| [i_separate_children](#nodebpy.nodes.geometry.input.CollectionInfo.i_separate_children) | Input socket: Separate Children |
+| [name](#nodebpy.nodes.geometry.input.CollectionInfo.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CollectionInfo.node) |  |
+| [o_instances](#nodebpy.nodes.geometry.input.CollectionInfo.o_instances) | Output socket: Instances |
+| [transform_space](#nodebpy.nodes.geometry.input.CollectionInfo.transform_space) |  |
+| [tree](#nodebpy.nodes.geometry.input.CollectionInfo.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CollectionInfo.type) |  |
+
+### Color { #nodebpy.nodes.geometry.input.Color }
+
+```python
+nodes.geometry.input.Color(value=(0.735, 0.735, 0.735, 1.0))
+```
+
+Output a color value chosen with the color picker widget
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Color.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Color.node) |  |
+| [o_color](#nodebpy.nodes.geometry.input.Color.o_color) | Output socket: Color |
+| [tree](#nodebpy.nodes.geometry.input.Color.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Color.type) |  |
+| [value](#nodebpy.nodes.geometry.input.Color.value) |  |
+
+### CornersOfEdge { #nodebpy.nodes.geometry.input.CornersOfEdge }
+
+```python
+nodes.geometry.input.CornersOfEdge(edge_index=0, weights=0.0, sort_index=0)
+```
+
+Retrieve face corners connected to edges
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_edge_index](#nodebpy.nodes.geometry.input.CornersOfEdge.i_edge_index) | Input socket: Edge Index |
+| [i_sort_index](#nodebpy.nodes.geometry.input.CornersOfEdge.i_sort_index) | Input socket: Sort Index |
+| [i_weights](#nodebpy.nodes.geometry.input.CornersOfEdge.i_weights) | Input socket: Weights |
+| [name](#nodebpy.nodes.geometry.input.CornersOfEdge.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CornersOfEdge.node) |  |
+| [o_corner_index](#nodebpy.nodes.geometry.input.CornersOfEdge.o_corner_index) | Output socket: Corner Index |
+| [o_total](#nodebpy.nodes.geometry.input.CornersOfEdge.o_total) | Output socket: Total |
+| [tree](#nodebpy.nodes.geometry.input.CornersOfEdge.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CornersOfEdge.type) |  |
+
+### CornersOfFace { #nodebpy.nodes.geometry.input.CornersOfFace }
+
+```python
+nodes.geometry.input.CornersOfFace(face_index=0, weights=0.0, sort_index=0)
+```
+
+Retrieve corners that make up a face
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_face_index](#nodebpy.nodes.geometry.input.CornersOfFace.i_face_index) | Input socket: Face Index |
+| [i_sort_index](#nodebpy.nodes.geometry.input.CornersOfFace.i_sort_index) | Input socket: Sort Index |
+| [i_weights](#nodebpy.nodes.geometry.input.CornersOfFace.i_weights) | Input socket: Weights |
+| [name](#nodebpy.nodes.geometry.input.CornersOfFace.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CornersOfFace.node) |  |
+| [o_corner_index](#nodebpy.nodes.geometry.input.CornersOfFace.o_corner_index) | Output socket: Corner Index |
+| [o_total](#nodebpy.nodes.geometry.input.CornersOfFace.o_total) | Output socket: Total |
+| [tree](#nodebpy.nodes.geometry.input.CornersOfFace.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CornersOfFace.type) |  |
+
+### CornersOfVertex { #nodebpy.nodes.geometry.input.CornersOfVertex }
+
+```python
+nodes.geometry.input.CornersOfVertex(vertex_index=0, weights=0.0, sort_index=0)
+```
+
+Retrieve face corners connected to vertices
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_sort_index](#nodebpy.nodes.geometry.input.CornersOfVertex.i_sort_index) | Input socket: Sort Index |
+| [i_vertex_index](#nodebpy.nodes.geometry.input.CornersOfVertex.i_vertex_index) | Input socket: Vertex Index |
+| [i_weights](#nodebpy.nodes.geometry.input.CornersOfVertex.i_weights) | Input socket: Weights |
+| [name](#nodebpy.nodes.geometry.input.CornersOfVertex.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CornersOfVertex.node) |  |
+| [o_corner_index](#nodebpy.nodes.geometry.input.CornersOfVertex.o_corner_index) | Output socket: Corner Index |
+| [o_total](#nodebpy.nodes.geometry.input.CornersOfVertex.o_total) | Output socket: Total |
+| [tree](#nodebpy.nodes.geometry.input.CornersOfVertex.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CornersOfVertex.type) |  |
+
+### Cursor3D { #nodebpy.nodes.geometry.input.Cursor3D }
+
+```python
+nodes.geometry.input.Cursor3D()
+```
+
+The scene's 3D cursor location and rotation
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Cursor3D.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Cursor3D.node) |  |
+| [o_location](#nodebpy.nodes.geometry.input.Cursor3D.o_location) | Output socket: Location |
+| [o_rotation](#nodebpy.nodes.geometry.input.Cursor3D.o_rotation) | Output socket: Rotation |
+| [tree](#nodebpy.nodes.geometry.input.Cursor3D.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Cursor3D.type) |  |
+
+### CurveHandlePositions { #nodebpy.nodes.geometry.input.CurveHandlePositions }
+
+```python
+nodes.geometry.input.CurveHandlePositions(relative=False)
+```
+
+Retrieve the position of each Bézier control point's handles
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_relative](#nodebpy.nodes.geometry.input.CurveHandlePositions.i_relative) | Input socket: Relative |
+| [name](#nodebpy.nodes.geometry.input.CurveHandlePositions.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CurveHandlePositions.node) |  |
+| [o_left](#nodebpy.nodes.geometry.input.CurveHandlePositions.o_left) | Output socket: Left |
+| [o_right](#nodebpy.nodes.geometry.input.CurveHandlePositions.o_right) | Output socket: Right |
+| [tree](#nodebpy.nodes.geometry.input.CurveHandlePositions.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CurveHandlePositions.type) |  |
+
+### CurveOfPoint { #nodebpy.nodes.geometry.input.CurveOfPoint }
+
+```python
+nodes.geometry.input.CurveOfPoint(point_index=0)
+```
+
+Retrieve the curve a control point is part of
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_point_index](#nodebpy.nodes.geometry.input.CurveOfPoint.i_point_index) | Input socket: Point Index |
+| [name](#nodebpy.nodes.geometry.input.CurveOfPoint.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CurveOfPoint.node) |  |
+| [o_curve_index](#nodebpy.nodes.geometry.input.CurveOfPoint.o_curve_index) | Output socket: Curve Index |
+| [o_index_in_curve](#nodebpy.nodes.geometry.input.CurveOfPoint.o_index_in_curve) | Output socket: Index in Curve |
+| [tree](#nodebpy.nodes.geometry.input.CurveOfPoint.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CurveOfPoint.type) |  |
+
+### CurveTangent { #nodebpy.nodes.geometry.input.CurveTangent }
+
+```python
+nodes.geometry.input.CurveTangent()
+```
+
+Retrieve the direction of curves at each control point
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.CurveTangent.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CurveTangent.node) |  |
+| [o_tangent](#nodebpy.nodes.geometry.input.CurveTangent.o_tangent) | Output socket: Tangent |
+| [tree](#nodebpy.nodes.geometry.input.CurveTangent.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CurveTangent.type) |  |
+
+### CurveTilt { #nodebpy.nodes.geometry.input.CurveTilt }
+
+```python
+nodes.geometry.input.CurveTilt()
+```
+
+Retrieve the angle at each control point used to twist the curve's normal around its tangent
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.CurveTilt.name) |  |
+| [node](#nodebpy.nodes.geometry.input.CurveTilt.node) |  |
+| [o_tilt](#nodebpy.nodes.geometry.input.CurveTilt.o_tilt) | Output socket: Tilt |
+| [tree](#nodebpy.nodes.geometry.input.CurveTilt.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.CurveTilt.type) |  |
+
+### EdgeAngle { #nodebpy.nodes.geometry.input.EdgeAngle }
+
+```python
+nodes.geometry.input.EdgeAngle()
+```
+
+The angle between the normals of connected manifold faces
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.EdgeAngle.name) |  |
+| [node](#nodebpy.nodes.geometry.input.EdgeAngle.node) |  |
+| [o_signed_angle](#nodebpy.nodes.geometry.input.EdgeAngle.o_signed_angle) | Output socket: Signed Angle |
+| [o_unsigned_angle](#nodebpy.nodes.geometry.input.EdgeAngle.o_unsigned_angle) | Output socket: Unsigned Angle |
+| [tree](#nodebpy.nodes.geometry.input.EdgeAngle.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.EdgeAngle.type) |  |
+
+### EdgeNeighbors { #nodebpy.nodes.geometry.input.EdgeNeighbors }
+
+```python
+nodes.geometry.input.EdgeNeighbors()
+```
+
+Retrieve the number of faces that use each edge as one of their sides
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.EdgeNeighbors.name) |  |
+| [node](#nodebpy.nodes.geometry.input.EdgeNeighbors.node) |  |
+| [o_face_count](#nodebpy.nodes.geometry.input.EdgeNeighbors.o_face_count) | Output socket: Face Count |
+| [tree](#nodebpy.nodes.geometry.input.EdgeNeighbors.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.EdgeNeighbors.type) |  |
+
+### EdgePathsToSelection { #nodebpy.nodes.geometry.input.EdgePathsToSelection }
+
+```python
+nodes.geometry.input.EdgePathsToSelection(
+    start_vertices=True,
+    next_vertex_index=-1,
+)
+```
+
+Output a selection of edges by following paths across mesh edges
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_next_vertex_index](#nodebpy.nodes.geometry.input.EdgePathsToSelection.i_next_vertex_index) | Input socket: Next Vertex Index |
+| [i_start_vertices](#nodebpy.nodes.geometry.input.EdgePathsToSelection.i_start_vertices) | Input socket: Start Vertices |
+| [name](#nodebpy.nodes.geometry.input.EdgePathsToSelection.name) |  |
+| [node](#nodebpy.nodes.geometry.input.EdgePathsToSelection.node) |  |
+| [o_selection](#nodebpy.nodes.geometry.input.EdgePathsToSelection.o_selection) | Output socket: Selection |
+| [tree](#nodebpy.nodes.geometry.input.EdgePathsToSelection.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.EdgePathsToSelection.type) |  |
+
+### EdgeVertices { #nodebpy.nodes.geometry.input.EdgeVertices }
+
+```python
+nodes.geometry.input.EdgeVertices()
+```
+
+Retrieve topology information relating to each edge of a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.EdgeVertices.name) |  |
+| [node](#nodebpy.nodes.geometry.input.EdgeVertices.node) |  |
+| [o_position_1](#nodebpy.nodes.geometry.input.EdgeVertices.o_position_1) | Output socket: Position 1 |
+| [o_position_2](#nodebpy.nodes.geometry.input.EdgeVertices.o_position_2) | Output socket: Position 2 |
+| [o_vertex_index_1](#nodebpy.nodes.geometry.input.EdgeVertices.o_vertex_index_1) | Output socket: Vertex Index 1 |
+| [o_vertex_index_2](#nodebpy.nodes.geometry.input.EdgeVertices.o_vertex_index_2) | Output socket: Vertex Index 2 |
+| [tree](#nodebpy.nodes.geometry.input.EdgeVertices.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.EdgeVertices.type) |  |
+
+### EdgesOfCorner { #nodebpy.nodes.geometry.input.EdgesOfCorner }
+
+```python
+nodes.geometry.input.EdgesOfCorner(corner_index=0)
+```
+
+Retrieve the edges on both sides of a face corner
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_corner_index](#nodebpy.nodes.geometry.input.EdgesOfCorner.i_corner_index) | Input socket: Corner Index |
+| [name](#nodebpy.nodes.geometry.input.EdgesOfCorner.name) |  |
+| [node](#nodebpy.nodes.geometry.input.EdgesOfCorner.node) |  |
+| [o_next_edge_index](#nodebpy.nodes.geometry.input.EdgesOfCorner.o_next_edge_index) | Output socket: Next Edge Index |
+| [o_previous_edge_index](#nodebpy.nodes.geometry.input.EdgesOfCorner.o_previous_edge_index) | Output socket: Previous Edge Index |
+| [tree](#nodebpy.nodes.geometry.input.EdgesOfCorner.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.EdgesOfCorner.type) |  |
+
+### EdgesOfVertex { #nodebpy.nodes.geometry.input.EdgesOfVertex }
+
+```python
+nodes.geometry.input.EdgesOfVertex(vertex_index=0, weights=0.0, sort_index=0)
+```
+
+Retrieve the edges connected to each vertex
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_sort_index](#nodebpy.nodes.geometry.input.EdgesOfVertex.i_sort_index) | Input socket: Sort Index |
+| [i_vertex_index](#nodebpy.nodes.geometry.input.EdgesOfVertex.i_vertex_index) | Input socket: Vertex Index |
+| [i_weights](#nodebpy.nodes.geometry.input.EdgesOfVertex.i_weights) | Input socket: Weights |
+| [name](#nodebpy.nodes.geometry.input.EdgesOfVertex.name) |  |
+| [node](#nodebpy.nodes.geometry.input.EdgesOfVertex.node) |  |
+| [o_edge_index](#nodebpy.nodes.geometry.input.EdgesOfVertex.o_edge_index) | Output socket: Edge Index |
+| [o_total](#nodebpy.nodes.geometry.input.EdgesOfVertex.o_total) | Output socket: Total |
+| [tree](#nodebpy.nodes.geometry.input.EdgesOfVertex.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.EdgesOfVertex.type) |  |
+
+### EdgesToFaceGroups { #nodebpy.nodes.geometry.input.EdgesToFaceGroups }
+
+```python
+nodes.geometry.input.EdgesToFaceGroups(boundary_edges=True)
+```
+
+Group faces into regions surrounded by the selected boundary edges
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_boundary_edges](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.i_boundary_edges) | Input socket: Boundary Edges |
+| [name](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.name) |  |
+| [node](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.node) |  |
+| [o_face_group_id](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.o_face_group_id) | Output socket: Face Group ID |
+| [tree](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.type) |  |
+
+### EndpointSelection { #nodebpy.nodes.geometry.input.EndpointSelection }
+
+```python
+nodes.geometry.input.EndpointSelection(start_size=1, end_size=1)
+```
+
+Provide a selection for an arbitrary number of endpoints in each spline
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_end_size](#nodebpy.nodes.geometry.input.EndpointSelection.i_end_size) | Input socket: End Size |
+| [i_start_size](#nodebpy.nodes.geometry.input.EndpointSelection.i_start_size) | Input socket: Start Size |
+| [name](#nodebpy.nodes.geometry.input.EndpointSelection.name) |  |
+| [node](#nodebpy.nodes.geometry.input.EndpointSelection.node) |  |
+| [o_selection](#nodebpy.nodes.geometry.input.EndpointSelection.o_selection) | Output socket: Selection |
+| [tree](#nodebpy.nodes.geometry.input.EndpointSelection.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.EndpointSelection.type) |  |
+
+### FaceArea { #nodebpy.nodes.geometry.input.FaceArea }
+
+```python
+nodes.geometry.input.FaceArea()
+```
+
+Calculate the surface area of a mesh's faces
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.FaceArea.name) |  |
+| [node](#nodebpy.nodes.geometry.input.FaceArea.node) |  |
+| [o_area](#nodebpy.nodes.geometry.input.FaceArea.o_area) | Output socket: Area |
+| [tree](#nodebpy.nodes.geometry.input.FaceArea.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.FaceArea.type) |  |
+
+### FaceGroupBoundaries { #nodebpy.nodes.geometry.input.FaceGroupBoundaries }
+
+```python
+nodes.geometry.input.FaceGroupBoundaries(face_set=0)
+```
+
+Find edges on the boundaries between groups of faces with the same ID value
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_face_set](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.i_face_set) | Input socket: Face Group ID |
+| [name](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.name) |  |
+| [node](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.node) |  |
+| [o_boundary_edges](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.o_boundary_edges) | Output socket: Boundary Edges |
+| [tree](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.type) |  |
+
+### FaceNeighbors { #nodebpy.nodes.geometry.input.FaceNeighbors }
+
+```python
+nodes.geometry.input.FaceNeighbors()
+```
+
+Retrieve topology information relating to each face of a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.FaceNeighbors.name) |  |
+| [node](#nodebpy.nodes.geometry.input.FaceNeighbors.node) |  |
+| [o_face_count](#nodebpy.nodes.geometry.input.FaceNeighbors.o_face_count) | Output socket: Face Count |
+| [o_vertex_count](#nodebpy.nodes.geometry.input.FaceNeighbors.o_vertex_count) | Output socket: Vertex Count |
+| [tree](#nodebpy.nodes.geometry.input.FaceNeighbors.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.FaceNeighbors.type) |  |
+
+### FaceOfCorner { #nodebpy.nodes.geometry.input.FaceOfCorner }
+
+```python
+nodes.geometry.input.FaceOfCorner(corner_index=0)
+```
+
+Retrieve the face each face corner is part of
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_corner_index](#nodebpy.nodes.geometry.input.FaceOfCorner.i_corner_index) | Input socket: Corner Index |
+| [name](#nodebpy.nodes.geometry.input.FaceOfCorner.name) |  |
+| [node](#nodebpy.nodes.geometry.input.FaceOfCorner.node) |  |
+| [o_face_index](#nodebpy.nodes.geometry.input.FaceOfCorner.o_face_index) | Output socket: Face Index |
+| [o_index_in_face](#nodebpy.nodes.geometry.input.FaceOfCorner.o_index_in_face) | Output socket: Index in Face |
+| [tree](#nodebpy.nodes.geometry.input.FaceOfCorner.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.FaceOfCorner.type) |  |
+
+### FaceSet { #nodebpy.nodes.geometry.input.FaceSet }
+
+```python
+nodes.geometry.input.FaceSet()
+```
+
+Each face's sculpt face set value
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.FaceSet.name) |  |
+| [node](#nodebpy.nodes.geometry.input.FaceSet.node) |  |
+| [o_exists](#nodebpy.nodes.geometry.input.FaceSet.o_exists) | Output socket: Exists |
+| [o_face_set](#nodebpy.nodes.geometry.input.FaceSet.o_face_set) | Output socket: Face Set |
+| [tree](#nodebpy.nodes.geometry.input.FaceSet.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.FaceSet.type) |  |
+
+### ID { #nodebpy.nodes.geometry.input.ID }
+
+```python
+nodes.geometry.input.ID()
+```
+
+Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.ID.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ID.node) |  |
+| [o_id](#nodebpy.nodes.geometry.input.ID.o_id) | Output socket: ID |
+| [tree](#nodebpy.nodes.geometry.input.ID.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ID.type) |  |
+
+### Image { #nodebpy.nodes.geometry.input.Image }
+
+```python
+nodes.geometry.input.Image()
+```
+
+Input an image data-block
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Image.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Image.node) |  |
+| [o_image](#nodebpy.nodes.geometry.input.Image.o_image) | Output socket: Image |
+| [tree](#nodebpy.nodes.geometry.input.Image.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Image.type) |  |
+
+### ImageInfo { #nodebpy.nodes.geometry.input.ImageInfo }
+
+```python
+nodes.geometry.input.ImageInfo(image=None, frame=0)
+```
+
+Retrieve information about an image
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_frame](#nodebpy.nodes.geometry.input.ImageInfo.i_frame) | Input socket: Frame |
+| [i_image](#nodebpy.nodes.geometry.input.ImageInfo.i_image) | Input socket: Image |
+| [name](#nodebpy.nodes.geometry.input.ImageInfo.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ImageInfo.node) |  |
+| [o_fps](#nodebpy.nodes.geometry.input.ImageInfo.o_fps) | Output socket: FPS |
+| [o_frame_count](#nodebpy.nodes.geometry.input.ImageInfo.o_frame_count) | Output socket: Frame Count |
+| [o_has_alpha](#nodebpy.nodes.geometry.input.ImageInfo.o_has_alpha) | Output socket: Has Alpha |
+| [o_height](#nodebpy.nodes.geometry.input.ImageInfo.o_height) | Output socket: Height |
+| [o_width](#nodebpy.nodes.geometry.input.ImageInfo.o_width) | Output socket: Width |
+| [tree](#nodebpy.nodes.geometry.input.ImageInfo.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ImageInfo.type) |  |
+
+### ImportCSV { #nodebpy.nodes.geometry.input.ImportCSV }
+
+```python
+nodes.geometry.input.ImportCSV(path='', delimiter=',')
+```
+
+Import geometry from an CSV file
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_delimiter](#nodebpy.nodes.geometry.input.ImportCSV.i_delimiter) | Input socket: Delimiter |
+| [i_path](#nodebpy.nodes.geometry.input.ImportCSV.i_path) | Input socket: Path |
+| [name](#nodebpy.nodes.geometry.input.ImportCSV.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ImportCSV.node) |  |
+| [o_point_cloud](#nodebpy.nodes.geometry.input.ImportCSV.o_point_cloud) | Output socket: Point Cloud |
+| [tree](#nodebpy.nodes.geometry.input.ImportCSV.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ImportCSV.type) |  |
+
+### ImportOBJ { #nodebpy.nodes.geometry.input.ImportOBJ }
+
+```python
+nodes.geometry.input.ImportOBJ(path='')
+```
+
+Import geometry from an OBJ file
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_path](#nodebpy.nodes.geometry.input.ImportOBJ.i_path) | Input socket: Path |
+| [name](#nodebpy.nodes.geometry.input.ImportOBJ.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ImportOBJ.node) |  |
+| [o_instances](#nodebpy.nodes.geometry.input.ImportOBJ.o_instances) | Output socket: Instances |
+| [tree](#nodebpy.nodes.geometry.input.ImportOBJ.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ImportOBJ.type) |  |
+
+### ImportPLY { #nodebpy.nodes.geometry.input.ImportPLY }
+
+```python
+nodes.geometry.input.ImportPLY(path='')
+```
+
+Import a point cloud from a PLY file
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_path](#nodebpy.nodes.geometry.input.ImportPLY.i_path) | Input socket: Path |
+| [name](#nodebpy.nodes.geometry.input.ImportPLY.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ImportPLY.node) |  |
+| [o_mesh](#nodebpy.nodes.geometry.input.ImportPLY.o_mesh) | Output socket: Mesh |
+| [tree](#nodebpy.nodes.geometry.input.ImportPLY.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ImportPLY.type) |  |
+
+### ImportSTL { #nodebpy.nodes.geometry.input.ImportSTL }
+
+```python
+nodes.geometry.input.ImportSTL(path='')
+```
+
+Import a mesh from an STL file
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_path](#nodebpy.nodes.geometry.input.ImportSTL.i_path) | Input socket: Path |
+| [name](#nodebpy.nodes.geometry.input.ImportSTL.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ImportSTL.node) |  |
+| [o_mesh](#nodebpy.nodes.geometry.input.ImportSTL.o_mesh) | Output socket: Mesh |
+| [tree](#nodebpy.nodes.geometry.input.ImportSTL.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ImportSTL.type) |  |
+
+### ImportText { #nodebpy.nodes.geometry.input.ImportText }
+
+```python
+nodes.geometry.input.ImportText(path='')
+```
+
+Import a string from a text file
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_path](#nodebpy.nodes.geometry.input.ImportText.i_path) | Input socket: Path |
+| [name](#nodebpy.nodes.geometry.input.ImportText.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ImportText.node) |  |
+| [o_string](#nodebpy.nodes.geometry.input.ImportText.o_string) | Output socket: String |
+| [tree](#nodebpy.nodes.geometry.input.ImportText.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ImportText.type) |  |
+
+### ImportVDB { #nodebpy.nodes.geometry.input.ImportVDB }
+
+```python
+nodes.geometry.input.ImportVDB(path='')
+```
+
+Import volume data from a .vdb file
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_path](#nodebpy.nodes.geometry.input.ImportVDB.i_path) | Input socket: Path |
+| [name](#nodebpy.nodes.geometry.input.ImportVDB.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ImportVDB.node) |  |
+| [o_volume](#nodebpy.nodes.geometry.input.ImportVDB.o_volume) | Output socket: Volume |
+| [tree](#nodebpy.nodes.geometry.input.ImportVDB.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ImportVDB.type) |  |
+
+### Index { #nodebpy.nodes.geometry.input.Index }
+
+```python
+nodes.geometry.input.Index()
+```
+
+Retrieve an integer value indicating the position of each element in the list, starting at zero
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Index.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Index.node) |  |
+| [o_index](#nodebpy.nodes.geometry.input.Index.o_index) | Output socket: Index |
+| [tree](#nodebpy.nodes.geometry.input.Index.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Index.type) |  |
+
+### InstanceBounds { #nodebpy.nodes.geometry.input.InstanceBounds }
+
+```python
+nodes.geometry.input.InstanceBounds(use_radius=True)
+```
+
+Calculate position bounds of each instance's geometry set
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_use_radius](#nodebpy.nodes.geometry.input.InstanceBounds.i_use_radius) | Input socket: Use Radius |
+| [name](#nodebpy.nodes.geometry.input.InstanceBounds.name) |  |
+| [node](#nodebpy.nodes.geometry.input.InstanceBounds.node) |  |
+| [o_max](#nodebpy.nodes.geometry.input.InstanceBounds.o_max) | Output socket: Max |
+| [o_min](#nodebpy.nodes.geometry.input.InstanceBounds.o_min) | Output socket: Min |
+| [tree](#nodebpy.nodes.geometry.input.InstanceBounds.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.InstanceBounds.type) |  |
+
+### InstanceRotation { #nodebpy.nodes.geometry.input.InstanceRotation }
+
+```python
+nodes.geometry.input.InstanceRotation()
+```
+
+Retrieve the rotation of each instance in the geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.InstanceRotation.name) |  |
+| [node](#nodebpy.nodes.geometry.input.InstanceRotation.node) |  |
+| [o_rotation](#nodebpy.nodes.geometry.input.InstanceRotation.o_rotation) | Output socket: Rotation |
+| [tree](#nodebpy.nodes.geometry.input.InstanceRotation.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.InstanceRotation.type) |  |
+
+### InstanceScale { #nodebpy.nodes.geometry.input.InstanceScale }
+
+```python
+nodes.geometry.input.InstanceScale()
+```
+
+Retrieve the scale of each instance in the geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.InstanceScale.name) |  |
+| [node](#nodebpy.nodes.geometry.input.InstanceScale.node) |  |
+| [o_scale](#nodebpy.nodes.geometry.input.InstanceScale.o_scale) | Output socket: Scale |
+| [tree](#nodebpy.nodes.geometry.input.InstanceScale.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.InstanceScale.type) |  |
+
+### InstanceTransform { #nodebpy.nodes.geometry.input.InstanceTransform }
+
+```python
+nodes.geometry.input.InstanceTransform()
+```
+
+Retrieve the full transformation of each instance in the geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.InstanceTransform.name) |  |
+| [node](#nodebpy.nodes.geometry.input.InstanceTransform.node) |  |
+| [o_transform](#nodebpy.nodes.geometry.input.InstanceTransform.o_transform) | Output socket: Transform |
+| [tree](#nodebpy.nodes.geometry.input.InstanceTransform.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.InstanceTransform.type) |  |
+
+### Integer { #nodebpy.nodes.geometry.input.Integer }
+
+```python
+nodes.geometry.input.Integer(integer=1)
+```
+
+Provide an integer value that can be connected to other nodes in the tree
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [integer](#nodebpy.nodes.geometry.input.Integer.integer) |  |
+| [name](#nodebpy.nodes.geometry.input.Integer.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Integer.node) |  |
+| [o_integer](#nodebpy.nodes.geometry.input.Integer.o_integer) | Output socket: Integer |
+| [tree](#nodebpy.nodes.geometry.input.Integer.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Integer.type) |  |
+
+### IsEdgeSmooth { #nodebpy.nodes.geometry.input.IsEdgeSmooth }
+
+```python
+nodes.geometry.input.IsEdgeSmooth()
+```
+
+Retrieve whether each edge is marked for smooth or split normals
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.IsEdgeSmooth.name) |  |
+| [node](#nodebpy.nodes.geometry.input.IsEdgeSmooth.node) |  |
+| [o_smooth](#nodebpy.nodes.geometry.input.IsEdgeSmooth.o_smooth) | Output socket: Smooth |
+| [tree](#nodebpy.nodes.geometry.input.IsEdgeSmooth.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.IsEdgeSmooth.type) |  |
+
+### IsFacePlanar { #nodebpy.nodes.geometry.input.IsFacePlanar }
+
+```python
+nodes.geometry.input.IsFacePlanar(threshold=0.01)
+```
+
+Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_threshold](#nodebpy.nodes.geometry.input.IsFacePlanar.i_threshold) | Input socket: Threshold |
+| [name](#nodebpy.nodes.geometry.input.IsFacePlanar.name) |  |
+| [node](#nodebpy.nodes.geometry.input.IsFacePlanar.node) |  |
+| [o_planar](#nodebpy.nodes.geometry.input.IsFacePlanar.o_planar) | Output socket: Planar |
+| [tree](#nodebpy.nodes.geometry.input.IsFacePlanar.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.IsFacePlanar.type) |  |
+
+### IsFaceSmooth { #nodebpy.nodes.geometry.input.IsFaceSmooth }
+
+```python
+nodes.geometry.input.IsFaceSmooth()
+```
+
+Retrieve whether each face is marked for smooth or sharp normals
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.IsFaceSmooth.name) |  |
+| [node](#nodebpy.nodes.geometry.input.IsFaceSmooth.node) |  |
+| [o_smooth](#nodebpy.nodes.geometry.input.IsFaceSmooth.o_smooth) | Output socket: Smooth |
+| [tree](#nodebpy.nodes.geometry.input.IsFaceSmooth.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.IsFaceSmooth.type) |  |
+
+### IsSplineCyclic { #nodebpy.nodes.geometry.input.IsSplineCyclic }
+
+```python
+nodes.geometry.input.IsSplineCyclic()
+```
+
+Retrieve whether each spline endpoint connects to the beginning
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.IsSplineCyclic.name) |  |
+| [node](#nodebpy.nodes.geometry.input.IsSplineCyclic.node) |  |
+| [o_cyclic](#nodebpy.nodes.geometry.input.IsSplineCyclic.o_cyclic) | Output socket: Cyclic |
+| [tree](#nodebpy.nodes.geometry.input.IsSplineCyclic.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.IsSplineCyclic.type) |  |
+
+### IsViewport { #nodebpy.nodes.geometry.input.IsViewport }
+
+```python
+nodes.geometry.input.IsViewport()
+```
+
+Retrieve whether the nodes are being evaluated for the viewport rather than the final render
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.IsViewport.name) |  |
+| [node](#nodebpy.nodes.geometry.input.IsViewport.node) |  |
+| [o_is_viewport](#nodebpy.nodes.geometry.input.IsViewport.o_is_viewport) | Output socket: Is Viewport |
+| [tree](#nodebpy.nodes.geometry.input.IsViewport.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.IsViewport.type) |  |
+
+### MaterialIndex { #nodebpy.nodes.geometry.input.MaterialIndex }
+
+```python
+nodes.geometry.input.MaterialIndex()
+```
+
+Retrieve the index of the material used for each element in the geometry's list of materials
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.MaterialIndex.name) |  |
+| [node](#nodebpy.nodes.geometry.input.MaterialIndex.node) |  |
+| [o_material_index](#nodebpy.nodes.geometry.input.MaterialIndex.o_material_index) | Output socket: Material Index |
+| [tree](#nodebpy.nodes.geometry.input.MaterialIndex.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.MaterialIndex.type) |  |
+
+### MeshIsland { #nodebpy.nodes.geometry.input.MeshIsland }
+
+```python
+nodes.geometry.input.MeshIsland()
+```
+
+Retrieve information about separate connected regions in a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.MeshIsland.name) |  |
+| [node](#nodebpy.nodes.geometry.input.MeshIsland.node) |  |
+| [o_island_count](#nodebpy.nodes.geometry.input.MeshIsland.o_island_count) | Output socket: Island Count |
+| [o_island_index](#nodebpy.nodes.geometry.input.MeshIsland.o_island_index) | Output socket: Island Index |
+| [tree](#nodebpy.nodes.geometry.input.MeshIsland.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.MeshIsland.type) |  |
+
+### MousePosition { #nodebpy.nodes.geometry.input.MousePosition }
+
+```python
+nodes.geometry.input.MousePosition()
+```
+
+Retrieve the position of the mouse cursor
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.MousePosition.name) |  |
+| [node](#nodebpy.nodes.geometry.input.MousePosition.node) |  |
+| [o_mouse_x](#nodebpy.nodes.geometry.input.MousePosition.o_mouse_x) | Output socket: Mouse X |
+| [o_mouse_y](#nodebpy.nodes.geometry.input.MousePosition.o_mouse_y) | Output socket: Mouse Y |
+| [o_region_height](#nodebpy.nodes.geometry.input.MousePosition.o_region_height) | Output socket: Region Height |
+| [o_region_width](#nodebpy.nodes.geometry.input.MousePosition.o_region_width) | Output socket: Region Width |
+| [tree](#nodebpy.nodes.geometry.input.MousePosition.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.MousePosition.type) |  |
+
+### NamedAttribute { #nodebpy.nodes.geometry.input.NamedAttribute }
+
+```python
+nodes.geometry.input.NamedAttribute(name='', *, data_type='FLOAT')
+```
+
+Retrieve the data of a specified attribute
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [data_type](#nodebpy.nodes.geometry.input.NamedAttribute.data_type) |  |
+| [i_name](#nodebpy.nodes.geometry.input.NamedAttribute.i_name) | Input socket: Name |
+| [name](#nodebpy.nodes.geometry.input.NamedAttribute.name) |  |
+| [node](#nodebpy.nodes.geometry.input.NamedAttribute.node) |  |
+| [o_attribute](#nodebpy.nodes.geometry.input.NamedAttribute.o_attribute) | Output socket: Attribute |
+| [o_exists](#nodebpy.nodes.geometry.input.NamedAttribute.o_exists) | Output socket: Exists |
+| [tree](#nodebpy.nodes.geometry.input.NamedAttribute.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.NamedAttribute.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [boolean](#nodebpy.nodes.geometry.input.NamedAttribute.boolean) | Create Named Attribute with operation 'Boolean'. |
+| [color](#nodebpy.nodes.geometry.input.NamedAttribute.color) | Create Named Attribute with operation 'Color'. |
+| [float](#nodebpy.nodes.geometry.input.NamedAttribute.float) | Create Named Attribute with operation 'Float'. |
+| [integer](#nodebpy.nodes.geometry.input.NamedAttribute.integer) | Create Named Attribute with operation 'Integer'. |
+| [matrix](#nodebpy.nodes.geometry.input.NamedAttribute.matrix) | Create Named Attribute with operation '4x4 Matrix'. |
+| [quaternion](#nodebpy.nodes.geometry.input.NamedAttribute.quaternion) | Create Named Attribute with operation 'Quaternion'. |
+| [vector](#nodebpy.nodes.geometry.input.NamedAttribute.vector) | Create Named Attribute with operation 'Vector'. |
+
+##### boolean { #nodebpy.nodes.geometry.input.NamedAttribute.boolean }
+
+```python
+nodes.geometry.input.NamedAttribute.boolean(name='')
+```
+
+Create Named Attribute with operation 'Boolean'.
+
+##### color { #nodebpy.nodes.geometry.input.NamedAttribute.color }
+
+```python
+nodes.geometry.input.NamedAttribute.color(name='')
+```
+
+Create Named Attribute with operation 'Color'.
+
+##### float { #nodebpy.nodes.geometry.input.NamedAttribute.float }
+
+```python
+nodes.geometry.input.NamedAttribute.float(name='')
+```
+
+Create Named Attribute with operation 'Float'.
+
+##### integer { #nodebpy.nodes.geometry.input.NamedAttribute.integer }
+
+```python
+nodes.geometry.input.NamedAttribute.integer(name='')
+```
+
+Create Named Attribute with operation 'Integer'.
+
+##### matrix { #nodebpy.nodes.geometry.input.NamedAttribute.matrix }
+
+```python
+nodes.geometry.input.NamedAttribute.matrix(name='')
+```
+
+Create Named Attribute with operation '4x4 Matrix'.
+
+##### quaternion { #nodebpy.nodes.geometry.input.NamedAttribute.quaternion }
+
+```python
+nodes.geometry.input.NamedAttribute.quaternion(name='')
+```
+
+Create Named Attribute with operation 'Quaternion'.
+
+##### vector { #nodebpy.nodes.geometry.input.NamedAttribute.vector }
+
+```python
+nodes.geometry.input.NamedAttribute.vector(name='')
+```
+
+Create Named Attribute with operation 'Vector'.
+
+### NamedLayerSelection { #nodebpy.nodes.geometry.input.NamedLayerSelection }
+
+```python
+nodes.geometry.input.NamedLayerSelection(name='')
+```
+
+Output a selection of a Grease Pencil layer
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_name](#nodebpy.nodes.geometry.input.NamedLayerSelection.i_name) | Input socket: Name |
+| [name](#nodebpy.nodes.geometry.input.NamedLayerSelection.name) |  |
+| [node](#nodebpy.nodes.geometry.input.NamedLayerSelection.node) |  |
+| [o_selection](#nodebpy.nodes.geometry.input.NamedLayerSelection.o_selection) | Output socket: Selection |
+| [tree](#nodebpy.nodes.geometry.input.NamedLayerSelection.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.NamedLayerSelection.type) |  |
+
+### Normal { #nodebpy.nodes.geometry.input.Normal }
+
+```python
+nodes.geometry.input.Normal(legacy_corner_normals=False)
+```
+
+Retrieve a unit length vector indicating the direction pointing away from the geometry at each element
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [legacy_corner_normals](#nodebpy.nodes.geometry.input.Normal.legacy_corner_normals) |  |
+| [name](#nodebpy.nodes.geometry.input.Normal.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Normal.node) |  |
+| [o_normal](#nodebpy.nodes.geometry.input.Normal.o_normal) | Output socket: Normal |
+| [o_true_normal](#nodebpy.nodes.geometry.input.Normal.o_true_normal) | Output socket: True Normal |
+| [tree](#nodebpy.nodes.geometry.input.Normal.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Normal.type) |  |
+
+### ObjectInfo { #nodebpy.nodes.geometry.input.ObjectInfo }
+
+```python
+nodes.geometry.input.ObjectInfo(
+    object=None,
+    as_instance=False,
+    *,
+    transform_space='ORIGINAL',
+)
+```
+
+Retrieve information from an object
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_as_instance](#nodebpy.nodes.geometry.input.ObjectInfo.i_as_instance) | Input socket: As Instance |
+| [i_object](#nodebpy.nodes.geometry.input.ObjectInfo.i_object) | Input socket: Object |
+| [name](#nodebpy.nodes.geometry.input.ObjectInfo.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ObjectInfo.node) |  |
+| [o_geometry](#nodebpy.nodes.geometry.input.ObjectInfo.o_geometry) | Output socket: Geometry |
+| [o_location](#nodebpy.nodes.geometry.input.ObjectInfo.o_location) | Output socket: Location |
+| [o_rotation](#nodebpy.nodes.geometry.input.ObjectInfo.o_rotation) | Output socket: Rotation |
+| [o_scale](#nodebpy.nodes.geometry.input.ObjectInfo.o_scale) | Output socket: Scale |
+| [o_transform](#nodebpy.nodes.geometry.input.ObjectInfo.o_transform) | Output socket: Transform |
+| [transform_space](#nodebpy.nodes.geometry.input.ObjectInfo.transform_space) |  |
+| [tree](#nodebpy.nodes.geometry.input.ObjectInfo.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ObjectInfo.type) |  |
+
+### OffsetCornerInFace { #nodebpy.nodes.geometry.input.OffsetCornerInFace }
+
+```python
+nodes.geometry.input.OffsetCornerInFace(corner_index=0, offset=0)
+```
+
+Retrieve corners in the same face as another
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_corner_index](#nodebpy.nodes.geometry.input.OffsetCornerInFace.i_corner_index) | Input socket: Corner Index |
+| [i_offset](#nodebpy.nodes.geometry.input.OffsetCornerInFace.i_offset) | Input socket: Offset |
+| [name](#nodebpy.nodes.geometry.input.OffsetCornerInFace.name) |  |
+| [node](#nodebpy.nodes.geometry.input.OffsetCornerInFace.node) |  |
+| [o_corner_index](#nodebpy.nodes.geometry.input.OffsetCornerInFace.o_corner_index) | Output socket: Corner Index |
+| [tree](#nodebpy.nodes.geometry.input.OffsetCornerInFace.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.OffsetCornerInFace.type) |  |
+
+### OffsetPointInCurve { #nodebpy.nodes.geometry.input.OffsetPointInCurve }
+
+```python
+nodes.geometry.input.OffsetPointInCurve(point_index=0, offset=0)
+```
+
+Offset a control point index within its curve
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_offset](#nodebpy.nodes.geometry.input.OffsetPointInCurve.i_offset) | Input socket: Offset |
+| [i_point_index](#nodebpy.nodes.geometry.input.OffsetPointInCurve.i_point_index) | Input socket: Point Index |
+| [name](#nodebpy.nodes.geometry.input.OffsetPointInCurve.name) |  |
+| [node](#nodebpy.nodes.geometry.input.OffsetPointInCurve.node) |  |
+| [o_is_valid_offset](#nodebpy.nodes.geometry.input.OffsetPointInCurve.o_is_valid_offset) | Output socket: Is Valid Offset |
+| [o_point_index](#nodebpy.nodes.geometry.input.OffsetPointInCurve.o_point_index) | Output socket: Point Index |
+| [tree](#nodebpy.nodes.geometry.input.OffsetPointInCurve.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.OffsetPointInCurve.type) |  |
+
+### PointsOfCurve { #nodebpy.nodes.geometry.input.PointsOfCurve }
+
+```python
+nodes.geometry.input.PointsOfCurve(curve_index=0, weights=0.0, sort_index=0)
+```
+
+Retrieve a point index within a curve
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_curve_index](#nodebpy.nodes.geometry.input.PointsOfCurve.i_curve_index) | Input socket: Curve Index |
+| [i_sort_index](#nodebpy.nodes.geometry.input.PointsOfCurve.i_sort_index) | Input socket: Sort Index |
+| [i_weights](#nodebpy.nodes.geometry.input.PointsOfCurve.i_weights) | Input socket: Weights |
+| [name](#nodebpy.nodes.geometry.input.PointsOfCurve.name) |  |
+| [node](#nodebpy.nodes.geometry.input.PointsOfCurve.node) |  |
+| [o_point_index](#nodebpy.nodes.geometry.input.PointsOfCurve.o_point_index) | Output socket: Point Index |
+| [o_total](#nodebpy.nodes.geometry.input.PointsOfCurve.o_total) | Output socket: Total |
+| [tree](#nodebpy.nodes.geometry.input.PointsOfCurve.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.PointsOfCurve.type) |  |
+
+### Position { #nodebpy.nodes.geometry.input.Position }
+
+```python
+nodes.geometry.input.Position()
+```
+
+Retrieve a vector indicating the location of each element
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Position.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Position.node) |  |
+| [o_position](#nodebpy.nodes.geometry.input.Position.o_position) | Output socket: Position |
+| [tree](#nodebpy.nodes.geometry.input.Position.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Position.type) |  |
+
+### Radius { #nodebpy.nodes.geometry.input.Radius }
+
+```python
+nodes.geometry.input.Radius()
+```
+
+Retrieve the radius at each point on curve or point cloud geometry
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Radius.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Radius.node) |  |
+| [o_radius](#nodebpy.nodes.geometry.input.Radius.o_radius) | Output socket: Radius |
+| [tree](#nodebpy.nodes.geometry.input.Radius.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Radius.type) |  |
+
+### Rotation { #nodebpy.nodes.geometry.input.Rotation }
+
+```python
+nodes.geometry.input.Rotation(rotation_euler=(0.0, 0.0, 0.0))
+```
+
+Provide a rotation value that can be connected to other nodes in the tree
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Rotation.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Rotation.node) |  |
+| [o_rotation](#nodebpy.nodes.geometry.input.Rotation.o_rotation) | Output socket: Rotation |
+| [rotation_euler](#nodebpy.nodes.geometry.input.Rotation.rotation_euler) |  |
+| [tree](#nodebpy.nodes.geometry.input.Rotation.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Rotation.type) |  |
+
+### SceneTime { #nodebpy.nodes.geometry.input.SceneTime }
+
+```python
+nodes.geometry.input.SceneTime()
+```
+
+Retrieve the current time in the scene's animation in units of seconds or frames
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.SceneTime.name) |  |
+| [node](#nodebpy.nodes.geometry.input.SceneTime.node) |  |
+| [o_frame](#nodebpy.nodes.geometry.input.SceneTime.o_frame) | Output socket: Frame |
+| [o_seconds](#nodebpy.nodes.geometry.input.SceneTime.o_seconds) | Output socket: Seconds |
+| [tree](#nodebpy.nodes.geometry.input.SceneTime.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.SceneTime.type) |  |
+
+### Selection { #nodebpy.nodes.geometry.input.Selection }
+
+```python
+nodes.geometry.input.Selection()
+```
+
+User selection of the edited geometry, for tool execution
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Selection.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Selection.node) |  |
+| [o_float](#nodebpy.nodes.geometry.input.Selection.o_float) | Output socket: Float |
+| [o_selection](#nodebpy.nodes.geometry.input.Selection.o_selection) | Output socket: Boolean |
+| [tree](#nodebpy.nodes.geometry.input.Selection.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Selection.type) |  |
+
+### SelfObject { #nodebpy.nodes.geometry.input.SelfObject }
+
+```python
+nodes.geometry.input.SelfObject()
+```
+
+Retrieve the object that contains the geometry nodes modifier currently being executed
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.SelfObject.name) |  |
+| [node](#nodebpy.nodes.geometry.input.SelfObject.node) |  |
+| [o_self_object](#nodebpy.nodes.geometry.input.SelfObject.o_self_object) | Output socket: Self Object |
+| [tree](#nodebpy.nodes.geometry.input.SelfObject.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.SelfObject.type) |  |
+
+### ShortestEdgePaths { #nodebpy.nodes.geometry.input.ShortestEdgePaths }
+
+```python
+nodes.geometry.input.ShortestEdgePaths(end_vertex=False, edge_cost=1.0)
+```
+
+Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_edge_cost](#nodebpy.nodes.geometry.input.ShortestEdgePaths.i_edge_cost) | Input socket: Edge Cost |
+| [i_end_vertex](#nodebpy.nodes.geometry.input.ShortestEdgePaths.i_end_vertex) | Input socket: End Vertex |
+| [name](#nodebpy.nodes.geometry.input.ShortestEdgePaths.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ShortestEdgePaths.node) |  |
+| [o_next_vertex_index](#nodebpy.nodes.geometry.input.ShortestEdgePaths.o_next_vertex_index) | Output socket: Next Vertex Index |
+| [o_total_cost](#nodebpy.nodes.geometry.input.ShortestEdgePaths.o_total_cost) | Output socket: Total Cost |
+| [tree](#nodebpy.nodes.geometry.input.ShortestEdgePaths.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ShortestEdgePaths.type) |  |
+
+### SpecialCharacters { #nodebpy.nodes.geometry.input.SpecialCharacters }
+
+```python
+nodes.geometry.input.SpecialCharacters()
+```
+
+Output string characters that cannot be typed directly with the keyboard
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.SpecialCharacters.name) |  |
+| [node](#nodebpy.nodes.geometry.input.SpecialCharacters.node) |  |
+| [o_line_break](#nodebpy.nodes.geometry.input.SpecialCharacters.o_line_break) | Output socket: Line Break |
+| [o_tab](#nodebpy.nodes.geometry.input.SpecialCharacters.o_tab) | Output socket: Tab |
+| [tree](#nodebpy.nodes.geometry.input.SpecialCharacters.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.SpecialCharacters.type) |  |
+
+### SplineLength { #nodebpy.nodes.geometry.input.SplineLength }
+
+```python
+nodes.geometry.input.SplineLength()
+```
+
+Retrieve the total length of each spline, as a distance or as a number of points
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.SplineLength.name) |  |
+| [node](#nodebpy.nodes.geometry.input.SplineLength.node) |  |
+| [o_length](#nodebpy.nodes.geometry.input.SplineLength.o_length) | Output socket: Length |
+| [o_point_count](#nodebpy.nodes.geometry.input.SplineLength.o_point_count) | Output socket: Point Count |
+| [tree](#nodebpy.nodes.geometry.input.SplineLength.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.SplineLength.type) |  |
+
+### SplineParameter { #nodebpy.nodes.geometry.input.SplineParameter }
+
+```python
+nodes.geometry.input.SplineParameter()
+```
+
+Retrieve how far along each spline a control point is
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.SplineParameter.name) |  |
+| [node](#nodebpy.nodes.geometry.input.SplineParameter.node) |  |
+| [o_factor](#nodebpy.nodes.geometry.input.SplineParameter.o_factor) | Output socket: Factor |
+| [o_index](#nodebpy.nodes.geometry.input.SplineParameter.o_index) | Output socket: Index |
+| [o_length](#nodebpy.nodes.geometry.input.SplineParameter.o_length) | Output socket: Length |
+| [tree](#nodebpy.nodes.geometry.input.SplineParameter.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.SplineParameter.type) |  |
+
+### SplineResolution { #nodebpy.nodes.geometry.input.SplineResolution }
+
+```python
+nodes.geometry.input.SplineResolution()
+```
+
+Retrieve the number of evaluated points that will be generated for every control point on curves
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.SplineResolution.name) |  |
+| [node](#nodebpy.nodes.geometry.input.SplineResolution.node) |  |
+| [o_resolution](#nodebpy.nodes.geometry.input.SplineResolution.o_resolution) | Output socket: Resolution |
+| [tree](#nodebpy.nodes.geometry.input.SplineResolution.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.SplineResolution.type) |  |
+
+### String { #nodebpy.nodes.geometry.input.String }
+
+```python
+nodes.geometry.input.String(string='')
+```
+
+Provide a string value that can be connected to other nodes in the tree
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.String.name) |  |
+| [node](#nodebpy.nodes.geometry.input.String.node) |  |
+| [o_string](#nodebpy.nodes.geometry.input.String.o_string) | Output socket: String |
+| [string](#nodebpy.nodes.geometry.input.String.string) |  |
+| [tree](#nodebpy.nodes.geometry.input.String.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.String.type) |  |
+
+### UVTangent { #nodebpy.nodes.geometry.input.UVTangent }
+
+```python
+nodes.geometry.input.UVTangent(method='Exact', uv=None)
+```
+
+Generate tangent directions based on a UV map
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_method](#nodebpy.nodes.geometry.input.UVTangent.i_method) | Input socket: Method |
+| [i_uv](#nodebpy.nodes.geometry.input.UVTangent.i_uv) | Input socket: UV |
+| [name](#nodebpy.nodes.geometry.input.UVTangent.name) |  |
+| [node](#nodebpy.nodes.geometry.input.UVTangent.node) |  |
+| [o_tangent](#nodebpy.nodes.geometry.input.UVTangent.o_tangent) | Output socket: Tangent |
+| [tree](#nodebpy.nodes.geometry.input.UVTangent.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.UVTangent.type) |  |
+
+### Vector { #nodebpy.nodes.geometry.input.Vector }
+
+```python
+nodes.geometry.input.Vector(vector=(0.0, 0.0, 0.0))
+```
+
+Provide a vector value that can be connected to other nodes in the tree
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.Vector.name) |  |
+| [node](#nodebpy.nodes.geometry.input.Vector.node) |  |
+| [o_vector](#nodebpy.nodes.geometry.input.Vector.o_vector) | Output socket: Vector |
+| [tree](#nodebpy.nodes.geometry.input.Vector.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.Vector.type) |  |
+| [vector](#nodebpy.nodes.geometry.input.Vector.vector) |  |
+
+### VertexNeighbors { #nodebpy.nodes.geometry.input.VertexNeighbors }
+
+```python
+nodes.geometry.input.VertexNeighbors()
+```
+
+Retrieve topology information relating to each vertex of a mesh
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.VertexNeighbors.name) |  |
+| [node](#nodebpy.nodes.geometry.input.VertexNeighbors.node) |  |
+| [o_face_count](#nodebpy.nodes.geometry.input.VertexNeighbors.o_face_count) | Output socket: Face Count |
+| [o_vertex_count](#nodebpy.nodes.geometry.input.VertexNeighbors.o_vertex_count) | Output socket: Vertex Count |
+| [tree](#nodebpy.nodes.geometry.input.VertexNeighbors.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.VertexNeighbors.type) |  |
+
+### VertexOfCorner { #nodebpy.nodes.geometry.input.VertexOfCorner }
+
+```python
+nodes.geometry.input.VertexOfCorner(corner_index=0)
+```
+
+Retrieve the vertex each face corner is attached to
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_corner_index](#nodebpy.nodes.geometry.input.VertexOfCorner.i_corner_index) | Input socket: Corner Index |
+| [name](#nodebpy.nodes.geometry.input.VertexOfCorner.name) |  |
+| [node](#nodebpy.nodes.geometry.input.VertexOfCorner.node) |  |
+| [o_vertex_index](#nodebpy.nodes.geometry.input.VertexOfCorner.o_vertex_index) | Output socket: Vertex Index |
+| [tree](#nodebpy.nodes.geometry.input.VertexOfCorner.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.VertexOfCorner.type) |  |
+
+### ViewportTransform { #nodebpy.nodes.geometry.input.ViewportTransform }
+
+```python
+nodes.geometry.input.ViewportTransform()
+```
+
+Retrieve the view direction and location of the 3D viewport
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.ViewportTransform.name) |  |
+| [node](#nodebpy.nodes.geometry.input.ViewportTransform.node) |  |
+| [o_is_orthographic](#nodebpy.nodes.geometry.input.ViewportTransform.o_is_orthographic) | Output socket: Is Orthographic |
+| [o_projection](#nodebpy.nodes.geometry.input.ViewportTransform.o_projection) | Output socket: Projection |
+| [o_view](#nodebpy.nodes.geometry.input.ViewportTransform.o_view) | Output socket: View |
+| [tree](#nodebpy.nodes.geometry.input.ViewportTransform.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.ViewportTransform.type) |  |
+
+### VoxelIndex { #nodebpy.nodes.geometry.input.VoxelIndex }
+
+```python
+nodes.geometry.input.VoxelIndex()
+```
+
+Retrieve the integer coordinates of the voxel that the field is evaluated on
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#nodebpy.nodes.geometry.input.VoxelIndex.name) |  |
+| [node](#nodebpy.nodes.geometry.input.VoxelIndex.node) |  |
+| [o_extent_x](#nodebpy.nodes.geometry.input.VoxelIndex.o_extent_x) | Output socket: Extent X |
+| [o_extent_y](#nodebpy.nodes.geometry.input.VoxelIndex.o_extent_y) | Output socket: Extent Y |
+| [o_extent_z](#nodebpy.nodes.geometry.input.VoxelIndex.o_extent_z) | Output socket: Extent Z |
+| [o_is_tile](#nodebpy.nodes.geometry.input.VoxelIndex.o_is_tile) | Output socket: Is Tile |
+| [o_x](#nodebpy.nodes.geometry.input.VoxelIndex.o_x) | Output socket: X |
+| [o_y](#nodebpy.nodes.geometry.input.VoxelIndex.o_y) | Output socket: Y |
+| [o_z](#nodebpy.nodes.geometry.input.VoxelIndex.o_z) | Output socket: Z |
+| [tree](#nodebpy.nodes.geometry.input.VoxelIndex.tree) |  |
+| [type](#nodebpy.nodes.geometry.input.VoxelIndex.type) |  |

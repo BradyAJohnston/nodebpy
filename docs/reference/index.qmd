@@ -6,14 +6,14 @@ Functions to inspect docstrings.
 
 | | |
 | --- | --- |
-| [nodes.input](nodes.input.qmd#nodebpy.nodes.input) |  |
-| [nodes.attribute](nodes.attribute.qmd#nodebpy.nodes.attribute) |  |
-| [nodes.color](nodes.color.qmd#nodebpy.nodes.color) |  |
-| [nodes.converter](nodes.converter.qmd#nodebpy.nodes.converter) |  |
-| [nodes.texture](nodes.texture.qmd#nodebpy.nodes.texture) |  |
-| [nodes.grid](nodes.grid.qmd#nodebpy.nodes.grid) |  |
-| [nodes.geometry](nodes.geometry.qmd#nodebpy.nodes.geometry) |  |
-| [nodes.attribute](nodes.attribute.qmd#nodebpy.nodes.attribute) |  |
-| [nodes.vector](nodes.vector.qmd#nodebpy.nodes.vector) |  |
-| [nodes.manual](nodes.manual.qmd#nodebpy.nodes.manual) |  |
-| [nodes.zone](nodes.zone.qmd#nodebpy.nodes.zone) |  |
+| [nodes.geometry.input](nodes.geometry.input.qmd#nodebpy.nodes.geometry.input) |  |
+| [nodes.geometry.attribute](nodes.geometry.attribute.qmd#nodebpy.nodes.geometry.attribute) |  |
+| [nodes.geometry.color](nodes.geometry.color.qmd#nodebpy.nodes.geometry.color) |  |
+| [nodes.geometry.converter](nodes.geometry.converter.qmd#nodebpy.nodes.geometry.converter) |  |
+| [nodes.geometry.texture](nodes.geometry.texture.qmd#nodebpy.nodes.geometry.texture) |  |
+| [nodes.geometry.grid](nodes.geometry.grid.qmd#nodebpy.nodes.geometry.grid) |  |
+| [nodes.geometry.geometry](nodes.geometry.geometry.qmd#nodebpy.nodes.geometry.geometry) |  |
+| [nodes.geometry.attribute](nodes.geometry.attribute.qmd#nodebpy.nodes.geometry.attribute) |  |
+| [nodes.geometry.vector](nodes.geometry.vector.qmd#nodebpy.nodes.geometry.vector) |  |
+| [nodes.geometry.manual](nodes.geometry.manual.qmd#nodebpy.nodes.geometry.manual) |  |
+| [nodes.geometry.zone](nodes.geometry.zone.qmd#nodebpy.nodes.geometry.zone) |  |

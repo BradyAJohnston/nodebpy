@@ -14,3 +14,5 @@ wheels/
 /.quarto/
 **/*.quarto_ipynb
 /docs/_build
+/docs/reference
+docs/objects.json

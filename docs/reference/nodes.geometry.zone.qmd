@@ -1,0 +1,487 @@
+# nodes.geometry.zone { #nodebpy.nodes.geometry.zone }
+
+`nodes.geometry.zone`
+
+
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [BaseRepeatZone](#nodebpy.nodes.geometry.zone.BaseRepeatZone) |  |
+| [BaseSimulationZone](#nodebpy.nodes.geometry.zone.BaseSimulationZone) |  |
+| [BaseZone](#nodebpy.nodes.geometry.zone.BaseZone) |  |
+| [BaseZoneInput](#nodebpy.nodes.geometry.zone.BaseZoneInput) | Base class for zone input nodes |
+| [BaseZoneOutput](#nodebpy.nodes.geometry.zone.BaseZoneOutput) | Base class for zone output nodes |
+| [ForEachGeometryElementInput](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput) | For Each Geometry Element Input node |
+| [ForEachGeometryElementOutput](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput) | For Each Geometry Element Output node |
+| [ForEachGeometryElementZone](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone) |  |
+| [RepeatInput](#nodebpy.nodes.geometry.zone.RepeatInput) | Repeat Input node |
+| [RepeatOutput](#nodebpy.nodes.geometry.zone.RepeatOutput) | Repeat Output node |
+| [RepeatZone](#nodebpy.nodes.geometry.zone.RepeatZone) | Wrapper that supports both direct unpacking and iteration |
+| [SimulationInput](#nodebpy.nodes.geometry.zone.SimulationInput) | Simulation Input node |
+| [SimulationOutput](#nodebpy.nodes.geometry.zone.SimulationOutput) | Simulation Output node |
+| [SimulationZone](#nodebpy.nodes.geometry.zone.SimulationZone) |  |
+
+### BaseRepeatZone { #nodebpy.nodes.geometry.zone.BaseRepeatZone }
+
+```python
+nodes.geometry.zone.BaseRepeatZone()
+```
+
+
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.geometry.zone.BaseRepeatZone.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.BaseRepeatZone.items) |  |
+| [name](#nodebpy.nodes.geometry.zone.BaseRepeatZone.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.BaseRepeatZone.node) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.BaseRepeatZone.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.BaseRepeatZone.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.BaseRepeatZone.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.BaseRepeatZone.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.BaseRepeatZone.capture }
+
+```python
+nodes.geometry.zone.BaseRepeatZone.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### BaseSimulationZone { #nodebpy.nodes.geometry.zone.BaseSimulationZone }
+
+```python
+nodes.geometry.zone.BaseSimulationZone()
+```
+
+
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.geometry.zone.BaseSimulationZone.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.BaseSimulationZone.items) |  |
+| [name](#nodebpy.nodes.geometry.zone.BaseSimulationZone.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.BaseSimulationZone.node) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.BaseSimulationZone.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.BaseSimulationZone.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.BaseSimulationZone.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.BaseSimulationZone.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.BaseSimulationZone.capture }
+
+```python
+nodes.geometry.zone.BaseSimulationZone.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### BaseZone { #nodebpy.nodes.geometry.zone.BaseZone }
+
+```python
+nodes.geometry.zone.BaseZone()
+```
+
+
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.geometry.zone.BaseZone.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.BaseZone.items) | Return the items collection |
+| [name](#nodebpy.nodes.geometry.zone.BaseZone.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.BaseZone.node) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.BaseZone.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.BaseZone.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.BaseZone.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.BaseZone.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.BaseZone.capture }
+
+```python
+nodes.geometry.zone.BaseZone.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### BaseZoneInput { #nodebpy.nodes.geometry.zone.BaseZoneInput }
+
+```python
+nodes.geometry.zone.BaseZoneInput()
+```
+
+Base class for zone input nodes
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.geometry.zone.BaseZoneInput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.BaseZoneInput.items) | Return the items collection |
+| [name](#nodebpy.nodes.geometry.zone.BaseZoneInput.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.BaseZoneInput.node) |  |
+| [output](#nodebpy.nodes.geometry.zone.BaseZoneInput.output) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.BaseZoneInput.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.BaseZoneInput.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.BaseZoneInput.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.BaseZoneInput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.BaseZoneInput.capture }
+
+```python
+nodes.geometry.zone.BaseZoneInput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### BaseZoneOutput { #nodebpy.nodes.geometry.zone.BaseZoneOutput }
+
+```python
+nodes.geometry.zone.BaseZoneOutput()
+```
+
+Base class for zone output nodes
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.geometry.zone.BaseZoneOutput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.BaseZoneOutput.items) | Return the items collection |
+| [name](#nodebpy.nodes.geometry.zone.BaseZoneOutput.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.BaseZoneOutput.node) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.BaseZoneOutput.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.BaseZoneOutput.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.BaseZoneOutput.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.BaseZoneOutput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.BaseZoneOutput.capture }
+
+```python
+nodes.geometry.zone.BaseZoneOutput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### ForEachGeometryElementInput { #nodebpy.nodes.geometry.zone.ForEachGeometryElementInput }
+
+```python
+nodes.geometry.zone.ForEachGeometryElementInput(geometry=None, selection=True)
+```
+
+For Each Geometry Element Input node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_geometry](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.i_geometry) | Input socket: Geometry |
+| [i_selection](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.i_selection) | Input socket: Selection |
+| [inputs](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.items) |  |
+| [name](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.node) |  |
+| [o_index](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.o_index) | Output socket: Index |
+| [output](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.output) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.capture }
+
+```python
+nodes.geometry.zone.ForEachGeometryElementInput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### ForEachGeometryElementOutput { #nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput }
+
+```python
+nodes.geometry.zone.ForEachGeometryElementOutput(domain='POINT', **kwargs)
+```
+
+For Each Geometry Element Output node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [domain](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.domain) |  |
+| [i_geometry](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.i_geometry) | Input socket: Geometry |
+| [inputs](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items) |  |
+| [items_generated](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items_generated) |  |
+| [name](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.node) |  |
+| [o_generation](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.o_generation) | Output socket: Geometry |
+| [o_geometry](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.o_geometry) | Output socket: Geometry |
+| [outputs](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture) | Capture something as an input to the simulation |
+| [capture_generated](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated) |  |
+
+##### capture { #nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture }
+
+```python
+nodes.geometry.zone.ForEachGeometryElementOutput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+##### capture_generated { #nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated }
+
+```python
+nodes.geometry.zone.ForEachGeometryElementOutput.capture_generated(value)
+```
+
+
+
+### ForEachGeometryElementZone { #nodebpy.nodes.geometry.zone.ForEachGeometryElementZone }
+
+```python
+nodes.geometry.zone.ForEachGeometryElementZone(
+    geometry=None,
+    selection=True,
+    *,
+    domain='POINT',
+)
+```
+
+
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [index](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.index) |  |
+| [input](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.input) |  |
+| [output](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.output) |  |
+
+### RepeatInput { #nodebpy.nodes.geometry.zone.RepeatInput }
+
+```python
+nodes.geometry.zone.RepeatInput(iterations=1)
+```
+
+Repeat Input node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.geometry.zone.RepeatInput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.RepeatInput.items) |  |
+| [name](#nodebpy.nodes.geometry.zone.RepeatInput.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.RepeatInput.node) |  |
+| [o_iteration](#nodebpy.nodes.geometry.zone.RepeatInput.o_iteration) | Output socket: Iteration |
+| [output](#nodebpy.nodes.geometry.zone.RepeatInput.output) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.RepeatInput.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.RepeatInput.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.RepeatInput.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.RepeatInput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.RepeatInput.capture }
+
+```python
+nodes.geometry.zone.RepeatInput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### RepeatOutput { #nodebpy.nodes.geometry.zone.RepeatOutput }
+
+```python
+nodes.geometry.zone.RepeatOutput()
+```
+
+Repeat Output node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.geometry.zone.RepeatOutput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.RepeatOutput.items) |  |
+| [name](#nodebpy.nodes.geometry.zone.RepeatOutput.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.RepeatOutput.node) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.RepeatOutput.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.RepeatOutput.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.RepeatOutput.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.RepeatOutput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.RepeatOutput.capture }
+
+```python
+nodes.geometry.zone.RepeatOutput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### RepeatZone { #nodebpy.nodes.geometry.zone.RepeatZone }
+
+```python
+nodes.geometry.zone.RepeatZone(iterations=1, *args, **kwargs)
+```
+
+Wrapper that supports both direct unpacking and iteration
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i](#nodebpy.nodes.geometry.zone.RepeatZone.i) | Input socket: Skip simluation frame |
+| [input](#nodebpy.nodes.geometry.zone.RepeatZone.input) |  |
+| [output](#nodebpy.nodes.geometry.zone.RepeatZone.output) |  |
+
+### SimulationInput { #nodebpy.nodes.geometry.zone.SimulationInput }
+
+```python
+nodes.geometry.zone.SimulationInput()
+```
+
+Simulation Input node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [inputs](#nodebpy.nodes.geometry.zone.SimulationInput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.SimulationInput.items) |  |
+| [name](#nodebpy.nodes.geometry.zone.SimulationInput.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.SimulationInput.node) |  |
+| [o_delta_time](#nodebpy.nodes.geometry.zone.SimulationInput.o_delta_time) | Output socket: Delta Time |
+| [output](#nodebpy.nodes.geometry.zone.SimulationInput.output) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.SimulationInput.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.SimulationInput.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.SimulationInput.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.SimulationInput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.SimulationInput.capture }
+
+```python
+nodes.geometry.zone.SimulationInput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### SimulationOutput { #nodebpy.nodes.geometry.zone.SimulationOutput }
+
+```python
+nodes.geometry.zone.SimulationOutput()
+```
+
+Simulation Output node
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [i_skip](#nodebpy.nodes.geometry.zone.SimulationOutput.i_skip) | Input socket: Skip simluation frame |
+| [inputs](#nodebpy.nodes.geometry.zone.SimulationOutput.inputs) | Get all input sockets based on items collection |
+| [items](#nodebpy.nodes.geometry.zone.SimulationOutput.items) |  |
+| [name](#nodebpy.nodes.geometry.zone.SimulationOutput.name) |  |
+| [node](#nodebpy.nodes.geometry.zone.SimulationOutput.node) |  |
+| [outputs](#nodebpy.nodes.geometry.zone.SimulationOutput.outputs) | Get all output sockets based on items collection |
+| [tree](#nodebpy.nodes.geometry.zone.SimulationOutput.tree) |  |
+| [type](#nodebpy.nodes.geometry.zone.SimulationOutput.type) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [capture](#nodebpy.nodes.geometry.zone.SimulationOutput.capture) | Capture something as an input to the simulation |
+
+##### capture { #nodebpy.nodes.geometry.zone.SimulationOutput.capture }
+
+```python
+nodes.geometry.zone.SimulationOutput.capture(value, domain='POINT')
+```
+
+Capture something as an input to the simulation
+
+### SimulationZone { #nodebpy.nodes.geometry.zone.SimulationZone }
+
+```python
+nodes.geometry.zone.SimulationZone(*args, **kwargs)
+```
+
+
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [input](#nodebpy.nodes.geometry.zone.SimulationZone.input) |  |
+| [output](#nodebpy.nodes.geometry.zone.SimulationZone.output) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [delta_time](#nodebpy.nodes.geometry.zone.SimulationZone.delta_time) |  |
+
+##### delta_time { #nodebpy.nodes.geometry.zone.SimulationZone.delta_time }
+
+```python
+nodes.geometry.zone.SimulationZone.delta_time()
+```
+

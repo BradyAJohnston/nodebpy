@@ -3,17 +3,17 @@ website:
   - contents:
     - reference/index.qmd
     - contents:
-      - reference/nodes.input.qmd
-      - reference/nodes.attribute.qmd
-      - reference/nodes.color.qmd
-      - reference/nodes.converter.qmd
-      - reference/nodes.texture.qmd
-      - reference/nodes.grid.qmd
-      - reference/nodes.geometry.qmd
-      - reference/nodes.attribute.qmd
-      - reference/nodes.vector.qmd
-      - reference/nodes.manual.qmd
-      - reference/nodes.zone.qmd
+      - reference/nodes.geometry.input.qmd
+      - reference/nodes.geometry.attribute.qmd
+      - reference/nodes.geometry.color.qmd
+      - reference/nodes.geometry.converter.qmd
+      - reference/nodes.geometry.texture.qmd
+      - reference/nodes.geometry.grid.qmd
+      - reference/nodes.geometry.geometry.qmd
+      - reference/nodes.geometry.attribute.qmd
+      - reference/nodes.geometry.vector.qmd
+      - reference/nodes.geometry.manual.qmd
+      - reference/nodes.geometry.zone.qmd
       section: Some functions
     id: reference
   - id: dummy-sidebar
