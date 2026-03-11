@@ -141,5 +141,5 @@ Most node classes are generated automatically with this. The nodes in
 complexities of particular nodes (usually lergacy).
 
 ``` bash
-uv run generate.py && ruff format && ruff check --fix --unsafe-fixes
+uv run generate.py && ruff format && ruff check --fix
 ```
