@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
-    from .nodes import Math, VectorMath
+    from .nodes.geometry import Math, VectorMath
 
 import bpy
 from bpy.types import (
@@ -589,7 +589,7 @@ class NodeBuilder:
         self, other: Any, operation: str, reverse: bool = False
     ) -> "VectorMath | Math":
         """Apply a math operation with appropriate Math/VectorMath node."""
-        from .nodes import VectorMath
+        from .nodes.geometry import VectorMath
 
         values = (
             (self._default_output_socket, other)
@@ -637,7 +637,7 @@ class NodeBuilder:
                         f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
                     )
         else:  # Both operands are scalar types, use regular Math
-            from .nodes.converter import IntegerMath, Math
+            from .nodes.geometry.converter import IntegerMath, Math
 
             if isinstance(other, int) and self._default_output_socket.type == "INT":
                 return getattr(IntegerMath, operation)(*values)

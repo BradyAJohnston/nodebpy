@@ -1,7 +1,7 @@
 """Example test showing how to use tree snapshots."""
 
 from nodebpy import TreeBuilder
-from nodebpy import nodes as n
+from nodebpy import geometry as g
 from nodebpy import sockets as s
 
 
@@ -14,8 +14,8 @@ def test_simple_tree_snapshot(snapshot_tree):
             output = s.SocketGeometry()
 
         # Create some nodes
-        set_pos = n.SetPosition()
-        transform = n.TransformGeometry()
+        set_pos = g.SetPosition()
+        transform = g.TransformGeometry()
 
         # Link them together
         input >> set_pos >> transform >> output
@@ -38,12 +38,12 @@ def test_complex_tree_snapshot(snapshot_tree):
         with tree.outputs:
             output = s.SocketGeometry()
 
-        subdivide = n.SubdivisionSurface()
-        transform1 = n.TransformGeometry(scale=scale)
-        transform2 = n.TransformGeometry(scale=scale)
+        subdivide = g.SubdivisionSurface()
+        transform1 = g.TransformGeometry(scale=scale)
+        transform2 = g.TransformGeometry(scale=scale)
 
         _ = (
-            n.JoinGeometry(
+            g.JoinGeometry(
                 input >> subdivide >> transform1,
                 input >> transform2,
             )
@@ -72,7 +72,7 @@ def test_tree_with_math_nodes(snapshot_tree):
         math_result = value * 2.0 + 1.0
 
         # Use result in geometry
-        set_pos = n.SetPosition(offset=math_result)
+        set_pos = g.SetPosition(offset=math_result)
         geo_in >> set_pos >> geo_out
         math_result >> result
 

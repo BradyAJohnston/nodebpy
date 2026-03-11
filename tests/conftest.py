@@ -4,9 +4,9 @@ import bpy
 import pytest
 
 from nodebpy import TreeBuilder
-from nodebpy import nodes as n
+from nodebpy import compositor as c
+from nodebpy import geometry as g
 from nodebpy import sockets as s
-from nodebpy.nodes import compositor as c
 
 from .snapshots import TreeBuilderSnapshotExtension
 
@@ -44,12 +44,12 @@ def clean_and_save(request):
                 ong = s.SocketGeometry()
 
             for i, name in enumerate(geo_tree_names):
-                node = n.Group()
+                node = g.Group()
                 node.node.node_tree = bpy.data.node_groups[name]
                 node.node.location = (0, 200 * i)
 
-            if node.node.outputs and node.node.outputs[0].type == "GEOMETRY":
-                node >> ong
+            if node.node.outputs and node.node.outputs[0].type == "GEOMETRY":  # type: ignore
+                _ = node >> ong  # type: ignore
             else:
                 _ = ing >> ong
 
@@ -82,8 +82,8 @@ def clean_and_save(request):
     if compositor_tree_names:
         with TreeBuilder.compositor("CompHoldingTree") as tree:
             for i, name in enumerate(compositor_tree_names):
-                g = c.Group()
-                g.node.node_tree = bpy.data.node_groups[name]
+                group = c.Group()
+                group.node.node_tree = bpy.data.node_groups[name]
         bpy.context.scene.compositing_node_group = tree.tree
 
     # save a .blendfile for inspection with the current tests' nodes and also
