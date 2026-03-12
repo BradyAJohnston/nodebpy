@@ -530,7 +530,13 @@ class NodeBuilder:
     def _establish_links(self, **kwargs: TYPE_INPUT_ALL):
         input_ids = [input.identifier for input in self.node.inputs]
         for name, value in kwargs.items():
-            if value is None:
+            if value is None or (
+                # TODO: this is an ugly single-node exception for this particular case. I'd
+                # like to fine a cleaner way to handle this automatically instead.
+                "GridPrune" in self._bl_idname
+                and name == "Threshold"
+                and self.node.data_type == "BOOLEAN"
+            ):
                 continue
             if isinstance(value, Node):
                 node = NodeBuilder()

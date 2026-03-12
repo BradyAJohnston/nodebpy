@@ -1870,7 +1870,7 @@ class Compare(NodeBuilder):
         self.operation = operation
         self.data_type = data_type
         if self.data_type == "VECTOR":
-            self.mode = kwargs["mode"]
+            self.mode = kwargs.pop("mode")
         self._establish_links(**kwargs)
 
     @classmethod
@@ -1951,11 +1951,11 @@ class Compare(NodeBuilder):
     @classmethod
     def string(
         cls,
-        a,
-        b,
+        a: str = "",
+        b: str = "",
     ) -> "Compare":
         """Create Compare with operation 'String'."""
-        return cls(mode="STRING", A_STR=a, B_STR=b)
+        return cls(data_type="STRING", A_STR=a, B_STR=b)
 
     def _suffix(self) -> str:
         suffix_lookup = {

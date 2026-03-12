@@ -91,7 +91,7 @@ class GetListItem(NodeBuilder):
 
     @classmethod
     def menu(
-        cls, list: TYPE_INPUT_MENU = "", index: TYPE_INPUT_INT = 0
+        cls, list: TYPE_INPUT_MENU = None, index: TYPE_INPUT_INT = 0
     ) -> "GetListItem":
         """Create Get List Item with operation 'Menu'."""
         return cls(data_type="MENU", list=list, index=index)
@@ -195,7 +195,7 @@ class List(NodeBuilder):
         return cls(data_type="MATRIX", count=count, value=value)
 
     @classmethod
-    def menu(cls, count: TYPE_INPUT_INT = 1, value: TYPE_INPUT_MENU = "") -> "List":
+    def menu(cls, count: TYPE_INPUT_INT = 1, value: TYPE_INPUT_MENU = None) -> "List":
         """Create List with operation 'Menu'."""
         return cls(data_type="MENU", count=count, value=value)
 
@@ -289,7 +289,7 @@ class ListLength(NodeBuilder):
         return cls(data_type="MATRIX", list=list)
 
     @classmethod
-    def menu(cls, list: TYPE_INPUT_MENU = "") -> "ListLength":
+    def menu(cls, list: TYPE_INPUT_MENU = None) -> "ListLength":
         """Create List Length with operation 'Menu'."""
         return cls(data_type="MENU", list=list)
 

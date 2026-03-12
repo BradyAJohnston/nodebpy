@@ -4,6 +4,7 @@ Tests for the node builder API.
 Tests the TreeBuilder, NodeBuilder, and the >> operator chaining system.
 """
 
+import inspect
 import re
 from math import pi
 
@@ -515,13 +516,24 @@ def test_nested_trees():
 
 @pytest.mark.parametrize(
     "module,tree_type",
-    zip([g, s, c], ["GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"]),
+    [(g, "GeometryNodeTree"), (s, "ShaderNodeTree"), (c, "CompositorNodeTree")],
 )
 def test_add_all_nodes(module, tree_type):
-    with TreeBuilder(tree_type, tree_type=tree_type):
-        for node_name in dir(module):
-            if re.match(r"^([A-Z][a-z]+)+$", node_name):
-                cls = getattr(module, node_name)
-                node = cls()
-                if isinstance(node, NodeBuilder):
-                    assert node.node
+    with TreeBuilder(tree_type=tree_type):
+        for name in dir(module):
+            if not re.match(r"^([A-Z][a-z]+)+$", name):
+                continue
+            cls = getattr(module, name)
+            if not (inspect.isclass(cls) and issubclass(cls, NodeBuilder)):
+                continue
+            # Test the default constructor
+            node = cls()
+            assert node.node is not None
+            # Test each classmethod defined on this class (not inherited from NodeBuilder)
+            for method_name in dir(cls):
+                if (
+                    isinstance(inspect.getattr_static(cls, method_name), classmethod)
+                    and method_name not in dir(NodeBuilder)
+                ):
+                    node = getattr(cls, method_name)()
+                    assert node.node is not None

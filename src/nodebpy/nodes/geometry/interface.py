@@ -8,7 +8,17 @@ from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
+    TYPE_INPUT_BUNDLE,
+    TYPE_INPUT_CLOSURE,
+    TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_GEOMETRY,
+    TYPE_INPUT_IMAGE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_MATERIAL,
     TYPE_INPUT_MATRIX,
+    TYPE_INPUT_MENU,
+    TYPE_INPUT_OBJECT,
     TYPE_INPUT_ROTATION,
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
@@ -122,84 +132,116 @@ class EnableOutput(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def float(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_VALUE = 0.0
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Float'."""
-        return cls(data_type="FLOAT", enable=enable)
+        return cls(data_type="FLOAT", enable=enable, value=value)
 
     @classmethod
-    def integer(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def integer(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_INT = 0
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Integer'."""
-        return cls(data_type="INT", enable=enable)
+        return cls(data_type="INT", enable=enable, value=value)
 
     @classmethod
-    def boolean(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def boolean(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_BOOLEAN = False
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Boolean'."""
-        return cls(data_type="BOOLEAN", enable=enable)
+        return cls(data_type="BOOLEAN", enable=enable, value=value)
 
     @classmethod
-    def vector(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def vector(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_VECTOR = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Vector'."""
-        return cls(data_type="VECTOR", enable=enable)
+        return cls(data_type="VECTOR", enable=enable, value=value)
 
     @classmethod
-    def color(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def color(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_COLOR = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Color'."""
-        return cls(data_type="RGBA", enable=enable)
+        return cls(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
-    def rotation(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def rotation(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_ROTATION = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Rotation'."""
-        return cls(data_type="ROTATION", enable=enable)
+        return cls(data_type="ROTATION", enable=enable, value=value)
 
     @classmethod
-    def matrix(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def matrix(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_MATRIX = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Matrix'."""
-        return cls(data_type="MATRIX", enable=enable)
+        return cls(data_type="MATRIX", enable=enable, value=value)
 
     @classmethod
-    def string(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def string(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_STRING = ""
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'String'."""
-        return cls(data_type="STRING", enable=enable)
+        return cls(data_type="STRING", enable=enable, value=value)
 
     @classmethod
-    def menu(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def menu(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_MENU = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Menu'."""
-        return cls(data_type="MENU", enable=enable)
+        return cls(data_type="MENU", enable=enable, value=value)
 
     @classmethod
-    def object(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def object(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_OBJECT = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Object'."""
-        return cls(data_type="OBJECT", enable=enable)
+        return cls(data_type="OBJECT", enable=enable, value=value)
 
     @classmethod
-    def image(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def image(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_IMAGE = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Image'."""
-        return cls(data_type="IMAGE", enable=enable)
+        return cls(data_type="IMAGE", enable=enable, value=value)
 
     @classmethod
-    def geometry(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def geometry(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_GEOMETRY = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Geometry'."""
-        return cls(data_type="GEOMETRY", enable=enable)
+        return cls(data_type="GEOMETRY", enable=enable, value=value)
 
     @classmethod
-    def collection(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def collection(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_COLLECTION = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Collection'."""
-        return cls(data_type="COLLECTION", enable=enable)
+        return cls(data_type="COLLECTION", enable=enable, value=value)
 
     @classmethod
-    def material(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def material(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_MATERIAL = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Material'."""
-        return cls(data_type="MATERIAL", enable=enable)
+        return cls(data_type="MATERIAL", enable=enable, value=value)
 
     @classmethod
-    def bundle(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def bundle(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_BUNDLE = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Bundle'."""
-        return cls(data_type="BUNDLE", enable=enable)
+        return cls(data_type="BUNDLE", enable=enable, value=value)
 
     @classmethod
-    def closure(cls, enable: TYPE_INPUT_BOOLEAN = False) -> "EnableOutput":
+    def closure(
+        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_CLOSURE = None
+    ) -> "EnableOutput":
         """Create Enable Output with operation 'Closure'."""
-        return cls(data_type="CLOSURE", enable=enable)
+        return cls(data_type="CLOSURE", enable=enable, value=value)
 
     @property
     def i_enable(self) -> SocketLinker:

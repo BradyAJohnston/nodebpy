@@ -1093,8 +1093,8 @@ class MenuSwitch(NodeBuilder):
     def menu(
         cls,
         menu: TYPE_INPUT_MENU = "A",
-        item_0: TYPE_INPUT_MENU = "",
-        item_1: TYPE_INPUT_MENU = "",
+        item_0: TYPE_INPUT_MENU = None,
+        item_1: TYPE_INPUT_MENU = None,
         extend: LINKABLE = None,
     ) -> "MenuSwitch":
         """Create Menu Switch with operation 'Menu'."""

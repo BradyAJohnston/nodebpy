@@ -3482,8 +3482,8 @@ class Switch(NodeBuilder):
     def menu(
         cls,
         switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_MENU = "",
-        true: TYPE_INPUT_MENU = "",
+        false: TYPE_INPUT_MENU = None,
+        true: TYPE_INPUT_MENU = None,
     ) -> "Switch":
         """Create Switch with operation 'Menu'."""
         return cls(input_type="MENU", switch=switch, false=false, true=true)

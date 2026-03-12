@@ -592,7 +592,10 @@ def collect_socket_info(
         # Switch-type nodes have sockets that are inactive one or the other
         # so we have to be explicit to capture all of them
         if "Switch" not in socket.node.bl_idname:
-            if (socket.is_inactive and not hidden) or "__extend__" in socket.identifier:
+            if (
+                (socket.is_inactive and socket.node.bl_idname != "NodeEnableOutput")
+                and not hidden
+            ) or "__extend__" in socket.identifier:
                 continue
 
         socket_info = SocketInfo(
@@ -610,6 +613,8 @@ def collect_socket_info(
             value = socket.default_value
             if isinstance(value, (Euler, Vector, bpy_prop_array)):
                 value = list(value)
+            if socket.type == "MENU" and value == "":
+                value = None
             socket_info.default_value = value
 
         if hasattr(socket, "min_value"):
