@@ -104,7 +104,7 @@ class TestFloorDivOperator:
         assert result.node.operation == "DIVIDE_FLOOR"
 
     def test_float_floordiv(self):
-        with TreeBuilder("TestFloatFloorDiv") as tree:
+        with TreeBuilder("TestFloatFloorDiv"):
             result = g.Value(10.0) // 3.0
 
         # float floordiv composes divide + floor
@@ -119,9 +119,7 @@ class TestFloorDivOperator:
 
         assert result.node.bl_idname == "ShaderNodeVectorMath"
         assert result.node.operation == "FLOOR"
-        assert (
-            result.node.inputs[0].links[0].from_node.operation == "DIVIDE"
-        )
+        assert result.node.inputs[0].links[0].from_node.operation == "DIVIDE"
 
     def test_rfloordiv_integer(self):
         with TreeBuilder("TestRFloorDivInt"):
@@ -346,7 +344,7 @@ class TestParameterizedOperators:
     )
     def test_binary_operators_with_types(self, operator, input_cls):
         with TreeBuilder("TestParameterized"):
-            node = input_cls()
+            input_cls()
             result = eval(f"node {operator} 2.0")
 
         assert result.node is not None
@@ -380,19 +378,17 @@ class TestComparisonChaining:
 
     def test_comparison_chain_with_boolean(self):
         """Combine comparison results with boolean operators."""
-        with TreeBuilder("TestCompareBool") as tree:
+        with TreeBuilder("TestCompareBool"):
             val = g.Value(5.0)
             result = (val > 1.0) & (val < 10.0)
 
         assert result.node.bl_idname == "FunctionNodeBooleanMath"
         assert result.node.operation == "AND"
         assert (
-            result.node.inputs[0].links[0].from_node.bl_idname
-            == "FunctionNodeCompare"
+            result.node.inputs[0].links[0].from_node.bl_idname == "FunctionNodeCompare"
         )
         assert (
-            result.node.inputs[1].links[0].from_node.bl_idname
-            == "FunctionNodeCompare"
+            result.node.inputs[1].links[0].from_node.bl_idname == "FunctionNodeCompare"
         )
 
 
@@ -401,15 +397,15 @@ class TestComplexExpressions:
 
     def test_math_expression_chain(self):
         """Test a complex math expression: (value ** 2 + 1) % 10."""
-        with TreeBuilder("TestComplexMath") as tree:
+        with TreeBuilder("TestComplexMath"):
             val = g.Value(3.0)
-            result = (val ** 2 + 1) % 10
+            result = (val**2 + 1) % 10
 
         assert result.node.operation == "FLOORED_MODULO"
 
     def test_vector_expression(self):
         """Test: position * 2 + offset, then floor divide."""
-        with TreeBuilder("TestComplexVector") as tree:
+        with TreeBuilder("TestComplexVector"):
             pos = g.Position()
             result = (pos * 2 + (0, 0, 1)) // (1, 1, 1)
 
@@ -443,7 +439,7 @@ class TestComplexExpressions:
                 o_geo = s.SocketGeometry()
 
             pos = g.Position()
-            offset = (pos ** 2) % (1, 1, 1)
+            offset = (pos**2) % (1, 1, 1)
             _ = i_geo >> g.SetPosition(offset=offset) >> o_geo
 
         assert len(tree.tree.links) >= 4
@@ -470,7 +466,7 @@ class TestComplexExpressions:
             selection = (g.Index() % 2) > 0
 
             # Use power and modulo for position
-            offset = (pos ** 2) % (2, 2, 2)
+            offset = (pos**2) % (2, 2, 2)
 
             _ = (
                 g.Points(count, position=g.RandomValue.vector(min=-1))
@@ -479,3 +475,42 @@ class TestComplexExpressions:
             )
 
         assert len(tree) >= 8
+
+
+class TestMatrixMultiplcation:
+    def test_matrix_multiplication(self):
+        """Test matrix multiplication."""
+        with TreeBuilder("MatrixMultiplication") as tree:
+            with tree.outputs:
+                out = s.SocketGeometry()
+            cube = g.Cube()
+            _ = (
+                cube
+                >> g.SetPosition(
+                    position=(
+                        g.TransformPoint(
+                            g.Position(),
+                            transform=(
+                                g.CombineTransform(rotation=(0, 90, 0))
+                                @ g.CombineTransform(translation=(1, 0, 0))
+                            ),
+                        )
+                    )
+                )
+                >> out
+            )
+
+        assert cube.o_mesh.links[0].to_node.bl_idname == "GeometryNodeSetPosition"
+        assert (
+            cube.o_mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname
+            == "FunctionNodeTransformPoint"
+        )
+        assert (
+            cube.o_mesh.links[0]
+            .to_node.inputs["Position"]
+            .links[0]
+            .from_node.inputs["Transform"]
+            .links[0]
+            .from_node.bl_idname
+            == "FunctionNodeMatrixMultiply"
+        )

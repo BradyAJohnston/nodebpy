@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
     from .nodes.geometry import Math, VectorMath
-    from .nodes.geometry.converter import BooleanMath
+    from .nodes.geometry.converter import BooleanMath, MultiplyMatrices
     from .nodes.geometry.manual import Compare
 
 import bpy
@@ -735,14 +735,12 @@ class NodeBuilder:
         from .nodes.geometry.converter import IntegerMath, Math
 
         socket = self._default_output_socket
-        component_is_vector = socket.type == "VECTOR" or getattr(
-            other, "type", None
-        ) == "VECTOR"
+        component_is_vector = (
+            socket.type == "VECTOR" or getattr(other, "type", None) == "VECTOR"
+        )
 
         if not component_is_vector and isinstance(other, int) and socket.type == "INT":
-            values = (
-                (socket, other) if not reverse else (other, socket)
-            )
+            values = (socket, other) if not reverse else (other, socket)
             return IntegerMath.divide_floor(*values)
 
         divided = self._apply_math_operation(other, "divide", reverse=reverse)
@@ -777,21 +775,18 @@ class NodeBuilder:
     def __ge__(self, other: Any) -> "Compare":
         return self._apply_compare_operation(other, "greater_equal")
 
-    def _apply_boolean_operation(
-        self, other: Any, operation: str
-    ) -> "BooleanMath":
+    def _apply_boolean_operation(self, other: Any, operation: str) -> "BooleanMath":
         """Apply a boolean operation using the BooleanMath node."""
         from .nodes.geometry.converter import BooleanMath
 
-        return getattr(BooleanMath, operation)(
-            self._default_output_socket, other
-        )
+        return getattr(BooleanMath, operation)(self._default_output_socket, other)
 
     def __and__(self, other: Any) -> "BooleanMath":
         return self._apply_boolean_operation(other, "l_and")
 
     def __rand__(self, other: Any) -> "BooleanMath":
         from .nodes.geometry.converter import BooleanMath
+
         return BooleanMath.l_and(other, self._default_output_socket)
 
     def __or__(self, other: Any) -> "BooleanMath":
@@ -799,6 +794,7 @@ class NodeBuilder:
 
     def __ror__(self, other: Any) -> "BooleanMath":
         from .nodes.geometry.converter import BooleanMath
+
         return BooleanMath.l_or(other, self._default_output_socket)
 
     def __xor__(self, other: Any) -> "BooleanMath":
@@ -806,11 +802,23 @@ class NodeBuilder:
 
     def __rxor__(self, other: Any) -> "BooleanMath":
         from .nodes.geometry.converter import BooleanMath
+
         return BooleanMath.not_equal(other, self._default_output_socket)
 
     def __invert__(self) -> "BooleanMath":
         from .nodes.geometry.converter import BooleanMath
+
         return BooleanMath.l_not(self._default_output_socket)
+
+    def __matmul__(self, other: Any) -> "MultiplyMatrices":
+        from .nodes.geometry.converter import MultiplyMatrices
+
+        return MultiplyMatrices(self._default_output_socket, other)
+
+    def __rmatmul__(self, other: Any) -> "MultiplyMatrices":
+        from .nodes.geometry.converter import MultiplyMatrices
+
+        return MultiplyMatrices(other, self._default_output_socket)
 
 
 class DynamicInputsMixin:
