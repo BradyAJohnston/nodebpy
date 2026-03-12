@@ -12,6 +12,8 @@ website:
         text: Home
       - href: introduction.qmd
         text: Introduction
+      - href: operators.qmd
+        text: Operators
       - href: reference/
         text: Reference
 
