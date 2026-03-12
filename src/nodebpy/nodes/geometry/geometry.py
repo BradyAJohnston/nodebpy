@@ -1356,7 +1356,7 @@ class FillCurve(NodeBuilder):
         self,
         curve: TYPE_INPUT_GEOMETRY = None,
         group_id: TYPE_INPUT_INT = 0,
-        mode: TYPE_INPUT_MENU = "Triangles",
+        mode: TYPE_INPUT_MENU | Literal["Triangles", "N-gons"] = "Triangles",
     ):
         super().__init__()
         key_args = {"Curve": curve, "Group ID": group_id, "Mode": mode}
@@ -1397,7 +1397,7 @@ class FilletCurve(NodeBuilder):
         curve: TYPE_INPUT_GEOMETRY = None,
         radius: TYPE_INPUT_VALUE = 0.25,
         limit_radius: TYPE_INPUT_BOOLEAN = False,
-        mode: TYPE_INPUT_MENU = "Bézier",
+        mode: TYPE_INPUT_MENU | Literal["Bézier", "Poly"] = "Bézier",
         count: TYPE_INPUT_INT = 1,
     ):
         super().__init__()
@@ -1983,7 +1983,7 @@ class MergeByDistance(NodeBuilder):
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        mode: TYPE_INPUT_MENU = "All",
+        mode: TYPE_INPUT_MENU | Literal["All", "Connected"] = "All",
         distance: TYPE_INPUT_VALUE = 0.001,
     ):
         super().__init__()
@@ -2633,7 +2633,8 @@ class Raycast(NodeBuilder):
         self,
         target_geometry: TYPE_INPUT_GEOMETRY = None,
         attribute: TYPE_INPUT_VALUE = 0.0,
-        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
@@ -2665,7 +2666,8 @@ class Raycast(NodeBuilder):
         cls,
         target_geometry: TYPE_INPUT_GEOMETRY = None,
         attribute: TYPE_INPUT_VALUE = 0.0,
-        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
@@ -2686,7 +2688,8 @@ class Raycast(NodeBuilder):
         cls,
         target_geometry: TYPE_INPUT_GEOMETRY = None,
         attribute: TYPE_INPUT_INT = 0,
-        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
@@ -2707,7 +2710,8 @@ class Raycast(NodeBuilder):
         cls,
         target_geometry: TYPE_INPUT_GEOMETRY = None,
         attribute: TYPE_INPUT_BOOLEAN = False,
-        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
@@ -2728,7 +2732,8 @@ class Raycast(NodeBuilder):
         cls,
         target_geometry: TYPE_INPUT_GEOMETRY = None,
         attribute: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
@@ -2749,7 +2754,8 @@ class Raycast(NodeBuilder):
         cls,
         target_geometry: TYPE_INPUT_GEOMETRY = None,
         attribute: TYPE_INPUT_COLOR = None,
-        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
@@ -2770,7 +2776,8 @@ class Raycast(NodeBuilder):
         cls,
         target_geometry: TYPE_INPUT_GEOMETRY = None,
         attribute: TYPE_INPUT_ROTATION = None,
-        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
@@ -2791,7 +2798,8 @@ class Raycast(NodeBuilder):
         cls,
         target_geometry: TYPE_INPUT_GEOMETRY = None,
         attribute: TYPE_INPUT_MATRIX = None,
-        interpolation: TYPE_INPUT_MENU = "Interpolated",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: TYPE_INPUT_VECTOR = None,
         ray_direction: TYPE_INPUT_VECTOR = None,
         ray_length: TYPE_INPUT_VALUE = 100.0,
@@ -2995,7 +3003,7 @@ class ResampleCurve(NodeBuilder):
         self,
         curve: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        mode: TYPE_INPUT_MENU = "Count",
+        mode: TYPE_INPUT_MENU | Literal["Evaluated", "Count", "Length"] = "Count",
         count: TYPE_INPUT_INT = 10,
         length: TYPE_INPUT_VALUE = 0.1,
         *,
@@ -4185,7 +4193,7 @@ class ScaleElements(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         scale: TYPE_INPUT_VALUE = 1.0,
         center: TYPE_INPUT_VECTOR = None,
-        scale_mode: TYPE_INPUT_MENU = "Uniform",
+        scale_mode: TYPE_INPUT_MENU | Literal["Uniform", "Single Axis"] = "Uniform",
         axis: TYPE_INPUT_VECTOR = None,
         *,
         domain: Literal["FACE", "EDGE"] = "FACE",
@@ -4209,7 +4217,7 @@ class ScaleElements(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         scale: TYPE_INPUT_VALUE = 1.0,
         center: TYPE_INPUT_VECTOR = None,
-        scale_mode: TYPE_INPUT_MENU = "Uniform",
+        scale_mode: TYPE_INPUT_MENU | Literal["Uniform", "Single Axis"] = "Uniform",
     ) -> "ScaleElements":
         """Create Scale Elements with operation 'Face'."""
         return cls(
@@ -4228,7 +4236,7 @@ class ScaleElements(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         scale: TYPE_INPUT_VALUE = 1.0,
         center: TYPE_INPUT_VECTOR = None,
-        scale_mode: TYPE_INPUT_MENU = "Uniform",
+        scale_mode: TYPE_INPUT_MENU | Literal["Uniform", "Single Axis"] = "Uniform",
     ) -> "ScaleElements":
         """Create Scale Elements with operation 'Edge'."""
         return cls(
@@ -4499,7 +4507,8 @@ class SetCurveNormal(NodeBuilder):
         self,
         curve: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        mode: TYPE_INPUT_MENU = "Minimum Twist",
+        mode: TYPE_INPUT_MENU
+        | Literal["Minimum Twist", "Z Up", "Free"] = "Minimum Twist",
         normal: TYPE_INPUT_VECTOR = None,
     ):
         super().__init__()
@@ -6249,8 +6258,16 @@ class SubdivisionSurface(NodeBuilder):
         edge_crease: TYPE_INPUT_VALUE = 0.0,
         vertex_crease: TYPE_INPUT_VALUE = 0.0,
         limit_surface: TYPE_INPUT_BOOLEAN = True,
-        uv_smooth: TYPE_INPUT_MENU = "Keep Boundaries",
-        boundary_smooth: TYPE_INPUT_MENU = "All",
+        uv_smooth: TYPE_INPUT_MENU
+        | Literal[
+            "None",
+            "Keep Corners",
+            "Keep Corners, Junctions",
+            "Keep Corners, Junctions, Concave",
+            "Keep Boundaries",
+            "All",
+        ] = "Keep Boundaries",
+        boundary_smooth: TYPE_INPUT_MENU | Literal["Keep Corners", "All"] = "All",
     ):
         super().__init__()
         key_args = {
@@ -6317,7 +6334,7 @@ class TransformGeometry(NodeBuilder):
     def __init__(
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        mode: TYPE_INPUT_MENU = "Components",
+        mode: TYPE_INPUT_MENU | Literal["Components", "Matrix"] = "Components",
         translation: TYPE_INPUT_VECTOR = None,
         rotation: TYPE_INPUT_ROTATION = None,
         scale: TYPE_INPUT_VECTOR = None,
@@ -6434,8 +6451,15 @@ class Triangulate(NodeBuilder):
         self,
         mesh: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
-        quad_method: TYPE_INPUT_MENU = "Shortest Diagonal",
-        n_gon_method: TYPE_INPUT_MENU = "Beauty",
+        quad_method: TYPE_INPUT_MENU
+        | Literal[
+            "Beauty",
+            "Fixed",
+            "Fixed Alternate",
+            "Shortest Diagonal",
+            "Longest Diagonal",
+        ] = "Shortest Diagonal",
+        n_gon_method: TYPE_INPUT_MENU | Literal["Beauty", "Clip"] = "Beauty",
     ):
         super().__init__()
         key_args = {

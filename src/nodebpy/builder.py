@@ -750,19 +750,48 @@ class NodeBuilder:
         else:
             return Math.floor(divided)
 
-    def _apply_compare_operation(self, other: Any, operation: str) -> "Compare":
-        """Apply a comparison operation using the Compare node."""
-        from .nodes.geometry.manual import Compare
+    def _apply_compare_operation(self, other: Any, operation: str) -> "Compare | Math":
+        """Apply a comparison operation.
 
-        socket = self._default_output_socket
-        values = (socket, other)
+        Uses the Compare node in geometry trees (supports float, int, vector and
+        outputs a boolean). Falls back to Math.less_than / Math.greater_than in
+        compositor and shader trees which lack a Compare node. For <= and >= in
+        non-geometry trees, we swap the operands (a <= b == b >= a == !(a > b)
+        is equivalent to less_than(b, a) when treating the output as boolean).
+        """
+        if isinstance(self._tree.tree, GeometryNodeTree):
+            from .nodes.geometry.manual import Compare
 
-        if socket.type == "VECTOR":
-            return getattr(Compare, operation).vector(*values)
-        elif socket.type == "INT":
-            return getattr(Compare, operation).integer(*values)
+            socket = self._default_output_socket
+            values = (socket, other)
+
+            if socket.type == "VECTOR":
+                return getattr(Compare, operation).vector(*values)
+            elif socket.type == "INT":
+                return getattr(Compare, operation).integer(*values)
+            else:
+                return getattr(Compare, operation).float(*values)
         else:
-            return getattr(Compare, operation).float(*values)
+            # Compositor / Shader trees only have Math.less_than and
+            # Math.greater_than (float output, no boolean). Map <= and >= by
+            # swapping operands: a <= b ≡ less_than(b, a) is wrong —
+            # but greater_than(b, a) gives 1 when b>a i.e. a<b.
+            # So: a <= b → 1 - greater_than(a, b)  — needs two nodes.
+            # Simpler: a >= b ≡ !(a < b) ≡ 1 - less_than(a, b)
+            from .nodes.geometry.converter import Math
+
+            socket = self._default_output_socket
+            _MATH_COMPARE_MAP = {
+                "less_than": ("less_than", False),
+                "greater_than": ("greater_than", False),
+                "less_equal": ("greater_than", True),  # a<=b → !(a>b) → 1-gt(a,b)
+                "greater_equal": ("less_than", True),  # a>=b → !(a<b) → 1-lt(a,b)
+            }
+            math_op, negate = _MATH_COMPARE_MAP[operation]
+            result = getattr(Math, math_op)(socket, other)
+            if negate:
+                result = Math.subtract(1.0, result._default_output_socket)
+            return result
 
     def __lt__(self, other: Any) -> "Compare":
         return self._apply_compare_operation(other, "less_than")

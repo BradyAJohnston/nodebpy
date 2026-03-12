@@ -2163,7 +2163,7 @@ class UVTangent(NodeBuilder):
 
     def __init__(
         self,
-        method: TYPE_INPUT_MENU = "Exact",
+        method: TYPE_INPUT_MENU | Literal["Exact", "Fast"] = "Exact",
         uv: TYPE_INPUT_VECTOR = None,
     ):
         super().__init__()

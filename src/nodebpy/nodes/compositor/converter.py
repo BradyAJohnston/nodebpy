@@ -30,7 +30,8 @@ class AlphaConvert(NodeBuilder):
     def __init__(
         self,
         image: TYPE_INPUT_COLOR = None,
-        type: TYPE_INPUT_MENU = "To Premultiplied",
+        type: TYPE_INPUT_MENU
+        | Literal["To Premultiplied", "To Straight"] = "To Premultiplied",
     ):
         super().__init__()
         key_args = {"Image": image, "Type": type}
@@ -51,111 +52,6 @@ class AlphaConvert(NodeBuilder):
     def o_image(self) -> SocketLinker:
         """Output socket: Image"""
         return self._output("Image")
-
-
-class Blackbody(NodeBuilder):
-    """
-    Convert a blackbody temperature to an RGB value
-    """
-
-    _bl_idname = "ShaderNodeBlackbody"
-    node: bpy.types.ShaderNodeBlackbody
-
-    def __init__(self, temperature: TYPE_INPUT_VALUE = 6500.0):
-        super().__init__()
-        key_args = {"Temperature": temperature}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_temperature(self) -> SocketLinker:
-        """Input socket: Temperature"""
-        return self._input("Temperature")
-
-    @property
-    def o_color(self) -> SocketLinker:
-        """Output socket: Color"""
-        return self._output("Color")
-
-
-class Clamp(NodeBuilder):
-    """
-    Clamp a value between a minimum and a maximum
-    """
-
-    _bl_idname = "ShaderNodeClamp"
-    node: bpy.types.ShaderNodeClamp
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 1.0,
-        min: TYPE_INPUT_VALUE = 0.0,
-        max: TYPE_INPUT_VALUE = 1.0,
-        *,
-        clamp_type: Literal["MINMAX", "RANGE"] = "MINMAX",
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Min": min, "Max": max}
-        self.clamp_type = clamp_type
-        self._establish_links(**key_args)
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def i_min(self) -> SocketLinker:
-        """Input socket: Min"""
-        return self._input("Min")
-
-    @property
-    def i_max(self) -> SocketLinker:
-        """Input socket: Max"""
-        return self._input("Max")
-
-    @property
-    def o_result(self) -> SocketLinker:
-        """Output socket: Result"""
-        return self._output("Result")
-
-    @property
-    def clamp_type(self) -> Literal["MINMAX", "RANGE"]:
-        return self.node.clamp_type
-
-    @clamp_type.setter
-    def clamp_type(self, value: Literal["MINMAX", "RANGE"]):
-        self.node.clamp_type = value
-
-
-class ColorRamp(NodeBuilder):
-    """
-    Map values to colors with the use of a gradient
-    """
-
-    _bl_idname = "ShaderNodeValToRGB"
-    node: bpy.types.ShaderNodeValToRGB
-
-    def __init__(self, fac: TYPE_INPUT_VALUE = 0.5):
-        super().__init__()
-        key_args = {"Fac": fac}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_fac(self) -> SocketLinker:
-        """Input socket: Factor"""
-        return self._input("Fac")
-
-    @property
-    def o_color(self) -> SocketLinker:
-        """Output socket: Color"""
-        return self._output("Color")
-
-    @property
-    def o_alpha(self) -> SocketLinker:
-        """Output socket: Alpha"""
-        return self._output("Alpha")
 
 
 class CombineColor(NodeBuilder):
@@ -222,46 +118,6 @@ class CombineColor(NodeBuilder):
     @ycc_mode.setter
     def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]):
         self.node.ycc_mode = value
-
-
-class CombineXYZ(NodeBuilder):
-    """
-    Create a vector from X, Y, and Z components
-    """
-
-    _bl_idname = "ShaderNodeCombineXYZ"
-    node: bpy.types.ShaderNodeCombineXYZ
-
-    def __init__(
-        self,
-        x: TYPE_INPUT_VALUE = 0.0,
-        y: TYPE_INPUT_VALUE = 0.0,
-        z: TYPE_INPUT_VALUE = 0.0,
-    ):
-        super().__init__()
-        key_args = {"X": x, "Y": y, "Z": z}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_x(self) -> SocketLinker:
-        """Input socket: X"""
-        return self._input("X")
-
-    @property
-    def i_y(self) -> SocketLinker:
-        """Input socket: Y"""
-        return self._input("Y")
-
-    @property
-    def i_z(self) -> SocketLinker:
-        """Input socket: Z"""
-        return self._input("Z")
-
-    @property
-    def o_vector(self) -> SocketLinker:
-        """Output socket: Vector"""
-        return self._output("Vector")
 
 
 class ConvertColorspace(NodeBuilder):
@@ -512,40 +368,6 @@ class ConvertToDisplay(NodeBuilder):
         return self._output("Image")
 
 
-class FloatCurve(NodeBuilder):
-    """
-    Map an input float to a curve and outputs a float value
-    """
-
-    _bl_idname = "ShaderNodeFloatCurve"
-    node: bpy.types.ShaderNodeFloatCurve
-
-    def __init__(
-        self,
-        factor: TYPE_INPUT_VALUE = 1.0,
-        value: TYPE_INPUT_VALUE = 1.0,
-    ):
-        super().__init__()
-        key_args = {"Factor": factor, "Value": value}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_factor(self) -> SocketLinker:
-        """Input socket: Factor"""
-        return self._input("Factor")
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self._output("Value")
-
-
 class IDMask(NodeBuilder):
     """
     Create a matte from an object or material index pass
@@ -597,7 +419,8 @@ class Levels(NodeBuilder):
     def __init__(
         self,
         image: TYPE_INPUT_COLOR = None,
-        channel: TYPE_INPUT_MENU = "Combined",
+        channel: TYPE_INPUT_MENU
+        | Literal["Combined", "Red", "Green", "Blue", "Luminance"] = "Combined",
     ):
         super().__init__()
         key_args = {"Image": image, "Channel": channel}
@@ -625,662 +448,6 @@ class Levels(NodeBuilder):
         return self._output("Standard Deviation")
 
 
-class MapRange(NodeBuilder):
-    """
-    Remap a value from a range to a target range
-    """
-
-    _bl_idname = "ShaderNodeMapRange"
-    node: bpy.types.ShaderNodeMapRange
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 1.0,
-        from_min: TYPE_INPUT_VALUE = 0.0,
-        from_max: TYPE_INPUT_VALUE = 1.0,
-        to_min: TYPE_INPUT_VALUE = 0.0,
-        to_max: TYPE_INPUT_VALUE = 1.0,
-        steps: TYPE_INPUT_VALUE = 4.0,
-        vector: TYPE_INPUT_VECTOR = None,
-        from_min_float3: TYPE_INPUT_VECTOR = None,
-        from_max_float3: TYPE_INPUT_VECTOR = None,
-        to_min_float3: TYPE_INPUT_VECTOR = None,
-        to_max_float3: TYPE_INPUT_VECTOR = None,
-        steps_float3: TYPE_INPUT_VECTOR = None,
-        *,
-        clamp: bool = False,
-        interpolation_type: Literal[
-            "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
-        ] = "LINEAR",
-        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
-    ):
-        super().__init__()
-        key_args = {
-            "Value": value,
-            "From Min": from_min,
-            "From Max": from_max,
-            "To Min": to_min,
-            "To Max": to_max,
-            "Steps": steps,
-            "Vector": vector,
-            "From_Min_FLOAT3": from_min_float3,
-            "From_Max_FLOAT3": from_max_float3,
-            "To_Min_FLOAT3": to_min_float3,
-            "To_Max_FLOAT3": to_max_float3,
-            "Steps_FLOAT3": steps_float3,
-        }
-        self.clamp = clamp
-        self.interpolation_type = interpolation_type
-        self.data_type = data_type
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls,
-        value: TYPE_INPUT_VALUE = 1.0,
-        from_min: TYPE_INPUT_VALUE = 0.0,
-        from_max: TYPE_INPUT_VALUE = 1.0,
-        to_min: TYPE_INPUT_VALUE = 0.0,
-        to_max: TYPE_INPUT_VALUE = 1.0,
-    ) -> "MapRange":
-        """Create Map Range with operation 'Float'."""
-        return cls(
-            data_type="FLOAT",
-            value=value,
-            from_min=from_min,
-            from_max=from_max,
-            to_min=to_min,
-            to_max=to_max,
-        )
-
-    @classmethod
-    def vector(
-        cls,
-        vector: TYPE_INPUT_VECTOR = None,
-        from_min3: TYPE_INPUT_VECTOR = None,
-        from_max3: TYPE_INPUT_VECTOR = None,
-        to_min3: TYPE_INPUT_VECTOR = None,
-        to_max3: TYPE_INPUT_VECTOR = None,
-    ) -> "MapRange":
-        """Create Map Range with operation 'Vector'."""
-        return cls(
-            data_type="FLOAT_VECTOR",
-            vector=vector,
-            from_min_float3=from_min3,
-            from_max_float3=from_max3,
-            to_min_float3=to_min3,
-            to_max_float3=to_max3,
-        )
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def i_from_min(self) -> SocketLinker:
-        """Input socket: From Min"""
-        return self._input("From Min")
-
-    @property
-    def i_from_max(self) -> SocketLinker:
-        """Input socket: From Max"""
-        return self._input("From Max")
-
-    @property
-    def i_to_min(self) -> SocketLinker:
-        """Input socket: To Min"""
-        return self._input("To Min")
-
-    @property
-    def i_to_max(self) -> SocketLinker:
-        """Input socket: To Max"""
-        return self._input("To Max")
-
-    @property
-    def i_steps(self) -> SocketLinker:
-        """Input socket: Steps"""
-        return self._input("Steps")
-
-    @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self._input("Vector")
-
-    @property
-    def i_from_min_float3(self) -> SocketLinker:
-        """Input socket: From Min"""
-        return self._input("From_Min_FLOAT3")
-
-    @property
-    def i_from_max_float3(self) -> SocketLinker:
-        """Input socket: From Max"""
-        return self._input("From_Max_FLOAT3")
-
-    @property
-    def i_to_min_float3(self) -> SocketLinker:
-        """Input socket: To Min"""
-        return self._input("To_Min_FLOAT3")
-
-    @property
-    def i_to_max_float3(self) -> SocketLinker:
-        """Input socket: To Max"""
-        return self._input("To_Max_FLOAT3")
-
-    @property
-    def i_steps_float3(self) -> SocketLinker:
-        """Input socket: Steps"""
-        return self._input("Steps_FLOAT3")
-
-    @property
-    def o_result(self) -> SocketLinker:
-        """Output socket: Result"""
-        return self._output("Result")
-
-    @property
-    def o_vector(self) -> SocketLinker:
-        """Output socket: Vector"""
-        return self._output("Vector")
-
-    @property
-    def clamp(self) -> bool:
-        return self.node.clamp
-
-    @clamp.setter
-    def clamp(self, value: bool):
-        self.node.clamp = value
-
-    @property
-    def interpolation_type(
-        self,
-    ) -> Literal["LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"]:
-        return self.node.interpolation_type
-
-    @interpolation_type.setter
-    def interpolation_type(
-        self, value: Literal["LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"]
-    ):
-        self.node.interpolation_type = value
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
-        self.node.data_type = value
-
-
-class Math(NodeBuilder):
-    """
-    Perform math operations
-    """
-
-    _bl_idname = "ShaderNodeMath"
-    node: bpy.types.ShaderNodeMath
-
-    def __init__(
-        self,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
-        *,
-        operation: Literal[
-            "ADD",
-            "SUBTRACT",
-            "MULTIPLY",
-            "DIVIDE",
-            "MULTIPLY_ADD",
-            "POWER",
-            "LOGARITHM",
-            "SQRT",
-            "INVERSE_SQRT",
-            "ABSOLUTE",
-            "EXPONENT",
-            "MINIMUM",
-            "MAXIMUM",
-            "LESS_THAN",
-            "GREATER_THAN",
-            "SIGN",
-            "COMPARE",
-            "SMOOTH_MIN",
-            "SMOOTH_MAX",
-            "ROUND",
-            "FLOOR",
-            "CEIL",
-            "TRUNC",
-            "FRACT",
-            "MODULO",
-            "FLOORED_MODULO",
-            "WRAP",
-            "SNAP",
-            "PINGPONG",
-            "SINE",
-            "COSINE",
-            "TANGENT",
-            "ARCSINE",
-            "ARCCOSINE",
-            "ARCTANGENT",
-            "ARCTAN2",
-            "SINH",
-            "COSH",
-            "TANH",
-            "RADIANS",
-            "DEGREES",
-        ] = "ADD",
-        use_clamp: bool = False,
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Value_001": value_001, "Value_002": value_002}
-        self.operation = operation
-        self.use_clamp = use_clamp
-        self._establish_links(**key_args)
-
-    @classmethod
-    def add(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Add'."""
-        return cls(operation="ADD", value=value, value_001=value_001)
-
-    @classmethod
-    def subtract(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Subtract'."""
-        return cls(operation="SUBTRACT", value=value, value_001=value_001)
-
-    @classmethod
-    def multiply(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Multiply'."""
-        return cls(operation="MULTIPLY", value=value, value_001=value_001)
-
-    @classmethod
-    def divide(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Divide'."""
-        return cls(operation="DIVIDE", value=value, value_001=value_001)
-
-    @classmethod
-    def multiply_add(
-        cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
-    ) -> "Math":
-        """Create Math with operation 'Multiply Add'."""
-        return cls(
-            operation="MULTIPLY_ADD",
-            value=value,
-            value_001=value_001,
-            value_002=value_002,
-        )
-
-    @classmethod
-    def power(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Power'."""
-        return cls(operation="POWER", value=value, value_001=value_001)
-
-    @classmethod
-    def logarithm(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Logarithm'."""
-        return cls(operation="LOGARITHM", value=value, value_001=value_001)
-
-    @classmethod
-    def square_root(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Square Root'."""
-        return cls(operation="SQRT", value=value)
-
-    @classmethod
-    def inverse_square_root(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Inverse Square Root'."""
-        return cls(operation="INVERSE_SQRT", value=value)
-
-    @classmethod
-    def absolute(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Absolute'."""
-        return cls(operation="ABSOLUTE", value=value)
-
-    @classmethod
-    def exponent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Exponent'."""
-        return cls(operation="EXPONENT", value=value)
-
-    @classmethod
-    def minimum(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Minimum'."""
-        return cls(operation="MINIMUM", value=value, value_001=value_001)
-
-    @classmethod
-    def maximum(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Maximum'."""
-        return cls(operation="MAXIMUM", value=value, value_001=value_001)
-
-    @classmethod
-    def less_than(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Less Than'."""
-        return cls(operation="LESS_THAN", value=value, value_001=value_001)
-
-    @classmethod
-    def greater_than(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Greater Than'."""
-        return cls(operation="GREATER_THAN", value=value, value_001=value_001)
-
-    @classmethod
-    def sign(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Sign'."""
-        return cls(operation="SIGN", value=value)
-
-    @classmethod
-    def compare(
-        cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
-    ) -> "Math":
-        """Create Math with operation 'Compare'."""
-        return cls(
-            operation="COMPARE", value=value, value_001=value_001, value_002=value_002
-        )
-
-    @classmethod
-    def smooth_minimum(
-        cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
-    ) -> "Math":
-        """Create Math with operation 'Smooth Minimum'."""
-        return cls(
-            operation="SMOOTH_MIN",
-            value=value,
-            value_001=value_001,
-            value_002=value_002,
-        )
-
-    @classmethod
-    def smooth_maximum(
-        cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
-    ) -> "Math":
-        """Create Math with operation 'Smooth Maximum'."""
-        return cls(
-            operation="SMOOTH_MAX",
-            value=value,
-            value_001=value_001,
-            value_002=value_002,
-        )
-
-    @classmethod
-    def round(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Round'."""
-        return cls(operation="ROUND", value=value)
-
-    @classmethod
-    def floor(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Floor'."""
-        return cls(operation="FLOOR", value=value)
-
-    @classmethod
-    def ceil(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Ceil'."""
-        return cls(operation="CEIL", value=value)
-
-    @classmethod
-    def truncate(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Truncate'."""
-        return cls(operation="TRUNC", value=value)
-
-    @classmethod
-    def fraction(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Fraction'."""
-        return cls(operation="FRACT", value=value)
-
-    @classmethod
-    def truncated_modulo(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Truncated Modulo'."""
-        return cls(operation="MODULO", value=value, value_001=value_001)
-
-    @classmethod
-    def floored_modulo(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Floored Modulo'."""
-        return cls(operation="FLOORED_MODULO", value=value, value_001=value_001)
-
-    @classmethod
-    def wrap(
-        cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
-    ) -> "Math":
-        """Create Math with operation 'Wrap'."""
-        return cls(
-            operation="WRAP", value=value, value_001=value_001, value_002=value_002
-        )
-
-    @classmethod
-    def snap(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Snap'."""
-        return cls(operation="SNAP", value=value, value_001=value_001)
-
-    @classmethod
-    def ping_pong(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Ping-Pong'."""
-        return cls(operation="PINGPONG", value=value, value_001=value_001)
-
-    @classmethod
-    def sine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Sine'."""
-        return cls(operation="SINE", value=value)
-
-    @classmethod
-    def cosine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Cosine'."""
-        return cls(operation="COSINE", value=value)
-
-    @classmethod
-    def tangent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Tangent'."""
-        return cls(operation="TANGENT", value=value)
-
-    @classmethod
-    def arcsine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Arcsine'."""
-        return cls(operation="ARCSINE", value=value)
-
-    @classmethod
-    def arccosine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Arccosine'."""
-        return cls(operation="ARCCOSINE", value=value)
-
-    @classmethod
-    def arctangent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Arctangent'."""
-        return cls(operation="ARCTANGENT", value=value)
-
-    @classmethod
-    def arctan2(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
-        """Create Math with operation 'Arctan2'."""
-        return cls(operation="ARCTAN2", value=value, value_001=value_001)
-
-    @classmethod
-    def hyperbolic_sine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Hyperbolic Sine'."""
-        return cls(operation="SINH", value=value)
-
-    @classmethod
-    def hyperbolic_cosine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Hyperbolic Cosine'."""
-        return cls(operation="COSH", value=value)
-
-    @classmethod
-    def hyperbolic_tangent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'Hyperbolic Tangent'."""
-        return cls(operation="TANH", value=value)
-
-    @classmethod
-    def to_radians(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'To Radians'."""
-        return cls(operation="RADIANS", value=value)
-
-    @classmethod
-    def to_degrees(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
-        """Create Math with operation 'To Degrees'."""
-        return cls(operation="DEGREES", value=value)
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value")
-
-    @property
-    def i_value_001(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value_001")
-
-    @property
-    def i_value_002(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self._input("Value_002")
-
-    @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self._output("Value")
-
-    @property
-    def operation(
-        self,
-    ) -> Literal[
-        "ADD",
-        "SUBTRACT",
-        "MULTIPLY",
-        "DIVIDE",
-        "MULTIPLY_ADD",
-        "POWER",
-        "LOGARITHM",
-        "SQRT",
-        "INVERSE_SQRT",
-        "ABSOLUTE",
-        "EXPONENT",
-        "MINIMUM",
-        "MAXIMUM",
-        "LESS_THAN",
-        "GREATER_THAN",
-        "SIGN",
-        "COMPARE",
-        "SMOOTH_MIN",
-        "SMOOTH_MAX",
-        "ROUND",
-        "FLOOR",
-        "CEIL",
-        "TRUNC",
-        "FRACT",
-        "MODULO",
-        "FLOORED_MODULO",
-        "WRAP",
-        "SNAP",
-        "PINGPONG",
-        "SINE",
-        "COSINE",
-        "TANGENT",
-        "ARCSINE",
-        "ARCCOSINE",
-        "ARCTANGENT",
-        "ARCTAN2",
-        "SINH",
-        "COSH",
-        "TANH",
-        "RADIANS",
-        "DEGREES",
-    ]:
-        return self.node.operation
-
-    @operation.setter
-    def operation(
-        self,
-        value: Literal[
-            "ADD",
-            "SUBTRACT",
-            "MULTIPLY",
-            "DIVIDE",
-            "MULTIPLY_ADD",
-            "POWER",
-            "LOGARITHM",
-            "SQRT",
-            "INVERSE_SQRT",
-            "ABSOLUTE",
-            "EXPONENT",
-            "MINIMUM",
-            "MAXIMUM",
-            "LESS_THAN",
-            "GREATER_THAN",
-            "SIGN",
-            "COMPARE",
-            "SMOOTH_MIN",
-            "SMOOTH_MAX",
-            "ROUND",
-            "FLOOR",
-            "CEIL",
-            "TRUNC",
-            "FRACT",
-            "MODULO",
-            "FLOORED_MODULO",
-            "WRAP",
-            "SNAP",
-            "PINGPONG",
-            "SINE",
-            "COSINE",
-            "TANGENT",
-            "ARCSINE",
-            "ARCCOSINE",
-            "ARCTANGENT",
-            "ARCTAN2",
-            "SINH",
-            "COSH",
-            "TANH",
-            "RADIANS",
-            "DEGREES",
-        ],
-    ):
-        self.node.operation = value
-
-    @property
-    def use_clamp(self) -> bool:
-        return self.node.use_clamp
-
-    @use_clamp.setter
-    def use_clamp(self, value: bool):
-        self.node.use_clamp = value
-
-
 class MenuSwitch(NodeBuilder):
     """
     Select from multiple inputs by name
@@ -1291,7 +458,7 @@ class MenuSwitch(NodeBuilder):
 
     def __init__(
         self,
-        menu: TYPE_INPUT_MENU = "A",
+        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
         item_0: TYPE_INPUT_COLOR = None,
         item_1: TYPE_INPUT_COLOR = None,
         extend: LINKABLE = None,
@@ -1313,7 +480,7 @@ class MenuSwitch(NodeBuilder):
     @classmethod
     def float(
         cls,
-        menu: TYPE_INPUT_MENU = "A",
+        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
         item_0: TYPE_INPUT_VALUE = 0.0,
         item_1: TYPE_INPUT_VALUE = 0.0,
         extend: LINKABLE = None,
@@ -1326,7 +493,7 @@ class MenuSwitch(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        menu: TYPE_INPUT_MENU = "A",
+        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
         item_0: TYPE_INPUT_INT = 0,
         item_1: TYPE_INPUT_INT = 0,
         extend: LINKABLE = None,
@@ -1339,7 +506,7 @@ class MenuSwitch(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        menu: TYPE_INPUT_MENU = "A",
+        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
         item_0: TYPE_INPUT_BOOLEAN = False,
         item_1: TYPE_INPUT_BOOLEAN = False,
         extend: LINKABLE = None,
@@ -1352,7 +519,7 @@ class MenuSwitch(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        menu: TYPE_INPUT_MENU = "A",
+        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
         item_0: TYPE_INPUT_VECTOR = None,
         item_1: TYPE_INPUT_VECTOR = None,
         extend: LINKABLE = None,
@@ -1365,7 +532,7 @@ class MenuSwitch(NodeBuilder):
     @classmethod
     def color(
         cls,
-        menu: TYPE_INPUT_MENU = "A",
+        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
         item_0: TYPE_INPUT_COLOR = None,
         item_1: TYPE_INPUT_COLOR = None,
         extend: LINKABLE = None,
@@ -1378,7 +545,7 @@ class MenuSwitch(NodeBuilder):
     @classmethod
     def string(
         cls,
-        menu: TYPE_INPUT_MENU = "A",
+        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
         item_0: TYPE_INPUT_STRING = "",
         item_1: TYPE_INPUT_STRING = "",
         extend: LINKABLE = None,
@@ -1391,7 +558,7 @@ class MenuSwitch(NodeBuilder):
     @classmethod
     def menu(
         cls,
-        menu: TYPE_INPUT_MENU = "A",
+        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
         item_0: TYPE_INPUT_MENU = None,
         item_1: TYPE_INPUT_MENU = None,
         extend: LINKABLE = None,
@@ -1705,7 +872,7 @@ class Mix(NodeBuilder):
         self.node.clamp_result = value
 
 
-class RgbToBw(NodeBuilder):
+class RGBToBw(NodeBuilder):
     """
     Convert RGB input into grayscale using luminance
     """
@@ -1883,41 +1050,6 @@ class SeparateColor(NodeBuilder):
         self.node.ycc_mode = value
 
 
-class SeparateXYZ(NodeBuilder):
-    """
-    Split a vector into its X, Y, and Z components
-    """
-
-    _bl_idname = "ShaderNodeSeparateXYZ"
-    node: bpy.types.ShaderNodeSeparateXYZ
-
-    def __init__(self, vector: TYPE_INPUT_VECTOR = None):
-        super().__init__()
-        key_args = {"Vector": vector}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self._input("Vector")
-
-    @property
-    def o_x(self) -> SocketLinker:
-        """Output socket: X"""
-        return self._output("X")
-
-    @property
-    def o_y(self) -> SocketLinker:
-        """Output socket: Y"""
-        return self._output("Y")
-
-    @property
-    def o_z(self) -> SocketLinker:
-        """Output socket: Z"""
-        return self._output("Z")
-
-
 class SetAlpha(NodeBuilder):
     """
     Add an alpha channel to an image
@@ -1930,7 +1062,7 @@ class SetAlpha(NodeBuilder):
         self,
         image: TYPE_INPUT_COLOR = None,
         alpha: TYPE_INPUT_VALUE = 1.0,
-        type: TYPE_INPUT_MENU = "Apply Mask",
+        type: TYPE_INPUT_MENU | Literal["Apply Mask", "Replace Alpha"] = "Apply Mask",
     ):
         super().__init__()
         key_args = {"Image": image, "Alpha": alpha, "Type": type}

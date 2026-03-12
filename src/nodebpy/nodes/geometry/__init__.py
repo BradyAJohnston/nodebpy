@@ -335,7 +335,7 @@ from .output import (
 )
 from .color import (
     Gamma,
-    RgbCurves,
+    RGBCurves,
 )
 from .vector import (
     RadialTiling,
@@ -537,6 +537,7 @@ __all__ = (
     "QuadraticBezier",
     "Quadrilateral",
     "QuaternionToRotation",
+    "RGBCurves",
     "RadialTiling",
     "Radius",
     "RandomValue",
@@ -550,7 +551,6 @@ __all__ = (
     "ReplaceString",
     "ResampleCurve",
     "ReverseCurve",
-    "RgbCurves",
     "RotateEuler",
     "RotateInstances",
     "RotateRotation",
