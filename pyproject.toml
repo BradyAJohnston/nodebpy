@@ -1,7 +1,7 @@
 [project]
 name = "nodebpy"
-version = "0.4.1"
-description = "Build nodes in Blender with code"
+version = "0.5.0"
+description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
     { name = "Brady Johnston", email = "brady.johnston@me.com" }

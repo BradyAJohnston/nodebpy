@@ -531,9 +531,8 @@ def test_add_all_nodes(module, tree_type):
             assert node.node is not None
             # Test each classmethod defined on this class (not inherited from NodeBuilder)
             for method_name in dir(cls):
-                if (
-                    isinstance(inspect.getattr_static(cls, method_name), classmethod)
-                    and method_name not in dir(NodeBuilder)
-                ):
+                if isinstance(
+                    inspect.getattr_static(cls, method_name), classmethod
+                ) and method_name not in dir(NodeBuilder):
                     node = getattr(cls, method_name)()
                     assert node.node is not None
