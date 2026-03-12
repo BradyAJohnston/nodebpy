@@ -3,19 +3,19 @@ title: What happens when we add nodes?
 ---
 
 ```{python}
-from nodebpy import TreeBuilder, nodes as n, sockets as s
+from nodebpy import TreeBuilder, geometry as g, sockets as s
 ```
 
 ## Adding Nodes
 
 Adding nodes must be done inside of a context. We enter a context using the `with` keyword.
-While inside of this context, whenever you call a node class (`n.SetPosition()`) a node of that type will be added to the current tree.
+While inside of this context, whenever you call a node class (`g.SetPosition()`) a node of that type will be added to the current tree.
 
 This first example creates a new tree and adds two new nodes, linking the `Set Position` node into the `Transform Geometry` node. The output and input sockets for each are inferred based on simple heuristics around socket type and order.
 
 ```{python}
 with TreeBuilder("NewTree") as tree:
-    n.SetPosition() >> n.TransformGeometry()
+    g.SetPosition() >> g.TransformGeometry()
 
 tree
 ```
@@ -30,19 +30,19 @@ These two approaches are equivalent:
 
 ```{python}
 with TreeBuilder("AnotherTree") as tree:
-    pos = n.SetPosition()
+    pos = g.SetPosition()
 
-    n.Position() * 0.5 >> pos.i_position
-    n.Vector() >> pos.i_offset
+    g.Position() * 0.5 >> pos.i_position
+    g.Vector() >> pos.i_offset
 ```
 
 ## Using Arguments to Class
 
 ```{python}
 with TreeBuilder("AnotherAnotherTree") as tree:
-    n.SetPosition(
-        offset = n.Vector(),
-        position = n.Position() * 0.5
+    g.SetPosition(
+        offset = g.Vector(),
+        position = g.Position() * 0.5
     )
 ```
 
@@ -65,7 +65,7 @@ with TreeBuilder("NewTree") as tree:
         geom_inputs = [s.SocketGeometry(f"Geometry_{i}") for i in range(5)]
 
     with tree.outputs:
-        n.JoinGeometry(*geom_inputs) >> s.SocketGeometry("The Output Socket")
+        g.JoinGeometry(*geom_inputs) >> s.SocketGeometry("The Output Socket")
 
 tree
 
@@ -82,7 +82,7 @@ with TreeBuilder() as tree:
 
     (
         count
-        >> n.Points(position=n.RandomValue.vector(min=(-0.1,-0.1,-0.2)))
+        >> g.Points(position=g.RandomValue.vector(min=(-0.1,-0.1,-0.2)))
         >> output
     )
 
@@ -99,7 +99,7 @@ with TreeBuilder() as tree:
 
     (
         count
-        >> n.Points(position=n.RandomValue.vector() * 0.5 * n.Position())
+        >> g.Points(position=g.RandomValue.vector() * 0.5 * g.Position())
         >> output
     )
 
@@ -117,13 +117,13 @@ Both input and output nodes can automatically detect and capture links when you 
 
 ```{python}
 with TreeBuilder(arrange=False) as tree:
-    zone = n.RepeatZone(10)
-    join = n.JoinGeometry()
+    zone = g.RepeatZone(10)
+    join = g.JoinGeometry()
     # a geometry socket is added to the zone when we try to connect from the Join Geometry
     # to the zone output, which is then available for the zone.input >> join
-    join >> zone.output >> n.SetPosition()
+    join >> zone.output >> g.SetPosition()
     zone.input >> join
-    n.Points(zone.i, position=n.RandomValue.vector(seed=zone.i)) >> join
+    g.Points(zone.i, position=g.RandomValue.vector(seed=zone.i)) >> join
 
 
 tree
@@ -133,15 +133,15 @@ tree
 ```{python}
 with TreeBuilder(arrange=False) as tree:
     # this initializes the zone with two socket inputs for each of the values
-    zone = n.SimulationZone(n.Value(), n.Vector())
+    zone = g.SimulationZone(g.Value(), g.Vector())
 
-    # this explicitly grabs the "Value" socket (which got it's name from the n.Value() node)
+    # this explicitly grabs the "Value" socket (which got it's name from the g.Value() node)
     # and adds 10 then attempts to plug it into the zone output (it will choose the float
     # socket instead of the vector socket because that is the most compatible)
     zone.input.outputs["Value"] + 10 >> zone.output
     # this should automatically pick the vector input socket because we are
     # explicity about the VectorMath and it will be the most compatible
-    zone.input >> n.VectorMath.add((1.2, 1.2, 1.2)) >> zone.output
+    zone.input >> g.VectorMath.add((1.2, 1.2, 1.2)) >> zone.output
 
 tree
 ```

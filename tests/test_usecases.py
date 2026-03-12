@@ -1,5 +1,5 @@
 from nodebpy import TreeBuilder
-from nodebpy import nodes as n
+from nodebpy import geometry as g
 from nodebpy import sockets as s
 
 
@@ -15,15 +15,15 @@ def import_channel():
             min_value = s.SocketFloat("Minimum Value")
             max_value = s.SocketFloat("Maximum Value")
 
-        string = n.FormatString(
+        string = g.FormatString(
             time=time,
             channel_number=channel_number,
             base_path=base_path,
-            scale=n.Integer(0),
+            scale=g.Integer(0),
             format=string_to_format,
         )
-        gng = n.GetNamedGrid(n.ImportVDB(string), name="data")
-        sng = n.StoreNamedGrid(
+        gng = g.GetNamedGrid(g.ImportVDB(string), name="data")
+        sng = g.StoreNamedGrid(
             gng,
             name=channel_name,
             grid=(gng.o_grid - min_value) / (max_value - min_value),

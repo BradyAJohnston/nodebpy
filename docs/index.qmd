@@ -1,7 +1,7 @@
 
 # nodebpy
 
-[![Run Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml) [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy) 
+[![Run Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml) [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy)
 
 A package to help build node trees in blender more elegantly with python code.
 
@@ -24,7 +24,7 @@ The dots can appear at multiple locations and each input will be linked to the p
 
 ```{python}
 # | output: asis
-from nodebpy import TreeBuilder, nodes as n, sockets as s
+from nodebpy import TreeBuilder, geometry as g, sockets as s
 
 with TreeBuilder("AnotherTree") as tree:
     with tree.inputs:
@@ -33,23 +33,23 @@ with TreeBuilder("AnotherTree") as tree:
         instances = s.SocketGeometry("Instances")
 
     rotation = (
-        n.RandomValue.vector(min=(-1, -1, -1), seed=2)
-        >> n.AlignRotationToVector()
-        >> n.RotateRotation(
-            rotate_by=n.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
+        g.RandomValue.vector(min=(-1, -1, -1), seed=2)
+        >> g.AlignRotationToVector()
+        >> g.RotateRotation(
+            rotate_by=g.AxisAngleToRotation(angle=0.3), rotation_space="LOCAL"
         )
     )
 
     _ = (
         count
-        >> n.Points(position=n.RandomValue.vector(min=(-1, -1, -1)))
-        >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
-        >> n.SetPosition(
-            position=n.Position() * 2.0 + (0, 0.2, 0.3),
+        >> g.Points(position=g.RandomValue.vector(min=(-1, -1, -1)))
+        >> g.InstanceOnPoints(instance=g.Cube(), rotation=rotation)
+        >> g.SetPosition(
+            position=g.Position() * 2.0 + (0, 0.2, 0.3),
             offset=(0, 0, 0.1),
         )
-        >> n.RealizeInstances()
-        >> n.InstanceOnPoints(n.Cube(), instance=...)
+        >> g.RealizeInstances()
+        >> g.InstanceOnPoints(g.Cube(), instance=...)
         >> instances
     )
 

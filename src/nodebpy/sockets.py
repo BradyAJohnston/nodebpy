@@ -22,6 +22,7 @@ from .builder import (
     SocketMenu,
     SocketObject,
     SocketRotation,
+    SocketShader,
     SocketString,
     SocketVector,
 )
@@ -43,4 +44,5 @@ __all__ = [
     "SocketMaterial",
     "SocketBundle",
     "SocketClosure",
+    "SocketShader",
 ]
