@@ -5,6 +5,7 @@ Tests arithmetic, comparison, boolean, and unary operators on NodeBuilder.
 
 import itertools
 
+import numpy as np
 import pytest
 
 from nodebpy import TreeBuilder
@@ -614,12 +615,21 @@ class TestReverseOperators:
         assert result.node.bl_idname == "FunctionNodeBooleanMath"
         assert result.node.operation == "XOR"
 
+    def test_matmul(self):
+        with TreeBuilder("TestMatmul"):
+            mat = np.random.rand(4, 4)
+            a = g.CombineTransform(translation=(1, 0, 0))
+            b = g.CombineMatrix(*mat.ravel())
+            result = a @ b
+        assert result.node.bl_idname == "FunctionNodeMatrixMultiply"
+        assert np.allclose(mat.ravel(), [i.default_value for i in b.node.inputs])
+
     def test_rmatmul(self):
         with TreeBuilder("TestRMatmul"):
             a = g.CombineTransform(translation=(1, 0, 0))
             b = g.CombineTransform(rotation=(0, 90, 0))
             # use the output socket as the left operand so Python calls b.__rmatmul__
-            result = a.o_transform @ b
+            result = a.o_transform.socket @ b
 
         assert result.node.bl_idname == "FunctionNodeMatrixMultiply"
 

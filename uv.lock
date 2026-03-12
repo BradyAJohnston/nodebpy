@@ -1310,6 +1310,11 @@ jupyter = [
     { name = "ipython" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "numpy" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.0.0" },
@@ -1326,6 +1331,9 @@ requires-dist = [
     { name = "tree-clipper", marker = "extra == 'dev'", specifier = ">=0.1.1" },
 ]
 provides-extras = ["bpy", "jupyter", "dev"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "numpy", specifier = "<2.0" }]
 
 [[package]]
 name = "notebook"

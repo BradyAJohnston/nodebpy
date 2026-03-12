@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
-    from .nodes.geometry import Math, VectorMath
+    from .nodes.geometry import IntegerMath, Math, VectorMath
     from .nodes.geometry.converter import BooleanMath, MultiplyMatrices
     from .nodes.geometry.manual import Compare
 
@@ -697,13 +697,13 @@ class NodeBuilder:
     def __rmod__(self, other: Any) -> "VectorMath | Math":
         return self._apply_math_operation(other, "modulo", reverse=True)
 
-    def __floordiv__(self, other: Any) -> "VectorMath | Math":
+    def __floordiv__(self, other: Any) -> "VectorMath | Math | IntegerMath":
         return self._apply_floordiv_operation(other)
 
-    def __rfloordiv__(self, other: Any) -> "VectorMath | Math":
+    def __rfloordiv__(self, other: Any) -> "VectorMath | Math | IntegerMath":
         return self._apply_floordiv_operation(other, reverse=True)
 
-    def __neg__(self) -> "VectorMath | Math":
+    def __neg__(self) -> "VectorMath | Math | IntegerMath":
         from .nodes.geometry import VectorMath
         from .nodes.geometry.converter import IntegerMath, Math
 
@@ -715,7 +715,7 @@ class NodeBuilder:
         else:
             return Math.multiply(socket, -1)
 
-    def __abs__(self) -> "VectorMath | Math":
+    def __abs__(self) -> "VectorMath | Math | IntegerMath":
         from .nodes.geometry import VectorMath
         from .nodes.geometry.converter import IntegerMath, Math
 
@@ -729,7 +729,7 @@ class NodeBuilder:
 
     def _apply_floordiv_operation(
         self, other: Any, reverse: bool = False
-    ) -> "VectorMath | Math":
+    ) -> "VectorMath | Math | IntegerMath":
         """Apply floor division: divide then floor."""
         from .nodes.geometry import VectorMath
         from .nodes.geometry.converter import IntegerMath, Math
@@ -745,9 +745,9 @@ class NodeBuilder:
 
         divided = self._apply_math_operation(other, "divide", reverse=reverse)
         if component_is_vector:
-            return VectorMath.floor(divided._default_output_socket)
+            return VectorMath.floor(divided)
         else:
-            return Math.floor(divided._default_output_socket)
+            return Math.floor(divided)
 
     def _apply_compare_operation(self, other: Any, operation: str) -> "Compare":
         """Apply a comparison operation using the Compare node."""
@@ -779,7 +779,7 @@ class NodeBuilder:
         """Apply a boolean operation using the BooleanMath node."""
         from .nodes.geometry.converter import BooleanMath
 
-        return getattr(BooleanMath, operation)(self._default_output_socket, other)
+        return getattr(BooleanMath, operation)(self, other)
 
     def __and__(self, other: Any) -> "BooleanMath":
         return self._apply_boolean_operation(other, "l_and")
@@ -787,7 +787,7 @@ class NodeBuilder:
     def __rand__(self, other: Any) -> "BooleanMath":
         from .nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_and(other, self._default_output_socket)
+        return BooleanMath.l_and(other, self)
 
     def __or__(self, other: Any) -> "BooleanMath":
         return self._apply_boolean_operation(other, "l_or")
@@ -795,7 +795,7 @@ class NodeBuilder:
     def __ror__(self, other: Any) -> "BooleanMath":
         from .nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_or(other, self._default_output_socket)
+        return BooleanMath.l_or(other, self)
 
     def __xor__(self, other: Any) -> "BooleanMath":
         return self._apply_boolean_operation(other, "not_equal")
@@ -803,22 +803,31 @@ class NodeBuilder:
     def __rxor__(self, other: Any) -> "BooleanMath":
         from .nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.not_equal(other, self._default_output_socket)
+        return BooleanMath.not_equal(other, self)
 
     def __invert__(self) -> "BooleanMath":
         from .nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_not(self._default_output_socket)
+        return BooleanMath.l_not(self)
 
     def __matmul__(self, other: Any) -> "MultiplyMatrices":
         from .nodes.geometry.converter import MultiplyMatrices
 
-        return MultiplyMatrices(self._default_output_socket, other)
+        return MultiplyMatrices(self, other)
 
     def __rmatmul__(self, other: Any) -> "MultiplyMatrices":
-        from .nodes.geometry.converter import MultiplyMatrices
+        from .nodes.geometry.converter import CombineMatrix, MultiplyMatrices
 
-        return MultiplyMatrices(other, self._default_output_socket)
+        def _cast_to_matrix(value):
+            if isinstance(value, (NodeBuilder, NodeSocket, SocketLinker)):
+                return value
+            if hasattr(value, "shape") and value.shape == (4, 4):
+                return CombineMatrix(*value)
+            raise TypeError(
+                f"Unsupported type for matrix multiplication: {type(value)}"
+            )
+
+        return MultiplyMatrices(_cast_to_matrix(other), self)
 
 
 class DynamicInputsMixin:
