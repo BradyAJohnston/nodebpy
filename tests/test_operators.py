@@ -345,7 +345,7 @@ class TestParameterizedOperators:
     )
     def test_binary_operators_with_types(self, operator, input_cls):
         with TreeBuilder("TestParameterized"):
-            node = input_cls()
+            node = input_cls()  # noqa: F841
             result = eval(f"node {operator} 2.0")
 
         assert result.node is not None
