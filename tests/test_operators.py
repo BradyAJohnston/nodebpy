@@ -344,7 +344,7 @@ class TestParameterizedOperators:
     )
     def test_binary_operators_with_types(self, operator, input_cls):
         with TreeBuilder("TestParameterized"):
-            input_cls()
+            node = input_cls()
             result = eval(f"node {operator} 2.0")
 
         assert result.node is not None
@@ -390,6 +390,89 @@ class TestComparisonChaining:
         assert (
             result.node.inputs[1].links[0].from_node.bl_idname == "FunctionNodeCompare"
         )
+
+    def test_comparison_or_chain(self):
+        """Combine comparisons with OR: val < 1 or val > 10."""
+        with TreeBuilder("TestCompareOr"):
+            val = g.Value(5.0)
+            result = (val < 1.0) | (val > 10.0)
+
+        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.operation == "OR"
+        lt_node = result.node.inputs[0].links[0].from_node
+        gt_node = result.node.inputs[1].links[0].from_node
+        assert lt_node.operation == "LESS_THAN"
+        assert gt_node.operation == "GREATER_THAN"
+
+    def test_comparison_negated(self):
+        """Negate a comparison: ~(val > 5)."""
+        with TreeBuilder("TestCompareNegated"):
+            result = ~(g.Value(3.0) > 5.0)
+
+        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.operation == "NOT"
+        assert (
+            result.node.inputs[0].links[0].from_node.bl_idname == "FunctionNodeCompare"
+        )
+
+    def test_comparison_xor(self):
+        """XOR two comparisons."""
+        with TreeBuilder("TestCompareXor"):
+            a = g.Value(1.0)
+            b = g.Value(2.0)
+            result = (a > 0.0) ^ (b > 0.0)
+
+        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.operation == "XOR"
+
+    def test_multi_condition_and_or(self):
+        """Build (a > 0 & b > 0) | c > 0."""
+        with TreeBuilder("TestMultiCondition"):
+            a = g.Value(1.0)
+            b = g.Value(2.0)
+            c = g.Value(3.0)
+            result = ((a > 0.0) & (b > 0.0)) | (c > 0.0)
+
+        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.operation == "OR"
+        and_node = result.node.inputs[0].links[0].from_node
+        assert and_node.bl_idname == "FunctionNodeBooleanMath"
+        assert and_node.operation == "AND"
+
+    def test_integer_comparison_with_boolean_ops(self):
+        """Integer comparisons combined with boolean operators."""
+        with TreeBuilder("TestIntCompareBool"):
+            idx = g.Index()
+            result = (idx >= 5) & (idx <= 100)
+
+        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.operation == "AND"
+        ge_node = result.node.inputs[0].links[0].from_node
+        le_node = result.node.inputs[1].links[0].from_node
+        assert ge_node.operation == "GREATER_EQUAL"
+        assert ge_node.data_type == "INT"
+        assert le_node.operation == "LESS_EQUAL"
+        assert le_node.data_type == "INT"
+
+    def test_comparison_into_switch(self):
+        """Use a comparison as a switch condition."""
+        with TreeBuilder("TestCompareSwitch"):
+            val = g.Value(5.0)
+            condition = val > 0.0
+            switch = g.Switch.float(condition, 1.0, 2.0)
+
+        assert switch.node.inputs["Switch"].links[0].from_node == condition.node
+
+    def test_comparison_boolean_into_set_position(self):
+        """Full pipeline: compare + boolean logic as selection for SetPosition."""
+        with TreeBuilder("TestCompareBoolSetPos") as tree:
+            pos = g.Position()
+            xyz = g.SeparateXYZ(pos)
+            # select points where x > 0 and z <= 1
+            selection = (xyz > 0.0) & (g.SeparateXYZ(pos).o_z <= 1.0)
+            _ = g.Cube() >> g.SetPosition(selection=selection, offset=(0, 0, 1))
+
+        assert len(tree) >= 5
 
 
 class TestComplexExpressions:
