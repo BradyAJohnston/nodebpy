@@ -560,6 +560,70 @@ class TestComplexExpressions:
         assert len(tree) >= 8
 
 
+class TestReverseOperators:
+    """Tests for reverse (r) operator variants triggered when the left operand is a literal."""
+
+    def test_rmul(self):
+        with TreeBuilder("TestRMul"):
+            result = 3.0 * g.Value(2.0)
+
+        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.operation == "MULTIPLY"
+
+    def test_rtruediv(self):
+        with TreeBuilder("TestRTrueDiv"):
+            result = 10.0 / g.Value(2.0)
+
+        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.operation == "DIVIDE"
+        assert result.node.inputs[0].default_value == 10.0
+
+    def test_radd(self):
+        with TreeBuilder("TestRAdd"):
+            result = 5.0 + g.Value(3.0)
+
+        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.operation == "ADD"
+
+    def test_rsub(self):
+        with TreeBuilder("TestRSub"):
+            result = 10.0 - g.Value(3.0)
+
+        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.operation == "SUBTRACT"
+        assert result.node.inputs[0].default_value == 10.0
+
+    def test_rand(self):
+        with TreeBuilder("TestRAnd"):
+            result = True & g.Boolean(False)
+
+        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.operation == "AND"
+
+    def test_ror(self):
+        with TreeBuilder("TestROr"):
+            result = False | g.Boolean(True)
+
+        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.operation == "OR"
+
+    def test_rxor(self):
+        with TreeBuilder("TestRXor"):
+            result = True ^ g.Boolean(False)
+
+        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.operation == "XOR"
+
+    def test_rmatmul(self):
+        with TreeBuilder("TestRMatmul"):
+            a = g.CombineTransform(translation=(1, 0, 0))
+            b = g.CombineTransform(rotation=(0, 90, 0))
+            # use the output socket as the left operand so Python calls b.__rmatmul__
+            result = a.o_transform @ b
+
+        assert result.node.bl_idname == "FunctionNodeMatrixMultiply"
+
+
 class TestMatrixMultiplcation:
     def test_matrix_multiplication(self):
         """Test matrix multiplication."""
