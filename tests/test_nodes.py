@@ -4,20 +4,20 @@ import bpy
 import pytest
 
 from nodebpy import TreeBuilder
-from nodebpy import nodes as n
+from nodebpy import geometry as g
 from nodebpy import sockets as s
 
 
 def test_capture_attribute():
     with TreeBuilder("TestCaptureAttribute") as tree:
-        cube = n.Cube()
-        cap = n.CaptureAttribute.edge()
+        cube = g.Cube()
+        cap = g.CaptureAttribute.edge()
 
         _ = (
             cube
             >> cap
-            >> n.SetPosition(offset=(0, 0, 10))
-            >> n.SetPosition(position=cap.capture(n.Position()))
+            >> g.SetPosition(offset=(0, 0, 10))
+            >> g.SetPosition(position=cap.capture(g.Position()))
         )
 
     assert "Capture Attribute" in tree.nodes
@@ -26,12 +26,12 @@ def test_capture_attribute():
     assert cap.node.outputs[1].type == "VECTOR"
 
     with TreeBuilder() as tree:
-        cap = n.Points(
-            count=10, position=n.RandomValue.vector(), radius=n.RandomValue.float()
-        ) >> n.CaptureAttribute.point(
-            n.Position(),
-            n.Radius(),
-            normal=n.Normal(),
+        cap = g.Points(
+            count=10, position=g.RandomValue.vector(), radius=g.RandomValue.float()
+        ) >> g.CaptureAttribute.point(
+            g.Position(),
+            g.Radius(),
+            normal=g.Normal(),
         )
         assert len(cap.node.capture_items) == 3
         assert (
@@ -46,8 +46,8 @@ def test_capture_attribute():
 
 def test_join_geometry():
     with TreeBuilder("TestJoinGeometry") as tree:
-        items = [n.Cube(), n.UVSphere(), n.Cone(), n.Cylinder(), n.Grid()]
-        join = n.JoinGeometry(*items)
+        items = [g.Cube(), g.UVSphere(), g.Cone(), g.Cylinder(), g.Grid()]
+        join = g.JoinGeometry(*items)
 
     assert "Join Geometry" in tree.nodes
     assert len(join.node.inputs["Geometry"].links) == 5
@@ -57,11 +57,11 @@ def test_join_geometry():
 
 def test_socket_selection():
     with TreeBuilder("AnotherTree"):
-        pos = n.SetPosition()
-        vec = n.Vector()
+        pos = g.SetPosition()
+        vec = g.Vector()
 
         vec >> pos.i_offset
-        n.Position() * 1.0 >> pos.i_position
+        g.Position() * 1.0 >> pos.i_position
 
     assert pos.i_offset.socket_name == "Offset"
     assert vec.o_vector.socket.links[0].to_socket.node == pos.node
@@ -74,13 +74,13 @@ class TestMathOperators:
         "operator,input",
         itertools.product(
             ["+", "-", "*", "/"],
-            [n.Vector, n.Value],
+            [g.Vector, g.Value],
         ),
     )
     def test_math_operators(self, operator, input):
         with TreeBuilder("TestMathOperators"):
-            set_pos = n.SetPosition()
-            pos = n.Position()  # noqa: F841
+            set_pos = g.SetPosition()
+            pos = g.Position()  # noqa: F841
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 
@@ -92,10 +92,10 @@ class TestMathOperators:
 def test_format_string():
     str_to_format = "Hello {x} friends, it is {y} hours and this is a {String}"
     with TreeBuilder("TestFormatString"):
-        x_int = n.Integer(5)
-        y_value = n.Value(12.50)
-        format = n.FormatString(
-            n.String("test"),
+        x_int = g.Integer(5)
+        y_value = g.Value(12.50)
+        format = g.FormatString(
+            g.String("test"),
             format=str_to_format,
             x=x_int,
             y=y_value,
@@ -120,10 +120,10 @@ def test_format_string():
 def test_field_to_grid():
     with TreeBuilder() as tree:
         # the rotation value should add a vector item as the next available compatible data type
-        inputs = [n.Vector(), n.Value(), n.Boolean(), n.Integer(), n.Rotation()]
-        math = n.Math.add()
+        inputs = [g.Vector(), g.Value(), g.Boolean(), g.Integer(), g.Rotation()]
+        math = g.Math.add()
 
-        ftg = n.FieldToGrid(*inputs, test=n.Value())
+        ftg = g.FieldToGrid(*inputs, test=g.Value())
         _ = ftg.outputs["test"] >> math
 
     assert len(tree) == 8
@@ -139,8 +139,8 @@ def test_field_to_grid():
         assert item.data_type == type
 
     with TreeBuilder() as tree:
-        grid = n.VolumeCube(n.NoiseTexture()) >> n.GetNamedGrid(name="density")
-        ftg = n.FieldToGrid.vector(n.NoiseTexture().o_color, topology=grid)
+        grid = g.VolumeCube(g.NoiseTexture()) >> g.GetNamedGrid(name="density")
+        ftg = g.FieldToGrid.vector(g.NoiseTexture().o_color, topology=grid)
 
     assert ftg.data_type == "VECTOR"
     assert len(ftg.node.grid_items) == 1
@@ -151,8 +151,8 @@ def test_field_to_grid():
 
 def test_geometry_to_instance():
     with TreeBuilder() as tree:
-        inputs = [n.Cube(), n.UVSphere(), n.IcoSphere(), n.Cone()]
-        gti = n.GeometryToInstance(*inputs)
+        inputs = [g.Cube(), g.UVSphere(), g.IcoSphere(), g.Cone()]
+        gti = g.GeometryToInstance(*inputs)
 
     assert len(tree) == 5
     assert len(gti.node.inputs[0].links) == 4
@@ -163,9 +163,9 @@ def test_geometry_to_instance():
 def test_get_named_grid(snapshot_tree):
     with TreeBuilder() as tree:
         (
-            n.VolumeCube()
-            >> n.GetNamedGrid(name="density")
-            >> n.FieldToGrid(n.Position(), n.Position() * 2 + 10)
+            g.VolumeCube()
+            >> g.GetNamedGrid(name="density")
+            >> g.FieldToGrid(g.Position(), g.Position() * 2 + 10)
         )
 
     assert snapshot_tree == tree
@@ -173,14 +173,14 @@ def test_get_named_grid(snapshot_tree):
 
 def test_advect_grid(snapshot_tree):
     with TreeBuilder():
-        grid = n.GetNamedGrid(n.VolumeCube(), name="density")
-        ftg = n.FieldToGrid(
-            n.Position(),
+        grid = g.GetNamedGrid(g.VolumeCube(), name="density")
+        ftg = g.FieldToGrid(
+            g.Position(),
             topology=grid,
         )
 
-        ag = grid >> n.AdvectGrid(
-            velocity=ftg, time_step=n.Value(0.1), integration_scheme="Midpoint"
+        ag = grid >> g.AdvectGrid(
+            velocity=ftg, time_step=g.Value(0.1), integration_scheme="Midpoint"
         )
 
     assert ftg.i_topology.socket.links[0].from_socket == grid.o_grid.socket
@@ -190,13 +190,13 @@ def test_advect_grid(snapshot_tree):
 
 def test_sdf_grid_boolean():
     with TreeBuilder() as tree:
-        trio = [n.PointsToSDFGrid() for _ in range(3)]
-        bool1 = n.SDFGridBoolean.difference(
+        trio = [g.PointsToSDFGrid() for _ in range(3)]
+        bool1 = g.SDFGridBoolean.difference(
             *trio,
-            grid_1=n.GetNamedGrid(n.VolumeCube(), name="density"),
+            grid_1=g.GetNamedGrid(g.VolumeCube(), name="density"),
         )
-        bool2 = n.SDFGridBoolean.intersect(*trio)
-        bool3 = n.SDFGridBoolean.union(*trio)
+        bool2 = g.SDFGridBoolean.intersect(*trio)
+        bool3 = g.SDFGridBoolean.union(*trio)
 
     assert len(tree) == 8
     assert (
@@ -216,8 +216,8 @@ def test_sdf_grid_boolean():
 )
 def test_domain_size(domain, output):
     with TreeBuilder() as tree:
-        domain_size = n.DomainSize(n.Points(10), component=domain)
-        domain_size >> n.Points()
+        domain_size = g.DomainSize(g.Points(10), component=domain)
+        domain_size >> g.Points()
 
     assert len(tree) == 3
     assert len(domain_size.node.outputs[output].links) == 1
@@ -225,32 +225,32 @@ def test_domain_size(domain, output):
 
 def test_curve_handle():
     with TreeBuilder():
-        node = n.HandleTypeSelection(left=False, right=False)
+        node = g.HandleTypeSelection(left=False, right=False)
         assert not node.left
         assert not node.right
         node.left = True
         assert node.left
         node.right = True
         assert node.right
-        node = n.HandleTypeSelection(left=False, right=True)
+        node = g.HandleTypeSelection(left=False, right=True)
         assert not node.left
         assert node.right
-        node = n.HandleTypeSelection(left=True, right=True)
+        node = g.HandleTypeSelection(left=True, right=True)
         assert node.left
         assert node.right
-        node = n.HandleTypeSelection(left=True, right=False)
+        node = g.HandleTypeSelection(left=True, right=False)
         assert node.left
         assert not node.right
 
 
 def test_bake():
     with TreeBuilder() as tree:
-        bake = n.Bake(
-            n.Points(10),
-            n.Position(),
-            n.Value() * n.Radius() + 10,
+        bake = g.Bake(
+            g.Points(10),
+            g.Position(),
+            g.Value() * g.Radius() + 10,
         )
-        set_pos = bake >> n.SetPosition()
+        set_pos = bake >> g.SetPosition()
 
     assert len(tree) == 8
     assert len(bake.node.bake_items) == 3
@@ -260,18 +260,18 @@ def test_bake():
 
 def test_simulation(snapshot_tree):
     with TreeBuilder() as tree:
-        cube = n.Cube()
-        input, output = n.SimulationZone(cube)
-        pos_math = input.capture(n.Position()) * n.Position()
+        cube = g.Cube()
+        input, output = g.SimulationZone(cube)
+        pos_math = input.capture(g.Position()) * g.Position()
         _ = pos_math >> output
         _ = (
             input
-            >> n.SetPosition(
-                offset=input.o_delta_time * n.Vector((0, 0, 0.1)) * pos_math
+            >> g.SetPosition(
+                offset=input.o_delta_time * g.Vector((0, 0, 0.1)) * pos_math
             )
             >> output
         )
-        _ = output >> n.SetPosition(position=output.outputs["Position"])
+        _ = output >> g.SetPosition(position=output.outputs["Position"])
     assert len(output.node.inputs["Skip"].links) == 0
     assert len(tree) == 13
     assert snapshot_tree == tree
@@ -279,26 +279,26 @@ def test_simulation(snapshot_tree):
 
 def test_repeat(snapshot_tree):
     with TreeBuilder() as tree:
-        cube = n.Cube()
-        for i, input, output in n.RepeatZone(10, cube):
-            pos_math = input.capture(n.Position()) * n.Position()
+        cube = g.Cube()
+        for i, input, output in g.RepeatZone(10, cube):
+            pos_math = input.capture(g.Position()) * g.Position()
             _ = pos_math >> output
             _ = (
                 input
-                >> n.SetPosition(offset=i * n.Vector((0, 0, 0.1)) * pos_math)
+                >> g.SetPosition(offset=i * g.Vector((0, 0, 0.1)) * pos_math)
                 >> output
             )
-            _ = output >> n.SetPosition(position=output.outputs["Position"])
+            _ = output >> g.SetPosition(position=output.outputs["Position"])
     assert len(tree) == 13
     assert len(input.items) == 2
     assert snapshot_tree == tree
 
     with TreeBuilder() as tree:
-        zone = n.RepeatZone(5)
-        join = n.JoinGeometry()
+        zone = g.RepeatZone(5)
+        join = g.JoinGeometry()
         zone.output.capture(join)
         zone.input >> join
-        _ = n.Points(zone.i, position=n.RandomValue.vector(min=-1, seed=zone.i)) >> join
+        _ = g.Points(zone.i, position=g.RandomValue.vector(min=-1, seed=zone.i)) >> join
     assert all(
         [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
     )
@@ -308,8 +308,8 @@ def test_repeat(snapshot_tree):
 
 def test_index_switch(snapshot_tree):
     with TreeBuilder() as tree:
-        items = (n.Cube(), n.UVSphere(), n.Cube(), n.Cube())
-        index = n.IndexSwitch.geometry(*items, index=5)
+        items = (g.Cube(), g.UVSphere(), g.Cube(), g.Cube())
+        index = g.IndexSwitch.geometry(*items, index=5)
 
     assert len(index.node.index_switch_items) == 4
     assert len(tree) == 5
@@ -319,12 +319,12 @@ def test_index_switch(snapshot_tree):
 def test_menu_switch():
     with TreeBuilder() as tree:
         items = (
-            n.Cube(),
-            n.UVSphere(),
-            n.Cube(),
-            n.Cube(),
+            g.Cube(),
+            g.UVSphere(),
+            g.Cube(),
+            g.Cube(),
         )
-        switch = n.MenuSwitch.geometry(*items, custom=n.Cone())
+        switch = g.MenuSwitch.geometry(*items, custom=g.Cone())
         with tree.inputs:
             menu = s.SocketMenu()
         menu >> switch
@@ -334,7 +334,7 @@ def test_menu_switch():
     assert len(switch.node.enum_items) == 5
 
     with TreeBuilder() as tree:
-        switch = n.MenuSwitch.float(*range(10))
+        switch = g.MenuSwitch.float(*range(10))
 
     assert len(switch.node.enum_items) == 10
     assert switch.inputs["Item_5"].socket.default_value == 5
@@ -342,11 +342,11 @@ def test_menu_switch():
 
 def test_multi_menu():
     with TreeBuilder() as tree:
-        items = (n.Cube(), n.IcoSphere(), n.Grid())
+        items = (g.Cube(), g.IcoSphere(), g.Grid())
 
-        menu = n.MenuSwitch.integer(test=0, another=1, again=2)
-        switch1 = n.IndexSwitch.geometry(*items, index=menu)
-        switch2 = n.IndexSwitch.geometry(*reversed(items), index=menu)
+        menu = g.MenuSwitch.integer(test=0, another=1, again=2)
+        switch1 = g.IndexSwitch.geometry(*items, index=menu)
+        switch2 = g.IndexSwitch.geometry(*reversed(items), index=menu)
 
         with tree.inputs:
             menu_input = s.SocketMenu()
@@ -354,7 +354,7 @@ def test_multi_menu():
             menu_input.default_value = "test"
 
         with tree.outputs:
-            n.JoinGeometry(switch1, switch2) >> s.SocketGeometry("Output")
+            g.JoinGeometry(switch1, switch2) >> s.SocketGeometry("Output")
 
 
 def test_switch_repeatzone(snapshot_tree):
@@ -364,10 +364,10 @@ def test_switch_repeatzone(snapshot_tree):
         with tree.outputs:
             output = s.SocketGeometry()
 
-        items = (n.Cube(), n.IcoSphere(), n.Grid())
-        zone = n.RepeatZone(5, input)
-        switch = n.IndexSwitch.geometry(*items, index=zone.i)
-        join = n.JoinGeometry(zone.input, switch)
+        items = (g.Cube(), g.IcoSphere(), g.Grid())
+        zone = g.RepeatZone(5, input)
+        switch = g.IndexSwitch.geometry(*items, index=zone.i)
+        join = g.JoinGeometry(zone.input, switch)
         join >> zone.output >> output
 
     assert len(zone.output.items) == 1
@@ -378,9 +378,9 @@ def test_switch_repeatzone(snapshot_tree):
 def test_generate_select_group():
     with TreeBuilder() as tree:
         with tree.inputs:
-            switch = n.IndexSwitch.boolean(
+            switch = g.IndexSwitch.boolean(
                 *[s.SocketBoolean(str(i)) for i in range(20)],
-                index=n.NamedAttribute.integer("chain_id"),
+                index=g.NamedAttribute.integer("chain_id"),
             )
         with tree.outputs:
             switch >> s.SocketBoolean("Selection")
@@ -391,17 +391,17 @@ def test_generate_select_group():
 
 def test_accumulate_field():
     with TreeBuilder() as tree:
-        cube = n.Cube()
-        aatr = n.AxisAngleToRotation(angle=1.0)
-        tran = n.AccumulateField.point.transform(
-            n.EvaluateAtIndex.point.rotation(aatr, n.Index() - int(1))
+        cube = g.Cube()
+        aatr = g.AxisAngleToRotation(angle=1.0)
+        tran = g.AccumulateField.point.transform(
+            g.EvaluateAtIndex.point.rotation(aatr, g.Index() - int(1))
         )
-        _ = cube >> n.SetPosition(
-            position=n.TransformPoint(n.Position(), tran.o_trailing),
-            offset=n.FieldAverage.edge.vector(n.Position()),
+        _ = cube >> g.SetPosition(
+            position=g.TransformPoint(g.Position(), tran.o_trailing),
+            offset=g.FieldAverage.edge.vector(g.Position()),
         )
 
-        n.SetPosition(offset=n.FieldVariance.point.vector(n.Position()))
+        g.SetPosition(offset=g.FieldVariance.point.vector(g.Position()))
 
     assert tree.nodes.get("Integer Math")
     assert tree.nodes.get("Accumulate Field").outputs["Trailing"].links[
@@ -419,12 +419,12 @@ def test_edge_other_point():
 
         # with the index from the selected edge from the input, we get the two different vertices
         # of the edge. We compare them and return the one that isn't the current input vertex index
-        eov = n.EdgesOfVertex(v_index, sort_index=e_index)
-        ev = n.EdgeVertices()
-        vert_1 = n.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
-        vert_2 = n.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
-        compare = n.Compare.equal.integer(v_index, vert_1)
-        other_vertex = n.Switch.integer(compare, vert_1, vert_2)
+        eov = g.EdgesOfVertex(v_index, sort_index=e_index)
+        ev = g.EdgeVertices()
+        vert_1 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
+        vert_2 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
+        compare = g.Compare.equal.integer(v_index, vert_1)
+        other_vertex = g.Switch.integer(compare, vert_1, vert_2)
 
         with tree.outputs:
             _ = other_vertex >> s.SocketInt("Other Vertex")
@@ -439,9 +439,9 @@ def test_align_rotation_to_vector():
     """Ensure that it appropiately selects a vector or rotation socket"""
     with TreeBuilder() as tree:
         # this should select the vector input socket
-        artv = n.RandomValue.vector() >> n.AlignRotationToVector()
+        artv = g.RandomValue.vector() >> g.AlignRotationToVector()
         # this should select the rotation input socket
-        artv2 = n.AxesToRotation() >> n.AlignRotationToVector()
+        artv2 = g.AxesToRotation() >> g.AlignRotationToVector()
 
     assert (
         artv.i_vector.socket.links[0].from_socket
@@ -457,20 +457,20 @@ def test_foreachgeometryelement_zone():
     with TreeBuilder() as tree:
         with tree.outputs:
             out = s.SocketGeometry("Geometry")
-        cube = n.Cube()
-        zone = n.ForEachGeometryElementZone(
+        cube = g.Cube()
+        zone = g.ForEachGeometryElementZone(
             cube,
-            selection=n.Normal()
-            >> n.VectorMath.dot_product(..., (0, 0, 1))
-            >> n.Compare.greater_than.float(..., -0.1),
+            selection=g.Normal()
+            >> g.VectorMath.dot_product(..., (0, 0, 1))
+            >> g.Compare.greater_than.float(..., -0.1),
             domain="FACE",
         )
-        pos = zone.input.capture(n.Position())
-        norm = zone.input.capture(n.Normal())
-        transformed = n.Cone() >> n.TransformGeometry(
+        pos = zone.input.capture(g.Position())
+        norm = zone.input.capture(g.Normal())
+        transformed = g.Cone() >> g.TransformGeometry(
             translation=pos,
-            rotation=n.AlignRotationToVector(
-                vector=norm + n.RandomValue.vector(min=-1, id=zone.index)
+            rotation=g.AlignRotationToVector(
+                vector=norm + g.RandomValue.vector(min=-1, id=zone.index)
             ),
             scale=0.4,
         )
@@ -478,7 +478,7 @@ def test_foreachgeometryelement_zone():
         zone.output.capture_generated(pos)
         zone.output.capture_generated(transformed)
         _ = transformed >> zone.output
-        _ = n.JoinGeometry(zone.output.o_generation, cube) >> out
+        _ = g.JoinGeometry(zone.output.o_generation, cube) >> out
 
     input, output = zone
     with pytest.raises(IndexError):
@@ -503,12 +503,12 @@ def test_foreachgeometryelement_zone():
 def test_boolean_math_methods():
     with TreeBuilder(arrange=False, collapse=True) as tree:
         _ = (
-            n.Boolean()
-            >> n.BooleanMath.not_and(..., True)
-            >> n.BooleanMath.l_not()
-            >> n.BooleanMath.nor()
-            >> n.BooleanMath.not_equal()
-            >> n.BooleanMath.imply()
+            g.Boolean()
+            >> g.BooleanMath.not_and(..., True)
+            >> g.BooleanMath.l_not()
+            >> g.BooleanMath.nor()
+            >> g.BooleanMath.not_equal()
+            >> g.BooleanMath.imply()
         )
     assert len(tree) == 6
 
@@ -516,15 +516,15 @@ def test_boolean_math_methods():
 def test_integer_math_methods():
     with TreeBuilder(arrange=False) as tree:
         _ = (
-            n.Integer(2444222)
-            >> n.IntegerMath.divide_round(2)
-            >> n.IntegerMath.divide_floor(3)
-            >> n.IntegerMath.divide_ceiling(10)
-            >> n.IntegerMath.floored_modulo(5)
-            >> n.IntegerMath.modulo(2)
-            >> n.IntegerMath.greatest_common_divisor(10)
-            >> n.IntegerMath.least_common_multiple(15)
-            >> n.IntegerMath.absolute()
+            g.Integer(2444222)
+            >> g.IntegerMath.divide_round(2)
+            >> g.IntegerMath.divide_floor(3)
+            >> g.IntegerMath.divide_ceiling(10)
+            >> g.IntegerMath.floored_modulo(5)
+            >> g.IntegerMath.modulo(2)
+            >> g.IntegerMath.greatest_common_divisor(10)
+            >> g.IntegerMath.least_common_multiple(15)
+            >> g.IntegerMath.absolute()
         )
 
     assert len(tree) == 9
@@ -533,35 +533,35 @@ def test_integer_math_methods():
 def test_math_methods():
     with TreeBuilder(arrange=False) as tree:
         _ = (
-            n.Value(2.5)
-            >> n.Math.add(3.5)
-            >> n.Math.subtract(1.5)
-            >> n.Math.multiply(2.5)
-            >> n.Math.divide(4.5)
-            >> n.Math.power(2)
-            >> n.Math.logarithm(10)
-            >> n.Math.square_root()
-            >> n.Math.absolute()
-            >> n.Math.square_root()
-            >> n.Math.inverse_square_root()
-            >> n.Math.absolute()
-            >> n.Math.less_than(..., 1.5)
-            >> n.Math.greater_than(..., 1.5)
-            >> n.Math.sign()
-            >> n.Math.smooth_minimum()
-            >> n.Math.smooth_maximum()
-            >> n.Math.round()
-            >> n.Math.floored_modulo()
-            >> n.Math.truncated_modulo()
-            >> n.Math.floored_modulo()
-            >> n.Math.wrap()
-            >> n.Math.ping_pong()
-            >> n.Math.sine()
-            >> n.Math.hyperbolic_cosine()
-            >> n.Math.hyperbolic_tangent()
-            >> n.Math.hyperbolic_tangent()
-            >> n.Math.to_radians()
-            >> n.Math.to_degrees()
+            g.Value(2.5)
+            >> g.Math.add(3.5)
+            >> g.Math.subtract(1.5)
+            >> g.Math.multiply(2.5)
+            >> g.Math.divide(4.5)
+            >> g.Math.power(2)
+            >> g.Math.logarithm(10)
+            >> g.Math.square_root()
+            >> g.Math.absolute()
+            >> g.Math.square_root()
+            >> g.Math.inverse_square_root()
+            >> g.Math.absolute()
+            >> g.Math.less_than(..., 1.5)
+            >> g.Math.greater_than(..., 1.5)
+            >> g.Math.sign()
+            >> g.Math.smooth_minimum()
+            >> g.Math.smooth_maximum()
+            >> g.Math.round()
+            >> g.Math.floored_modulo()
+            >> g.Math.truncated_modulo()
+            >> g.Math.floored_modulo()
+            >> g.Math.wrap()
+            >> g.Math.ping_pong()
+            >> g.Math.sine()
+            >> g.Math.hyperbolic_cosine()
+            >> g.Math.hyperbolic_tangent()
+            >> g.Math.hyperbolic_tangent()
+            >> g.Math.to_radians()
+            >> g.Math.to_degrees()
         )
 
     assert len(tree) == 29
@@ -569,13 +569,13 @@ def test_math_methods():
 
 def test_inputs():
     with TreeBuilder() as tree:
-        _ = n.ObjectInfo(bpy.data.objects["Cube"])
-        object = n.Object(bpy.data.objects["Cube"]) >> n.ObjectInfo()
-        material = n.SetMaterial(
-            object, material=n.Material(bpy.data.materials["Material"])
+        _ = g.ObjectInfo(bpy.data.objects["Cube"])
+        object = g.Object(bpy.data.objects["Cube"]) >> g.ObjectInfo()
+        material = g.SetMaterial(
+            object, material=g.Material(bpy.data.materials["Material"])
         )
-        coll = n.CollectionInfo(
-            n.Collection(bpy.data.collections.new("TestColelction"))
+        coll = g.CollectionInfo(
+            g.Collection(bpy.data.collections.new("TestColelction"))
         )
 
     assert len(tree) == 7
