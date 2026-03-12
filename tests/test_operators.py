@@ -349,6 +349,21 @@ class TestParameterizedOperators:
             result = eval(f"node {operator} 2.0")
 
         assert result.node is not None
+        match input_cls:
+            case g.Vector:
+                expected_op = "POWER" if operator == "**" else "MODULO"
+                assert result.node.operation == expected_op
+                # vec in input 0 (linked), scalar broadcast in input 1 (default)
+                assert len(result.node.inputs[0].links) == 1
+                assert tuple(result.node.inputs[1].default_value) == (2.0, 2.0, 2.0)
+                assert len(result.node.inputs[1].links) == 0
+            case g.Value:
+                expected_op = "POWER" if operator == "**" else "FLOORED_MODULO"
+                assert result.node.operation == expected_op
+                # value in input 0 (linked), scalar in input 1 (default)
+                assert len(result.node.inputs[0].links) == 1
+                assert result.node.inputs[1].default_value == 2.0
+                assert len(result.node.inputs[1].links) == 0
 
     @pytest.mark.parametrize("input_cls", [g.Vector, g.Value, g.Integer])
     def test_neg_all_types(self, input_cls):
@@ -356,6 +371,19 @@ class TestParameterizedOperators:
             result = -input_cls()
 
         assert result.node is not None
+        match input_cls:
+            case g.Integer:
+                assert result.operation == "NEGATE"
+                assert (
+                    result.node.inputs[0].links[0].from_node.bl_idname
+                    == "FunctionNodeInputInt"
+                )
+            case g.Value:
+                assert result.operation == "MULTIPLY"
+                assert result.node.inputs[1].default_value == -1.0
+            case g.Vector:
+                assert result.operation == "SCALE"
+                assert result.node.inputs["Scale"].default_value == -1.0
 
     @pytest.mark.parametrize("input_cls", [g.Vector, g.Value, g.Integer])
     def test_abs_all_types(self, input_cls):
@@ -363,6 +391,89 @@ class TestParameterizedOperators:
             result = abs(input_cls())
 
         assert result.node is not None
+        assert result.operation == "ABSOLUTE"
+
+
+class TestVectorScalarOperandOrder:
+    """Tests that non-commutative vector-scalar operations have the correct operand order.
+
+    For `vec ** 2.0`, the vector should be in input 0 and scalar (2,2,2) in input 1.
+    For `2.0 ** vec` (reverse), the scalar should be in input 0 and vector in input 1.
+    """
+
+    def test_vector_sub_scalar_order(self):
+        """vec - 2.0 should put vec in input 0, (2,2,2) in input 1."""
+        with TreeBuilder("TestVecSubOrder"):
+            vec = g.Vector((1, 2, 3))
+            result = vec - 2.0
+
+        # vec links into input 0, scalar default in input 1
+        assert len(result.node.inputs[0].links) == 1
+        assert tuple(result.node.inputs[1].default_value) == (2.0, 2.0, 2.0)
+
+    def test_scalar_sub_vector_order(self):
+        """2.0 - vec should put (2,2,2) in input 0, vec in input 1."""
+        with TreeBuilder("TestScalarSubVecOrder"):
+            vec = g.Vector((1, 2, 3))
+            result = 2.0 - vec
+
+        # scalar default in input 0, vec links into input 1
+        assert tuple(result.node.inputs[0].default_value) == (2.0, 2.0, 2.0)
+        assert len(result.node.inputs[1].links) == 1
+
+    def test_vector_div_scalar_order(self):
+        """vec / 2.0 should put vec in input 0, (2,2,2) in input 1."""
+        with TreeBuilder("TestVecDivOrder"):
+            vec = g.Vector((1, 2, 3))
+            result = vec / 2.0
+
+        assert len(result.node.inputs[0].links) == 1
+        assert tuple(result.node.inputs[1].default_value) == (2.0, 2.0, 2.0)
+
+    def test_scalar_div_vector_order(self):
+        """2.0 / vec should put (2,2,2) in input 0, vec in input 1."""
+        with TreeBuilder("TestScalarDivVecOrder"):
+            vec = g.Vector((1, 2, 3))
+            result = 2.0 / vec
+
+        assert tuple(result.node.inputs[0].default_value) == (2.0, 2.0, 2.0)
+        assert len(result.node.inputs[1].links) == 1
+
+    def test_vector_pow_scalar_order(self):
+        """vec ** 2.0 should put vec in input 0, (2,2,2) in input 1."""
+        with TreeBuilder("TestVecPowOrder"):
+            vec = g.Vector((1, 2, 3))
+            result = vec ** 2.0
+
+        assert len(result.node.inputs[0].links) == 1
+        assert tuple(result.node.inputs[1].default_value) == (2.0, 2.0, 2.0)
+
+    def test_scalar_pow_vector_order(self):
+        """2.0 ** vec should put (2,2,2) in input 0, vec in input 1."""
+        with TreeBuilder("TestScalarPowVecOrder"):
+            vec = g.Vector((1, 2, 3))
+            result = 2.0 ** vec
+
+        assert tuple(result.node.inputs[0].default_value) == (2.0, 2.0, 2.0)
+        assert len(result.node.inputs[1].links) == 1
+
+    def test_vector_mod_scalar_order(self):
+        """vec % 3.0 should put vec in input 0, (3,3,3) in input 1."""
+        with TreeBuilder("TestVecModOrder"):
+            vec = g.Vector((10, 20, 30))
+            result = vec % 3.0
+
+        assert len(result.node.inputs[0].links) == 1
+        assert tuple(result.node.inputs[1].default_value) == (3.0, 3.0, 3.0)
+
+    def test_scalar_mod_vector_order(self):
+        """3.0 % vec should put (3,3,3) in input 0, vec in input 1."""
+        with TreeBuilder("TestScalarModVecOrder"):
+            vec = g.Vector((10, 20, 30))
+            result = 3.0 % vec
+
+        assert tuple(result.node.inputs[0].default_value) == (3.0, 3.0, 3.0)
+        assert len(result.node.inputs[1].links) == 1
 
 
 class TestComparisonChaining:

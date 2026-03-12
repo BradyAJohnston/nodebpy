@@ -637,9 +637,9 @@ class NodeBuilder:
                 if isinstance(other, (int, float)):
                     scalar_vector = (other, other, other)
                     return (
-                        vector_method(scalar_vector, self._default_output_socket)
+                        vector_method(self._default_output_socket, scalar_vector)
                         if not reverse
-                        else vector_method(self._default_output_socket, scalar_vector)
+                        else vector_method(scalar_vector, self._default_output_socket)
                     )
                 elif (
                     isinstance(other, (list, tuple)) and len(other) == 3
