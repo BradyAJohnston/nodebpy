@@ -818,16 +818,7 @@ class NodeBuilder:
     def __rmatmul__(self, other: Any) -> "MultiplyMatrices":
         from .nodes.geometry.converter import CombineMatrix, MultiplyMatrices
 
-        def _cast_to_matrix(value):
-            if isinstance(value, (NodeBuilder, NodeSocket, SocketLinker)):
-                return value
-            if hasattr(value, "shape") and value.shape == (4, 4):
-                return CombineMatrix(*value)
-            raise TypeError(
-                f"Unsupported type for matrix multiplication: {type(value)}"
-            )
-
-        return MultiplyMatrices(_cast_to_matrix(other), self)
+        return MultiplyMatrices(other, self)
 
 
 class DynamicInputsMixin:
