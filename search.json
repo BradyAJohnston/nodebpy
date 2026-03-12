@@ -4,7 +4,7 @@
     "href": "reference/nodes.geometry.color.html",
     "title": "nodes.geometry.color",
     "section": "",
-    "text": "nodes.geometry.color\n\n\n\n\n\nName\nDescription\n\n\n\n\nGamma\nApply a gamma correction\n\n\nRgbCurves\nApply color corrections for each color channel\n\n\n\n\n\nnodes.geometry.color.Gamma(color=None, gamma=1.0)\nApply a gamma correction\n\n\n\n\n\nName\nDescription\n\n\n\n\ni_color\nInput socket: Color\n\n\ni_gamma\nInput socket: Gamma\n\n\nname\n\n\n\nnode\n\n\n\no_color\nOutput socket: Color\n\n\ntree\n\n\n\ntype\n\n\n\n\n\n\n\n\nnodes.geometry.color.RgbCurves(fac=1.0, color=None)\nApply color corrections for each color channel\n\n\n\n\n\nName\nDescription\n\n\n\n\ni_color\nInput socket: Color\n\n\ni_fac\nInput socket: Factor\n\n\nname\n\n\n\nnode\n\n\n\no_color\nOutput socket: Color\n\n\ntree\n\n\n\ntype",
+    "text": "nodes.geometry.color\n\n\n\n\n\nName\nDescription\n\n\n\n\nGamma\nApply a gamma correction\n\n\nRGBCurves\nApply color corrections for each color channel\n\n\n\n\n\nnodes.geometry.color.Gamma(color=None, gamma=1.0)\nApply a gamma correction\n\n\n\n\n\nName\nDescription\n\n\n\n\ni_color\nInput socket: Color\n\n\ni_gamma\nInput socket: Gamma\n\n\nname\n\n\n\nnode\n\n\n\no_color\nOutput socket: Color\n\n\ntree\n\n\n\ntype\n\n\n\n\n\n\n\n\nnodes.geometry.color.RGBCurves(fac=1.0, color=None)\nApply color corrections for each color channel\n\n\n\n\n\nName\nDescription\n\n\n\n\ni_color\nInput socket: Color\n\n\ni_fac\nInput socket: Factor\n\n\nname\n\n\n\nnode\n\n\n\no_color\nOutput socket: Color\n\n\ntree\n\n\n\ntype",
     "crumbs": [
       "Geometry Nodes",
       "nodes.geometry.color"
@@ -15,7 +15,7 @@
     "href": "reference/nodes.geometry.color.html#classes",
     "title": "nodes.geometry.color",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nGamma\nApply a gamma correction\n\n\nRgbCurves\nApply color corrections for each color channel\n\n\n\n\n\nnodes.geometry.color.Gamma(color=None, gamma=1.0)\nApply a gamma correction\n\n\n\n\n\nName\nDescription\n\n\n\n\ni_color\nInput socket: Color\n\n\ni_gamma\nInput socket: Gamma\n\n\nname\n\n\n\nnode\n\n\n\no_color\nOutput socket: Color\n\n\ntree\n\n\n\ntype\n\n\n\n\n\n\n\n\nnodes.geometry.color.RgbCurves(fac=1.0, color=None)\nApply color corrections for each color channel\n\n\n\n\n\nName\nDescription\n\n\n\n\ni_color\nInput socket: Color\n\n\ni_fac\nInput socket: Factor\n\n\nname\n\n\n\nnode\n\n\n\no_color\nOutput socket: Color\n\n\ntree\n\n\n\ntype",
+    "text": "Name\nDescription\n\n\n\n\nGamma\nApply a gamma correction\n\n\nRGBCurves\nApply color corrections for each color channel\n\n\n\n\n\nnodes.geometry.color.Gamma(color=None, gamma=1.0)\nApply a gamma correction\n\n\n\n\n\nName\nDescription\n\n\n\n\ni_color\nInput socket: Color\n\n\ni_gamma\nInput socket: Gamma\n\n\nname\n\n\n\nnode\n\n\n\no_color\nOutput socket: Color\n\n\ntree\n\n\n\ntype\n\n\n\n\n\n\n\n\nnodes.geometry.color.RGBCurves(fac=1.0, color=None)\nApply color corrections for each color channel\n\n\n\n\n\nName\nDescription\n\n\n\n\ni_color\nInput socket: Color\n\n\ni_fac\nInput socket: Factor\n\n\nname\n\n\n\nnode\n\n\n\no_color\nOutput socket: Color\n\n\ntree\n\n\n\ntype",
     "crumbs": [
       "Geometry Nodes",
       "nodes.geometry.color"
