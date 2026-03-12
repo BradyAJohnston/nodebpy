@@ -199,7 +199,7 @@ class RemoveNamedAttribute(NodeBuilder):
     def __init__(
         self,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        pattern_mode: TYPE_INPUT_MENU = "Exact",
+        pattern_mode: TYPE_INPUT_MENU | Literal["Exact", "Wildcard"] = "Exact",
         name: TYPE_INPUT_STRING = "",
     ):
         super().__init__()

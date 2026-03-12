@@ -130,7 +130,17 @@ class Blur(NodeBuilder):
         self,
         image: TYPE_INPUT_COLOR = None,
         size: TYPE_INPUT_VECTOR = None,
-        type: TYPE_INPUT_MENU = "Gaussian",
+        type: TYPE_INPUT_MENU
+        | Literal[
+            "Flat",
+            "Tent",
+            "Quadratic",
+            "Cubic",
+            "Gaussian",
+            "Fast Gaussian",
+            "Catrom",
+            "Mitch",
+        ] = "Gaussian",
         extend_bounds: TYPE_INPUT_BOOLEAN = False,
         separable: TYPE_INPUT_BOOLEAN = True,
     ):
@@ -245,7 +255,7 @@ class Convolve(NodeBuilder):
     def __init__(
         self,
         image: TYPE_INPUT_COLOR = None,
-        kernel_data_type: TYPE_INPUT_MENU = "Float",
+        kernel_data_type: TYPE_INPUT_MENU | Literal["Float", "Color"] = "Float",
         float_kernel: TYPE_INPUT_VALUE = 0.0,
         color_kernel: TYPE_INPUT_COLOR = None,
         normalize_kernel: TYPE_INPUT_BOOLEAN = True,
@@ -411,8 +421,9 @@ class Denoise(NodeBuilder):
         albedo: TYPE_INPUT_COLOR = None,
         normal: TYPE_INPUT_VECTOR = None,
         hdr: TYPE_INPUT_BOOLEAN = True,
-        prefilter: TYPE_INPUT_MENU = "Accurate",
-        quality: TYPE_INPUT_MENU = "Follow Scene",
+        prefilter: TYPE_INPUT_MENU | Literal["None", "Fast", "Accurate"] = "Accurate",
+        quality: TYPE_INPUT_MENU
+        | Literal["Follow Scene", "High", "Balanced", "Fast"] = "Follow Scene",
     ):
         super().__init__()
         key_args = {
@@ -525,9 +536,13 @@ class Dilateerode(NodeBuilder):
         self,
         mask: TYPE_INPUT_VALUE = 0.0,
         size: TYPE_INPUT_INT = 0,
-        type: TYPE_INPUT_MENU = "Steps",
+        type: TYPE_INPUT_MENU
+        | Literal["Steps", "Threshold", "Distance", "Feather"] = "Steps",
         falloff_size: TYPE_INPUT_VALUE = 0.0,
-        falloff: TYPE_INPUT_MENU = "Smooth",
+        falloff: TYPE_INPUT_MENU
+        | Literal[
+            "Smooth", "Sphere", "Root", "Inverse Square", "Sharp", "Linear"
+        ] = "Smooth",
     ):
         super().__init__()
         key_args = {
@@ -655,7 +670,17 @@ class Filter(NodeBuilder):
         self,
         image: TYPE_INPUT_COLOR = None,
         fac: TYPE_INPUT_VALUE = 1.0,
-        type: TYPE_INPUT_MENU = "Soften",
+        type: TYPE_INPUT_MENU
+        | Literal[
+            "Soften",
+            "Box Sharpen",
+            "Diamond Sharpen",
+            "Laplace",
+            "Sobel",
+            "Prewitt",
+            "Kirsch",
+            "Shadow",
+        ] = "Soften",
     ):
         super().__init__()
         key_args = {"Image": image, "Fac": fac, "Type": type}
@@ -694,8 +719,17 @@ class Glare(NodeBuilder):
     def __init__(
         self,
         image: TYPE_INPUT_COLOR = None,
-        type: TYPE_INPUT_MENU = "Streaks",
-        quality: TYPE_INPUT_MENU = "Medium",
+        type: TYPE_INPUT_MENU
+        | Literal[
+            "Bloom",
+            "Ghosts",
+            "Streaks",
+            "Fog Glow",
+            "Simple Star",
+            "Sun Beams",
+            "Kernel",
+        ] = "Streaks",
+        quality: TYPE_INPUT_MENU | Literal["High", "Medium", "Low"] = "Medium",
         highlights_threshold: TYPE_INPUT_VALUE = 1.0,
         highlights_smoothness: TYPE_INPUT_VALUE = 0.1,
         clamp_highlights: TYPE_INPUT_BOOLEAN = False,
@@ -712,7 +746,7 @@ class Glare(NodeBuilder):
         diagonal_star: TYPE_INPUT_BOOLEAN = True,
         sun_position: TYPE_INPUT_VECTOR = None,
         jitter: TYPE_INPUT_VALUE = 0.0,
-        kernel_data_type: TYPE_INPUT_MENU = "Float",
+        kernel_data_type: TYPE_INPUT_MENU | Literal["Float", "Color"] = "Float",
         float_kernel: TYPE_INPUT_VALUE = 0.0,
         color_kernel: TYPE_INPUT_COLOR = None,
     ):
@@ -916,7 +950,7 @@ class Kuwahara(NodeBuilder):
         self,
         image: TYPE_INPUT_COLOR = None,
         size: TYPE_INPUT_VALUE = 6.0,
-        type: TYPE_INPUT_MENU = "Anisotropic",
+        type: TYPE_INPUT_MENU | Literal["Classic", "Anisotropic"] = "Anisotropic",
         uniformity: TYPE_INPUT_INT = 4,
         sharpness: TYPE_INPUT_VALUE = 1.0,
         eccentricity: TYPE_INPUT_VALUE = 1.0,

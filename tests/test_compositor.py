@@ -13,26 +13,16 @@ def test_initial_compositor():
             background_menu = s.SocketMenu("Background")
             background_color = s.SocketColor("Background Color")
             outline_menu = s.SocketMenu(name="Outline", expanded=True)
-            outline_depth = s.SocketFloat("Socket Depth", default_value=5.0)
-            outline_size = s.SocketInt("Outline Size", default_value=2)
+            outline_depth = s.SocketFloat("Socket Depth", 5.0)
+            outline_size = s.SocketInt("Outline Size", 2)
             outline_color = s.SocketColor("Outline Color")
         with t.outputs:
             output_color = s.SocketColor("Image")
 
-        ao_factor = (
-            ao
-            >> c.InvertColor()
-            >> c.Math.power(value_001=0.94)
-            >> c.Kuwahara(size=4.0)
-        )
-
+        ao_factor = (ao >> c.InvertColor()) ** 0.94 >> c.Kuwahara(size=4.0).i_image
         active_image = c.Mix.color(ao_factor, image)
-        depth_line = (
-            depth
-            >> c.Filter(type="Sobel")
-            >> c.Math.greater_than(..., outline_depth / 100)
-        )
-        normal_line = normal >> c.Filter(type="Sobel") >> c.Math.greater_than(..., 1.5)
+        depth_line = c.Filter(depth, type="Sobel") > (outline_depth / 100)
+        normal_line = c.Filter(normal, type="Sobel") > 1.5
         outline_comp = (
             (depth_line + normal_line)
             >> c.AntiAliasing()
