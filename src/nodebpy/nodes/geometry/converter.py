@@ -1582,7 +1582,8 @@ class MatchString(NodeBuilder):
     def __init__(
         self,
         string: TYPE_INPUT_STRING = "",
-        operation: TYPE_INPUT_MENU = "Starts With",
+        operation: TYPE_INPUT_MENU
+        | Literal["Starts With", "Ends With", "Contains"] = "Starts With",
         key: TYPE_INPUT_STRING = "",
     ):
         super().__init__()
@@ -2424,7 +2425,8 @@ class PackUVIslands(NodeBuilder):
         selection: TYPE_INPUT_BOOLEAN = True,
         margin: TYPE_INPUT_VALUE = 0.001,
         rotate: TYPE_INPUT_BOOLEAN = True,
-        method: TYPE_INPUT_MENU = "Bounding Box",
+        method: TYPE_INPUT_MENU
+        | Literal["Bounding Box", "Convex Hull", "Exact Shape"] = "Bounding Box",
     ):
         super().__init__()
         key_args = {
@@ -3733,7 +3735,7 @@ class UVUnwrap(NodeBuilder):
         seam: TYPE_INPUT_BOOLEAN = False,
         margin: TYPE_INPUT_VALUE = 0.001,
         fill_holes: TYPE_INPUT_BOOLEAN = True,
-        method: TYPE_INPUT_MENU = "Angle Based",
+        method: TYPE_INPUT_MENU | Literal["Angle Based", "Conformal"] = "Angle Based",
     ):
         super().__init__()
         key_args = {

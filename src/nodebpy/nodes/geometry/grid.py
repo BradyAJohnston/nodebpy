@@ -31,8 +31,16 @@ class AdvectGrid(NodeBuilder):
         grid: TYPE_INPUT_VALUE = 0.0,
         velocity: TYPE_INPUT_VECTOR = None,
         time_step: TYPE_INPUT_VALUE = 1.0,
-        integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
-        limiter: TYPE_INPUT_MENU = "Clamp",
+        integration_scheme: TYPE_INPUT_MENU
+        | Literal[
+            "Semi-Lagrangian",
+            "Midpoint",
+            "Runge-Kutta 3",
+            "Runge-Kutta 4",
+            "MacCormack",
+            "BFECC",
+        ] = "Runge-Kutta 3",
+        limiter: TYPE_INPUT_MENU | Literal["None", "Clamp", "Revert"] = "Clamp",
         *,
         data_type: Literal["FLOAT", "INT", "VECTOR"] = "FLOAT",
     ):
@@ -53,8 +61,16 @@ class AdvectGrid(NodeBuilder):
         grid: TYPE_INPUT_VALUE = 0.0,
         velocity: TYPE_INPUT_VECTOR = None,
         time_step: TYPE_INPUT_VALUE = 1.0,
-        integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
-        limiter: TYPE_INPUT_MENU = "Clamp",
+        integration_scheme: TYPE_INPUT_MENU
+        | Literal[
+            "Semi-Lagrangian",
+            "Midpoint",
+            "Runge-Kutta 3",
+            "Runge-Kutta 4",
+            "MacCormack",
+            "BFECC",
+        ] = "Runge-Kutta 3",
+        limiter: TYPE_INPUT_MENU | Literal["None", "Clamp", "Revert"] = "Clamp",
     ) -> "AdvectGrid":
         """Create Advect Grid with operation 'Float'."""
         return cls(
@@ -72,8 +88,16 @@ class AdvectGrid(NodeBuilder):
         grid: TYPE_INPUT_INT = 0,
         velocity: TYPE_INPUT_VECTOR = None,
         time_step: TYPE_INPUT_VALUE = 1.0,
-        integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
-        limiter: TYPE_INPUT_MENU = "Clamp",
+        integration_scheme: TYPE_INPUT_MENU
+        | Literal[
+            "Semi-Lagrangian",
+            "Midpoint",
+            "Runge-Kutta 3",
+            "Runge-Kutta 4",
+            "MacCormack",
+            "BFECC",
+        ] = "Runge-Kutta 3",
+        limiter: TYPE_INPUT_MENU | Literal["None", "Clamp", "Revert"] = "Clamp",
     ) -> "AdvectGrid":
         """Create Advect Grid with operation 'Integer'."""
         return cls(
@@ -91,8 +115,16 @@ class AdvectGrid(NodeBuilder):
         grid: TYPE_INPUT_VECTOR = None,
         velocity: TYPE_INPUT_VECTOR = None,
         time_step: TYPE_INPUT_VALUE = 1.0,
-        integration_scheme: TYPE_INPUT_MENU = "Runge-Kutta 3",
-        limiter: TYPE_INPUT_MENU = "Clamp",
+        integration_scheme: TYPE_INPUT_MENU
+        | Literal[
+            "Semi-Lagrangian",
+            "Midpoint",
+            "Runge-Kutta 3",
+            "Runge-Kutta 4",
+            "MacCormack",
+            "BFECC",
+        ] = "Runge-Kutta 3",
+        limiter: TYPE_INPUT_MENU | Literal["None", "Clamp", "Revert"] = "Clamp",
     ) -> "AdvectGrid":
         """Create Advect Grid with operation 'Vector'."""
         return cls(
@@ -222,7 +254,7 @@ class DistributePointsInVolume(NodeBuilder):
     def __init__(
         self,
         volume: TYPE_INPUT_GEOMETRY = None,
-        mode: TYPE_INPUT_MENU = "Random",
+        mode: TYPE_INPUT_MENU | Literal["Random", "Grid"] = "Random",
         density: TYPE_INPUT_VALUE = 1.0,
         seed: TYPE_INPUT_INT = 0,
         spacing: TYPE_INPUT_VECTOR = None,
@@ -677,7 +709,7 @@ class MeshToVolume(NodeBuilder):
         self,
         mesh: TYPE_INPUT_GEOMETRY = None,
         density: TYPE_INPUT_VALUE = 1.0,
-        resolution_mode: TYPE_INPUT_MENU = "Amount",
+        resolution_mode: TYPE_INPUT_MENU | Literal["Amount", "Size"] = "Amount",
         voxel_size: TYPE_INPUT_VALUE = 0.3,
         voxel_amount: TYPE_INPUT_VALUE = 64.0,
         interior_band_width: TYPE_INPUT_VALUE = 0.2,
@@ -782,7 +814,7 @@ class PointsToVolume(NodeBuilder):
         self,
         points: TYPE_INPUT_GEOMETRY = None,
         density: TYPE_INPUT_VALUE = 1.0,
-        resolution_mode: TYPE_INPUT_MENU = "Amount",
+        resolution_mode: TYPE_INPUT_MENU | Literal["Amount", "Size"] = "Amount",
         voxel_size: TYPE_INPUT_VALUE = 0.3,
         voxel_amount: TYPE_INPUT_VALUE = 64.0,
         radius: TYPE_INPUT_VALUE = 0.5,
@@ -846,7 +878,7 @@ class PruneGrid(NodeBuilder):
     def __init__(
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
-        mode: TYPE_INPUT_MENU = "Threshold",
+        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
         threshold: TYPE_INPUT_VALUE = 0.01,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
@@ -860,7 +892,7 @@ class PruneGrid(NodeBuilder):
     def float(
         cls,
         grid: TYPE_INPUT_VALUE = 0.0,
-        mode: TYPE_INPUT_MENU = "Threshold",
+        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
         threshold: TYPE_INPUT_VALUE = 0.01,
     ) -> "PruneGrid":
         """Create Prune Grid with operation 'Float'."""
@@ -870,7 +902,7 @@ class PruneGrid(NodeBuilder):
     def integer(
         cls,
         grid: TYPE_INPUT_INT = 0,
-        mode: TYPE_INPUT_MENU = "Threshold",
+        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
         threshold: TYPE_INPUT_INT = 0,
     ) -> "PruneGrid":
         """Create Prune Grid with operation 'Integer'."""
@@ -878,7 +910,9 @@ class PruneGrid(NodeBuilder):
 
     @classmethod
     def boolean(
-        cls, grid: TYPE_INPUT_BOOLEAN = False, mode: TYPE_INPUT_MENU = "Threshold"
+        cls,
+        grid: TYPE_INPUT_BOOLEAN = False,
+        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
     ) -> "PruneGrid":
         """Create Prune Grid with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", grid=grid, mode=mode)
@@ -887,7 +921,7 @@ class PruneGrid(NodeBuilder):
     def vector(
         cls,
         grid: TYPE_INPUT_VECTOR = None,
-        mode: TYPE_INPUT_MENU = "Threshold",
+        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
         threshold: TYPE_INPUT_VECTOR = None,
     ) -> "PruneGrid":
         """Create Prune Grid with operation 'Vector'."""
@@ -1150,7 +1184,8 @@ class SampleGrid(NodeBuilder):
         self,
         grid: TYPE_INPUT_VALUE = 0.0,
         position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU = "Trilinear",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1164,7 +1199,8 @@ class SampleGrid(NodeBuilder):
         cls,
         grid: TYPE_INPUT_VALUE = 0.0,
         position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU = "Trilinear",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid":
         """Create Sample Grid with operation 'Float'."""
         return cls(
@@ -1176,7 +1212,8 @@ class SampleGrid(NodeBuilder):
         cls,
         grid: TYPE_INPUT_INT = 0,
         position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU = "Trilinear",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid":
         """Create Sample Grid with operation 'Integer'."""
         return cls(
@@ -1188,7 +1225,8 @@ class SampleGrid(NodeBuilder):
         cls,
         grid: TYPE_INPUT_BOOLEAN = False,
         position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU = "Trilinear",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid":
         """Create Sample Grid with operation 'Boolean'."""
         return cls(
@@ -1203,7 +1241,8 @@ class SampleGrid(NodeBuilder):
         cls,
         grid: TYPE_INPUT_VECTOR = None,
         position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU = "Trilinear",
+        interpolation: TYPE_INPUT_MENU
+        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid":
         """Create Sample Grid with operation 'Vector'."""
         return cls(
@@ -1664,7 +1703,7 @@ class VolumeToMesh(NodeBuilder):
     def __init__(
         self,
         volume: TYPE_INPUT_GEOMETRY = None,
-        resolution_mode: TYPE_INPUT_MENU = "Grid",
+        resolution_mode: TYPE_INPUT_MENU | Literal["Grid", "Amount", "Size"] = "Grid",
         voxel_size: TYPE_INPUT_VALUE = 0.3,
         voxel_amount: TYPE_INPUT_VALUE = 64.0,
         threshold: TYPE_INPUT_VALUE = 0.1,

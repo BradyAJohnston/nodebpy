@@ -443,7 +443,7 @@ class TestVectorScalarOperandOrder:
         """vec ** 2.0 should put vec in input 0, (2,2,2) in input 1."""
         with TreeBuilder("TestVecPowOrder"):
             vec = g.Vector((1, 2, 3))
-            result = vec ** 2.0
+            result = vec**2.0
 
         assert len(result.node.inputs[0].links) == 1
         assert tuple(result.node.inputs[1].default_value) == (2.0, 2.0, 2.0)
@@ -452,7 +452,7 @@ class TestVectorScalarOperandOrder:
         """2.0 ** vec should put (2,2,2) in input 0, vec in input 1."""
         with TreeBuilder("TestScalarPowVecOrder"):
             vec = g.Vector((1, 2, 3))
-            result = 2.0 ** vec
+            result = 2.0**vec
 
         assert tuple(result.node.inputs[0].default_value) == (2.0, 2.0, 2.0)
         assert len(result.node.inputs[1].links) == 1
