@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>nodes.texture – nodebpy</title>
+<title>nodes.geometry.texture – nodebpy</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.grid.html" rel="next">
-<link href="../reference/nodes.converter.html" rel="prev">
+<link href="../reference/nodes.geometry.grid.html" rel="next">
+<link href="../reference/nodes.geometry.converter.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-8fd1faf6fd93e4e6d207ae0f9db51d78.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-9195fa1a9c736cb8c2994c5df3058328.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -150,7 +150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.texture.html">nodes.texture</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.geometry.input.html">Geometry Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.geometry.texture.html">nodes.geometry.texture</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -171,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Some functions</span></a>
+ <span class="menu-text">Geometry Nodes</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -179,68 +179,96 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.input.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.input</span></a>
+  <a href="../reference/nodes.geometry.input.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.input</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.attribute</span></a>
+  <a href="../reference/nodes.geometry.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.attribute</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.color.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.color</span></a>
+  <a href="../reference/nodes.geometry.color.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.color</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.converter.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.converter</span></a>
+  <a href="../reference/nodes.geometry.converter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.converter</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.texture.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">nodes.texture</span></a>
+  <a href="../reference/nodes.geometry.texture.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">nodes.geometry.texture</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.grid.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.grid</span></a>
+  <a href="../reference/nodes.geometry.grid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.grid</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry</span></a>
+  <a href="../reference/nodes.geometry.geometry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.geometry</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.attribute.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.attribute</span></a>
+  <a href="../reference/nodes.geometry.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.attribute</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.vector.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.vector</span></a>
+  <a href="../reference/nodes.geometry.vector.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.vector</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.manual.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.manual</span></a>
+  <a href="../reference/nodes.geometry.manual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.manual</span></a>
   </div>
 </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Zonesin GN</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.zone.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.zone</span></a>
+  <a href="../reference/nodes.geometry.zone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.zone</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Shader Nodes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader</span></a>
   </div>
 </li>
       </ul>
@@ -255,34 +283,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.nodes.texture" id="toc-nodebpy.nodes.texture" class="nav-link active" data-scroll-target="#nodebpy.nodes.texture">nodes.texture</a>
+  <li><a href="#nodebpy.nodes.geometry.texture" id="toc-nodebpy.nodes.geometry.texture" class="nav-link active" data-scroll-target="#nodebpy.nodes.geometry.texture">nodes.geometry.texture</a>
   <ul class="collapse">
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
-  <li><a href="#nodebpy.nodes.texture.BrickTexture" id="toc-nodebpy.nodes.texture.BrickTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.BrickTexture">BrickTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.CheckerTexture" id="toc-nodebpy.nodes.texture.CheckerTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.CheckerTexture">CheckerTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.GaborTexture" id="toc-nodebpy.nodes.texture.GaborTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.GaborTexture">GaborTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.GradientTexture" id="toc-nodebpy.nodes.texture.GradientTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.GradientTexture">GradientTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.ImageTexture" id="toc-nodebpy.nodes.texture.ImageTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.ImageTexture">ImageTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.MagicTexture" id="toc-nodebpy.nodes.texture.MagicTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.MagicTexture">MagicTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.NoiseTexture" id="toc-nodebpy.nodes.texture.NoiseTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.NoiseTexture">NoiseTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.VoronoiTexture" id="toc-nodebpy.nodes.texture.VoronoiTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.VoronoiTexture">VoronoiTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.WaveTexture" id="toc-nodebpy.nodes.texture.WaveTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.WaveTexture">WaveTexture</a></li>
-  <li><a href="#nodebpy.nodes.texture.WhiteNoiseTexture" id="toc-nodebpy.nodes.texture.WhiteNoiseTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.texture.WhiteNoiseTexture">WhiteNoiseTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.BrickTexture" id="toc-nodebpy.nodes.geometry.texture.BrickTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.BrickTexture">BrickTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.CheckerTexture" id="toc-nodebpy.nodes.geometry.texture.CheckerTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.CheckerTexture">CheckerTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.GaborTexture" id="toc-nodebpy.nodes.geometry.texture.GaborTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.GaborTexture">GaborTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.GradientTexture" id="toc-nodebpy.nodes.geometry.texture.GradientTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.GradientTexture">GradientTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.ImageTexture" id="toc-nodebpy.nodes.geometry.texture.ImageTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.ImageTexture">ImageTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.MagicTexture" id="toc-nodebpy.nodes.geometry.texture.MagicTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.MagicTexture">MagicTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.NoiseTexture" id="toc-nodebpy.nodes.geometry.texture.NoiseTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.NoiseTexture">NoiseTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture" id="toc-nodebpy.nodes.geometry.texture.VoronoiTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.VoronoiTexture">VoronoiTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.WaveTexture" id="toc-nodebpy.nodes.geometry.texture.WaveTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.WaveTexture">WaveTexture</a></li>
+  <li><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture" id="toc-nodebpy.nodes.geometry.texture.WhiteNoiseTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture">WhiteNoiseTexture</a></li>
   </ul></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.input.html">Some functions</a></li><li class="breadcrumb-item"><a href="../reference/nodes.texture.html">nodes.texture</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.geometry.input.html">Geometry Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.geometry.texture.html">nodes.geometry.texture</a></li></ol></nav></header>
 
 
 
 
-<section id="nodebpy.nodes.texture" class="level1">
-<h1>nodes.texture</h1>
-<p><code>nodes.texture</code></p>
+<section id="nodebpy.nodes.geometry.texture" class="level1">
+<h1>nodes.geometry.texture</h1>
+<p><code>nodes.geometry.texture</code></p>
 <section id="classes" class="level2">
 <h2 class="anchored" data-anchor-id="classes">Classes</h2>
 <table class="caption-top table">
@@ -294,50 +322,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture">BrickTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture">BrickTexture</a></td>
 <td>Generate a procedural texture producing bricks</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture">CheckerTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture">CheckerTexture</a></td>
 <td>Generate a checkerboard texture</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GaborTexture">GaborTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture">GaborTexture</a></td>
 <td>Generate Gabor noise</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GradientTexture">GradientTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture">GradientTexture</a></td>
 <td>Generate interpolated color and intensity values based on the input vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.ImageTexture">ImageTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture">ImageTexture</a></td>
 <td>Sample values from an image texture</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.MagicTexture">MagicTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture">MagicTexture</a></td>
 <td>Generate a psychedelic color texture</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture">NoiseTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture">NoiseTexture</a></td>
 <td>Generate fractal Perlin noise</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture">VoronoiTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture">VoronoiTexture</a></td>
 <td>Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture">WaveTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture">WaveTexture</a></td>
 <td>Generate procedural bands or rings with noise</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture">WhiteNoiseTexture</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture">WhiteNoiseTexture</a></td>
 <td>Calculate a random value or color based on an input seed</td>
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.texture.BrickTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.BrickTexture">BrickTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.BrickTexture(</span>
+<section id="nodebpy.nodes.geometry.texture.BrickTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.BrickTexture">BrickTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.BrickTexture(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    color1<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    color2<span class="op">=</span><span class="va">None</span>,</span>
@@ -366,92 +394,97 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_bias">i_bias</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_bias">i_bias</a></td>
 <td>Input socket: Bias</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_brick_width">i_brick_width</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_brick_width">i_brick_width</a></td>
 <td>Input socket: Brick Width</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_color1">i_color1</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_color1">i_color1</a></td>
 <td>Input socket: Color1</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_color2">i_color2</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_color2">i_color2</a></td>
 <td>Input socket: Color2</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_mortar">i_mortar</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_mortar">i_mortar</a></td>
 <td>Input socket: Mortar</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_mortar_size">i_mortar_size</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_mortar_size">i_mortar_size</a></td>
 <td>Input socket: Mortar Size</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_mortar_smooth">i_mortar_smooth</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_mortar_smooth">i_mortar_smooth</a></td>
 <td>Input socket: Mortar Smooth</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_row_height">i_row_height</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_row_height">i_row_height</a></td>
 <td>Input socket: Row Height</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_scale">i_scale</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_scale">i_scale</a></td>
 <td>Input socket: Scale</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.o_fac">o_fac</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.o_fac">o_fac</a></td>
 <td>Output socket: Factor</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.offset">offset</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.offset">offset</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.offset_frequency">offset_frequency</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.offset_frequency">offset_frequency</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.squash">squash</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.squash">squash</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.squash_frequency">squash_frequency</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.squash_frequency">squash_frequency</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.BrickTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.BrickTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.CheckerTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.CheckerTexture">CheckerTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.CheckerTexture(vector<span class="op">=</span><span class="va">None</span>, color1<span class="op">=</span><span class="va">None</span>, color2<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="fl">5.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.texture.CheckerTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.CheckerTexture">CheckerTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.CheckerTexture(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    color1<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    color2<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a checkerboard texture</p>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
@@ -464,52 +497,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.i_color1">i_color1</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.i_color1">i_color1</a></td>
 <td>Input socket: Color1</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.i_color2">i_color2</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.i_color2">i_color2</a></td>
 <td>Input socket: Color2</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.i_scale">i_scale</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.i_scale">i_scale</a></td>
 <td>Input socket: Scale</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.o_fac">o_fac</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.o_fac">o_fac</a></td>
 <td>Output socket: Factor</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.CheckerTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.CheckerTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.GaborTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.GaborTexture">GaborTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.GaborTexture(</span>
+<section id="nodebpy.nodes.geometry.texture.GaborTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GaborTexture">GaborTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.GaborTexture(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    frequency<span class="op">=</span><span class="fl">2.0</span>,</span>
@@ -531,68 +564,68 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.gabor_type">gabor_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.gabor_type">gabor_type</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.i_anisotropy">i_anisotropy</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.i_anisotropy">i_anisotropy</a></td>
 <td>Input socket: Anisotropy</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.i_frequency">i_frequency</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.i_frequency">i_frequency</a></td>
 <td>Input socket: Frequency</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.i_orientation_2d">i_orientation_2d</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.i_orientation_2d">i_orientation_2d</a></td>
 <td>Input socket: Orientation</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.i_orientation_3d">i_orientation_3d</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.i_orientation_3d">i_orientation_3d</a></td>
 <td>Input socket: Orientation</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.i_scale">i_scale</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.i_scale">i_scale</a></td>
 <td>Input socket: Scale</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.o_intensity">o_intensity</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.o_intensity">o_intensity</a></td>
 <td>Output socket: Intensity</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.o_phase">o_phase</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.o_phase">o_phase</a></td>
 <td>Output socket: Phase</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.o_value">o_value</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.o_value">o_value</a></td>
 <td>Output socket: Value</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GaborTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.GradientTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.GradientTexture">GradientTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.GradientTexture(vector<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, gradient_type<span class="op">=</span><span class="st">'LINEAR'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.texture.GradientTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture">GradientTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.GradientTexture(vector<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, gradient_type<span class="op">=</span><span class="st">'LINEAR'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate interpolated color and intensity values based on the input vector</p>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
@@ -605,44 +638,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GradientTexture.gradient_type">gradient_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.gradient_type">gradient_type</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GradientTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GradientTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GradientTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GradientTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GradientTexture.o_fac">o_fac</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.o_fac">o_fac</a></td>
 <td>Output socket: Factor</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.GradientTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.GradientTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.ImageTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.ImageTexture">ImageTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.ImageTexture(</span>
+<section id="nodebpy.nodes.geometry.texture.ImageTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.ImageTexture">ImageTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.ImageTexture(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    frame<span class="op">=</span><span class="dv">0</span>,</span>
@@ -662,56 +695,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.extension">extension</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.extension">extension</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.i_frame">i_frame</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.i_frame">i_frame</a></td>
 <td>Input socket: Frame</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.i_image">i_image</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.i_image">i_image</a></td>
 <td>Input socket: Image</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.interpolation">interpolation</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.interpolation">interpolation</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.o_alpha">o_alpha</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.o_alpha">o_alpha</a></td>
 <td>Output socket: Alpha</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.ImageTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.ImageTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.MagicTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.MagicTexture">MagicTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.MagicTexture(</span>
+<section id="nodebpy.nodes.geometry.texture.MagicTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.MagicTexture">MagicTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.MagicTexture(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">1.0</span>,</span>
@@ -730,52 +763,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.i_distortion">i_distortion</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.i_distortion">i_distortion</a></td>
 <td>Input socket: Distortion</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.i_scale">i_scale</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.i_scale">i_scale</a></td>
 <td>Input socket: Scale</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.o_fac">o_fac</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.o_fac">o_fac</a></td>
 <td>Output socket: Factor</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.turbulence_depth">turbulence_depth</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.turbulence_depth">turbulence_depth</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.MagicTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.MagicTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.NoiseTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.NoiseTexture">NoiseTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.NoiseTexture(</span>
+<section id="nodebpy.nodes.geometry.texture.NoiseTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.NoiseTexture">NoiseTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.NoiseTexture(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    w<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
@@ -802,84 +835,84 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_detail">i_detail</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_detail">i_detail</a></td>
 <td>Input socket: Detail</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_distortion">i_distortion</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_distortion">i_distortion</a></td>
 <td>Input socket: Distortion</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_gain">i_gain</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_gain">i_gain</a></td>
 <td>Input socket: Gain</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_lacunarity">i_lacunarity</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_lacunarity">i_lacunarity</a></td>
 <td>Input socket: Lacunarity</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_offset">i_offset</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_offset">i_offset</a></td>
 <td>Input socket: Offset</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_roughness">i_roughness</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_roughness">i_roughness</a></td>
 <td>Input socket: Roughness</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_scale">i_scale</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_scale">i_scale</a></td>
 <td>Input socket: Scale</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.i_w">i_w</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.i_w">i_w</a></td>
 <td>Input socket: W</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.noise_dimensions">noise_dimensions</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.noise_dimensions">noise_dimensions</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.noise_type">noise_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.noise_type">noise_type</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.normalize">normalize</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.normalize">normalize</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.o_fac">o_fac</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.o_fac">o_fac</a></td>
 <td>Output socket: Factor</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.NoiseTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.VoronoiTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.VoronoiTexture">VoronoiTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.VoronoiTexture(</span>
+<section id="nodebpy.nodes.geometry.texture.VoronoiTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.VoronoiTexture">VoronoiTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.VoronoiTexture(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    w<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
@@ -907,100 +940,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.distance">distance</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.distance">distance</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.feature">feature</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.feature">feature</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_detail">i_detail</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_detail">i_detail</a></td>
 <td>Input socket: Detail</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_exponent">i_exponent</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_exponent">i_exponent</a></td>
 <td>Input socket: Exponent</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_lacunarity">i_lacunarity</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_lacunarity">i_lacunarity</a></td>
 <td>Input socket: Lacunarity</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_randomness">i_randomness</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_randomness">i_randomness</a></td>
 <td>Input socket: Randomness</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_roughness">i_roughness</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_roughness">i_roughness</a></td>
 <td>Input socket: Roughness</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_scale">i_scale</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_scale">i_scale</a></td>
 <td>Input socket: Scale</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_smoothness">i_smoothness</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_smoothness">i_smoothness</a></td>
 <td>Input socket: Smoothness</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.i_w">i_w</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.i_w">i_w</a></td>
 <td>Input socket: W</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.normalize">normalize</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.normalize">normalize</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.o_distance">o_distance</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.o_distance">o_distance</a></td>
 <td>Output socket: Distance</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.o_position">o_position</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.o_position">o_position</a></td>
 <td>Output socket: Position</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.o_radius">o_radius</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.o_radius">o_radius</a></td>
 <td>Output socket: Radius</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.o_w">o_w</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.o_w">o_w</a></td>
 <td>Output socket: W</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.type">type</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.VoronoiTexture.voronoi_dimensions">voronoi_dimensions</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.VoronoiTexture.voronoi_dimensions">voronoi_dimensions</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.WaveTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.WaveTexture">WaveTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.WaveTexture(</span>
+<section id="nodebpy.nodes.geometry.texture.WaveTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.WaveTexture">WaveTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.WaveTexture(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
@@ -1026,80 +1059,85 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.bands_direction">bands_direction</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.bands_direction">bands_direction</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.i_detail">i_detail</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.i_detail">i_detail</a></td>
 <td>Input socket: Detail</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.i_detail_roughness">i_detail_roughness</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.i_detail_roughness">i_detail_roughness</a></td>
 <td>Input socket: Detail Roughness</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.i_detail_scale">i_detail_scale</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.i_detail_scale">i_detail_scale</a></td>
 <td>Input socket: Detail Scale</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.i_distortion">i_distortion</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.i_distortion">i_distortion</a></td>
 <td>Input socket: Distortion</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.i_phase_offset">i_phase_offset</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.i_phase_offset">i_phase_offset</a></td>
 <td>Input socket: Phase Offset</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.i_scale">i_scale</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.i_scale">i_scale</a></td>
 <td>Input socket: Scale</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.o_fac">o_fac</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.o_fac">o_fac</a></td>
 <td>Output socket: Factor</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.rings_direction">rings_direction</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.rings_direction">rings_direction</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.type">type</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.wave_profile">wave_profile</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.wave_profile">wave_profile</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WaveTexture.wave_type">wave_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.wave_type">wave_type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.texture.WhiteNoiseTexture" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.texture.WhiteNoiseTexture">WhiteNoiseTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.texture.WhiteNoiseTexture(vector<span class="op">=</span><span class="va">None</span>, w<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, noise_dimensions<span class="op">=</span><span class="st">'3D'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.texture.WhiteNoiseTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.WhiteNoiseTexture">WhiteNoiseTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nodes.geometry.texture.WhiteNoiseTexture(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    w<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    noise_dimensions<span class="op">=</span><span class="st">'3D'</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate a random value or color based on an input seed</p>
 <section id="attributes-9" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
@@ -1112,39 +1150,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.i_vector">i_vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.i_vector">i_vector</a></td>
 <td>Input socket: Vector</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.i_w">i_w</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.i_w">i_w</a></td>
 <td>Input socket: W</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.noise_dimensions">noise_dimensions</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.noise_dimensions">noise_dimensions</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.o_color">o_color</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.o_color">o_color</a></td>
 <td>Output socket: Color</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.o_value">o_value</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.o_value">o_value</a></td>
 <td>Output socket: Value</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.texture.WhiteNoiseTexture.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1559,13 +1597,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/nodes.converter.html" class="pagination-link" aria-label="nodes.converter">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.converter</span>
+      <a href="../reference/nodes.geometry.converter.html" class="pagination-link" aria-label="nodes.geometry.converter">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.geometry.converter</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.grid.html" class="pagination-link" aria-label="nodes.grid">
-        <span class="nav-page-text">nodes.grid</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.geometry.grid.html" class="pagination-link" aria-label="nodes.geometry.grid">
+        <span class="nav-page-text">nodes.geometry.grid</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
