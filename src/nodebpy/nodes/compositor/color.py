@@ -140,18 +140,8 @@ class ColorBalance(NodeBuilder):
         output_temperature: TYPE_INPUT_VALUE = 6500.0,
         output_tint: TYPE_INPUT_VALUE = 10.0,
         *,
-        input_whitepoint: tuple[float, float, float, float] = (
-            0.735,
-            0.735,
-            0.735,
-            1.0,
-        ),
-        output_whitepoint: tuple[float, float, float, float] = (
-            0.735,
-            0.735,
-            0.735,
-            1.0,
-        ),
+        input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
     ):
         super().__init__()
         key_args = {
@@ -280,19 +270,19 @@ class ColorBalance(NodeBuilder):
         return self._output("Image")
 
     @property
-    def input_whitepoint(self) -> tuple[float, float, float, float]:
+    def input_whitepoint(self) -> tuple[float, float, float]:
         return self.node.input_whitepoint
 
     @input_whitepoint.setter
-    def input_whitepoint(self, value: tuple[float, float, float, float]):
+    def input_whitepoint(self, value: tuple[float, float, float]):
         self.node.input_whitepoint = value
 
     @property
-    def output_whitepoint(self) -> tuple[float, float, float, float]:
+    def output_whitepoint(self) -> tuple[float, float, float]:
         return self.node.output_whitepoint
 
     @output_whitepoint.setter
-    def output_whitepoint(self, value: tuple[float, float, float, float]):
+    def output_whitepoint(self, value: tuple[float, float, float]):
         self.node.output_whitepoint = value
 
 

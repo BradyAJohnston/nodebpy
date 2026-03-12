@@ -33,28 +33,12 @@ from .filter import (
     Pixelate,
     VectorBlur,
 )
-from .input import (
-    BokehImage,
-    Color,
-    Image,
-    ImageCoordinates,
-    ImageInfo,
-    Mask,
-    MovieClip,
-    Normal,
-    RenderLayers,
-    SceneTime,
-    TimeCurve,
-    TrackPosition,
-    Value,
-)
 from .matte import (
     BoxMask,
     ChannelKey,
     ChromaKey,
     ColorKey,
     ColorSpill,
-    Cryptomatte,
     DifferenceKey,
     DistanceKey,
     DoubleEdgeMask,
@@ -106,6 +90,17 @@ from .distort import (
 from .group import (
     Group,
 )
+from .input import (
+    Color,
+    Mask,
+    MovieClip,
+    Normal,
+    RenderLayers,
+    SceneTime,
+    TimeCurve,
+    TrackPosition,
+    Value,
+)
 from .vector import (
     Normalize,
     VectorCurves,
@@ -141,7 +136,6 @@ __all__ = (
     "Blackbody",
     "Blur",
     "BokehBlur",
-    "BokehImage",
     "BoxMask",
     "BrickTexture",
     "Brightnesscontrast",
@@ -162,7 +156,6 @@ __all__ = (
     "Convolve",
     "CornerPin",
     "Crop",
-    "Cryptomatte",
     "Defocus",
     "Denoise",
     "DepthCombine",
@@ -190,9 +183,6 @@ __all__ = (
     "HueCorrect",
     "Huesaturationvalue",
     "IDMask",
-    "Image",
-    "ImageCoordinates",
-    "ImageInfo",
     "Inpaint",
     "InvertColor",
     "Keying",

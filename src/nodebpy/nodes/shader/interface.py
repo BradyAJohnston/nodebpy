@@ -5,7 +5,6 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker
 
 
-
 class ClosureInput(NodeBuilder):
     """
     Closure Input node

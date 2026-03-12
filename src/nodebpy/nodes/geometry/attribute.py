@@ -446,7 +446,7 @@ class StoreNamedAttribute(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
-        value: TYPE_INPUT_COLOR = None,
+        value: TYPE_INPUT_VALUE = 0.0,
     ) -> "StoreNamedAttribute":
         """Create Store Named Attribute with operation 'Point'."""
         return cls(
@@ -463,7 +463,7 @@ class StoreNamedAttribute(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
-        value: TYPE_INPUT_COLOR = None,
+        value: TYPE_INPUT_VALUE = 0.0,
     ) -> "StoreNamedAttribute":
         """Create Store Named Attribute with operation 'Edge'."""
         return cls(
@@ -480,7 +480,7 @@ class StoreNamedAttribute(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
-        value: TYPE_INPUT_COLOR = None,
+        value: TYPE_INPUT_VALUE = 0.0,
     ) -> "StoreNamedAttribute":
         """Create Store Named Attribute with operation 'Face'."""
         return cls(
@@ -497,7 +497,7 @@ class StoreNamedAttribute(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
-        value: TYPE_INPUT_COLOR = None,
+        value: TYPE_INPUT_VALUE = 0.0,
     ) -> "StoreNamedAttribute":
         """Create Store Named Attribute with operation 'Face Corner'."""
         return cls(
@@ -514,7 +514,7 @@ class StoreNamedAttribute(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
-        value: TYPE_INPUT_COLOR = None,
+        value: TYPE_INPUT_VALUE = 0.0,
     ) -> "StoreNamedAttribute":
         """Create Store Named Attribute with operation 'Spline'."""
         return cls(
@@ -531,7 +531,7 @@ class StoreNamedAttribute(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
-        value: TYPE_INPUT_COLOR = None,
+        value: TYPE_INPUT_VALUE = 0.0,
     ) -> "StoreNamedAttribute":
         """Create Store Named Attribute with operation 'Instance'."""
         return cls(
@@ -548,7 +548,7 @@ class StoreNamedAttribute(NodeBuilder):
         geometry: TYPE_INPUT_GEOMETRY = None,
         selection: TYPE_INPUT_BOOLEAN = True,
         name: TYPE_INPUT_STRING = "",
-        value: TYPE_INPUT_COLOR = None,
+        value: TYPE_INPUT_VALUE = 0.0,
     ) -> "StoreNamedAttribute":
         """Create Store Named Attribute with operation 'Layer'."""
         return cls(

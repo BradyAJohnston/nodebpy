@@ -3189,7 +3189,7 @@ class SampleCurve(NodeBuilder):
         cls,
         curves: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_VALUE = 0.0,
-        length: TYPE_INPUT_VALUE = 0.0,
+        factor: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Float'."""
@@ -3197,7 +3197,7 @@ class SampleCurve(NodeBuilder):
             data_type="FLOAT",
             curves=curves,
             value=value,
-            length=length,
+            factor=factor,
             curve_index=curve_index,
         )
 
@@ -3206,7 +3206,7 @@ class SampleCurve(NodeBuilder):
         cls,
         curves: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_INT = 0,
-        length: TYPE_INPUT_VALUE = 0.0,
+        factor: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Integer'."""
@@ -3214,7 +3214,7 @@ class SampleCurve(NodeBuilder):
             data_type="INT",
             curves=curves,
             value=value,
-            length=length,
+            factor=factor,
             curve_index=curve_index,
         )
 
@@ -3223,7 +3223,7 @@ class SampleCurve(NodeBuilder):
         cls,
         curves: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_BOOLEAN = False,
-        length: TYPE_INPUT_VALUE = 0.0,
+        factor: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Boolean'."""
@@ -3231,7 +3231,7 @@ class SampleCurve(NodeBuilder):
             data_type="BOOLEAN",
             curves=curves,
             value=value,
-            length=length,
+            factor=factor,
             curve_index=curve_index,
         )
 
@@ -3240,7 +3240,7 @@ class SampleCurve(NodeBuilder):
         cls,
         curves: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_VECTOR = None,
-        length: TYPE_INPUT_VALUE = 0.0,
+        factor: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Vector'."""
@@ -3248,7 +3248,7 @@ class SampleCurve(NodeBuilder):
             data_type="FLOAT_VECTOR",
             curves=curves,
             value=value,
-            length=length,
+            factor=factor,
             curve_index=curve_index,
         )
 
@@ -3257,7 +3257,7 @@ class SampleCurve(NodeBuilder):
         cls,
         curves: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_COLOR = None,
-        length: TYPE_INPUT_VALUE = 0.0,
+        factor: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Color'."""
@@ -3265,7 +3265,7 @@ class SampleCurve(NodeBuilder):
             data_type="FLOAT_COLOR",
             curves=curves,
             value=value,
-            length=length,
+            factor=factor,
             curve_index=curve_index,
         )
 
@@ -3274,7 +3274,7 @@ class SampleCurve(NodeBuilder):
         cls,
         curves: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_ROTATION = None,
-        length: TYPE_INPUT_VALUE = 0.0,
+        factor: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Quaternion'."""
@@ -3282,7 +3282,7 @@ class SampleCurve(NodeBuilder):
             data_type="QUATERNION",
             curves=curves,
             value=value,
-            length=length,
+            factor=factor,
             curve_index=curve_index,
         )
 
@@ -3291,7 +3291,7 @@ class SampleCurve(NodeBuilder):
         cls,
         curves: TYPE_INPUT_GEOMETRY = None,
         value: TYPE_INPUT_MATRIX = None,
-        length: TYPE_INPUT_VALUE = 0.0,
+        factor: TYPE_INPUT_VALUE = 0.0,
         curve_index: TYPE_INPUT_INT = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation '4x4 Matrix'."""
@@ -3299,7 +3299,7 @@ class SampleCurve(NodeBuilder):
             data_type="FLOAT4X4",
             curves=curves,
             value=value,
-            length=length,
+            factor=factor,
             curve_index=curve_index,
         )
 
@@ -3505,7 +3505,7 @@ class SampleIndex(NodeBuilder):
     def point(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
+        value: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Point'."""
@@ -3515,7 +3515,7 @@ class SampleIndex(NodeBuilder):
     def edge(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
+        value: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Edge'."""
@@ -3525,7 +3525,7 @@ class SampleIndex(NodeBuilder):
     def face(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
+        value: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Face'."""
@@ -3535,7 +3535,7 @@ class SampleIndex(NodeBuilder):
     def face_corner(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
+        value: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Face Corner'."""
@@ -3545,7 +3545,7 @@ class SampleIndex(NodeBuilder):
     def spline(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
+        value: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Spline'."""
@@ -3555,7 +3555,7 @@ class SampleIndex(NodeBuilder):
     def instance(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
+        value: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Instance'."""
@@ -3565,7 +3565,7 @@ class SampleIndex(NodeBuilder):
     def layer(
         cls,
         geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
+        value: TYPE_INPUT_VALUE = 0.0,
         index: TYPE_INPUT_INT = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Layer'."""
@@ -5095,24 +5095,54 @@ class SetMeshNormal(NodeBuilder):
 
     @classmethod
     def point(
-        cls, mesh: TYPE_INPUT_GEOMETRY = None, custom_normal: TYPE_INPUT_VECTOR = None
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        remove_custom: TYPE_INPUT_BOOLEAN = True,
+        edge_sharpness: TYPE_INPUT_BOOLEAN = False,
+        face_sharpness: TYPE_INPUT_BOOLEAN = False,
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Point'."""
-        return cls(domain="POINT", mesh=mesh, custom_normal=custom_normal)
+        return cls(
+            domain="POINT",
+            mesh=mesh,
+            remove_custom=remove_custom,
+            edge_sharpness=edge_sharpness,
+            face_sharpness=face_sharpness,
+        )
 
     @classmethod
     def face(
-        cls, mesh: TYPE_INPUT_GEOMETRY = None, custom_normal: TYPE_INPUT_VECTOR = None
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        remove_custom: TYPE_INPUT_BOOLEAN = True,
+        edge_sharpness: TYPE_INPUT_BOOLEAN = False,
+        face_sharpness: TYPE_INPUT_BOOLEAN = False,
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Face'."""
-        return cls(domain="FACE", mesh=mesh, custom_normal=custom_normal)
+        return cls(
+            domain="FACE",
+            mesh=mesh,
+            remove_custom=remove_custom,
+            edge_sharpness=edge_sharpness,
+            face_sharpness=face_sharpness,
+        )
 
     @classmethod
     def face_corner(
-        cls, mesh: TYPE_INPUT_GEOMETRY = None, custom_normal: TYPE_INPUT_VECTOR = None
+        cls,
+        mesh: TYPE_INPUT_GEOMETRY = None,
+        remove_custom: TYPE_INPUT_BOOLEAN = True,
+        edge_sharpness: TYPE_INPUT_BOOLEAN = False,
+        face_sharpness: TYPE_INPUT_BOOLEAN = False,
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Face Corner'."""
-        return cls(domain="CORNER", mesh=mesh, custom_normal=custom_normal)
+        return cls(
+            domain="CORNER",
+            mesh=mesh,
+            remove_custom=remove_custom,
+            edge_sharpness=edge_sharpness,
+            face_sharpness=face_sharpness,
+        )
 
     @property
     def i_mesh(self) -> SocketLinker:

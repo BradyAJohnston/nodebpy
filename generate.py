@@ -124,6 +124,8 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "Legacy",
         "Frame",
         "Reroute",
+        "Cryptomatte",
+        "Image",
     ],
     manually_defined=(),
     class_name_prefix_strips=[
@@ -244,64 +246,59 @@ class PropertyInfo:
             prop_name = prop_name.replace("_axis", "")
         return prop_name
 
+    def type_hint(self) -> str:
+        match self.prop_type:
+            case "ENUM":
+                type = self.enum_values_to_literal()
+            case "BOOLEAN":
+                type = "bool"
+            case "INT":
+                type = "int"
+            case "FLOAT":
+                if isinstance(self.default, float):
+                    type = "float"
+                else:
+                    type = "tuple[{}]".format(", ".join(["float"] * len(self.default)))
+            case "STRING":
+                type = "str"
+            case _:
+                raise ValueError(f"Unsupported property type: {self.prop_type}")
+
+        return type
+
     def format_property_argument(self) -> str:
         match self.prop_type:
             case "ENUM":
-                type = self.enum_values_to_literal()
                 default = f'"{self.default}"'
             case "BOOLEAN":
-                type = "bool"
                 default = self.default
             case "INT":
-                type = "int"
                 default = self.default
             case "FLOAT":
                 match self.subtype:
                     case "COLOR":
-                        type = "tuple[float, float, float, float]"
                         default = self.default
-                    case "EULER" | "XYZ":
-                        type = "tuple[float, float, float]"
+                    case "EULER" | "XYZ" | "DIRECTION":
                         default = self.default
                     case _:
-                        type = "float"
                         default = round(self.default, 3)
             case "STRING":
-                type = "str"
                 default = f'"{self.default}"'
             case _:
                 raise ValueError(f"Unsupported property type: {self.prop_type}")
 
-        return "{}: {} = {}".format(self.format_name(), type, default)
+        return "{}: {} = {}".format(self.format_name(), self.type_hint(), default)
 
     def format_property_accessors(self) -> str:
-        prop_name = self.format_name()
-        match self.prop_type:
-            case "ENUM":
-                type = self.enum_values_to_literal()
-            case "BOOLEAN":
-                type = "bool"
-            case "INT":
-                type = "int"
-            case "FLOAT":
-                match self.subtype:
-                    case "COLOR":
-                        type = "tuple[float, float, float, float]"
-                    case "EULER" | "XYZ":
-                        type = "tuple[float, float, float]"
-                    case _:
-                        type = "float"
-            case "STRING":
-                type = "str"
-            case _:
-                raise ValueError(f"Unsupported property type: {self.prop_type}")
-
+        name = self.format_name()
+        type = self.type_hint()
         return f"""    @property
-    def {prop_name}(self) -> {type}:
+
+    def {name}(self) -> {type}:
         return self.node.{self.identifier}
 
-    @{prop_name}.setter
-    def {prop_name}(self, value: {type}):
+    @{name}.setter
+    def {name}(self, value: {type}):
         self.node.{self.identifier} = value
 """
 
@@ -358,6 +355,7 @@ class NodeInfo:
             "ImportPly": "ImportPLY",
             "Vdb": "VDB",
             "3DLocation": "Location3D",
+            "Bsdf": "BSDF",
         }
 
         # Add prefix strips from config
@@ -655,6 +653,7 @@ def collect_property_info(node, node_type):
                             sockets=collect_socket_info(node.inputs),
                         )
                     )
+                    setattr(node, prop_identifier, default)
 
                 except TypeError as e:
                     print(f"TypeError: {prop.identifier}, {e}")
@@ -673,8 +672,12 @@ def collect_property_info(node, node_type):
             default = prop.default if not prop.type == "STRING" else ""
             if prop.subtype == "COLOR":
                 default = (0.735, 0.735, 0.735, 1.0)
+                if len(prop.default_array) == 3:
+                    default = (0.735, 0.735, 0.735)
             if prop.subtype in ["EULER", "XYZ"]:
                 default = (0.0, 0.0, 0.0)
+            if prop.subtype in ["DIRECTION"]:
+                default = (0.0, 0.0, 1.0)
             properties.append(
                 PropertyInfo(
                     identifier=prop.identifier,

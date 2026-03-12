@@ -134,7 +134,7 @@ class LineStyleOutput(NodeBuilder):
             "SATURATION",
             "COLOR",
             "VALUE",
-        ] = "MULTIPLY",
+        ] = "MIX",
         use_alpha: bool = False,
         use_clamp: bool = False,
     ):

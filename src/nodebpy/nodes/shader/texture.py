@@ -762,7 +762,7 @@ class SkyTexture(NodeBuilder):
         air_density: float = 1.0,
         aerosol_density: float = 1.0,
         ozone_density: float = 1.0,
-        sun_direction: float = 0.0,
+        sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
         turbidity: float = 0.0,
         ground_albedo: float = 0.0,
     ):
@@ -883,11 +883,11 @@ class SkyTexture(NodeBuilder):
         self.node.ozone_density = value
 
     @property
-    def sun_direction(self) -> float:
+    def sun_direction(self) -> tuple[float, float, float]:
         return self.node.sun_direction
 
     @sun_direction.setter
-    def sun_direction(self, value: float):
+    def sun_direction(self, value: tuple[float, float, float]):
         self.node.sun_direction = value
 
     @property
