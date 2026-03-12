@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
     from .nodes.geometry import Math, VectorMath
+    from .nodes.geometry.converter import BooleanMath
+    from .nodes.geometry.manual import Compare
 
 import bpy
 from bpy.types import (
@@ -653,7 +655,11 @@ class NodeBuilder:
             if isinstance(other, int) and self._default_output_socket.type == "INT":
                 return getattr(IntegerMath, operation)(*values)
             else:
-                return getattr(Math, operation)(*values)
+                # Math node uses 'floored_modulo' instead of 'modulo'
+                math_operation = (
+                    "floored_modulo" if operation == "modulo" else operation
+                )
+                return getattr(Math, math_operation)(*values)
 
     def __mul__(self, other: Any) -> "VectorMath | Math":
         return self._apply_math_operation(other, "multiply")
@@ -678,6 +684,133 @@ class NodeBuilder:
 
     def __rsub__(self, other: Any) -> "VectorMath | Math":
         return self._apply_math_operation(other, "subtract", reverse=True)
+
+    def __pow__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_math_operation(other, "power")
+
+    def __rpow__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_math_operation(other, "power", reverse=True)
+
+    def __mod__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_math_operation(other, "modulo")
+
+    def __rmod__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_math_operation(other, "modulo", reverse=True)
+
+    def __floordiv__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_floordiv_operation(other)
+
+    def __rfloordiv__(self, other: Any) -> "VectorMath | Math":
+        return self._apply_floordiv_operation(other, reverse=True)
+
+    def __neg__(self) -> "VectorMath | Math":
+        from .nodes.geometry import VectorMath
+        from .nodes.geometry.converter import IntegerMath, Math
+
+        socket = self._default_output_socket
+        if socket.type == "VECTOR":
+            return VectorMath.scale(socket, -1)
+        elif socket.type == "INT":
+            return IntegerMath.negate(socket)
+        else:
+            return Math.multiply(socket, -1)
+
+    def __abs__(self) -> "VectorMath | Math":
+        from .nodes.geometry import VectorMath
+        from .nodes.geometry.converter import IntegerMath, Math
+
+        socket = self._default_output_socket
+        if socket.type == "VECTOR":
+            return VectorMath.absolute(socket)
+        elif socket.type == "INT":
+            return IntegerMath.absolute(socket)
+        else:
+            return Math.absolute(socket)
+
+    def _apply_floordiv_operation(
+        self, other: Any, reverse: bool = False
+    ) -> "VectorMath | Math":
+        """Apply floor division: divide then floor."""
+        from .nodes.geometry import VectorMath
+        from .nodes.geometry.converter import IntegerMath, Math
+
+        socket = self._default_output_socket
+        component_is_vector = socket.type == "VECTOR" or getattr(
+            other, "type", None
+        ) == "VECTOR"
+
+        if not component_is_vector and isinstance(other, int) and socket.type == "INT":
+            values = (
+                (socket, other) if not reverse else (other, socket)
+            )
+            return IntegerMath.divide_floor(*values)
+
+        divided = self._apply_math_operation(other, "divide", reverse=reverse)
+        if component_is_vector:
+            return VectorMath.floor(divided._default_output_socket)
+        else:
+            return Math.floor(divided._default_output_socket)
+
+    def _apply_compare_operation(self, other: Any, operation: str) -> "Compare":
+        """Apply a comparison operation using the Compare node."""
+        from .nodes.geometry.manual import Compare
+
+        socket = self._default_output_socket
+        values = (socket, other)
+
+        if socket.type == "VECTOR":
+            return getattr(Compare, operation).vector(*values)
+        elif socket.type == "INT":
+            return getattr(Compare, operation).integer(*values)
+        else:
+            return getattr(Compare, operation).float(*values)
+
+    def __lt__(self, other: Any) -> "Compare":
+        return self._apply_compare_operation(other, "less_than")
+
+    def __gt__(self, other: Any) -> "Compare":
+        return self._apply_compare_operation(other, "greater_than")
+
+    def __le__(self, other: Any) -> "Compare":
+        return self._apply_compare_operation(other, "less_equal")
+
+    def __ge__(self, other: Any) -> "Compare":
+        return self._apply_compare_operation(other, "greater_equal")
+
+    def _apply_boolean_operation(
+        self, other: Any, operation: str
+    ) -> "BooleanMath":
+        """Apply a boolean operation using the BooleanMath node."""
+        from .nodes.geometry.converter import BooleanMath
+
+        return getattr(BooleanMath, operation)(
+            self._default_output_socket, other
+        )
+
+    def __and__(self, other: Any) -> "BooleanMath":
+        return self._apply_boolean_operation(other, "l_and")
+
+    def __rand__(self, other: Any) -> "BooleanMath":
+        from .nodes.geometry.converter import BooleanMath
+        return BooleanMath.l_and(other, self._default_output_socket)
+
+    def __or__(self, other: Any) -> "BooleanMath":
+        return self._apply_boolean_operation(other, "l_or")
+
+    def __ror__(self, other: Any) -> "BooleanMath":
+        from .nodes.geometry.converter import BooleanMath
+        return BooleanMath.l_or(other, self._default_output_socket)
+
+    def __xor__(self, other: Any) -> "BooleanMath":
+        return self._apply_boolean_operation(other, "not_equal")
+
+    def __rxor__(self, other: Any) -> "BooleanMath":
+        from .nodes.geometry.converter import BooleanMath
+        return BooleanMath.not_equal(other, self._default_output_socket)
+
+    def __invert__(self) -> "BooleanMath":
+        from .nodes.geometry.converter import BooleanMath
+        return BooleanMath.l_not(self._default_output_socket)
 
 
 class DynamicInputsMixin:
