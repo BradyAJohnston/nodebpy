@@ -321,6 +321,7 @@ class NodeBuilder:
     _from_socket: NodeSocket | None = None
     _default_input_id: str | None = None
     _default_output_id: str | None = None
+    __array_ufunc__ = None
 
     def __init__(self):
         # Get active tree from context manager
@@ -810,15 +811,24 @@ class NodeBuilder:
 
         return BooleanMath.l_not(self)
 
+    @staticmethod
+    def _cast_to_matrix(value):
+        from .nodes.geometry.converter import CombineMatrix
+
+        if hasattr(value, "shape") and value.shape == (4, 4):
+            return CombineMatrix(*value.ravel())
+        else:
+            return value
+
     def __matmul__(self, other: Any) -> "MultiplyMatrices":
         from .nodes.geometry.converter import MultiplyMatrices
 
-        return MultiplyMatrices(self, other)
+        return MultiplyMatrices(self, self._cast_to_matrix(other))
 
     def __rmatmul__(self, other: Any) -> "MultiplyMatrices":
-        from .nodes.geometry.converter import CombineMatrix, MultiplyMatrices
+        from .nodes.geometry.converter import MultiplyMatrices
 
-        return MultiplyMatrices(other, self)
+        return MultiplyMatrices(self._cast_to_matrix(other), self)
 
 
 class DynamicInputsMixin:

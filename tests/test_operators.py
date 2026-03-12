@@ -619,19 +619,34 @@ class TestReverseOperators:
         with TreeBuilder("TestMatmul"):
             mat = np.random.rand(4, 4)
             a = g.CombineTransform(translation=(1, 0, 0))
-            b = g.CombineMatrix(*mat.ravel())
-            result = a @ b
+            result = a @ mat
+            result2 = mat @ a
         assert result.node.bl_idname == "FunctionNodeMatrixMultiply"
-        assert np.allclose(mat.ravel(), [i.default_value for i in b.node.inputs])
+        assert result2.node.bl_idname == "FunctionNodeMatrixMultiply"
+        assert np.allclose(
+            mat.ravel(),
+            [i.default_value for i in result.node.inputs[1].links[0].from_node.inputs],
+        )
+        assert np.allclose(
+            mat.ravel(),
+            [i.default_value for i in result2.node.inputs[0].links[0].from_node.inputs],
+        )
 
     def test_rmatmul(self):
         with TreeBuilder("TestRMatmul"):
             a = g.CombineTransform(translation=(1, 0, 0))
             b = g.CombineTransform(rotation=(0, 90, 0))
+            mat = np.random.rand(4, 4)
             # use the output socket as the left operand so Python calls b.__rmatmul__
             result = a.o_transform.socket @ b
+            result2 = mat @ a
 
         assert result.node.bl_idname == "FunctionNodeMatrixMultiply"
+        assert result2.node.bl_idname == "FunctionNodeMatrixMultiply"
+        assert np.allclose(
+            mat.ravel(),
+            [i.default_value for i in result2.node.inputs[0].links[0].from_node.inputs],
+        )
 
 
 class TestMatrixMultiplcation:
