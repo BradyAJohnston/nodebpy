@@ -1051,13 +1051,18 @@ class ModulesHandler:
 
     def write(self):
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        # gross and messy but currently only way I can stop it writing out experimental modules??
+        for key, filename in [
+            (key, item.filename) for key, item in self.modules.items()
+        ]:
+            if filename == "experimental.py":
+                print(f"----Removing experimental module: {key}")
+                self.modules.pop(key)
         self.write_modules()
         self.write_init()
 
     def write_modules(self):
         for module_name, module_writer in self.modules.items():
-            if module_writer.filename == "experimental.py":
-                continue
             module_writer.write(self.config)
 
     def generate_init(self):

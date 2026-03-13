@@ -482,7 +482,7 @@ class ClusterGraph:
 def get_socket_y(socket: NodeSocket) -> float:
     b_socket = bNodeSocket.from_address(socket.as_pointer())
     ui_scale = 1.0  # type: ignore
-    return b_socket.runtime.contents.location[1] / ui_scale
+    return 1.0
 
 
 @dataclass(frozen=True)
