@@ -14,12 +14,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import bpy
 from bpy.types import bpy_prop_array
 from mathutils import Euler, Vector
-from typing_extensions import Literal
 
 # ---------------------------------------------------------------------------
 # Tree-type configuration
