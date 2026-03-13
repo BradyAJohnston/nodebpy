@@ -664,36 +664,39 @@ class HandleTypeSelection(NodeBuilder):
         self.node.mode = value
 
 
-def _typed_index_switch(data_type: SOCKET_TYPES):
-    @classmethod
-    def method(cls, *args: TYPE_INPUT_ALL, index: TYPE_INPUT_INT = 0) -> "IndexSwitch":
-        """Create an IndexSwitch node with a pre-set data_type"""
-        return cls(*args, index=index, data_type=data_type)
-
-    return method
-
-
 class IndexSwitch(NodeBuilder):
     """Node builder for the Index Switch node"""
 
     _bl_idname = "GeometryNodeIndexSwitch"
     node: bpy.types.GeometryNodeIndexSwitch
-    float = _typed_index_switch("FLOAT")
-    integer = _typed_index_switch("INT")
-    boolean = _typed_index_switch("BOOLEAN")
-    vector = _typed_index_switch("VECTOR")
-    color = _typed_index_switch("RGBA")
-    rotation = _typed_index_switch("ROTATION")
-    matrix = _typed_index_switch("MATRIX")
-    string = _typed_index_switch("STRING")
-    menu = _typed_index_switch("MENU")
-    object = _typed_index_switch("OBJECT")
-    geometry = _typed_index_switch("GEOMETRY")
-    collection = _typed_index_switch("COLLECTION")
-    image = _typed_index_switch("IMAGE")
-    material = _typed_index_switch("MATERIAL")
-    bundle = _typed_index_switch("BUNDLE")
-    closure = _typed_index_switch("CLOSURE")
+
+    @staticmethod
+    def _typed(data_type: SOCKET_TYPES):
+        @classmethod
+        def method(
+            cls, *args: TYPE_INPUT_ALL, index: TYPE_INPUT_INT = 0
+        ) -> "IndexSwitch":
+            """Create an IndexSwitch node with a pre-set data_type"""
+            return cls(*args, index=index, data_type=data_type)
+
+        return method
+
+    float = _typed("FLOAT")
+    integer = _typed("INT")
+    boolean = _typed("BOOLEAN")
+    vector = _typed("VECTOR")
+    color = _typed("RGBA")
+    rotation = _typed("ROTATION")
+    matrix = _typed("MATRIX")
+    string = _typed("STRING")
+    menu = _typed("MENU")
+    object = _typed("OBJECT")
+    geometry = _typed("GEOMETRY")
+    collection = _typed("COLLECTION")
+    image = _typed("IMAGE")
+    material = _typed("MATERIAL")
+    bundle = _typed("BUNDLE")
+    closure = _typed("CLOSURE")
 
     def __init__(
         self,
@@ -750,42 +753,25 @@ class IndexSwitch(NodeBuilder):
         self.node.data_type = value
 
 
-def _typed_menu_switch(data_type: SOCKET_TYPES):
-    @classmethod
-    def method(
-        cls,
-        *args: TYPE_INPUT_ALL,
-        menu: TYPE_INPUT_MENU = None,
-        **kwargs: TYPE_INPUT_ALL,
-    ) -> "MenuSwitch":
-        """Create an MenuSwitch node with a pre-set data_type"""
-        return cls(*args, menu=menu, data_type=data_type, **kwargs)
-
-    return method
-
-
-class MenuSwitch(NodeBuilder):
-    """Node builder for the Menu Switch node"""
+class _MenuSwitchBase(NodeBuilder):
+    """Base class for MenuSwitch nodes across all tree types."""
 
     _bl_idname = "GeometryNodeMenuSwitch"
     node: bpy.types.GeometryNodeMenuSwitch
 
-    float = _typed_menu_switch("FLOAT")
-    integer = _typed_menu_switch("INT")
-    boolean = _typed_menu_switch("BOOLEAN")
-    vector = _typed_menu_switch("VECTOR")
-    color = _typed_menu_switch("RGBA")
-    rotation = _typed_menu_switch("ROTATION")
-    matrix = _typed_menu_switch("MATRIX")
-    string = _typed_menu_switch("STRING")
-    menu = _typed_menu_switch("MENU")
-    object = _typed_menu_switch("OBJECT")
-    geometry = _typed_menu_switch("GEOMETRY")
-    collection = _typed_menu_switch("COLLECTION")
-    image = _typed_menu_switch("IMAGE")
-    material = _typed_menu_switch("MATERIAL")
-    bundle = _typed_menu_switch("BUNDLE")
-    closure = _typed_menu_switch("CLOSURE")
+    @staticmethod
+    def _typed(data_type: SOCKET_TYPES):
+        @classmethod
+        def method(
+            cls,
+            *args: TYPE_INPUT_ALL,
+            menu: TYPE_INPUT_MENU = None,
+            **kwargs: TYPE_INPUT_ALL,
+        ) -> "MenuSwitch":
+            """Create a MenuSwitch node with a pre-set data_type"""
+            return cls(*args, menu=menu, data_type=data_type, **kwargs)
+
+        return method
 
     def __init__(
         self,
@@ -860,18 +846,25 @@ class MenuSwitch(NodeBuilder):
         self.node.data_type = value
 
 
-def _domain_capture_attribute(domain: _AttributeDomains):
-    @classmethod
-    def method(
-        cls,
-        *args: LINKABLE,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        **kwargs,
-    ) -> "CaptureAttribute":
-        """Create an IndexSwitch node with a pre-set domain"""
-        return cls(*args, geometry=geometry, domain=domain, **kwargs)
+class MenuSwitch(_MenuSwitchBase):
+    """Node builder for the Menu Switch node"""
 
-    return method
+    float = _MenuSwitchBase._typed("FLOAT")
+    integer = _MenuSwitchBase._typed("INT")
+    boolean = _MenuSwitchBase._typed("BOOLEAN")
+    vector = _MenuSwitchBase._typed("VECTOR")
+    color = _MenuSwitchBase._typed("RGBA")
+    rotation = _MenuSwitchBase._typed("ROTATION")
+    matrix = _MenuSwitchBase._typed("MATRIX")
+    string = _MenuSwitchBase._typed("STRING")
+    menu = _MenuSwitchBase._typed("MENU")
+    object = _MenuSwitchBase._typed("OBJECT")
+    geometry = _MenuSwitchBase._typed("GEOMETRY")
+    collection = _MenuSwitchBase._typed("COLLECTION")
+    image = _MenuSwitchBase._typed("IMAGE")
+    material = _MenuSwitchBase._typed("MATERIAL")
+    bundle = _MenuSwitchBase._typed("BUNDLE")
+    closure = _MenuSwitchBase._typed("CLOSURE")
 
 
 class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
@@ -899,13 +892,28 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         "ROTATION": "QUATERNION",
         "MATRIX": "FLOAT4X4",
     }
-    point = _domain_capture_attribute("POINT")
-    edge = _domain_capture_attribute("EDGE")
-    face = _domain_capture_attribute("FACE")
-    corner = _domain_capture_attribute("CORNER")
-    curve = _domain_capture_attribute("CURVE")
-    instance = _domain_capture_attribute("INSTANCE")
-    layer = _domain_capture_attribute("LAYER")
+
+    @staticmethod
+    def _domain_factory(domain: _AttributeDomains):
+        @classmethod
+        def method(
+            cls,
+            *args: LINKABLE,
+            geometry: TYPE_INPUT_GEOMETRY = None,
+            **kwargs,
+        ) -> "CaptureAttribute":
+            """Create a CaptureAttribute node with a pre-set domain"""
+            return cls(*args, geometry=geometry, domain=domain, **kwargs)
+
+        return method
+
+    point = _domain_factory("POINT")
+    edge = _domain_factory("EDGE")
+    face = _domain_factory("FACE")
+    corner = _domain_factory("CORNER")
+    curve = _domain_factory("CURVE")
+    instance = _domain_factory("INSTANCE")
+    layer = _domain_factory("LAYER")
 
     def __init__(
         self,
@@ -1168,52 +1176,52 @@ class SDFGridBoolean(NodeBuilder):
         self.node.operation = value
 
 
-def _accumlate_field_factory(domain: _AttributeDomains):
-    """Create a factory for AccumulateField with a specific data type"""
-
-    class EvaluateAtIndexDomainFactory:
-        @staticmethod
-        def float(
-            value: TYPE_INPUT_VALUE = None, index: TYPE_INPUT_INT = 0
-        ) -> "AccumulateField":
-            return AccumulateField(value, index, domain=domain, data_type="FLOAT")
-
-        @staticmethod
-        def integer(
-            value: TYPE_INPUT_INT = None, index: TYPE_INPUT_INT = 0
-        ) -> "AccumulateField":
-            return AccumulateField(value, index, domain=domain, data_type="INT")
-
-        @staticmethod
-        def vector(
-            value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0
-        ) -> "AccumulateField":
-            return AccumulateField(
-                value, index, domain=domain, data_type="FLOAT_VECTOR"
-            )
-
-        @staticmethod
-        def transform(
-            value: TYPE_INPUT_MATRIX = None, index: TYPE_INPUT_INT = 0
-        ) -> "AccumulateField":
-            return AccumulateField(value, index, domain=domain, data_type="TRANSFORM")
-
-    return EvaluateAtIndexDomainFactory()
-
-
 class AccumulateField(NodeBuilder):
     """Add the values of an evaluated field together and output the running total for each element"""
 
     _bl_idname = "GeometryNodeAccumulateField"
     node: bpy.types.GeometryNodeAccumulateField
 
-    point = _accumlate_field_factory("POINT")
-    edge = _accumlate_field_factory("EDGE")
-    face = _accumlate_field_factory("FACE")
-    corner = _accumlate_field_factory("CORNER")
-    spline = _accumlate_field_factory("CURVE")
-    instance = _accumlate_field_factory("INSTANCE")
-    layer = _accumlate_field_factory("LAYER")
+    @staticmethod
+    def _domain_factory(domain: _AttributeDomains):
+        class AccumulateFieldDomainFactory:
+            @staticmethod
+            def float(
+                value: TYPE_INPUT_VALUE = None, index: TYPE_INPUT_INT = 0
+            ) -> "AccumulateField":
+                return AccumulateField(value, index, domain=domain, data_type="FLOAT")
+
+            @staticmethod
+            def integer(
+                value: TYPE_INPUT_INT = None, index: TYPE_INPUT_INT = 0
+            ) -> "AccumulateField":
+                return AccumulateField(value, index, domain=domain, data_type="INT")
+
+            @staticmethod
+            def vector(
+                value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0
+            ) -> "AccumulateField":
+                return AccumulateField(
+                    value, index, domain=domain, data_type="FLOAT_VECTOR"
+                )
+
+            @staticmethod
+            def transform(
+                value: TYPE_INPUT_MATRIX = None, index: TYPE_INPUT_INT = 0
+            ) -> "AccumulateField":
+                return AccumulateField(
+                    value, index, domain=domain, data_type="TRANSFORM"
+                )
+
+        return AccumulateFieldDomainFactory()
+
+    point = _domain_factory("POINT")
+    edge = _domain_factory("EDGE")
+    face = _domain_factory("FACE")
+    corner = _domain_factory("CORNER")
+    spline = _domain_factory("CURVE")
+    instance = _domain_factory("INSTANCE")
+    layer = _domain_factory("LAYER")
 
     def __init__(
         self,
@@ -1281,52 +1289,54 @@ class AccumulateField(NodeBuilder):
         self.node.domain = value
 
 
-def _evaluate_at_index_factory(domain: _AttributeDomains):
-    """Create a factory for AccumulateField with a specific data type"""
-
-    class EvaluateAtIndexDomainFactory:
-        @staticmethod
-        def float(value: TYPE_INPUT_VALUE = None, index: TYPE_INPUT_INT = 0):
-            return EvaluateAtIndex(value, index, domain=domain, data_type="FLOAT")
-
-        @staticmethod
-        def integer(value: TYPE_INPUT_INT = None, index: TYPE_INPUT_INT = 0):
-            return EvaluateAtIndex(value, index, domain=domain, data_type="INT")
-
-        @staticmethod
-        def boolean(value: TYPE_INPUT_BOOLEAN = None, index: TYPE_INPUT_INT = 0):
-            return EvaluateAtIndex(value, index, domain=domain, data_type="BOOLEAN")
-
-        @staticmethod
-        def vector(value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0):
-            return EvaluateAtIndex(
-                value, index, domain=domain, data_type="FLOAT_VECTOR"
-            )
-
-        @staticmethod
-        def rotation(value: TYPE_INPUT_ROTATION = None, index: TYPE_INPUT_INT = 0):
-            return EvaluateAtIndex(value, index, domain=domain, data_type="QUATERNION")
-
-        @staticmethod
-        def transform(value: TYPE_INPUT_MATRIX = None, index: TYPE_INPUT_INT = 0):
-            return EvaluateAtIndex(value, index, domain=domain, data_type="FLOAT4X4")
-
-    return EvaluateAtIndexDomainFactory()
-
-
 class EvaluateAtIndex(NodeBuilder):
     """Retrieve data of other elements in the context's geometry"""
 
     _bl_idname = "GeometryNodeFieldAtIndex"
     node: bpy.types.GeometryNodeFieldAtIndex
 
-    point = _evaluate_at_index_factory("POINT")
-    edge = _evaluate_at_index_factory("EDGE")
-    face = _evaluate_at_index_factory("FACE")
-    corner = _evaluate_at_index_factory("CORNER")
-    spline = _evaluate_at_index_factory("CURVE")
-    instance = _evaluate_at_index_factory("INSTANCE")
-    layer = _evaluate_at_index_factory("LAYER")
+    @staticmethod
+    def _domain_factory(domain: _AttributeDomains):
+        class EvaluateAtIndexDomainFactory:
+            @staticmethod
+            def float(value: TYPE_INPUT_VALUE = None, index: TYPE_INPUT_INT = 0):
+                return EvaluateAtIndex(value, index, domain=domain, data_type="FLOAT")
+
+            @staticmethod
+            def integer(value: TYPE_INPUT_INT = None, index: TYPE_INPUT_INT = 0):
+                return EvaluateAtIndex(value, index, domain=domain, data_type="INT")
+
+            @staticmethod
+            def boolean(value: TYPE_INPUT_BOOLEAN = None, index: TYPE_INPUT_INT = 0):
+                return EvaluateAtIndex(value, index, domain=domain, data_type="BOOLEAN")
+
+            @staticmethod
+            def vector(value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0):
+                return EvaluateAtIndex(
+                    value, index, domain=domain, data_type="FLOAT_VECTOR"
+                )
+
+            @staticmethod
+            def rotation(value: TYPE_INPUT_ROTATION = None, index: TYPE_INPUT_INT = 0):
+                return EvaluateAtIndex(
+                    value, index, domain=domain, data_type="QUATERNION"
+                )
+
+            @staticmethod
+            def transform(value: TYPE_INPUT_MATRIX = None, index: TYPE_INPUT_INT = 0):
+                return EvaluateAtIndex(
+                    value, index, domain=domain, data_type="FLOAT4X4"
+                )
+
+        return EvaluateAtIndexDomainFactory()
+
+    point = _domain_factory("POINT")
+    edge = _domain_factory("EDGE")
+    face = _domain_factory("FACE")
+    corner = _domain_factory("CORNER")
+    spline = _domain_factory("CURVE")
+    instance = _domain_factory("INSTANCE")
+    layer = _domain_factory("LAYER")
 
     def __init__(
         self,
@@ -1386,44 +1396,44 @@ class EvaluateAtIndex(NodeBuilder):
         self.node.data_type = value
 
 
-def _field_average_factory(domain: _AttributeDomains):
-    """Create a factory for FieldVariance with a specific data type"""
-
-    class FieldAverageDomainFactory:
-        @staticmethod
-        def float(
-            value: TYPE_INPUT_VALUE = 1.0,
-            group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldAverage":
-            """Create FieldAverage for the "FLOAT" data type"""
-            return FieldAverage(value, group_index, data_type="FLOAT", domain=domain)
-
-        @staticmethod
-        def vector(
-            value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
-            group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldAverage":
-            """Create FieldAverage on for the "FLOAT_VECTOR" data type"""
-            return FieldAverage(
-                value, group_index, data_type="FLOAT_VECTOR", domain=domain
-            )
-
-    return FieldAverageDomainFactory()
-
-
 class FieldAverage(NodeBuilder):
     """Calculate the mean and median of a given field"""
 
     _bl_idname = "GeometryNodeFieldAverage"
     node: bpy.types.GeometryNodeFieldAverage
 
-    point = _field_average_factory("POINT")
-    edge = _field_average_factory("EDGE")
-    face = _field_average_factory("FACE")
-    corner = _field_average_factory("CORNER")
-    spline = _field_average_factory("CURVE")
-    instance = _field_average_factory("INSTANCE")
-    layer = _field_average_factory("LAYER")
+    @staticmethod
+    def _domain_factory(domain: _AttributeDomains):
+        class FieldAverageDomainFactory:
+            @staticmethod
+            def float(
+                value: TYPE_INPUT_VALUE = 1.0,
+                group_index: TYPE_INPUT_INT = 0,
+            ) -> "FieldAverage":
+                """Create FieldAverage for the "FLOAT" data type"""
+                return FieldAverage(
+                    value, group_index, data_type="FLOAT", domain=domain
+                )
+
+            @staticmethod
+            def vector(
+                value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
+                group_index: TYPE_INPUT_INT = 0,
+            ) -> "FieldAverage":
+                """Create FieldAverage for the "FLOAT_VECTOR" data type"""
+                return FieldAverage(
+                    value, group_index, data_type="FLOAT_VECTOR", domain=domain
+                )
+
+        return FieldAverageDomainFactory()
+
+    point = _domain_factory("POINT")
+    edge = _domain_factory("EDGE")
+    face = _domain_factory("FACE")
+    corner = _domain_factory("CORNER")
+    spline = _domain_factory("CURVE")
+    instance = _domain_factory("INSTANCE")
+    layer = _domain_factory("LAYER")
 
     def __init__(
         self,
@@ -1481,52 +1491,54 @@ class FieldAverage(NodeBuilder):
         self.node.domain = value
 
 
-def _field_min_and_max_factory(domain: _AttributeDomains):
-    """Create a factory for AccumulateField with a specific data type"""
-
-    class FieldMinMaxDataTypeFactory:
-        @staticmethod
-        def float(
-            value: TYPE_INPUT_VALUE = 1.0,
-            group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldMinAndMax":
-            """Create FieldMinMax for the "FLOAT" data type"""
-            return FieldMinAndMax(value, group_index, data_type="FLOAT", domain=domain)
-
-        @staticmethod
-        def integer(
-            value: TYPE_INPUT_INT = 1,
-            group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldMinAndMax":
-            """Create FieldMinMax for the "INT" data type"""
-            return FieldMinAndMax(value, group_index, data_type="INT", domain=domain)
-
-        @staticmethod
-        def vector(
-            value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
-            group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldMinAndMax":
-            """Create FieldMinMax on for the "FLOAT_VECTOR" data type"""
-            return FieldMinAndMax(
-                value, group_index, data_type="FLOAT_VECTOR", domain=domain
-            )
-
-    return FieldMinMaxDataTypeFactory()
-
-
 class FieldMinAndMax(NodeBuilder):
     """Calculate the minimum and maximum of a given field"""
 
     _bl_idname = "GeometryNodeFieldMinAndMax"
     node: bpy.types.GeometryNodeFieldMinAndMax
 
-    point = _field_min_and_max_factory("POINT")
-    edge = _field_min_and_max_factory("EDGE")
-    face = _field_min_and_max_factory("FACE")
-    corner = _field_min_and_max_factory("CORNER")
-    spline = _field_min_and_max_factory("CURVE")
-    instance = _field_min_and_max_factory("INSTANCE")
-    layer = _field_min_and_max_factory("LAYER")
+    @staticmethod
+    def _domain_factory(domain: _AttributeDomains):
+        class FieldMinMaxDomainFactory:
+            @staticmethod
+            def float(
+                value: TYPE_INPUT_VALUE = 1.0,
+                group_index: TYPE_INPUT_INT = 0,
+            ) -> "FieldMinAndMax":
+                """Create FieldMinMax for the "FLOAT" data type"""
+                return FieldMinAndMax(
+                    value, group_index, data_type="FLOAT", domain=domain
+                )
+
+            @staticmethod
+            def integer(
+                value: TYPE_INPUT_INT = 1,
+                group_index: TYPE_INPUT_INT = 0,
+            ) -> "FieldMinAndMax":
+                """Create FieldMinMax for the "INT" data type"""
+                return FieldMinAndMax(
+                    value, group_index, data_type="INT", domain=domain
+                )
+
+            @staticmethod
+            def vector(
+                value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
+                group_index: TYPE_INPUT_INT = 0,
+            ) -> "FieldMinAndMax":
+                """Create FieldMinMax for the "FLOAT_VECTOR" data type"""
+                return FieldMinAndMax(
+                    value, group_index, data_type="FLOAT_VECTOR", domain=domain
+                )
+
+        return FieldMinMaxDomainFactory()
+
+    point = _domain_factory("POINT")
+    edge = _domain_factory("EDGE")
+    face = _domain_factory("FACE")
+    corner = _domain_factory("CORNER")
+    spline = _domain_factory("CURVE")
+    instance = _domain_factory("INSTANCE")
+    layer = _domain_factory("LAYER")
 
     def __init__(
         self,
@@ -1584,50 +1596,48 @@ class FieldMinAndMax(NodeBuilder):
         self.node.domain = value
 
 
-def _evaluate_on_domain_factory(domain: _AttributeDomains):
-    """Create a factory for AccumulateField with a specific data type"""
-
-    class EvaluateOnDomainDomainFactory:
-        @staticmethod
-        def float(value: TYPE_INPUT_VALUE = None):
-            return EvaluateOnDomain(value, domain=domain, data_type="FLOAT")
-
-        @staticmethod
-        def integer(value: TYPE_INPUT_INT = None):
-            return EvaluateOnDomain(value, domain=domain, data_type="INT")
-
-        @staticmethod
-        def boolean(value: TYPE_INPUT_BOOLEAN = None, index: TYPE_INPUT_INT = 0):
-            return EvaluateOnDomain(value, domain=domain, data_type="BOOLEAN")
-
-        @staticmethod
-        def vector(value: TYPE_INPUT_VECTOR = None):
-            return EvaluateOnDomain(value, domain=domain, data_type="FLOAT_VECTOR")
-
-        @staticmethod
-        def rotation(value: TYPE_INPUT_ROTATION = None):
-            return EvaluateOnDomain(value, domain=domain, data_type="QUATERNION")
-
-        @staticmethod
-        def transform(value: TYPE_INPUT_MATRIX = None):
-            return EvaluateOnDomain(value, domain=domain, data_type="FLOAT4X4")
-
-    return EvaluateOnDomainDomainFactory()
-
-
 class EvaluateOnDomain(NodeBuilder):
     """Retrieve values from a field on a different domain besides the domain from the context"""
 
     _bl_idname = "GeometryNodeFieldOnDomain"
     node: bpy.types.GeometryNodeFieldOnDomain
 
-    point = _field_min_and_max_factory("POINT")
-    edge = _field_min_and_max_factory("EDGE")
-    face = _field_min_and_max_factory("FACE")
-    corner = _field_min_and_max_factory("CORNER")
-    spline = _field_min_and_max_factory("CURVE")
-    instance = _field_min_and_max_factory("INSTANCE")
-    layer = _field_min_and_max_factory("LAYER")
+    @staticmethod
+    def _domain_factory(domain: _AttributeDomains):
+        class EvaluateOnDomainDomainFactory:
+            @staticmethod
+            def float(value: TYPE_INPUT_VALUE = None):
+                return EvaluateOnDomain(value, domain=domain, data_type="FLOAT")
+
+            @staticmethod
+            def integer(value: TYPE_INPUT_INT = None):
+                return EvaluateOnDomain(value, domain=domain, data_type="INT")
+
+            @staticmethod
+            def boolean(value: TYPE_INPUT_BOOLEAN = None):
+                return EvaluateOnDomain(value, domain=domain, data_type="BOOLEAN")
+
+            @staticmethod
+            def vector(value: TYPE_INPUT_VECTOR = None):
+                return EvaluateOnDomain(value, domain=domain, data_type="FLOAT_VECTOR")
+
+            @staticmethod
+            def rotation(value: TYPE_INPUT_ROTATION = None):
+                return EvaluateOnDomain(value, domain=domain, data_type="QUATERNION")
+
+            @staticmethod
+            def transform(value: TYPE_INPUT_MATRIX = None):
+                return EvaluateOnDomain(value, domain=domain, data_type="FLOAT4X4")
+
+        return EvaluateOnDomainDomainFactory()
+
+    point = _domain_factory("POINT")
+    edge = _domain_factory("EDGE")
+    face = _domain_factory("FACE")
+    corner = _domain_factory("CORNER")
+    spline = _domain_factory("CURVE")
+    instance = _domain_factory("INSTANCE")
+    layer = _domain_factory("LAYER")
 
     def __init__(
         self,
@@ -1679,44 +1689,44 @@ class EvaluateOnDomain(NodeBuilder):
         self.node.data_type = value
 
 
-def _field_variance_factory(domain: _AttributeDomains):
-    """Create a factory for FieldVariance with a specific data type"""
-
-    class FieldVarianceDomainFactory:
-        @staticmethod
-        def float(
-            value: TYPE_INPUT_VALUE = 1.0,
-            group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldVariance":
-            """Create FieldVariance for the "FLOAT" data type"""
-            return FieldVariance(value, group_index, data_type="FLOAT", domain=domain)
-
-        @staticmethod
-        def vector(
-            value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
-            group_index: TYPE_INPUT_INT = 0,
-        ) -> "FieldVariance":
-            """Create FieldVariance on for the "FLOAT_VECTOR" data type"""
-            return FieldVariance(
-                value, group_index, data_type="FLOAT_VECTOR", domain=domain
-            )
-
-    return FieldVarianceDomainFactory()
-
-
 class FieldVariance(NodeBuilder):
     """Calculate the standard deviation and variance of a given field"""
 
     _bl_idname = "GeometryNodeFieldVariance"
     node: bpy.types.GeometryNodeFieldVariance
 
-    point = _field_variance_factory("POINT")
-    edge = _field_variance_factory("EDGE")
-    face = _field_variance_factory("FACE")
-    corner = _field_variance_factory("CORNER")
-    spline = _field_variance_factory("CURVE")
-    instance = _field_variance_factory("INSTANCE")
-    layer = _field_variance_factory("LAYER")
+    @staticmethod
+    def _domain_factory(domain: _AttributeDomains):
+        class FieldVarianceDomainFactory:
+            @staticmethod
+            def float(
+                value: TYPE_INPUT_VALUE = 1.0,
+                group_index: TYPE_INPUT_INT = 0,
+            ) -> "FieldVariance":
+                """Create FieldVariance for the "FLOAT" data type"""
+                return FieldVariance(
+                    value, group_index, data_type="FLOAT", domain=domain
+                )
+
+            @staticmethod
+            def vector(
+                value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
+                group_index: TYPE_INPUT_INT = 0,
+            ) -> "FieldVariance":
+                """Create FieldVariance for the "FLOAT_VECTOR" data type"""
+                return FieldVariance(
+                    value, group_index, data_type="FLOAT_VECTOR", domain=domain
+                )
+
+        return FieldVarianceDomainFactory()
+
+    point = _domain_factory("POINT")
+    edge = _domain_factory("EDGE")
+    face = _domain_factory("FACE")
+    corner = _domain_factory("CORNER")
+    spline = _domain_factory("CURVE")
+    instance = _domain_factory("INSTANCE")
+    layer = _domain_factory("LAYER")
 
     def __init__(
         self,
@@ -1799,72 +1809,72 @@ _CompareVectorModes = Literal[
 ]
 
 
-def _compare_operation_method(operation: _CompareOperations):
-    """Create a factory for Compare with a specific operation"""
-
-    class CompareOperationFactory:
-        @staticmethod
-        def float(
-            a: TYPE_INPUT_VALUE = 0.0,
-            b: TYPE_INPUT_VALUE = 0.0,
-            *,
-            epsilon: TYPE_INPUT_VALUE = 0.0001,
-        ) -> "Compare":
-            return Compare.float(operation=operation, a=a, b=b, epsilon=epsilon)
-
-        @staticmethod
-        def integer(a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "Compare":
-            return Compare.integer(operation=operation, a=a, b=b)
-
-        @staticmethod
-        def vector(
-            a: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-            b: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-            *,
-            mode: _CompareVectorModes = "ELEMENT",
-            c: TYPE_INPUT_VALUE = None,
-            angle: TYPE_INPUT_VALUE = None,
-            epsilon: TYPE_INPUT_VALUE = None,
-        ) -> "Compare":
-            return Compare.vector(
-                operation=operation,
-                a=a,
-                b=b,
-                mode=mode,
-                c=c,
-                angle=angle,
-                epsilon=epsilon,
-            )
-
-        @staticmethod
-        def color(
-            a: TYPE_INPUT_COLOR = None,
-            b: TYPE_INPUT_COLOR = None,
-            epsilon: TYPE_INPUT_VALUE = None,
-        ) -> "Compare":
-            return Compare.color(operation=operation, a=a, b=b, epsilon=epsilon)
-
-        @staticmethod
-        def string(a: TYPE_INPUT_STRING = "", b: TYPE_INPUT_STRING = "") -> "Compare":
-            return Compare.string(operation=operation, a=a, b=b)
-
-    return CompareOperationFactory()
-
-
 class Compare(NodeBuilder):
     """Perform a comparison operation on the two given inputs"""
 
     _bl_idname = "FunctionNodeCompare"
     node: bpy.types.FunctionNodeCompare
 
-    less_than = _compare_operation_method("LESS_THAN")
-    less_equal = _compare_operation_method("LESS_EQUAL")
-    greater_than = _compare_operation_method("GREATER_THAN")
-    greater_equal = _compare_operation_method("GREATER_EQUAL")
-    equal = _compare_operation_method("EQUAL")
-    not_equal = _compare_operation_method("NOT_EQUAL")
-    brighter = _compare_operation_method("BRIGHTER")
-    darker = _compare_operation_method("DARKER")
+    @staticmethod
+    def _operation_factory(operation: _CompareOperations):
+        class CompareOperationFactory:
+            @staticmethod
+            def float(
+                a: TYPE_INPUT_VALUE = 0.0,
+                b: TYPE_INPUT_VALUE = 0.0,
+                *,
+                epsilon: TYPE_INPUT_VALUE = 0.0001,
+            ) -> "Compare":
+                return Compare.float(operation=operation, a=a, b=b, epsilon=epsilon)
+
+            @staticmethod
+            def integer(a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "Compare":
+                return Compare.integer(operation=operation, a=a, b=b)
+
+            @staticmethod
+            def vector(
+                a: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+                b: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+                *,
+                mode: _CompareVectorModes = "ELEMENT",
+                c: TYPE_INPUT_VALUE = None,
+                angle: TYPE_INPUT_VALUE = None,
+                epsilon: TYPE_INPUT_VALUE = None,
+            ) -> "Compare":
+                return Compare.vector(
+                    operation=operation,
+                    a=a,
+                    b=b,
+                    mode=mode,
+                    c=c,
+                    angle=angle,
+                    epsilon=epsilon,
+                )
+
+            @staticmethod
+            def color(
+                a: TYPE_INPUT_COLOR = None,
+                b: TYPE_INPUT_COLOR = None,
+                epsilon: TYPE_INPUT_VALUE = None,
+            ) -> "Compare":
+                return Compare.color(operation=operation, a=a, b=b, epsilon=epsilon)
+
+            @staticmethod
+            def string(
+                a: TYPE_INPUT_STRING = "", b: TYPE_INPUT_STRING = ""
+            ) -> "Compare":
+                return Compare.string(operation=operation, a=a, b=b)
+
+        return CompareOperationFactory()
+
+    less_than = _operation_factory("LESS_THAN")
+    less_equal = _operation_factory("LESS_EQUAL")
+    greater_than = _operation_factory("GREATER_THAN")
+    greater_equal = _operation_factory("GREATER_EQUAL")
+    equal = _operation_factory("EQUAL")
+    not_equal = _operation_factory("NOT_EQUAL")
+    brighter = _operation_factory("BRIGHTER")
+    darker = _operation_factory("DARKER")
 
     def __init__(
         self,
