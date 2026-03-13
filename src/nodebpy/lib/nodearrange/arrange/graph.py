@@ -480,8 +480,7 @@ class ClusterGraph:
 
 
 def get_socket_y(socket: NodeSocket) -> float:
-    b_socket = bNodeSocket.from_address(socket.as_pointer())
-    ui_scale = 1.0  # type: ignore
+    bNodeSocket.from_address(socket.as_pointer())
     return 1.0
 
 
