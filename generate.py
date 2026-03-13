@@ -109,7 +109,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "Frame",
         "Reroute",
     ],
-    manually_defined=(),
+    manually_defined=("MenuSwitch",),
     class_name_prefix_strips=[
         "ShaderNode",
         "Node",
@@ -126,7 +126,7 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "Cryptomatte",
         "Image",
     ],
-    manually_defined=(),
+    manually_defined=("MenuSwitch",),
     class_name_prefix_strips=[
         "CompositorNode",
         "Node",

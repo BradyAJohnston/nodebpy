@@ -755,15 +755,15 @@ def _typed_menu_switch(data_type: SOCKET_TYPES):
         menu: TYPE_INPUT_MENU = None,
         data_type: SOCKET_TYPES = "FLOAT",
         **kwargs: TYPE_INPUT_ALL,
-    ) -> "IndexSwitch":
-        """Create an IndexSwitch node with a pre-set data_type"""
+    ) -> "MenuSwitch":
+        """Create an MenuSwitch node with a pre-set data_type"""
         return cls(*args, menu=menu, data_type=data_type, **kwargs)
 
     return method
 
 
 class MenuSwitch(NodeBuilder):
-    """Node builder for the Index Switch node"""
+    """Node builder for the Menu Switch node"""
 
     _bl_idname = "GeometryNodeMenuSwitch"
     node: bpy.types.GeometryNodeMenuSwitch

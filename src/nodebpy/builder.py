@@ -125,6 +125,7 @@ class TreeBuilder:
     """
 
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
+    _menu_defaults: dict[str, str] = {}
     just_added: "Node | None" = None
     collapse: bool = False
 
@@ -232,7 +233,16 @@ class TreeBuilder:
     def __exit__(self, *args):
         if self._arrange:
             self.arrange()
+        self._apply_input_defaults()
         self.deactivate_tree()
+
+    def _apply_input_defaults(self) -> None:
+        for key, value in self._menu_defaults.items():
+            print(f"Setting default value for {key}: {value}")
+            for item in self.tree.interface.items_tree:
+                if item.identifier == key:
+                    item.default_value = value
+                    break
 
     def __len__(self) -> int:
         return len(self.nodes)
@@ -990,7 +1000,10 @@ class SocketBase(SocketLinker):
         for key, value in kwargs.items():
             if value is None:
                 continue
-            setattr(self.interface_socket, key, value)
+            try:
+                setattr(self.interface_socket, key, value)
+            except TypeError:
+                self.tree._menu_defaults[self.interface_socket.identifier] = value
 
     @property
     def default_value(self):

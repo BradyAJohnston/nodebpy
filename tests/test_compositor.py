@@ -10,9 +10,13 @@ def test_initial_compositor():
             depth = s.SocketFloat("Depth")
             normal = s.SocketVector("Normal")
             ao = s.SocketColor("AO")
-            background_menu = s.SocketMenu("Background")
+
+            background_menu = s.SocketMenu("Background", "Output")
             background_color = s.SocketColor("Background Color")
-            outline_menu = s.SocketMenu(name="Outline", expanded=True)
+            outline_menu = s.SocketMenu(
+                "Outline", "Outline", expanded=True, optional_label=True
+            )
+
             outline_depth = s.SocketFloat("Socket Depth", 5.0)
             outline_size = s.SocketInt("Outline Size", 2)
             outline_color = s.SocketColor("Outline Color")
@@ -31,14 +35,18 @@ def test_initial_compositor():
         )
 
         outline_switch = c.MenuSwitch.color(
-            outline_menu, active_image, c.AlphaOver(outline_comp, outline_color)
+            **{
+                "None": active_image,
+                "Outline": c.AlphaOver(outline_comp, outline_color),
+            },
+            menu=outline_menu,
         )
 
         _ = (
             c.MenuSwitch.color(
-                background_menu,
                 outline_switch,
                 c.AlphaOver(background_color, outline_switch),
+                menu=background_menu,
             )
             >> output_color
         )
