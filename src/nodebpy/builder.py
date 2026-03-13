@@ -61,12 +61,39 @@ class SocketError(Exception):
     """Raised when a socket operation fails."""
 
 
+class PanelContext:
+    """Context manager for grouping sockets into a panel."""
+
+    def __init__(
+        self,
+        socket_context: SocketContext,
+        name: str,
+        *,
+        default_closed: bool = False,
+    ):
+        self._socket_context = socket_context
+        self._name = name
+        self._default_closed = default_closed
+        self._panel: bpy.types.NodeTreeInterfacePanel | None = None
+
+    def __enter__(self):
+        self._panel = self._socket_context.interface.new_panel(
+            self._name, default_closed=self._default_closed
+        )
+        self._socket_context._active_panel = self._panel
+        return self
+
+    def __exit__(self, *args):
+        self._socket_context._active_panel = None
+
+
 class SocketContext:
     _direction: Literal["INPUT", "OUTPUT"] | None
     _active_context: SocketContext | None = None
 
     def __init__(self, tree_builder: TreeBuilder):
         self.builder = tree_builder
+        self._active_panel: bpy.types.NodeTreeInterfacePanel | None = None
 
     @property
     def tree(self) -> NodeTree:
@@ -80,15 +107,22 @@ class SocketContext:
         assert interface is not None
         return interface
 
+    def panel(self, name: str, *, default_closed: bool = False) -> PanelContext:
+        """Create a panel context for grouping sockets."""
+        return PanelContext(self, name, default_closed=default_closed)
+
     def _create_socket(
         self, socket_def: SocketBase, name: str
     ) -> bpy.types.NodeTreeInterfaceSocket:
         """Create a socket from a socket definition."""
-        socket = self.interface.new_socket(
-            name=name,
-            in_out=self._direction,
-            socket_type=socket_def._bl_socket_type,
-        )
+        kwargs: dict[str, Any] = {
+            "name": name,
+            "in_out": self._direction,
+            "socket_type": socket_def._bl_socket_type,
+        }
+        if self._active_panel is not None:
+            kwargs["parent"] = self._active_panel
+        socket = self.interface.new_socket(**kwargs)
         socket.description = socket_def.description
         return socket
 
@@ -100,7 +134,6 @@ class SocketContext:
     def __exit__(self, *args):
         SocketContext._direction = None
         SocketContext._active_context = None
-        pass
 
 
 class DirectionalContext(SocketContext):
@@ -662,7 +695,14 @@ class NodeBuilder:
         else:  # Both operands are scalar types, use regular Math
             from .nodes.geometry.converter import IntegerMath, Math
 
-            if isinstance(other, int) and self._default_output_socket.type == "INT":
+            # only the Geometry Node Tree supports integer math currently, potential
+            # to support other trees when Blender supports it
+            is_geometry_tree = self._tree.tree.bl_idname in ["GeometryNodeTree"]
+            if (
+                is_geometry_tree
+                and isinstance(other, int)
+                and self._default_output_socket.type == "INT"
+            ):
                 return getattr(IntegerMath, operation)(*values)
             else:
                 # Math node uses 'floored_modulo' instead of 'modulo'
@@ -1120,6 +1160,7 @@ class SocketBoolean(SocketBase):
         layer_selection_field: bool = False,
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
+        is_panel_toggle: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
@@ -1131,6 +1172,7 @@ class SocketBoolean(SocketBase):
             structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
+            is_panel_toggle=is_panel_toggle,
         )
 
 
