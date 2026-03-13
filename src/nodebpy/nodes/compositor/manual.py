@@ -22,7 +22,6 @@ def _typed_menu_switch(data_type: SOCKET_TYPES):
         cls,
         *args: TYPE_INPUT_ALL,
         menu: TYPE_INPUT_MENU = None,
-        data_type: SOCKET_TYPES = "FLOAT",
         **kwargs: TYPE_INPUT_ALL,
     ) -> "MenuSwitch":
         """Create an MenuSwitch node with a pre-set data_type"""
@@ -42,16 +41,8 @@ class MenuSwitch(NodeBuilder):
     boolean = _typed_menu_switch("BOOLEAN")
     vector = _typed_menu_switch("VECTOR")
     color = _typed_menu_switch("RGBA")
-    rotation = _typed_menu_switch("ROTATION")
-    matrix = _typed_menu_switch("MATRIX")
     string = _typed_menu_switch("STRING")
     menu = _typed_menu_switch("MENU")
-    object = _typed_menu_switch("OBJECT")
-    geometry = _typed_menu_switch("GEOMETRY")
-    collection = _typed_menu_switch("COLLECTION")
-    image = _typed_menu_switch("IMAGE")
-    material = _typed_menu_switch("MATERIAL")
-    closure = _typed_menu_switch("CLOSURE")
 
     def __init__(
         self,

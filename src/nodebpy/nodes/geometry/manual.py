@@ -129,7 +129,10 @@ class Bake(NodeBuilder, DynamicInputsMixin):
 
 
 class GeometryToInstance(NodeBuilder):
-    """Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large"""
+    """
+    Convert each input geometry into an instance, which can be much faster
+    than the Join Geometry node when the inputs are large
+    """
 
     _bl_idname = "GeometryNodeGeometryToInstance"
     node: bpy.types.GeometryNodeGeometryToInstance
@@ -753,7 +756,6 @@ def _typed_menu_switch(data_type: SOCKET_TYPES):
         cls,
         *args: TYPE_INPUT_ALL,
         menu: TYPE_INPUT_MENU = None,
-        data_type: SOCKET_TYPES = "FLOAT",
         **kwargs: TYPE_INPUT_ALL,
     ) -> "MenuSwitch":
         """Create an MenuSwitch node with a pre-set data_type"""
@@ -873,7 +875,11 @@ def _domain_capture_attribute(domain: _AttributeDomains):
 
 
 class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
-    """Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation"""
+    """
+    Store the result of a field on a geometry and output the data as a node socket.
+    Allows remembering or interpolating data as the geometry changes,
+    such as positions before deformation
+    """
 
     _bl_idname = "GeometryNodeCaptureAttribute"
     node: bpy.types.GeometryNodeCaptureAttribute

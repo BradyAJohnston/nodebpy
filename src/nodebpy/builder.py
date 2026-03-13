@@ -870,7 +870,7 @@ class NodeBuilder:
 
 
 class DynamicInputsMixin:
-    _socket_data_types: tuple[str]
+    _socket_data_types: tuple[str, ...]
     _type_map: dict[str, str] = {}
 
     def _match_compatible_data(

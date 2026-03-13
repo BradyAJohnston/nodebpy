@@ -1,6 +1,7 @@
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import sockets as s
+from nodebpy.lib.nodearrange.arrange.stacking import T
 
 
 def test_initial_compositor():
@@ -20,6 +21,7 @@ def test_initial_compositor():
             outline_depth = s.SocketFloat("Socket Depth", 5.0)
             outline_size = s.SocketInt("Outline Size", 2)
             outline_color = s.SocketColor("Outline Color")
+
         with t.outputs:
             output_color = s.SocketColor("Image")
 
