@@ -24,3 +24,25 @@ def test_material_math():
         comp.node.inputs[1].links[0].from_node.inputs[0].links[0].from_node.bl_idname
         == "ShaderNodeNewGeometry"
     )
+
+
+def test_material_menu_switch():
+    with TreeBuilder.shader() as tree:
+        menu = s.MenuSwitch.shader(*[s.PrincipledBSDF() for _ in range(10)])
+        with tree.outputs:
+            _ = menu >> sockets.SocketShader()
+
+    assert len(menu.node.enum_items) == 10
+    assert menu.node.outputs[0].links
+
+    with TreeBuilder.shader() as tree:
+        menu = s.MenuSwitch.float(
+            **{f"Input_{i}": float(value) for i, value in enumerate(range(10))}
+        )
+        with tree.outputs:
+            _ = menu >> sockets.SocketFloat()
+
+    assert len(menu.node.enum_items) == 10
+    for i, input in enumerate(menu.inputs.values()):
+        assert f"Input_{i}" == input.name
+        assert float(i) == input.socket.default_value

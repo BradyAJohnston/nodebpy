@@ -39,6 +39,8 @@ class MenuSwitch(NodeBuilder):
     color = _typed_menu_switch("RGBA")
     menu = _typed_menu_switch("MENU")
     closure = _typed_menu_switch("CLOSURE")
+    bundle = _typed_menu_switch("BUNDLE")
+    shader = _typed_menu_switch("SHADER")
 
     def __init__(
         self,

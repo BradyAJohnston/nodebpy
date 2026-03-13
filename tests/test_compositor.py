@@ -52,3 +52,25 @@ def test_initial_compositor():
             )
             >> output_color
         )
+
+
+def test_compositor_menu_switch():
+    with TreeBuilder.compositor() as tree:
+        menu = c.MenuSwitch.string(*[str(x) for x in range(10)])
+        with tree.outputs:
+            _ = menu >> s.SocketString()
+
+    assert len(menu.node.enum_items) == 10
+    assert menu.node.outputs[0].links
+
+    with TreeBuilder.compositor() as tree:
+        menu = c.MenuSwitch.float(
+            **{f"Input_{i}": float(value) for i, value in enumerate(range(10))}
+        )
+        with tree.outputs:
+            _ = menu >> s.SocketFloat()
+
+    assert len(menu.node.enum_items) == 10
+    for i, input in enumerate(menu.inputs.values()):
+        assert f"Input_{i}" == input.name
+        assert float(i) == input.socket.default_value
