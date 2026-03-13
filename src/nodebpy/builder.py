@@ -107,9 +107,7 @@ class SocketContext:
         assert interface is not None
         return interface
 
-    def panel(
-        self, name: str, *, default_closed: bool = False
-    ) -> PanelContext:
+    def panel(self, name: str, *, default_closed: bool = False) -> PanelContext:
         """Create a panel context for grouping sockets."""
         return PanelContext(self, name, default_closed=default_closed)
 
@@ -697,7 +695,14 @@ class NodeBuilder:
         else:  # Both operands are scalar types, use regular Math
             from .nodes.geometry.converter import IntegerMath, Math
 
-            if isinstance(other, int) and self._default_output_socket.type == "INT":
+            # only the Geometry Node Tree supports integer math currently, potential
+            # to support other trees when Blender supports it
+            is_geometry_tree = self._tree.tree.bl_idname in ["GeometryNodeTree"]
+            if (
+                is_geometry_tree
+                and isinstance(other, int)
+                and self._default_output_socket.type == "INT"
+            ):
                 return getattr(IntegerMath, operation)(*values)
             else:
                 # Math node uses 'floored_modulo' instead of 'modulo'
