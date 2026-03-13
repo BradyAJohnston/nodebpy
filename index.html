@@ -249,30 +249,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N6("Points"):::geometry-node
     N7("MeshCube"):::geometry-node
     N8("RotateRotation"):::converter-node
-    N9("VectorMath&lt;br/&gt;&lt;small&gt;×2&lt;/small&gt;"):::vector-node
+    N9("VectorMath&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×2&lt;/small&gt;"):::vector-node
     N10("InstanceOnPoints"):::geometry-node
-    N11("VectorMath&lt;br/&gt;&lt;small&gt;(0,0.2,0.3)&lt;/small&gt;"):::vector-node
+    N11("VectorMath&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;(0,0.2,0.3)&lt;/small&gt;"):::vector-node
     N12("SetPosition&lt;br/&gt;&lt;small&gt;+(0,0,0.1)&lt;/small&gt;"):::geometry-node
     N13("MeshCube"):::geometry-node
     N14("RealizeInstances"):::geometry-node
     N15("InstanceOnPoints"):::geometry-node
     N16("NodeGroupOutput"):::default-node
-    N1 --&gt;|"Value&gt;&gt;Vector"| N3
-    N4 --&gt;|"Rotation&gt;&gt;Rotate By"| N8
-    N3 --&gt;|"Rotation&gt;&gt;Rotation"| N8
-    N2 --&gt;|"Value&gt;&gt;Position"| N6
-    N0 --&gt;|"Count&gt;&gt;Count"| N6
-    N7 --&gt;|"Mesh&gt;&gt;Instance"| N10
-    N8 --&gt;|"Rotation&gt;&gt;Rotation"| N10
-    N6 --&gt;|"Points&gt;&gt;Points"| N10
-    N5 --&gt;|"Position&gt;&gt;Vector"| N9
-    N9 --&gt;|"Vector&gt;&gt;Vector"| N11
-    N11 --&gt;|"Vector&gt;&gt;Position"| N12
-    N10 --&gt;|"Instances&gt;&gt;Geometry"| N12
-    N12 --&gt;|"Geometry&gt;&gt;Geometry"| N14
-    N13 --&gt;|"Mesh&gt;&gt;Points"| N15
-    N14 --&gt;|"Geometry&gt;&gt;Instance"| N15
-    N15 --&gt;|"Instances&gt;&gt;Instances"| N16
+    N1 --&gt;|"Value-&gt;Vector"| N3
+    N4 --&gt;|"Rotation-&gt;Rotate By"| N8
+    N3 --&gt;|"Rotation-&gt;Rotation"| N8
+    N2 --&gt;|"Value-&gt;Position"| N6
+    N0 --&gt;|"Count-&gt;Count"| N6
+    N7 --&gt;|"Mesh-&gt;Instance"| N10
+    N8 --&gt;|"Rotation-&gt;Rotation"| N10
+    N6 --&gt;|"Points-&gt;Points"| N10
+    N5 --&gt;|"Position-&gt;Vector"| N9
+    N9 --&gt;|"Vector-&gt;Vector"| N11
+    N11 --&gt;|"Vector-&gt;Position"| N12
+    N10 --&gt;|"Instances-&gt;Geometry"| N12
+    N12 --&gt;|"Geometry-&gt;Geometry"| N14
+    N13 --&gt;|"Mesh-&gt;Points"| N15
+    N14 --&gt;|"Geometry-&gt;Instance"| N15
+    N15 --&gt;|"Instances-&gt;Instances"| N16
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px

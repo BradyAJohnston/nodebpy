@@ -203,7 +203,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="arithmetic-operators" class="level2">
 <h2 class="anchored" data-anchor-id="arithmetic-operators">Arithmetic Operators</h2>
 <p>The standard arithmetic operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> are joined by <code>**</code> (power), <code>%</code> (modulo), <code>//</code> (floor division), unary <code>-</code> (negate), and <code>abs()</code>.</p>
-<div id="0e72fb06" class="cell" data-execution_count="2">
+<div id="e6cc82f8" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"ArithmeticDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -228,26 +228,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <pre class="mermaid mermaid-js">graph LR
     N0("Value"):::input-node
-    N1("Math"):::converter-node
-    N2("Math"):::converter-node
-    N3("Math"):::converter-node
+    N1("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
+    N2("Math&lt;br/&gt;&lt;small&gt;(DIVIDE)&lt;/small&gt;"):::converter-node
+    N3("Math&lt;br/&gt;&lt;small&gt;(FLOORED_MODULO)&lt;/small&gt;"):::converter-node
     N4("RandomValue&lt;br/&gt;&lt;small&gt;(-1,-1,-1)&lt;/small&gt;"):::converter-node
     N5("InputPosition"):::input-node
-    N6("Math"):::converter-node
+    N6("Math&lt;br/&gt;&lt;small&gt;(FLOOR)&lt;/small&gt;"):::converter-node
     N7("Points"):::geometry-node
-    N8("VectorMath"):::vector-node
+    N8("VectorMath&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::vector-node
     N9("SetPosition"):::geometry-node
     N10("NodeGroupOutput"):::default-node
-    N0 --&gt;|"Value&gt;&gt;Value"| N1
-    N1 --&gt;|"Value&gt;&gt;Value"| N3
-    N1 --&gt;|"Value&gt;&gt;Value"| N2
-    N2 --&gt;|"Value&gt;&gt;Value"| N6
-    N4 --&gt;|"Value&gt;&gt;Position"| N7
-    N5 --&gt;|"Position&gt;&gt;Vector"| N8
-    N6 --&gt;|"Value&gt;&gt;Vector"| N8
-    N8 --&gt;|"Vector&gt;&gt;Offset"| N9
-    N7 --&gt;|"Points&gt;&gt;Geometry"| N9
-    N9 --&gt;|"Geometry&gt;&gt;Geometry"| N10
+    N0 --&gt;|"Value-&gt;Value"| N1
+    N1 --&gt;|"Value-&gt;Value"| N3
+    N1 --&gt;|"Value-&gt;Value"| N2
+    N2 --&gt;|"Value-&gt;Value"| N6
+    N4 --&gt;|"Value-&gt;Position"| N7
+    N5 --&gt;|"Position-&gt;Vector"| N8
+    N6 --&gt;|"Value-&gt;Vector"| N8
+    N8 --&gt;|"Vector-&gt;Offset"| N9
+    N7 --&gt;|"Points-&gt;Geometry"| N9
+    N9 --&gt;|"Geometry-&gt;Geometry"| N10
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -266,7 +266,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>All operators automatically select the right node type. With integers you get <code>IntegerMath</code>, with vectors you get <code>VectorMath</code>, and scalars are broadcast when mixed with vectors:</p>
-<div id="939294eb" class="cell" data-execution_count="3">
+<div id="e0f4a30e" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"TypeDispatch"</span>) <span class="im">as</span> tree:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -293,20 +293,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre class="mermaid mermaid-js">graph LR
     N0("InputPosition"):::input-node
     N1("MeshGrid"):::geometry-node
-    N2("VectorMath&lt;br/&gt;&lt;small&gt;(2,2,2)&lt;/small&gt;"):::vector-node
-    N3("VectorMath"):::vector-node
+    N2("VectorMath&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;(2,2,2)&lt;/small&gt;"):::vector-node
+    N3("VectorMath&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::vector-node
     N4("SetPosition"):::geometry-node
     N5("InputIndex"):::input-node
-    N6("IntegerMath"):::converter-node
-    N7("IntegerMath"):::converter-node
+    N6("IntegerMath&lt;br/&gt;&lt;small&gt;(DIVIDE_FLOOR)&lt;/small&gt;"):::converter-node
+    N7("IntegerMath&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
     N8("NodeGroupOutput"):::default-node
-    N5 --&gt;|"Index&gt;&gt;Value"| N6
-    N5 --&gt;|"Index&gt;&gt;Value"| N7
-    N0 --&gt;|"Position&gt;&gt;Vector"| N2
-    N0 --&gt;|"Position&gt;&gt;Vector"| N3
-    N3 --&gt;|"Vector&gt;&gt;Offset"| N4
-    N1 --&gt;|"Mesh&gt;&gt;Geometry"| N4
-    N4 --&gt;|"Geometry&gt;&gt;Geometry"| N8
+    N5 --&gt;|"Index-&gt;Value"| N6
+    N5 --&gt;|"Index-&gt;Value"| N7
+    N0 --&gt;|"Position-&gt;Vector"| N2
+    N0 --&gt;|"Position-&gt;Vector"| N3
+    N3 --&gt;|"Vector-&gt;Offset"| N4
+    N1 --&gt;|"Mesh-&gt;Geometry"| N4
+    N4 --&gt;|"Geometry-&gt;Geometry"| N8
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -327,7 +327,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="negation-and-absolute-value" class="level3">
 <h3 class="anchored" data-anchor-id="negation-and-absolute-value">Negation and Absolute Value</h3>
 <p>The unary <code>-</code> and <code>abs()</code> operators work with all numeric types:</p>
-<div id="7fadfa0f" class="cell" data-execution_count="4">
+<div id="46d4f893" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"UnaryOps"</span>) <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -347,16 +347,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <pre class="mermaid mermaid-js">graph LR
     N0("InputPosition"):::input-node
-    N1("VectorMath&lt;br/&gt;&lt;small&gt;×-1&lt;/small&gt;"):::vector-node
+    N1("VectorMath&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×-1&lt;/small&gt;"):::vector-node
     N2("MeshCube"):::geometry-node
-    N3("VectorMath"):::vector-node
+    N3("VectorMath&lt;br/&gt;&lt;small&gt;(ABSOLUTE)&lt;/small&gt;"):::vector-node
     N4("SetPosition"):::geometry-node
     N5("NodeGroupOutput"):::default-node
-    N0 --&gt;|"Position&gt;&gt;Vector"| N1
-    N1 --&gt;|"Vector&gt;&gt;Vector"| N3
-    N3 --&gt;|"Vector&gt;&gt;Offset"| N4
-    N2 --&gt;|"Mesh&gt;&gt;Geometry"| N4
-    N4 --&gt;|"Geometry&gt;&gt;Geometry"| N5
+    N0 --&gt;|"Position-&gt;Vector"| N1
+    N1 --&gt;|"Vector-&gt;Vector"| N3
+    N3 --&gt;|"Vector-&gt;Offset"| N4
+    N2 --&gt;|"Mesh-&gt;Geometry"| N4
+    N4 --&gt;|"Geometry-&gt;Geometry"| N5
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -379,7 +379,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="comparison-operators" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-operators">Comparison Operators</h2>
 <p>The <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> operators create <code>Compare</code> nodes that output boolean sockets. The correct data type (float, integer, or vector) is inferred from the left-hand operand.</p>
-<div id="37945a9e" class="cell" data-execution_count="5">
+<div id="c7e030f1" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"CompareDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -407,16 +407,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N0("InputPosition"):::input-node
     N1("SeparateXYZ"):::converter-node
     N2("MeshCube&lt;br/&gt;&lt;small&gt;(1e+01,1e+01,1e+01)&lt;/small&gt;"):::geometry-node
-    N3("Compare"):::converter-node
-    N4("Compare"):::converter-node
+    N3("Compare&lt;br/&gt;&lt;small&gt;(LESS_EQUAL)&lt;/small&gt;"):::converter-node
+    N4("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
     N5("SetPosition&lt;br/&gt;&lt;small&gt;+(0,0,1)&lt;/small&gt;"):::geometry-node
     N6("NodeGroupOutput"):::default-node
-    N0 --&gt;|"Position&gt;&gt;Vector"| N1
-    N1 --&gt;|"Z&gt;&gt;A"| N4
-    N1 --&gt;|"Z&gt;&gt;A"| N3
-    N4 --&gt;|"Result&gt;&gt;Selection"| N5
-    N2 --&gt;|"Mesh&gt;&gt;Geometry"| N5
-    N5 --&gt;|"Geometry&gt;&gt;Geometry"| N6
+    N0 --&gt;|"Position-&gt;Vector"| N1
+    N1 --&gt;|"Z-&gt;A"| N4
+    N1 --&gt;|"Z-&gt;A"| N3
+    N4 --&gt;|"Result-&gt;Selection"| N5
+    N2 --&gt;|"Mesh-&gt;Geometry"| N5
+    N5 --&gt;|"Geometry-&gt;Geometry"| N6
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -438,7 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="boolean-operators" class="level2">
 <h2 class="anchored" data-anchor-id="boolean-operators">Boolean Operators</h2>
 <p>Python’s bitwise operators <code>&amp;</code> (and), <code>|</code> (or), <code>^</code> (xor), and <code>~</code> (not) map to <code>BooleanMath</code> nodes. These are especially useful for combining comparison results into complex selections.</p>
-<div id="80fc9772" class="cell" data-execution_count="6">
+<div id="3a57df1f" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"BooleanDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -466,21 +466,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N0("InputPosition"):::input-node
     N1("SeparateXYZ"):::converter-node
     N2("MeshCube&lt;br/&gt;&lt;small&gt;(6,6,6)&lt;/small&gt;"):::geometry-node
-    N3("Compare"):::converter-node
-    N4("Compare"):::converter-node
+    N3("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
+    N4("Compare&lt;br/&gt;&lt;small&gt;(LESS_THAN)&lt;/small&gt;"):::converter-node
     N5("MeshToPoints"):::geometry-node
-    N6("BooleanMath"):::converter-node
+    N6("BooleanMath&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
     N7("SetPosition&lt;br/&gt;&lt;small&gt;+(1,0,0)&lt;/small&gt;"):::geometry-node
     N8("NodeGroupOutput"):::default-node
-    N0 --&gt;|"Position&gt;&gt;Vector"| N1
-    N1 --&gt;|"Z&gt;&gt;A"| N3
-    N1 --&gt;|"Z&gt;&gt;A"| N4
-    N3 --&gt;|"Result&gt;&gt;Boolean"| N6
-    N4 --&gt;|"Result&gt;&gt;Boolean"| N6
-    N2 --&gt;|"Mesh&gt;&gt;Mesh"| N5
-    N6 --&gt;|"Boolean&gt;&gt;Selection"| N7
-    N5 --&gt;|"Points&gt;&gt;Geometry"| N7
-    N7 --&gt;|"Geometry&gt;&gt;Geometry"| N8
+    N0 --&gt;|"Position-&gt;Vector"| N1
+    N1 --&gt;|"Z-&gt;A"| N3
+    N1 --&gt;|"Z-&gt;A"| N4
+    N3 --&gt;|"Result-&gt;Boolean"| N6
+    N4 --&gt;|"Result-&gt;Boolean"| N6
+    N2 --&gt;|"Mesh-&gt;Mesh"| N5
+    N6 --&gt;|"Boolean-&gt;Selection"| N7
+    N5 --&gt;|"Points-&gt;Geometry"| N7
+    N7 --&gt;|"Geometry-&gt;Geometry"| N8
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -499,7 +499,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The <code>~</code> operator inverts a boolean:</p>
-<div id="f867882a" class="cell" data-execution_count="7">
+<div id="42819d72" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"InvertDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -523,20 +523,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <pre class="mermaid mermaid-js">graph LR
     N0("InputIndex"):::input-node
-    N1("IntegerMath"):::converter-node
+    N1("IntegerMath&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
     N2("MeshLine&lt;br/&gt;&lt;small&gt;+(0,0,1)&lt;/small&gt;"):::geometry-node
-    N3("Compare"):::converter-node
+    N3("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
     N4("MeshToPoints"):::geometry-node
-    N5("BooleanMath"):::converter-node
+    N5("BooleanMath&lt;br/&gt;&lt;small&gt;(NOT)&lt;/small&gt;"):::converter-node
     N6("SetPosition&lt;br/&gt;&lt;small&gt;+(0,0,0.5)&lt;/small&gt;"):::geometry-node
     N7("NodeGroupOutput"):::default-node
-    N0 --&gt;|"Index&gt;&gt;Value"| N1
-    N1 --&gt;|"Value&gt;&gt;A"| N3
-    N3 --&gt;|"Result&gt;&gt;Boolean"| N5
-    N2 --&gt;|"Mesh&gt;&gt;Mesh"| N4
-    N5 --&gt;|"Boolean&gt;&gt;Selection"| N6
-    N4 --&gt;|"Points&gt;&gt;Geometry"| N6
-    N6 --&gt;|"Geometry&gt;&gt;Geometry"| N7
+    N0 --&gt;|"Index-&gt;Value"| N1
+    N1 --&gt;|"Value-&gt;A"| N3
+    N3 --&gt;|"Result-&gt;Boolean"| N5
+    N2 --&gt;|"Mesh-&gt;Mesh"| N4
+    N5 --&gt;|"Boolean-&gt;Selection"| N6
+    N4 --&gt;|"Points-&gt;Geometry"| N6
+    N6 --&gt;|"Geometry-&gt;Geometry"| N7
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -558,7 +558,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="matrix-multiplication" class="level2">
 <h2 class="anchored" data-anchor-id="matrix-multiplication">Matrix Multiplication</h2>
 <p>The <code>@</code> operator maps to <code>MultiplyMatrices</code>, composing two 4x4 transformation matrices:</p>
-<div id="fed94451" class="cell" data-execution_count="8">
+<div id="e61caad6" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"MatmulDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -589,13 +589,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N5("TransformPoint"):::converter-node
     N6("SetPosition"):::geometry-node
     N7("NodeGroupOutput"):::default-node
-    N0 --&gt;|"Transform&gt;&gt;Matrix"| N3
-    N1 --&gt;|"Transform&gt;&gt;Matrix"| N3
-    N2 --&gt;|"Position&gt;&gt;Vector"| N5
-    N3 --&gt;|"Matrix&gt;&gt;Transform"| N5
-    N5 --&gt;|"Vector&gt;&gt;Position"| N6
-    N4 --&gt;|"Mesh&gt;&gt;Geometry"| N6
-    N6 --&gt;|"Geometry&gt;&gt;Geometry"| N7
+    N0 --&gt;|"Transform-&gt;Matrix"| N3
+    N1 --&gt;|"Transform-&gt;Matrix"| N3
+    N2 --&gt;|"Position-&gt;Vector"| N5
+    N3 --&gt;|"Matrix-&gt;Transform"| N5
+    N5 --&gt;|"Vector-&gt;Position"| N6
+    N4 --&gt;|"Mesh-&gt;Geometry"| N6
+    N6 --&gt;|"Geometry-&gt;Geometry"| N7
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -620,7 +620,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="checkerboard-selection" class="level3">
 <h3 class="anchored" data-anchor-id="checkerboard-selection">Checkerboard Selection</h3>
 <p>Select alternating faces on a grid using integer modulo and comparisons:</p>
-<div id="479caba1" class="cell" data-execution_count="9">
+<div id="014bb60e" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Checkerboard"</span>) <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -645,23 +645,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <pre class="mermaid mermaid-js">graph LR
     N0("InputIndex"):::input-node
-    N1("IntegerMath"):::converter-node
-    N2("IntegerMath"):::converter-node
-    N3("Math"):::converter-node
-    N4("Math"):::converter-node
+    N1("IntegerMath&lt;br/&gt;&lt;small&gt;(DIVIDE_FLOOR)&lt;/small&gt;"):::converter-node
+    N2("IntegerMath&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
+    N3("Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::converter-node
+    N4("Math&lt;br/&gt;&lt;small&gt;(FLOORED_MODULO)&lt;/small&gt;"):::converter-node
     N5("MeshGrid"):::geometry-node
-    N6("Compare"):::converter-node
+    N6("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
     N7("SetPosition&lt;br/&gt;&lt;small&gt;+(0,0,0.5)&lt;/small&gt;"):::geometry-node
     N8("NodeGroupOutput"):::default-node
-    N0 --&gt;|"Index&gt;&gt;Value"| N1
-    N0 --&gt;|"Index&gt;&gt;Value"| N2
-    N1 --&gt;|"Value&gt;&gt;Value"| N3
-    N2 --&gt;|"Value&gt;&gt;Value"| N3
-    N3 --&gt;|"Value&gt;&gt;Value"| N4
-    N4 --&gt;|"Value&gt;&gt;A"| N6
-    N6 --&gt;|"Result&gt;&gt;Selection"| N7
-    N5 --&gt;|"Mesh&gt;&gt;Geometry"| N7
-    N7 --&gt;|"Geometry&gt;&gt;Geometry"| N8
+    N0 --&gt;|"Index-&gt;Value"| N1
+    N0 --&gt;|"Index-&gt;Value"| N2
+    N1 --&gt;|"Value-&gt;Value"| N3
+    N2 --&gt;|"Value-&gt;Value"| N3
+    N3 --&gt;|"Value-&gt;Value"| N4
+    N4 --&gt;|"Value-&gt;A"| N6
+    N6 --&gt;|"Result-&gt;Selection"| N7
+    N5 --&gt;|"Mesh-&gt;Geometry"| N7
+    N7 --&gt;|"Geometry-&gt;Geometry"| N8
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -683,7 +683,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="layered-selection" class="level3">
 <h3 class="anchored" data-anchor-id="layered-selection">Layered Selection</h3>
 <p>Divide space into layers using floor division, then select specific layers:</p>
-<div id="6473ecd2" class="cell" data-execution_count="10">
+<div id="6d21db17" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Layers"</span>) <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -709,37 +709,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <pre class="mermaid mermaid-js">graph LR
     N0("InputPosition"):::input-node
-    N1("VectorMath"):::vector-node
-    N2("VectorMath"):::vector-node
+    N1("VectorMath&lt;br/&gt;&lt;small&gt;(DIVIDE)&lt;/small&gt;"):::vector-node
+    N2("VectorMath&lt;br/&gt;&lt;small&gt;(FLOOR)&lt;/small&gt;"):::vector-node
     N3("SeparateXYZ"):::converter-node
-    N4("Compare"):::converter-node
-    N5("Compare"):::converter-node
-    N6("Compare"):::converter-node
+    N4("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
+    N5("Compare&lt;br/&gt;&lt;small&gt;(LESS_THAN)&lt;/small&gt;"):::converter-node
+    N6("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
     N7("MeshCube&lt;br/&gt;&lt;small&gt;(5,5,5)&lt;/small&gt;"):::geometry-node
-    N8("BooleanMath"):::converter-node
-    N9("BooleanMath"):::converter-node
+    N8("BooleanMath&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
+    N9("BooleanMath&lt;br/&gt;&lt;small&gt;(NOT)&lt;/small&gt;"):::converter-node
     N10("MeshToPoints"):::geometry-node
-    N11("BooleanMath"):::converter-node
+    N11("BooleanMath&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
     N12("InputPosition"):::input-node
     N13("SetPosition&lt;br/&gt;&lt;small&gt;+(1,0,0)&lt;/small&gt;"):::geometry-node
     N14("SeparateXYZ"):::converter-node
     N15("NodeGroupOutput"):::default-node
-    N12 --&gt;|"Position&gt;&gt;Vector"| N14
-    N0 --&gt;|"Position&gt;&gt;Vector"| N1
-    N1 --&gt;|"Vector&gt;&gt;Vector"| N2
-    N2 --&gt;|"Vector&gt;&gt;Vector"| N3
-    N3 --&gt;|"Z&gt;&gt;A"| N4
-    N3 --&gt;|"Z&gt;&gt;A"| N5
-    N4 --&gt;|"Result&gt;&gt;Boolean"| N8
-    N5 --&gt;|"Result&gt;&gt;Boolean"| N8
-    N3 --&gt;|"Z&gt;&gt;A"| N6
-    N6 --&gt;|"Result&gt;&gt;Boolean"| N9
-    N8 --&gt;|"Boolean&gt;&gt;Boolean"| N11
-    N9 --&gt;|"Boolean&gt;&gt;Boolean"| N11
-    N7 --&gt;|"Mesh&gt;&gt;Mesh"| N10
-    N11 --&gt;|"Boolean&gt;&gt;Selection"| N13
-    N10 --&gt;|"Points&gt;&gt;Geometry"| N13
-    N13 --&gt;|"Geometry&gt;&gt;Geometry"| N15
+    N12 --&gt;|"Position-&gt;Vector"| N14
+    N0 --&gt;|"Position-&gt;Vector"| N1
+    N1 --&gt;|"Vector-&gt;Vector"| N2
+    N2 --&gt;|"Vector-&gt;Vector"| N3
+    N3 --&gt;|"Z-&gt;A"| N4
+    N3 --&gt;|"Z-&gt;A"| N5
+    N4 --&gt;|"Result-&gt;Boolean"| N8
+    N5 --&gt;|"Result-&gt;Boolean"| N8
+    N3 --&gt;|"Z-&gt;A"| N6
+    N6 --&gt;|"Result-&gt;Boolean"| N9
+    N8 --&gt;|"Boolean-&gt;Boolean"| N11
+    N9 --&gt;|"Boolean-&gt;Boolean"| N11
+    N7 --&gt;|"Mesh-&gt;Mesh"| N10
+    N11 --&gt;|"Boolean-&gt;Selection"| N13
+    N10 --&gt;|"Points-&gt;Geometry"| N13
+    N13 --&gt;|"Geometry-&gt;Geometry"| N15
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -761,7 +761,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="spiral-point-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="spiral-point-distribution">Spiral Point Distribution</h3>
 <p>Use power and modulo to create a spiral-like displacement pattern:</p>
-<div id="2bc964db" class="cell" data-execution_count="11">
+<div id="f0a9149d" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Spiral"</span>) <span class="im">as</span> tree:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -794,39 +794,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N1("NodeReroute"):::default-node
     N2("SeparateXYZ"):::converter-node
     N3("SeparateXYZ"):::converter-node
-    N4("Math"):::converter-node
-    N5("Math"):::converter-node
-    N6("Math"):::converter-node
-    N7("Math"):::converter-node
-    N8("Math"):::converter-node
+    N4("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
+    N5("Math&lt;br/&gt;&lt;small&gt;(ABSOLUTE)&lt;/small&gt;"):::converter-node
+    N6("Math&lt;br/&gt;&lt;small&gt;(COSINE)&lt;/small&gt;"):::converter-node
+    N7("Math&lt;br/&gt;&lt;small&gt;(SINE)&lt;/small&gt;"):::converter-node
+    N8("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
     N9("RandomValue&lt;br/&gt;&lt;small&gt;(-1,-1,-1)&lt;/small&gt;"):::converter-node
-    N10("Math"):::converter-node
-    N11("Math"):::converter-node
+    N10("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
+    N11("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
     N12("SeparateXYZ"):::converter-node
     N13("Points"):::geometry-node
     N14("CombineXYZ"):::converter-node
     N15("SetPosition"):::geometry-node
     N16("NodeGroupOutput"):::default-node
-    N0 --&gt;|"Position&gt;&gt;Vector"| N2
-    N2 --&gt;|"X&gt;&gt;Value"| N4
-    N0 --&gt;|"Position&gt;&gt;Vector"| N3
-    N3 --&gt;|"Y&gt;&gt;Value"| N5
-    N5 --&gt;|"Value&gt;&gt;Value"| N8
-    N4 --&gt;|"Value&gt;&gt;Value"| N6
-    N6 --&gt;|"Value&gt;&gt;Value"| N10
-    N8 --&gt;|"Value&gt;&gt;Value"| N10
-    N4 --&gt;|"Value&gt;&gt;Value"| N7
-    N7 --&gt;|"Value&gt;&gt;Value"| N11
-    N8 --&gt;|"Value&gt;&gt;Value"| N11
-    N10 --&gt;|"Value&gt;&gt;X"| N14
-    N11 --&gt;|"Value&gt;&gt;Y"| N14
-    N12 --&gt;|"Z&gt;&gt;Z"| N14
-    N9 --&gt;|"Value&gt;&gt;Position"| N13
-    N14 --&gt;|"Vector&gt;&gt;Position"| N15
-    N13 --&gt;|"Points&gt;&gt;Geometry"| N15
-    N15 --&gt;|"Geometry&gt;&gt;Geometry"| N16
-    N0 --&gt;|"Position&gt;&gt;Input"| N1
-    N1 --&gt;|"Output&gt;&gt;Vector"| N12
+    N0 --&gt;|"Position-&gt;Vector"| N2
+    N2 --&gt;|"X-&gt;Value"| N4
+    N0 --&gt;|"Position-&gt;Vector"| N3
+    N3 --&gt;|"Y-&gt;Value"| N5
+    N5 --&gt;|"Value-&gt;Value"| N8
+    N4 --&gt;|"Value-&gt;Value"| N6
+    N6 --&gt;|"Value-&gt;Value"| N10
+    N8 --&gt;|"Value-&gt;Value"| N10
+    N4 --&gt;|"Value-&gt;Value"| N7
+    N7 --&gt;|"Value-&gt;Value"| N11
+    N8 --&gt;|"Value-&gt;Value"| N11
+    N10 --&gt;|"Value-&gt;X"| N14
+    N11 --&gt;|"Value-&gt;Y"| N14
+    N12 --&gt;|"Z-&gt;Z"| N14
+    N9 --&gt;|"Value-&gt;Position"| N13
+    N14 --&gt;|"Vector-&gt;Position"| N15
+    N13 --&gt;|"Points-&gt;Geometry"| N15
+    N15 --&gt;|"Geometry-&gt;Geometry"| N16
+    N0 --&gt;|"Position-&gt;Input"| N1
+    N1 --&gt;|"Output-&gt;Vector"| N12
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
