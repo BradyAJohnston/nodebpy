@@ -8,16 +8,11 @@ for use in Jupyter notebooks or other contexts.
 
 from __future__ import annotations
 
-import os
-from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
-import bpy
-import numpy as np
-from mathutils import Vector
 
 if TYPE_CHECKING:
-    from PIL import Image as PILImage
+    pass
 
 # Mermaid diagram generation (no subprocess needed)
 
@@ -33,307 +28,6 @@ IMAGE_COLOR_MODE = "RGB"
 IMAGE_COLOR_DEPTH = "8"
 IMAGE_TIFF_CODEC = "DEFLATE"
 IMAGE_EXTENSION = ".tif"
-
-
-def compute_node_bounds(context, margin: float) -> tuple[Vector, Vector]:
-    """
-    Compute the extent (in View2D space) of all nodes in a node tree.
-
-    Args:
-        context: Blender context
-        margin: Margin to add around nodes
-
-    Returns:
-        Tuple of (min, max) vectors of the node bounds
-    """
-    ui_scale = 1.0
-    space = context.space_data
-    node_tree = space.edit_tree
-    if not node_tree:
-        return Vector((0.0, 0.0)), Vector((0.0, 0.0))
-
-    bmin = Vector((1.0e8, 1.0e8))
-    bmax = Vector((-1.0e8, -1.0e8))
-    for node in node_tree.nodes:
-        node_view_min = (
-            Vector(
-                (
-                    node.location_absolute[0],
-                    node.location_absolute[1] - node.height - NODE_EXTRA_HEIGHT,
-                )
-            )
-            * ui_scale
-        )
-        node_view_max = (
-            Vector((node.location_absolute[0] + node.width, node.location_absolute[1]))
-            * ui_scale
-        )
-
-        bmin = Vector((min(bmin.x, node_view_min.x), min(bmin.y, node_view_min.y)))
-        bmax = Vector((max(bmax.x, node_view_max.x), max(bmax.y, node_view_max.y)))
-
-    return bmin - Vector((margin, margin)), bmax + Vector((margin, margin))
-
-
-@contextmanager
-def clean_node_window_region(context):
-    """
-    Creates a safe context for executing screenshots
-    and ensures the region properties are reset afterwards.
-    """
-    try:
-        # Remember image format settings
-        img_settings = context.scene.render.image_settings
-        file_format = img_settings.file_format
-        color_mode = img_settings.color_mode
-        color_depth = img_settings.color_depth
-        tiff_codec = img_settings.tiff_codec
-
-        # Set image format for screenshots
-        img_settings.file_format = IMAGE_FILE_FORMAT
-        img_settings.color_mode = IMAGE_COLOR_MODE
-        img_settings.color_depth = IMAGE_COLOR_DEPTH
-        img_settings.tiff_codec = IMAGE_TIFF_CODEC
-
-        space = context.space_data
-        show_region_header = space.show_region_header
-        show_context_path = space.overlay.show_context_path
-
-        space.show_region_header = False
-        space.overlay.show_context_path = False
-
-        yield context
-
-    finally:
-        img_settings.file_format = file_format
-        img_settings.color_mode = color_mode
-        img_settings.color_depth = color_depth
-        img_settings.tiff_codec = tiff_codec
-
-        space.show_region_header = show_region_header
-        space.overlay.show_context_path = show_context_path
-
-
-class TileInfo:
-    """Information about tiling strategy for large node trees."""
-
-    def __init__(self, context, region):
-        v2d = region.view2d
-
-        self.nodes_min, self.nodes_max = compute_node_bounds(context, NODE_MARGIN)
-
-        # Min/Max points of the region considered usable for screenshots.
-        # The margin excludes some bits that can't be hidden (dividers, scrollbars, sidebar buttons).
-        usable_region_min = Vector((REGION_MARGIN, REGION_MARGIN))
-        usable_region_max = Vector(
-            (region.width - REGION_MARGIN, region.height - REGION_MARGIN)
-        )
-        self.tile_margin = REGION_MARGIN
-        self.tile_size = (
-            int(usable_region_max.x - usable_region_min.x),
-            int(usable_region_max.y - usable_region_min.y),
-        )
-
-        self.orig_view_min = Vector(
-            v2d.region_to_view(usable_region_min.x, usable_region_min.y)
-        )
-        self.orig_view_max = Vector(
-            v2d.region_to_view(usable_region_max.x, usable_region_max.y)
-        )
-        self.image_num = (
-            int(self.nodes_size.x / self.view_size.x) + 1,
-            int(self.nodes_size.y / self.view_size.y) + 1,
-        )
-
-    @property
-    def view_size(self) -> Vector:
-        return self.orig_view_max - self.orig_view_min
-
-    @property
-    def nodes_size(self) -> Vector:
-        return self.nodes_max - self.nodes_min
-
-    @property
-    def full_size(self) -> tuple[int, int]:
-        return (int(self.nodes_size[0]), int(self.nodes_size[1]))
-
-    @property
-    def tile_num(self) -> int:
-        return self.image_num[0] * self.image_num[1]
-
-    def tile_boxes(
-        self, tile_index: tuple[int, int]
-    ) -> tuple[tuple[int, int, int, int], tuple[int, int, int, int]]:
-        """Calculate input and output boxes for a tile."""
-        in_start = (self.tile_margin, self.tile_margin)
-        out_start = (
-            tile_index[0] * self.tile_size[0],
-            tile_index[1] * self.tile_size[1],
-        )
-        tile_size_clamped = (
-            min(out_start[0] + self.tile_size[0], self.full_size[0]) - out_start[0],
-            min(out_start[1] + self.tile_size[1], self.full_size[1]) - out_start[1],
-        )
-        in_end = (
-            in_start[0] + tile_size_clamped[0],
-            in_start[1] + tile_size_clamped[1],
-        )
-        out_end = (
-            out_start[0] + tile_size_clamped[0],
-            out_start[1] + tile_size_clamped[1],
-        )
-        return (*in_start, *in_end), (*out_start, *out_end)
-
-
-def find_node_editor_window_region(context):
-    """Find the window region in a node editor area."""
-    for region in context.area.regions:
-        if region.type == "WINDOW":
-            return region
-    return None
-
-
-def capture_tiles(
-    context, region, tile_info: TileInfo, area=None, window=None, screen=None
-) -> dict[tuple[int, int], str]:
-    """
-    Capture individual screenshot tiles of the node tree.
-
-    Args:
-        context: Blender context
-        region: Node editor window region
-        tile_info: Tiling information
-        area: Node editor area (optional, extracted from context if None)
-        window: Window context (optional, extracted from context if None)
-        screen: Screen context (optional, extracted from context if None)
-
-    Returns:
-        Dictionary mapping tile indices to temporary file paths
-    """
-    context_override = context.copy()
-    context_override["region"] = region
-    if area is not None:
-        context_override["area"] = area
-    if window is not None:
-        context_override["window"] = window
-    if screen is not None:
-        context_override["screen"] = screen
-    render_settings = context.scene.render
-
-    # View2D only supports relative panning, this provides a "goto" function.
-    current_view_min = tile_info.orig_view_min
-
-    def pan_to_view(view_min):
-        nonlocal current_view_min
-        delta = view_min - current_view_min
-        with context.temp_override(**context_override):
-            bpy.ops.view2d.pan(deltax=int(delta.x), deltay=int(delta.y))
-        current_view_min = view_min
-
-    image_files = {}
-    for i in range(tile_info.image_num[0]):
-        for j in range(tile_info.image_num[1]):
-            pan_to_view(tile_info.nodes_min + Vector((i, j)) * tile_info.view_size)
-
-            tmp_filepath = os.path.join(
-                bpy.app.tempdir,
-                f"node_tree_screenshot_tile_{i}_{j}{render_settings.file_extension}",
-            )
-            with context.temp_override(**context_override):
-                bpy.ops.screen.screenshot_area(filepath=tmp_filepath)
-            image_files[(i, j)] = tmp_filepath
-
-    # Reset view.
-    pan_to_view(tile_info.orig_view_min)
-
-    return image_files
-
-
-def stitch_tiles_numpy(
-    context, tile_info: TileInfo, image_files: dict[tuple[int, int], str]
-) -> np.ndarray:
-    """
-    Stitch tiles into a single numpy array.
-
-    Args:
-        context: Blender context
-        tile_info: Tiling information
-        image_files: Dictionary of tile files
-
-    Returns:
-        Numpy array with shape (height, width, 4) containing RGBA data
-    """
-    if not image_files:
-        raise ValueError("No image files to stitch")
-
-    # NOTE: NumPy pixel arrays are declared with shape (HEIGHT, WIDTH, CHANNELS)
-    pixels_out = np.zeros(
-        (tile_info.full_size[1], tile_info.full_size[0], 4), dtype=float
-    )
-
-    for tile_index, tile_filepath in image_files.items():
-        tile_image = context.blend_data.images.load(tile_filepath)
-        assert tile_image.channels == 4, "Tile images should have 4 channels"
-
-        in_box, out_box = tile_info.tile_boxes(tile_index)
-
-        pixels_flat = np.fromiter(
-            tile_image.pixels,
-            dtype=float,
-            count=tile_image.size[0] * tile_image.size[1] * 4,
-        )
-        pixels_in = np.reshape(pixels_flat, (tile_image.size[1], tile_image.size[0], 4))
-        pixels_out[out_box[1] : out_box[3], out_box[0] : out_box[2], :] = pixels_in[
-            in_box[1] : in_box[3], in_box[0] : in_box[2], :
-        ]
-
-        context.blend_data.images.remove(tile_image)
-
-    return pixels_out
-
-
-def stitch_tiles_pil(
-    context, tile_info: TileInfo, image_files: dict[tuple[int, int], str]
-) -> PILImage.Image:
-    """
-    Stitch tiles into a single PIL Image.
-
-    Args:
-        context: Blender context
-        tile_info: Tiling information
-        image_files: Dictionary of tile files
-
-    Returns:
-        PIL Image object
-    """
-    from PIL import Image
-
-    if not image_files:
-        raise ValueError("No image files to stitch")
-
-    full_image = Image.new("RGB", tile_info.full_size)
-
-    for tile_index, tile_filepath in image_files.items():
-        with Image.open(tile_filepath) as tile_image:
-            in_box, out_box = tile_info.tile_boxes(tile_index)
-
-            # Note: Pillow library uses upper-left corner as (0, 0), subtract Y coordinate from height!
-            pil_in_box = (
-                in_box[0],
-                tile_image.height - in_box[3],
-                in_box[2],
-                tile_image.height - in_box[1],
-            )
-            pil_out_box = (
-                out_box[0],
-                full_image.height - out_box[3],
-                out_box[2],
-                full_image.height - out_box[1],
-            )
-            tile_cropped = tile_image.crop(pil_in_box)
-            full_image.paste(tile_cropped, pil_out_box)
-
-    return full_image
 
 
 def generate_mermaid_diagram(tree) -> str:
@@ -444,6 +138,8 @@ def generate_mermaid_diagram(tree) -> str:
 
         # Build minimal node label
         node_label = node_type_clean
+        if hasattr(node, "operation"):
+            node_label += f"<br/><small>({node.operation})</small>"
 
         # Only add parameters if there are any significant ones
         if key_params:
@@ -470,8 +166,8 @@ def generate_mermaid_diagram(tree) -> str:
 
         # Create socket label with full names
         if from_socket and to_socket:
-            # Always show from >> to format with full socket names
-            label = f"{from_socket}>>{to_socket}"
+            # Always show from -> to format with full socket names
+            label = f"{from_socket}->{to_socket}"
 
             mermaid_lines.append(f'    {from_node_id} -->|"{label}"| {to_node_id}')
         else:
