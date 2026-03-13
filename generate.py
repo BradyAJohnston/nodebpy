@@ -1056,6 +1056,8 @@ class ModulesHandler:
 
     def write_modules(self):
         for module_name, module_writer in self.modules.items():
+            if module_writer.filename == "experimental.py":
+                continue
             module_writer.write(self.config)
 
     def generate_init(self):

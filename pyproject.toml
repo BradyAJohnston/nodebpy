@@ -16,7 +16,7 @@ nodebpy = "nodebpy:main"
 
 [project.optional-dependencies]
 bpy = [
-    "bpy>=5.0.0",
+    "bpy>=5.0.1",
 ]
 jupyter = [
     "ipython>=8.0.0",
