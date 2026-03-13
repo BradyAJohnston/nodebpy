@@ -23,6 +23,11 @@ from ..geometry.interface import (
     GroupInput,
     GroupOutput,
 )
+from ..geometry.manual import (
+    RepeatInput,
+    RepeatOutput,
+    Value,
+)
 from ..geometry.texture import (
     BrickTexture,
     CheckerTexture,
@@ -39,10 +44,6 @@ from ..geometry.vector import (
     VectorCurves,
     VectorMath,
     VectorRotate,
-)
-from .zone import (
-    RepeatInput,
-    RepeatOutput,
 )
 from .interface import (
     ClosureInput,
@@ -98,7 +99,6 @@ from .input import (
     TextureCoordinate,
     UVAlongStroke,
     UVMap,
-    Value,
     Wireframe,
 )
 from .color import (

@@ -20,6 +20,9 @@ from ..geometry.interface import (
     GroupInput,
     GroupOutput,
 )
+from ..geometry.manual import (
+    Value,
+)
 from ..geometry.texture import (
     BrickTexture,
     CheckerTexture,
@@ -125,7 +128,6 @@ from .input import (
     SceneTime,
     TimeCurve,
     TrackPosition,
-    Value,
 )
 from .vector import (
     Normalize,

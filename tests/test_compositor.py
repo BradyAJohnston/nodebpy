@@ -1,7 +1,6 @@
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import sockets as s
-from nodebpy.lib.nodearrange.arrange.stacking import T
 
 
 def test_initial_compositor():
@@ -74,3 +73,18 @@ def test_compositor_menu_switch():
     for i, input in enumerate(menu.inputs.values()):
         assert f"Input_{i}" == input.name
         assert float(i) == input.socket.default_value
+
+    with TreeBuilder.shader() as tree:
+        menu = c.MenuSwitch.float(
+            **{f"Input_{i}": c.Value(value) for i, value in enumerate(range(10))}
+        )
+        with tree.outputs:
+            _ = menu >> s.SocketFloat()
+
+    assert len(menu.node.enum_items) == 10
+    for i, input in enumerate(menu.inputs.values()):
+        assert f"Input_{i}" == input.name
+        assert input.socket.links[0].from_node.bl_idname == c.Value._bl_idname
+        # we have to check the output defeault value here because that is how the Value
+        # node is defined which is truly cursed but hey it is what it is
+        assert input.socket.links[0].from_node.outputs[0].default_value == float(i)
