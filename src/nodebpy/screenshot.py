@@ -46,7 +46,7 @@ def compute_node_bounds(context, margin: float) -> tuple[Vector, Vector]:
     Returns:
         Tuple of (min, max) vectors of the node bounds
     """
-    ui_scale = context.preferences.system.ui_scale
+    ui_scale = 1.0
     space = context.space_data
     node_tree = space.edit_tree
     if not node_tree:

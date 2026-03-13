@@ -325,11 +325,6 @@ from .texture import (
     WaveTexture,
     WhiteNoiseTexture,
 )
-from .experimental import (
-    GetListItem,
-    List,
-    ListLength,
-)
 from .output import (
     Viewer,
 )
@@ -441,7 +436,6 @@ __all__ = (
     "Gamma",
     "GeometryProximity",
     "GeometryToInstance",
-    "GetListItem",
     "GetNamedGrid",
     "GradientTexture",
     "GreasePencilToCurves",
@@ -491,8 +485,6 @@ __all__ = (
     "JoinGeometry",
     "JoinStrings",
     "LinearGizmo",
-    "List",
-    "ListLength",
     "MagicTexture",
     "MapRange",
     "MatchString",
