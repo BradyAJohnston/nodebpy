@@ -125,7 +125,6 @@ class TreeBuilder:
     """
 
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
-    _menu_defaults: dict[str, str] = {}
     just_added: "Node | None" = None
     collapse: bool = False
 
@@ -145,6 +144,7 @@ class TreeBuilder:
         else:
             self.tree = tree
 
+        self._menu_defaults: dict[str, str] = {}
         # Create socket accessors for named access
         self.inputs = InputInterfaceContext(self)
         self.outputs = OutputInterfaceContext(self)
@@ -238,7 +238,6 @@ class TreeBuilder:
 
     def _apply_input_defaults(self) -> None:
         for key, value in self._menu_defaults.items():
-            print(f"Setting default value for {key}: {value}")
             for item in self.tree.interface.items_tree:
                 if item.identifier == key:
                     item.default_value = value
@@ -1000,10 +999,16 @@ class SocketBase(SocketLinker):
         for key, value in kwargs.items():
             if value is None:
                 continue
-            try:
-                setattr(self.interface_socket, key, value)
-            except TypeError:
+            if (
+                self.interface_socket.socket_type == "NodeSocketMenu"
+                and key == "default_value"
+            ):
+                # we delay the setting of the default value until the menu is created
+                # because it doesn't have potential enum values yet until the menu socket is
+                # connected and the node tree is complete
                 self.tree._menu_defaults[self.interface_socket.identifier] = value
+            else:
+                setattr(self.interface_socket, key, value)
 
     @property
     def default_value(self):
