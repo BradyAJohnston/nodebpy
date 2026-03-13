@@ -1317,7 +1317,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.0.0" },
+    { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.0.1" },
     { name = "fake-bpy-module", marker = "extra == 'dev'", specifier = ">=20260113" },
     { name = "ipython", marker = "extra == 'jupyter'", specifier = ">=8.0.0" },
     { name = "jsondiff", marker = "extra == 'dev'", specifier = ">=2.2.1" },
