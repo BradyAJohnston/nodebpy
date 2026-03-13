@@ -1160,6 +1160,7 @@ class SocketBoolean(SocketBase):
         layer_selection_field: bool = False,
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
+        is_panel_toggle: bool = False,
     ):
         super().__init__(name, description)
         self._set_values(
@@ -1171,6 +1172,7 @@ class SocketBoolean(SocketBase):
             structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
+            is_panel_toggle=is_panel_toggle,
         )
 
 
