@@ -7,13 +7,11 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
-    LINKABLE,
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_COLOR,
     TYPE_INPUT_INT,
     TYPE_INPUT_MENU,
     TYPE_INPUT_ROTATION,
-    TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
@@ -446,175 +444,6 @@ class Levels(NodeBuilder):
     def o_standard_deviation(self) -> SocketLinker:
         """Output socket: Standard Deviation"""
         return self._output("Standard Deviation")
-
-
-class MenuSwitch(NodeBuilder):
-    """
-    Select from multiple inputs by name
-    """
-
-    _bl_idname = "GeometryNodeMenuSwitch"
-    node: bpy.types.GeometryNodeMenuSwitch
-
-    def __init__(
-        self,
-        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
-        item_0: TYPE_INPUT_COLOR = None,
-        item_1: TYPE_INPUT_COLOR = None,
-        extend: LINKABLE = None,
-        *,
-        data_type: Literal[
-            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"
-        ] = "RGBA",
-    ):
-        super().__init__()
-        key_args = {
-            "Menu": menu,
-            "Item_0": item_0,
-            "Item_1": item_1,
-            "__extend__": extend,
-        }
-        self.data_type = data_type
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls,
-        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
-        item_0: TYPE_INPUT_VALUE = 0.0,
-        item_1: TYPE_INPUT_VALUE = 0.0,
-        extend: LINKABLE = None,
-    ) -> "MenuSwitch":
-        """Create Menu Switch with operation 'Float'."""
-        return cls(
-            data_type="FLOAT", menu=menu, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def integer(
-        cls,
-        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
-        item_0: TYPE_INPUT_INT = 0,
-        item_1: TYPE_INPUT_INT = 0,
-        extend: LINKABLE = None,
-    ) -> "MenuSwitch":
-        """Create Menu Switch with operation 'Integer'."""
-        return cls(
-            data_type="INT", menu=menu, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def boolean(
-        cls,
-        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
-        item_0: TYPE_INPUT_BOOLEAN = False,
-        item_1: TYPE_INPUT_BOOLEAN = False,
-        extend: LINKABLE = None,
-    ) -> "MenuSwitch":
-        """Create Menu Switch with operation 'Boolean'."""
-        return cls(
-            data_type="BOOLEAN", menu=menu, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def vector(
-        cls,
-        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
-        item_0: TYPE_INPUT_VECTOR = None,
-        item_1: TYPE_INPUT_VECTOR = None,
-        extend: LINKABLE = None,
-    ) -> "MenuSwitch":
-        """Create Menu Switch with operation 'Vector'."""
-        return cls(
-            data_type="VECTOR", menu=menu, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def color(
-        cls,
-        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
-        item_0: TYPE_INPUT_COLOR = None,
-        item_1: TYPE_INPUT_COLOR = None,
-        extend: LINKABLE = None,
-    ) -> "MenuSwitch":
-        """Create Menu Switch with operation 'Color'."""
-        return cls(
-            data_type="RGBA", menu=menu, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def string(
-        cls,
-        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
-        item_0: TYPE_INPUT_STRING = "",
-        item_1: TYPE_INPUT_STRING = "",
-        extend: LINKABLE = None,
-    ) -> "MenuSwitch":
-        """Create Menu Switch with operation 'String'."""
-        return cls(
-            data_type="STRING", menu=menu, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @classmethod
-    def menu(
-        cls,
-        menu: TYPE_INPUT_MENU | Literal["A", "B"] = "A",
-        item_0: TYPE_INPUT_MENU = None,
-        item_1: TYPE_INPUT_MENU = None,
-        extend: LINKABLE = None,
-    ) -> "MenuSwitch":
-        """Create Menu Switch with operation 'Menu'."""
-        return cls(
-            data_type="MENU", menu=menu, item_0=item_0, item_1=item_1, extend=extend
-        )
-
-    @property
-    def i_menu(self) -> SocketLinker:
-        """Input socket: Menu"""
-        return self._input("Menu")
-
-    @property
-    def i_item_0(self) -> SocketLinker:
-        """Input socket: A"""
-        return self._input("Item_0")
-
-    @property
-    def i_item_1(self) -> SocketLinker:
-        """Input socket: B"""
-        return self._input("Item_1")
-
-    @property
-    def i_extend(self) -> SocketLinker:
-        """Input socket:"""
-        return self._input("__extend__")
-
-    @property
-    def o_output(self) -> SocketLinker:
-        """Output socket: Output"""
-        return self._output("Output")
-
-    @property
-    def o_item_0(self) -> SocketLinker:
-        """Output socket: A"""
-        return self._output("Item_0")
-
-    @property
-    def o_item_1(self) -> SocketLinker:
-        """Output socket: B"""
-        return self._output("Item_1")
-
-    @property
-    def data_type(
-        self,
-    ) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(
-        self,
-        value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"],
-    ):
-        self.node.data_type = value
 
 
 class Mix(NodeBuilder):

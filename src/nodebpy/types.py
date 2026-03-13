@@ -282,6 +282,7 @@ SOCKET_TYPES = Literal[
     "MATERIAL",
     "BUNDLE",
     "CLOSURE",
+    "SHADER",
 ]
 
 SOCKET_COMPATIBILITY: dict[str, tuple[str]] = {

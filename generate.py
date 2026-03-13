@@ -109,7 +109,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "Frame",
         "Reroute",
     ],
-    manually_defined=(),
+    manually_defined=("MenuSwitch",),
     class_name_prefix_strips=[
         "ShaderNode",
         "Node",
@@ -126,7 +126,7 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "Cryptomatte",
         "Image",
     ],
-    manually_defined=(),
+    manually_defined=("MenuSwitch",),
     class_name_prefix_strips=[
         "CompositorNode",
         "Node",
@@ -1143,11 +1143,27 @@ class ModulesHandler:
         """
         registry: dict[str, tuple[str, str, NodeInfo]] = {}
         for cls_name, node_info in self._class_names.items():
-            if cls_name in GEOMETRY_CONFIG.manually_defined:
+            if cls_name in self.config.manually_defined:
                 module = "manual"
             else:
                 module = node_info.module_name
             registry[node_info.bl_idname] = (cls_name, module, node_info)
+
+        # Also include manually defined nodes — they were skipped during
+        # add_node so they're not in _class_names, but subsequent tree-type
+        # handlers still need to detect them for re-export.
+        all_nodes = get_node_names()
+        for node_type in all_nodes:
+            node_name = (
+                node_type.bl_rna.name.title().replace(" ", "").replace("Sdf", "SDF")
+            )
+            if node_name in self.config.manually_defined:
+                if node_type.__name__ not in registry:
+                    node_info = introspect_node(node_type, self.config.tree_type)
+                    if node_info:
+                        cls_name = node_info.class_name_for_config(self.config)
+                        registry[node_info.bl_idname] = (cls_name, "manual", node_info)
+
         return registry
 
     def count_nodes(self) -> int:

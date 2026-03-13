@@ -859,26 +859,6 @@ class UVMap(NodeBuilder):
         self.node.uv_map = value
 
 
-class Value(NodeBuilder):
-    """
-    Input numerical values to other nodes in the tree
-    """
-
-    _bl_idname = "ShaderNodeValue"
-    node: bpy.types.ShaderNodeValue
-
-    def __init__(self):
-        super().__init__()
-        key_args = {}
-
-        self._establish_links(**key_args)
-
-    @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self._output("Value")
-
-
 class Wireframe(NodeBuilder):
     """
         Retrieve the edges of an object as it appears to Cycles.

@@ -57,7 +57,7 @@ tree
 ```
 
 
-![](images/paste-2.png)
+![](images/paste-1.png)
 
 # Design Considerations
 
