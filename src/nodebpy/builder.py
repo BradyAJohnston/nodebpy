@@ -335,9 +335,13 @@ class TreeBuilder:
             # the warning message should report which sockets from which nodes were linked and which were innactive
             for socket in [socket1, socket2]:
                 # we want to be loud about it if we end up linking an inactive socket to a node that is not a switch
-                if socket.is_inactive and socket.node.bl_idname not in (  # type: ignore
-                    "GeometryNodeIndexSwitch",
-                    "GeometryNodeMenuSwitch",
+                if socket.is_inactive and (
+                    socket.node.bl_idname
+                    not in (  # type: ignore
+                        "GeometryNodeIndexSwitch",
+                        "GeometryNodeMenuSwitch",
+                        "ShaderNodeMixShader",
+                    )
                 ):
                     message = f"Socket {socket.name} from node {socket.node.name} is inactive."  # type: ignore
                     message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."
