@@ -1,5 +1,8 @@
+import pytest
+
 from nodebpy import TreeBuilder, sockets
 from nodebpy import shader as s
+from nodebpy.builder import SocketError
 
 
 def test_simple_shader():
@@ -61,3 +64,13 @@ def test_shader_menu_switch():
         # we have to check the output defeault value here because that is how the Value
         # node is defined which is truly cursed but hey it is what it is
         assert input.socket.links[0].from_node.outputs[0].default_value == float(i)
+
+
+def test_color_shader():
+    with TreeBuilder.shader() as tree:
+        mix = s.MixShader(1.0, s.Color())
+        assert (
+            mix.node.inputs["Shader"].links[0].from_node.bl_idname == s.Color._bl_idname
+        )
+        with pytest.raises(SocketError):
+            _ = mix >> s.Mix.color().i_a_color
