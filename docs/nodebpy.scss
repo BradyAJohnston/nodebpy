@@ -1,0 +1,70 @@
+// Ref:
+// - https://getbootstrap.com/docs/5.3/utilities/spacing/
+// - https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss
+
+/*-- scss:defaults --*/
+// Dracula palette
+$primary: #404abc;       // purple
+$secondary: #6272a4;     // comment blue-gray
+$success: #50fa7b;       // green
+$info: #8be9fd;          // cyan
+$warning: #f1fa8c;       // yellow
+$danger: #ff5555;        // red
+
+$body-bg: #282a36;       // background
+$body-color: #f8f8f2;    // foreground
+$link-color: #bd93f9;    // purple
+
+$navbar-dark-color: #f8f8f2;
+$navbar-dark-hover-color: #ff79c6;  // pink
+
+$code-color: #ff79c6;    // pink
+$pre-color: #f8f8f2;
+
+$card-bg: #44475a;       // current line
+$card-border-color: #6272a4;
+
+/*-- scss:mixins --*/
+
+/*-- scss:rules --*/
+$signature-border-color: tint-color($primary, 25%);
+
+
+.doc-signature.doc-module > div:first-child,
+.doc-signature.doc-class > div:first-child {
+   border-top: 0.25rem solid $signature-border-color;
+}
+
+.doc-signature.doc-function > div:first-child,
+.doc-signature.doc-method > div:first-child {
+   border-left: 0.25rem solid $signature-border-color;
+}
+
+.doc-signature.doc-attribute > p > code::before {
+  content: "";
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: $signature-border-color;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-left: -.75rem;
+  margin-right: .5rem;
+}
+
+// Give the Name column in class summary tables more room
+.caption-top.table td:first-child,
+.caption-top.table th:first-child {
+  width: 40%;
+  white-space: nowrap;
+}
+
+.doc-usage:not(.doc-signature) > p {
+  margin-bottom: -1rem;
+  color: $gray-600;
+  font-size: 0.95rem;
+}
+
+/*-- scss:functions --*/
+
+/*-- scss:uses --*/

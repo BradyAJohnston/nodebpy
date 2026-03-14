@@ -1,53 +1,6 @@
-project:
-  type: website
-  output-dir: _build
-
-website:
-  title: "nodebpy {{< var version >}}"
-  page-navigation: true
-
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - href: introduction.qmd
-        text: Introduction
-      - href: operators.qmd
-        text: Operators
-      - href: reference/
-        text: Reference
-    right:
-      - icon: github
-        href: https://github.com/BradyAJohnston/nodebpy
-
-# tell quarto to read the generated sidebar
-metadata-files:
-  - reference/_sidebar.yml
-
-format:
-  html:
-    toc: true
-    theme:
-      - darkly
-      - nodebpy.scss
-    # highlight-style: 
-    #   dark: dracula.theme
-
-filters:
-  - interlinks
-
-interlinks:
-  sources:
-    python:
-      url: https://docs.python.org/3/
-    numpy:
-      url: https://numpy.org/doc/stable/
-
 quartodoc:
   # the name used to import the package you want to create reference docs for
   package: nodebpy
-  renderer:
-    style: _renderer.py
 
   # write sidebar and style data
   sidebar: reference/_sidebar.yml
