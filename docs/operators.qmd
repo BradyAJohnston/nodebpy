@@ -142,7 +142,8 @@ tree
 
 ## Matrix Multiplication
 
-The `@` operator maps to `MultiplyMatrices`, composing two 4x4 transformation matrices:
+The `@` operator maps to `MultiplyMatrices`, composing two 4x4 transformation matrices.
+You can also multiply a matrix by a vector using `@` and a `TransformPoint` will automatically be added.
 
 ```{python}
 with TreeBuilder("MatmulDemo") as tree:
@@ -151,11 +152,10 @@ with TreeBuilder("MatmulDemo") as tree:
 
     rotate = g.CombineTransform(rotation=(0, 45, 0))
     translate = g.CombineTransform(translation=(2, 0, 0))
-    combined = rotate @ translate
 
     _ = (
         g.Cube()
-        >> g.SetPosition(position=g.TransformPoint(g.Position(), combined))
+        >> g.SetPosition(position=rotate @ translate @ g.Position())
         >> out
     )
 
