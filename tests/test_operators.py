@@ -8,6 +8,7 @@ import itertools
 import numpy as np
 import pytest
 
+import nodebpy
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy import sockets as s
@@ -758,6 +759,28 @@ class TestReverseOperators:
             mat.ravel(),
             [i.default_value for i in result2.node.inputs[0].links[0].from_node.inputs],
         )
+
+    def test_matrix_matmul_vector(self):
+        """matrix @ vector should produce a TransformPoint node."""
+        with TreeBuilder("TestMatrixMatmulVector") as tree:
+            mat = g.CombineTransform(translation=(1, 0, 0))
+            vec = g.Vector((1, 2, 3))
+            result = mat @ vec
+            result2 = mat @ np.random.rand(4, 4)
+            _ = mat @ result2
+
+        assert result.node.bl_idname == "FunctionNodeTransformPoint"
+        assert result.node.inputs[0].links[0].from_node == vec.node
+        assert result.node.inputs[1].links[0].from_node == mat.node
+        assert result2.node.inputs[0].links[0].from_node == mat.node
+        assert (
+            result2.node.inputs[1].links[0].from_node.bl_idname
+            == "FunctionNodeCombineMatrix"
+        )
+
+        with tree:
+            with pytest.raises(nodebpy.builder.SocketError):
+                _ = vec @ mat
 
 
 class TestMatrixMultiplcation:
