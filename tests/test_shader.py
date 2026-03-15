@@ -67,7 +67,7 @@ def test_shader_menu_switch():
 
 
 def test_color_shader():
-    with TreeBuilder.shader() as tree:
+    with TreeBuilder.shader():
         mix = s.MixShader(1.0, s.Color())
         assert (
             mix.node.inputs["Shader"].links[0].from_node.bl_idname == s.Color._bl_idname

@@ -486,7 +486,7 @@ def test_auto_selection():
 def test_placeholder():
     # use ... to force a link into the second socket,
     # setting the value for the first instead
-    with TreeBuilder.geometry() as tree:
+    with TreeBuilder.geometry():
         v = g.Value()
         add = v >> g.Math.add(1.0, ...)
 
@@ -497,7 +497,7 @@ def test_placeholder():
 
     # use ... to force a link into the first socket,
     # setting the value for the second instead
-    with TreeBuilder.geometry() as tree:
+    with TreeBuilder.geometry():
         v = g.Value()
         add = v >> g.Math.add(..., 1.0)
 
@@ -506,7 +506,7 @@ def test_placeholder():
     assert add.node.inputs[0].links
     assert add.node.inputs[0].links[0].from_node == v.node
 
-    with TreeBuilder.geometry() as tree:
+    with TreeBuilder.geometry():
         v = g.Color()
         mix = v >> g.Mix.color(0.3, (0.5, 0.5, 0.5, 1.0), ...)
 
