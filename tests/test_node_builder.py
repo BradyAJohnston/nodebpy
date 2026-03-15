@@ -506,6 +506,15 @@ def test_placeholder():
     assert add.node.inputs[0].links
     assert add.node.inputs[0].links[0].from_node == v.node
 
+    with TreeBuilder.geometry() as tree:
+        v = g.Color()
+        mix = v >> g.Mix.color(0.3, (0.5, 0.5, 0.5, 1.0), ...)
+
+    assert not mix._input("Factor_Float").socket.links
+    assert tuple(mix._input("A_Color").socket.default_value) == (0.5, 0.5, 0.5, 1.0)
+    assert mix._input("B_Color").socket.links
+    assert mix._input("B_Color").socket.links[0].from_node == v.node
+
 
 def test_nested_trees():
     with TreeBuilder("Tree") as tree:
