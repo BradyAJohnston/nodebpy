@@ -249,14 +249,14 @@ class TreeBuilder:
 
     @fake_user.setter
     def fake_user(self, value: bool) -> None:
-        self.tree.use_extra_user = value
+        self.tree.use_fake_user = value
 
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""
         TreeBuilder._tree_contexts.append(self)
 
     def deactivate_tree(self) -> None:
-        """Whatever tree ws previously active is set to be the active one (or None if no previously active tree)."""
+        """Whatever tree was previously active is set to be the active one (or None if no previously active tree)."""
         TreeBuilder._tree_contexts.pop()
 
     def __enter__(self):
@@ -530,7 +530,10 @@ class NodeBuilder:
         if identifier in input_names:
             return input_names.index(identifier)
 
-        raise RuntimeError()
+        raise RuntimeError(
+            f"Input '{identifier}' not found on {self.node.bl_idname}. "
+            f"Available inputs: {input_names}"
+        )
 
     def _output_idx(self, identifier: str) -> int:
         output_ids = [output.identifier for output in self.node.outputs]
@@ -701,7 +704,7 @@ class NodeBuilder:
 
             # only the Geometry Node Tree supports integer math currently, potential
             # to support other trees when Blender supports it
-            is_geometry_tree = self._tree.tree.bl_idname in ["GeometryNodeTree"]
+            is_geometry_tree = self._tree.tree.bl_idname == "GeometryNodeTree"
             if (
                 is_geometry_tree
                 and isinstance(other, int)
