@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
     from .nodes.geometry import IntegerMath, Math, VectorMath
-    from .nodes.geometry.converter import BooleanMath, MultiplyMatrices
+    from .nodes.geometry.converter import BooleanMath, MultiplyMatrices, TransformPoint
     from .nodes.geometry.manual import Compare
 
 import bpy
@@ -139,7 +139,7 @@ class SocketContext:
 class DirectionalContext(SocketContext):
     """Base class for directional socket contexts"""
 
-    _direction: Literal["INPUT", "OUTPUT"] = "INPUT"
+    _direction = "INPUT"
     _active_context = None
 
 
@@ -271,9 +271,9 @@ class TreeBuilder:
 
     def _apply_input_defaults(self) -> None:
         for key, value in self._menu_defaults.items():
-            for item in self.tree.interface.items_tree:
-                if item.identifier == key:
-                    item.default_value = value
+            for item in self.tree.interface.items_tree:  # type: ignore
+                if item.identifier == key:  # type: ignore
+                    item.default_value = value  # type: ignore
                     break
 
     def __len__(self) -> int:
@@ -336,7 +336,7 @@ class TreeBuilder:
             for socket in [socket1, socket2]:
                 # we want to be loud about it if we end up linking an inactive socket to a node that is not a switch
                 if socket.is_inactive and (
-                    socket.node.bl_idname
+                    socket.node.bl_idname  # type: ignore
                     not in (  # type: ignore
                         "GeometryNodeIndexSwitch",
                         "GeometryNodeMenuSwitch",
@@ -360,7 +360,7 @@ class TreeBuilder:
 class NodeBuilder:
     """Base class for all geometry node wrappers."""
 
-    node: Any
+    node: bpy.types.Node
     _bl_idname: str
     _tree: "TreeBuilder"
     _link_target: str | None = None
@@ -506,7 +506,7 @@ class NodeBuilder:
             return sorted(possible_combos, key=lambda x: x[0])[0][1]
 
         raise SocketError(
-            f"Cannot link any output from {source.node.name} to any input of {target.node.name}. "
+            f"Cannot link any output from {source.node.name} to any input of {target.node.name}. "  # type: ignore
             f"Available output types: {[f'{o.name}:{o.type}' for o in outputs]}, "
             f"Available input types: {[f'{i.name}:{i.type}' for i in inputs]}"
         )
@@ -849,16 +849,16 @@ class NodeBuilder:
                 result = Math.subtract(1.0, result._default_output_socket)
             return result
 
-    def __lt__(self, other: Any) -> "Compare":
+    def __lt__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "less_than")
 
-    def __gt__(self, other: Any) -> "Compare":
+    def __gt__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "greater_than")
 
-    def __le__(self, other: Any) -> "Compare":
+    def __le__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "less_equal")
 
-    def __ge__(self, other: Any) -> "Compare":
+    def __ge__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "greater_equal")
 
     def _apply_boolean_operation(self, other: Any, operation: str) -> "BooleanMath":
@@ -957,7 +957,7 @@ class DynamicInputsMixin:
         self, source: NodeBuilder | NodeSocket, target: NodeBuilder | NodeSocket
     ) -> tuple[NodeSocket, NodeSocket]:
         try:
-            return super()._find_best_socket_pair(source, target)
+            return super()._find_best_socket_pair(source, target)  # type: ignore
         except SocketError:
             if target == self:
                 target_name, source_socket = list(target._add_inputs(source).items())[0]
@@ -1049,7 +1049,7 @@ class SocketBase(SocketLinker):
     def __init__(self, name: str, description: str = ""):
         self.description = description
 
-        self._socket_context: SocketContext = SocketContext._active_context
+        self._socket_context = SocketContext._active_context
         self.interface_socket = self._socket_context._create_socket(self, name)
         self._tree = self._socket_context.builder
         if self._socket_context._direction == "INPUT":
@@ -1079,7 +1079,7 @@ class SocketBase(SocketLinker):
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute 'default_value'"
             )
-        return self.interface_socket.default_value
+        return getattr(self.interface_socket, "default_value")
 
     @default_value.setter
     def default_value(self, value):
@@ -1087,7 +1087,7 @@ class SocketBase(SocketLinker):
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute 'default_value'"
             )
-        self.interface_socket.default_value = value
+        setattr(self.interface_socket, "default_value", value)
 
 
 class SocketFloat(SocketBase):
