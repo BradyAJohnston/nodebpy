@@ -39,10 +39,10 @@ def test_panel_groups_input_sockets():
     """Test that sockets created inside a panel context are children of that panel."""
     with TreeBuilder("PanelInputTest") as tree:
         with tree.inputs:
-            geo = s.SocketGeometry("Geometry")
+            s.SocketGeometry("Geometry")
             with tree.inputs.panel("Settings"):
-                count = s.SocketInt("Count")
-                scale = s.SocketFloat("Scale")
+                s.SocketInt("Count")
+                s.SocketFloat("Scale")
 
         items = list(tree.tree.interface.items_tree)
         panel_items = [
@@ -67,8 +67,8 @@ def test_panel_groups_output_sockets():
     with TreeBuilder("PanelOutputTest") as tree:
         with tree.outputs:
             with tree.outputs.panel("Results"):
-                out_geo = s.SocketGeometry("Geometry")
-            extra = s.SocketFloat("Extra")
+                s.SocketGeometry("Geometry")
+            s.SocketFloat("Extra")
 
         items = list(tree.tree.interface.items_tree)
         panel_items = [
@@ -88,9 +88,9 @@ def test_multiple_panels():
     with TreeBuilder("MultiPanelTest") as tree:
         with tree.inputs:
             with tree.inputs.panel("Transform"):
-                pos = s.SocketVector("Position")
+                s.SocketVector("Position")
             with tree.inputs.panel("Appearance"):
-                color = s.SocketColor("Color")
+                s.SocketColor("Color")
 
         items = list(tree.tree.interface.items_tree)
         panel_items = [
