@@ -33,9 +33,9 @@ In `nodebpy` we use the `>>` operator to link from one node or socket into anoth
 This should feel and behave much like the <kbd>Alt</kbd> + <kbd>Right Click</kbd> drag between nodes in [Node Wrangler](https://docs.blender.org/manual/en/latest/addons/node/node_wrangler.html). It will use some smart logic to match the most compatible sockets between the nodes, but if you ever want to be explicit you do so. The input and output sockets of a node are accessible as properties via the `i_*` and `o_*` prefixes, or you can use the `...` placeholder to specify the particular input to be user, or pass in the previous node as a named argument.
 
 ```py
-n.Vector() >> n.SetPosition().i_offset
-n.Vector() >> n.SetPosition(offset=...)
-n.SetPosition(offset=n.Vector())
+g.Vector() >> g.SetPosition().i_offset
+g.Vector() >> g.SetPosition(offset=...)
+g.SetPosition(offset=g.Vector())
 ```
 
 The `>>` operator will always look for the _most_ compatible sockets first (matching data types) before looking for other compatible but not identical socket data types to link.
@@ -52,7 +52,7 @@ Entering the `tree.inputs` and `tree.outputs` contexts will let you add new inte
 
 ```py
 with TreeBuilder("MyTree") as tree:
-    points = n.Points(position=n.RandomValue.vector(min=-1))
+    points = g.Points(position=g.RandomValue.vector(min=-1))
     with tree.outputs:
         points >> s.SocketGeometry("New Points")
 ```
@@ -62,7 +62,7 @@ with TreeBuilder("MyTree") as tree:
 The node tree below creates a integer input and geometry output to the node group. We create a `rotation` variable that can be used later on as an argument, then construct a longer chain of nodes being created and linked together. The nodes are added and linked as each node is instantiated. After we exit the tree context, the nodes are automatically arranged.
 
 ``` python
-from nodebpy import TreeBuilder, nodes as n, sockets as s
+from nodebpy import TreeBuilder, geometry as g, sockets as s
 
 with TreeBuilder("AnotherTree", collapse=True) as tree:
     with tree.inputs:
@@ -71,21 +71,21 @@ with TreeBuilder("AnotherTree", collapse=True) as tree:
         instances = s.SocketGeometry("Instances")
 
     rotation = (
-        n.RandomValue.vector(min=-1, seed=2)
-        >> n.AlignRotationToVector()
-        >> n.RotateRotation(rotate_by=n.AxisAngleToRotation(angle=0.3))
+        g.RandomValue.vector(min=-1, seed=2)
+        >> g.AlignRotationToVector()
+        >> g.RotateRotation(rotate_by=g.AxisAngleToRotation(angle=0.3))
     )
 
     _ = (
         count
-        >> n.Points(position=n.RandomValue.vector(min=-1))
-        >> n.InstanceOnPoints(instance=n.Cube(), rotation=rotation)
-        >> n.SetPosition(
-            position=n.Position() * 2.0 + (0, 0.2, 0.3),
+        >> g.Points(position=g.RandomValue.vector(min=-1))
+        >> g.InstanceOnPoints(instance=g.Cube(), rotation=rotation)
+        >> g.SetPosition(
+            position=g.Position() * 2.0 + (0, 0.2, 0.3),
             offset=(0, 0, 0.1),
         )
-        >> n.RealizeInstances()
-        >> n.InstanceOnPoints(n.Cube(), instance=...)
+        >> g.RealizeInstances()
+        >> g.InstanceOnPoints(g.Cube(), instance=...)
         >> instances
     )
 ```
@@ -102,16 +102,16 @@ The basic math operators also automatically add relevant nodes with their operat
 
 ```py
 # operation is exposed as a property
-math = n.Math(1.0, 2.0, operation='ADD')
+math = g.Math(1.0, 2.0, operation='ADD')
 math.operation = "SUBTRACT"
 
 # operation can be chose as a class method
-math = n.Math.subtract(1.0, 2.0)
-math = n.Math.add(1.0, 2.0)
+math = g.Math.subtract(1.0, 2.0)
+math = g.Math.add(1.0, 2.0)
 
-# these are equivalent, the n.Math.multiply is automatically added
-n.Value(1.0) * 2
-n.Math.multiply(n.Value(1.0), 2.0)
+# these are equivalent, the g.Math.multiply is automatically added
+g.Value(1.0) * 2
+g.Math.multiply(g.Value(1.0), 2.0)
 ```
 
 # Design Considerations
