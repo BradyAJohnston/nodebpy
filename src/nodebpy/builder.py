@@ -367,6 +367,7 @@ class NodeBuilder:
     _from_socket: NodeSocket | None = None
     _default_input_id: str | None = None
     _default_output_id: str | None = None
+    _placeholder_inputs: list[str]
     __array_ufunc__ = None
 
     def __init__(self):
@@ -384,6 +385,7 @@ class NodeBuilder:
 
         self._tree = tree
         self._link_target = None
+        self._placeholder_inputs = []
         if self.__class__.name is not None:
             self.node = self._tree.add(self.__class__._bl_idname)
         else:
@@ -596,10 +598,11 @@ class NodeBuilder:
                 value = node
 
             if value is ...:
-                # Ellipsis indicates this input should receive links from >> operator
-                # which can potentially target multiple inputs on the new node
+                # Ellipsis marks this input as a placeholder for the >> operator
+                self._placeholder_inputs.append(name)
                 if self._from_socket is not None:
                     self._link_from(self._from_socket, name)
+                continue
 
             elif isinstance(value, SocketLinker):
                 self._link_from(value, name)
@@ -631,6 +634,14 @@ class NodeBuilder:
             source = self._default_output_socket
             target = other.socket
             other._from_socket = source
+        elif getattr(other, "_placeholder_inputs", None):
+            # Link to the first placeholder input marked with ...
+            name = other._placeholder_inputs.pop(0)
+            try:
+                target = other.node.inputs[name]
+            except KeyError:
+                target = other.node.inputs[other._input_idx(name)]
+            source = self._best_output_socket(target.type)
         else:
             try:
                 source, target = self._find_best_socket_pair(self, other)
