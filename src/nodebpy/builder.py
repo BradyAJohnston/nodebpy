@@ -902,15 +902,31 @@ class NodeBuilder:
         else:
             return value
 
-    def __matmul__(self, other: Any) -> "MultiplyMatrices":
-        from .nodes.geometry.converter import MultiplyMatrices
+    def __matmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
+        from .nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
-        return MultiplyMatrices(self, self._cast_to_matrix(other))
+        other = self._cast_to_matrix(other)
+        socket = self._default_output_socket
+        other_type = getattr(other, "type", None)
 
-    def __rmatmul__(self, other: Any) -> "MultiplyMatrices":
-        from .nodes.geometry.converter import MultiplyMatrices
+        # matrix @ vector → TransformPoint (standard M @ v)
+        if socket.type == "MATRIX" and other_type == "VECTOR":
+            return TransformPoint(other, socket)
 
-        return MultiplyMatrices(self._cast_to_matrix(other), self)
+        return MultiplyMatrices(self, other)
+
+    def __rmatmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
+        from .nodes.geometry.converter import MultiplyMatrices, TransformPoint
+
+        other = self._cast_to_matrix(other)
+        socket = self._default_output_socket
+        other_type = getattr(other, "type", None)
+
+        # matrix @ vector: other is matrix (non-NodeBuilder cast), self is vector
+        if socket.type == "VECTOR" and other_type == "MATRIX":
+            return TransformPoint(socket, other)
+
+        return MultiplyMatrices(other, self)
 
 
 class DynamicInputsMixin:
