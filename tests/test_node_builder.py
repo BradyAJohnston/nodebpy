@@ -461,7 +461,7 @@ def test_readme_tree():
 
 
 def test_auto_selection():
-    with TreeBuilder(arrange=False) as tree:
+    with TreeBuilder(arrange=None) as tree:
         # this initializes the zone with two socket inputs for each of the values
         zone = g.SimulationZone(g.Value(), g.Vector())
 

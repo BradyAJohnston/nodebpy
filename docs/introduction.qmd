@@ -116,7 +116,7 @@ Both input and output nodes can automatically detect and capture links when you 
 
 
 ```{python}
-with TreeBuilder(arrange=False) as tree:
+with TreeBuilder(arrange=None) as tree:
     zone = g.RepeatZone(10)
     join = g.JoinGeometry()
     # a geometry socket is added to the zone when we try to connect from the Join Geometry
@@ -131,7 +131,7 @@ tree
 
 
 ```{python}
-with TreeBuilder(arrange=False) as tree:
+with TreeBuilder(arrange=None) as tree:
     # this initializes the zone with two socket inputs for each of the values
     zone = g.SimulationZone(g.Value(), g.Vector())
 
