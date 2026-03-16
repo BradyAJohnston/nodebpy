@@ -434,7 +434,7 @@ def test_warning_innactive_socket():
 
 
 def test_readme_tree():
-    with TreeBuilder("AnotherTree", collapse=True) as tree:
+    with TreeBuilder("AnotherTree", collapse=True, arrange="simple") as tree:
         with tree.inputs:
             count = socket.SocketInt("Count", 10)
         with tree.outputs:

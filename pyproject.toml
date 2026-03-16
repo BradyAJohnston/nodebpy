@@ -41,6 +41,5 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-    "networkx>=3.6.1",
     "numpy<2.0",
 ]

@@ -90,9 +90,23 @@ def calculate_node_dimensions(
     socket_input_connection_count: Counter,
     interface_scale: float,
 ) -> tuple[float, float]:
-    """Calculate the visual dimensions of a node."""
+    """Calculate the visual dimensions of a node.
+
+    When a node is collapsed (``node.hide is True``) only linked sockets
+    contribute to the height, and header / property / vector-expansion rows
+    are omitted.
+    """
     HEADER = 20
-    SOCKET = 28
+    SOCKET = 32
+    HIDDEN_SOCKET = 14
+    HIDDEN_HEADER = 30
+
+    if node.hide:
+        linked_inputs = sum(1 for s in node.inputs if s.enabled and s.is_linked)
+        linked_outputs = sum(1 for s in node.outputs if s.enabled and s.is_linked)
+        visible = max(linked_inputs, linked_outputs, 1)
+        height = (HIDDEN_HEADER + visible * HIDDEN_SOCKET) * interface_scale
+        return node.width, height
     PROPERTY_ROW = 28
     VECTOR_EXPANDED = 84
 
@@ -241,11 +255,18 @@ def position_nodes_in_columns(
     connection_counts: Counter,
     spacing: tuple[float, float] = (50, 25),
 ) -> None:
-    """Position nodes column-by-column with the given spacing."""
+    """Position nodes column-by-column with the given spacing.
+
+    Consecutive collapsed nodes are stacked tightly (with minimal gap) to
+    keep related math/converter chains visually grouped together.
+    """
+    COLLAPSED_GAP = 4
+
     x = 0.0
     for column in columns:
         col_width = 0.0
         y = 0.0
+        prev_hidden = False
 
         for node in column:
             node.update()
@@ -256,7 +277,14 @@ def position_nodes_in_columns(
                 col_width = width
 
             node.location = (x, y)
-            y -= height + spacing[1]
+
+            # use tight spacing between consecutive collapsed nodes
+            if node.hide and prev_hidden:
+                y -= height + COLLAPSED_GAP
+            else:
+                y -= height + spacing[1]
+
+            prev_hidden = node.hide
 
         x += col_width + spacing[0]
 
