@@ -501,7 +501,7 @@ def test_foreachgeometryelement_zone():
 
 
 def test_boolean_math_methods():
-    with TreeBuilder(arrange=False, collapse=True) as tree:
+    with TreeBuilder(arrange=None, collapse=True) as tree:
         _ = (
             g.Boolean()
             >> g.BooleanMath.not_and(..., True)
@@ -514,7 +514,7 @@ def test_boolean_math_methods():
 
 
 def test_integer_math_methods():
-    with TreeBuilder(arrange=False) as tree:
+    with TreeBuilder(arrange=None) as tree:
         _ = (
             g.Integer(2444222)
             >> g.IntegerMath.divide_round(2)
@@ -531,7 +531,7 @@ def test_integer_math_methods():
 
 
 def test_math_methods():
-    with TreeBuilder(arrange=False) as tree:
+    with TreeBuilder(arrange=None) as tree:
         _ = (
             g.Value(2.5)
             >> g.Math.add(3.5)

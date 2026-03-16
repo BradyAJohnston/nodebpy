@@ -18,7 +18,7 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
-from .lib.nodearrange import arrange
+from .arrange import arrange_tree
 from .types import (
     LINKABLE,
     SOCKET_COMPATIBILITY,
@@ -31,8 +31,6 @@ from .types import (
     _AttributeDomains,
     _SocketShapeStructureType,
 )
-
-# from .arrange import arrange_tree
 
 GEO_NODE_NAMES = (
     f"GeometryNode{name}"
@@ -169,7 +167,7 @@ class TreeBuilder:
             "GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"
         ] = "GeometryNodeTree",
         collapse: bool = False,
-        arrange: bool = True,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
     ):
         if isinstance(tree, str):
@@ -191,7 +189,7 @@ class TreeBuilder:
         name: GeometryNodeTree | str = "Geometry Nodes",
         *,
         collapse: bool = False,
-        arrange: bool = True,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
     ) -> "TreeBuilder":
         """Create a geometry node tree."""
@@ -209,7 +207,7 @@ class TreeBuilder:
         name: ShaderNodeTree | str = "Shader Nodes",
         *,
         collapse: bool = False,
-        arrange: bool = True,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
     ) -> "TreeBuilder":
         """Create a shader node tree."""
@@ -227,7 +225,7 @@ class TreeBuilder:
         name: CompositorNodeTree | str = "Compositor Nodes",
         *,
         collapse: bool = False,
-        arrange: bool = True,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
     ) -> "TreeBuilder":
         """Create a compositor node tree."""
@@ -264,7 +262,7 @@ class TreeBuilder:
         return self
 
     def __exit__(self, *args):
-        if self._arrange:
+        if self._arrange is not None:
             self.arrange()
         self._apply_input_defaults()
         self.deactivate_tree()
@@ -280,8 +278,25 @@ class TreeBuilder:
         return len(self.nodes)
 
     def arrange(self):
-        arrange.sugiyama.sugiyama_layout(self.tree)
-        arrange.sugiyama.config.reset()
+        if self._arrange == "sugiyama":
+            try:
+                from .lib.nodearrange import arrange as nodearrange
+
+                nodearrange.sugiyama.sugiyama_layout(self.tree)
+                nodearrange.sugiyama.config.reset()
+            except ImportError as e:
+                if "networkx" not in str(e):
+                    raise
+                import warnings
+
+                warnings.warn(
+                    "networkx is not installed, falling back to simple arrangement. "
+                    "Install networkx for the Sugiyama layout: pip install nodebpy[networkx]",
+                    stacklevel=2,
+                )
+                arrange_tree(self.tree)
+        elif self._arrange == "simple":
+            arrange_tree(self.tree)
 
     def _repr_markdown_(self) -> str | None:
         """
