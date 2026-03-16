@@ -6,7 +6,7 @@ from nodebpy import sockets as s
 def import_channel():
     string_to_format = "{base_path}/{scale}/x0y0z0/x0y0z0c0t{time:04}.vdb"
 
-    with TreeBuilder("Channel Import") as tree:
+    with TreeBuilder("Channel Import", arrange="simple") as tree:
         with tree.inputs:
             base_path = s.SocketString("base_path", subtype="FILE_PATH")
             time = s.SocketInt("Time")
@@ -15,15 +15,17 @@ def import_channel():
             min_value = s.SocketFloat("Minimum Value")
             max_value = s.SocketFloat("Maximum Value")
 
-        string = g.FormatString(
-            time=time,
-            channel_number=channel_number,
-            base_path=base_path,
-            scale=g.Integer(0),
-            format=string_to_format,
+        volume = g.ImportVDB(
+            g.FormatString(
+                time=time,
+                channel_number=channel_number,
+                base_path=base_path,
+                scale=g.Integer(0),
+                format=string_to_format,
+            )
         )
-        gng = g.GetNamedGrid(g.ImportVDB(string), name="data")
-        sng = g.StoreNamedGrid(
+        gng = g.GetNamedGrid.float(volume, "data")
+        sng = g.StoreNamedGrid.float(
             gng,
             name=channel_name,
             grid=(gng.o_grid - min_value) / (max_value - min_value),
@@ -36,4 +38,4 @@ def import_channel():
 
 def test_import_channel():
     tree = import_channel()
-    assert len(tree.nodes) == 13
+    assert len(tree.nodes) == 10

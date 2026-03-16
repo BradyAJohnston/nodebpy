@@ -1285,11 +1285,8 @@ wheels = [
 
 [[package]]
 name = "nodebpy"
-version = "0.7.2"
+version = "0.8.0"
 source = { editable = "." }
-dependencies = [
-    { name = "networkx" },
-]
 
 [package.optional-dependencies]
 bpy = [
@@ -1298,6 +1295,7 @@ bpy = [
 dev = [
     { name = "fake-bpy-module" },
     { name = "jsondiff" },
+    { name = "networkx" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "quarto-cli" },
@@ -1309,9 +1307,13 @@ dev = [
 jupyter = [
     { name = "ipython" },
 ]
+networkx = [
+    { name = "networkx" },
+]
 
 [package.dev-dependencies]
 dev = [
+    { name = "networkx" },
     { name = "numpy" },
 ]
 
@@ -1321,7 +1323,8 @@ requires-dist = [
     { name = "fake-bpy-module", marker = "extra == 'dev'", specifier = ">=20260113" },
     { name = "ipython", marker = "extra == 'jupyter'", specifier = ">=8.0.0" },
     { name = "jsondiff", marker = "extra == 'dev'", specifier = ">=2.2.1" },
-    { name = "networkx", specifier = ">=3.6.1" },
+    { name = "networkx", marker = "extra == 'dev'", specifier = ">=3.6.1" },
+    { name = "networkx", marker = "extra == 'networkx'", specifier = ">=3.6.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.2" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "quarto-cli", marker = "extra == 'dev'", specifier = ">=1.8.26" },
@@ -1330,10 +1333,13 @@ requires-dist = [
     { name = "syrupy", marker = "extra == 'dev'", specifier = ">=5.0.0" },
     { name = "tree-clipper", marker = "extra == 'dev'", specifier = ">=0.1.1" },
 ]
-provides-extras = ["bpy", "jupyter", "dev"]
+provides-extras = ["networkx", "bpy", "jupyter", "dev"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "numpy", specifier = "<2.0" }]
+dev = [
+    { name = "networkx", specifier = ">=3.6.1" },
+    { name = "numpy", specifier = "<2.0" },
+]
 
 [[package]]
 name = "notebook"

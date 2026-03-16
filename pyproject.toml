@@ -1,20 +1,21 @@
 [project]
 name = "nodebpy"
-version = "0.7.2"
+version = "0.8.0"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
     { name = "Brady Johnston", email = "brady.johnston@me.com" }
 ]
 requires-python = ">=3.11"
-dependencies = [
-    "networkx>=3.6.1",
-]
+dependencies = []
 
 [project.scripts]
 nodebpy = "nodebpy:main"
 
 [project.optional-dependencies]
+networkx = [
+    "networkx>=3.6.1",
+]
 bpy = [
     "bpy>=5.0.1",
 ]
@@ -24,6 +25,7 @@ jupyter = [
 dev = [
     "fake-bpy-module>=20260113",
     "jsondiff>=2.2.1",
+    "networkx>=3.6.1",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
     "quarto-cli>=1.8.26",

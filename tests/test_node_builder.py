@@ -434,7 +434,7 @@ def test_warning_innactive_socket():
 
 
 def test_readme_tree():
-    with TreeBuilder("AnotherTree", collapse=True) as tree:
+    with TreeBuilder("AnotherTree", collapse=True, arrange="simple") as tree:
         with tree.inputs:
             count = socket.SocketInt("Count", 10)
         with tree.outputs:
@@ -461,7 +461,7 @@ def test_readme_tree():
 
 
 def test_auto_selection():
-    with TreeBuilder(arrange=False) as tree:
+    with TreeBuilder(arrange=None) as tree:
         # this initializes the zone with two socket inputs for each of the values
         zone = g.SimulationZone(g.Value(), g.Vector())
 
