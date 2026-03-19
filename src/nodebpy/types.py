@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+from types import EllipsisType
 from typing import Literal
 
 from bpy.types import (
@@ -35,7 +36,7 @@ def _is_default_value(value: TYPE_INPUT_ALL):
 
 
 # Type aliases for node inputs using typing.Union for runtime compatibility
-LINKABLE = typing.Union["NodeBuilder", "SocketLinker", NodeSocket, None]
+LINKABLE = typing.Union["NodeBuilder", "SocketLinker", NodeSocket, None, EllipsisType]
 TYPE_INPUT_ROTATION = typing.Union[
     tuple[float, float, float], float, int, Euler, LINKABLE
 ]

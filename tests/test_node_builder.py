@@ -434,7 +434,7 @@ def test_warning_innactive_socket():
 
 
 def test_readme_tree():
-    with TreeBuilder("AnotherTree", collapse=True) as tree:
+    with TreeBuilder("AnotherTree", collapse=True, arrange="simple") as tree:
         with tree.inputs:
             count = socket.SocketInt("Count", 10)
         with tree.outputs:
@@ -461,7 +461,7 @@ def test_readme_tree():
 
 
 def test_auto_selection():
-    with TreeBuilder(arrange=False) as tree:
+    with TreeBuilder(arrange=None) as tree:
         # this initializes the zone with two socket inputs for each of the values
         zone = g.SimulationZone(g.Value(), g.Vector())
 
@@ -481,6 +481,39 @@ def test_auto_selection():
         tree.nodes["Vector Math"].inputs[0].links[0].from_socket
         == zone.input.outputs["Vector"].socket
     )
+
+
+def test_placeholder():
+    # use ... to force a link into the second socket,
+    # setting the value for the first instead
+    with TreeBuilder.geometry():
+        v = g.Value()
+        add = v >> g.Math.add(1.0, ...)
+
+    assert not add.node.inputs[0].links
+    assert add.node.inputs[0].default_value == 1.0
+    assert add.node.inputs[1].links
+    assert add.node.inputs[1].links[0].from_node == v.node
+
+    # use ... to force a link into the first socket,
+    # setting the value for the second instead
+    with TreeBuilder.geometry():
+        v = g.Value()
+        add = v >> g.Math.add(..., 1.0)
+
+    assert not add.node.inputs[1].links
+    assert add.node.inputs[1].default_value == 1.0
+    assert add.node.inputs[0].links
+    assert add.node.inputs[0].links[0].from_node == v.node
+
+    with TreeBuilder.geometry():
+        v = g.Color()
+        mix = v >> g.Mix.color(0.3, (0.5, 0.5, 0.5, 1.0), ...)
+
+    assert not mix._input("Factor_Float").socket.links
+    assert tuple(mix._input("A_Color").socket.default_value) == (0.5, 0.5, 0.5, 1.0)
+    assert mix._input("B_Color").socket.links
+    assert mix._input("B_Color").socket.links[0].from_node == v.node
 
 
 def test_nested_trees():

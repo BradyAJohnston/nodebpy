@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
     from .nodes.geometry import IntegerMath, Math, VectorMath
-    from .nodes.geometry.converter import BooleanMath, MultiplyMatrices
+    from .nodes.geometry.converter import BooleanMath, MultiplyMatrices, TransformPoint
     from .nodes.geometry.manual import Compare
 
 import bpy
@@ -18,7 +18,7 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
-from .lib.nodearrange import arrange
+from .arrange import arrange_tree
 from .types import (
     LINKABLE,
     SOCKET_COMPATIBILITY,
@@ -31,8 +31,6 @@ from .types import (
     _AttributeDomains,
     _SocketShapeStructureType,
 )
-
-# from .arrange import arrange_tree
 
 GEO_NODE_NAMES = (
     f"GeometryNode{name}"
@@ -139,7 +137,7 @@ class SocketContext:
 class DirectionalContext(SocketContext):
     """Base class for directional socket contexts"""
 
-    _direction: Literal["INPUT", "OUTPUT"] = "INPUT"
+    _direction = "INPUT"
     _active_context = None
 
 
@@ -169,7 +167,7 @@ class TreeBuilder:
             "GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"
         ] = "GeometryNodeTree",
         collapse: bool = False,
-        arrange: bool = True,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
     ):
         if isinstance(tree, str):
@@ -191,7 +189,7 @@ class TreeBuilder:
         name: GeometryNodeTree | str = "Geometry Nodes",
         *,
         collapse: bool = False,
-        arrange: bool = True,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
     ) -> "TreeBuilder":
         """Create a geometry node tree."""
@@ -209,7 +207,7 @@ class TreeBuilder:
         name: ShaderNodeTree | str = "Shader Nodes",
         *,
         collapse: bool = False,
-        arrange: bool = True,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
     ) -> "TreeBuilder":
         """Create a shader node tree."""
@@ -227,7 +225,7 @@ class TreeBuilder:
         name: CompositorNodeTree | str = "Compositor Nodes",
         *,
         collapse: bool = False,
-        arrange: bool = True,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
     ) -> "TreeBuilder":
         """Create a compositor node tree."""
@@ -249,14 +247,14 @@ class TreeBuilder:
 
     @fake_user.setter
     def fake_user(self, value: bool) -> None:
-        self.tree.use_extra_user = value
+        self.tree.use_fake_user = value
 
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""
         TreeBuilder._tree_contexts.append(self)
 
     def deactivate_tree(self) -> None:
-        """Whatever tree ws previously active is set to be the active one (or None if no previously active tree)."""
+        """Whatever tree was previously active is set to be the active one (or None if no previously active tree)."""
         TreeBuilder._tree_contexts.pop()
 
     def __enter__(self):
@@ -264,24 +262,41 @@ class TreeBuilder:
         return self
 
     def __exit__(self, *args):
-        if self._arrange:
+        if self._arrange is not None:
             self.arrange()
         self._apply_input_defaults()
         self.deactivate_tree()
 
     def _apply_input_defaults(self) -> None:
         for key, value in self._menu_defaults.items():
-            for item in self.tree.interface.items_tree:
-                if item.identifier == key:
-                    item.default_value = value
+            for item in self.tree.interface.items_tree:  # type: ignore
+                if item.identifier == key:  # type: ignore
+                    item.default_value = value  # type: ignore
                     break
 
     def __len__(self) -> int:
         return len(self.nodes)
 
     def arrange(self):
-        arrange.sugiyama.sugiyama_layout(self.tree)
-        arrange.sugiyama.config.reset()
+        if self._arrange == "sugiyama":
+            try:
+                from .lib.nodearrange import arrange as nodearrange
+
+                nodearrange.sugiyama.sugiyama_layout(self.tree)
+                nodearrange.sugiyama.config.reset()
+            except ImportError as e:
+                if "networkx" not in str(e):
+                    raise
+                import warnings
+
+                warnings.warn(
+                    "networkx is not installed, falling back to simple arrangement. "
+                    "Install networkx for the Sugiyama layout: pip install nodebpy[networkx]",
+                    stacklevel=2,
+                )
+                arrange_tree(self.tree)
+        elif self._arrange == "simple":
+            arrange_tree(self.tree)
 
     def _repr_markdown_(self) -> str | None:
         """
@@ -336,7 +351,7 @@ class TreeBuilder:
             for socket in [socket1, socket2]:
                 # we want to be loud about it if we end up linking an inactive socket to a node that is not a switch
                 if socket.is_inactive and (
-                    socket.node.bl_idname
+                    socket.node.bl_idname  # type: ignore
                     not in (  # type: ignore
                         "GeometryNodeIndexSwitch",
                         "GeometryNodeMenuSwitch",
@@ -360,13 +375,14 @@ class TreeBuilder:
 class NodeBuilder:
     """Base class for all geometry node wrappers."""
 
-    node: Any
+    node: bpy.types.Node
     _bl_idname: str
     _tree: "TreeBuilder"
     _link_target: str | None = None
     _from_socket: NodeSocket | None = None
     _default_input_id: str | None = None
     _default_output_id: str | None = None
+    _placeholder_inputs: list[str]
     __array_ufunc__ = None
 
     def __init__(self):
@@ -384,6 +400,7 @@ class NodeBuilder:
 
         self._tree = tree
         self._link_target = None
+        self._placeholder_inputs = []
         if self.__class__.name is not None:
             self.node = self._tree.add(self.__class__._bl_idname)
         else:
@@ -506,7 +523,7 @@ class NodeBuilder:
             return sorted(possible_combos, key=lambda x: x[0])[0][1]
 
         raise SocketError(
-            f"Cannot link any output from {source.node.name} to any input of {target.node.name}. "
+            f"Cannot link any output from {source.node.name} to any input of {target.node.name}. "  # type: ignore
             f"Available output types: {[f'{o.name}:{o.type}' for o in outputs]}, "
             f"Available input types: {[f'{i.name}:{i.type}' for i in inputs]}"
         )
@@ -530,7 +547,10 @@ class NodeBuilder:
         if identifier in input_names:
             return input_names.index(identifier)
 
-        raise RuntimeError()
+        raise RuntimeError(
+            f"Input '{identifier}' not found on {self.node.bl_idname}. "
+            f"Available inputs: {input_names}"
+        )
 
     def _output_idx(self, identifier: str) -> int:
         output_ids = [output.identifier for output in self.node.outputs]
@@ -593,10 +613,11 @@ class NodeBuilder:
                 value = node
 
             if value is ...:
-                # Ellipsis indicates this input should receive links from >> operator
-                # which can potentially target multiple inputs on the new node
+                # Ellipsis marks this input as a placeholder for the >> operator
+                self._placeholder_inputs.append(name)
                 if self._from_socket is not None:
                     self._link_from(self._from_socket, name)
+                continue
 
             elif isinstance(value, SocketLinker):
                 self._link_from(value, name)
@@ -628,6 +649,14 @@ class NodeBuilder:
             source = self._default_output_socket
             target = other.socket
             other._from_socket = source
+        elif getattr(other, "_placeholder_inputs", None):
+            # Link to the first placeholder input marked with ...
+            name = other._placeholder_inputs.pop(0)
+            try:
+                target = other.node.inputs[name]
+            except KeyError:
+                target = other.node.inputs[other._input_idx(name)]
+            source = self._best_output_socket(target.type)
         else:
             try:
                 source, target = self._find_best_socket_pair(self, other)
@@ -701,7 +730,7 @@ class NodeBuilder:
 
             # only the Geometry Node Tree supports integer math currently, potential
             # to support other trees when Blender supports it
-            is_geometry_tree = self._tree.tree.bl_idname in ["GeometryNodeTree"]
+            is_geometry_tree = self._tree.tree.bl_idname == "GeometryNodeTree"
             if (
                 is_geometry_tree
                 and isinstance(other, int)
@@ -846,16 +875,16 @@ class NodeBuilder:
                 result = Math.subtract(1.0, result._default_output_socket)
             return result
 
-    def __lt__(self, other: Any) -> "Compare":
+    def __lt__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "less_than")
 
-    def __gt__(self, other: Any) -> "Compare":
+    def __gt__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "greater_than")
 
-    def __le__(self, other: Any) -> "Compare":
+    def __le__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "less_equal")
 
-    def __ge__(self, other: Any) -> "Compare":
+    def __ge__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "greater_equal")
 
     def _apply_boolean_operation(self, other: Any, operation: str) -> "BooleanMath":
@@ -902,15 +931,31 @@ class NodeBuilder:
         else:
             return value
 
-    def __matmul__(self, other: Any) -> "MultiplyMatrices":
-        from .nodes.geometry.converter import MultiplyMatrices
+    def __matmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
+        from .nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
-        return MultiplyMatrices(self, self._cast_to_matrix(other))
+        other = self._cast_to_matrix(other)
+        socket = self._default_output_socket
+        other_type = getattr(other, "type", None)
 
-    def __rmatmul__(self, other: Any) -> "MultiplyMatrices":
-        from .nodes.geometry.converter import MultiplyMatrices
+        # matrix @ vector → TransformPoint (standard M @ v)
+        if socket.type == "MATRIX" and other_type == "VECTOR":
+            return TransformPoint(other, socket)
 
-        return MultiplyMatrices(self._cast_to_matrix(other), self)
+        return MultiplyMatrices(self, other)
+
+    def __rmatmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
+        from .nodes.geometry.converter import MultiplyMatrices, TransformPoint
+
+        other = self._cast_to_matrix(other)
+        socket = self._default_output_socket
+        other_type = getattr(other, "type", None)
+
+        # matrix @ vector: other is matrix (non-NodeBuilder cast), self is vector
+        if socket.type == "VECTOR" and other_type == "MATRIX":
+            return TransformPoint(socket, other)
+
+        return MultiplyMatrices(other, self)
 
 
 class DynamicInputsMixin:
@@ -938,7 +983,7 @@ class DynamicInputsMixin:
         self, source: NodeBuilder | NodeSocket, target: NodeBuilder | NodeSocket
     ) -> tuple[NodeSocket, NodeSocket]:
         try:
-            return super()._find_best_socket_pair(source, target)
+            return super()._find_best_socket_pair(source, target)  # type: ignore
         except SocketError:
             if target == self:
                 target_name, source_socket = list(target._add_inputs(source).items())[0]
@@ -1030,7 +1075,7 @@ class SocketBase(SocketLinker):
     def __init__(self, name: str, description: str = ""):
         self.description = description
 
-        self._socket_context: SocketContext = SocketContext._active_context
+        self._socket_context = SocketContext._active_context
         self.interface_socket = self._socket_context._create_socket(self, name)
         self._tree = self._socket_context.builder
         if self._socket_context._direction == "INPUT":
@@ -1060,7 +1105,7 @@ class SocketBase(SocketLinker):
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute 'default_value'"
             )
-        return self.interface_socket.default_value
+        return getattr(self.interface_socket, "default_value")
 
     @default_value.setter
     def default_value(self, value):
@@ -1068,7 +1113,7 @@ class SocketBase(SocketLinker):
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute 'default_value'"
             )
-        self.interface_socket.default_value = value
+        setattr(self.interface_socket, "default_value", value)
 
 
 class SocketFloat(SocketBase):
