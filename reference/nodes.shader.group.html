@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index – nodebpy {{&lt; var version &gt;}}</title>
+<title>nodes.shader.group – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +65,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.geometry.input.html" rel="next">
+<link href="../reference/nodes.shader.input.html" rel="next">
+<link href="../reference/nodes.shader.grid.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -124,7 +160,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/index.html">Function reference</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.shader.color.html">Shader Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.shader.group.html">nodes.shader.group</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -138,7 +174,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Function reference</span></a>
   </div>
 </li>
@@ -259,7 +295,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.group.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/nodes.shader.group.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">nodes.shader.group</span></a>
   </div>
 </li>
@@ -435,219 +471,77 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#function-reference" id="toc-function-reference" class="nav-link active" data-scroll-target="#function-reference">Function reference</a>
+  <li><a href="#nodebpy.nodes.shader.group" id="toc-nodebpy.nodes.shader.group" class="nav-link active" data-scroll-target="#nodebpy.nodes.shader.group">nodes.shader.group</a>
   <ul class="collapse">
-  <li><a href="#geometry-nodes" id="toc-geometry-nodes" class="nav-link" data-scroll-target="#geometry-nodes">Geometry Nodes</a>
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
-  <li><a href="#zones-in-gn" id="toc-zones-in-gn" class="nav-link" data-scroll-target="#zones-in-gn">Zones in GN</a></li>
+  <li><a href="#nodebpy.nodes.shader.group.Group" id="toc-nodebpy.nodes.shader.group.Group" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.group.Group">Group</a></li>
   </ul></li>
-  <li><a href="#shader-nodes" id="toc-shader-nodes" class="nav-link" data-scroll-target="#shader-nodes">Shader Nodes</a></li>
-  <li><a href="#compositor-nodes" id="toc-compositor-nodes" class="nav-link" data-scroll-target="#compositor-nodes">Compositor Nodes</a></li>
-  <li><a href="#internals" id="toc-internals" class="nav-link" data-scroll-target="#internals">Internals</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.shader.color.html">Shader Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.shader.group.html">nodes.shader.group</a></li></ol></nav></header>
 
 
 
 
-<section id="function-reference" class="level1 doc doc-index">
-<h1 class="doc doc-index">Function reference</h1>
-<section id="geometry-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="geometry-nodes">Geometry Nodes</h2>
-<p>Nodes use in Geometry Nodes trees.</p>
+<section id="nodebpy.nodes.shader.group" class="level1">
+<h1>nodes.shader.group</h1>
+<p><code>group</code></p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.input.html#nodebpy.nodes.geometry.input">nodes.geometry.input</a></td>
+<td><a href="#nodebpy.nodes.shader.group.Group">Group</a></td>
+<td>Group node</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.group.Group" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.group.Group">Group</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Group()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Group node</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.group.Group.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.attribute.html#nodebpy.nodes.geometry.attribute">nodes.geometry.attribute</a></td>
+<td><a href="#nodebpy.nodes.shader.group.Group.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.color.html#nodebpy.nodes.geometry.color">nodes.geometry.color</a></td>
+<td><a href="#nodebpy.nodes.shader.group.Group.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.converter.html#nodebpy.nodes.geometry.converter">nodes.geometry.converter</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.geometry.texture.html#nodebpy.nodes.geometry.texture">nodes.geometry.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.geometry.grid.html#nodebpy.nodes.geometry.grid">nodes.geometry.grid</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.geometry.geometry.html#nodebpy.nodes.geometry.geometry">nodes.geometry.geometry</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.geometry.attribute.html#nodebpy.nodes.geometry.attribute">nodes.geometry.attribute</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.geometry.vector.html#nodebpy.nodes.geometry.vector">nodes.geometry.vector</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.geometry.manual.html#nodebpy.nodes.geometry.manual">nodes.geometry.manual</a></td>
+<td><a href="#nodebpy.nodes.shader.group.Group.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
-<section id="zones-in-gn" class="level3">
-<h3 class="anchored" data-anchor-id="zones-in-gn">Zones in GN</h3>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="../reference/nodes.geometry.zone.html#nodebpy.nodes.geometry.zone">nodes.geometry.zone</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+
+
 </section>
 </section>
-<section id="shader-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="shader-nodes">Shader Nodes</h2>
-<p>Nodes use in Material / Shader node trees</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.color.html#nodebpy.nodes.shader.color">nodes.shader.color</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.converter.html#nodebpy.nodes.shader.converter">nodes.shader.converter</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.grid.html#nodebpy.nodes.shader.grid">nodes.shader.grid</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.group.html#nodebpy.nodes.shader.group">nodes.shader.group</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.input.html#nodebpy.nodes.shader.input">nodes.shader.input</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.interface.html#nodebpy.nodes.shader.interface">nodes.shader.interface</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.manual.html#nodebpy.nodes.shader.manual">nodes.shader.manual</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.output.html#nodebpy.nodes.shader.output">nodes.shader.output</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.script.html#nodebpy.nodes.shader.script">nodes.shader.script</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.shader.html#nodebpy.nodes.shader.shader">nodes.shader.shader</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.texture.html#nodebpy.nodes.shader.texture">nodes.shader.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.vector.html#nodebpy.nodes.shader.vector">nodes.shader.vector</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.zone.html#nodebpy.nodes.shader.zone">nodes.shader.zone</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="compositor-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="compositor-nodes">Compositor Nodes</h2>
-<p>Nodes for use in the compositor</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.color.html#nodebpy.nodes.compositor.color">nodes.compositor.color</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.converter.html#nodebpy.nodes.compositor.converter">nodes.compositor.converter</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.distort.html#nodebpy.nodes.compositor.distort">nodes.compositor.distort</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.filter.html#nodebpy.nodes.compositor.filter">nodes.compositor.filter</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.group.html#nodebpy.nodes.compositor.group">nodes.compositor.group</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.input.html#nodebpy.nodes.compositor.input">nodes.compositor.input</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.interface.html#nodebpy.nodes.compositor.interface">nodes.compositor.interface</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.manual.html#nodebpy.nodes.compositor.manual">nodes.compositor.manual</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.matte.html#nodebpy.nodes.compositor.matte">nodes.compositor.matte</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.output.html#nodebpy.nodes.compositor.output">nodes.compositor.output</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.texture.html#nodebpy.nodes.compositor.texture">nodes.compositor.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.vector.html#nodebpy.nodes.compositor.vector">nodes.compositor.vector</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="internals" class="level2">
-<h2 class="anchored" data-anchor-id="internals">Internals</h2>
-<p>Internal nodes used by nodebpy</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="../reference/TreeBuilder.html#nodebpy.TreeBuilder">TreeBuilder</a></td>
-<td>Builder for creating Blender node trees with a clean Python API.</td>
-</tr>
-<tr class="even">
-<td><a href="../reference/builder.NodeBuilder.html#nodebpy.builder.NodeBuilder">builder.NodeBuilder</a></td>
-<td>Base class for all geometry node wrappers.</td>
-</tr>
-</tbody>
-</table>
-
-
 </section>
 </section>
 
@@ -1054,10 +948,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../reference/nodes.shader.grid.html" class="pagination-link" aria-label="nodes.shader.grid">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.shader.grid</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.geometry.input.html" class="pagination-link" aria-label="nodes.geometry.input">
-        <span class="nav-page-text">nodes.geometry.input</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.shader.input.html" class="pagination-link" aria-label="nodes.shader.input">
+        <span class="nav-page-text">nodes.shader.input</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

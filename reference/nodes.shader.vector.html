@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index – nodebpy {{&lt; var version &gt;}}</title>
+<title>nodes.shader.vector – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +65,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.geometry.input.html" rel="next">
+<link href="../reference/nodes.shader.zone.html" rel="next">
+<link href="../reference/nodes.shader.texture.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -124,7 +160,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/index.html">Function reference</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.shader.color.html">Shader Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.shader.vector.html">nodes.shader.vector</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -138,7 +174,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Function reference</span></a>
   </div>
 </li>
@@ -307,7 +343,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.vector.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/nodes.shader.vector.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">nodes.shader.vector</span></a>
   </div>
 </li>
@@ -435,219 +471,487 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#function-reference" id="toc-function-reference" class="nav-link active" data-scroll-target="#function-reference">Function reference</a>
+  <li><a href="#nodebpy.nodes.shader.vector" id="toc-nodebpy.nodes.shader.vector" class="nav-link active" data-scroll-target="#nodebpy.nodes.shader.vector">nodes.shader.vector</a>
   <ul class="collapse">
-  <li><a href="#geometry-nodes" id="toc-geometry-nodes" class="nav-link" data-scroll-target="#geometry-nodes">Geometry Nodes</a>
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
-  <li><a href="#zones-in-gn" id="toc-zones-in-gn" class="nav-link" data-scroll-target="#zones-in-gn">Zones in GN</a></li>
+  <li><a href="#nodebpy.nodes.shader.vector.Bump" id="toc-nodebpy.nodes.shader.vector.Bump" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.vector.Bump">Bump</a></li>
+  <li><a href="#nodebpy.nodes.shader.vector.Displacement" id="toc-nodebpy.nodes.shader.vector.Displacement" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.vector.Displacement">Displacement</a></li>
+  <li><a href="#nodebpy.nodes.shader.vector.Mapping" id="toc-nodebpy.nodes.shader.vector.Mapping" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.vector.Mapping">Mapping</a></li>
+  <li><a href="#nodebpy.nodes.shader.vector.Normal" id="toc-nodebpy.nodes.shader.vector.Normal" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.vector.Normal">Normal</a></li>
+  <li><a href="#nodebpy.nodes.shader.vector.NormalMap" id="toc-nodebpy.nodes.shader.vector.NormalMap" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.vector.NormalMap">NormalMap</a></li>
+  <li><a href="#nodebpy.nodes.shader.vector.VectorDisplacement" id="toc-nodebpy.nodes.shader.vector.VectorDisplacement" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.vector.VectorDisplacement">VectorDisplacement</a></li>
+  <li><a href="#nodebpy.nodes.shader.vector.VectorTransform" id="toc-nodebpy.nodes.shader.vector.VectorTransform" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.vector.VectorTransform">VectorTransform</a></li>
   </ul></li>
-  <li><a href="#shader-nodes" id="toc-shader-nodes" class="nav-link" data-scroll-target="#shader-nodes">Shader Nodes</a></li>
-  <li><a href="#compositor-nodes" id="toc-compositor-nodes" class="nav-link" data-scroll-target="#compositor-nodes">Compositor Nodes</a></li>
-  <li><a href="#internals" id="toc-internals" class="nav-link" data-scroll-target="#internals">Internals</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.shader.color.html">Shader Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.shader.vector.html">nodes.shader.vector</a></li></ol></nav></header>
 
 
 
 
-<section id="function-reference" class="level1 doc doc-index">
-<h1 class="doc doc-index">Function reference</h1>
-<section id="geometry-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="geometry-nodes">Geometry Nodes</h2>
-<p>Nodes use in Geometry Nodes trees.</p>
+<section id="nodebpy.nodes.shader.vector" class="level1">
+<h1>nodes.shader.vector</h1>
+<p><code>vector</code></p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.input.html#nodebpy.nodes.geometry.input">nodes.geometry.input</a></td>
-<td></td>
+<td><a href="#nodebpy.nodes.shader.vector.Bump">Bump</a></td>
+<td>Generate a perturbed normal from a height texture for bump mapping. Typically used for faking highly detailed surfaces</td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.attribute.html#nodebpy.nodes.geometry.attribute">nodes.geometry.attribute</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Displacement">Displacement</a></td>
+<td>Displace the surface along the surface normal</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping">Mapping</a></td>
+<td>Transform the input vector by applying translation, rotation, and scale</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Normal">Normal</a></td>
+<td>Generate a normal vector and a dot product</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap">NormalMap</a></td>
+<td>Generate a perturbed normal from an RGB normal map image. Typically used for faking highly detailed surfaces</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement">VectorDisplacement</a></td>
+<td>Displace the surface along an arbitrary direction</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform">VectorTransform</a></td>
+<td>Convert a vector, point, or normal between world, camera, and object coordinate space</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.vector.Bump" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Bump">Bump</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Bump(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    distance<span class="op">=</span><span class="fl">0.001</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    filter_width<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    invert<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a perturbed normal from a height texture for bump mapping. Typically used for faking highly detailed surfaces</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Bump.i_distance"><code>i_distance</code></a></td>
+<td>Input socket: Distance</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Bump.i_filter_width"><code>i_filter_width</code></a></td>
+<td>Input socket: Filter Width</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Bump.i_height"><code>i_height</code></a></td>
+<td>Input socket: Height</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Bump.i_normal"><code>i_normal</code></a></td>
+<td>Input socket: Normal</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Bump.i_strength"><code>i_strength</code></a></td>
+<td>Input socket: Strength</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Bump.invert">invert</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.color.html#nodebpy.nodes.geometry.color">nodes.geometry.color</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Bump.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.converter.html#nodebpy.nodes.geometry.converter">nodes.geometry.converter</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Bump.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.texture.html#nodebpy.nodes.geometry.texture">nodes.geometry.texture</a></td>
-<td></td>
+<td><a href="#nodebpy.nodes.shader.vector.Bump.o_normal"><code>o_normal</code></a></td>
+<td>Output socket: Normal</td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.grid.html#nodebpy.nodes.geometry.grid">nodes.geometry.grid</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Bump.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.geometry.html#nodebpy.nodes.geometry.geometry">nodes.geometry.geometry</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.geometry.attribute.html#nodebpy.nodes.geometry.attribute">nodes.geometry.attribute</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.geometry.vector.html#nodebpy.nodes.geometry.vector">nodes.geometry.vector</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.geometry.manual.html#nodebpy.nodes.geometry.manual">nodes.geometry.manual</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Bump.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
-<section id="zones-in-gn" class="level3">
-<h3 class="anchored" data-anchor-id="zones-in-gn">Zones in GN</h3>
+</section>
+</section>
+<section id="nodebpy.nodes.shader.vector.Displacement" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Displacement">Displacement</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Displacement(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    midlevel<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">0.01</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    space<span class="op">=</span><span class="st">'OBJECT'</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Displace the surface along the surface normal</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.zone.html#nodebpy.nodes.geometry.zone">nodes.geometry.zone</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.i_height"><code>i_height</code></a></td>
+<td>Input socket: Height</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.i_midlevel"><code>i_midlevel</code></a></td>
+<td>Input socket: Midlevel</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.i_normal"><code>i_normal</code></a></td>
+<td>Input socket: Normal</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.i_scale"><code>i_scale</code></a></td>
+<td>Input socket: Scale</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.o_displacement"><code>o_displacement</code></a></td>
+<td>Output socket: Displacement</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.space">space</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Displacement.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="shader-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="shader-nodes">Shader Nodes</h2>
-<p>Nodes use in Material / Shader node trees</p>
+<section id="nodebpy.nodes.shader.vector.Mapping" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Mapping">Mapping</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Mapping(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    location<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    vector_type<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Transform the input vector by applying translation, rotation, and scale</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.color.html#nodebpy.nodes.shader.color">nodes.shader.color</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.i_location"><code>i_location</code></a></td>
+<td>Input socket: Location</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.i_rotation"><code>i_rotation</code></a></td>
+<td>Input socket: Rotation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.i_scale"><code>i_scale</code></a></td>
+<td>Input socket: Scale</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.i_vector"><code>i_vector</code></a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.converter.html#nodebpy.nodes.shader.converter">nodes.shader.converter</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.grid.html#nodebpy.nodes.shader.grid">nodes.shader.grid</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.o_vector"><code>o_vector</code></a></td>
+<td>Output socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.type">type</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.group.html#nodebpy.nodes.shader.group">nodes.shader.group</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.input.html#nodebpy.nodes.shader.input">nodes.shader.input</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.interface.html#nodebpy.nodes.shader.interface">nodes.shader.interface</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.manual.html#nodebpy.nodes.shader.manual">nodes.shader.manual</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.output.html#nodebpy.nodes.shader.output">nodes.shader.output</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.script.html#nodebpy.nodes.shader.script">nodes.shader.script</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.shader.html#nodebpy.nodes.shader.shader">nodes.shader.shader</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.texture.html#nodebpy.nodes.shader.texture">nodes.shader.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.vector.html#nodebpy.nodes.shader.vector">nodes.shader.vector</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.zone.html#nodebpy.nodes.shader.zone">nodes.shader.zone</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.vector_type">vector_type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="compositor-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="compositor-nodes">Compositor Nodes</h2>
-<p>Nodes for use in the compositor</p>
+</section>
+<section id="nodebpy.nodes.shader.vector.Normal" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Normal">Normal</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Normal(normal<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a normal vector and a dot product</p>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.compositor.color.html#nodebpy.nodes.compositor.color">nodes.compositor.color</a></td>
-<td></td>
+<td><a href="#nodebpy.nodes.shader.vector.Normal.i_normal"><code>i_normal</code></a></td>
+<td>Input socket: Normal</td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.compositor.converter.html#nodebpy.nodes.compositor.converter">nodes.compositor.converter</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Normal.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.compositor.distort.html#nodebpy.nodes.compositor.distort">nodes.compositor.distort</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Normal.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.compositor.filter.html#nodebpy.nodes.compositor.filter">nodes.compositor.filter</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Normal.o_dot"><code>o_dot</code></a></td>
+<td>Output socket: Dot</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Normal.o_normal"><code>o_normal</code></a></td>
+<td>Output socket: Normal</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Normal.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.compositor.group.html#nodebpy.nodes.compositor.group">nodes.compositor.group</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.input.html#nodebpy.nodes.compositor.input">nodes.compositor.input</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.interface.html#nodebpy.nodes.compositor.interface">nodes.compositor.interface</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.manual.html#nodebpy.nodes.compositor.manual">nodes.compositor.manual</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.matte.html#nodebpy.nodes.compositor.matte">nodes.compositor.matte</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.output.html#nodebpy.nodes.compositor.output">nodes.compositor.output</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.texture.html#nodebpy.nodes.compositor.texture">nodes.compositor.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.vector.html#nodebpy.nodes.compositor.vector">nodes.compositor.vector</a></td>
+<td><a href="#nodebpy.nodes.shader.vector.Normal.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="internals" class="level2">
-<h2 class="anchored" data-anchor-id="internals">Internals</h2>
-<p>Internal nodes used by nodebpy</p>
+</section>
+<section id="nodebpy.nodes.shader.vector.NormalMap" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.NormalMap">NormalMap</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>NormalMap(strength<span class="op">=</span><span class="fl">1.0</span>, color<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, space<span class="op">=</span><span class="st">'TANGENT'</span>, uv_map<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a perturbed normal from an RGB normal map image. Typically used for faking highly detailed surfaces</p>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/TreeBuilder.html#nodebpy.TreeBuilder">TreeBuilder</a></td>
-<td>Builder for creating Blender node trees with a clean Python API.</td>
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.i_color"><code>i_color</code></a></td>
+<td>Input socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="../reference/builder.NodeBuilder.html#nodebpy.builder.NodeBuilder">builder.NodeBuilder</a></td>
-<td>Base class for all geometry node wrappers.</td>
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.i_strength"><code>i_strength</code></a></td>
+<td>Input socket: Strength</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.o_normal"><code>o_normal</code></a></td>
+<td>Output socket: Normal</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.space">space</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.type">type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.NormalMap.uv_map">uv_map</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.shader.vector.VectorDisplacement" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.VectorDisplacement">VectorDisplacement</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>VectorDisplacement(vector<span class="op">=</span><span class="va">None</span>, midlevel<span class="op">=</span><span class="fl">0.0</span>, scale<span class="op">=</span><span class="fl">0.01</span>, <span class="op">*</span>, space<span class="op">=</span><span class="st">'TANGENT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Displace the surface along an arbitrary direction</p>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.i_midlevel"><code>i_midlevel</code></a></td>
+<td>Input socket: Midlevel</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.i_scale"><code>i_scale</code></a></td>
+<td>Input socket: Scale</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.i_vector"><code>i_vector</code></a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.o_displacement"><code>o_displacement</code></a></td>
+<td>Output socket: Displacement</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.space">space</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.shader.vector.VectorTransform" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.VectorTransform">VectorTransform</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>VectorTransform(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    vector_type<span class="op">=</span><span class="st">'VECTOR'</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    convert_from<span class="op">=</span><span class="st">'WORLD'</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    convert_to<span class="op">=</span><span class="st">'OBJECT'</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Convert a vector, point, or normal between world, camera, and object coordinate space</p>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.convert_from">convert_from</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.convert_to">convert_to</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.i_vector"><code>i_vector</code></a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.o_vector"><code>o_vector</code></a></td>
+<td>Output socket: Vector</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.type">type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.vector_type">vector_type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 
 
+</section>
+</section>
 </section>
 </section>
 
@@ -1054,10 +1358,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../reference/nodes.shader.texture.html" class="pagination-link" aria-label="nodes.shader.texture">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.shader.texture</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.geometry.input.html" class="pagination-link" aria-label="nodes.geometry.input">
-        <span class="nav-page-text">nodes.geometry.input</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.shader.zone.html" class="pagination-link" aria-label="nodes.shader.zone">
+        <span class="nav-page-text">nodes.shader.zone</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index – nodebpy {{&lt; var version &gt;}}</title>
+<title>treebuilder – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +65,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.geometry.input.html" rel="next">
+<link href="../reference/builder.NodeBuilder.html" rel="next">
+<link href="../reference/nodes.compositor.vector.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -124,7 +160,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/index.html">Function reference</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/TreeBuilder.html">Internals</a></li><li class="breadcrumb-item"><a href="../reference/TreeBuilder.html">TreeBuilder</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -138,7 +174,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Function reference</span></a>
   </div>
 </li>
@@ -413,7 +449,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/TreeBuilder.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/TreeBuilder.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">TreeBuilder</span></a>
   </div>
 </li>
@@ -435,219 +471,184 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#function-reference" id="toc-function-reference" class="nav-link active" data-scroll-target="#function-reference">Function reference</a>
+  <li><a href="#nodebpy.TreeBuilder" id="toc-nodebpy.TreeBuilder" class="nav-link active" data-scroll-target="#nodebpy.TreeBuilder">TreeBuilder</a>
   <ul class="collapse">
-  <li><a href="#geometry-nodes" id="toc-geometry-nodes" class="nav-link" data-scroll-target="#geometry-nodes">Geometry Nodes</a>
+  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
   <ul class="collapse">
-  <li><a href="#zones-in-gn" id="toc-zones-in-gn" class="nav-link" data-scroll-target="#zones-in-gn">Zones in GN</a></li>
+  <li><a href="#nodebpy.TreeBuilder.activate_tree" id="toc-nodebpy.TreeBuilder.activate_tree" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.activate_tree">activate_tree</a></li>
+  <li><a href="#nodebpy.TreeBuilder.add" id="toc-nodebpy.TreeBuilder.add" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.add">add</a></li>
+  <li><a href="#nodebpy.TreeBuilder.arrange" id="toc-nodebpy.TreeBuilder.arrange" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.arrange">arrange</a></li>
+  <li><a href="#nodebpy.TreeBuilder.compositor" id="toc-nodebpy.TreeBuilder.compositor" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.compositor">compositor</a></li>
+  <li><a href="#nodebpy.TreeBuilder.deactivate_tree" id="toc-nodebpy.TreeBuilder.deactivate_tree" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.deactivate_tree">deactivate_tree</a></li>
+  <li><a href="#nodebpy.TreeBuilder.geometry" id="toc-nodebpy.TreeBuilder.geometry" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.geometry">geometry</a></li>
+  <li><a href="#nodebpy.TreeBuilder.link" id="toc-nodebpy.TreeBuilder.link" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.link">link</a></li>
+  <li><a href="#nodebpy.TreeBuilder.shader" id="toc-nodebpy.TreeBuilder.shader" class="nav-link" data-scroll-target="#nodebpy.TreeBuilder.shader">shader</a></li>
   </ul></li>
-  <li><a href="#shader-nodes" id="toc-shader-nodes" class="nav-link" data-scroll-target="#shader-nodes">Shader Nodes</a></li>
-  <li><a href="#compositor-nodes" id="toc-compositor-nodes" class="nav-link" data-scroll-target="#compositor-nodes">Compositor Nodes</a></li>
-  <li><a href="#internals" id="toc-internals" class="nav-link" data-scroll-target="#internals">Internals</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/TreeBuilder.html">Internals</a></li><li class="breadcrumb-item"><a href="../reference/TreeBuilder.html">TreeBuilder</a></li></ol></nav></header>
 
 
 
 
-<section id="function-reference" class="level1 doc doc-index">
-<h1 class="doc doc-index">Function reference</h1>
-<section id="geometry-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="geometry-nodes">Geometry Nodes</h2>
-<p>Nodes use in Geometry Nodes trees.</p>
+<section id="nodebpy.TreeBuilder" class="level1">
+<h1>TreeBuilder</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>TreeBuilder(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    tree<span class="op">=</span><span class="st">'Geometry Nodes'</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    tree_type<span class="op">=</span><span class="st">'GeometryNodeTree'</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Builder for creating Blender node trees with a clean Python API.</p>
+<p>Supports geometry, shader, and compositor node trees.</p>
+<section id="attributes" class="level2">
+<h2 class="anchored" data-anchor-id="attributes">Attributes</h2>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.input.html#nodebpy.nodes.geometry.input">nodes.geometry.input</a></td>
+<td><a href="#nodebpy.TreeBuilder.collapse">collapse</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.attribute.html#nodebpy.nodes.geometry.attribute">nodes.geometry.attribute</a></td>
+<td><a href="#nodebpy.TreeBuilder.fake_user">fake_user</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.color.html#nodebpy.nodes.geometry.color">nodes.geometry.color</a></td>
+<td><a href="#nodebpy.TreeBuilder.inputs">inputs</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.converter.html#nodebpy.nodes.geometry.converter">nodes.geometry.converter</a></td>
+<td><a href="#nodebpy.TreeBuilder.just_added">just_added</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.texture.html#nodebpy.nodes.geometry.texture">nodes.geometry.texture</a></td>
+<td><a href="#nodebpy.TreeBuilder.nodes">nodes</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.grid.html#nodebpy.nodes.geometry.grid">nodes.geometry.grid</a></td>
+<td><a href="#nodebpy.TreeBuilder.outputs">outputs</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.geometry.html#nodebpy.nodes.geometry.geometry">nodes.geometry.geometry</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.geometry.attribute.html#nodebpy.nodes.geometry.attribute">nodes.geometry.attribute</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.geometry.vector.html#nodebpy.nodes.geometry.vector">nodes.geometry.vector</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.geometry.manual.html#nodebpy.nodes.geometry.manual">nodes.geometry.manual</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<section id="zones-in-gn" class="level3">
-<h3 class="anchored" data-anchor-id="zones-in-gn">Zones in GN</h3>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="../reference/nodes.geometry.zone.html#nodebpy.nodes.geometry.zone">nodes.geometry.zone</a></td>
+<td><a href="#nodebpy.TreeBuilder.tree">tree</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
-</section>
-<section id="shader-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="shader-nodes">Shader Nodes</h2>
-<p>Nodes use in Material / Shader node trees</p>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.color.html#nodebpy.nodes.shader.color">nodes.shader.color</a></td>
-<td></td>
+<td><a href="#nodebpy.TreeBuilder.activate_tree">activate_tree</a></td>
+<td>Make this tree the active tree for all new node creation.</td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.converter.html#nodebpy.nodes.shader.converter">nodes.shader.converter</a></td>
+<td><a href="#nodebpy.TreeBuilder.add">add</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.grid.html#nodebpy.nodes.shader.grid">nodes.shader.grid</a></td>
+<td><a href="#nodebpy.TreeBuilder.arrange">arrange</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.group.html#nodebpy.nodes.shader.group">nodes.shader.group</a></td>
-<td></td>
+<td><a href="#nodebpy.TreeBuilder.compositor">compositor</a></td>
+<td>Create a compositor node tree.</td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.input.html#nodebpy.nodes.shader.input">nodes.shader.input</a></td>
+<td><a href="#nodebpy.TreeBuilder.deactivate_tree">deactivate_tree</a></td>
+<td>Whatever tree was previously active is set to be the active one (or None if no previously active tree).</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.TreeBuilder.geometry">geometry</a></td>
+<td>Create a geometry node tree.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.TreeBuilder.link">link</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.interface.html#nodebpy.nodes.shader.interface">nodes.shader.interface</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.manual.html#nodebpy.nodes.shader.manual">nodes.shader.manual</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.output.html#nodebpy.nodes.shader.output">nodes.shader.output</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.script.html#nodebpy.nodes.shader.script">nodes.shader.script</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.shader.html#nodebpy.nodes.shader.shader">nodes.shader.shader</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.texture.html#nodebpy.nodes.shader.texture">nodes.shader.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.vector.html#nodebpy.nodes.shader.vector">nodes.shader.vector</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.zone.html#nodebpy.nodes.shader.zone">nodes.shader.zone</a></td>
-<td></td>
+<td><a href="#nodebpy.TreeBuilder.shader">shader</a></td>
+<td>Create a shader node tree.</td>
 </tr>
 </tbody>
 </table>
+<section id="nodebpy.TreeBuilder.activate_tree" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.activate_tree">activate_tree</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>activate_tree()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Make this tree the active tree for all new node creation.</p>
 </section>
-<section id="compositor-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="compositor-nodes">Compositor Nodes</h2>
-<p>Nodes for use in the compositor</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.color.html#nodebpy.nodes.compositor.color">nodes.compositor.color</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.converter.html#nodebpy.nodes.compositor.converter">nodes.compositor.converter</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.distort.html#nodebpy.nodes.compositor.distort">nodes.compositor.distort</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.filter.html#nodebpy.nodes.compositor.filter">nodes.compositor.filter</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.group.html#nodebpy.nodes.compositor.group">nodes.compositor.group</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.input.html#nodebpy.nodes.compositor.input">nodes.compositor.input</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.interface.html#nodebpy.nodes.compositor.interface">nodes.compositor.interface</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.manual.html#nodebpy.nodes.compositor.manual">nodes.compositor.manual</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.matte.html#nodebpy.nodes.compositor.matte">nodes.compositor.matte</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.output.html#nodebpy.nodes.compositor.output">nodes.compositor.output</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.texture.html#nodebpy.nodes.compositor.texture">nodes.compositor.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.vector.html#nodebpy.nodes.compositor.vector">nodes.compositor.vector</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<section id="nodebpy.TreeBuilder.add" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.add">add</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>add(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="internals" class="level2">
-<h2 class="anchored" data-anchor-id="internals">Internals</h2>
-<p>Internal nodes used by nodebpy</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="../reference/TreeBuilder.html#nodebpy.TreeBuilder">TreeBuilder</a></td>
-<td>Builder for creating Blender node trees with a clean Python API.</td>
-</tr>
-<tr class="even">
-<td><a href="../reference/builder.NodeBuilder.html#nodebpy.builder.NodeBuilder">builder.NodeBuilder</a></td>
-<td>Base class for all geometry node wrappers.</td>
-</tr>
-</tbody>
-</table>
+<section id="nodebpy.TreeBuilder.arrange" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.arrange">arrange</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>arrange()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.TreeBuilder.compositor" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.compositor">compositor</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>compositor(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'Compositor Nodes'</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a compositor node tree.</p>
+</section>
+<section id="nodebpy.TreeBuilder.deactivate_tree" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.deactivate_tree">deactivate_tree</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>deactivate_tree()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whatever tree was previously active is set to be the active one (or None if no previously active tree).</p>
+</section>
+<section id="nodebpy.TreeBuilder.geometry" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.geometry">geometry</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>geometry(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'Geometry Nodes'</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a geometry node tree.</p>
+</section>
+<section id="nodebpy.TreeBuilder.link" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.link">link</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>link(socket1, socket2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.TreeBuilder.shader" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.TreeBuilder.shader">shader</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>shader(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'Shader Nodes'</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a shader node tree.</p>
 
 
+</section>
 </section>
 </section>
 
@@ -1054,10 +1055,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../reference/nodes.compositor.vector.html" class="pagination-link" aria-label="nodes.compositor.vector">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.compositor.vector</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.geometry.input.html" class="pagination-link" aria-label="nodes.geometry.input">
-        <span class="nav-page-text">nodes.geometry.input</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/builder.NodeBuilder.html" class="pagination-link" aria-label="builder.NodeBuilder">
+        <span class="nav-page-text">builder.NodeBuilder</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

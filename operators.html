@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Operators – nodebpy</title>
+<title>Operators – nodebpy 0.7.1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9195fa1a9c736cb8c2994c5df3058328.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-f1003bd77f54eb3a86d476d9f86355cf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -108,7 +108,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
-<link rel="stylesheet" href="reference/_styles-quartodoc.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -119,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy</span>
+    <span class="navbar-title">nodebpy 0.7.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -143,6 +142,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="./reference/"> 
 <span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/BradyAJohnston/nodebpy"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -203,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="arithmetic-operators" class="level2">
 <h2 class="anchored" data-anchor-id="arithmetic-operators">Arithmetic Operators</h2>
 <p>The standard arithmetic operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> are joined by <code>**</code> (power), <code>%</code> (modulo), <code>//</code> (floor division), unary <code>-</code> (negate), and <code>abs()</code>.</p>
-<div id="2bc012a3" class="cell" data-execution_count="2">
+<div id="b7eb345c" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"ArithmeticDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -266,7 +272,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>All operators automatically select the right node type. With integers you get <code>IntegerMath</code>, with vectors you get <code>VectorMath</code>, and scalars are broadcast when mixed with vectors:</p>
-<div id="2c85de3e" class="cell" data-execution_count="3">
+<div id="7ad0ee5b" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"TypeDispatch"</span>) <span class="im">as</span> tree:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -327,7 +333,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="negation-and-absolute-value" class="level3">
 <h3 class="anchored" data-anchor-id="negation-and-absolute-value">Negation and Absolute Value</h3>
 <p>The unary <code>-</code> and <code>abs()</code> operators work with all numeric types:</p>
-<div id="280f210e" class="cell" data-execution_count="4">
+<div id="d0e298af" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"UnaryOps"</span>) <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -379,7 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="comparison-operators" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-operators">Comparison Operators</h2>
 <p>The <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> operators create <code>Compare</code> nodes that output boolean sockets. The correct data type (float, integer, or vector) is inferred from the left-hand operand.</p>
-<div id="86bb16f3" class="cell" data-execution_count="5">
+<div id="f8c3132b" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"CompareDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -438,7 +444,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="boolean-operators" class="level2">
 <h2 class="anchored" data-anchor-id="boolean-operators">Boolean Operators</h2>
 <p>Python’s bitwise operators <code>&amp;</code> (and), <code>|</code> (or), <code>^</code> (xor), and <code>~</code> (not) map to <code>BooleanMath</code> nodes. These are especially useful for combining comparison results into complex selections.</p>
-<div id="0e968d81" class="cell" data-execution_count="6">
+<div id="9bda2dd3" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"BooleanDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -499,7 +505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The <code>~</code> operator inverts a boolean:</p>
-<div id="ed9596cb" class="cell" data-execution_count="7">
+<div id="06b873ec" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"InvertDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -558,7 +564,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="matrix-multiplication" class="level2">
 <h2 class="anchored" data-anchor-id="matrix-multiplication">Matrix Multiplication</h2>
 <p>The <code>@</code> operator maps to <code>MultiplyMatrices</code>, composing two 4x4 transformation matrices. You can also multiply a matrix by a vector using <code>@</code> and a <code>TransformPoint</code> will automatically be added.</p>
-<div id="43de0ffa" class="cell" data-execution_count="8">
+<div id="e80ec71a" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"MatmulDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -619,7 +625,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="checkerboard-selection" class="level3">
 <h3 class="anchored" data-anchor-id="checkerboard-selection">Checkerboard Selection</h3>
 <p>Select alternating faces on a grid using integer modulo and comparisons:</p>
-<div id="e66ec1e9" class="cell" data-execution_count="9">
+<div id="e1fa09ce" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Checkerboard"</span>) <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -682,7 +688,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="layered-selection" class="level3">
 <h3 class="anchored" data-anchor-id="layered-selection">Layered Selection</h3>
 <p>Divide space into layers using floor division, then select specific layers:</p>
-<div id="721290a5" class="cell" data-execution_count="10">
+<div id="9c0e082e" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Layers"</span>) <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -760,7 +766,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="spiral-point-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="spiral-point-distribution">Spiral Point Distribution</h3>
 <p>Use power and modulo to create a spiral-like displacement pattern:</p>
-<div id="42fda33e" class="cell" data-execution_count="11">
+<div id="d9220d4d" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Spiral"</span>) <span class="im">as</span> tree:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>

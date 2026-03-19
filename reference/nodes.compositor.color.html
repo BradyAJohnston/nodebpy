@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>nodes.compositor.color – nodebpy {{&lt; var version &gt;}}</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../reference/nodes.compositor.converter.html" rel="next">
+<link href="../reference/nodes.shader.zone.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-f1003bd77f54eb3a86d476d9f86355cf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">nodebpy 0.7.1</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../introduction.html"> 
+<span class="menu-text">Introduction</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../operators.html"> 
+<span class="menu-text">Operators</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reference/"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/BradyAJohnston/nodebpy"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.compositor.color.html">Compositor Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.compositor.color.html">nodes.compositor.color</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Function reference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Geometry Nodes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.input.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.input</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.color.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.color</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.converter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.converter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.texture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.texture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.grid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.grid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.geometry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.geometry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.attribute.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.attribute</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.vector.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.manual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.manual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Zones in GN</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.geometry.zone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.geometry.zone</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Shader Nodes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.color.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.color</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.converter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.converter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.grid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.grid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.group.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.input.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.input</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.interface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.interface</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.manual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.output.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.output</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.script.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.script</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.shader.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.shader</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.texture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.texture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.vector.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.vector</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.shader.zone.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.shader.zone</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Compositor Nodes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.color.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">nodes.compositor.color</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.converter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.converter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.distort.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.distort</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.filter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.filter</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.group.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.group</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.input.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.input</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.interface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.interface</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.manual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.manual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.matte.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.matte</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.output.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.output</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.texture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.texture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/nodes.compositor.vector.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">nodes.compositor.vector</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Internals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/TreeBuilder.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TreeBuilder</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/builder.NodeBuilder.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">builder.NodeBuilder</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#nodebpy.nodes.compositor.color" id="toc-nodebpy.nodes.compositor.color" class="nav-link active" data-scroll-target="#nodebpy.nodes.compositor.color">nodes.compositor.color</a>
+  <ul class="collapse">
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
+  <ul class="collapse">
+  <li><a href="#nodebpy.nodes.compositor.color.AlphaOver" id="toc-nodebpy.nodes.compositor.color.AlphaOver" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.AlphaOver">AlphaOver</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast" id="toc-nodebpy.nodes.compositor.color.Brightnesscontrast" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.Brightnesscontrast">Brightnesscontrast</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.ColorBalance" id="toc-nodebpy.nodes.compositor.color.ColorBalance" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.ColorBalance">ColorBalance</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.ColorCorrection" id="toc-nodebpy.nodes.compositor.color.ColorCorrection" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.ColorCorrection">ColorCorrection</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.DepthCombine" id="toc-nodebpy.nodes.compositor.color.DepthCombine" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.DepthCombine">DepthCombine</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.Exposure" id="toc-nodebpy.nodes.compositor.color.Exposure" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.Exposure">Exposure</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.HueCorrect" id="toc-nodebpy.nodes.compositor.color.HueCorrect" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.HueCorrect">HueCorrect</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue" id="toc-nodebpy.nodes.compositor.color.Huesaturationvalue" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.Huesaturationvalue">Huesaturationvalue</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.InvertColor" id="toc-nodebpy.nodes.compositor.color.InvertColor" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.InvertColor">InvertColor</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.Posterize" id="toc-nodebpy.nodes.compositor.color.Posterize" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.Posterize">Posterize</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.RGBCurves" id="toc-nodebpy.nodes.compositor.color.RGBCurves" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.RGBCurves">RGBCurves</a></li>
+  <li><a href="#nodebpy.nodes.compositor.color.Tonemap" id="toc-nodebpy.nodes.compositor.color.Tonemap" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.color.Tonemap">Tonemap</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.compositor.color.html">Compositor Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.compositor.color.html">nodes.compositor.color</a></li></ol></nav></header>
+
+
+
+
+<section id="nodebpy.nodes.compositor.color" class="level1">
+<h1>nodes.compositor.color</h1>
+<p><code>color</code></p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver">AlphaOver</a></td>
+<td>Overlay a foreground image onto a background image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast">Brightnesscontrast</a></td>
+<td>Adjust brightness and contrast</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance">ColorBalance</a></td>
+<td>Adjust color and values</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection">ColorCorrection</a></td>
+<td>Adjust the color of an image, separately in several tonal ranges (highlights, midtones and shadows)</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine">DepthCombine</a></td>
+<td>Combine two images using depth maps</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Exposure">Exposure</a></td>
+<td>Adjust brightness using a camera exposure parameter</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.HueCorrect">HueCorrect</a></td>
+<td>Adjust hue, saturation, and value with a curve</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue">Huesaturationvalue</a></td>
+<td>Apply a color transformation in the HSV color model</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor">InvertColor</a></td>
+<td>Invert colors, producing a negative</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Posterize">Posterize</a></td>
+<td>Reduce number of colors in an image, converting smooth gradients into sharp transitions</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves">RGBCurves</a></td>
+<td>Perform level adjustments on each color channel of an image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap">Tonemap</a></td>
+<td>Map one set of colors to another in order to approximate the appearance of high dynamic range</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.compositor.color.AlphaOver" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.AlphaOver">AlphaOver</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AlphaOver(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    background<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    foreground<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    fac<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">'Over'</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    straight_alpha<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Overlay a foreground image onto a background image</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.i_background"><code>i_background</code></a></td>
+<td>Input socket: Background</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.i_fac"><code>i_fac</code></a></td>
+<td>Input socket: Factor</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.i_foreground"><code>i_foreground</code></a></td>
+<td>Input socket: Foreground</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.i_straight_alpha"><code>i_straight_alpha</code></a></td>
+<td>Input socket: Straight Alpha</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.i_type"><code>i_type</code></a></td>
+<td>Input socket: Type</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.AlphaOver.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.Brightnesscontrast" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.Brightnesscontrast">Brightnesscontrast</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Brightnesscontrast(image<span class="op">=</span><span class="va">None</span>, bright<span class="op">=</span><span class="fl">0.0</span>, contrast<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Adjust brightness and contrast</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast.i_bright"><code>i_bright</code></a></td>
+<td>Input socket: Brightness</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast.i_contrast"><code>i_contrast</code></a></td>
+<td>Input socket: Contrast</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Brightnesscontrast.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.ColorBalance" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.ColorBalance">ColorBalance</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ColorBalance(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    fac<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">'Lift/Gamma/Gain'</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    base_lift<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    color_lift<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    base_gamma<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    color_gamma<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    base_gain<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    color_gain<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    base_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    color_offset<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    base_power<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    color_power<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    base_slope<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    color_slope<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    input_temperature<span class="op">=</span><span class="fl">6500.0</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    input_tint<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    output_temperature<span class="op">=</span><span class="fl">6500.0</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    output_tint<span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    input_whitepoint<span class="op">=</span>(<span class="fl">0.735</span>, <span class="fl">0.735</span>, <span class="fl">0.735</span>),</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    output_whitepoint<span class="op">=</span>(<span class="fl">0.735</span>, <span class="fl">0.735</span>, <span class="fl">0.735</span>),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Adjust color and values</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_base_gain"><code>i_base_gain</code></a></td>
+<td>Input socket: Gain</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_base_gamma"><code>i_base_gamma</code></a></td>
+<td>Input socket: Gamma</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_base_lift"><code>i_base_lift</code></a></td>
+<td>Input socket: Lift</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_base_offset"><code>i_base_offset</code></a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_base_power"><code>i_base_power</code></a></td>
+<td>Input socket: Power</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_base_slope"><code>i_base_slope</code></a></td>
+<td>Input socket: Slope</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_color_gain"><code>i_color_gain</code></a></td>
+<td>Input socket: Gain</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_color_gamma"><code>i_color_gamma</code></a></td>
+<td>Input socket: Gamma</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_color_lift"><code>i_color_lift</code></a></td>
+<td>Input socket: Lift</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_color_offset"><code>i_color_offset</code></a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_color_power"><code>i_color_power</code></a></td>
+<td>Input socket: Power</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_color_slope"><code>i_color_slope</code></a></td>
+<td>Input socket: Slope</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_fac"><code>i_fac</code></a></td>
+<td>Input socket: Factor</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_input_temperature"><code>i_input_temperature</code></a></td>
+<td>Input socket: Temperature</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_input_tint"><code>i_input_tint</code></a></td>
+<td>Input socket: Tint</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_output_temperature"><code>i_output_temperature</code></a></td>
+<td>Input socket: Temperature</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_output_tint"><code>i_output_tint</code></a></td>
+<td>Input socket: Tint</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.i_type"><code>i_type</code></a></td>
+<td>Input socket: Type</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.input_whitepoint">input_whitepoint</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.output_whitepoint">output_whitepoint</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorBalance.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.ColorCorrection" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.ColorCorrection">ColorCorrection</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ColorCorrection(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    mask<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    master_saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    master_contrast<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    master_gamma<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    master_gain<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    master_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    highlights_saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    highlights_contrast<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    highlights_gamma<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    highlights_gain<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    highlights_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    midtones_saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    midtones_contrast<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    midtones_gamma<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    midtones_gain<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    midtones_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    shadows_saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    shadows_contrast<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    shadows_gamma<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    shadows_gain<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    shadows_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    midtones_start<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    midtones_end<span class="op">=</span><span class="fl">0.7</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    apply_on_red<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    apply_on_green<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    apply_on_blue<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Adjust the color of an image, separately in several tonal ranges (highlights, midtones and shadows)</p>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_apply_on_blue"><code>i_apply_on_blue</code></a></td>
+<td>Input socket: Blue</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_apply_on_green"><code>i_apply_on_green</code></a></td>
+<td>Input socket: Green</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_apply_on_red"><code>i_apply_on_red</code></a></td>
+<td>Input socket: Red</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_highlights_contrast"><code>i_highlights_contrast</code></a></td>
+<td>Input socket: Contrast</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_highlights_gain"><code>i_highlights_gain</code></a></td>
+<td>Input socket: Gain</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_highlights_gamma"><code>i_highlights_gamma</code></a></td>
+<td>Input socket: Gamma</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_highlights_offset"><code>i_highlights_offset</code></a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_highlights_saturation"><code>i_highlights_saturation</code></a></td>
+<td>Input socket: Saturation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_mask"><code>i_mask</code></a></td>
+<td>Input socket: Mask</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_master_contrast"><code>i_master_contrast</code></a></td>
+<td>Input socket: Contrast</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_master_gain"><code>i_master_gain</code></a></td>
+<td>Input socket: Gain</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_master_gamma"><code>i_master_gamma</code></a></td>
+<td>Input socket: Gamma</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_master_offset"><code>i_master_offset</code></a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_master_saturation"><code>i_master_saturation</code></a></td>
+<td>Input socket: Saturation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_midtones_contrast"><code>i_midtones_contrast</code></a></td>
+<td>Input socket: Contrast</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_midtones_end"><code>i_midtones_end</code></a></td>
+<td>Input socket: Midtones End</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_midtones_gain"><code>i_midtones_gain</code></a></td>
+<td>Input socket: Gain</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_midtones_gamma"><code>i_midtones_gamma</code></a></td>
+<td>Input socket: Gamma</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_midtones_offset"><code>i_midtones_offset</code></a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_midtones_saturation"><code>i_midtones_saturation</code></a></td>
+<td>Input socket: Saturation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_midtones_start"><code>i_midtones_start</code></a></td>
+<td>Input socket: Midtones Start</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_shadows_contrast"><code>i_shadows_contrast</code></a></td>
+<td>Input socket: Contrast</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_shadows_gain"><code>i_shadows_gain</code></a></td>
+<td>Input socket: Gain</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_shadows_gamma"><code>i_shadows_gamma</code></a></td>
+<td>Input socket: Gamma</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_shadows_offset"><code>i_shadows_offset</code></a></td>
+<td>Input socket: Offset</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.i_shadows_saturation"><code>i_shadows_saturation</code></a></td>
+<td>Input socket: Saturation</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.ColorCorrection.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.DepthCombine" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.DepthCombine">DepthCombine</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>DepthCombine(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    a<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    depth_a<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    b<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    depth_b<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    use_alpha<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    anti_alias<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Combine two images using depth maps</p>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.i_a"><code>i_a</code></a></td>
+<td>Input socket: A</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.i_anti_alias"><code>i_anti_alias</code></a></td>
+<td>Input socket: Anti-Alias</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.i_b"><code>i_b</code></a></td>
+<td>Input socket: B</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.i_depth_a"><code>i_depth_a</code></a></td>
+<td>Input socket: Depth A</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.i_depth_b"><code>i_depth_b</code></a></td>
+<td>Input socket: Depth B</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.i_use_alpha"><code>i_use_alpha</code></a></td>
+<td>Input socket: Use Alpha</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.o_depth"><code>o_depth</code></a></td>
+<td>Output socket: Depth</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.o_result"><code>o_result</code></a></td>
+<td>Output socket: Result</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.DepthCombine.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.Exposure" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.Exposure">Exposure</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Exposure(image<span class="op">=</span><span class="va">None</span>, exposure<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Adjust brightness using a camera exposure parameter</p>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Exposure.i_exposure"><code>i_exposure</code></a></td>
+<td>Input socket: Exposure</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Exposure.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Exposure.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Exposure.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Exposure.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Exposure.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Exposure.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.HueCorrect" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.HueCorrect">HueCorrect</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>HueCorrect(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Adjust hue, saturation, and value with a curve</p>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.HueCorrect.i_fac"><code>i_fac</code></a></td>
+<td>Input socket: Factor</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.HueCorrect.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.HueCorrect.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.HueCorrect.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.HueCorrect.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.HueCorrect.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.HueCorrect.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.Huesaturationvalue" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.Huesaturationvalue">Huesaturationvalue</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Huesaturationvalue(image<span class="op">=</span><span class="va">None</span>, hue<span class="op">=</span><span class="fl">0.5</span>, saturation<span class="op">=</span><span class="fl">1.0</span>, value<span class="op">=</span><span class="fl">1.0</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply a color transformation in the HSV color model</p>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.i_fac"><code>i_fac</code></a></td>
+<td>Input socket: Factor</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.i_hue"><code>i_hue</code></a></td>
+<td>Input socket: Hue</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.i_saturation"><code>i_saturation</code></a></td>
+<td>Input socket: Saturation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.i_value"><code>i_value</code></a></td>
+<td>Input socket: Value</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Huesaturationvalue.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.InvertColor" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.InvertColor">InvertColor</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>InvertColor(color<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>, invert_color<span class="op">=</span><span class="va">True</span>, invert_alpha<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Invert colors, producing a negative</p>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.i_color"><code>i_color</code></a></td>
+<td>Input socket: Color</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.i_fac"><code>i_fac</code></a></td>
+<td>Input socket: Factor</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.i_invert_alpha"><code>i_invert_alpha</code></a></td>
+<td>Input socket: Invert Alpha</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.i_invert_color"><code>i_invert_color</code></a></td>
+<td>Input socket: Invert Color</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.o_color"><code>o_color</code></a></td>
+<td>Output socket: Color</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.InvertColor.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.Posterize" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.Posterize">Posterize</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Posterize(image<span class="op">=</span><span class="va">None</span>, steps<span class="op">=</span><span class="fl">8.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Reduce number of colors in an image, converting smooth gradients into sharp transitions</p>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Posterize.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Posterize.i_steps"><code>i_steps</code></a></td>
+<td>Input socket: Steps</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Posterize.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Posterize.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Posterize.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Posterize.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Posterize.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.RGBCurves" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.RGBCurves">RGBCurves</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>RGBCurves(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>, black_level<span class="op">=</span><span class="va">None</span>, white_level<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Perform level adjustments on each color channel of an image</p>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.i_black_level"><code>i_black_level</code></a></td>
+<td>Input socket: Black Level</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.i_fac"><code>i_fac</code></a></td>
+<td>Input socket: Factor</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.i_white_level"><code>i_white_level</code></a></td>
+<td>Input socket: White Level</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.RGBCurves.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.color.Tonemap" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.color.Tonemap">Tonemap</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Tonemap(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">'R/D Photoreceptor'</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    key<span class="op">=</span><span class="fl">0.18</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    balance<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    gamma<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    intensity<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    contrast<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    light_adaptation<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    chromatic_adaptation<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Map one set of colors to another in order to approximate the appearance of high dynamic range</p>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_balance"><code>i_balance</code></a></td>
+<td>Input socket: Balance</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_chromatic_adaptation"><code>i_chromatic_adaptation</code></a></td>
+<td>Input socket: Chromatic Adaptation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_contrast"><code>i_contrast</code></a></td>
+<td>Input socket: Contrast</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_gamma"><code>i_gamma</code></a></td>
+<td>Input socket: Gamma</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_image"><code>i_image</code></a></td>
+<td>Input socket: Image</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_intensity"><code>i_intensity</code></a></td>
+<td>Input socket: Intensity</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_key"><code>i_key</code></a></td>
+<td>Input socket: Key</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_light_adaptation"><code>i_light_adaptation</code></a></td>
+<td>Input socket: Light Adaptation</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.i_type"><code>i_type</code></a></td>
+<td>Input socket: Type</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.o_image"><code>o_image</code></a></td>
+<td>Output socket: Image</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.color.Tonemap.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../reference/nodes.shader.zone.html" class="pagination-link" aria-label="nodes.shader.zone">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.shader.zone</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../reference/nodes.compositor.converter.html" class="pagination-link" aria-label="nodes.compositor.converter">
+        <span class="nav-page-text">nodes.compositor.converter</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

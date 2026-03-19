@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index – nodebpy {{&lt; var version &gt;}}</title>
+<title>nodes.shader.texture – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +65,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.geometry.input.html" rel="next">
+<link href="../reference/nodes.shader.vector.html" rel="next">
+<link href="../reference/nodes.shader.shader.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -124,7 +160,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/index.html">Function reference</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.shader.color.html">Shader Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.shader.texture.html">nodes.shader.texture</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -138,7 +174,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Function reference</span></a>
   </div>
 </li>
@@ -301,7 +337,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.texture.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/nodes.shader.texture.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">nodes.shader.texture</span></a>
   </div>
 </li>
@@ -435,219 +471,346 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#function-reference" id="toc-function-reference" class="nav-link active" data-scroll-target="#function-reference">Function reference</a>
+  <li><a href="#nodebpy.nodes.shader.texture" id="toc-nodebpy.nodes.shader.texture" class="nav-link active" data-scroll-target="#nodebpy.nodes.shader.texture">nodes.shader.texture</a>
   <ul class="collapse">
-  <li><a href="#geometry-nodes" id="toc-geometry-nodes" class="nav-link" data-scroll-target="#geometry-nodes">Geometry Nodes</a>
+  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
-  <li><a href="#zones-in-gn" id="toc-zones-in-gn" class="nav-link" data-scroll-target="#zones-in-gn">Zones in GN</a></li>
+  <li><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture" id="toc-nodebpy.nodes.shader.texture.EnvironmentTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.EnvironmentTexture">EnvironmentTexture</a></li>
+  <li><a href="#nodebpy.nodes.shader.texture.IesTexture" id="toc-nodebpy.nodes.shader.texture.IesTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.IesTexture">IesTexture</a></li>
+  <li><a href="#nodebpy.nodes.shader.texture.ImageTexture" id="toc-nodebpy.nodes.shader.texture.ImageTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.ImageTexture">ImageTexture</a></li>
+  <li><a href="#nodebpy.nodes.shader.texture.SkyTexture" id="toc-nodebpy.nodes.shader.texture.SkyTexture" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.texture.SkyTexture">SkyTexture</a></li>
   </ul></li>
-  <li><a href="#shader-nodes" id="toc-shader-nodes" class="nav-link" data-scroll-target="#shader-nodes">Shader Nodes</a></li>
-  <li><a href="#compositor-nodes" id="toc-compositor-nodes" class="nav-link" data-scroll-target="#compositor-nodes">Compositor Nodes</a></li>
-  <li><a href="#internals" id="toc-internals" class="nav-link" data-scroll-target="#internals">Internals</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.shader.color.html">Shader Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.shader.texture.html">nodes.shader.texture</a></li></ol></nav></header>
 
 
 
 
-<section id="function-reference" class="level1 doc doc-index">
-<h1 class="doc doc-index">Function reference</h1>
-<section id="geometry-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="geometry-nodes">Geometry Nodes</h2>
-<p>Nodes use in Geometry Nodes trees.</p>
+<section id="nodebpy.nodes.shader.texture" class="level1">
+<h1>nodes.shader.texture</h1>
+<p><code>texture</code></p>
+<section id="classes" class="level2">
+<h2 class="anchored" data-anchor-id="classes">Classes</h2>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.input.html#nodebpy.nodes.geometry.input">nodes.geometry.input</a></td>
-<td></td>
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture">EnvironmentTexture</a></td>
+<td>Sample an image file as an environment texture. Typically used to light the scene with the background node</td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.attribute.html#nodebpy.nodes.geometry.attribute">nodes.geometry.attribute</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture">IesTexture</a></td>
+<td>Match real world lights with IES files, which store the directional intensity distribution of light sources</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture">ImageTexture</a></td>
+<td>Sample an image file as a texture</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture">SkyTexture</a></td>
+<td>Generate a procedural sky texture</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.texture.EnvironmentTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.EnvironmentTexture">EnvironmentTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>EnvironmentTexture(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    projection<span class="op">=</span><span class="st">'EQUIRECTANGULAR'</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Linear'</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sample an image file as an environment texture. Typically used to light the scene with the background node</p>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture.i_vector"><code>i_vector</code></a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture.interpolation">interpolation</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.color.html#nodebpy.nodes.geometry.color">nodes.geometry.color</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.converter.html#nodebpy.nodes.geometry.converter">nodes.geometry.converter</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.texture.html#nodebpy.nodes.geometry.texture">nodes.geometry.texture</a></td>
-<td></td>
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture.o_color"><code>o_color</code></a></td>
+<td>Output socket: Color</td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.grid.html#nodebpy.nodes.geometry.grid">nodes.geometry.grid</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture.projection">projection</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.geometry.html#nodebpy.nodes.geometry.geometry">nodes.geometry.geometry</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.geometry.attribute.html#nodebpy.nodes.geometry.attribute">nodes.geometry.attribute</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.geometry.vector.html#nodebpy.nodes.geometry.vector">nodes.geometry.vector</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.geometry.manual.html#nodebpy.nodes.geometry.manual">nodes.geometry.manual</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.EnvironmentTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
-<section id="zones-in-gn" class="level3">
-<h3 class="anchored" data-anchor-id="zones-in-gn">Zones in GN</h3>
+</section>
+</section>
+<section id="nodebpy.nodes.shader.texture.IesTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IesTexture">IesTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>IesTexture(vector<span class="op">=</span><span class="va">None</span>, strength<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, filepath<span class="op">=</span><span class="st">''</span>, mode<span class="op">=</span><span class="st">'INTERNAL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Match real world lights with IES files, which store the directional intensity distribution of light sources</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.geometry.zone.html#nodebpy.nodes.geometry.zone">nodes.geometry.zone</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.filepath">filepath</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.i_strength"><code>i_strength</code></a></td>
+<td>Input socket: Strength</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.i_vector"><code>i_vector</code></a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.mode">mode</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.name">name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.node">node</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.o_fac"><code>o_fac</code></a></td>
+<td>Output socket: Factor</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="shader-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="shader-nodes">Shader Nodes</h2>
-<p>Nodes use in Material / Shader node trees</p>
+<section id="nodebpy.nodes.shader.texture.ImageTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.ImageTexture">ImageTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ImageTexture(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    projection<span class="op">=</span><span class="st">'FLAT'</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Linear'</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    projection_blend<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    extension<span class="op">=</span><span class="st">'REPEAT'</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sample an image file as a texture</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.color.html#nodebpy.nodes.shader.color">nodes.shader.color</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.extension">extension</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.converter.html#nodebpy.nodes.shader.converter">nodes.shader.converter</a></td>
-<td></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.i_vector"><code>i_vector</code></a></td>
+<td>Input socket: Vector</td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.grid.html#nodebpy.nodes.shader.grid">nodes.shader.grid</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.interpolation">interpolation</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.group.html#nodebpy.nodes.shader.group">nodes.shader.group</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.input.html#nodebpy.nodes.shader.input">nodes.shader.input</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.node">node</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.interface.html#nodebpy.nodes.shader.interface">nodes.shader.interface</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.o_alpha"><code>o_alpha</code></a></td>
+<td>Output socket: Alpha</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.o_color"><code>o_color</code></a></td>
+<td>Output socket: Color</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.projection">projection</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.manual.html#nodebpy.nodes.shader.manual">nodes.shader.manual</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.projection_blend">projection_blend</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/nodes.shader.output.html#nodebpy.nodes.shader.output">nodes.shader.output</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="../reference/nodes.shader.script.html#nodebpy.nodes.shader.script">nodes.shader.script</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.shader.html#nodebpy.nodes.shader.shader">nodes.shader.shader</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.texture.html#nodebpy.nodes.shader.texture">nodes.shader.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.shader.vector.html#nodebpy.nodes.shader.vector">nodes.shader.vector</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.shader.zone.html#nodebpy.nodes.shader.zone">nodes.shader.zone</a></td>
+<td><a href="#nodebpy.nodes.shader.texture.ImageTexture.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="compositor-nodes" class="level2">
-<h2 class="anchored" data-anchor-id="compositor-nodes">Compositor Nodes</h2>
-<p>Nodes for use in the compositor</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.color.html#nodebpy.nodes.compositor.color">nodes.compositor.color</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.converter.html#nodebpy.nodes.compositor.converter">nodes.compositor.converter</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.distort.html#nodebpy.nodes.compositor.distort">nodes.compositor.distort</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.filter.html#nodebpy.nodes.compositor.filter">nodes.compositor.filter</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.group.html#nodebpy.nodes.compositor.group">nodes.compositor.group</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.input.html#nodebpy.nodes.compositor.input">nodes.compositor.input</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.interface.html#nodebpy.nodes.compositor.interface">nodes.compositor.interface</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.manual.html#nodebpy.nodes.compositor.manual">nodes.compositor.manual</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.matte.html#nodebpy.nodes.compositor.matte">nodes.compositor.matte</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.output.html#nodebpy.nodes.compositor.output">nodes.compositor.output</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="../reference/nodes.compositor.texture.html#nodebpy.nodes.compositor.texture">nodes.compositor.texture</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="../reference/nodes.compositor.vector.html#nodebpy.nodes.compositor.vector">nodes.compositor.vector</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 </section>
-<section id="internals" class="level2">
-<h2 class="anchored" data-anchor-id="internals">Internals</h2>
-<p>Internal nodes used by nodebpy</p>
+<section id="nodebpy.nodes.shader.texture.SkyTexture" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.SkyTexture">SkyTexture</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>SkyTexture(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    sky_type<span class="op">=</span><span class="st">'MULTIPLE_SCATTERING'</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    sun_disc<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    sun_size<span class="op">=</span><span class="fl">0.01</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    sun_intensity<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    sun_elevation<span class="op">=</span><span class="fl">0.262</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    sun_rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    altitude<span class="op">=</span><span class="fl">100.0</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    air_density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    aerosol_density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    ozone_density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    sun_direction<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    turbidity<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    ground_albedo<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a procedural sky texture</p>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td><a href="../reference/TreeBuilder.html#nodebpy.TreeBuilder">TreeBuilder</a></td>
-<td>Builder for creating Blender node trees with a clean Python API.</td>
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.aerosol_density">aerosol_density</a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="../reference/builder.NodeBuilder.html#nodebpy.builder.NodeBuilder">builder.NodeBuilder</a></td>
-<td>Base class for all geometry node wrappers.</td>
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.air_density">air_density</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.altitude">altitude</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.ground_albedo">ground_albedo</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.i_vector"><code>i_vector</code></a></td>
+<td>Input socket: Vector</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.name">name</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.o_color"><code>o_color</code></a></td>
+<td>Output socket: Color</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.ozone_density">ozone_density</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.sky_type">sky_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.sun_direction">sun_direction</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.sun_disc">sun_disc</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.sun_elevation">sun_elevation</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.sun_intensity">sun_intensity</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.sun_rotation">sun_rotation</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.sun_size">sun_size</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.tree">tree</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.turbidity">turbidity</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.type">type</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 
 
+</section>
+</section>
 </section>
 </section>
 
@@ -1054,10 +1217,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../reference/nodes.shader.shader.html" class="pagination-link" aria-label="nodes.shader.shader">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.shader.shader</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.geometry.input.html" class="pagination-link" aria-label="nodes.geometry.input">
-        <span class="nav-page-text">nodes.geometry.input</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.shader.vector.html" class="pagination-link" aria-label="nodes.shader.vector">
+        <span class="nav-page-text">nodes.shader.vector</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
