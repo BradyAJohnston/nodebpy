@@ -1292,10 +1292,17 @@ source = { editable = "." }
 bpy = [
     { name = "bpy" },
 ]
+networkx = [
+    { name = "networkx" },
+]
+
+[package.dev-dependencies]
 dev = [
     { name = "fake-bpy-module" },
+    { name = "ipython" },
     { name = "jsondiff" },
     { name = "networkx" },
+    { name = "numpy" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "quarto-cli" },
@@ -1304,41 +1311,28 @@ dev = [
     { name = "syrupy" },
     { name = "tree-clipper" },
 ]
-jupyter = [
-    { name = "ipython" },
-]
-networkx = [
-    { name = "networkx" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "networkx" },
-    { name = "numpy" },
-]
 
 [package.metadata]
 requires-dist = [
     { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.0.1" },
-    { name = "fake-bpy-module", marker = "extra == 'dev'", specifier = ">=20260113" },
-    { name = "ipython", marker = "extra == 'jupyter'", specifier = ">=8.0.0" },
-    { name = "jsondiff", marker = "extra == 'dev'", specifier = ">=2.2.1" },
-    { name = "networkx", marker = "extra == 'dev'", specifier = ">=3.6.1" },
     { name = "networkx", marker = "extra == 'networkx'", specifier = ">=3.6.1" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.2" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=7.0.0" },
-    { name = "quarto-cli", marker = "extra == 'dev'", specifier = ">=1.8.26" },
-    { name = "quartodoc", marker = "extra == 'dev'", specifier = ">=0.11.1" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.11" },
-    { name = "syrupy", marker = "extra == 'dev'", specifier = ">=5.0.0" },
-    { name = "tree-clipper", marker = "extra == 'dev'", specifier = ">=0.1.1" },
 ]
-provides-extras = ["networkx", "bpy", "jupyter", "dev"]
+provides-extras = ["networkx", "bpy"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "fake-bpy-module", specifier = ">=20260113" },
+    { name = "ipython", specifier = ">=8.0.0" },
+    { name = "jsondiff", specifier = ">=2.2.1" },
     { name = "networkx", specifier = ">=3.6.1" },
     { name = "numpy", specifier = "<2.0" },
+    { name = "pytest", specifier = ">=9.0.2" },
+    { name = "pytest-cov", specifier = ">=7.0.0" },
+    { name = "quarto-cli", specifier = ">=1.8.26" },
+    { name = "quartodoc", specifier = ">=0.11.1" },
+    { name = "ruff", specifier = ">=0.14.11" },
+    { name = "syrupy", specifier = ">=5.0.0" },
+    { name = "tree-clipper", specifier = ">=0.1.1" },
 ]
 
 [[package]]
