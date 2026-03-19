@@ -1,0 +1,37 @@
+quartodoc:
+  # the name used to import the package you want to create reference docs for
+  package: nodebpy
+
+  # write sidebar and style data
+  sidebar: reference/_sidebar.yml
+  css: reference/_styles-quartodoc.css
+
+  options:
+    include_attributes: true
+    include_functions: true
+    include_inherited: true
+    include_empty: true
+
+  sections:
+    - title: Geometry Nodes
+      desc: Nodes use in Geometry Nodes trees.
+      contents:
+        - nodes.geometry.input
+        - nodes.geometry.attribute
+        - nodes.geometry.color
+        - nodes.geometry.converter
+        - nodes.geometry.texture
+        - nodes.geometry.grid
+        - nodes.geometry.geometry
+        - nodes.geometry.attribute
+        ####################
+        - nodes.geometry.vector
+        - nodes.geometry.manual
+    - subtitle: Zones in GN
+      contents:
+        - nodes.geometry.zone
+
+    - title: Shader Nodes
+      desc: Nodes use in Material / Shader node trees
+      contents:
+        - nodes.shader
