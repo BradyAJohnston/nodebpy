@@ -569,3 +569,22 @@ def test_add_all_nodes(module, tree_type):
                 ) and method_name not in dir(NodeBuilder):
                     node = getattr(cls, method_name)()
                     assert node.node is not None
+
+
+def test_iter_outputs():
+    with TreeBuilder("IndexSwitch"):
+        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).outputs.values())
+
+    assert len(switch.node.outputs) == 1
+    # 1 input for the index, another for the dynamic socket
+    assert len(switch.node.inputs) == 5
+
+    with TreeBuilder("MultipleOutputs") as tree:
+        for name, output in g.SeparateXYZ(g.Position()).outputs.items():
+            with tree.outputs:
+                _ = output >> socket.SocketFloat(name)
+
+    with TreeBuilder("MenuSwitch") as tree:
+        switch = g.MenuSwitch.float(**g.SeparateXYZ(g.Position()).outputs)
+
+    assert len(switch.inputs) == 5

@@ -337,7 +337,27 @@ def test_menu_switch():
         switch = g.MenuSwitch.float(*range(10))
 
     assert len(switch.node.enum_items) == 10
+    print(
+        [
+            (
+                name,
+                x.socket.default_value if hasattr(x.socket, "default_value") else None,
+            )
+            for name, x in switch.inputs.items()
+        ]
+    )
     assert switch.inputs["Item_5"].socket.default_value == 5
+
+
+def test_menu_switch_menu_connection():
+    with TreeBuilder("AnotherMenuSwitch"):
+        switch = g.MenuSwitch.geometry(
+            cube=g.Cube(), sphere=g.UVSphere(), cone=g.Cone(), menu=g.Switch.menu()
+        )
+    assert switch.inputs["Menu"].links
+    assert switch.inputs["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
+    assert switch.inputs["Menu"].links[0].from_node.input_type == "MENU"
+    assert switch.inputs["Menu"].socket.default_value == "cube"
 
 
 def test_multi_menu():

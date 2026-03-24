@@ -55,6 +55,16 @@ def denormalize_name(attr_name: str) -> str:
     return attr_name.replace("_", " ").title()
 
 
+def _allow_innactive_sockets(node: bpy.types.Node) -> bool:
+    """Returns True if we should allow inactive sockets to be linked for this node type"""
+    return node.bl_idname in (
+        "GeometryNodeIndexSwitch",
+        "GeometryNodeMenuSwitch",
+        "ShaderNodeMixShader",
+        "GeometryNodeSwitch",
+    )
+
+
 class SocketError(Exception):
     """Raised when a socket operation fails."""
 
@@ -350,15 +360,7 @@ class TreeBuilder:
             # the warning message should report which sockets from which nodes were linked and which were innactive
             for socket in [socket1, socket2]:
                 # we want to be loud about it if we end up linking an inactive socket to a node that is not a switch
-                if socket.is_inactive and (
-                    socket.node.bl_idname  # type: ignore
-                    not in (  # type: ignore
-                        "GeometryNodeIndexSwitch",
-                        "GeometryNodeMenuSwitch",
-                        "ShaderNodeMixShader",
-                        "GeometryNodeSwitch",
-                    )
-                ):
+                if socket.is_inactive and not _allow_innactive_sockets(socket.node):
                     message = f"Socket {socket.name} from node {socket.node.name} is inactive."  # type: ignore
                     message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."
                     message += " This link will be created by Blender but ignored when evaluated."
@@ -641,6 +643,27 @@ class NodeBuilder:
                 else:
                     input = self.node.inputs[name.replace("_", "").capitalize()]
                     self._set_input_default_value(input, value)
+
+    @property
+    def outputs(self) -> dict[str, "SocketLinker"]:
+        """Return all visible output sockets as a dict keyed by socket name."""
+        return {
+            output.name: VectorSocketLinker(output)
+            if "NodeSocketVector" in output.bl_idname
+            else SocketLinker(output)
+            for output in self._available_outputs
+        }
+
+    @property
+    def inputs(self) -> dict[str, "SocketLinker"]:
+        """Return all visible input sockets as a dict keyed by socket name."""
+
+        return {
+            input.name: SocketLinker(input)
+            for input in self.node.inputs
+            if _allow_innactive_sockets(self.node)
+            or (not input.is_inactive and input.is_icon_visible)
+        }
 
     def __rshift__(self, other: "NodeBuilder | SocketLinker") -> "NodeBuilder":
         """Chain nodes using >> operator. Links output to input.
