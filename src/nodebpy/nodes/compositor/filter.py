@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -161,9 +161,9 @@ class Blur(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_size(self) -> SocketLinker:
+    def i_size(self) -> VectorSocketLinker:
         """Input socket: Size"""
-        return self._input("Size")
+        return self._input("Size", subtype="Vector")
 
     @property
     def i_type(self) -> SocketLinker:
@@ -448,9 +448,9 @@ class Denoise(NodeBuilder):
         return self._input("Albedo")
 
     @property
-    def i_normal(self) -> SocketLinker:
+    def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self._input("Normal", subtype="Vector")
 
     @property
     def i_hdr(self) -> SocketLinker:
@@ -628,9 +628,9 @@ class DirectionalBlur(NodeBuilder):
         return self._input("Samples")
 
     @property
-    def i_center(self) -> SocketLinker:
+    def i_center(self) -> VectorSocketLinker:
         """Input socket: Center"""
-        return self._input("Center")
+        return self._input("Center", subtype="Vector")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -864,9 +864,9 @@ class Glare(NodeBuilder):
         return self._input("Diagonal Star")
 
     @property
-    def i_sun_position(self) -> SocketLinker:
+    def i_sun_position(self) -> VectorSocketLinker:
         """Input socket: Sun Position"""
-        return self._input("Sun Position")
+        return self._input("Sun Position", subtype="Vector")
 
     @property
     def i_jitter(self) -> SocketLinker:
@@ -1077,9 +1077,9 @@ class VectorBlur(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_speed(self) -> SocketLinker:
+    def i_speed(self) -> VectorSocketLinker:
         """Input socket: Speed"""
-        return self._input("Speed")
+        return self._input("Speed", subtype="Vector")
 
     @property
     def i_z(self) -> SocketLinker:

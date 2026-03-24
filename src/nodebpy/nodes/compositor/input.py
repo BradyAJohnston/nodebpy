@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -167,9 +167,9 @@ class Normal(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal")
+        return self._output("Normal", subtype="Vector")
 
 
 class RenderLayers(NodeBuilder):
@@ -202,24 +202,24 @@ class RenderLayers(NodeBuilder):
         return self._output("Depth")
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal")
+        return self._output("Normal", subtype="Vector")
 
     @property
-    def o_uv(self) -> SocketLinker:
+    def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV")
+        return self._output("UV", subtype="Vector")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self._output("Vector", subtype="Vector")
 
     @property
-    def o_position(self) -> SocketLinker:
+    def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position")
+        return self._output("Position", subtype="Vector")
 
     @property
     def o_deprecated(self) -> SocketLinker:
@@ -455,9 +455,9 @@ class TrackPosition(NodeBuilder):
         return self._output("Y")
 
     @property
-    def o_speed(self) -> SocketLinker:
+    def o_speed(self) -> VectorSocketLinker:
         """Output socket: Speed"""
-        return self._output("Speed")
+        return self._output("Speed", subtype="Vector")
 
     @property
     def tracking_object(self) -> str:

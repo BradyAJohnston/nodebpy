@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -551,9 +551,9 @@ class Mix(NodeBuilder):
         return self._input("Factor_Float")
 
     @property
-    def i_factor_vector(self) -> SocketLinker:
+    def i_factor_vector(self) -> VectorSocketLinker:
         """Input socket: Factor"""
-        return self._input("Factor_Vector")
+        return self._input("Factor_Vector", subtype="Vector")
 
     @property
     def i_a_float(self) -> SocketLinker:
@@ -566,14 +566,14 @@ class Mix(NodeBuilder):
         return self._input("B_Float")
 
     @property
-    def i_a_vector(self) -> SocketLinker:
+    def i_a_vector(self) -> VectorSocketLinker:
         """Input socket: A"""
-        return self._input("A_Vector")
+        return self._input("A_Vector", subtype="Vector")
 
     @property
-    def i_b_vector(self) -> SocketLinker:
+    def i_b_vector(self) -> VectorSocketLinker:
         """Input socket: B"""
-        return self._input("B_Vector")
+        return self._input("B_Vector", subtype="Vector")
 
     @property
     def i_a_color(self) -> SocketLinker:
@@ -601,9 +601,9 @@ class Mix(NodeBuilder):
         return self._output("Result_Float")
 
     @property
-    def o_result_vector(self) -> SocketLinker:
+    def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Vector")
+        return self._output("Result_Vector", subtype="Vector")
 
     @property
     def o_result_color(self) -> SocketLinker:
@@ -770,9 +770,9 @@ class RelativeToPixel(NodeBuilder):
         return cls(data_type="VECTOR", vector_value=vector_value, image=image)
 
     @property
-    def i_vector_value(self) -> SocketLinker:
+    def i_vector_value(self) -> VectorSocketLinker:
         """Input socket: Value"""
-        return self._input("Vector Value")
+        return self._input("Vector Value", subtype="Vector")
 
     @property
     def i_float_value(self) -> SocketLinker:
@@ -790,9 +790,9 @@ class RelativeToPixel(NodeBuilder):
         return self._output("Float Value")
 
     @property
-    def o_vector_value(self) -> SocketLinker:
+    def o_vector_value(self) -> VectorSocketLinker:
         """Output socket: Value"""
-        return self._output("Vector Value")
+        return self._output("Vector Value", subtype="Vector")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR"]:
@@ -945,9 +945,9 @@ class Split(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
     def i_rotation(self) -> SocketLinker:

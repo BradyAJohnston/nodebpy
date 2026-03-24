@@ -11,7 +11,9 @@ class Renderer(MdRenderer):
     style = "_renderer.py"
 
     @dispatch
-    def summarize(self, el: layout.Doc, path: Optional[str] = None, shorten: bool = False):
+    def summarize(
+        self, el: layout.Doc, path: Optional[str] = None, shorten: bool = False
+    ):
         name = el.name
 
         # Wrap i_* and o_* attribute names in code backticks

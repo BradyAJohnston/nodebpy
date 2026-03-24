@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -62,14 +62,14 @@ class BoxMask(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
-    def i_size(self) -> SocketLinker:
+    def i_size(self) -> VectorSocketLinker:
         """Input socket: Size"""
-        return self._input("Size")
+        return self._input("Size", subtype="Vector")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -622,14 +622,14 @@ class EllipseMask(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
-    def i_size(self) -> SocketLinker:
+    def i_size(self) -> VectorSocketLinker:
         """Input socket: Size"""
-        return self._input("Size")
+        return self._input("Size", subtype="Vector")
 
     @property
     def i_rotation(self) -> SocketLinker:

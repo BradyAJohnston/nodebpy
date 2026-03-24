@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_VALUE,
@@ -34,9 +34,9 @@ class EnvironmentTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def o_color(self) -> SocketLinker:
@@ -83,9 +83,9 @@ class IesTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_strength(self) -> SocketLinker:
@@ -140,9 +140,9 @@ class ImageTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def o_color(self) -> SocketLinker:
@@ -233,9 +233,9 @@ class SkyTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def o_color(self) -> SocketLinker:

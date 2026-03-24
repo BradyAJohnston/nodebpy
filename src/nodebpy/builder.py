@@ -557,14 +557,22 @@ class NodeBuilder:
         output_ids = [output.identifier for output in self.node.outputs]
         return output_ids.index(identifier)
 
-    def _input(self, identifier: str) -> SocketLinker:
+    def _input(self, identifier: str, subtype: None = None) -> SocketLinker:
         """Input socket: Vector"""
         input = self.node.inputs[self._input_idx(identifier)]
         return SocketLinker(input)
 
-    def _output(self, identifier: str) -> SocketLinker:
+    def _output(
+        self, identifier: str, subtype: Literal["Vector"] | None = None
+    ) -> SocketLinker | VectorSocketLinker:
         """Output socket: Vector"""
-        return SocketLinker(self.node.outputs[self._output_idx(identifier)])
+        match subtype:
+            case "Vector":
+                return VectorSocketLinker(
+                    self.node.outputs[self._output_idx(identifier)]
+                )
+            case _:
+                return SocketLinker(self.node.outputs[self._output_idx(identifier)])
 
     def _link(
         self, source: LINKABLE | SocketLinker | NodeSocket, target: LINKABLE
@@ -1072,6 +1080,26 @@ class SocketLinker(NodeBuilder):
     @property
     def name(self) -> str:
         return str(self.socket.name)
+
+
+class VectorSocketLinker(SocketLinker):
+    @property
+    def x(self) -> SocketLinker:
+        from .nodes.geometry import SeparateXYZ
+
+        return SeparateXYZ(self).o_x
+
+    @property
+    def y(self) -> SocketLinker:
+        from .nodes.geometry import SeparateXYZ
+
+        return SeparateXYZ(self).o_y
+
+    @property
+    def z(self) -> SocketLinker:
+        from .nodes.geometry import SeparateXYZ
+
+        return SeparateXYZ(self).o_z
 
 
 class SocketBase(SocketLinker):

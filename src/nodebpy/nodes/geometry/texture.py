@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_COLOR,
@@ -61,9 +61,9 @@ class BrickTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_color1(self) -> SocketLinker:
@@ -179,9 +179,9 @@ class CheckerTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_color1(self) -> SocketLinker:
@@ -241,9 +241,9 @@ class GaborTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -266,9 +266,9 @@ class GaborTexture(NodeBuilder):
         return self._input("Orientation 2D")
 
     @property
-    def i_orientation_3d(self) -> SocketLinker:
+    def i_orientation_3d(self) -> VectorSocketLinker:
         """Input socket: Orientation"""
-        return self._input("Orientation 3D")
+        return self._input("Orientation 3D", subtype="Vector")
 
     @property
     def o_value(self) -> SocketLinker:
@@ -322,9 +322,9 @@ class GradientTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def o_color(self) -> SocketLinker:
@@ -395,9 +395,9 @@ class ImageTexture(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_frame(self) -> SocketLinker:
@@ -453,9 +453,9 @@ class MagicTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -534,9 +534,9 @@ class NoiseTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_w(self) -> SocketLinker:
@@ -678,9 +678,9 @@ class VoronoiTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_w(self) -> SocketLinker:
@@ -733,9 +733,9 @@ class VoronoiTexture(NodeBuilder):
         return self._output("Color")
 
     @property
-    def o_position(self) -> SocketLinker:
+    def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position")
+        return self._output("Position", subtype="Vector")
 
     @property
     def o_w(self) -> SocketLinker:
@@ -827,9 +827,9 @@ class WaveTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -925,9 +925,9 @@ class WhiteNoiseTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_w(self) -> SocketLinker:

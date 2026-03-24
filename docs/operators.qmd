@@ -109,6 +109,14 @@ with TreeBuilder("SwitchDemo") as tree:
 
 tree
 ```
+```{python}
+with TreeBuilder("SwitchDemo") as tree:
+    v = g.Value(5.0)
+    pos = g.Position().o_position
+    result = g.Switch.float(pos.z > v, g.RandomValue.float(), 5.0 ** g.Value(10.0))
+
+tree
+```
 
 ## Boolean Operators
 

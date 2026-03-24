@@ -214,10 +214,22 @@ class SocketInfo:
         if self.description != "":
             description += f"\n        {self.description}\n        "
 
+        return_type = (
+            "VectorSocketLinker"
+            if "NodeSocketVector" in self.bl_socket_type
+            else "SocketLinker"
+        )
+
+        return_value = "self._{}('{}'{})".format(
+            "output" if self.is_output else "input",
+            self.identifier,
+            ', subtype="Vector"' if "NodeSocketVector" in self.bl_socket_type else "",
+        )
+
         return f'''    @property
-    def {prop_name}(self) -> SocketLinker:
+    def {prop_name}(self) -> {return_type}:
         """{description}"""
-        return self._{"output" if self.is_output else "input"}("{self.identifier}")
+        return {return_value}
 '''
 
 
@@ -940,6 +952,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     builder_imports = ["NodeBuilder"]
     if has_sockets:
         builder_imports.append("SocketLinker")
+        builder_imports.append("VectorSocketLinker")
     lines.append(f"from ...builder import {', '.join(builder_imports)}")
 
     # Types imports — use canonical order matching the type_map

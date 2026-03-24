@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -142,9 +142,9 @@ class AdvectGrid(NodeBuilder):
         return self._input("Grid")
 
     @property
-    def i_velocity(self) -> SocketLinker:
+    def i_velocity(self) -> VectorSocketLinker:
         """Input socket: Velocity"""
-        return self._input("Velocity")
+        return self._input("Velocity", subtype="Vector")
 
     @property
     def i_time_step(self) -> SocketLinker:
@@ -220,9 +220,9 @@ class DistributePointsInGrid(NodeBuilder):
         return self._input("Seed")
 
     @property
-    def i_spacing(self) -> SocketLinker:
+    def i_spacing(self) -> VectorSocketLinker:
         """Input socket: Spacing"""
-        return self._input("Spacing")
+        return self._input("Spacing", subtype="Vector")
 
     @property
     def i_threshold(self) -> SocketLinker:
@@ -293,9 +293,9 @@ class DistributePointsInVolume(NodeBuilder):
         return self._input("Seed")
 
     @property
-    def i_spacing(self) -> SocketLinker:
+    def i_spacing(self) -> VectorSocketLinker:
         """Input socket: Spacing"""
-        return self._input("Spacing")
+        return self._input("Spacing", subtype="Vector")
 
     @property
     def i_threshold(self) -> SocketLinker:
@@ -418,14 +418,14 @@ class GridCurl(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grid(self) -> SocketLinker:
+    def i_grid(self) -> VectorSocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self._input("Grid", subtype="Vector")
 
     @property
-    def o_curl(self) -> SocketLinker:
+    def o_curl(self) -> VectorSocketLinker:
         """Output socket: Curl"""
-        return self._output("Curl")
+        return self._output("Curl", subtype="Vector")
 
 
 class GridDivergence(NodeBuilder):
@@ -443,9 +443,9 @@ class GridDivergence(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grid(self) -> SocketLinker:
+    def i_grid(self) -> VectorSocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self._input("Grid", subtype="Vector")
 
     @property
     def o_divergence(self) -> SocketLinker:
@@ -473,9 +473,9 @@ class GridGradient(NodeBuilder):
         return self._input("Grid")
 
     @property
-    def o_gradient(self) -> SocketLinker:
+    def o_gradient(self) -> VectorSocketLinker:
         """Output socket: Gradient"""
-        return self._output("Gradient")
+        return self._output("Gradient", subtype="Vector")
 
 
 class GridInfo(NodeBuilder):
@@ -1258,9 +1258,9 @@ class SampleGrid(NodeBuilder):
         return self._input("Grid")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
     def i_interpolation(self) -> SocketLinker:
@@ -1662,14 +1662,14 @@ class VolumeCube(NodeBuilder):
         return self._input("Background")
 
     @property
-    def i_min(self) -> SocketLinker:
+    def i_min(self) -> VectorSocketLinker:
         """Input socket: Min"""
-        return self._input("Min")
+        return self._input("Min", subtype="Vector")
 
     @property
-    def i_max(self) -> SocketLinker:
+    def i_max(self) -> VectorSocketLinker:
         """Input socket: Max"""
-        return self._input("Max")
+        return self._input("Max", subtype="Vector")
 
     @property
     def i_resolution_x(self) -> SocketLinker:

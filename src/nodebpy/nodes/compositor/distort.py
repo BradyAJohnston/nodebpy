@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -56,24 +56,24 @@ class CornerPin(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_upper_left(self) -> SocketLinker:
+    def i_upper_left(self) -> VectorSocketLinker:
         """Input socket: Upper Left"""
-        return self._input("Upper Left")
+        return self._input("Upper Left", subtype="Vector")
 
     @property
-    def i_upper_right(self) -> SocketLinker:
+    def i_upper_right(self) -> VectorSocketLinker:
         """Input socket: Upper Right"""
-        return self._input("Upper Right")
+        return self._input("Upper Right", subtype="Vector")
 
     @property
-    def i_lower_left(self) -> SocketLinker:
+    def i_lower_left(self) -> VectorSocketLinker:
         """Input socket: Lower Left"""
-        return self._input("Lower Left")
+        return self._input("Lower Left", subtype="Vector")
 
     @property
-    def i_lower_right(self) -> SocketLinker:
+    def i_lower_right(self) -> VectorSocketLinker:
         """Input socket: Lower Right"""
-        return self._input("Lower Right")
+        return self._input("Lower Right", subtype="Vector")
 
     @property
     def i_interpolation(self) -> SocketLinker:
@@ -200,9 +200,9 @@ class Displace(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_displacement(self) -> SocketLinker:
+    def i_displacement(self) -> VectorSocketLinker:
         """Input socket: Displacement"""
-        return self._input("Displacement")
+        return self._input("Displacement", subtype="Vector")
 
     @property
     def i_interpolation(self) -> SocketLinker:
@@ -364,9 +364,9 @@ class MapUV(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_uv(self) -> SocketLinker:
+    def i_uv(self) -> VectorSocketLinker:
         """Input socket: UV"""
-        return self._input("UV")
+        return self._input("UV", subtype="Vector")
 
     @property
     def i_interpolation(self) -> SocketLinker:

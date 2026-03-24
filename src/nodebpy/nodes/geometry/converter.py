@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -60,9 +60,9 @@ class AlignRotationToVector(NodeBuilder):
         return self._input("Factor")
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -109,14 +109,14 @@ class AxesToRotation(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_primary_axis(self) -> SocketLinker:
+    def i_primary_axis(self) -> VectorSocketLinker:
         """Input socket: Primary Axis"""
-        return self._input("Primary Axis")
+        return self._input("Primary Axis", subtype="Vector")
 
     @property
-    def i_secondary_axis(self) -> SocketLinker:
+    def i_secondary_axis(self) -> VectorSocketLinker:
         """Input socket: Secondary Axis"""
-        return self._input("Secondary Axis")
+        return self._input("Secondary Axis", subtype="Vector")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -159,9 +159,9 @@ class AxisAngleToRotation(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_axis(self) -> SocketLinker:
+    def i_axis(self) -> VectorSocketLinker:
         """Input socket: Axis"""
-        return self._input("Axis")
+        return self._input("Axis", subtype="Vector")
 
     @property
     def i_angle(self) -> SocketLinker:
@@ -728,9 +728,9 @@ class CombineTransform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_translation(self) -> SocketLinker:
+    def i_translation(self) -> VectorSocketLinker:
         """Input socket: Translation"""
-        return self._input("Translation")
+        return self._input("Translation", subtype="Vector")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -738,9 +738,9 @@ class CombineTransform(NodeBuilder):
         return self._input("Rotation")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> VectorSocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self._input("Scale", subtype="Vector")
 
     @property
     def o_transform(self) -> SocketLinker:
@@ -783,9 +783,9 @@ class CombineXYZ(NodeBuilder):
         return self._input("Z")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self._output("Vector", subtype="Vector")
 
 
 class EulerToRotation(NodeBuilder):
@@ -803,9 +803,9 @@ class EulerToRotation(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_euler(self) -> SocketLinker:
+    def i_euler(self) -> VectorSocketLinker:
         """Input socket: Euler"""
-        return self._input("Euler")
+        return self._input("Euler", subtype="Vector")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -1045,9 +1045,9 @@ class IndexOfNearest(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
     def i_group_id(self) -> SocketLinker:
@@ -1503,34 +1503,34 @@ class MapRange(NodeBuilder):
         return self._input("Steps")
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
-    def i_from_min_float3(self) -> SocketLinker:
+    def i_from_min_float3(self) -> VectorSocketLinker:
         """Input socket: From Min"""
-        return self._input("From_Min_FLOAT3")
+        return self._input("From_Min_FLOAT3", subtype="Vector")
 
     @property
-    def i_from_max_float3(self) -> SocketLinker:
+    def i_from_max_float3(self) -> VectorSocketLinker:
         """Input socket: From Max"""
-        return self._input("From_Max_FLOAT3")
+        return self._input("From_Max_FLOAT3", subtype="Vector")
 
     @property
-    def i_to_min_float3(self) -> SocketLinker:
+    def i_to_min_float3(self) -> VectorSocketLinker:
         """Input socket: To Min"""
-        return self._input("To_Min_FLOAT3")
+        return self._input("To_Min_FLOAT3", subtype="Vector")
 
     @property
-    def i_to_max_float3(self) -> SocketLinker:
+    def i_to_max_float3(self) -> VectorSocketLinker:
         """Input socket: To Max"""
-        return self._input("To_Max_FLOAT3")
+        return self._input("To_Max_FLOAT3", subtype="Vector")
 
     @property
-    def i_steps_float3(self) -> SocketLinker:
+    def i_steps_float3(self) -> VectorSocketLinker:
         """Input socket: Steps"""
-        return self._input("Steps_FLOAT3")
+        return self._input("Steps_FLOAT3", subtype="Vector")
 
     @property
     def o_result(self) -> SocketLinker:
@@ -1538,9 +1538,9 @@ class MapRange(NodeBuilder):
         return self._output("Result")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self._output("Vector", subtype="Vector")
 
     @property
     def clamp(self) -> bool:
@@ -2227,9 +2227,9 @@ class Mix(NodeBuilder):
         return self._input("Factor_Float")
 
     @property
-    def i_factor_vector(self) -> SocketLinker:
+    def i_factor_vector(self) -> VectorSocketLinker:
         """Input socket: Factor"""
-        return self._input("Factor_Vector")
+        return self._input("Factor_Vector", subtype="Vector")
 
     @property
     def i_a_float(self) -> SocketLinker:
@@ -2242,14 +2242,14 @@ class Mix(NodeBuilder):
         return self._input("B_Float")
 
     @property
-    def i_a_vector(self) -> SocketLinker:
+    def i_a_vector(self) -> VectorSocketLinker:
         """Input socket: A"""
-        return self._input("A_Vector")
+        return self._input("A_Vector", subtype="Vector")
 
     @property
-    def i_b_vector(self) -> SocketLinker:
+    def i_b_vector(self) -> VectorSocketLinker:
         """Input socket: B"""
-        return self._input("B_Vector")
+        return self._input("B_Vector", subtype="Vector")
 
     @property
     def i_a_color(self) -> SocketLinker:
@@ -2277,9 +2277,9 @@ class Mix(NodeBuilder):
         return self._output("Result_Float")
 
     @property
-    def o_result_vector(self) -> SocketLinker:
+    def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Vector")
+        return self._output("Result_Vector", subtype="Vector")
 
     @property
     def o_result_color(self) -> SocketLinker:
@@ -2440,9 +2440,9 @@ class PackUVIslands(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_uv(self) -> SocketLinker:
+    def i_uv(self) -> VectorSocketLinker:
         """Input socket: UV"""
-        return self._input("UV")
+        return self._input("UV", subtype="Vector")
 
     @property
     def i_selection(self) -> SocketLinker:
@@ -2465,9 +2465,9 @@ class PackUVIslands(NodeBuilder):
         return self._input("Method")
 
     @property
-    def o_uv(self) -> SocketLinker:
+    def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV")
+        return self._output("UV", subtype="Vector")
 
 
 class ProjectPoint(NodeBuilder):
@@ -2489,9 +2489,9 @@ class ProjectPoint(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_transform(self) -> SocketLinker:
@@ -2499,9 +2499,9 @@ class ProjectPoint(NodeBuilder):
         return self._input("Transform")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self._output("Vector", subtype="Vector")
 
 
 class QuaternionToRotation(NodeBuilder):
@@ -2631,14 +2631,14 @@ class RandomValue(NodeBuilder):
         return cls(data_type="FLOAT_VECTOR", min=min, max=max, id=id, seed=seed)
 
     @property
-    def i_min(self) -> SocketLinker:
+    def i_min(self) -> VectorSocketLinker:
         """Input socket: Min"""
-        return self._input("Min")
+        return self._input("Min", subtype="Vector")
 
     @property
-    def i_max(self) -> SocketLinker:
+    def i_max(self) -> VectorSocketLinker:
         """Input socket: Max"""
-        return self._input("Max")
+        return self._input("Max", subtype="Vector")
 
     @property
     def i_min_001(self) -> SocketLinker:
@@ -2676,9 +2676,9 @@ class RandomValue(NodeBuilder):
         return self._input("Seed")
 
     @property
-    def o_value(self) -> SocketLinker:
+    def o_value(self) -> VectorSocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self._output("Value", subtype="Vector")
 
     @property
     def o_value_001(self) -> SocketLinker:
@@ -2774,19 +2774,19 @@ class RotateEuler(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_rotation(self) -> SocketLinker:
+    def i_rotation(self) -> VectorSocketLinker:
         """Input socket: Rotation"""
-        return self._input("Rotation")
+        return self._input("Rotation", subtype="Vector")
 
     @property
-    def i_rotate_by(self) -> SocketLinker:
+    def i_rotate_by(self) -> VectorSocketLinker:
         """Input socket: Rotate By"""
-        return self._input("Rotate By")
+        return self._input("Rotate By", subtype="Vector")
 
     @property
-    def i_axis(self) -> SocketLinker:
+    def i_axis(self) -> VectorSocketLinker:
         """Input socket: Axis"""
-        return self._input("Axis")
+        return self._input("Axis", subtype="Vector")
 
     @property
     def i_angle(self) -> SocketLinker:
@@ -2794,9 +2794,9 @@ class RotateEuler(NodeBuilder):
         return self._input("Angle")
 
     @property
-    def o_rotation(self) -> SocketLinker:
+    def o_rotation(self) -> VectorSocketLinker:
         """Output socket: Rotation"""
-        return self._output("Rotation")
+        return self._output("Rotation", subtype="Vector")
 
     @property
     def rotation_type(self) -> Literal["AXIS_ANGLE", "EULER"]:
@@ -2878,9 +2878,9 @@ class RotateVector(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -2888,9 +2888,9 @@ class RotateVector(NodeBuilder):
         return self._input("Rotation")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self._output("Vector", subtype="Vector")
 
 
 class RotationToAxisAngle(NodeBuilder):
@@ -2913,9 +2913,9 @@ class RotationToAxisAngle(NodeBuilder):
         return self._input("Rotation")
 
     @property
-    def o_axis(self) -> SocketLinker:
+    def o_axis(self) -> VectorSocketLinker:
         """Output socket: Axis"""
-        return self._output("Axis")
+        return self._output("Axis", subtype="Vector")
 
     @property
     def o_angle(self) -> SocketLinker:
@@ -2943,9 +2943,9 @@ class RotationToEuler(NodeBuilder):
         return self._input("Rotation")
 
     @property
-    def o_euler(self) -> SocketLinker:
+    def o_euler(self) -> VectorSocketLinker:
         """Output socket: Euler"""
-        return self._output("Euler")
+        return self._output("Euler", subtype="Vector")
 
 
 class RotationToQuaternion(NodeBuilder):
@@ -3194,9 +3194,9 @@ class SeparateTransform(NodeBuilder):
         return self._input("Transform")
 
     @property
-    def o_translation(self) -> SocketLinker:
+    def o_translation(self) -> VectorSocketLinker:
         """Output socket: Translation"""
-        return self._output("Translation")
+        return self._output("Translation", subtype="Vector")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -3204,9 +3204,9 @@ class SeparateTransform(NodeBuilder):
         return self._output("Rotation")
 
     @property
-    def o_scale(self) -> SocketLinker:
+    def o_scale(self) -> VectorSocketLinker:
         """Output socket: Scale"""
-        return self._output("Scale")
+        return self._output("Scale", subtype="Vector")
 
 
 class SeparateXYZ(NodeBuilder):
@@ -3224,9 +3224,9 @@ class SeparateXYZ(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def o_x(self) -> SocketLinker:
@@ -3647,9 +3647,9 @@ class TransformDirection(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_direction(self) -> SocketLinker:
+    def i_direction(self) -> VectorSocketLinker:
         """Input socket: Direction"""
-        return self._input("Direction")
+        return self._input("Direction", subtype="Vector")
 
     @property
     def i_transform(self) -> SocketLinker:
@@ -3657,9 +3657,9 @@ class TransformDirection(NodeBuilder):
         return self._input("Transform")
 
     @property
-    def o_direction(self) -> SocketLinker:
+    def o_direction(self) -> VectorSocketLinker:
         """Output socket: Direction"""
-        return self._output("Direction")
+        return self._output("Direction", subtype="Vector")
 
 
 class TransformPoint(NodeBuilder):
@@ -3681,9 +3681,9 @@ class TransformPoint(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self._input("Vector", subtype="Vector")
 
     @property
     def i_transform(self) -> SocketLinker:
@@ -3691,9 +3691,9 @@ class TransformPoint(NodeBuilder):
         return self._input("Transform")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self._output("Vector", subtype="Vector")
 
 
 class TransposeMatrix(NodeBuilder):
@@ -3774,9 +3774,9 @@ class UVUnwrap(NodeBuilder):
         return self._input("Method")
 
     @property
-    def o_uv(self) -> SocketLinker:
+    def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV")
+        return self._output("UV", subtype="Vector")
 
 
 class ValueToString(NodeBuilder):

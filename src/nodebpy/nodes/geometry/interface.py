@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -61,14 +61,14 @@ class DialGizmo(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
-    def i_up(self) -> SocketLinker:
+    def i_up(self) -> VectorSocketLinker:
         """Input socket: Up"""
-        return self._input("Up")
+        return self._input("Up", subtype="Vector")
 
     @property
     def i_screen_space(self) -> SocketLinker:
@@ -373,14 +373,14 @@ class LinearGizmo(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
-    def i_direction(self) -> SocketLinker:
+    def i_direction(self) -> VectorSocketLinker:
         """Input socket: Direction"""
-        return self._input("Direction")
+        return self._input("Direction", subtype="Vector")
 
     @property
     def o_transform(self) -> SocketLinker:
@@ -447,9 +447,9 @@ class TransformGizmo(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
     def i_rotation(self) -> SocketLinker:

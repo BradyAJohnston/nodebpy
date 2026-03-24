@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -66,19 +66,19 @@ class Arc(NodeBuilder):
         return self._input("Resolution")
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> VectorSocketLinker:
         """Input socket: Start"""
-        return self._input("Start")
+        return self._input("Start", subtype="Vector")
 
     @property
-    def i_middle(self) -> SocketLinker:
+    def i_middle(self) -> VectorSocketLinker:
         """Input socket: Middle"""
-        return self._input("Middle")
+        return self._input("Middle", subtype="Vector")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> VectorSocketLinker:
         """Input socket: End"""
-        return self._input("End")
+        return self._input("End", subtype="Vector")
 
     @property
     def i_radius(self) -> SocketLinker:
@@ -116,14 +116,14 @@ class Arc(NodeBuilder):
         return self._output("Curve")
 
     @property
-    def o_center(self) -> SocketLinker:
+    def o_center(self) -> VectorSocketLinker:
         """Output socket: Center"""
-        return self._output("Center")
+        return self._output("Center", subtype="Vector")
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal")
+        return self._output("Normal", subtype="Vector")
 
     @property
     def o_radius(self) -> SocketLinker:
@@ -173,14 +173,14 @@ class BoundingBox(NodeBuilder):
         return self._output("Bounding Box")
 
     @property
-    def o_min(self) -> SocketLinker:
+    def o_min(self) -> VectorSocketLinker:
         """Output socket: Min"""
-        return self._output("Min")
+        return self._output("Min", subtype="Vector")
 
     @property
-    def o_max(self) -> SocketLinker:
+    def o_max(self) -> VectorSocketLinker:
         """Output socket: Max"""
-        return self._output("Max")
+        return self._output("Max", subtype="Vector")
 
 
 class BezierSegment(NodeBuilder):
@@ -218,24 +218,24 @@ class BezierSegment(NodeBuilder):
         return self._input("Resolution")
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> VectorSocketLinker:
         """Input socket: Start"""
-        return self._input("Start")
+        return self._input("Start", subtype="Vector")
 
     @property
-    def i_start_handle(self) -> SocketLinker:
+    def i_start_handle(self) -> VectorSocketLinker:
         """Input socket: Start Handle"""
-        return self._input("Start Handle")
+        return self._input("Start Handle", subtype="Vector")
 
     @property
-    def i_end_handle(self) -> SocketLinker:
+    def i_end_handle(self) -> VectorSocketLinker:
         """Input socket: End Handle"""
-        return self._input("End Handle")
+        return self._input("End Handle", subtype="Vector")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> VectorSocketLinker:
         """Input socket: End"""
-        return self._input("End")
+        return self._input("End", subtype="Vector")
 
     @property
     def o_curve(self) -> SocketLinker:
@@ -333,9 +333,9 @@ class Cone(NodeBuilder):
         return self._output("Side")
 
     @property
-    def o_uv_map(self) -> SocketLinker:
+    def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map")
+        return self._output("UV Map", subtype="Vector")
 
     @property
     def fill_type(self) -> Literal["NONE", "NGON", "TRIANGLE_FAN"]:
@@ -397,9 +397,9 @@ class Cube(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_size(self) -> SocketLinker:
+    def i_size(self) -> VectorSocketLinker:
         """Input socket: Size"""
-        return self._input("Size")
+        return self._input("Size", subtype="Vector")
 
     @property
     def i_vertices_x(self) -> SocketLinker:
@@ -422,9 +422,9 @@ class Cube(NodeBuilder):
         return self._output("Mesh")
 
     @property
-    def o_uv_map(self) -> SocketLinker:
+    def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map")
+        return self._output("UV Map", subtype="Vector")
 
 
 class CurveCircle(NodeBuilder):
@@ -462,19 +462,19 @@ class CurveCircle(NodeBuilder):
         return self._input("Resolution")
 
     @property
-    def i_point_1(self) -> SocketLinker:
+    def i_point_1(self) -> VectorSocketLinker:
         """Input socket: Point 1"""
-        return self._input("Point 1")
+        return self._input("Point 1", subtype="Vector")
 
     @property
-    def i_point_2(self) -> SocketLinker:
+    def i_point_2(self) -> VectorSocketLinker:
         """Input socket: Point 2"""
-        return self._input("Point 2")
+        return self._input("Point 2", subtype="Vector")
 
     @property
-    def i_point_3(self) -> SocketLinker:
+    def i_point_3(self) -> VectorSocketLinker:
         """Input socket: Point 3"""
-        return self._input("Point 3")
+        return self._input("Point 3", subtype="Vector")
 
     @property
     def i_radius(self) -> SocketLinker:
@@ -487,9 +487,9 @@ class CurveCircle(NodeBuilder):
         return self._output("Curve")
 
     @property
-    def o_center(self) -> SocketLinker:
+    def o_center(self) -> VectorSocketLinker:
         """Output socket: Center"""
-        return self._output("Center")
+        return self._output("Center", subtype="Vector")
 
     @property
     def mode(self) -> Literal["POINTS", "RADIUS"]:
@@ -553,19 +553,19 @@ class CurveLine(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> VectorSocketLinker:
         """Input socket: Start"""
-        return self._input("Start")
+        return self._input("Start", subtype="Vector")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> VectorSocketLinker:
         """Input socket: End"""
-        return self._input("End")
+        return self._input("End", subtype="Vector")
 
     @property
-    def i_direction(self) -> SocketLinker:
+    def i_direction(self) -> VectorSocketLinker:
         """Input socket: Direction"""
-        return self._input("Direction")
+        return self._input("Direction", subtype="Vector")
 
     @property
     def i_length(self) -> SocketLinker:
@@ -679,14 +679,14 @@ class CurveToPoints(NodeBuilder):
         return self._output("Points")
 
     @property
-    def o_tangent(self) -> SocketLinker:
+    def o_tangent(self) -> VectorSocketLinker:
         """Output socket: Tangent"""
-        return self._output("Tangent")
+        return self._output("Tangent", subtype="Vector")
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal")
+        return self._output("Normal", subtype="Vector")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -821,9 +821,9 @@ class Cylinder(NodeBuilder):
         return self._output("Bottom")
 
     @property
-    def o_uv_map(self) -> SocketLinker:
+    def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map")
+        return self._output("UV Map", subtype="Vector")
 
     @property
     def fill_type(self) -> Literal["NONE", "NGON", "TRIANGLE_FAN"]:
@@ -1035,9 +1035,9 @@ class DistributePointsOnFaces(NodeBuilder):
         return self._output("Points")
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal")
+        return self._output("Normal", subtype="Vector")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -1306,9 +1306,9 @@ class ExtrudeMesh(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> VectorSocketLinker:
         """Input socket: Offset"""
-        return self._input("Offset")
+        return self._input("Offset", subtype="Vector")
 
     @property
     def i_offset_scale(self) -> SocketLinker:
@@ -1514,9 +1514,9 @@ class GeometryProximity(NodeBuilder):
         return self._input("Group ID")
 
     @property
-    def i_source_position(self) -> SocketLinker:
+    def i_source_position(self) -> VectorSocketLinker:
         """Input socket: Sample Position"""
-        return self._input("Source Position")
+        return self._input("Source Position", subtype="Vector")
 
     @property
     def i_sample_group_id(self) -> SocketLinker:
@@ -1524,9 +1524,9 @@ class GeometryProximity(NodeBuilder):
         return self._input("Sample Group ID")
 
     @property
-    def o_position(self) -> SocketLinker:
+    def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position")
+        return self._output("Position", subtype="Vector")
 
     @property
     def o_distance(self) -> SocketLinker:
@@ -1642,9 +1642,9 @@ class Grid(NodeBuilder):
         return self._output("Mesh")
 
     @property
-    def o_uv_map(self) -> SocketLinker:
+    def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map")
+        return self._output("UV Map", subtype="Vector")
 
 
 class IcoSphere(NodeBuilder):
@@ -1681,9 +1681,9 @@ class IcoSphere(NodeBuilder):
         return self._output("Mesh")
 
     @property
-    def o_uv_map(self) -> SocketLinker:
+    def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map")
+        return self._output("UV Map", subtype="Vector")
 
 
 class InstanceOnPoints(NodeBuilder):
@@ -1748,9 +1748,9 @@ class InstanceOnPoints(NodeBuilder):
         return self._input("Rotation")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> VectorSocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self._input("Scale", subtype="Vector")
 
     @property
     def o_instances(self) -> SocketLinker:
@@ -1795,9 +1795,9 @@ class InstancesToPoints(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
     def i_radius(self) -> SocketLinker:
@@ -1847,9 +1847,9 @@ class InterpolateCurves(NodeBuilder):
         return self._input("Guide Curves")
 
     @property
-    def i_guide_up(self) -> SocketLinker:
+    def i_guide_up(self) -> VectorSocketLinker:
         """Input socket: Guide Up"""
-        return self._input("Guide Up")
+        return self._input("Guide Up", subtype="Vector")
 
     @property
     def i_guide_group_id(self) -> SocketLinker:
@@ -1862,9 +1862,9 @@ class InterpolateCurves(NodeBuilder):
         return self._input("Points")
 
     @property
-    def i_point_up(self) -> SocketLinker:
+    def i_point_up(self) -> VectorSocketLinker:
         """Input socket: Point Up"""
-        return self._input("Point Up")
+        return self._input("Point Up", subtype="Vector")
 
     @property
     def i_point_group_id(self) -> SocketLinker:
@@ -2199,14 +2199,14 @@ class MeshLine(NodeBuilder):
         return self._input("Resolution")
 
     @property
-    def i_start_location(self) -> SocketLinker:
+    def i_start_location(self) -> VectorSocketLinker:
         """Input socket: Start Location"""
-        return self._input("Start Location")
+        return self._input("Start Location", subtype="Vector")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> VectorSocketLinker:
         """Input socket: Offset"""
-        return self._input("Offset")
+        return self._input("Offset", subtype="Vector")
 
     @property
     def o_mesh(self) -> SocketLinker:
@@ -2312,9 +2312,9 @@ class MeshToPoints(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
     def i_radius(self) -> SocketLinker:
@@ -2360,9 +2360,9 @@ class Points(NodeBuilder):
         return self._input("Count")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
     def i_radius(self) -> SocketLinker:
@@ -2484,19 +2484,19 @@ class QuadraticBezier(NodeBuilder):
         return self._input("Resolution")
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> VectorSocketLinker:
         """Input socket: Start"""
-        return self._input("Start")
+        return self._input("Start", subtype="Vector")
 
     @property
-    def i_middle(self) -> SocketLinker:
+    def i_middle(self) -> VectorSocketLinker:
         """Input socket: Middle"""
-        return self._input("Middle")
+        return self._input("Middle", subtype="Vector")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> VectorSocketLinker:
         """Input socket: End"""
-        return self._input("End")
+        return self._input("End", subtype="Vector")
 
     @property
     def o_curve(self) -> SocketLinker:
@@ -2583,24 +2583,24 @@ class Quadrilateral(NodeBuilder):
         return self._input("Top Height")
 
     @property
-    def i_point_1(self) -> SocketLinker:
+    def i_point_1(self) -> VectorSocketLinker:
         """Input socket: Point 1"""
-        return self._input("Point 1")
+        return self._input("Point 1", subtype="Vector")
 
     @property
-    def i_point_2(self) -> SocketLinker:
+    def i_point_2(self) -> VectorSocketLinker:
         """Input socket: Point 2"""
-        return self._input("Point 2")
+        return self._input("Point 2", subtype="Vector")
 
     @property
-    def i_point_3(self) -> SocketLinker:
+    def i_point_3(self) -> VectorSocketLinker:
         """Input socket: Point 3"""
-        return self._input("Point 3")
+        return self._input("Point 3", subtype="Vector")
 
     @property
-    def i_point_4(self) -> SocketLinker:
+    def i_point_4(self) -> VectorSocketLinker:
         """Input socket: Point 4"""
-        return self._input("Point 4")
+        return self._input("Point 4", subtype="Vector")
 
     @property
     def o_curve(self) -> SocketLinker:
@@ -2831,14 +2831,14 @@ class Raycast(NodeBuilder):
         return self._input("Interpolation")
 
     @property
-    def i_source_position(self) -> SocketLinker:
+    def i_source_position(self) -> VectorSocketLinker:
         """Input socket: Source Position"""
-        return self._input("Source Position")
+        return self._input("Source Position", subtype="Vector")
 
     @property
-    def i_ray_direction(self) -> SocketLinker:
+    def i_ray_direction(self) -> VectorSocketLinker:
         """Input socket: Ray Direction"""
-        return self._input("Ray Direction")
+        return self._input("Ray Direction", subtype="Vector")
 
     @property
     def i_ray_length(self) -> SocketLinker:
@@ -2851,14 +2851,14 @@ class Raycast(NodeBuilder):
         return self._output("Is Hit")
 
     @property
-    def o_hit_position(self) -> SocketLinker:
+    def o_hit_position(self) -> VectorSocketLinker:
         """Output socket: Hit Position"""
-        return self._output("Hit Position")
+        return self._output("Hit Position", subtype="Vector")
 
     @property
-    def o_hit_normal(self) -> SocketLinker:
+    def o_hit_normal(self) -> VectorSocketLinker:
         """Output socket: Hit Normal"""
-        return self._output("Hit Normal")
+        return self._output("Hit Normal", subtype="Vector")
 
     @property
     def o_hit_distance(self) -> SocketLinker:
@@ -3136,9 +3136,9 @@ class RotateInstances(NodeBuilder):
         return self._input("Rotation")
 
     @property
-    def i_pivot_point(self) -> SocketLinker:
+    def i_pivot_point(self) -> VectorSocketLinker:
         """Input socket: Pivot Point"""
-        return self._input("Pivot Point")
+        return self._input("Pivot Point", subtype="Vector")
 
     @property
     def i_local_space(self) -> SocketLinker:
@@ -3342,19 +3342,19 @@ class SampleCurve(NodeBuilder):
         return self._output("Value")
 
     @property
-    def o_position(self) -> SocketLinker:
+    def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position")
+        return self._output("Position", subtype="Vector")
 
     @property
-    def o_tangent(self) -> SocketLinker:
+    def o_tangent(self) -> VectorSocketLinker:
         """Output socket: Tangent"""
-        return self._output("Tangent")
+        return self._output("Tangent", subtype="Vector")
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal")
+        return self._output("Normal", subtype="Vector")
 
     @property
     def mode(self) -> Literal["FACTOR", "LENGTH"]:
@@ -3712,9 +3712,9 @@ class SampleNearest(NodeBuilder):
         return self._input("Geometry")
 
     @property
-    def i_sample_position(self) -> SocketLinker:
+    def i_sample_position(self) -> VectorSocketLinker:
         """Input socket: Sample Position"""
-        return self._input("Sample Position")
+        return self._input("Sample Position", subtype="Vector")
 
     @property
     def o_index(self) -> SocketLinker:
@@ -3916,9 +3916,9 @@ class SampleNearestSurface(NodeBuilder):
         return self._input("Group ID")
 
     @property
-    def i_sample_position(self) -> SocketLinker:
+    def i_sample_position(self) -> VectorSocketLinker:
         """Input socket: Sample Position"""
-        return self._input("Sample Position")
+        return self._input("Sample Position", subtype="Vector")
 
     @property
     def i_sample_group_id(self) -> SocketLinker:
@@ -4130,14 +4130,14 @@ class SampleUVSurface(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_source_uv_map(self) -> SocketLinker:
+    def i_source_uv_map(self) -> VectorSocketLinker:
         """Input socket: UV Map"""
-        return self._input("Source UV Map")
+        return self._input("Source UV Map", subtype="Vector")
 
     @property
-    def i_sample_uv(self) -> SocketLinker:
+    def i_sample_uv(self) -> VectorSocketLinker:
         """Input socket: Sample UV"""
-        return self._input("Sample UV")
+        return self._input("Sample UV", subtype="Vector")
 
     @property
     def o_value(self) -> SocketLinker:
@@ -4264,9 +4264,9 @@ class ScaleElements(NodeBuilder):
         return self._input("Scale")
 
     @property
-    def i_center(self) -> SocketLinker:
+    def i_center(self) -> VectorSocketLinker:
         """Input socket: Center"""
-        return self._input("Center")
+        return self._input("Center", subtype="Vector")
 
     @property
     def i_scale_mode(self) -> SocketLinker:
@@ -4274,9 +4274,9 @@ class ScaleElements(NodeBuilder):
         return self._input("Scale Mode")
 
     @property
-    def i_axis(self) -> SocketLinker:
+    def i_axis(self) -> VectorSocketLinker:
         """Input socket: Axis"""
-        return self._input("Axis")
+        return self._input("Axis", subtype="Vector")
 
     @property
     def o_geometry(self) -> SocketLinker:
@@ -4330,14 +4330,14 @@ class ScaleInstances(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> VectorSocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self._input("Scale", subtype="Vector")
 
     @property
-    def i_center(self) -> SocketLinker:
+    def i_center(self) -> VectorSocketLinker:
         """Input socket: Center"""
-        return self._input("Center")
+        return self._input("Center", subtype="Vector")
 
     @property
     def i_local_space(self) -> SocketLinker:
@@ -4537,9 +4537,9 @@ class SetCurveNormal(NodeBuilder):
         return self._input("Mode")
 
     @property
-    def i_normal(self) -> SocketLinker:
+    def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self._input("Normal", subtype="Vector")
 
     @property
     def o_curve(self) -> SocketLinker:
@@ -4882,14 +4882,14 @@ class SetHandlePositions(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> VectorSocketLinker:
         """Input socket: Offset"""
-        return self._input("Offset")
+        return self._input("Offset", subtype="Vector")
 
     @property
     def o_curve(self) -> SocketLinker:
@@ -5271,14 +5271,14 @@ class SetPosition(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self._input("Position", subtype="Vector")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> VectorSocketLinker:
         """Input socket: Offset"""
-        return self._input("Offset")
+        return self._input("Offset", subtype="Vector")
 
     @property
     def o_geometry(self) -> SocketLinker:
@@ -6112,9 +6112,9 @@ class StringToCurves(NodeBuilder):
         return self._output("Line")
 
     @property
-    def o_pivot_point(self) -> SocketLinker:
+    def o_pivot_point(self) -> VectorSocketLinker:
         """Output socket: Pivot Point"""
-        return self._output("Pivot Point")
+        return self._output("Pivot Point", subtype="Vector")
 
     @property
     def overflow(self) -> Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"]:
@@ -6363,9 +6363,9 @@ class TransformGeometry(NodeBuilder):
         return self._input("Mode")
 
     @property
-    def i_translation(self) -> SocketLinker:
+    def i_translation(self) -> VectorSocketLinker:
         """Input socket: Translation"""
-        return self._input("Translation")
+        return self._input("Translation", subtype="Vector")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -6373,9 +6373,9 @@ class TransformGeometry(NodeBuilder):
         return self._input("Rotation")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> VectorSocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self._input("Scale", subtype="Vector")
 
     @property
     def i_transform(self) -> SocketLinker:
@@ -6424,9 +6424,9 @@ class TranslateInstances(NodeBuilder):
         return self._input("Selection")
 
     @property
-    def i_translation(self) -> SocketLinker:
+    def i_translation(self) -> VectorSocketLinker:
         """Input socket: Translation"""
-        return self._input("Translation")
+        return self._input("Translation", subtype="Vector")
 
     @property
     def i_local_space(self) -> SocketLinker:
@@ -6612,6 +6612,6 @@ class UVSphere(NodeBuilder):
         return self._output("Mesh")
 
     @property
-    def o_uv_map(self) -> SocketLinker:
+    def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map")
+        return self._output("UV Map", subtype="Vector")
