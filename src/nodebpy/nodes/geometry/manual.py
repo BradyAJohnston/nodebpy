@@ -34,6 +34,7 @@ from ...types import (
     _GridDataTypes,
     _is_default_value,
 )
+from .converter import Switch
 from .zone import (
     ForEachGeometryElementInput,
     ForEachGeometryElementOutput,
@@ -1888,6 +1889,29 @@ class Compare(NodeBuilder):
         if self.data_type == "VECTOR":
             self.mode = kwargs.pop("mode")
         self._establish_links(**kwargs)
+
+    def switch(self, false: LINKABLE, true: LINKABLE) -> Switch:
+        def _infer_data_type(a: LINKABLE, b: LINKABLE) -> _CompareDataTypes:
+            set_types = [
+                x._default_output_socket.type
+                for x in (a, b)
+                if hasattr(x, "_default_output_socket")
+            ]
+            if set_types:
+                value = set_types[0]
+                return "FLOAT" if value == "VALUE" else value
+
+            if isinstance(a, float) or isinstance(b, float):
+                return "FLOAT"
+            if isinstance(a, int) or isinstance(b, int):
+                return "INT"
+            if isinstance(a, bool) or isinstance(b, bool):
+                return "BOOLEAN"
+            return "VECTOR"
+
+        return getattr(Switch, _infer_data_type(false, true).lower())(
+            switch=self, false=false, true=true
+        )
 
     @classmethod
     def float(

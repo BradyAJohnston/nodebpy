@@ -356,6 +356,7 @@ class TreeBuilder:
                         "GeometryNodeIndexSwitch",
                         "GeometryNodeMenuSwitch",
                         "ShaderNodeMixShader",
+                        "GeometryNodeSwitch",
                     )
                 ):
                     message = f"Socket {socket.name} from node {socket.node.name} is inactive."  # type: ignore
@@ -886,6 +887,12 @@ class NodeBuilder:
 
     def __ge__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "greater_equal")
+
+    def __eq__(self, other: Any) -> "Compare | Math":  # type: ignore
+        return self._apply_compare_operation(other, "equal")
+
+    def __ne__(self, other: Any) -> "Compare | Math":  # type: ignore
+        return self._apply_compare_operation(other, "not_equal")
 
     def _apply_boolean_operation(self, other: Any, operation: str) -> "BooleanMath":
         """Apply a boolean operation using the BooleanMath node."""

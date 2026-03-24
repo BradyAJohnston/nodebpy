@@ -477,6 +477,63 @@ class TestVectorScalarOperandOrder:
         assert len(result.node.inputs[1].links) == 1
 
 
+class TestComparisonEqualNotEqual:
+    def test_comparison_equal(self):
+        """Test equality comparison."""
+        with TreeBuilder("TestCompareEqual"):
+            val = g.Value(5.0)
+            result = val == 5.0
+
+        assert result.node.bl_idname == g.Compare._bl_idname
+        assert result.node.operation == "EQUAL"
+        assert result.node.data_type == "FLOAT"
+
+    def test_comparison_not_equal(self):
+        """Test inequality comparison."""
+        with TreeBuilder("TestCompareNotEqual"):
+            val = g.Integer(5)
+            result = val != 5
+
+        assert result.node.operation == "NOT_EQUAL"
+        assert result.node.data_type == "INT"
+
+    def test_comparison_into_switch(self):
+        """Test using a comparison result as a switch condition."""
+        with TreeBuilder("TestCompareSwitch"):
+            val = g.Integer(5)
+            result = (val == 5) >> g.Switch.geometry(..., g.Cube(), g.IcoSphere())
+
+        assert result.node.input_type == "GEOMETRY"
+        assert (
+            result.node.inputs["False"].links[0].from_node.bl_idname
+            == g.Cube._bl_idname
+        )
+        assert (
+            result.node.inputs["True"].links[0].from_node.bl_idname
+            == g.IcoSphere._bl_idname
+        )
+        assert result.node.inputs[0].links[0].from_node.operation == "EQUAL"
+        assert result.node.inputs[0].links[0].from_node.data_type == "INT"
+
+    def test_comparison_with_switch(self):
+        """Test using a comparison result as a switch condition."""
+        with TreeBuilder("TestCompareSwitch"):
+            val = g.Integer(5)
+            result = (val == 5).switch(g.Cube(), g.IcoSphere())
+
+        assert result.node.input_type == "GEOMETRY"
+        assert (
+            result.node.inputs["False"].links[0].from_node.bl_idname
+            == g.Cube._bl_idname
+        )
+        assert (
+            result.node.inputs["True"].links[0].from_node.bl_idname
+            == g.IcoSphere._bl_idname
+        )
+        assert result.node.inputs[0].links[0].from_node.operation == "EQUAL"
+        assert result.node.inputs[0].links[0].from_node.data_type == "INT"
+
+
 class TestComparisonChaining:
     """Tests for comparison operators used in realistic node tree scenarios."""
 
