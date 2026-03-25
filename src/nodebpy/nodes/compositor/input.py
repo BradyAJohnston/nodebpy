@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -29,7 +29,7 @@ class Color(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -122,7 +122,7 @@ class MovieClip(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -187,7 +187,7 @@ class RenderLayers(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -222,37 +222,37 @@ class RenderLayers(NodeBuilder):
         return self._output("Position")
 
     @property
-    def o_deprecated(self) -> SocketLinker:
+    def o_deprecated(self) -> ColorSocketLinker:
         """Output socket: Deprecated"""
         return self._output("Deprecated")
 
     @property
-    def o_deprecated_001(self) -> SocketLinker:
+    def o_deprecated_001(self) -> ColorSocketLinker:
         """Output socket: Deprecated"""
         return self._output("Deprecated_001")
 
     @property
-    def o_shadow(self) -> SocketLinker:
+    def o_shadow(self) -> ColorSocketLinker:
         """Output socket: Shadow"""
         return self._output("Shadow")
 
     @property
-    def o_ambient_occlusion(self) -> SocketLinker:
+    def o_ambient_occlusion(self) -> ColorSocketLinker:
         """Output socket: Ambient Occlusion"""
         return self._output("Ambient Occlusion")
 
     @property
-    def o_deprecated_002(self) -> SocketLinker:
+    def o_deprecated_002(self) -> ColorSocketLinker:
         """Output socket: Deprecated"""
         return self._output("Deprecated_002")
 
     @property
-    def o_deprecated_003(self) -> SocketLinker:
+    def o_deprecated_003(self) -> ColorSocketLinker:
         """Output socket: Deprecated"""
         return self._output("Deprecated_003")
 
     @property
-    def o_deprecated_004(self) -> SocketLinker:
+    def o_deprecated_004(self) -> ColorSocketLinker:
         """Output socket: Deprecated"""
         return self._output("Deprecated_004")
 
@@ -272,72 +272,72 @@ class RenderLayers(NodeBuilder):
         return self._output("Mist")
 
     @property
-    def o_emission(self) -> SocketLinker:
+    def o_emission(self) -> ColorSocketLinker:
         """Output socket: Emission"""
         return self._output("Emission")
 
     @property
-    def o_environment(self) -> SocketLinker:
+    def o_environment(self) -> ColorSocketLinker:
         """Output socket: Environment"""
         return self._output("Environment")
 
     @property
-    def o_diffuse_direct(self) -> SocketLinker:
+    def o_diffuse_direct(self) -> ColorSocketLinker:
         """Output socket: Diffuse Direct"""
         return self._output("Diffuse Direct")
 
     @property
-    def o_diffuse_indirect(self) -> SocketLinker:
+    def o_diffuse_indirect(self) -> ColorSocketLinker:
         """Output socket: Diffuse Indirect"""
         return self._output("Diffuse Indirect")
 
     @property
-    def o_diffuse_color(self) -> SocketLinker:
+    def o_diffuse_color(self) -> ColorSocketLinker:
         """Output socket: Diffuse Color"""
         return self._output("Diffuse Color")
 
     @property
-    def o_glossy_direct(self) -> SocketLinker:
+    def o_glossy_direct(self) -> ColorSocketLinker:
         """Output socket: Glossy Direct"""
         return self._output("Glossy Direct")
 
     @property
-    def o_glossy_indirect(self) -> SocketLinker:
+    def o_glossy_indirect(self) -> ColorSocketLinker:
         """Output socket: Glossy Indirect"""
         return self._output("Glossy Indirect")
 
     @property
-    def o_glossy_color(self) -> SocketLinker:
+    def o_glossy_color(self) -> ColorSocketLinker:
         """Output socket: Glossy Color"""
         return self._output("Glossy Color")
 
     @property
-    def o_transmission_direct(self) -> SocketLinker:
+    def o_transmission_direct(self) -> ColorSocketLinker:
         """Output socket: Transmission Direct"""
         return self._output("Transmission Direct")
 
     @property
-    def o_transmission_indirect(self) -> SocketLinker:
+    def o_transmission_indirect(self) -> ColorSocketLinker:
         """Output socket: Transmission Indirect"""
         return self._output("Transmission Indirect")
 
     @property
-    def o_transmission_color(self) -> SocketLinker:
+    def o_transmission_color(self) -> ColorSocketLinker:
         """Output socket: Transmission Color"""
         return self._output("Transmission Color")
 
     @property
-    def o_subsurface_direct(self) -> SocketLinker:
+    def o_subsurface_direct(self) -> ColorSocketLinker:
         """Output socket: Subsurface Direct"""
         return self._output("Subsurface Direct")
 
     @property
-    def o_subsurface_indirect(self) -> SocketLinker:
+    def o_subsurface_indirect(self) -> ColorSocketLinker:
         """Output socket: Subsurface Indirect"""
         return self._output("Subsurface Indirect")
 
     @property
-    def o_subsurface_color(self) -> SocketLinker:
+    def o_subsurface_color(self) -> ColorSocketLinker:
         """Output socket: Subsurface Color"""
         return self._output("Subsurface Color")
 

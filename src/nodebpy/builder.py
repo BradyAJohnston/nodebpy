@@ -803,9 +803,7 @@ class NodeBuilder:
             "absolute"
         )
 
-    def _apply_compare_operation(
-        self, other: Any, operation: str
-    ) -> "NodeBuilder":
+    def _apply_compare_operation(self, other: Any, operation: str) -> "NodeBuilder":
         return _get_socket_linker(self._default_output_socket)._dispatch_compare(
             other, operation
         )
@@ -1017,9 +1015,7 @@ class SocketLinker(NodeBuilder):
             return Math.absolute(self.socket)
         raise ValueError(f"Unknown unary operation: {operation}")
 
-    def _dispatch_floordiv(
-        self, other: Any, reverse: bool = False
-    ) -> "NodeBuilder":
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "NodeBuilder":
         """Scalar floor division: divide then floor."""
         from .nodes.geometry.converter import Math
 
@@ -1120,18 +1116,16 @@ class VectorSocketLinker(SocketLinker):
                     if not reverse
                     else vector_method(scalar_vector, self.socket)
                 )
-            elif (
-                isinstance(other, (list, tuple)) and len(other) == 3
-            ) or isinstance(other, (NodeBuilder, NodeSocket)):
+            elif (isinstance(other, (list, tuple)) and len(other) == 3) or isinstance(
+                other, (NodeBuilder, NodeSocket)
+            ):
                 return vector_method(*values)
             else:
                 raise TypeError(
                     f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
                 )
 
-    def _dispatch_floordiv(
-        self, other: Any, reverse: bool = False
-    ) -> "NodeBuilder":
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "NodeBuilder":
         from .nodes.geometry import VectorMath
 
         divided = self._dispatch_math(other, "divide", reverse=reverse)
@@ -1176,9 +1170,7 @@ class IntegerSocketLinker(SocketLinker):
                 return IntegerMath.absolute(self.socket)
         return super()._dispatch_unary(operation)
 
-    def _dispatch_floordiv(
-        self, other: Any, reverse: bool = False
-    ) -> "NodeBuilder":
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "NodeBuilder":
         if self._is_geometry_tree and isinstance(other, int):
             from .nodes.geometry.converter import IntegerMath
 
@@ -1195,6 +1187,54 @@ class IntegerSocketLinker(SocketLinker):
 
 
 _SOCKET_LINKER_REGISTRY["NodeSocketInt"] = IntegerSocketLinker
+
+
+_SEPARATE_COLOR_IDNAMES = (
+    "FunctionNodeSeparateColor",
+    "ShaderNodeSeparateColor",
+    "CompositorNodeSeparateColor",
+)
+
+
+class ColorSocketLinker(SocketLinker):
+    """Provides .r/.g/.b/.a accessors for color output sockets."""
+
+    def _get_separate_color_cls(self):
+        tree_type = self._tree.tree.bl_idname
+        if tree_type == "ShaderNodeTree":
+            from .nodes.shader.converter import SeparateColor
+        elif tree_type == "CompositorNodeTree":
+            from .nodes.compositor.converter import SeparateColor
+        else:
+            from .nodes.geometry.converter import SeparateColor
+        return SeparateColor
+
+    def _separated_channel(self, channel: str) -> SocketLinker:
+        for link in self.socket.links:
+            if link.to_node.bl_idname in _SEPARATE_COLOR_IDNAMES:
+                return SocketLinker(link.to_node.outputs[channel])
+
+        SeparateColor = self._get_separate_color_cls()
+        return getattr(SeparateColor(self), f"o_{channel.lower()}")
+
+    @property
+    def r(self) -> SocketLinker:
+        return self._separated_channel("Red")
+
+    @property
+    def g(self) -> SocketLinker:
+        return self._separated_channel("Green")
+
+    @property
+    def b(self) -> SocketLinker:
+        return self._separated_channel("Blue")
+
+    @property
+    def a(self) -> SocketLinker:
+        return self._separated_channel("Alpha")
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketColor"] = ColorSocketLinker
 
 
 class SocketBase(SocketLinker):
