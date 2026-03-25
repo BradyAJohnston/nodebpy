@@ -1004,20 +1004,6 @@ class DynamicInputsMixin:
                     target.inputs[target_name].socket,
                 )
 
-            # for target_name, source_socket in new_sockets.items():
-            #     target_socket = target.inputs[target_name].socket
-            #     return (source_socket, target_socket)
-
-    # def _best_output_socket(self, type: str) -> NodeSocket:
-    #     # compatible = SOCKET_COMPATIBILITY.get(type, ())
-    #     # possible = [
-    #     #     socket for socket in self._available_outputs if socket.type in compatible
-    #     # ]
-    #     # if possible:
-    #     #     return sorted(possible, key=lambda x: compatible.index(x.type))[0]
-
-    #     raise SocketError("No compatible output sockets found")
-
     def _add_inputs(self, *args, **kwargs) -> dict[str, LINKABLE]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
         new_sockets = {}

@@ -505,6 +505,14 @@ class TestComparisonEqualNotEqual:
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "FLOAT"
 
+    def test_comparison_float_socket(self):
+        """Test float comparison with socket."""
+        with TreeBuilder("TestCompareFloatSocket"):
+            result = (g.Integer(5) == 4).switch(g.Value(5.0), g.RandomValue.integer())
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "FLOAT"
+
     def test_comparison_returns_float(self):
         """Test comparison returns float."""
         with TreeBuilder("TestCompareReturnsFloat"):
