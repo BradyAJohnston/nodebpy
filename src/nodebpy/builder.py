@@ -356,6 +356,7 @@ class TreeBuilder:
                         "GeometryNodeIndexSwitch",
                         "GeometryNodeMenuSwitch",
                         "ShaderNodeMixShader",
+                        "GeometryNodeSwitch",
                     )
                 ):
                     message = f"Socket {socket.name} from node {socket.node.name} is inactive."  # type: ignore
@@ -887,6 +888,12 @@ class NodeBuilder:
     def __ge__(self, other: Any) -> "Compare | Math":
         return self._apply_compare_operation(other, "greater_equal")
 
+    def __eq__(self, other: Any) -> "Compare | Math":  # type: ignore
+        return self._apply_compare_operation(other, "equal")
+
+    def __ne__(self, other: Any) -> "Compare | Math":  # type: ignore
+        return self._apply_compare_operation(other, "not_equal")
+
     def _apply_boolean_operation(self, other: Any, operation: str) -> "BooleanMath":
         """Apply a boolean operation using the BooleanMath node."""
         from .nodes.geometry.converter import BooleanMath
@@ -985,7 +992,7 @@ class DynamicInputsMixin:
         try:
             return super()._find_best_socket_pair(source, target)  # type: ignore
         except SocketError:
-            if target == self:
+            if target.node == self.node:
                 target_name, source_socket = list(target._add_inputs(source).items())[0]
                 return (source_socket, target.inputs[target_name].socket)
             else:
@@ -996,20 +1003,6 @@ class DynamicInputsMixin:
                     source.outputs[target_name].socket,
                     target.inputs[target_name].socket,
                 )
-
-            # for target_name, source_socket in new_sockets.items():
-            #     target_socket = target.inputs[target_name].socket
-            #     return (source_socket, target_socket)
-
-    # def _best_output_socket(self, type: str) -> NodeSocket:
-    #     # compatible = SOCKET_COMPATIBILITY.get(type, ())
-    #     # possible = [
-    #     #     socket for socket in self._available_outputs if socket.type in compatible
-    #     # ]
-    #     # if possible:
-    #     #     return sorted(possible, key=lambda x: compatible.index(x.type))[0]
-
-    #     raise SocketError("No compatible output sockets found")
 
     def _add_inputs(self, *args, **kwargs) -> dict[str, LINKABLE]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""

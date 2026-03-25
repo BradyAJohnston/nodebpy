@@ -423,8 +423,7 @@ def test_edge_other_point():
         ev = g.EdgeVertices()
         vert_1 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
         vert_2 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
-        compare = g.Compare.equal.integer(v_index, vert_1)
-        other_vertex = g.Switch.integer(compare, vert_1, vert_2)
+        other_vertex = g.Switch.integer(v_index == vert_1, vert_1, vert_2)
 
         with tree.outputs:
             _ = other_vertex >> s.SocketInt("Other Vertex")
@@ -432,7 +431,6 @@ def test_edge_other_point():
     other_vertex.node.inputs[0].links[0].from_node == vert_1.node
     other_vertex.node.inputs[1].links[0].from_node == vert_2.node
     other_vertex.node.inputs[2].links[0].from_node.name == "Compare"
-    compare.o_result.socket.links[0].to_node.name == "Switch"
 
 
 def test_align_rotation_to_vector():
@@ -489,8 +487,8 @@ def test_foreachgeometryelement_zone():
     assert len(zone.output.items) == 1
     assert zone.output.items[0].socket_type == "VECTOR"
     assert zone.output.node.inputs["Geometry"].links[0].from_node == transformed.node
-    assert zone.input == input
-    assert zone.output == output
+    assert zone.input.node == input.node
+    assert zone.output.node == output.node
     assert input.output == output.node
     assert input.i_selection.socket.links[0].from_node == tree.nodes["Compare"]
     assert tree.nodes["Compare"].data_type == "FLOAT"

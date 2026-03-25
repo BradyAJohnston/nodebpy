@@ -122,7 +122,7 @@ class TestOperatorChaining:
             result = pos >> set_pos
 
             # Should return the right-hand node
-            assert result == set_pos
+            assert result.node == set_pos.node
 
             # Should create a link between the nodes
             links = tree.tree.links

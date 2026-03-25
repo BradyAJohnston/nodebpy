@@ -58,16 +58,16 @@ tree
 
 The unary `-` and `abs()` operators work with all numeric types:
 
+
 ```{python}
+#| results: false
 with TreeBuilder("UnaryOps") as tree:
     with tree.outputs:
-        out = s.SocketGeometry()
-
-    pos = g.Position()
-    mirrored = -pos             # VectorMath.scale(pos, -1)
-    magnitude = abs(mirrored)   # VectorMath.absolute
-
-    _ = g.Cube() >> g.SetPosition(offset=magnitude) >> out
+        _ = (
+            g.Cube()
+            >> g.SetPosition(offset=-abs(g.Position()))
+            >> s.SocketGeometry()
+        )
 
 tree
 ```
@@ -92,6 +92,20 @@ with TreeBuilder("CompareDemo") as tree:
         >> g.SetPosition(selection=above_ground, offset=(0, 0, 1))
         >> out
     )
+
+tree
+```
+
+## Comparison into a Switch
+
+The result of a comparison is a `Compare` node, which can be used to directly chain into a `Switch` node when in a Geometry node tree.
+This saves us some time having to directly use `g.Switch.float(pos.z > v, ...)`
+
+```{python}
+with TreeBuilder("SwitchDemo") as tree:
+    v = g.Value(5.0)
+    pos = g.Position() >> g.SeparateXYZ()
+    result = (pos.o_z > v).switch(g.RandomValue.float(), 5.0 ** g.Value(10.0))
 
 tree
 ```

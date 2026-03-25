@@ -286,7 +286,7 @@ SOCKET_TYPES = Literal[
     "SHADER",
 ]
 
-SOCKET_COMPATIBILITY: dict[str, tuple[str]] = {
+SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
     "VALUE": (
         "VALUE",
         "VECTOR",
