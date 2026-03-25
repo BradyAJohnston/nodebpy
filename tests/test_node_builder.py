@@ -10,6 +10,7 @@ from math import pi
 
 import bpy
 import pytest
+from bpy.types import NodeSocketInt
 from numpy.testing import assert_allclose
 
 from nodebpy import TreeBuilder
@@ -17,7 +18,8 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
-from nodebpy.builder import NodeBuilder
+from nodebpy.builder import NodeBuilder, VectorSocketLinker
+from nodebpy.types import NodeSocketFloat
 
 
 class TestTreeBuilder:
@@ -547,6 +549,31 @@ def test_nested_trees():
     assert len(tree) == 4
 
 
+def _test_node_outputs(node: NodeBuilder):
+    assert node.node is not None
+    for output in node.outputs.values():
+        if isinstance(output, VectorSocketLinker):
+            result = -output
+            assert result.node is not None
+            assert result.operation == "SCALE"
+            assert result.node.inputs["Scale"].default_value == -1.0
+        elif isinstance(output.socket, NodeSocketFloat):
+            result = -output
+            assert result.node is not None
+            assert result.node.inputs["Value"].links
+            assert result.node.operation == "MULTIPLY"
+            assert result.node.inputs["Value_001"].default_value == -1
+        elif isinstance(output.socket, NodeSocketInt):
+            result = -output
+            assert result.node is not None
+            assert result.node.inputs["Value"].links
+            assert (
+                result.node.operation == "NEGATE"
+                if result.tree.tree.type == "GEOMETRY"
+                else "MULTIPLY"
+            )
+
+
 @pytest.mark.parametrize(
     "module,tree_type",
     [(g, "GeometryNodeTree"), (s, "ShaderNodeTree"), (c, "CompositorNodeTree")],
@@ -562,6 +589,12 @@ def test_add_all_nodes(module, tree_type):
             # Test the default constructor
             node = cls()
             assert node.node is not None
+            if any(
+                x in node.name
+                for x in ["Repeat", "Zone", "Foreach", "Element", "Simulation"]
+            ):
+                continue
+            _test_node_outputs(node)
             # Test each classmethod defined on this class (not inherited from NodeBuilder)
             for method_name in dir(cls):
                 if isinstance(
@@ -569,6 +602,7 @@ def test_add_all_nodes(module, tree_type):
                 ) and method_name not in dir(NodeBuilder):
                     node = getattr(cls, method_name)()
                     assert node.node is not None
+                    _test_node_outputs(node)
 
 
 def test_iter_outputs():

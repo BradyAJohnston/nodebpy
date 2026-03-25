@@ -825,7 +825,10 @@ class NodeBuilder:
         socket = self._default_output_socket
         if socket.type == "VECTOR":
             return VectorMath.scale(socket, -1)
-        elif socket.type == "INT":
+        elif (
+            socket.type == "INT"
+            and self._tree.tree.bl_idname == "GeometryNodeTree"
+        ):
             return IntegerMath.negate(socket)
         else:
             return Math.multiply(socket, -1)
@@ -837,7 +840,10 @@ class NodeBuilder:
         socket = self._default_output_socket
         if socket.type == "VECTOR":
             return VectorMath.absolute(socket)
-        elif socket.type == "INT":
+        elif (
+            socket.type == "INT"
+            and self._tree.tree.bl_idname == "GeometryNodeTree"
+        ):
             return IntegerMath.absolute(socket)
         else:
             return Math.absolute(socket)
