@@ -914,28 +914,22 @@ class TestMatrixMultiplcation:
                 out = s.SocketGeometry()
             cube = g.Cube()
             _ = (
-                cube
-                >> g.SetPosition(
-                    position=(
-                        g.TransformPoint(
-                            g.Position(),
-                            transform=(
-                                g.CombineTransform(rotation=(0, 90, 0))
-                                @ g.CombineTransform(translation=(1, 0, 0))
-                            ),
-                        )
-                    )
+                g.SetPosition(
+                    cube,
+                    position=g.CombineTransform(rotation=(0, 90, 0))
+                    @ g.CombineTransform(translation=(1, 0, 0))
+                    @ g.Position(),
                 )
                 >> out
             )
 
         assert cube.o_mesh.links[0].to_node.bl_idname == "GeometryNodeSetPosition"
         assert (
-            cube.o_mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname
+            cube.o_mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname  # type: ignore
             == "FunctionNodeTransformPoint"
         )
         assert (
-            cube.o_mesh.links[0]
+            cube.o_mesh.links[0]  # type: ignore
             .to_node.inputs["Position"]
             .links[0]
             .from_node.inputs["Transform"]
