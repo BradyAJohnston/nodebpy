@@ -497,6 +497,35 @@ class TestComparisonEqualNotEqual:
         assert result.node.operation == "NOT_EQUAL"
         assert result.node.data_type == "INT"
 
+    def test_comparison_float(self):
+        """Test float comparison."""
+        with TreeBuilder("TestCompareFloat"):
+            result = (g.Integer(5) == 4).switch(5.0, g.RandomValue.integer())
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "FLOAT"
+
+    def test_comparison_int(self):
+        """Test int comparison."""
+        with TreeBuilder("TestCompareInt"):
+            result = (g.Integer(5) == 4).switch(int(5), g.RandomValue.integer())
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "INT"
+
+    def test_comparison_bool(self):
+        """Test int comparison."""
+        with TreeBuilder("TestCompareInt"):
+            result = (g.Integer(5) == 4).switch(False, True)
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "BOOLEAN"
+
+        with pytest.raises(ValueError):
+            with TreeBuilder("TestCompareInt"):
+                # we don't automatically infer changing data types of string & numeric
+                result = (g.Integer(5) == 4).switch("str", 5.0)
+
     def test_comparison_into_switch(self):
         """Test using a comparison result as a switch condition."""
         with TreeBuilder("TestCompareSwitch"):
