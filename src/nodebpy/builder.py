@@ -711,12 +711,15 @@ class NodeBuilder:
     ) -> "Math":
         """Apply a math operation with appropriate Math/IntegerMath node."""
         socket = self._default_output_socket
-        component_is_vector = (
-            socket.type == "VECTOR" or getattr(other, "type", None) == "VECTOR"
-        )
-        if component_is_vector:
+        other_is_vector = getattr(other, "type", None) == "VECTOR"
+        if socket.type == "VECTOR":
             return VectorSocketLinker(socket)._apply_math_operation(
                 other, operation, reverse=reverse
+            )
+        elif other_is_vector:
+            other_socket = other._default_output_socket
+            return VectorSocketLinker(other_socket)._apply_math_operation(
+                self._default_output_socket, operation, reverse=not reverse
             )
 
         from .nodes.geometry.converter import IntegerMath, Math
@@ -804,12 +807,15 @@ class NodeBuilder:
     ) -> "Math | IntegerMath":
         """Apply floor division: divide then floor."""
         socket = self._default_output_socket
-        component_is_vector = (
-            socket.type == "VECTOR" or getattr(other, "type", None) == "VECTOR"
-        )
-        if component_is_vector:
+        other_is_vector = getattr(other, "type", None) == "VECTOR"
+        if socket.type == "VECTOR":
             return VectorSocketLinker(socket)._apply_floordiv_operation(
                 other, reverse=reverse
+            )
+        elif other_is_vector:
+            other_socket = other._default_output_socket
+            return VectorSocketLinker(other_socket)._apply_floordiv_operation(
+                self._default_output_socket, reverse=not reverse
             )
 
         from .nodes.geometry.converter import IntegerMath, Math
@@ -1051,23 +1057,26 @@ class SocketLinker(NodeBuilder):
 
 
 class VectorSocketLinker(SocketLinker):
-    @property
-    def x(self) -> SocketLinker:
+    def _separated_value(self, value: str) -> SocketLinker:
         from .nodes.geometry import SeparateXYZ
 
-        return SeparateXYZ(self).o_x
+        for link in self.socket.links:
+            if link.to_node.bl_idname == "ShaderNodeSeparateXYZ":
+                return SocketLinker(link.to_node.outputs[value])
+
+        return getattr(SeparateXYZ(self), f"o_{value.lower()}")
+
+    @property
+    def x(self) -> SocketLinker:
+        return self._separated_value("X")
 
     @property
     def y(self) -> SocketLinker:
-        from .nodes.geometry import SeparateXYZ
-
-        return SeparateXYZ(self).o_y
+        return self._separated_value("Y")
 
     @property
     def z(self) -> SocketLinker:
-        from .nodes.geometry import SeparateXYZ
-
-        return SeparateXYZ(self).o_z
+        return self._separated_value("Z")
 
     def __neg__(self) -> "VectorMath":
         from .nodes.geometry import VectorMath
@@ -1095,7 +1104,13 @@ class VectorSocketLinker(SocketLinker):
                 return VectorMath.scale(self._default_output_socket, other)
             elif isinstance(other, (list, tuple)) and len(other) == 3:
                 return VectorMath.multiply(*values)
+            elif isinstance(other, NodeSocket) and other.type in ("VALUE", "FLOAT", "INT"):
+                return VectorMath.scale(self._default_output_socket, other)
             elif isinstance(other, NodeBuilder):
+                if getattr(other, "type", None) in ("VALUE", "FLOAT", "INT"):
+                    return VectorMath.scale(
+                        self._default_output_socket, other._default_output_socket
+                    )
                 return VectorMath.multiply(*values)
             else:
                 raise TypeError(
@@ -1110,9 +1125,9 @@ class VectorSocketLinker(SocketLinker):
                     if not reverse
                     else vector_method(scalar_vector, self._default_output_socket)
                 )
-            elif (isinstance(other, (list, tuple)) and len(other) == 3) or isinstance(
-                other, NodeBuilder
-            ):
+            elif (
+                isinstance(other, (list, tuple)) and len(other) == 3
+            ) or isinstance(other, (NodeBuilder, NodeSocket)):
                 return vector_method(*values)
             else:
                 raise TypeError(

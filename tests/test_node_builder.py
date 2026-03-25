@@ -621,3 +621,15 @@ def test_iter_outputs():
         switch = g.MenuSwitch.float(**g.SeparateXYZ(g.Position()).outputs)
 
     assert len(switch.inputs) == 5
+
+
+def test_vector_socket_linker():
+    with TreeBuilder("SeparateXYZ_z") as tree:
+        pos = g.Position().o_position
+
+        result = g.SetPosition(position=pos.x * g.Position())
+        result2 = pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
+
+    assert result.node
+    assert result.node.inputs["Position"].links[0].from_node.operation == "SCALE"
+    assert len(pos.links) == 1
