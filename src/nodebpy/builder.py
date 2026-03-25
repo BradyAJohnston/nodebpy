@@ -992,7 +992,7 @@ class DynamicInputsMixin:
         try:
             return super()._find_best_socket_pair(source, target)  # type: ignore
         except SocketError:
-            if target == self:
+            if target.node == self.node:
                 target_name, source_socket = list(target._add_inputs(source).items())[0]
                 return (source_socket, target.inputs[target_name].socket)
             else:

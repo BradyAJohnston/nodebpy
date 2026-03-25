@@ -505,6 +505,30 @@ class TestComparisonEqualNotEqual:
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "FLOAT"
 
+    def test_comparison_returns_float(self):
+        """Test comparison returns float."""
+        with TreeBuilder("TestCompareReturnsFloat"):
+            result = (g.Integer(5) == 4).switch(5.0, int(5))
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "FLOAT"
+
+    def test_comparison_returns_int(self):
+        """Test comparison returns float."""
+        with TreeBuilder("TestCompareReturnsInt"):
+            result = (g.Integer(5) == 4).switch(int(5), 0)
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "INT"
+
+    def test_comparison_returns_str(self):
+        """Test comparison returns string."""
+        with TreeBuilder("TestCompareReturnsString"):
+            result = (g.Integer(5) == 4).switch("some_string", "another_string")
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "STRING"
+
     def test_comparison_int(self):
         """Test int comparison."""
         with TreeBuilder("TestCompareInt"):
@@ -521,10 +545,15 @@ class TestComparisonEqualNotEqual:
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "BOOLEAN"
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="Cannot infer compatible type from"):
             with TreeBuilder("TestCompareInt"):
                 # we don't automatically infer changing data types of string & numeric
                 result = (g.Integer(5) == 4).switch("str", 5.0)
+
+    def test_raise_warning(self):
+        with pytest.raises(ValueError, match="Cannot infer compatible type from"):
+            with TreeBuilder("TestCompareInt"):
+                _ = (g.Integer(5) == 4).switch(list, int)
 
     def test_comparison_into_switch(self):
         """Test using a comparison result as a switch condition."""
