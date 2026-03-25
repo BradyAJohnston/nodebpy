@@ -10,6 +10,7 @@ from math import pi
 
 import bpy
 import pytest
+from bpy.types import NodeSocketInt
 from numpy.testing import assert_allclose
 
 from nodebpy import TreeBuilder
@@ -17,7 +18,8 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
-from nodebpy.builder import NodeBuilder
+from nodebpy.builder import ColorSocketLinker, NodeBuilder, VectorSocketLinker
+from nodebpy.types import NodeSocketFloat
 
 
 class TestTreeBuilder:
@@ -552,6 +554,30 @@ def test_nested_trees():
     [(g, "GeometryNodeTree"), (s, "ShaderNodeTree"), (c, "CompositorNodeTree")],
 )
 def test_add_all_nodes(module, tree_type):
+    def _test_node_outputs(node: NodeBuilder):
+        assert node.node is not None
+        for output in node.outputs.values():
+            if isinstance(output, VectorSocketLinker):
+                result = -output
+                assert result.node is not None
+                assert result.operation == "SCALE"
+                assert result.node.inputs["Scale"].default_value == -1.0
+            elif isinstance(output.socket, NodeSocketFloat):
+                result = -output
+                assert result.node is not None
+                assert result.node.inputs["Value"].links
+                assert result.node.operation == "MULTIPLY"
+                assert result.node.inputs["Value_001"].default_value == -1
+            elif isinstance(output.socket, NodeSocketInt):
+                result = -output
+                assert result.node is not None
+                assert result.node.inputs["Value"].links
+                assert (
+                    result.node.operation == "NEGATE"
+                    if result.tree.tree.type == "GEOMETRY"
+                    else "MULTIPLY"
+                )
+
     with TreeBuilder(tree_type=tree_type):
         for name in dir(module):
             if not re.match(r"^([A-Z][a-z]+)+$", name):
@@ -562,6 +588,12 @@ def test_add_all_nodes(module, tree_type):
             # Test the default constructor
             node = cls()
             assert node.node is not None
+            if any(
+                x in node.name
+                for x in ["Repeat", "Zone", "Foreach", "Element", "Simulation"]
+            ):
+                continue
+            _test_node_outputs(node)
             # Test each classmethod defined on this class (not inherited from NodeBuilder)
             for method_name in dir(cls):
                 if isinstance(
@@ -569,3 +601,83 @@ def test_add_all_nodes(module, tree_type):
                 ) and method_name not in dir(NodeBuilder):
                     node = getattr(cls, method_name)()
                     assert node.node is not None
+                    _test_node_outputs(node)
+
+
+def test_iter_outputs():
+    with TreeBuilder("IndexSwitch"):
+        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).outputs.values())
+
+    assert len(switch.node.outputs) == 1
+    # 1 input for the index, another for the dynamic socket
+    assert len(switch.node.inputs) == 5
+
+    with TreeBuilder("MultipleOutputs") as tree:
+        for name, output in g.SeparateXYZ(g.Position()).outputs.items():
+            with tree.outputs:
+                _ = output >> socket.SocketFloat(name)
+
+    with TreeBuilder("MenuSwitch") as tree:
+        switch = g.MenuSwitch.float(**g.SeparateXYZ(g.Position()).outputs)
+
+    assert len(switch.inputs) == 5
+
+
+def test_vector_socket_linker():
+    with TreeBuilder("SeparateXYZ_z") as tree:
+        pos = g.Position().o_position
+
+        result = g.SetPosition(position=pos.x * g.Position())
+        result2 = pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
+
+    assert result.node
+    assert result.node.inputs["Position"].links[0].from_node.operation == "SCALE"
+    assert len(pos.links) == 1
+
+
+def test_color_socket_linker():
+    with TreeBuilder("ColorChannels") as tree:
+        color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
+
+        assert isinstance(color, ColorSocketLinker)
+
+        r = color.r
+        g_channel = color.g
+        b = color.b
+        a = color.a
+
+        # Each channel creates a float output from SeparateColor
+        assert r.type == "VALUE"
+        assert g_channel.type == "VALUE"
+        assert b.type == "VALUE"
+        assert a.type == "VALUE"
+        assert a.node == r.node == g_channel.node == b.node
+
+        # The SeparateColor node should be reused across channels
+        assert r.node.bl_idname == "FunctionNodeSeparateColor"
+
+
+def test_color_socket_linker_in_shader_tree():
+    with TreeBuilder.shader():
+        color = s.CombineColor(red=1.0, green=0.5, blue=0.25).o_color
+
+        assert isinstance(color, ColorSocketLinker)
+
+        r, g, b = color.r, color.g, color.b
+        assert r.type == "VALUE"
+        assert b.type == "VALUE"
+        assert g.type == "VALUE"
+        assert r.node == g.node == b.node
+        assert r.node.bl_idname == "ShaderNodeSeparateColor"
+
+
+def test_color_socket_linker_channel_into_math():
+    with TreeBuilder("ColorMath"):
+        color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
+
+        # Use a color channel in a math expression
+        result = color.r * 2.0 + color.g
+
+    assert result.node is not None
+    assert result.node.bl_idname == "ShaderNodeMath"
+    assert result.node.operation == "ADD"

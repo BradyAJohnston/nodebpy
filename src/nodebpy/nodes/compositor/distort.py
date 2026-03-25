@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -91,7 +91,7 @@ class CornerPin(NodeBuilder):
         return self._input("Extension Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -161,7 +161,7 @@ class Crop(NodeBuilder):
         return self._input("Alpha Crop")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -220,7 +220,7 @@ class Displace(NodeBuilder):
         return self._input("Extension Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -260,7 +260,7 @@ class Flip(NodeBuilder):
         return self._input("Flip Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -325,7 +325,7 @@ class LensDistortion(NodeBuilder):
         return self._input("Fit")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -384,7 +384,7 @@ class MapUV(NodeBuilder):
         return self._input("Extension Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -418,7 +418,7 @@ class MovieDistortion(NodeBuilder):
         return self._input("Type")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -473,7 +473,7 @@ class PlaneTrackDeform(NodeBuilder):
         return self._input("Motion Blur Shutter")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -553,7 +553,7 @@ class Rotate(NodeBuilder):
         return self._input("Extension Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -634,7 +634,7 @@ class Scale(NodeBuilder):
         return self._input("Extension Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -693,7 +693,7 @@ class Stabilize2D(NodeBuilder):
         return self._input("Extension Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -773,7 +773,7 @@ class Transform(NodeBuilder):
         return self._input("Extension Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -839,6 +839,6 @@ class Translate(NodeBuilder):
         return self._input("Extension Y")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")

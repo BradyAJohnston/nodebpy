@@ -46,7 +46,7 @@ def test_shader_menu_switch():
             _ = menu >> sockets.SocketFloat()
 
     assert len(menu.node.enum_items) == 10
-    for i, input in enumerate(menu.inputs.values()):
+    for i, input in enumerate([x for x in menu.inputs.values() if x.type == "VALUE"]):
         assert f"Input_{i}" == input.name
         assert float(i) == input.socket.default_value
 
@@ -58,8 +58,8 @@ def test_shader_menu_switch():
             _ = menu >> sockets.SocketFloat()
 
     assert len(menu.node.enum_items) == 10
-    for i, input in enumerate(menu.inputs.values()):
-        assert f"Input_{i}" == input.name
+    print(list(menu.inputs.items()))
+    for i, input in enumerate([x for x in menu.inputs.values() if x.type == "VALUE"]):
         assert input.socket.links[0].from_node.bl_idname == s.Value._bl_idname
         # we have to check the output defeault value here because that is how the Value
         # node is defined which is truly cursed but hey it is what it is

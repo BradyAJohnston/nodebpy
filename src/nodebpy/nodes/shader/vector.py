@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_COLOR,
@@ -68,7 +68,7 @@ class Bump(NodeBuilder):
         return self._input("Normal")
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
         return self._output("Normal")
 
@@ -129,7 +129,7 @@ class Displacement(NodeBuilder):
         return self._input("Normal")
 
     @property
-    def o_displacement(self) -> SocketLinker:
+    def o_displacement(self) -> VectorSocketLinker:
         """Output socket: Displacement"""
         return self._output("Displacement")
 
@@ -190,7 +190,7 @@ class Mapping(NodeBuilder):
         return self._input("Scale")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
         return self._output("Vector")
 
@@ -223,7 +223,7 @@ class Normal(NodeBuilder):
         return self._input("Normal")
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
         return self._output("Normal")
 
@@ -268,7 +268,7 @@ class NormalMap(NodeBuilder):
         return self._input("Color")
 
     @property
-    def o_normal(self) -> SocketLinker:
+    def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
         return self._output("Normal")
 
@@ -331,7 +331,7 @@ class VectorDisplacement(NodeBuilder):
         return self._input("Scale")
 
     @property
-    def o_displacement(self) -> SocketLinker:
+    def o_displacement(self) -> VectorSocketLinker:
         """Output socket: Displacement"""
         return self._output("Displacement")
 
@@ -373,7 +373,7 @@ class VectorTransform(NodeBuilder):
         return self._input("Vector")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
         return self._output("Vector")
 

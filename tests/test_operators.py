@@ -710,6 +710,16 @@ class TestComparisonChaining:
 
         assert len(tree) >= 5
 
+    def test_comparison_xyz(self):
+        """Full pipeline: compare + boolean logic as selection for SetPosition."""
+        with TreeBuilder("TestCompareBoolSetPos") as tree:
+            pos = g.Position().o_position
+            # select points where x > 0 and z <= 1
+            selection = (pos.x > 0.0) & (pos.z <= 1.0)
+            _ = g.Cube() >> g.SetPosition(selection=selection, offset=(0, 0, 1))
+
+        assert len(tree) >= 5
+
 
 class TestComplexExpressions:
     """Tests for complex expressions combining multiple operator types."""

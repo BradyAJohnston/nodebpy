@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -68,7 +68,7 @@ class AlphaOver(NodeBuilder):
         return self._input("Straight Alpha")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -108,7 +108,7 @@ class Brightnesscontrast(NodeBuilder):
         return self._input("Contrast")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -271,7 +271,7 @@ class ColorBalance(NodeBuilder):
         return self._input("Output Tint")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -499,7 +499,7 @@ class ColorCorrection(NodeBuilder):
         return self._input("Apply On Blue")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -564,7 +564,7 @@ class DepthCombine(NodeBuilder):
         return self._input("Anti-Alias")
 
     @property
-    def o_result(self) -> SocketLinker:
+    def o_result(self) -> ColorSocketLinker:
         """Output socket: Result"""
         return self._output("Result")
 
@@ -603,7 +603,7 @@ class Exposure(NodeBuilder):
         return self._input("Exposure")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -637,7 +637,7 @@ class HueCorrect(NodeBuilder):
         return self._input("Fac")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -695,7 +695,7 @@ class Huesaturationvalue(NodeBuilder):
         return self._input("Fac")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -746,7 +746,7 @@ class InvertColor(NodeBuilder):
         return self._input("Invert Alpha")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -780,7 +780,7 @@ class Posterize(NodeBuilder):
         return self._input("Steps")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -831,7 +831,7 @@ class RGBCurves(NodeBuilder):
         return self._input("White Level")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -918,6 +918,6 @@ class Tonemap(NodeBuilder):
         return self._input("Chromatic Adaptation")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
