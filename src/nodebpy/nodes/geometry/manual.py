@@ -1870,8 +1870,42 @@ class Compare(NodeBuilder):
             self.mode = kwargs.pop("mode")
         self._establish_links(**kwargs)
 
-    def switch(self, false: LINKABLE, true: LINKABLE) -> Switch:
-        def _infer_data_type(a: LINKABLE, b: LINKABLE) -> _CompareDataTypes:
+    def switch(self, false: TYPE_INPUT_ALL, true: TYPE_INPUT_ALL) -> Switch:
+        def _infer_data_type(
+            a: TYPE_INPUT_ALL, b: TYPE_INPUT_ALL
+        ) -> Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+        ]:
+            # Check plain Python types first (most specific to least)
+            # bool must come before int since bool is a subclass of int
+            has_str = isinstance(a, str) or isinstance(b, str)
+            has_numeric = isinstance(a, (int, float)) or isinstance(b, (int, float))
+
+            # Reject mixing string with numeric types
+            if has_str and has_numeric:
+                raise ValueError(
+                    f"Cannot infer compatible type from {type(a).__name__} and {type(b).__name__}"
+                )
+
+            has_float = isinstance(a, float) or isinstance(b, float)
+            has_bool = isinstance(a, bool) or isinstance(b, bool)
+            has_int = isinstance(a, int) or isinstance(b, int)
+
             set_types = [
                 x._default_output_socket.type
                 for x in (a, b)
@@ -1879,19 +1913,30 @@ class Compare(NodeBuilder):
             ]
             if set_types:
                 value = set_types[0]
-                return "FLOAT" if value == "VALUE" else value
+                match value:
+                    case "VALUE":
+                        return "FLOAT"
+                    case "INT":
+                        # A float literal should promote INT to FLOAT
+                        return "FLOAT" if has_float else "INT"
+                    case _:
+                        return value
 
-            if isinstance(a, float) or isinstance(b, float):
+            if has_float:
                 return "FLOAT"
-            if isinstance(a, int) or isinstance(b, int):
-                return "INT"
-            if isinstance(a, bool) or isinstance(b, bool):
+            if has_bool:
                 return "BOOLEAN"
-            return "VECTOR"
+            if has_int:
+                return "INT"
+            if has_str:
+                return "STRING"
 
-        return getattr(Switch, _infer_data_type(false, true).lower())(
-            switch=self, false=false, true=true
-        )
+            raise ValueError(f"Cannot infer compatible type from {a} and {b}")
+
+        method = _infer_data_type(false, true).lower()
+        if method == "int":
+            method = "integer"
+        return getattr(Switch, method)(switch=self, false=false, true=true)
 
     @classmethod
     def float(

@@ -497,6 +497,72 @@ class TestComparisonEqualNotEqual:
         assert result.node.operation == "NOT_EQUAL"
         assert result.node.data_type == "INT"
 
+    def test_comparison_float(self):
+        """Test float comparison."""
+        with TreeBuilder("TestCompareFloat"):
+            result = (g.Integer(5) == 4).switch(5.0, g.RandomValue.integer())
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "FLOAT"
+
+    def test_comparison_float_socket(self):
+        """Test float comparison with socket."""
+        with TreeBuilder("TestCompareFloatSocket"):
+            result = (g.Integer(5) == 4).switch(g.Value(5.0), g.RandomValue.integer())
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "FLOAT"
+
+    def test_comparison_returns_float(self):
+        """Test comparison returns float."""
+        with TreeBuilder("TestCompareReturnsFloat"):
+            result = (g.Integer(5) == 4).switch(5.0, int(5))
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "FLOAT"
+
+    def test_comparison_returns_int(self):
+        """Test comparison returns float."""
+        with TreeBuilder("TestCompareReturnsInt"):
+            result = (g.Integer(5) == 4).switch(int(5), 0)
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "INT"
+
+    def test_comparison_returns_str(self):
+        """Test comparison returns string."""
+        with TreeBuilder("TestCompareReturnsString"):
+            result = (g.Integer(5) == 4).switch("some_string", "another_string")
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "STRING"
+
+    def test_comparison_int(self):
+        """Test int comparison."""
+        with TreeBuilder("TestCompareInt"):
+            result = (g.Integer(5) == 4).switch(int(5), g.RandomValue.integer())
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "INT"
+
+    def test_comparison_bool(self):
+        """Test int comparison."""
+        with TreeBuilder("TestCompareInt"):
+            result = (g.Integer(5) == 4).switch(False, True)
+
+        assert result.node.bl_idname == g.Switch._bl_idname
+        assert result.node.input_type == "BOOLEAN"
+
+        with pytest.raises(ValueError, match="Cannot infer compatible type from"):
+            with TreeBuilder("TestCompareInt"):
+                # we don't automatically infer changing data types of string & numeric
+                result = (g.Integer(5) == 4).switch("str", 5.0)
+
+    def test_raise_warning(self):
+        with pytest.raises(ValueError, match="Cannot infer compatible type from"):
+            with TreeBuilder("TestCompareInt"):
+                _ = (g.Integer(5) == 4).switch(list, int)
+
     def test_comparison_into_switch(self):
         """Test using a comparison result as a switch condition."""
         with TreeBuilder("TestCompareSwitch"):
@@ -848,28 +914,22 @@ class TestMatrixMultiplcation:
                 out = s.SocketGeometry()
             cube = g.Cube()
             _ = (
-                cube
-                >> g.SetPosition(
-                    position=(
-                        g.TransformPoint(
-                            g.Position(),
-                            transform=(
-                                g.CombineTransform(rotation=(0, 90, 0))
-                                @ g.CombineTransform(translation=(1, 0, 0))
-                            ),
-                        )
-                    )
+                g.SetPosition(
+                    cube,
+                    position=g.CombineTransform(rotation=(0, 90, 0))
+                    @ g.CombineTransform(translation=(1, 0, 0))
+                    @ g.Position(),
                 )
                 >> out
             )
 
         assert cube.o_mesh.links[0].to_node.bl_idname == "GeometryNodeSetPosition"
         assert (
-            cube.o_mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname
+            cube.o_mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname  # type: ignore
             == "FunctionNodeTransformPoint"
         )
         assert (
-            cube.o_mesh.links[0]
+            cube.o_mesh.links[0]  # type: ignore
             .to_node.inputs["Position"]
             .links[0]
             .from_node.inputs["Transform"]
