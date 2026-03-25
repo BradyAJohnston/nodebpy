@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
+from typing import TYPE_CHECKING, Any, Callable, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
     from .nodes.geometry import IntegerMath, Math, VectorMath
@@ -631,7 +631,10 @@ class NodeBuilder:
                     input = self.node.inputs[input_ids.index(name)]
                     self._set_input_default_value(input, value)
                 else:
-                    input = self.node.inputs[name.replace("_", "").capitalize()]
+                    if name in self.node.inputs:
+                        input = self.node.inputs[name]
+                    else:
+                        input = self.node.inputs[name.replace("_", "").capitalize()]
                     self._set_input_default_value(input, value)
 
     def __rshift__(self, other: "NodeBuilder | SocketLinker") -> "NodeBuilder":
@@ -1610,3 +1613,18 @@ class SocketShader(SocketBase):
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+
+
+class NodeGroupBase(NodeBuilder):
+    """
+    Base NodeGroup for interacting with custom node groups
+    """
+
+    _node_group_name: str
+    _bl_idname = "GeometryNodeGroup"
+    node: bpy.types.GeometryNodeGroup
+
+    def __init__(self):
+        super().__init__()
+
+    def _generate_node_group(self, name: str) -> bpy.types.GeometryNodeGroup: ...

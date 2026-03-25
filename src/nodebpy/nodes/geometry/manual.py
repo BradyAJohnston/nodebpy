@@ -5,9 +5,12 @@ import bpy
 from ...builder import (
     DynamicInputsMixin,
     NodeBuilder,
+    NodeGroupBase,
     NodeSocket,
     SocketError,
+    SocketInt,
     SocketLinker,
+    TreeBuilder,
 )
 from ...types import (
     LINKABLE,
@@ -1913,18 +1916,10 @@ class Compare(NodeBuilder):
         ]:
             # Check plain Python types first (most specific to least)
             # bool must come before int since bool is a subclass of int
-            has_str = isinstance(a, str) or isinstance(b, str)
-            has_numeric = isinstance(a, (int, float)) or isinstance(b, (int, float))
-
-            # Reject mixing string with numeric types
-            if has_str and has_numeric:
-                raise ValueError(
-                    f"Cannot infer compatible type from {type(a).__name__} and {type(b).__name__}"
-                )
-
             has_float = isinstance(a, float) or isinstance(b, float)
             has_bool = isinstance(a, bool) or isinstance(b, bool)
             has_int = isinstance(a, int) or isinstance(b, int)
+            both_str = isinstance(a, str) and isinstance(b, str)
 
             set_types = [
                 x._default_output_socket.type
@@ -1948,7 +1943,7 @@ class Compare(NodeBuilder):
                 return "BOOLEAN"
             if has_int:
                 return "INT"
-            if has_str:
+            if both_str:
                 return "STRING"
 
             raise ValueError(f"Cannot infer compatible type from {a} and {b}")
