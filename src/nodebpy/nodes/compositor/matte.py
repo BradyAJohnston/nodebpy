@@ -64,12 +64,12 @@ class BoxMask(NodeBuilder):
     @property
     def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
     def i_size(self) -> VectorSocketLinker:
         """Input socket: Size"""
-        return self._input("Size", subtype="Vector")
+        return self._input("Size")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -624,12 +624,12 @@ class EllipseMask(NodeBuilder):
     @property
     def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
     def i_size(self) -> VectorSocketLinker:
         """Input socket: Size"""
-        return self._input("Size", subtype="Vector")
+        return self._input("Size")
 
     @property
     def i_rotation(self) -> SocketLinker:

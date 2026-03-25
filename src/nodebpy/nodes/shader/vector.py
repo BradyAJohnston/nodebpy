@@ -65,7 +65,7 @@ class Bump(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
@@ -126,7 +126,7 @@ class Displacement(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_displacement(self) -> VectorSocketLinker:
@@ -172,22 +172,22 @@ class Mapping(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_location(self) -> VectorSocketLinker:
         """Input socket: Location"""
-        return self._input("Location", subtype="Vector")
+        return self._input("Location")
 
     @property
     def i_rotation(self) -> VectorSocketLinker:
         """Input socket: Rotation"""
-        return self._input("Rotation", subtype="Vector")
+        return self._input("Rotation")
 
     @property
     def i_scale(self) -> VectorSocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale", subtype="Vector")
+        return self._input("Scale")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
@@ -220,7 +220,7 @@ class Normal(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
@@ -370,7 +370,7 @@ class VectorTransform(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def o_vector(self) -> VectorSocketLinker:

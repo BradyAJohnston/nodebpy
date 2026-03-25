@@ -127,7 +127,7 @@ class DiffuseBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -231,7 +231,7 @@ class GlassBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -320,12 +320,12 @@ class GlossyBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_tangent(self) -> VectorSocketLinker:
         """Input socket: Tangent"""
-        return self._input("Tangent", subtype="Vector")
+        return self._input("Tangent")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -404,7 +404,7 @@ class HairBSDF(NodeBuilder):
     @property
     def i_tangent(self) -> VectorSocketLinker:
         """Input socket: Tangent"""
-        return self._input("Tangent", subtype="Vector")
+        return self._input("Tangent")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -509,12 +509,12 @@ class MetallicBSDF(NodeBuilder):
     @property
     def i_ior(self) -> VectorSocketLinker:
         """Input socket: IOR"""
-        return self._input("IOR", subtype="Vector")
+        return self._input("IOR")
 
     @property
     def i_extinction(self) -> VectorSocketLinker:
         """Input socket: Extinction"""
-        return self._input("Extinction", subtype="Vector")
+        return self._input("Extinction")
 
     @property
     def i_roughness(self) -> SocketLinker:
@@ -534,12 +534,12 @@ class MetallicBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_tangent(self) -> VectorSocketLinker:
         """Input socket: Tangent"""
-        return self._input("Tangent", subtype="Vector")
+        return self._input("Tangent")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -731,7 +731,7 @@ class PrincipledBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -751,7 +751,7 @@ class PrincipledBSDF(NodeBuilder):
     @property
     def i_subsurface_radius(self) -> VectorSocketLinker:
         """Input socket: Subsurface Radius"""
-        return self._input("Subsurface Radius", subtype="Vector")
+        return self._input("Subsurface Radius")
 
     @property
     def i_subsurface_scale(self) -> SocketLinker:
@@ -791,7 +791,7 @@ class PrincipledBSDF(NodeBuilder):
     @property
     def i_tangent(self) -> VectorSocketLinker:
         """Input socket: Tangent"""
-        return self._input("Tangent", subtype="Vector")
+        return self._input("Tangent")
 
     @property
     def i_transmission_weight(self) -> SocketLinker:
@@ -821,7 +821,7 @@ class PrincipledBSDF(NodeBuilder):
     @property
     def i_coat_normal(self) -> VectorSocketLinker:
         """Input socket: Coat Normal"""
-        return self._input("Coat Normal", subtype="Vector")
+        return self._input("Coat Normal")
 
     @property
     def i_sheen_weight(self) -> SocketLinker:
@@ -962,7 +962,7 @@ class PrincipledHairBSDF(NodeBuilder):
     @property
     def i_absorption_coefficient(self) -> VectorSocketLinker:
         """Input socket: Absorption Coefficient"""
-        return self._input("Absorption Coefficient", subtype="Vector")
+        return self._input("Absorption Coefficient")
 
     @property
     def i_aspect_ratio(self) -> SocketLinker:
@@ -1084,12 +1084,12 @@ class RayPortalBSDF(NodeBuilder):
     @property
     def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
     def i_direction(self) -> VectorSocketLinker:
         """Input socket: Direction"""
-        return self._input("Direction", subtype="Vector")
+        return self._input("Direction")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -1149,7 +1149,7 @@ class RefractionBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -1211,7 +1211,7 @@ class SheenBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -1297,7 +1297,7 @@ class SpecularBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_clear_coat(self) -> SocketLinker:
@@ -1312,7 +1312,7 @@ class SpecularBSDF(NodeBuilder):
     @property
     def i_clear_coat_normal(self) -> VectorSocketLinker:
         """Input socket: Clear Coat Normal"""
-        return self._input("Clear Coat Normal", subtype="Vector")
+        return self._input("Clear Coat Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -1374,7 +1374,7 @@ class SubsurfaceScattering(NodeBuilder):
     @property
     def i_radius(self) -> VectorSocketLinker:
         """Input socket: Radius"""
-        return self._input("Radius", subtype="Vector")
+        return self._input("Radius")
 
     @property
     def i_ior(self) -> SocketLinker:
@@ -1394,7 +1394,7 @@ class SubsurfaceScattering(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -1462,7 +1462,7 @@ class ToonBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
@@ -1510,7 +1510,7 @@ class TranslucentBSDF(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:

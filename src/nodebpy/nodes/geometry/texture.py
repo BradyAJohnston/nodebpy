@@ -63,7 +63,7 @@ class BrickTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_color1(self) -> SocketLinker:
@@ -181,7 +181,7 @@ class CheckerTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_color1(self) -> SocketLinker:
@@ -243,7 +243,7 @@ class GaborTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -268,7 +268,7 @@ class GaborTexture(NodeBuilder):
     @property
     def i_orientation_3d(self) -> VectorSocketLinker:
         """Input socket: Orientation"""
-        return self._input("Orientation 3D", subtype="Vector")
+        return self._input("Orientation 3D")
 
     @property
     def o_value(self) -> SocketLinker:
@@ -324,7 +324,7 @@ class GradientTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def o_color(self) -> SocketLinker:
@@ -397,7 +397,7 @@ class ImageTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_frame(self) -> SocketLinker:
@@ -455,7 +455,7 @@ class MagicTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -536,7 +536,7 @@ class NoiseTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_w(self) -> SocketLinker:
@@ -680,7 +680,7 @@ class VoronoiTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_w(self) -> SocketLinker:
@@ -829,7 +829,7 @@ class WaveTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -927,7 +927,7 @@ class WhiteNoiseTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_w(self) -> SocketLinker:

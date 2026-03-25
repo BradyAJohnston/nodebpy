@@ -52,7 +52,7 @@ class AmbientOcclusion(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_color(self) -> SocketLinker:
@@ -180,7 +180,7 @@ class Bevel(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
@@ -351,7 +351,7 @@ class Fresnel(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_fac(self) -> SocketLinker:
@@ -446,7 +446,7 @@ class LayerWeight(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_fresnel(self) -> SocketLinker:

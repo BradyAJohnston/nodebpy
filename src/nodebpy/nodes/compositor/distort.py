@@ -58,22 +58,22 @@ class CornerPin(NodeBuilder):
     @property
     def i_upper_left(self) -> VectorSocketLinker:
         """Input socket: Upper Left"""
-        return self._input("Upper Left", subtype="Vector")
+        return self._input("Upper Left")
 
     @property
     def i_upper_right(self) -> VectorSocketLinker:
         """Input socket: Upper Right"""
-        return self._input("Upper Right", subtype="Vector")
+        return self._input("Upper Right")
 
     @property
     def i_lower_left(self) -> VectorSocketLinker:
         """Input socket: Lower Left"""
-        return self._input("Lower Left", subtype="Vector")
+        return self._input("Lower Left")
 
     @property
     def i_lower_right(self) -> VectorSocketLinker:
         """Input socket: Lower Right"""
-        return self._input("Lower Right", subtype="Vector")
+        return self._input("Lower Right")
 
     @property
     def i_interpolation(self) -> SocketLinker:
@@ -202,7 +202,7 @@ class Displace(NodeBuilder):
     @property
     def i_displacement(self) -> VectorSocketLinker:
         """Input socket: Displacement"""
-        return self._input("Displacement", subtype="Vector")
+        return self._input("Displacement")
 
     @property
     def i_interpolation(self) -> SocketLinker:
@@ -366,7 +366,7 @@ class MapUV(NodeBuilder):
     @property
     def i_uv(self) -> VectorSocketLinker:
         """Input socket: UV"""
-        return self._input("UV", subtype="Vector")
+        return self._input("UV")
 
     @property
     def i_interpolation(self) -> SocketLinker:

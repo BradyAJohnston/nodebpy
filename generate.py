@@ -223,7 +223,9 @@ class SocketInfo:
         return_value = "self._{}('{}'{})".format(
             "output" if self.is_output else "input",
             self.identifier,
-            ', subtype="Vector"' if "NodeSocketVector" in self.bl_socket_type else "",
+            ', subtype="Vector"'
+            if self.is_output and "NodeSocketVector" in self.bl_socket_type
+            else "",
         )
 
         return f'''    @property

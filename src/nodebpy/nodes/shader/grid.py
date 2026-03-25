@@ -215,12 +215,12 @@ class VolumeCoefficients(NodeBuilder):
     @property
     def i_absorption_coefficients(self) -> VectorSocketLinker:
         """Input socket: Absorption Coefficients"""
-        return self._input("Absorption Coefficients", subtype="Vector")
+        return self._input("Absorption Coefficients")
 
     @property
     def i_scatter_coefficients(self) -> VectorSocketLinker:
         """Input socket: Scatter Coefficients"""
-        return self._input("Scatter Coefficients", subtype="Vector")
+        return self._input("Scatter Coefficients")
 
     @property
     def i_anisotropy(self) -> SocketLinker:
@@ -250,7 +250,7 @@ class VolumeCoefficients(NodeBuilder):
     @property
     def i_emission_coefficients(self) -> VectorSocketLinker:
         """Input socket: Emission Coefficients"""
-        return self._input("Emission Coefficients", subtype="Vector")
+        return self._input("Emission Coefficients")
 
     @property
     def o_volume(self) -> SocketLinker:

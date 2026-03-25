@@ -144,7 +144,7 @@ class AdvectGrid(NodeBuilder):
     @property
     def i_velocity(self) -> VectorSocketLinker:
         """Input socket: Velocity"""
-        return self._input("Velocity", subtype="Vector")
+        return self._input("Velocity")
 
     @property
     def i_time_step(self) -> SocketLinker:
@@ -222,7 +222,7 @@ class DistributePointsInGrid(NodeBuilder):
     @property
     def i_spacing(self) -> VectorSocketLinker:
         """Input socket: Spacing"""
-        return self._input("Spacing", subtype="Vector")
+        return self._input("Spacing")
 
     @property
     def i_threshold(self) -> SocketLinker:
@@ -295,7 +295,7 @@ class DistributePointsInVolume(NodeBuilder):
     @property
     def i_spacing(self) -> VectorSocketLinker:
         """Input socket: Spacing"""
-        return self._input("Spacing", subtype="Vector")
+        return self._input("Spacing")
 
     @property
     def i_threshold(self) -> SocketLinker:
@@ -420,7 +420,7 @@ class GridCurl(NodeBuilder):
     @property
     def i_grid(self) -> VectorSocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid", subtype="Vector")
+        return self._input("Grid")
 
     @property
     def o_curl(self) -> VectorSocketLinker:
@@ -445,7 +445,7 @@ class GridDivergence(NodeBuilder):
     @property
     def i_grid(self) -> VectorSocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid", subtype="Vector")
+        return self._input("Grid")
 
     @property
     def o_divergence(self) -> SocketLinker:
@@ -1260,7 +1260,7 @@ class SampleGrid(NodeBuilder):
     @property
     def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
     def i_interpolation(self) -> SocketLinker:
@@ -1664,12 +1664,12 @@ class VolumeCube(NodeBuilder):
     @property
     def i_min(self) -> VectorSocketLinker:
         """Input socket: Min"""
-        return self._input("Min", subtype="Vector")
+        return self._input("Min")
 
     @property
     def i_max(self) -> VectorSocketLinker:
         """Input socket: Max"""
-        return self._input("Max", subtype="Vector")
+        return self._input("Max")
 
     @property
     def i_resolution_x(self) -> SocketLinker:

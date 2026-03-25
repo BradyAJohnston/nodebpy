@@ -63,12 +63,12 @@ class DialGizmo(NodeBuilder):
     @property
     def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
     def i_up(self) -> VectorSocketLinker:
         """Input socket: Up"""
-        return self._input("Up", subtype="Vector")
+        return self._input("Up")
 
     @property
     def i_screen_space(self) -> SocketLinker:
@@ -375,12 +375,12 @@ class LinearGizmo(NodeBuilder):
     @property
     def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
     def i_direction(self) -> VectorSocketLinker:
         """Input socket: Direction"""
-        return self._input("Direction", subtype="Vector")
+        return self._input("Direction")
 
     @property
     def o_transform(self) -> SocketLinker:
@@ -449,7 +449,7 @@ class TransformGizmo(NodeBuilder):
     @property
     def i_position(self) -> VectorSocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
     def i_rotation(self) -> SocketLinker:

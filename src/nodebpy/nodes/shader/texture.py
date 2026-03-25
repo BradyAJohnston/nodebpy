@@ -36,7 +36,7 @@ class EnvironmentTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def o_color(self) -> SocketLinker:
@@ -85,7 +85,7 @@ class IesTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_strength(self) -> SocketLinker:
@@ -142,7 +142,7 @@ class ImageTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def o_color(self) -> SocketLinker:
@@ -235,7 +235,7 @@ class SkyTexture(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def o_color(self) -> SocketLinker:

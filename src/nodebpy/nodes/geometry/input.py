@@ -2179,7 +2179,7 @@ class UVTangent(NodeBuilder):
     @property
     def i_uv(self) -> VectorSocketLinker:
         """Input socket: UV"""
-        return self._input("UV", subtype="Vector")
+        return self._input("UV")
 
     @property
     def o_tangent(self) -> VectorSocketLinker:

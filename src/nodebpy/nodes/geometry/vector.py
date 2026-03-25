@@ -36,7 +36,7 @@ class RadialTiling(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_sides(self) -> SocketLinker:
@@ -103,7 +103,7 @@ class VectorCurves(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
@@ -383,17 +383,17 @@ class VectorMath(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_vector_001(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector_001", subtype="Vector")
+        return self._input("Vector_001")
 
     @property
     def i_vector_002(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector_002", subtype="Vector")
+        return self._input("Vector_002")
 
     @property
     def i_scale(self) -> SocketLinker:
@@ -520,17 +520,17 @@ class VectorRotate(NodeBuilder):
     @property
     def i_vector(self) -> VectorSocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_center(self) -> VectorSocketLinker:
         """Input socket: Center"""
-        return self._input("Center", subtype="Vector")
+        return self._input("Center")
 
     @property
     def i_axis(self) -> VectorSocketLinker:
         """Input socket: Axis"""
-        return self._input("Axis", subtype="Vector")
+        return self._input("Axis")
 
     @property
     def i_angle(self) -> SocketLinker:
@@ -540,7 +540,7 @@ class VectorRotate(NodeBuilder):
     @property
     def i_rotation(self) -> VectorSocketLinker:
         """Input socket: Rotation"""
-        return self._input("Rotation", subtype="Vector")
+        return self._input("Rotation")
 
     @property
     def o_vector(self) -> VectorSocketLinker:

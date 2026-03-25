@@ -163,7 +163,7 @@ class Blur(NodeBuilder):
     @property
     def i_size(self) -> VectorSocketLinker:
         """Input socket: Size"""
-        return self._input("Size", subtype="Vector")
+        return self._input("Size")
 
     @property
     def i_type(self) -> SocketLinker:
@@ -450,7 +450,7 @@ class Denoise(NodeBuilder):
     @property
     def i_normal(self) -> VectorSocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_hdr(self) -> SocketLinker:
@@ -630,7 +630,7 @@ class DirectionalBlur(NodeBuilder):
     @property
     def i_center(self) -> VectorSocketLinker:
         """Input socket: Center"""
-        return self._input("Center", subtype="Vector")
+        return self._input("Center")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -866,7 +866,7 @@ class Glare(NodeBuilder):
     @property
     def i_sun_position(self) -> VectorSocketLinker:
         """Input socket: Sun Position"""
-        return self._input("Sun Position", subtype="Vector")
+        return self._input("Sun Position")
 
     @property
     def i_jitter(self) -> SocketLinker:
@@ -1079,7 +1079,7 @@ class VectorBlur(NodeBuilder):
     @property
     def i_speed(self) -> VectorSocketLinker:
         """Input socket: Speed"""
-        return self._input("Speed", subtype="Vector")
+        return self._input("Speed")
 
     @property
     def i_z(self) -> SocketLinker:

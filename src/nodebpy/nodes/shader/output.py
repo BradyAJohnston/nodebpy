@@ -300,7 +300,7 @@ class MaterialOutput(NodeBuilder):
     @property
     def i_displacement(self) -> VectorSocketLinker:
         """Input socket: Displacement"""
-        return self._input("Displacement", subtype="Vector")
+        return self._input("Displacement")
 
     @property
     def i_thickness(self) -> SocketLinker:
