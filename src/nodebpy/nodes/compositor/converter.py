@@ -603,7 +603,7 @@ class Mix(NodeBuilder):
     @property
     def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Vector", subtype="Vector")
+        return self._output("Result_Vector")
 
     @property
     def o_result_color(self) -> SocketLinker:
@@ -792,7 +792,7 @@ class RelativeToPixel(NodeBuilder):
     @property
     def o_vector_value(self) -> VectorSocketLinker:
         """Output socket: Value"""
-        return self._output("Vector Value", subtype="Vector")
+        return self._output("Vector Value")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR"]:

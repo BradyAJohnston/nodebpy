@@ -785,7 +785,7 @@ class CombineXYZ(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
 
 class EulerToRotation(NodeBuilder):
@@ -1540,7 +1540,7 @@ class MapRange(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def clamp(self) -> bool:
@@ -2279,7 +2279,7 @@ class Mix(NodeBuilder):
     @property
     def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Vector", subtype="Vector")
+        return self._output("Result_Vector")
 
     @property
     def o_result_color(self) -> SocketLinker:
@@ -2467,7 +2467,7 @@ class PackUVIslands(NodeBuilder):
     @property
     def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV", subtype="Vector")
+        return self._output("UV")
 
 
 class ProjectPoint(NodeBuilder):
@@ -2501,7 +2501,7 @@ class ProjectPoint(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
 
 class QuaternionToRotation(NodeBuilder):
@@ -2678,7 +2678,7 @@ class RandomValue(NodeBuilder):
     @property
     def o_value(self) -> VectorSocketLinker:
         """Output socket: Value"""
-        return self._output("Value", subtype="Vector")
+        return self._output("Value")
 
     @property
     def o_value_001(self) -> SocketLinker:
@@ -2796,7 +2796,7 @@ class RotateEuler(NodeBuilder):
     @property
     def o_rotation(self) -> VectorSocketLinker:
         """Output socket: Rotation"""
-        return self._output("Rotation", subtype="Vector")
+        return self._output("Rotation")
 
     @property
     def rotation_type(self) -> Literal["AXIS_ANGLE", "EULER"]:
@@ -2890,7 +2890,7 @@ class RotateVector(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
 
 class RotationToAxisAngle(NodeBuilder):
@@ -2915,7 +2915,7 @@ class RotationToAxisAngle(NodeBuilder):
     @property
     def o_axis(self) -> VectorSocketLinker:
         """Output socket: Axis"""
-        return self._output("Axis", subtype="Vector")
+        return self._output("Axis")
 
     @property
     def o_angle(self) -> SocketLinker:
@@ -2945,7 +2945,7 @@ class RotationToEuler(NodeBuilder):
     @property
     def o_euler(self) -> VectorSocketLinker:
         """Output socket: Euler"""
-        return self._output("Euler", subtype="Vector")
+        return self._output("Euler")
 
 
 class RotationToQuaternion(NodeBuilder):
@@ -3196,7 +3196,7 @@ class SeparateTransform(NodeBuilder):
     @property
     def o_translation(self) -> VectorSocketLinker:
         """Output socket: Translation"""
-        return self._output("Translation", subtype="Vector")
+        return self._output("Translation")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -3206,7 +3206,7 @@ class SeparateTransform(NodeBuilder):
     @property
     def o_scale(self) -> VectorSocketLinker:
         """Output socket: Scale"""
-        return self._output("Scale", subtype="Vector")
+        return self._output("Scale")
 
 
 class SeparateXYZ(NodeBuilder):
@@ -3659,7 +3659,7 @@ class TransformDirection(NodeBuilder):
     @property
     def o_direction(self) -> VectorSocketLinker:
         """Output socket: Direction"""
-        return self._output("Direction", subtype="Vector")
+        return self._output("Direction")
 
 
 class TransformPoint(NodeBuilder):
@@ -3693,7 +3693,7 @@ class TransformPoint(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
 
 class TransposeMatrix(NodeBuilder):
@@ -3776,7 +3776,7 @@ class UVUnwrap(NodeBuilder):
     @property
     def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV", subtype="Vector")
+        return self._output("UV")
 
 
 class ValueToString(NodeBuilder):

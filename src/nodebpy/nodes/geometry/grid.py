@@ -425,7 +425,7 @@ class GridCurl(NodeBuilder):
     @property
     def o_curl(self) -> VectorSocketLinker:
         """Output socket: Curl"""
-        return self._output("Curl", subtype="Vector")
+        return self._output("Curl")
 
 
 class GridDivergence(NodeBuilder):
@@ -475,7 +475,7 @@ class GridGradient(NodeBuilder):
     @property
     def o_gradient(self) -> VectorSocketLinker:
         """Output socket: Gradient"""
-        return self._output("Gradient", subtype="Vector")
+        return self._output("Gradient")
 
 
 class GridInfo(NodeBuilder):

@@ -735,7 +735,7 @@ class VoronoiTexture(NodeBuilder):
     @property
     def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position", subtype="Vector")
+        return self._output("Position")
 
     @property
     def o_w(self) -> SocketLinker:

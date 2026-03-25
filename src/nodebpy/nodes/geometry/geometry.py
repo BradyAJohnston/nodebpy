@@ -118,12 +118,12 @@ class Arc(NodeBuilder):
     @property
     def o_center(self) -> VectorSocketLinker:
         """Output socket: Center"""
-        return self._output("Center", subtype="Vector")
+        return self._output("Center")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_radius(self) -> SocketLinker:
@@ -175,12 +175,12 @@ class BoundingBox(NodeBuilder):
     @property
     def o_min(self) -> VectorSocketLinker:
         """Output socket: Min"""
-        return self._output("Min", subtype="Vector")
+        return self._output("Min")
 
     @property
     def o_max(self) -> VectorSocketLinker:
         """Output socket: Max"""
-        return self._output("Max", subtype="Vector")
+        return self._output("Max")
 
 
 class BezierSegment(NodeBuilder):
@@ -335,7 +335,7 @@ class Cone(NodeBuilder):
     @property
     def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map", subtype="Vector")
+        return self._output("UV Map")
 
     @property
     def fill_type(self) -> Literal["NONE", "NGON", "TRIANGLE_FAN"]:
@@ -424,7 +424,7 @@ class Cube(NodeBuilder):
     @property
     def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map", subtype="Vector")
+        return self._output("UV Map")
 
 
 class CurveCircle(NodeBuilder):
@@ -489,7 +489,7 @@ class CurveCircle(NodeBuilder):
     @property
     def o_center(self) -> VectorSocketLinker:
         """Output socket: Center"""
-        return self._output("Center", subtype="Vector")
+        return self._output("Center")
 
     @property
     def mode(self) -> Literal["POINTS", "RADIUS"]:
@@ -681,12 +681,12 @@ class CurveToPoints(NodeBuilder):
     @property
     def o_tangent(self) -> VectorSocketLinker:
         """Output socket: Tangent"""
-        return self._output("Tangent", subtype="Vector")
+        return self._output("Tangent")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -823,7 +823,7 @@ class Cylinder(NodeBuilder):
     @property
     def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map", subtype="Vector")
+        return self._output("UV Map")
 
     @property
     def fill_type(self) -> Literal["NONE", "NGON", "TRIANGLE_FAN"]:
@@ -1037,7 +1037,7 @@ class DistributePointsOnFaces(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -1526,7 +1526,7 @@ class GeometryProximity(NodeBuilder):
     @property
     def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position", subtype="Vector")
+        return self._output("Position")
 
     @property
     def o_distance(self) -> SocketLinker:
@@ -1644,7 +1644,7 @@ class Grid(NodeBuilder):
     @property
     def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map", subtype="Vector")
+        return self._output("UV Map")
 
 
 class IcoSphere(NodeBuilder):
@@ -1683,7 +1683,7 @@ class IcoSphere(NodeBuilder):
     @property
     def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map", subtype="Vector")
+        return self._output("UV Map")
 
 
 class InstanceOnPoints(NodeBuilder):
@@ -2853,12 +2853,12 @@ class Raycast(NodeBuilder):
     @property
     def o_hit_position(self) -> VectorSocketLinker:
         """Output socket: Hit Position"""
-        return self._output("Hit Position", subtype="Vector")
+        return self._output("Hit Position")
 
     @property
     def o_hit_normal(self) -> VectorSocketLinker:
         """Output socket: Hit Normal"""
-        return self._output("Hit Normal", subtype="Vector")
+        return self._output("Hit Normal")
 
     @property
     def o_hit_distance(self) -> SocketLinker:
@@ -3344,17 +3344,17 @@ class SampleCurve(NodeBuilder):
     @property
     def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position", subtype="Vector")
+        return self._output("Position")
 
     @property
     def o_tangent(self) -> VectorSocketLinker:
         """Output socket: Tangent"""
-        return self._output("Tangent", subtype="Vector")
+        return self._output("Tangent")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def mode(self) -> Literal["FACTOR", "LENGTH"]:
@@ -6114,7 +6114,7 @@ class StringToCurves(NodeBuilder):
     @property
     def o_pivot_point(self) -> VectorSocketLinker:
         """Output socket: Pivot Point"""
-        return self._output("Pivot Point", subtype="Vector")
+        return self._output("Pivot Point")
 
     @property
     def overflow(self) -> Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"]:
@@ -6614,4 +6614,4 @@ class UVSphere(NodeBuilder):
     @property
     def o_uv_map(self) -> VectorSocketLinker:
         """Output socket: UV Map"""
-        return self._output("UV Map", subtype="Vector")
+        return self._output("UV Map")

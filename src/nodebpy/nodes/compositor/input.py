@@ -169,7 +169,7 @@ class Normal(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
 
 class RenderLayers(NodeBuilder):
@@ -204,22 +204,22 @@ class RenderLayers(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV", subtype="Vector")
+        return self._output("UV")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position", subtype="Vector")
+        return self._output("Position")
 
     @property
     def o_deprecated(self) -> SocketLinker:
@@ -457,7 +457,7 @@ class TrackPosition(NodeBuilder):
     @property
     def o_speed(self) -> VectorSocketLinker:
         """Output socket: Speed"""
-        return self._output("Speed", subtype="Vector")
+        return self._output("Speed")
 
     @property
     def tracking_object(self) -> str:

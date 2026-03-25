@@ -70,7 +70,7 @@ class Bump(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def invert(self) -> bool:
@@ -131,7 +131,7 @@ class Displacement(NodeBuilder):
     @property
     def o_displacement(self) -> VectorSocketLinker:
         """Output socket: Displacement"""
-        return self._output("Displacement", subtype="Vector")
+        return self._output("Displacement")
 
     @property
     def space(self) -> Literal["OBJECT", "WORLD"]:
@@ -192,7 +192,7 @@ class Mapping(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def vector_type(self) -> Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"]:
@@ -225,7 +225,7 @@ class Normal(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_dot(self) -> SocketLinker:
@@ -270,7 +270,7 @@ class NormalMap(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def space(
@@ -333,7 +333,7 @@ class VectorDisplacement(NodeBuilder):
     @property
     def o_displacement(self) -> VectorSocketLinker:
         """Output socket: Displacement"""
-        return self._output("Displacement", subtype="Vector")
+        return self._output("Displacement")
 
     @property
     def space(self) -> Literal["TANGENT", "OBJECT", "WORLD"]:
@@ -375,7 +375,7 @@ class VectorTransform(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def vector_type(self) -> Literal["POINT", "VECTOR", "NORMAL"]:

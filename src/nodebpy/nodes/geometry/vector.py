@@ -51,7 +51,7 @@ class RadialTiling(NodeBuilder):
     @property
     def o_segment_coordinates(self) -> VectorSocketLinker:
         """Output socket: Segment Coordinates"""
-        return self._output("Segment Coordinates", subtype="Vector")
+        return self._output("Segment Coordinates")
 
     @property
     def o_segment_id(self) -> SocketLinker:
@@ -108,7 +108,7 @@ class VectorCurves(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
 
 class VectorMath(NodeBuilder):
@@ -403,7 +403,7 @@ class VectorMath(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def o_value(self) -> SocketLinker:
@@ -545,7 +545,7 @@ class VectorRotate(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def rotation_type(
