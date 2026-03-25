@@ -549,36 +549,35 @@ def test_nested_trees():
     assert len(tree) == 4
 
 
-def _test_node_outputs(node: NodeBuilder):
-    assert node.node is not None
-    for output in node.outputs.values():
-        if isinstance(output, VectorSocketLinker):
-            result = -output
-            assert result.node is not None
-            assert result.operation == "SCALE"
-            assert result.node.inputs["Scale"].default_value == -1.0
-        elif isinstance(output.socket, NodeSocketFloat):
-            result = -output
-            assert result.node is not None
-            assert result.node.inputs["Value"].links
-            assert result.node.operation == "MULTIPLY"
-            assert result.node.inputs["Value_001"].default_value == -1
-        elif isinstance(output.socket, NodeSocketInt):
-            result = -output
-            assert result.node is not None
-            assert result.node.inputs["Value"].links
-            assert (
-                result.node.operation == "NEGATE"
-                if result.tree.tree.type == "GEOMETRY"
-                else "MULTIPLY"
-            )
-
-
 @pytest.mark.parametrize(
     "module,tree_type",
     [(g, "GeometryNodeTree"), (s, "ShaderNodeTree"), (c, "CompositorNodeTree")],
 )
 def test_add_all_nodes(module, tree_type):
+    def _test_node_outputs(node: NodeBuilder):
+        assert node.node is not None
+        for output in node.outputs.values():
+            if isinstance(output, VectorSocketLinker):
+                result = -output
+                assert result.node is not None
+                assert result.operation == "SCALE"
+                assert result.node.inputs["Scale"].default_value == -1.0
+            elif isinstance(output.socket, NodeSocketFloat):
+                result = -output
+                assert result.node is not None
+                assert result.node.inputs["Value"].links
+                assert result.node.operation == "MULTIPLY"
+                assert result.node.inputs["Value_001"].default_value == -1
+            elif isinstance(output.socket, NodeSocketInt):
+                result = -output
+                assert result.node is not None
+                assert result.node.inputs["Value"].links
+                assert (
+                    result.node.operation == "NEGATE"
+                    if result.tree.tree.type == "GEOMETRY"
+                    else "MULTIPLY"
+                )
+
     with TreeBuilder(tree_type=tree_type):
         for name in dir(module):
             if not re.match(r"^([A-Z][a-z]+)+$", name):
