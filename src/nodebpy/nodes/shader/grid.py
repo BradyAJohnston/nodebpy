@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
     TYPE_INPUT_COLOR,
@@ -213,12 +213,12 @@ class VolumeCoefficients(NodeBuilder):
         return self._input("Weight")
 
     @property
-    def i_absorption_coefficients(self) -> VectorSocketLinker:
+    def i_absorption_coefficients(self) -> SocketLinker:
         """Input socket: Absorption Coefficients"""
         return self._input("Absorption Coefficients")
 
     @property
-    def i_scatter_coefficients(self) -> VectorSocketLinker:
+    def i_scatter_coefficients(self) -> SocketLinker:
         """Input socket: Scatter Coefficients"""
         return self._input("Scatter Coefficients")
 
@@ -248,7 +248,7 @@ class VolumeCoefficients(NodeBuilder):
         return self._input("Diameter")
 
     @property
-    def i_emission_coefficients(self) -> VectorSocketLinker:
+    def i_emission_coefficients(self) -> SocketLinker:
         """Input socket: Emission Coefficients"""
         return self._input("Emission Coefficients")
 

@@ -224,7 +224,7 @@ class Mix(NodeBuilder):
         return self._input("Factor_Float")
 
     @property
-    def i_factor_vector(self) -> VectorSocketLinker:
+    def i_factor_vector(self) -> SocketLinker:
         """Input socket: Factor"""
         return self._input("Factor_Vector")
 
@@ -239,12 +239,12 @@ class Mix(NodeBuilder):
         return self._input("B_Float")
 
     @property
-    def i_a_vector(self) -> VectorSocketLinker:
+    def i_a_vector(self) -> SocketLinker:
         """Input socket: A"""
         return self._input("A_Vector")
 
     @property
-    def i_b_vector(self) -> VectorSocketLinker:
+    def i_b_vector(self) -> SocketLinker:
         """Input socket: B"""
         return self._input("B_Vector")
 

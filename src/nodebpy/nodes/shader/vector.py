@@ -63,7 +63,7 @@ class Bump(NodeBuilder):
         return self._input("Height")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
         return self._input("Normal")
 
@@ -124,7 +124,7 @@ class Displacement(NodeBuilder):
         return self._input("Scale")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
         return self._input("Normal")
 
@@ -170,22 +170,22 @@ class Mapping(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
 
     @property
-    def i_location(self) -> VectorSocketLinker:
+    def i_location(self) -> SocketLinker:
         """Input socket: Location"""
         return self._input("Location")
 
     @property
-    def i_rotation(self) -> VectorSocketLinker:
+    def i_rotation(self) -> SocketLinker:
         """Input socket: Rotation"""
         return self._input("Rotation")
 
     @property
-    def i_scale(self) -> VectorSocketLinker:
+    def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
         return self._input("Scale")
 
@@ -218,7 +218,7 @@ class Normal(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
         return self._input("Normal")
 
@@ -368,7 +368,7 @@ class VectorTransform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
 

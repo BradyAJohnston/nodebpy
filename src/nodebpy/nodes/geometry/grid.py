@@ -142,7 +142,7 @@ class AdvectGrid(NodeBuilder):
         return self._input("Grid")
 
     @property
-    def i_velocity(self) -> VectorSocketLinker:
+    def i_velocity(self) -> SocketLinker:
         """Input socket: Velocity"""
         return self._input("Velocity")
 
@@ -220,7 +220,7 @@ class DistributePointsInGrid(NodeBuilder):
         return self._input("Seed")
 
     @property
-    def i_spacing(self) -> VectorSocketLinker:
+    def i_spacing(self) -> SocketLinker:
         """Input socket: Spacing"""
         return self._input("Spacing")
 
@@ -293,7 +293,7 @@ class DistributePointsInVolume(NodeBuilder):
         return self._input("Seed")
 
     @property
-    def i_spacing(self) -> VectorSocketLinker:
+    def i_spacing(self) -> SocketLinker:
         """Input socket: Spacing"""
         return self._input("Spacing")
 
@@ -418,7 +418,7 @@ class GridCurl(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grid(self) -> VectorSocketLinker:
+    def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
         return self._input("Grid")
 
@@ -443,7 +443,7 @@ class GridDivergence(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grid(self) -> VectorSocketLinker:
+    def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
         return self._input("Grid")
 
@@ -1258,7 +1258,7 @@ class SampleGrid(NodeBuilder):
         return self._input("Grid")
 
     @property
-    def i_position(self) -> VectorSocketLinker:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
         return self._input("Position")
 
@@ -1662,12 +1662,12 @@ class VolumeCube(NodeBuilder):
         return self._input("Background")
 
     @property
-    def i_min(self) -> VectorSocketLinker:
+    def i_min(self) -> SocketLinker:
         """Input socket: Min"""
         return self._input("Min")
 
     @property
-    def i_max(self) -> VectorSocketLinker:
+    def i_max(self) -> SocketLinker:
         """Input socket: Max"""
         return self._input("Max")
 

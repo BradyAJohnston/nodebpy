@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -161,7 +161,7 @@ class Blur(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_size(self) -> VectorSocketLinker:
+    def i_size(self) -> SocketLinker:
         """Input socket: Size"""
         return self._input("Size")
 
@@ -448,7 +448,7 @@ class Denoise(NodeBuilder):
         return self._input("Albedo")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
         return self._input("Normal")
 
@@ -628,7 +628,7 @@ class DirectionalBlur(NodeBuilder):
         return self._input("Samples")
 
     @property
-    def i_center(self) -> VectorSocketLinker:
+    def i_center(self) -> SocketLinker:
         """Input socket: Center"""
         return self._input("Center")
 
@@ -864,7 +864,7 @@ class Glare(NodeBuilder):
         return self._input("Diagonal Star")
 
     @property
-    def i_sun_position(self) -> VectorSocketLinker:
+    def i_sun_position(self) -> SocketLinker:
         """Input socket: Sun Position"""
         return self._input("Sun Position")
 
@@ -1077,7 +1077,7 @@ class VectorBlur(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_speed(self) -> VectorSocketLinker:
+    def i_speed(self) -> SocketLinker:
         """Input socket: Speed"""
         return self._input("Speed")
 

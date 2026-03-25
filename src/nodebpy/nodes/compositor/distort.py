@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -56,22 +56,22 @@ class CornerPin(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_upper_left(self) -> VectorSocketLinker:
+    def i_upper_left(self) -> SocketLinker:
         """Input socket: Upper Left"""
         return self._input("Upper Left")
 
     @property
-    def i_upper_right(self) -> VectorSocketLinker:
+    def i_upper_right(self) -> SocketLinker:
         """Input socket: Upper Right"""
         return self._input("Upper Right")
 
     @property
-    def i_lower_left(self) -> VectorSocketLinker:
+    def i_lower_left(self) -> SocketLinker:
         """Input socket: Lower Left"""
         return self._input("Lower Left")
 
     @property
-    def i_lower_right(self) -> VectorSocketLinker:
+    def i_lower_right(self) -> SocketLinker:
         """Input socket: Lower Right"""
         return self._input("Lower Right")
 
@@ -200,7 +200,7 @@ class Displace(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_displacement(self) -> VectorSocketLinker:
+    def i_displacement(self) -> SocketLinker:
         """Input socket: Displacement"""
         return self._input("Displacement")
 
@@ -364,7 +364,7 @@ class MapUV(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_uv(self) -> VectorSocketLinker:
+    def i_uv(self) -> SocketLinker:
         """Input socket: UV"""
         return self._input("UV")
 

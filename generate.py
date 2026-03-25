@@ -216,7 +216,7 @@ class SocketInfo:
 
         return_type = (
             "VectorSocketLinker"
-            if "NodeSocketVector" in self.bl_socket_type
+            if self.is_output and "NodeSocketVector" in self.bl_socket_type
             else "SocketLinker"
         )
 

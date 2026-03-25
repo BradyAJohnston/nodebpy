@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -61,12 +61,12 @@ class DialGizmo(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> VectorSocketLinker:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
         return self._input("Position")
 
     @property
-    def i_up(self) -> VectorSocketLinker:
+    def i_up(self) -> SocketLinker:
         """Input socket: Up"""
         return self._input("Up")
 
@@ -373,12 +373,12 @@ class LinearGizmo(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> VectorSocketLinker:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
         return self._input("Position")
 
     @property
-    def i_direction(self) -> VectorSocketLinker:
+    def i_direction(self) -> SocketLinker:
         """Input socket: Direction"""
         return self._input("Direction")
 
@@ -447,7 +447,7 @@ class TransformGizmo(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> VectorSocketLinker:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
         return self._input("Position")
 

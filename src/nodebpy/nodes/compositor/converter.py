@@ -551,7 +551,7 @@ class Mix(NodeBuilder):
         return self._input("Factor_Float")
 
     @property
-    def i_factor_vector(self) -> VectorSocketLinker:
+    def i_factor_vector(self) -> SocketLinker:
         """Input socket: Factor"""
         return self._input("Factor_Vector")
 
@@ -566,12 +566,12 @@ class Mix(NodeBuilder):
         return self._input("B_Float")
 
     @property
-    def i_a_vector(self) -> VectorSocketLinker:
+    def i_a_vector(self) -> SocketLinker:
         """Input socket: A"""
         return self._input("A_Vector")
 
     @property
-    def i_b_vector(self) -> VectorSocketLinker:
+    def i_b_vector(self) -> SocketLinker:
         """Input socket: B"""
         return self._input("B_Vector")
 
@@ -770,7 +770,7 @@ class RelativeToPixel(NodeBuilder):
         return cls(data_type="VECTOR", vector_value=vector_value, image=image)
 
     @property
-    def i_vector_value(self) -> VectorSocketLinker:
+    def i_vector_value(self) -> SocketLinker:
         """Input socket: Value"""
         return self._input("Vector Value")
 
@@ -945,7 +945,7 @@ class Split(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_position(self) -> VectorSocketLinker:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
         return self._input("Position")
 

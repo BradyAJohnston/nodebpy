@@ -34,7 +34,7 @@ class RadialTiling(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
 
@@ -101,7 +101,7 @@ class VectorCurves(NodeBuilder):
         return self._input("Fac")
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
 
@@ -381,17 +381,17 @@ class VectorMath(NodeBuilder):
         return cls(operation="TANGENT", vector=vector)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
 
     @property
-    def i_vector_001(self) -> VectorSocketLinker:
+    def i_vector_001(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector_001")
 
     @property
-    def i_vector_002(self) -> VectorSocketLinker:
+    def i_vector_002(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector_002")
 
@@ -518,17 +518,17 @@ class VectorRotate(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
         return self._input("Vector")
 
     @property
-    def i_center(self) -> VectorSocketLinker:
+    def i_center(self) -> SocketLinker:
         """Input socket: Center"""
         return self._input("Center")
 
     @property
-    def i_axis(self) -> VectorSocketLinker:
+    def i_axis(self) -> SocketLinker:
         """Input socket: Axis"""
         return self._input("Axis")
 
@@ -538,7 +538,7 @@ class VectorRotate(NodeBuilder):
         return self._input("Angle")
 
     @property
-    def i_rotation(self) -> VectorSocketLinker:
+    def i_rotation(self) -> SocketLinker:
         """Input socket: Rotation"""
         return self._input("Rotation")
 

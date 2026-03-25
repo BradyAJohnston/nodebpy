@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
     TYPE_INPUT_COLOR,
@@ -298,7 +298,7 @@ class MaterialOutput(NodeBuilder):
         return self._input("Volume")
 
     @property
-    def i_displacement(self) -> VectorSocketLinker:
+    def i_displacement(self) -> SocketLinker:
         """Input socket: Displacement"""
         return self._input("Displacement")
 
