@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_COLOR,
@@ -40,7 +40,7 @@ class Gamma(NodeBuilder):
         return self._input("Gamma")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -74,6 +74,6 @@ class RGBCurves(NodeBuilder):
         return self._input("Color")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")

@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_CLOSURE,
@@ -53,7 +53,7 @@ class CombineColor(NodeBuilder):
         return self._input("Blue")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -274,12 +274,12 @@ class Mix(NodeBuilder):
         return self._output("Result_Float")
 
     @property
-    def o_result_vector(self) -> SocketLinker:
+    def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
         return self._output("Result_Vector")
 
     @property
-    def o_result_color(self) -> SocketLinker:
+    def o_result_color(self) -> ColorSocketLinker:
         """Output socket: Result"""
         return self._output("Result_Color")
 
@@ -468,7 +468,7 @@ class ShaderToRGB(NodeBuilder):
         return self._input("Shader")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -498,6 +498,6 @@ class Wavelength(NodeBuilder):
         return self._input("Wavelength")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
