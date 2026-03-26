@@ -4,9 +4,10 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
+    TYPE_INPUT_COLOR,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )
@@ -34,12 +35,12 @@ class EnvironmentTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -83,9 +84,9 @@ class IesTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def i_strength(self) -> SocketLinker:
@@ -140,12 +141,12 @@ class ImageTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -233,12 +234,12 @@ class SkyTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 

@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -47,7 +47,7 @@ class AlphaConvert(NodeBuilder):
         return self._input("Type")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -97,7 +97,7 @@ class CombineColor(NodeBuilder):
         return self._input("Alpha")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -197,7 +197,7 @@ class ConvertColorspace(NodeBuilder):
         return self._input("Image")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -361,7 +361,7 @@ class ConvertToDisplay(NodeBuilder):
         return self._input("Invert")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -551,9 +551,9 @@ class Mix(NodeBuilder):
         return self._input("Factor_Float")
 
     @property
-    def i_factor_vector(self) -> VectorSocketLinker:
+    def i_factor_vector(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Factor_Vector", subtype="Vector")
+        return self._input("Factor_Vector")
 
     @property
     def i_a_float(self) -> SocketLinker:
@@ -566,14 +566,14 @@ class Mix(NodeBuilder):
         return self._input("B_Float")
 
     @property
-    def i_a_vector(self) -> VectorSocketLinker:
+    def i_a_vector(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Vector", subtype="Vector")
+        return self._input("A_Vector")
 
     @property
-    def i_b_vector(self) -> VectorSocketLinker:
+    def i_b_vector(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Vector", subtype="Vector")
+        return self._input("B_Vector")
 
     @property
     def i_a_color(self) -> SocketLinker:
@@ -603,10 +603,10 @@ class Mix(NodeBuilder):
     @property
     def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Vector", subtype="Vector")
+        return self._output("Result_Vector")
 
     @property
-    def o_result_color(self) -> SocketLinker:
+    def o_result_color(self) -> ColorSocketLinker:
         """Output socket: Result"""
         return self._output("Result_Color")
 
@@ -770,9 +770,9 @@ class RelativeToPixel(NodeBuilder):
         return cls(data_type="VECTOR", vector_value=vector_value, image=image)
 
     @property
-    def i_vector_value(self) -> VectorSocketLinker:
+    def i_vector_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Vector Value", subtype="Vector")
+        return self._input("Vector Value")
 
     @property
     def i_float_value(self) -> SocketLinker:
@@ -792,7 +792,7 @@ class RelativeToPixel(NodeBuilder):
     @property
     def o_vector_value(self) -> VectorSocketLinker:
         """Output socket: Value"""
-        return self._output("Vector Value", subtype="Vector")
+        return self._output("Vector Value")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR"]:
@@ -914,7 +914,7 @@ class SetAlpha(NodeBuilder):
         return self._input("Type")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -945,9 +945,9 @@ class Split(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_position(self) -> VectorSocketLinker:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -965,7 +965,7 @@ class Split(NodeBuilder):
         return self._input("Image_001")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -1005,7 +1005,7 @@ class Switch(NodeBuilder):
         return self._input("On")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -1039,6 +1039,6 @@ class SwitchView(NodeBuilder):
         return self._input("right")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")

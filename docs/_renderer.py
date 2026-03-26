@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 from typing import Optional
 
-from quartodoc import MdRenderer, layout
 from plum import dispatch
+from quartodoc import MdRenderer, layout
 
 
 class Renderer(MdRenderer):
@@ -12,7 +12,7 @@ class Renderer(MdRenderer):
 
     @dispatch
     def summarize(
-        self, el: layout.Doc, path: Optional[str] = None, shorten: bool = False
+        self, el: layout.DocAttribute, path: Optional[str] = None, shorten: bool = False
     ):
         name = el.name
 

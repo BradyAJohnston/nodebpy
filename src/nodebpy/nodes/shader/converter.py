@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_CLOSURE,
@@ -53,7 +53,7 @@ class CombineColor(NodeBuilder):
         return self._input("Blue")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -224,9 +224,9 @@ class Mix(NodeBuilder):
         return self._input("Factor_Float")
 
     @property
-    def i_factor_vector(self) -> VectorSocketLinker:
+    def i_factor_vector(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Factor_Vector", subtype="Vector")
+        return self._input("Factor_Vector")
 
     @property
     def i_a_float(self) -> SocketLinker:
@@ -239,14 +239,14 @@ class Mix(NodeBuilder):
         return self._input("B_Float")
 
     @property
-    def i_a_vector(self) -> VectorSocketLinker:
+    def i_a_vector(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Vector", subtype="Vector")
+        return self._input("A_Vector")
 
     @property
-    def i_b_vector(self) -> VectorSocketLinker:
+    def i_b_vector(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Vector", subtype="Vector")
+        return self._input("B_Vector")
 
     @property
     def i_a_color(self) -> SocketLinker:
@@ -276,10 +276,10 @@ class Mix(NodeBuilder):
     @property
     def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Vector", subtype="Vector")
+        return self._output("Result_Vector")
 
     @property
-    def o_result_color(self) -> SocketLinker:
+    def o_result_color(self) -> ColorSocketLinker:
         """Output socket: Result"""
         return self._output("Result_Color")
 
@@ -468,7 +468,7 @@ class ShaderToRGB(NodeBuilder):
         return self._input("Shader")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -498,6 +498,6 @@ class Wavelength(NodeBuilder):
         return self._input("Wavelength")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")

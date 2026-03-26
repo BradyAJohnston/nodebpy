@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -62,7 +62,7 @@ class AntiAliasing(NodeBuilder):
         return self._input("Corner Rounding")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -113,7 +113,7 @@ class BilateralBlur(NodeBuilder):
         return self._input("Threshold")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -161,9 +161,9 @@ class Blur(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_size(self) -> VectorSocketLinker:
+    def i_size(self) -> SocketLinker:
         """Input socket: Size"""
-        return self._input("Size", subtype="Vector")
+        return self._input("Size")
 
     @property
     def i_type(self) -> SocketLinker:
@@ -181,7 +181,7 @@ class Blur(NodeBuilder):
         return self._input("Separable")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -239,7 +239,7 @@ class BokehBlur(NodeBuilder):
         return self._input("Extend Bounds")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -297,7 +297,7 @@ class Convolve(NodeBuilder):
         return self._input("Normalize Kernel")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -345,7 +345,7 @@ class Defocus(NodeBuilder):
         return self._input("Z")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -448,9 +448,9 @@ class Denoise(NodeBuilder):
         return self._input("Albedo")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def i_hdr(self) -> SocketLinker:
@@ -468,7 +468,7 @@ class Denoise(NodeBuilder):
         return self._input("Quality")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -519,7 +519,7 @@ class Despeckle(NodeBuilder):
         return self._input("Neighbor Threshold")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -628,9 +628,9 @@ class DirectionalBlur(NodeBuilder):
         return self._input("Samples")
 
     @property
-    def i_center(self) -> VectorSocketLinker:
+    def i_center(self) -> SocketLinker:
         """Input socket: Center"""
-        return self._input("Center", subtype="Vector")
+        return self._input("Center")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -653,7 +653,7 @@ class DirectionalBlur(NodeBuilder):
         return self._input("Translation Direction")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -703,7 +703,7 @@ class Filter(NodeBuilder):
         return self._input("Type")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -864,9 +864,9 @@ class Glare(NodeBuilder):
         return self._input("Diagonal Star")
 
     @property
-    def i_sun_position(self) -> VectorSocketLinker:
+    def i_sun_position(self) -> SocketLinker:
         """Input socket: Sun Position"""
-        return self._input("Sun Position", subtype="Vector")
+        return self._input("Sun Position")
 
     @property
     def i_jitter(self) -> SocketLinker:
@@ -889,17 +889,17 @@ class Glare(NodeBuilder):
         return self._input("Color Kernel")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
     @property
-    def o_glare(self) -> SocketLinker:
+    def o_glare(self) -> ColorSocketLinker:
         """Output socket: Glare"""
         return self._output("Glare")
 
     @property
-    def o_highlights(self) -> SocketLinker:
+    def o_highlights(self) -> ColorSocketLinker:
         """Output socket: Highlights"""
         return self._output("Highlights")
 
@@ -933,7 +933,7 @@ class Inpaint(NodeBuilder):
         return self._input("Size")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -1005,7 +1005,7 @@ class Kuwahara(NodeBuilder):
         return self._input("High Precision")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -1039,7 +1039,7 @@ class Pixelate(NodeBuilder):
         return self._input("Size")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -1077,9 +1077,9 @@ class VectorBlur(NodeBuilder):
         return self._input("Image")
 
     @property
-    def i_speed(self) -> VectorSocketLinker:
+    def i_speed(self) -> SocketLinker:
         """Input socket: Speed"""
-        return self._input("Speed", subtype="Vector")
+        return self._input("Speed")
 
     @property
     def i_z(self) -> SocketLinker:
@@ -1097,6 +1097,6 @@ class VectorBlur(NodeBuilder):
         return self._input("Shutter")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")

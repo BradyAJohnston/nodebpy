@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -62,14 +62,14 @@ class BoxMask(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> VectorSocketLinker:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
-    def i_size(self) -> VectorSocketLinker:
+    def i_size(self) -> SocketLinker:
         """Input socket: Size"""
-        return self._input("Size", subtype="Vector")
+        return self._input("Size")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -191,7 +191,7 @@ class ChannelKey(NodeBuilder):
         return self._input("YCbCr Limit Channel")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -254,7 +254,7 @@ class ChromaKey(NodeBuilder):
         return self._input("Falloff")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -317,7 +317,7 @@ class ColorKey(NodeBuilder):
         return self._input("Value")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -401,7 +401,7 @@ class ColorSpill(NodeBuilder):
         return self._input("Spill Strength")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -452,7 +452,7 @@ class DifferenceKey(NodeBuilder):
         return self._input("Falloff")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -515,7 +515,7 @@ class DistanceKey(NodeBuilder):
         return self._input("Falloff")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -622,14 +622,14 @@ class EllipseMask(NodeBuilder):
         return self._input("Value")
 
     @property
-    def i_position(self) -> VectorSocketLinker:
+    def i_position(self) -> SocketLinker:
         """Input socket: Position"""
-        return self._input("Position", subtype="Vector")
+        return self._input("Position")
 
     @property
-    def i_size(self) -> VectorSocketLinker:
+    def i_size(self) -> SocketLinker:
         """Input socket: Size"""
-        return self._input("Size", subtype="Vector")
+        return self._input("Size")
 
     @property
     def i_rotation(self) -> SocketLinker:
@@ -775,7 +775,7 @@ class Keying(NodeBuilder):
         return self._input("Despill Balance")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 
@@ -815,7 +815,7 @@ class KeyingScreen(NodeBuilder):
         return self._input("Smoothness")
 
     @property
-    def o_screen(self) -> SocketLinker:
+    def o_screen(self) -> ColorSocketLinker:
         """Output socket: Screen"""
         return self._output("Screen")
 
@@ -863,7 +863,7 @@ class LuminanceKey(NodeBuilder):
         return self._input("Maximum")
 
     @property
-    def o_image(self) -> SocketLinker:
+    def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
         return self._output("Image")
 

@@ -4,10 +4,11 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_COLOR,
+    TYPE_INPUT_SHADER,
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
@@ -213,14 +214,14 @@ class VolumeCoefficients(NodeBuilder):
         return self._input("Weight")
 
     @property
-    def i_absorption_coefficients(self) -> VectorSocketLinker:
+    def i_absorption_coefficients(self) -> SocketLinker:
         """Input socket: Absorption Coefficients"""
-        return self._input("Absorption Coefficients", subtype="Vector")
+        return self._input("Absorption Coefficients")
 
     @property
-    def i_scatter_coefficients(self) -> VectorSocketLinker:
+    def i_scatter_coefficients(self) -> SocketLinker:
         """Input socket: Scatter Coefficients"""
-        return self._input("Scatter Coefficients", subtype="Vector")
+        return self._input("Scatter Coefficients")
 
     @property
     def i_anisotropy(self) -> SocketLinker:
@@ -248,9 +249,9 @@ class VolumeCoefficients(NodeBuilder):
         return self._input("Diameter")
 
     @property
-    def i_emission_coefficients(self) -> VectorSocketLinker:
+    def i_emission_coefficients(self) -> SocketLinker:
         """Input socket: Emission Coefficients"""
-        return self._input("Emission Coefficients", subtype="Vector")
+        return self._input("Emission Coefficients")
 
     @property
     def o_volume(self) -> SocketLinker:
@@ -288,7 +289,7 @@ class VolumeInfo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 

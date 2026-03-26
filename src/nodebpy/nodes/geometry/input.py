@@ -4,15 +4,19 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
     TYPE_INPUT_COLLECTION,
+    TYPE_INPUT_COLOR,
+    TYPE_INPUT_GEOMETRY,
     TYPE_INPUT_IMAGE,
     TYPE_INPUT_INT,
+    TYPE_INPUT_MATRIX,
     TYPE_INPUT_MENU,
     TYPE_INPUT_OBJECT,
+    TYPE_INPUT_ROTATION,
     TYPE_INPUT_STRING,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
@@ -36,7 +40,7 @@ class Cursor3D(NodeBuilder):
     @property
     def o_location(self) -> VectorSocketLinker:
         """Output socket: Location"""
-        return self._output("Location", subtype="Vector")
+        return self._output("Location")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -177,12 +181,12 @@ class CameraInfo(NodeBuilder):
     @property
     def o_sensor(self) -> VectorSocketLinker:
         """Output socket: Sensor"""
-        return self._output("Sensor", subtype="Vector")
+        return self._output("Sensor")
 
     @property
     def o_shift(self) -> VectorSocketLinker:
         """Output socket: Shift"""
-        return self._output("Shift", subtype="Vector")
+        return self._output("Shift")
 
     @property
     def o_clip_start(self) -> SocketLinker:
@@ -281,7 +285,7 @@ class Color(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -463,12 +467,12 @@ class CurveHandlePositions(NodeBuilder):
     @property
     def o_left(self) -> VectorSocketLinker:
         """Output socket: Left"""
-        return self._output("Left", subtype="Vector")
+        return self._output("Left")
 
     @property
     def o_right(self) -> VectorSocketLinker:
         """Output socket: Right"""
-        return self._output("Right", subtype="Vector")
+        return self._output("Right")
 
 
 class CurveTangent(NodeBuilder):
@@ -488,7 +492,7 @@ class CurveTangent(NodeBuilder):
     @property
     def o_tangent(self) -> VectorSocketLinker:
         """Output socket: Tangent"""
-        return self._output("Tangent", subtype="Vector")
+        return self._output("Tangent")
 
 
 class CurveTilt(NodeBuilder):
@@ -650,12 +654,12 @@ class EdgeVertices(NodeBuilder):
     @property
     def o_position_1(self) -> VectorSocketLinker:
         """Output socket: Position 1"""
-        return self._output("Position 1", subtype="Vector")
+        return self._output("Position 1")
 
     @property
     def o_position_2(self) -> VectorSocketLinker:
         """Output socket: Position 2"""
-        return self._output("Position 2", subtype="Vector")
+        return self._output("Position 2")
 
 
 class EdgesOfCorner(NodeBuilder):
@@ -1216,12 +1220,12 @@ class InstanceBounds(NodeBuilder):
     @property
     def o_min(self) -> VectorSocketLinker:
         """Output socket: Min"""
-        return self._output("Min", subtype="Vector")
+        return self._output("Min")
 
     @property
     def o_max(self) -> VectorSocketLinker:
         """Output socket: Max"""
-        return self._output("Max", subtype="Vector")
+        return self._output("Max")
 
 
 class InstanceRotation(NodeBuilder):
@@ -1261,7 +1265,7 @@ class InstanceScale(NodeBuilder):
     @property
     def o_scale(self) -> VectorSocketLinker:
         """Output socket: Scale"""
-        return self._output("Scale", subtype="Vector")
+        return self._output("Scale")
 
 
 class InstanceTransform(NodeBuilder):
@@ -1646,12 +1650,12 @@ class Normal(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_true_normal(self) -> VectorSocketLinker:
         """Output socket: True Normal"""
-        return self._output("True Normal", subtype="Vector")
+        return self._output("True Normal")
 
     @property
     def legacy_corner_normals(self) -> bool:
@@ -1700,7 +1704,7 @@ class ObjectInfo(NodeBuilder):
     @property
     def o_location(self) -> VectorSocketLinker:
         """Output socket: Location"""
-        return self._output("Location", subtype="Vector")
+        return self._output("Location")
 
     @property
     def o_rotation(self) -> SocketLinker:
@@ -1710,7 +1714,7 @@ class ObjectInfo(NodeBuilder):
     @property
     def o_scale(self) -> VectorSocketLinker:
         """Output socket: Scale"""
-        return self._output("Scale", subtype="Vector")
+        return self._output("Scale")
 
     @property
     def o_geometry(self) -> SocketLinker:
@@ -1865,7 +1869,7 @@ class Position(NodeBuilder):
     @property
     def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position", subtype="Vector")
+        return self._output("Position")
 
 
 class Radius(NodeBuilder):
@@ -2177,14 +2181,14 @@ class UVTangent(NodeBuilder):
         return self._input("Method")
 
     @property
-    def i_uv(self) -> VectorSocketLinker:
+    def i_uv(self) -> SocketLinker:
         """Input socket: UV"""
-        return self._input("UV", subtype="Vector")
+        return self._input("UV")
 
     @property
     def o_tangent(self) -> VectorSocketLinker:
         """Output socket: Tangent"""
-        return self._output("Tangent", subtype="Vector")
+        return self._output("Tangent")
 
 
 class Vector(NodeBuilder):
@@ -2204,7 +2208,7 @@ class Vector(NodeBuilder):
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def vector(self) -> tuple[float, float, float]:

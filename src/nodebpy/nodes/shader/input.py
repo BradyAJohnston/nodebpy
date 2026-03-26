@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_COLOR,
@@ -50,12 +50,12 @@ class AmbientOcclusion(NodeBuilder):
         return self._input("Distance")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -111,14 +111,14 @@ class Attribute(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def o_fac(self) -> SocketLinker:
@@ -178,14 +178,14 @@ class Bevel(NodeBuilder):
         return self._input("Radius")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def samples(self) -> int:
@@ -213,7 +213,7 @@ class CameraData(NodeBuilder):
     @property
     def o_view_vector(self) -> VectorSocketLinker:
         """Output socket: View Vector"""
-        return self._output("View Vector", subtype="Vector")
+        return self._output("View Vector")
 
     @property
     def o_view_z_depth(self) -> SocketLinker:
@@ -241,7 +241,7 @@ class Color(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -261,7 +261,7 @@ class ColorAttribute(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -316,7 +316,7 @@ class CurvesInfo(NodeBuilder):
     @property
     def o_tangent_normal(self) -> VectorSocketLinker:
         """Output socket: Tangent Normal"""
-        return self._output("Tangent Normal", subtype="Vector")
+        return self._output("Tangent Normal")
 
     @property
     def o_random(self) -> SocketLinker:
@@ -349,9 +349,9 @@ class Fresnel(NodeBuilder):
         return self._input("IOR")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_fac(self) -> SocketLinker:
@@ -376,32 +376,32 @@ class Geometry(NodeBuilder):
     @property
     def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position", subtype="Vector")
+        return self._output("Position")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_tangent(self) -> VectorSocketLinker:
         """Output socket: Tangent"""
-        return self._output("Tangent", subtype="Vector")
+        return self._output("Tangent")
 
     @property
     def o_true_normal(self) -> VectorSocketLinker:
         """Output socket: True Normal"""
-        return self._output("True Normal", subtype="Vector")
+        return self._output("True Normal")
 
     @property
     def o_incoming(self) -> VectorSocketLinker:
         """Output socket: Incoming"""
-        return self._output("Incoming", subtype="Vector")
+        return self._output("Incoming")
 
     @property
     def o_parametric(self) -> VectorSocketLinker:
         """Output socket: Parametric"""
-        return self._output("Parametric", subtype="Vector")
+        return self._output("Parametric")
 
     @property
     def o_backfacing(self) -> SocketLinker:
@@ -444,9 +444,9 @@ class LayerWeight(NodeBuilder):
         return self._input("Blend")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_fresnel(self) -> SocketLinker:
@@ -567,10 +567,10 @@ class ObjectInfo(NodeBuilder):
     @property
     def o_location(self) -> VectorSocketLinker:
         """Output socket: Location"""
-        return self._output("Location", subtype="Vector")
+        return self._output("Location")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -632,7 +632,7 @@ class ParticleInfo(NodeBuilder):
     @property
     def o_location(self) -> VectorSocketLinker:
         """Output socket: Location"""
-        return self._output("Location", subtype="Vector")
+        return self._output("Location")
 
     @property
     def o_size(self) -> SocketLinker:
@@ -642,12 +642,12 @@ class ParticleInfo(NodeBuilder):
     @property
     def o_velocity(self) -> VectorSocketLinker:
         """Output socket: Velocity"""
-        return self._output("Velocity", subtype="Vector")
+        return self._output("Velocity")
 
     @property
     def o_angular_velocity(self) -> VectorSocketLinker:
         """Output socket: Angular Velocity"""
-        return self._output("Angular Velocity", subtype="Vector")
+        return self._output("Angular Velocity")
 
 
 class PointInfo(NodeBuilder):
@@ -667,7 +667,7 @@ class PointInfo(NodeBuilder):
     @property
     def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
-        return self._output("Position", subtype="Vector")
+        return self._output("Position")
 
     @property
     def o_radius(self) -> SocketLinker:
@@ -704,7 +704,7 @@ class Tangent(NodeBuilder):
     @property
     def o_tangent(self) -> VectorSocketLinker:
         """Output socket: Tangent"""
-        return self._output("Tangent", subtype="Vector")
+        return self._output("Tangent")
 
     @property
     def direction_type(self) -> Literal["RADIAL", "UV_MAP"]:
@@ -749,37 +749,37 @@ class TextureCoordinate(NodeBuilder):
     @property
     def o_generated(self) -> VectorSocketLinker:
         """Output socket: Generated"""
-        return self._output("Generated", subtype="Vector")
+        return self._output("Generated")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV", subtype="Vector")
+        return self._output("UV")
 
     @property
     def o_object(self) -> VectorSocketLinker:
         """Output socket: Object"""
-        return self._output("Object", subtype="Vector")
+        return self._output("Object")
 
     @property
     def o_camera(self) -> VectorSocketLinker:
         """Output socket: Camera"""
-        return self._output("Camera", subtype="Vector")
+        return self._output("Camera")
 
     @property
     def o_window(self) -> VectorSocketLinker:
         """Output socket: Window"""
-        return self._output("Window", subtype="Vector")
+        return self._output("Window")
 
     @property
     def o_reflection(self) -> VectorSocketLinker:
         """Output socket: Reflection"""
-        return self._output("Reflection", subtype="Vector")
+        return self._output("Reflection")
 
     @property
     def from_instancer(self) -> bool:
@@ -807,7 +807,7 @@ class UVAlongStroke(NodeBuilder):
     @property
     def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV", subtype="Vector")
+        return self._output("UV")
 
     @property
     def use_tips(self) -> bool:
@@ -840,7 +840,7 @@ class UVMap(NodeBuilder):
     @property
     def o_uv(self) -> VectorSocketLinker:
         """Output socket: UV"""
-        return self._output("UV", subtype="Vector")
+        return self._output("UV")
 
     @property
     def from_instancer(self) -> bool:
