@@ -7,7 +7,6 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
     TYPE_INPUT_VALUE,
     TYPE_INPUT_VECTOR,
 )

@@ -624,11 +624,11 @@ def test_iter_outputs():
 
 
 def test_vector_socket_linker():
-    with TreeBuilder("SeparateXYZ_z") as tree:
+    with TreeBuilder("SeparateXYZ_z"):
         pos = g.Position().o_position
 
         result = g.SetPosition(position=pos.x * g.Position())
-        result2 = pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
+        pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
 
     assert result.node
     assert result.node.inputs["Position"].links[0].from_node.operation == "SCALE"
@@ -636,7 +636,7 @@ def test_vector_socket_linker():
 
 
 def test_color_socket_linker():
-    with TreeBuilder("ColorChannels") as tree:
+    with TreeBuilder("ColorChannels"):
         color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
 
         assert isinstance(color, ColorSocketLinker)
