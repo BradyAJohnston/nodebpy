@@ -63,14 +63,14 @@ class Bump(NodeBuilder):
         return self._input("Height")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def invert(self) -> bool:
@@ -124,14 +124,14 @@ class Displacement(NodeBuilder):
         return self._input("Scale")
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_displacement(self) -> VectorSocketLinker:
         """Output socket: Displacement"""
-        return self._output("Displacement", subtype="Vector")
+        return self._output("Displacement")
 
     @property
     def space(self) -> Literal["OBJECT", "WORLD"]:
@@ -170,29 +170,29 @@ class Mapping(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
-    def i_location(self) -> VectorSocketLinker:
+    def i_location(self) -> SocketLinker:
         """Input socket: Location"""
-        return self._input("Location", subtype="Vector")
+        return self._input("Location")
 
     @property
-    def i_rotation(self) -> VectorSocketLinker:
+    def i_rotation(self) -> SocketLinker:
         """Input socket: Rotation"""
-        return self._input("Rotation", subtype="Vector")
+        return self._input("Rotation")
 
     @property
-    def i_scale(self) -> VectorSocketLinker:
+    def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale", subtype="Vector")
+        return self._input("Scale")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def vector_type(self) -> Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"]:
@@ -218,14 +218,14 @@ class Normal(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_normal(self) -> VectorSocketLinker:
+    def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal", subtype="Vector")
+        return self._input("Normal")
 
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def o_dot(self) -> SocketLinker:
@@ -270,7 +270,7 @@ class NormalMap(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocketLinker:
         """Output socket: Normal"""
-        return self._output("Normal", subtype="Vector")
+        return self._output("Normal")
 
     @property
     def space(
@@ -333,7 +333,7 @@ class VectorDisplacement(NodeBuilder):
     @property
     def o_displacement(self) -> VectorSocketLinker:
         """Output socket: Displacement"""
-        return self._output("Displacement", subtype="Vector")
+        return self._output("Displacement")
 
     @property
     def space(self) -> Literal["TANGENT", "OBJECT", "WORLD"]:
@@ -368,14 +368,14 @@ class VectorTransform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> VectorSocketLinker:
+    def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector", subtype="Vector")
+        return self._input("Vector")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector", subtype="Vector")
+        return self._output("Vector")
 
     @property
     def vector_type(self) -> Literal["POINT", "VECTOR", "NORMAL"]:
