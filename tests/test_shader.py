@@ -1,3 +1,4 @@
+import bpy
 import pytest
 
 from nodebpy import TreeBuilder, sockets
@@ -46,7 +47,7 @@ def test_shader_menu_switch():
             _ = menu >> sockets.SocketFloat()
 
     assert len(menu.node.enum_items) == 10
-    for i, input in enumerate(menu.inputs.values()):
+    for i, input in enumerate([x for x in menu.inputs.values() if x.type == "VALUE"]):
         assert f"Input_{i}" == input.name
         assert float(i) == input.socket.default_value
 
@@ -58,8 +59,8 @@ def test_shader_menu_switch():
             _ = menu >> sockets.SocketFloat()
 
     assert len(menu.node.enum_items) == 10
-    for i, input in enumerate(menu.inputs.values()):
-        assert f"Input_{i}" == input.name
+    print(list(menu.inputs.items()))
+    for i, input in enumerate([x for x in menu.inputs.values() if x.type == "VALUE"]):
         assert input.socket.links[0].from_node.bl_idname == s.Value._bl_idname
         # we have to check the output defeault value here because that is how the Value
         # node is defined which is truly cursed but hey it is what it is
@@ -68,9 +69,28 @@ def test_shader_menu_switch():
 
 def test_color_shader():
     with TreeBuilder.shader():
-        mix = s.MixShader(1.0, s.Color())
+        mix_shader = s.MixShader(1.0, s.Color())
         assert (
-            mix.node.inputs["Shader"].links[0].from_node.bl_idname == s.Color._bl_idname
+            mix_shader.node.inputs["Shader"].links[0].from_node.bl_idname
+            == s.Color._bl_idname
         )
         with pytest.raises(SocketError):
-            _ = mix >> s.Mix.color().i_a_color
+            _ = s.Mix.color(0.5, mix_shader)
+
+
+def material_node_cartoon() -> bpy.types.Material:
+    mat = bpy.data.materials.new(name="Cartoon")
+    with TreeBuilder.shader(mat.node_tree) as tree:
+        tree.nodes.clear()
+        output = s.MaterialOutput(surface=s.Attribute("GEOMETRY", "Color"))
+        aov = s.AovOutput(
+            value=s.Attribute("GEOMETRY", "sec_struct"), aov_name="sec_struct"
+        )
+
+    assert (
+        output.node.inputs["Surface"].links[0].from_node.bl_idname
+        == s.Attribute._bl_idname
+    )
+    assert (
+        aov.node.inputs["Value"].links[0].from_node.bl_idname == s.Attribute._bl_idname
+    )

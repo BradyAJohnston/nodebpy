@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_VALUE,
@@ -49,7 +49,7 @@ class RadialTiling(NodeBuilder):
         return self._input("Roundness")
 
     @property
-    def o_segment_coordinates(self) -> SocketLinker:
+    def o_segment_coordinates(self) -> VectorSocketLinker:
         """Output socket: Segment Coordinates"""
         return self._output("Segment Coordinates")
 
@@ -106,7 +106,7 @@ class VectorCurves(NodeBuilder):
         return self._input("Vector")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
         return self._output("Vector")
 
@@ -401,7 +401,7 @@ class VectorMath(NodeBuilder):
         return self._input("Scale")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
         return self._output("Vector")
 
@@ -543,7 +543,7 @@ class VectorRotate(NodeBuilder):
         return self._input("Rotation")
 
     @property
-    def o_vector(self) -> SocketLinker:
+    def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
         return self._output("Vector")
 

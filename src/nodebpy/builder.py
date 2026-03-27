@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Callable, ClassVar, Iterable, Literal
 
 if TYPE_CHECKING:
-    from .nodes.geometry import IntegerMath, Math, VectorMath
     from .nodes.geometry.converter import BooleanMath, MultiplyMatrices, TransformPoint
-    from .nodes.geometry.manual import Compare
 
 import bpy
 from bpy.types import (
@@ -32,6 +30,47 @@ from .types import (
     _SocketShapeStructureType,
 )
 
+_SOCKET_LINKER_REGISTRY: dict[str, "type[SocketLinker]"] = {}
+
+
+def _get_socket_linker(socket: NodeSocket) -> "SocketLinker":
+    for key, cls in _SOCKET_LINKER_REGISTRY.items():
+        if key in socket.bl_idname:
+            return cls(socket)
+    return SocketLinker(socket)
+
+
+# Type precedence for mixed-type operator dispatch (higher = dominant).
+_TYPE_PRECEDENCE: dict[str, int] = {
+    "INT": 0,
+    "VALUE": 1,
+    "FLOAT": 1,
+    "VECTOR": 2,
+}
+
+
+def _resolve_promotion(
+    self_socket: NodeSocket, other: Any, reverse: bool
+) -> "tuple[NodeSocket, Any, bool]":
+    """Determine the dominant socket for operator dispatch.
+
+    When both operands have a socket type, the higher-precedence type wins.
+    If `other` is dominant, the operands are swapped and `reverse` is flipped.
+
+    Returns (dominant_socket, effective_other, effective_reverse).
+    """
+    other_type = getattr(other, "type", None)
+    self_prec = _TYPE_PRECEDENCE.get(self_socket.type, 1)
+    other_prec = _TYPE_PRECEDENCE.get(other_type, -1)  # type: ignore[arg-type]
+
+    if other_prec > self_prec:
+        # Other side is dominant — swap so the linker wraps the vector/higher socket
+        other_socket = other._default_output_socket
+        return other_socket, self_socket, not reverse
+
+    return self_socket, other, reverse
+
+
 GEO_NODE_NAMES = (
     f"GeometryNode{name}"
     for name in (
@@ -53,6 +92,16 @@ def normalize_name(name: str) -> str:
 def denormalize_name(attr_name: str) -> str:
     """Convert 'geometry' or 'my_socket' to 'Geometry' or 'My Socket'."""
     return attr_name.replace("_", " ").title()
+
+
+def _allow_innactive_sockets(node: bpy.types.Node) -> bool:
+    """Returns True if we should allow inactive sockets to be linked for this node type"""
+    return node.bl_idname in (
+        "GeometryNodeIndexSwitch",
+        "GeometryNodeMenuSwitch",
+        "ShaderNodeMixShader",
+        "GeometryNodeSwitch",
+    )
 
 
 class SocketError(Exception):
@@ -350,15 +399,7 @@ class TreeBuilder:
             # the warning message should report which sockets from which nodes were linked and which were innactive
             for socket in [socket1, socket2]:
                 # we want to be loud about it if we end up linking an inactive socket to a node that is not a switch
-                if socket.is_inactive and (
-                    socket.node.bl_idname  # type: ignore
-                    not in (  # type: ignore
-                        "GeometryNodeIndexSwitch",
-                        "GeometryNodeMenuSwitch",
-                        "ShaderNodeMixShader",
-                        "GeometryNodeSwitch",
-                    )
-                ):
+                if socket.is_inactive and not _allow_innactive_sockets(socket.node):
                     message = f"Socket {socket.name} from node {socket.node.name} is inactive."  # type: ignore
                     message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."
                     message += " This link will be created by Blender but ignored when evaluated."
@@ -489,7 +530,9 @@ class NodeBuilder:
             possible.sort(key=lambda x: compatible.index(x.type))
             return possible[0]
 
-        raise SocketError("No compatible output sockets found")
+        message = f"No compatible output sockets found for type {type} between {self.node.name} and {type} with compatible types: {compatible}"
+
+        raise SocketError(message)
 
     def _find_best_socket_pair(
         self,
@@ -557,14 +600,14 @@ class NodeBuilder:
         output_ids = [output.identifier for output in self.node.outputs]
         return output_ids.index(identifier)
 
-    def _input(self, identifier: str) -> SocketLinker:
+    def _input(self, identifier: str, subtype: None = None) -> SocketLinker:
         """Input socket: Vector"""
         input = self.node.inputs[self._input_idx(identifier)]
         return SocketLinker(input)
 
     def _output(self, identifier: str) -> SocketLinker:
-        """Output socket: Vector"""
-        return SocketLinker(self.node.outputs[self._output_idx(identifier)])
+        """Output socket"""
+        return _get_socket_linker(self.node.outputs[self._output_idx(identifier)])
 
     def _link(
         self, source: LINKABLE | SocketLinker | NodeSocket, target: LINKABLE
@@ -637,6 +680,25 @@ class NodeBuilder:
                         input = self.node.inputs[name.replace("_", "").capitalize()]
                     self._set_input_default_value(input, value)
 
+    @property
+    def outputs(self) -> dict[str, "SocketLinker"]:
+        """Return all visible output sockets as a dict keyed by socket name."""
+        return {
+            output.name: _get_socket_linker(output)
+            for output in self._available_outputs
+        }
+
+    @property
+    def inputs(self) -> dict[str, "SocketLinker"]:
+        """Return all visible input sockets as a dict keyed by socket name."""
+
+        return {
+            input.name: SocketLinker(input)
+            for input in self.node.inputs
+            if _allow_innactive_sockets(self.node)
+            or (not input.is_inactive and input.is_icon_visible)
+        }
+
     def __rshift__(self, other: "NodeBuilder | SocketLinker") -> "NodeBuilder":
         """Chain nodes using >> operator. Links output to input.
 
@@ -678,223 +740,102 @@ class NodeBuilder:
             title_name = name.replace("_", " ").title()
             return node.node.inputs[title_name]
 
+    # -- Operator dispatch: delegates to _get_socket_linker()._dispatch_*() --
+    # The actual per-type math logic lives in SocketLinker subclasses.
+    # NodeBuilder just resolves type promotion and delegates.
+
     def _apply_math_operation(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "VectorMath | Math":
-        """Apply a math operation with appropriate Math/VectorMath node."""
-        from .nodes.geometry import VectorMath
-
-        values = (
-            (self._default_output_socket, other)
-            if not reverse
-            else (other, self._default_output_socket)
+    ) -> "NodeBuilder":
+        socket, other, reverse = _resolve_promotion(
+            self._default_output_socket, other, reverse
         )
+        return _get_socket_linker(socket)._dispatch_math(other, operation, reverse)
 
-        component_is_vector = False
-        for value in values:
-            if getattr(value, "type", None) == "VECTOR":
-                component_is_vector = True
-                break
-
-        # Use VectorMath if either operand is a vector
-        if component_is_vector:
-            if operation == "multiply":
-                # Handle special cases for vector multiplication where we might scale instead
-                # of using the multiply method
-                if isinstance(other, (int, float)):
-                    return VectorMath.scale(self._default_output_socket, other)
-                elif isinstance(other, (list, tuple)) and len(other) == 3:
-                    return VectorMath.multiply(*values)
-                elif isinstance(other, NodeBuilder):
-                    return VectorMath.multiply(*values)
-                else:
-                    raise TypeError(
-                        f"Unsupported type for {operation} with VECTOR socket: {type(other)}, {other=}"
-                    )
-            else:
-                vector_method = getattr(VectorMath, operation)
-                if isinstance(other, (int, float)):
-                    scalar_vector = (other, other, other)
-                    return (
-                        vector_method(self._default_output_socket, scalar_vector)
-                        if not reverse
-                        else vector_method(scalar_vector, self._default_output_socket)
-                    )
-                elif (
-                    isinstance(other, (list, tuple)) and len(other) == 3
-                ) or isinstance(other, NodeBuilder):
-                    return vector_method(*values)
-
-                else:
-                    raise TypeError(
-                        f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
-                    )
-        else:  # Both operands are scalar types, use regular Math
-            from .nodes.geometry.converter import IntegerMath, Math
-
-            # only the Geometry Node Tree supports integer math currently, potential
-            # to support other trees when Blender supports it
-            is_geometry_tree = self._tree.tree.bl_idname == "GeometryNodeTree"
-            if (
-                is_geometry_tree
-                and isinstance(other, int)
-                and self._default_output_socket.type == "INT"
-            ):
-                return getattr(IntegerMath, operation)(*values)
-            else:
-                # Math node uses 'floored_modulo' instead of 'modulo'
-                math_operation = (
-                    "floored_modulo" if operation == "modulo" else operation
-                )
-                return getattr(Math, math_operation)(*values)
-
-    def __mul__(self, other: Any) -> "VectorMath | Math":
+    def __mul__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "multiply")
 
-    def __rmul__(self, other: Any) -> "VectorMath | Math":
+    def __rmul__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "multiply", reverse=True)
 
-    def __truediv__(self, other: Any) -> "VectorMath | Math":
+    def __truediv__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "divide")
 
-    def __rtruediv__(self, other: Any) -> "VectorMath | Math":
+    def __rtruediv__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "divide", reverse=True)
 
-    def __add__(self, other: Any) -> "VectorMath | Math":
+    def __add__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "add")
 
-    def __radd__(self, other: Any) -> "VectorMath | Math":
+    def __radd__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "add", reverse=True)
 
-    def __sub__(self, other: Any) -> "VectorMath | Math":
+    def __sub__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "subtract")
 
-    def __rsub__(self, other: Any) -> "VectorMath | Math":
+    def __rsub__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "subtract", reverse=True)
 
-    def __pow__(self, other: Any) -> "VectorMath | Math":
+    def __pow__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "power")
 
-    def __rpow__(self, other: Any) -> "VectorMath | Math":
+    def __rpow__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "power", reverse=True)
 
-    def __mod__(self, other: Any) -> "VectorMath | Math":
+    def __mod__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "modulo")
 
-    def __rmod__(self, other: Any) -> "VectorMath | Math":
+    def __rmod__(self, other: Any) -> "NodeBuilder":
         return self._apply_math_operation(other, "modulo", reverse=True)
 
-    def __floordiv__(self, other: Any) -> "VectorMath | Math | IntegerMath":
-        return self._apply_floordiv_operation(other)
+    def __floordiv__(self, other: Any) -> "NodeBuilder":
+        socket, other, reverse = _resolve_promotion(
+            self._default_output_socket, other, False
+        )
+        return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
 
-    def __rfloordiv__(self, other: Any) -> "VectorMath | Math | IntegerMath":
-        return self._apply_floordiv_operation(other, reverse=True)
+    def __rfloordiv__(self, other: Any) -> "NodeBuilder":
+        socket, other, reverse = _resolve_promotion(
+            self._default_output_socket, other, True
+        )
+        return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
 
-    def __neg__(self) -> "VectorMath | Math | IntegerMath":
-        from .nodes.geometry import VectorMath
-        from .nodes.geometry.converter import IntegerMath, Math
+    def __neg__(self) -> "NodeBuilder":
+        return _get_socket_linker(self._default_output_socket)._dispatch_unary("negate")
 
-        socket = self._default_output_socket
-        if socket.type == "VECTOR":
-            return VectorMath.scale(socket, -1)
-        elif socket.type == "INT":
-            return IntegerMath.negate(socket)
-        else:
-            return Math.multiply(socket, -1)
-
-    def __abs__(self) -> "VectorMath | Math | IntegerMath":
-        from .nodes.geometry import VectorMath
-        from .nodes.geometry.converter import IntegerMath, Math
-
-        socket = self._default_output_socket
-        if socket.type == "VECTOR":
-            return VectorMath.absolute(socket)
-        elif socket.type == "INT":
-            return IntegerMath.absolute(socket)
-        else:
-            return Math.absolute(socket)
-
-    def _apply_floordiv_operation(
-        self, other: Any, reverse: bool = False
-    ) -> "VectorMath | Math | IntegerMath":
-        """Apply floor division: divide then floor."""
-        from .nodes.geometry import VectorMath
-        from .nodes.geometry.converter import IntegerMath, Math
-
-        socket = self._default_output_socket
-        component_is_vector = (
-            socket.type == "VECTOR" or getattr(other, "type", None) == "VECTOR"
+    def __abs__(self) -> "NodeBuilder":
+        return _get_socket_linker(self._default_output_socket)._dispatch_unary(
+            "absolute"
         )
 
-        if not component_is_vector and isinstance(other, int) and socket.type == "INT":
-            values = (socket, other) if not reverse else (other, socket)
-            return IntegerMath.divide_floor(*values)
+    def _apply_compare_operation(self, other: Any, operation: str) -> "NodeBuilder":
+        return _get_socket_linker(self._default_output_socket)._dispatch_compare(
+            other, operation
+        )
 
-        divided = self._apply_math_operation(other, "divide", reverse=reverse)
-        if component_is_vector:
-            return VectorMath.floor(divided)
-        else:
-            return Math.floor(divided)
-
-    def _apply_compare_operation(self, other: Any, operation: str) -> "Compare | Math":
-        """Apply a comparison operation.
-
-        Uses the Compare node in geometry trees (supports float, int, vector and
-        outputs a boolean). Falls back to Math.less_than / Math.greater_than in
-        compositor and shader trees which lack a Compare node. For <= and >= in
-        non-geometry trees, we swap the operands (a <= b == b >= a == !(a > b)
-        is equivalent to less_than(b, a) when treating the output as boolean).
-        """
-        if isinstance(self._tree.tree, GeometryNodeTree):
-            from .nodes.geometry.manual import Compare
-
-            socket = self._default_output_socket
-            values = (socket, other)
-
-            if socket.type == "VECTOR":
-                return getattr(Compare, operation).vector(*values)
-            elif socket.type == "INT":
-                return getattr(Compare, operation).integer(*values)
-            else:
-                return getattr(Compare, operation).float(*values)
-        else:
-            # Compositor / Shader trees only have Math.less_than and
-            # Math.greater_than (float output, no boolean). Map <= and >= by
-            # swapping operands: a <= b ≡ less_than(b, a) is wrong —
-            # but greater_than(b, a) gives 1 when b>a i.e. a<b.
-            # So: a <= b → 1 - greater_than(a, b)  — needs two nodes.
-            # Simpler: a >= b ≡ !(a < b) ≡ 1 - less_than(a, b)
-            from .nodes.geometry.converter import Math
-
-            socket = self._default_output_socket
-            _MATH_COMPARE_MAP = {
-                "less_than": ("less_than", False),
-                "greater_than": ("greater_than", False),
-                "less_equal": ("greater_than", True),  # a<=b → !(a>b) → 1-gt(a,b)
-                "greater_equal": ("less_than", True),  # a>=b → !(a<b) → 1-lt(a,b)
-            }
-            math_op, negate = _MATH_COMPARE_MAP[operation]
-            result = getattr(Math, math_op)(socket, other)
-            if negate:
-                result = Math.subtract(1.0, result._default_output_socket)
-            return result
-
-    def __lt__(self, other: Any) -> "Compare | Math":
+    def __lt__(self, other: Any) -> "NodeBuilder":
         return self._apply_compare_operation(other, "less_than")
 
-    def __gt__(self, other: Any) -> "Compare | Math":
+    def __gt__(self, other: Any) -> "NodeBuilder":
         return self._apply_compare_operation(other, "greater_than")
 
-    def __le__(self, other: Any) -> "Compare | Math":
+    def __le__(self, other: Any) -> "NodeBuilder":
         return self._apply_compare_operation(other, "less_equal")
 
-    def __ge__(self, other: Any) -> "Compare | Math":
+    def __ge__(self, other: Any) -> "NodeBuilder":
         return self._apply_compare_operation(other, "greater_equal")
 
+<<<<<<< HEAD
     def __eq__(self, other: Any) -> "Compare | Math":  # type: ignore
         return self._apply_compare_operation(other, "equal")
 
     def __ne__(self, other: Any) -> "Compare | Math":  # type: ignore
+=======
+    def __eq__(self, other: Any) -> "NodeBuilder":  # type: ignore
+        return self._apply_compare_operation(other, "equal")
+
+    def __ne__(self, other: Any) -> "NodeBuilder":  # type: ignore
+>>>>>>> main
         return self._apply_compare_operation(other, "not_equal")
 
     def _apply_boolean_operation(self, other: Any, operation: str) -> "BooleanMath":
@@ -995,7 +936,7 @@ class DynamicInputsMixin:
         try:
             return super()._find_best_socket_pair(source, target)  # type: ignore
         except SocketError:
-            if target == self:
+            if target.node == self.node:
                 target_name, source_socket = list(target._add_inputs(source).items())[0]
                 return (source_socket, target.inputs[target_name].socket)
             else:
@@ -1006,20 +947,6 @@ class DynamicInputsMixin:
                     source.outputs[target_name].socket,
                     target.inputs[target_name].socket,
                 )
-
-            # for target_name, source_socket in new_sockets.items():
-            #     target_socket = target.inputs[target_name].socket
-            #     return (source_socket, target_socket)
-
-    # def _best_output_socket(self, type: str) -> NodeSocket:
-    #     # compatible = SOCKET_COMPATIBILITY.get(type, ())
-    #     # possible = [
-    #     #     socket for socket in self._available_outputs if socket.type in compatible
-    #     # ]
-    #     # if possible:
-    #     #     return sorted(possible, key=lambda x: compatible.index(x.type))[0]
-
-    #     raise SocketError("No compatible output sockets found")
 
     def _add_inputs(self, *args, **kwargs) -> dict[str, LINKABLE]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
@@ -1075,6 +1002,251 @@ class SocketLinker(NodeBuilder):
     @property
     def name(self) -> str:
         return str(self.socket.name)
+
+    # -- Dispatch methods: contain per-type math logic. --
+    # These are called by NodeBuilder operators via _get_socket_linker().
+    # Subclasses override to provide type-specific behavior.
+
+    def _dispatch_math(
+        self, other: Any, operation: str, reverse: bool = False
+    ) -> "NodeBuilder":
+        """Scalar math dispatch (float). Uses the Math node."""
+        from .nodes.geometry.converter import Math
+
+        values = (self.socket, other) if not reverse else (other, self.socket)
+        math_operation = "floored_modulo" if operation == "modulo" else operation
+        return getattr(Math, math_operation)(*values)
+
+    def _dispatch_unary(self, operation: str) -> "NodeBuilder":
+        """Scalar unary dispatch (float). Uses the Math node."""
+        from .nodes.geometry.converter import Math
+
+        if operation == "negate":
+            return Math.multiply(self.socket, -1)
+        elif operation == "absolute":
+            return Math.absolute(self.socket)
+        raise ValueError(f"Unknown unary operation: {operation}")
+
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "NodeBuilder":
+        """Scalar floor division: divide then floor."""
+        from .nodes.geometry.converter import Math
+
+        values = (self.socket, other) if not reverse else (other, self.socket)
+        divided = Math.divide(*values)
+        return Math.floor(divided)
+
+    def _dispatch_compare(self, other: Any, operation: str) -> "NodeBuilder":
+        """Scalar comparison dispatch."""
+        if isinstance(self._tree.tree, GeometryNodeTree):
+            from .nodes.geometry.manual import Compare
+
+            return getattr(Compare, operation).float(self.socket, other)
+        else:
+            from .nodes.geometry.converter import Math
+
+            _MATH_COMPARE_MAP = {
+                "less_than": ("less_than", False),
+                "greater_than": ("greater_than", False),
+                "less_equal": ("greater_than", True),
+                "greater_equal": ("less_than", True),
+            }
+            math_op, negate = _MATH_COMPARE_MAP[operation]
+            result = getattr(Math, math_op)(self.socket, other)
+            if negate:
+                result = Math.subtract(1.0, result._default_output_socket)
+            return result
+
+
+class VectorSocketLinker(SocketLinker):
+    def _separated_value(self, value: str) -> SocketLinker:
+        from .nodes.geometry import SeparateXYZ
+
+        for link in self.socket.links:
+            if link.to_node.bl_idname == "ShaderNodeSeparateXYZ":
+                return SocketLinker(link.to_node.outputs[value])
+
+        return getattr(SeparateXYZ(self), f"o_{value.lower()}")
+
+    @property
+    def x(self) -> SocketLinker:
+        return self._separated_value("X")
+
+    @property
+    def y(self) -> SocketLinker:
+        return self._separated_value("Y")
+
+    @property
+    def z(self) -> SocketLinker:
+        return self._separated_value("Z")
+
+    def _dispatch_unary(self, operation: str) -> "NodeBuilder":
+        from .nodes.geometry import VectorMath
+
+        if operation == "negate":
+            return VectorMath.scale(self.socket, -1)
+        elif operation == "absolute":
+            return VectorMath.absolute(self.socket)
+        raise ValueError(f"Unknown unary operation: {operation}")
+
+    def _dispatch_math(
+        self, other: Any, operation: str, reverse: bool = False
+    ) -> "NodeBuilder":
+        from .nodes.geometry import VectorMath
+
+        values = (self.socket, other) if not reverse else (other, self.socket)
+
+        if operation == "multiply":
+            # Scalar * vector → scale; vector * vector → multiply
+            if isinstance(other, (int, float)):
+                return VectorMath.scale(self.socket, other)
+            elif isinstance(other, NodeSocket) and other.type in (
+                "VALUE",
+                "FLOAT",
+                "INT",
+            ):
+                return VectorMath.scale(self.socket, other)
+            elif isinstance(other, NodeBuilder) and getattr(other, "type", None) in (
+                "VALUE",
+                "FLOAT",
+                "INT",
+            ):
+                return VectorMath.scale(self.socket, other._default_output_socket)
+            elif isinstance(other, (list, tuple)) and len(other) == 3:
+                return VectorMath.multiply(*values)
+            elif isinstance(other, (NodeBuilder, NodeSocket)):
+                return VectorMath.multiply(*values)
+            else:
+                raise TypeError(
+                    f"Unsupported type for {operation} with VECTOR socket: {type(other)}, {other=}"
+                )
+        else:
+            vector_method = getattr(VectorMath, operation)
+            if isinstance(other, (int, float)):
+                scalar_vector = (other, other, other)
+                return (
+                    vector_method(self.socket, scalar_vector)
+                    if not reverse
+                    else vector_method(scalar_vector, self.socket)
+                )
+            elif (isinstance(other, (list, tuple)) and len(other) == 3) or isinstance(
+                other, (NodeBuilder, NodeSocket)
+            ):
+                return vector_method(*values)
+            else:
+                raise TypeError(
+                    f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
+                )
+
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "NodeBuilder":
+        from .nodes.geometry import VectorMath
+
+        divided = self._dispatch_math(other, "divide", reverse=reverse)
+        return VectorMath.floor(divided)
+
+    def _dispatch_compare(self, other: Any, operation: str) -> "NodeBuilder":
+        if isinstance(self._tree.tree, GeometryNodeTree):
+            from .nodes.geometry.manual import Compare
+
+            return getattr(Compare, operation).vector(self.socket, other)
+        else:
+            return super()._dispatch_compare(other, operation)
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketVector"] = VectorSocketLinker
+
+
+class IntegerSocketLinker(SocketLinker):
+    """Dispatches to IntegerMath in geometry trees, falls back to Math otherwise."""
+
+    @property
+    def _is_geometry_tree(self) -> bool:
+        return self._tree.tree.bl_idname == "GeometryNodeTree"
+
+    def _dispatch_math(
+        self, other: Any, operation: str, reverse: bool = False
+    ) -> "NodeBuilder":
+        if self._is_geometry_tree and isinstance(other, int):
+            from .nodes.geometry.converter import IntegerMath
+
+            values = (self.socket, other) if not reverse else (other, self.socket)
+            return getattr(IntegerMath, operation)(*values)
+        return super()._dispatch_math(other, operation, reverse)
+
+    def _dispatch_unary(self, operation: str) -> "NodeBuilder":
+        if self._is_geometry_tree:
+            from .nodes.geometry.converter import IntegerMath
+
+            if operation == "negate":
+                return IntegerMath.negate(self.socket)
+            elif operation == "absolute":
+                return IntegerMath.absolute(self.socket)
+        return super()._dispatch_unary(operation)
+
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "NodeBuilder":
+        if self._is_geometry_tree and isinstance(other, int):
+            from .nodes.geometry.converter import IntegerMath
+
+            values = (self.socket, other) if not reverse else (other, self.socket)
+            return IntegerMath.divide_floor(*values)
+        return super()._dispatch_floordiv(other, reverse)
+
+    def _dispatch_compare(self, other: Any, operation: str) -> "NodeBuilder":
+        if isinstance(self._tree.tree, GeometryNodeTree):
+            from .nodes.geometry.manual import Compare
+
+            return getattr(Compare, operation).integer(self.socket, other)
+        return super()._dispatch_compare(other, operation)
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketInt"] = IntegerSocketLinker
+
+
+_SEPARATE_COLOR_IDNAMES = (
+    "FunctionNodeSeparateColor",
+    "ShaderNodeSeparateColor",
+    "CompositorNodeSeparateColor",
+)
+
+
+class ColorSocketLinker(SocketLinker):
+    """Provides .r/.g/.b/.a accessors for color output sockets."""
+
+    def _get_separate_color_cls(self):
+        tree_type = self._tree.tree.bl_idname
+        if tree_type == "ShaderNodeTree":
+            from .nodes.shader.converter import SeparateColor
+        elif tree_type == "CompositorNodeTree":
+            from .nodes.compositor.converter import SeparateColor
+        else:
+            from .nodes.geometry.converter import SeparateColor
+        return SeparateColor
+
+    def _separated_channel(self, channel: str) -> SocketLinker:
+        for link in self.socket.links:
+            if link.to_node.bl_idname in _SEPARATE_COLOR_IDNAMES:
+                return SocketLinker(link.to_node.outputs[channel])
+
+        SeparateColor = self._get_separate_color_cls()
+        return getattr(SeparateColor(self), f"o_{channel.lower()}")
+
+    @property
+    def r(self) -> SocketLinker:
+        return self._separated_channel("Red")
+
+    @property
+    def g(self) -> SocketLinker:
+        return self._separated_channel("Green")
+
+    @property
+    def b(self) -> SocketLinker:
+        return self._separated_channel("Blue")
+
+    @property
+    def a(self) -> SocketLinker:
+        return self._separated_channel("Alpha")
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketColor"] = ColorSocketLinker
 
 
 class SocketBase(SocketLinker):

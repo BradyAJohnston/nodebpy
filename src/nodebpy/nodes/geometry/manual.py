@@ -716,8 +716,9 @@ class IndexSwitch(NodeBuilder):
         self._establish_links(**key_args)
 
     def _create_socket(self) -> NodeSocket:
-        item = self.node.index_switch_items.new()
-        return self.node.inputs[item.identifier]
+        self.node.index_switch_items.new()
+        # -1 is the last item (__extent__ socket) and -2 is the socket for the item we just added
+        return self.node.inputs[-2]
 
     def _link_args(self, *args: TYPE_INPUT_ALL):
         for arg in args:
@@ -727,14 +728,6 @@ class IndexSwitch(NodeBuilder):
             else:
                 source = self._source_socket(arg)
                 self.tree.link(source, self.node.inputs["__extend__"])
-
-    @property
-    def inputs(self) -> list[SocketLinker]:
-        """Input sockets"""
-        return [
-            SocketLinker(self.node.inputs[i + 1])
-            for i in range(len(self.node.index_switch_items))
-        ]
 
     @property
     def i_index(self) -> SocketLinker:
@@ -790,6 +783,8 @@ class _MenuSwitchBase(NodeBuilder):
         key_args = {"Menu": menu}
         self._link_args(*args, **kwargs)
         self._establish_links(**key_args)
+        if self.node.enum_items:
+            self.node.inputs[0].default_value = self.node.enum_items[0].name
 
     def _link_args(self, *args: TYPE_INPUT_ALL, **kwargs: TYPE_INPUT_ALL):
         for arg in args:
@@ -810,24 +805,9 @@ class _MenuSwitchBase(NodeBuilder):
                 self.node.enum_items[-1].name = key
 
     def _create_socket(self, name: str) -> bpy.types.NodeSocket:
-        item = self.node.enum_items.new(name)
-        return self.node.inputs[item.name]
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        """Input sockets"""
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.node.enum_items
-        }
-
-    @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        """Input sockets"""
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.node.enum_items
-        }
+        self.node.enum_items.new(name)
+        # -1 is the last item (__extent__ socket) and -2 is the socket for the item we just added
+        return self.node.inputs[-2]
 
     @property
     def i_menu(self) -> SocketLinker:
@@ -1916,10 +1896,25 @@ class Compare(NodeBuilder):
         ]:
             # Check plain Python types first (most specific to least)
             # bool must come before int since bool is a subclass of int
+<<<<<<< HEAD
             has_float = isinstance(a, float) or isinstance(b, float)
             has_bool = isinstance(a, bool) or isinstance(b, bool)
             has_int = isinstance(a, int) or isinstance(b, int)
             both_str = isinstance(a, str) and isinstance(b, str)
+=======
+            has_str = isinstance(a, str) or isinstance(b, str)
+            has_numeric = isinstance(a, (int, float)) or isinstance(b, (int, float))
+
+            # Reject mixing string with numeric types
+            if has_str and has_numeric:
+                raise ValueError(
+                    f"Cannot infer compatible type from {type(a).__name__} and {type(b).__name__}"
+                )
+
+            has_float = isinstance(a, float) or isinstance(b, float)
+            has_bool = isinstance(a, bool) or isinstance(b, bool)
+            has_int = isinstance(a, int) or isinstance(b, int)
+>>>>>>> main
 
             set_types = [
                 x._default_output_socket.type
@@ -1943,7 +1938,11 @@ class Compare(NodeBuilder):
                 return "BOOLEAN"
             if has_int:
                 return "INT"
+<<<<<<< HEAD
             if both_str:
+=======
+            if has_str:
+>>>>>>> main
                 return "STRING"
 
             raise ValueError(f"Cannot infer compatible type from {a} and {b}")

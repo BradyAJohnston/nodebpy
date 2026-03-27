@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
     TYPE_INPUT_COLOR,
@@ -111,7 +111,7 @@ class BrickTexture(NodeBuilder):
         return self._input("Row Height")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -199,7 +199,7 @@ class CheckerTexture(NodeBuilder):
         return self._input("Scale")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -327,7 +327,7 @@ class GradientTexture(NodeBuilder):
         return self._input("Vector")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -405,7 +405,7 @@ class ImageTexture(NodeBuilder):
         return self._input("Frame")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -468,7 +468,7 @@ class MagicTexture(NodeBuilder):
         return self._input("Distortion")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -584,7 +584,7 @@ class NoiseTexture(NodeBuilder):
         return self._output("Fac")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -728,12 +728,12 @@ class VoronoiTexture(NodeBuilder):
         return self._output("Distance")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
     @property
-    def o_position(self) -> SocketLinker:
+    def o_position(self) -> VectorSocketLinker:
         """Output socket: Position"""
         return self._output("Position")
 
@@ -862,7 +862,7 @@ class WaveTexture(NodeBuilder):
         return self._input("Phase Offset")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 
@@ -940,7 +940,7 @@ class WhiteNoiseTexture(NodeBuilder):
         return self._output("Value")
 
     @property
-    def o_color(self) -> SocketLinker:
+    def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
         return self._output("Color")
 

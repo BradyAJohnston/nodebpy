@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
     TYPE_INPUT_BOOLEAN,
@@ -423,7 +423,7 @@ class GridCurl(NodeBuilder):
         return self._input("Grid")
 
     @property
-    def o_curl(self) -> SocketLinker:
+    def o_curl(self) -> VectorSocketLinker:
         """Output socket: Curl"""
         return self._output("Curl")
 
@@ -473,7 +473,7 @@ class GridGradient(NodeBuilder):
         return self._input("Grid")
 
     @property
-    def o_gradient(self) -> SocketLinker:
+    def o_gradient(self) -> VectorSocketLinker:
         """Output socket: Gradient"""
         return self._output("Gradient")
 
