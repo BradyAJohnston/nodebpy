@@ -1,3 +1,4 @@
+import bpy
 import pytest
 
 from nodebpy import TreeBuilder, sockets
@@ -74,3 +75,21 @@ def test_color_shader():
         )
         with pytest.raises(SocketError):
             _ = mix >> s.Mix.color().i_a_color
+
+
+def material_node_cartoon() -> bpy.types.Material:
+    mat = bpy.data.materials.new(name="Cartoon")
+    with TreeBuilder.shader(mat.node_tree) as tree:
+        tree.nodes.clear()
+        output = s.MaterialOutput(surface=s.Attribute("GEOMETRY", "Color"))
+        aov = s.AovOutput(
+            value=s.Attribute("GEOMETRY", "sec_struct"), aov_name="sec_struct"
+        )
+
+    assert (
+        output.node.inputs["Surface"].links[0].from_node.bl_idname
+        == s.Attribute._bl_idname
+    )
+    assert (
+        aov.node.inputs["Value"].links[0].from_node.bl_idname == s.Attribute._bl_idname
+    )
