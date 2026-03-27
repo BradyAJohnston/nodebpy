@@ -69,12 +69,13 @@ def test_shader_menu_switch():
 
 def test_color_shader():
     with TreeBuilder.shader():
-        mix = s.MixShader(1.0, s.Color())
+        mix_shader = s.MixShader(1.0, s.Color())
         assert (
-            mix.node.inputs["Shader"].links[0].from_node.bl_idname == s.Color._bl_idname
+            mix_shader.node.inputs["Shader"].links[0].from_node.bl_idname
+            == s.Color._bl_idname
         )
         with pytest.raises(SocketError):
-            _ = mix >> s.Mix.color().i_a_color
+            _ = s.Mix.color(0.5, mix_shader)
 
 
 def material_node_cartoon() -> bpy.types.Material:

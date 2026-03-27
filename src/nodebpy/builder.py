@@ -530,7 +530,9 @@ class NodeBuilder:
             possible.sort(key=lambda x: compatible.index(x.type))
             return possible[0]
 
-        raise SocketError("No compatible output sockets found")
+        message = f"No compatible output sockets found for type {type} between {self.node.name} and {type} with compatible types: {compatible}"
+
+        raise SocketError(message)
 
     def _find_best_socket_pair(
         self,
