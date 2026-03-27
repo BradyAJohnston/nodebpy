@@ -10,7 +10,13 @@ from math import pi
 
 import bpy
 import pytest
-from bpy.types import NodeSocketInt
+from bpy.types import (
+    NodeSocketBool,
+    NodeSocketColor,
+    NodeSocketInt,
+    NodeSocketMatrix,
+    NodeSocketShader,
+)
 from numpy.testing import assert_allclose
 
 from nodebpy import TreeBuilder
@@ -18,8 +24,8 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
-from nodebpy.builder import ColorSocketLinker, NodeBuilder, VectorSocketLinker
-from nodebpy.types import NodeSocketFloat
+from nodebpy.builder import ColorSocketLinker, NodeBuilder
+from nodebpy.types import NodeSocketFloat, NodeSocketVector
 
 
 class TestTreeBuilder:
@@ -512,10 +518,10 @@ def test_placeholder():
         v = g.Color()
         mix = v >> g.Mix.color(0.3, (0.5, 0.5, 0.5, 1.0), ...)
 
-    assert not mix._input("Factor_Float").socket.links
-    assert tuple(mix._input("A_Color").socket.default_value) == (0.5, 0.5, 0.5, 1.0)
-    assert mix._input("B_Color").socket.links
-    assert mix._input("B_Color").socket.links[0].from_node == v.node
+    assert not mix.inputs["Factor_Float"].socket.links
+    assert tuple(mix.inputs["A_Color"].socket.default_value) == (0.5, 0.5, 0.5, 1.0)
+    assert mix.inputs["B_Color"].socket.links
+    assert mix.inputs["B_Color"].socket.links[0].from_node == v.node
 
 
 def test_nested_trees():
@@ -549,26 +555,53 @@ def test_nested_trees():
     assert len(tree) == 4
 
 
-@pytest.mark.parametrize(
-    "module,tree_type",
-    [(g, "GeometryNodeTree"), (s, "ShaderNodeTree"), (c, "CompositorNodeTree")],
-)
-def test_add_all_nodes(module, tree_type):
-    def _test_node_outputs(node: NodeBuilder):
+def _collect_node_classes(module):
+    """Collect NodeBuilder subclass names from a module."""
+    return [
+        name
+        for name in dir(module)
+        if re.match(r"^[A-Z][a-zA-Z0-9]+$", name)
+        and inspect.isclass(cls := getattr(module, name))
+        and issubclass(cls, NodeBuilder)
+    ]
+
+
+def _chunk(lst, n):
+    """Split list into chunks of size n."""
+    return [lst[i : i + n] for i in range(0, len(lst), n)]
+
+
+_CHUNK_SIZE = 10
+_all_node_params = []
+for _mod, _tree_type in [
+    (g, "GeometryNodeTree"),
+    (s, "ShaderNodeTree"),
+    (c, "CompositorNodeTree"),
+]:
+    _mod_name = _tree_type.removesuffix("NodeTree")
+    for _i, _chunk_names in enumerate(_chunk(_collect_node_classes(_mod), _CHUNK_SIZE)):
+        _all_node_params.append(
+            pytest.param(_mod, _tree_type, _chunk_names, id=f"{_mod_name}-{_i}")
+        )
+
+
+@pytest.mark.parametrize("module,tree_type,class_names", _all_node_params)
+def test_add_all_nodes(module, tree_type, class_names):
+    def _test_node_property_access(node: NodeBuilder):
         assert node.node is not None
-        for output in node.outputs.values():
-            if isinstance(output, VectorSocketLinker):
+        for output in [getattr(node, o) for o in dir(node) if o.startswith("o_")]:
+            if NodeSocketVector.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
                 assert result.operation == "SCALE"
                 assert result.node.inputs["Scale"].default_value == -1.0
-            elif isinstance(output.socket, NodeSocketFloat):
+            elif NodeSocketFloat.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
                 assert result.node.inputs["Value"].links
                 assert result.node.operation == "MULTIPLY"
                 assert result.node.inputs["Value_001"].default_value == -1
-            elif isinstance(output.socket, NodeSocketInt):
+            elif NodeSocketInt.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
                 assert result.node.inputs["Value"].links
@@ -577,14 +610,82 @@ def test_add_all_nodes(module, tree_type):
                     if result.tree.tree.type == "GEOMETRY"
                     else "MULTIPLY"
                 )
+            elif isinstance(output.socket, NodeSocketBool):
+                if not tree_type == "GeometryNodeTree":
+                    continue
+                result = output | True
+                assert result.node is not None
+                assert result.node.bl_idname == g.BooleanMath._bl_idname
+                assert result.node.inputs[0].links
+                assert not result.node.inputs[1].links
+                assert result.node.inputs[1].default_value
+                assert result.operation == "OR"
+            elif isinstance(output.socket, NodeSocketMatrix):
+                if not tree_type == "GeometryNodeTree":
+                    continue
+                result = output @ g.CombineTransform()
+                assert result.node is not None
+                assert result.node.bl_idname == g.MultiplyMatrices._bl_idname
+            elif "NodeSocketGeometry" in output.socket.bl_idname:
+                result = output >> g.JoinGeometry()
+                assert result.node is not None
+                assert result.node.bl_idname == g.JoinGeometry._bl_idname
+                assert result.inputs[0].links[0].from_node == output.node
+            elif NodeSocketColor.bl_rna.identifier in output.socket.bl_idname:
+                result = output >> module.SeparateColor()
+                assert result.node is not None
+                assert module.SeparateColor._bl_idname in result.node.bl_idname
+                assert result.node.inputs[0].links[0].from_node == output.node
+            elif "NodeSocketShader" in output.socket.bl_idname:
+                result = output >> s.AddShader()
+                assert result.node is not None
+                assert result.node.bl_idname == s.AddShader._bl_idname
+                assert result.node.inputs[0].links[0].from_node == output.node
+            elif NodeSocketMatrix.bl_rna.identifier in output.socket.bl_idname:
+                result = output @ g.Position()
+                assert result.node is not None
+                assert result.node.bl_idname == g.TransformPoint._bl_idname
+                assert result.node.inputs[0].links[0].from_node == output.node
+        for prop in dir(node):
+            if not prop.startswith("i_"):
+                continue
+            try:
+                input = getattr(node, prop)
+            except RuntimeError as e:
+                print(f"Failed to get input {prop} due to error: {e}")
+                continue
+            if any(
+                x.bl_rna.identifier in input.socket.bl_idname
+                for x in (
+                    NodeSocketFloat,
+                    NodeSocketInt,
+                    NodeSocketVector,
+                    NodeSocketColor,
+                    NodeSocketBool,
+                )
+            ):
+                value = module.Value(10.0)
+                try:
+                    result = value >> input
+                    assert result.node is not None
+                    assert result.socket.links[0].from_node == value.node
+                except RuntimeError as e:
+                    print(
+                        f"Failed to link {value.name} to {input.name} due to error: {e}"
+                    )
+            elif NodeSocketShader.bl_rna.identifier in input.socket.bl_idname:
+                value = s.DiffuseBSDF()
+                result = value >> input
+                assert result.node is not None
+                assert result.socket.links[0].from_node == value.node
+            elif isinstance(input.socket, NodeSocketMatrix):
+                trans = g.CombineTransform()
+                result = trans >> input
+                assert input.socket.links[0].from_node == trans.node
 
-    with TreeBuilder(tree_type=tree_type):
-        for name in dir(module):
-            if not re.match(r"^([A-Z][a-z]+)+$", name):
-                continue
+    with TreeBuilder(tree_type=tree_type, arrange=None, ignore_visibility=True):
+        for name in class_names:
             cls = getattr(module, name)
-            if not (inspect.isclass(cls) and issubclass(cls, NodeBuilder)):
-                continue
             # Test the default constructor
             node = cls()
             assert node.node is not None
@@ -593,7 +694,7 @@ def test_add_all_nodes(module, tree_type):
                 for x in ["Repeat", "Zone", "Foreach", "Element", "Simulation"]
             ):
                 continue
-            _test_node_outputs(node)
+            _test_node_property_access(node)
             # Test each classmethod defined on this class (not inherited from NodeBuilder)
             for method_name in dir(cls):
                 if isinstance(
@@ -601,7 +702,7 @@ def test_add_all_nodes(module, tree_type):
                 ) and method_name not in dir(NodeBuilder):
                     node = getattr(cls, method_name)()
                     assert node.node is not None
-                    _test_node_outputs(node)
+                    _test_node_property_access(node)
 
 
 def test_iter_outputs():
@@ -624,11 +725,11 @@ def test_iter_outputs():
 
 
 def test_vector_socket_linker():
-    with TreeBuilder("SeparateXYZ_z") as tree:
+    with TreeBuilder("SeparateXYZ_z"):
         pos = g.Position().o_position
 
         result = g.SetPosition(position=pos.x * g.Position())
-        result2 = pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
+        pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
 
     assert result.node
     assert result.node.inputs["Position"].links[0].from_node.operation == "SCALE"
@@ -636,7 +737,7 @@ def test_vector_socket_linker():
 
 
 def test_color_socket_linker():
-    with TreeBuilder("ColorChannels") as tree:
+    with TreeBuilder("ColorChannels"):
         color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
 
         assert isinstance(color, ColorSocketLinker)

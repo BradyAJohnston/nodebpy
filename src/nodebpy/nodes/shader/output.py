@@ -38,12 +38,12 @@ class AovOutput(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Value")
+        return self.inputs.get("Value")
 
     @property
     def aov_name(self) -> str:
@@ -78,7 +78,7 @@ class LightOutput(NodeBuilder):
     @property
     def i_surface(self) -> SocketLinker:
         """Input socket: Surface"""
-        return self._input("Surface")
+        return self.inputs.get("Surface")
 
     @property
     def is_active_output(self) -> bool:
@@ -155,22 +155,22 @@ class LineStyleOutput(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_color_fac(self) -> SocketLinker:
         """Input socket: Color Fac"""
-        return self._input("Color Fac")
+        return self.inputs.get("Color Fac")
 
     @property
     def i_alpha(self) -> SocketLinker:
         """Input socket: Alpha"""
-        return self._input("Alpha")
+        return self.inputs.get("Alpha")
 
     @property
     def i_alpha_fac(self) -> SocketLinker:
         """Input socket: Alpha Fac"""
-        return self._input("Alpha Fac")
+        return self.inputs.get("Alpha Fac")
 
     @property
     def is_active_output(self) -> bool:
@@ -290,22 +290,22 @@ class MaterialOutput(NodeBuilder):
     @property
     def i_surface(self) -> SocketLinker:
         """Input socket: Surface"""
-        return self._input("Surface")
+        return self.inputs.get("Surface")
 
     @property
     def i_volume(self) -> SocketLinker:
         """Input socket: Volume"""
-        return self._input("Volume")
+        return self.inputs.get("Volume")
 
     @property
     def i_displacement(self) -> SocketLinker:
         """Input socket: Displacement"""
-        return self._input("Displacement")
+        return self.inputs.get("Displacement")
 
     @property
     def i_thickness(self) -> SocketLinker:
         """Input socket: Thickness"""
-        return self._input("Thickness")
+        return self.inputs.get("Thickness")
 
     @property
     def is_active_output(self) -> bool:
@@ -349,12 +349,12 @@ class WorldOutput(NodeBuilder):
     @property
     def i_surface(self) -> SocketLinker:
         """Input socket: Surface"""
-        return self._input("Surface")
+        return self.inputs.get("Surface")
 
     @property
     def i_volume(self) -> SocketLinker:
         """Input socket: Volume"""
-        return self._input("Volume")
+        return self.inputs.get("Volume")
 
     @property
     def is_active_output(self) -> bool:

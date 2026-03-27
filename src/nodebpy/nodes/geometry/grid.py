@@ -139,32 +139,32 @@ class AdvectGrid(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_velocity(self) -> SocketLinker:
         """Input socket: Velocity"""
-        return self._input("Velocity")
+        return self.inputs.get("Velocity")
 
     @property
     def i_time_step(self) -> SocketLinker:
         """Input socket: Time Step"""
-        return self._input("Time Step")
+        return self.inputs.get("Time Step")
 
     @property
     def i_integration_scheme(self) -> SocketLinker:
         """Input socket: Integration Scheme"""
-        return self._input("Integration Scheme")
+        return self.inputs.get("Integration Scheme")
 
     @property
     def i_limiter(self) -> SocketLinker:
         """Input socket: Limiter"""
-        return self._input("Limiter")
+        return self.inputs.get("Limiter")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
@@ -207,32 +207,32 @@ class DistributePointsInGrid(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_density(self) -> SocketLinker:
         """Input socket: Density"""
-        return self._input("Density")
+        return self.inputs.get("Density")
 
     @property
     def i_seed(self) -> SocketLinker:
         """Input socket: Seed"""
-        return self._input("Seed")
+        return self.inputs.get("Seed")
 
     @property
     def i_spacing(self) -> SocketLinker:
         """Input socket: Spacing"""
-        return self._input("Spacing")
+        return self.inputs.get("Spacing")
 
     @property
     def i_threshold(self) -> SocketLinker:
         """Input socket: Threshold"""
-        return self._input("Threshold")
+        return self.inputs.get("Threshold")
 
     @property
     def o_points(self) -> SocketLinker:
         """Output socket: Points"""
-        return self._output("Points")
+        return self.outputs.get("Points")
 
     @property
     def mode(self) -> Literal["DENSITY_RANDOM", "DENSITY_GRID"]:
@@ -275,37 +275,37 @@ class DistributePointsInVolume(NodeBuilder):
     @property
     def i_volume(self) -> SocketLinker:
         """Input socket: Volume"""
-        return self._input("Volume")
+        return self.inputs.get("Volume")
 
     @property
     def i_mode(self) -> SocketLinker:
         """Input socket: Mode"""
-        return self._input("Mode")
+        return self.inputs.get("Mode")
 
     @property
     def i_density(self) -> SocketLinker:
         """Input socket: Density"""
-        return self._input("Density")
+        return self.inputs.get("Density")
 
     @property
     def i_seed(self) -> SocketLinker:
         """Input socket: Seed"""
-        return self._input("Seed")
+        return self.inputs.get("Seed")
 
     @property
     def i_spacing(self) -> SocketLinker:
         """Input socket: Spacing"""
-        return self._input("Spacing")
+        return self.inputs.get("Spacing")
 
     @property
     def i_threshold(self) -> SocketLinker:
         """Input socket: Threshold"""
-        return self._input("Threshold")
+        return self.inputs.get("Threshold")
 
     @property
     def o_points(self) -> SocketLinker:
         """Output socket: Points"""
-        return self._output("Points")
+        return self.outputs.get("Points")
 
 
 class GetNamedGrid(NodeBuilder):
@@ -372,27 +372,27 @@ class GetNamedGrid(NodeBuilder):
     @property
     def i_volume(self) -> SocketLinker:
         """Input socket: Volume"""
-        return self._input("Volume")
+        return self.inputs.get("Volume")
 
     @property
     def i_name(self) -> SocketLinker:
         """Input socket: Name"""
-        return self._input("Name")
+        return self.inputs.get("Name")
 
     @property
     def i_remove(self) -> SocketLinker:
         """Input socket: Remove"""
-        return self._input("Remove")
+        return self.inputs.get("Remove")
 
     @property
     def o_volume(self) -> SocketLinker:
         """Output socket: Volume"""
-        return self._output("Volume")
+        return self.outputs.get("Volume")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -420,12 +420,12 @@ class GridCurl(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def o_curl(self) -> VectorSocketLinker:
         """Output socket: Curl"""
-        return self._output("Curl")
+        return self.outputs.get("Curl")
 
 
 class GridDivergence(NodeBuilder):
@@ -445,12 +445,12 @@ class GridDivergence(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def o_divergence(self) -> SocketLinker:
         """Output socket: Divergence"""
-        return self._output("Divergence")
+        return self.outputs.get("Divergence")
 
 
 class GridGradient(NodeBuilder):
@@ -470,12 +470,12 @@ class GridGradient(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def o_gradient(self) -> VectorSocketLinker:
         """Output socket: Gradient"""
-        return self._output("Gradient")
+        return self.outputs.get("Gradient")
 
 
 class GridInfo(NodeBuilder):
@@ -520,17 +520,17 @@ class GridInfo(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def o_transform(self) -> SocketLinker:
         """Output socket: Transform"""
-        return self._output("Transform")
+        return self.outputs.get("Transform")
 
     @property
     def o_background_value(self) -> SocketLinker:
         """Output socket: Background Value"""
-        return self._output("Background Value")
+        return self.outputs.get("Background Value")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -558,12 +558,12 @@ class GridLaplacian(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def o_laplacian(self) -> SocketLinker:
         """Output socket: Laplacian"""
-        return self._output("Laplacian")
+        return self.outputs.get("Laplacian")
 
 
 class GridToMesh(NodeBuilder):
@@ -588,22 +588,22 @@ class GridToMesh(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_threshold(self) -> SocketLinker:
         """Input socket: Threshold"""
-        return self._input("Threshold")
+        return self.inputs.get("Threshold")
 
     @property
     def i_adaptivity(self) -> SocketLinker:
         """Input socket: Adaptivity"""
-        return self._input("Adaptivity")
+        return self.inputs.get("Adaptivity")
 
     @property
     def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
-        return self._output("Mesh")
+        return self.outputs.get("Mesh")
 
 
 class MeshToDensityGrid(NodeBuilder):
@@ -634,27 +634,27 @@ class MeshToDensityGrid(NodeBuilder):
     @property
     def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
-        return self._input("Mesh")
+        return self.inputs.get("Mesh")
 
     @property
     def i_density(self) -> SocketLinker:
         """Input socket: Density"""
-        return self._input("Density")
+        return self.inputs.get("Density")
 
     @property
     def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
-        return self._input("Voxel Size")
+        return self.inputs.get("Voxel Size")
 
     @property
     def i_gradient_width(self) -> SocketLinker:
         """Input socket: Gradient Width"""
-        return self._input("Gradient Width")
+        return self.inputs.get("Gradient Width")
 
     @property
     def o_density_grid(self) -> SocketLinker:
         """Output socket: Density Grid"""
-        return self._output("Density Grid")
+        return self.outputs.get("Density Grid")
 
 
 class MeshToSDFGrid(NodeBuilder):
@@ -679,22 +679,22 @@ class MeshToSDFGrid(NodeBuilder):
     @property
     def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
-        return self._input("Mesh")
+        return self.inputs.get("Mesh")
 
     @property
     def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
-        return self._input("Voxel Size")
+        return self.inputs.get("Voxel Size")
 
     @property
     def i_band_width(self) -> SocketLinker:
         """Input socket: Band Width"""
-        return self._input("Band Width")
+        return self.inputs.get("Band Width")
 
     @property
     def o_sdf_grid(self) -> SocketLinker:
         """Output socket: SDF Grid"""
-        return self._output("SDF Grid")
+        return self.outputs.get("SDF Grid")
 
 
 class MeshToVolume(NodeBuilder):
@@ -729,37 +729,37 @@ class MeshToVolume(NodeBuilder):
     @property
     def i_mesh(self) -> SocketLinker:
         """Input socket: Mesh"""
-        return self._input("Mesh")
+        return self.inputs.get("Mesh")
 
     @property
     def i_density(self) -> SocketLinker:
         """Input socket: Density"""
-        return self._input("Density")
+        return self.inputs.get("Density")
 
     @property
     def i_resolution_mode(self) -> SocketLinker:
         """Input socket: Resolution Mode"""
-        return self._input("Resolution Mode")
+        return self.inputs.get("Resolution Mode")
 
     @property
     def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
-        return self._input("Voxel Size")
+        return self.inputs.get("Voxel Size")
 
     @property
     def i_voxel_amount(self) -> SocketLinker:
         """Input socket: Voxel Amount"""
-        return self._input("Voxel Amount")
+        return self.inputs.get("Voxel Amount")
 
     @property
     def i_interior_band_width(self) -> SocketLinker:
         """Input socket: Interior Band Width"""
-        return self._input("Interior Band Width")
+        return self.inputs.get("Interior Band Width")
 
     @property
     def o_volume(self) -> SocketLinker:
         """Output socket: Volume"""
-        return self._output("Volume")
+        return self.outputs.get("Volume")
 
 
 class PointsToSDFGrid(NodeBuilder):
@@ -784,22 +784,22 @@ class PointsToSDFGrid(NodeBuilder):
     @property
     def i_points(self) -> SocketLinker:
         """Input socket: Points"""
-        return self._input("Points")
+        return self.inputs.get("Points")
 
     @property
     def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
-        return self._input("Radius")
+        return self.inputs.get("Radius")
 
     @property
     def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
-        return self._input("Voxel Size")
+        return self.inputs.get("Voxel Size")
 
     @property
     def o_sdf_grid(self) -> SocketLinker:
         """Output socket: SDF Grid"""
-        return self._output("SDF Grid")
+        return self.outputs.get("SDF Grid")
 
 
 class PointsToVolume(NodeBuilder):
@@ -834,37 +834,37 @@ class PointsToVolume(NodeBuilder):
     @property
     def i_points(self) -> SocketLinker:
         """Input socket: Points"""
-        return self._input("Points")
+        return self.inputs.get("Points")
 
     @property
     def i_density(self) -> SocketLinker:
         """Input socket: Density"""
-        return self._input("Density")
+        return self.inputs.get("Density")
 
     @property
     def i_resolution_mode(self) -> SocketLinker:
         """Input socket: Resolution Mode"""
-        return self._input("Resolution Mode")
+        return self.inputs.get("Resolution Mode")
 
     @property
     def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
-        return self._input("Voxel Size")
+        return self.inputs.get("Voxel Size")
 
     @property
     def i_voxel_amount(self) -> SocketLinker:
         """Input socket: Voxel Amount"""
-        return self._input("Voxel Amount")
+        return self.inputs.get("Voxel Amount")
 
     @property
     def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
-        return self._input("Radius")
+        return self.inputs.get("Radius")
 
     @property
     def o_volume(self) -> SocketLinker:
         """Output socket: Volume"""
-        return self._output("Volume")
+        return self.outputs.get("Volume")
 
 
 class PruneGrid(NodeBuilder):
@@ -930,22 +930,22 @@ class PruneGrid(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_mode(self) -> SocketLinker:
         """Input socket: Mode"""
-        return self._input("Mode")
+        return self.inputs.get("Mode")
 
     @property
     def i_threshold(self) -> SocketLinker:
         """Input socket: Threshold"""
-        return self._input("Threshold")
+        return self.inputs.get("Threshold")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -977,17 +977,17 @@ class SDFGridFillet(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_iterations(self) -> SocketLinker:
         """Input socket: Iterations"""
-        return self._input("Iterations")
+        return self.inputs.get("Iterations")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
 
 class SDFGridLaplacian(NodeBuilder):
@@ -1011,17 +1011,17 @@ class SDFGridLaplacian(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_iterations(self) -> SocketLinker:
         """Input socket: Iterations"""
-        return self._input("Iterations")
+        return self.inputs.get("Iterations")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
 
 class SDFGridMean(NodeBuilder):
@@ -1046,22 +1046,22 @@ class SDFGridMean(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_width(self) -> SocketLinker:
         """Input socket: Width"""
-        return self._input("Width")
+        return self.inputs.get("Width")
 
     @property
     def i_iterations(self) -> SocketLinker:
         """Input socket: Iterations"""
-        return self._input("Iterations")
+        return self.inputs.get("Iterations")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
 
 class SDFGridMeanCurvature(NodeBuilder):
@@ -1085,17 +1085,17 @@ class SDFGridMeanCurvature(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_iterations(self) -> SocketLinker:
         """Input socket: Iterations"""
-        return self._input("Iterations")
+        return self.inputs.get("Iterations")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
 
 class SDFGridMedian(NodeBuilder):
@@ -1120,22 +1120,22 @@ class SDFGridMedian(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_width(self) -> SocketLinker:
         """Input socket: Width"""
-        return self._input("Width")
+        return self.inputs.get("Width")
 
     @property
     def i_iterations(self) -> SocketLinker:
         """Input socket: Iterations"""
-        return self._input("Iterations")
+        return self.inputs.get("Iterations")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
 
 class SDFGridOffset(NodeBuilder):
@@ -1159,17 +1159,17 @@ class SDFGridOffset(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_distance(self) -> SocketLinker:
         """Input socket: Distance"""
-        return self._input("Distance")
+        return self.inputs.get("Distance")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
 
 class SampleGrid(NodeBuilder):
@@ -1255,22 +1255,22 @@ class SampleGrid(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_position(self) -> SocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self.inputs.get("Position")
 
     @property
     def i_interpolation(self) -> SocketLinker:
         """Input socket: Interpolation"""
-        return self._input("Interpolation")
+        return self.inputs.get("Interpolation")
 
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self.outputs.get("Value")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -1350,27 +1350,27 @@ class SampleGridIndex(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_x(self) -> SocketLinker:
         """Input socket: X"""
-        return self._input("X")
+        return self.inputs.get("X")
 
     @property
     def i_y(self) -> SocketLinker:
         """Input socket: Y"""
-        return self._input("Y")
+        return self.inputs.get("Y")
 
     @property
     def i_z(self) -> SocketLinker:
         """Input socket: Z"""
-        return self._input("Z")
+        return self.inputs.get("Z")
 
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self.outputs.get("Value")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -1432,17 +1432,17 @@ class SetGridBackground(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_background(self) -> SocketLinker:
         """Input socket: Background"""
-        return self._input("Background")
+        return self.inputs.get("Background")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -1504,22 +1504,22 @@ class SetGridTransform(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def i_transform(self) -> SocketLinker:
         """Input socket: Transform"""
-        return self._input("Transform")
+        return self.inputs.get("Transform")
 
     @property
     def o_is_valid(self) -> SocketLinker:
         """Output socket: Is Valid"""
-        return self._output("Is Valid")
+        return self.outputs.get("Is Valid")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -1594,22 +1594,22 @@ class StoreNamedGrid(NodeBuilder):
     @property
     def i_volume(self) -> SocketLinker:
         """Input socket: Volume"""
-        return self._input("Volume")
+        return self.inputs.get("Volume")
 
     @property
     def i_name(self) -> SocketLinker:
         """Input socket: Name"""
-        return self._input("Name")
+        return self.inputs.get("Name")
 
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def o_volume(self) -> SocketLinker:
         """Output socket: Volume"""
-        return self._output("Volume")
+        return self.outputs.get("Volume")
 
     @property
     def data_type(self) -> Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]:
@@ -1654,42 +1654,42 @@ class VolumeCube(NodeBuilder):
     @property
     def i_density(self) -> SocketLinker:
         """Input socket: Density"""
-        return self._input("Density")
+        return self.inputs.get("Density")
 
     @property
     def i_background(self) -> SocketLinker:
         """Input socket: Background"""
-        return self._input("Background")
+        return self.inputs.get("Background")
 
     @property
     def i_min(self) -> SocketLinker:
         """Input socket: Min"""
-        return self._input("Min")
+        return self.inputs.get("Min")
 
     @property
     def i_max(self) -> SocketLinker:
         """Input socket: Max"""
-        return self._input("Max")
+        return self.inputs.get("Max")
 
     @property
     def i_resolution_x(self) -> SocketLinker:
         """Input socket: Resolution X"""
-        return self._input("Resolution X")
+        return self.inputs.get("Resolution X")
 
     @property
     def i_resolution_y(self) -> SocketLinker:
         """Input socket: Resolution Y"""
-        return self._input("Resolution Y")
+        return self.inputs.get("Resolution Y")
 
     @property
     def i_resolution_z(self) -> SocketLinker:
         """Input socket: Resolution Z"""
-        return self._input("Resolution Z")
+        return self.inputs.get("Resolution Z")
 
     @property
     def o_volume(self) -> SocketLinker:
         """Output socket: Volume"""
-        return self._output("Volume")
+        return self.outputs.get("Volume")
 
 
 class VolumeToMesh(NodeBuilder):
@@ -1724,37 +1724,37 @@ class VolumeToMesh(NodeBuilder):
     @property
     def i_volume(self) -> SocketLinker:
         """Input socket: Volume"""
-        return self._input("Volume")
+        return self.inputs.get("Volume")
 
     @property
     def i_resolution_mode(self) -> SocketLinker:
         """Input socket: Resolution Mode"""
-        return self._input("Resolution Mode")
+        return self.inputs.get("Resolution Mode")
 
     @property
     def i_voxel_size(self) -> SocketLinker:
         """Input socket: Voxel Size"""
-        return self._input("Voxel Size")
+        return self.inputs.get("Voxel Size")
 
     @property
     def i_voxel_amount(self) -> SocketLinker:
         """Input socket: Voxel Amount"""
-        return self._input("Voxel Amount")
+        return self.inputs.get("Voxel Amount")
 
     @property
     def i_threshold(self) -> SocketLinker:
         """Input socket: Threshold"""
-        return self._input("Threshold")
+        return self.inputs.get("Threshold")
 
     @property
     def i_adaptivity(self) -> SocketLinker:
         """Input socket: Adaptivity"""
-        return self._input("Adaptivity")
+        return self.inputs.get("Adaptivity")
 
     @property
     def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
-        return self._output("Mesh")
+        return self.outputs.get("Mesh")
 
 
 class VoxelizeGrid(NodeBuilder):
@@ -1799,12 +1799,12 @@ class VoxelizeGrid(NodeBuilder):
     @property
     def i_grid(self) -> SocketLinker:
         """Input socket: Grid"""
-        return self._input("Grid")
+        return self.inputs.get("Grid")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
