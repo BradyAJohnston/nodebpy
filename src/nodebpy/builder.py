@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, ClassVar, Iterable, Literal
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Callable, ClassVar, Iterable, Literal, Union
 
 if TYPE_CHECKING:
     from .nodes.geometry.converter import BooleanMath, MultiplyMatrices, TransformPoint
@@ -825,17 +826,10 @@ class NodeBuilder:
     def __ge__(self, other: Any) -> "NodeBuilder":
         return self._apply_compare_operation(other, "greater_equal")
 
-<<<<<<< HEAD
-    def __eq__(self, other: Any) -> "Compare | Math":  # type: ignore
-        return self._apply_compare_operation(other, "equal")
-
-    def __ne__(self, other: Any) -> "Compare | Math":  # type: ignore
-=======
     def __eq__(self, other: Any) -> "NodeBuilder":  # type: ignore
         return self._apply_compare_operation(other, "equal")
 
     def __ne__(self, other: Any) -> "NodeBuilder":  # type: ignore
->>>>>>> main
         return self._apply_compare_operation(other, "not_equal")
 
     def _apply_boolean_operation(self, other: Any, operation: str) -> "BooleanMath":
@@ -1787,16 +1781,151 @@ class SocketShader(SocketBase):
         )
 
 
-class NodeGroupBase(NodeBuilder):
+class InputSpec:
+    """Descriptor for declaring a node group input socket.
+
+    Accepts a ``functools.partial`` (or any callable) that will create the
+    :class:`SocketBase` when the group tree is first built.  Using ``partial``
+    preserves IDE autocomplete and catches typos at call-time::
+
+        from functools import partial
+
+        i_vertex_index = InputSpec(partial(SocketInt, "Vertex Index", default_input="INDEX"))
+
+    The descriptor also:
+    - Acts as an ``i_*`` property on instances, returning the live :class:`SocketLinker`.
+    - Maps ``__init__`` kwargs to socket names (``i_vertex_index`` → kwarg ``vertex_index``
+      → socket ``"Vertex Index"``).
     """
-    Base NodeGroup for interacting with custom node groups
+
+    def __init__(self, socket_factory: Callable[[], SocketBase]):
+        self.socket_factory = socket_factory
+        self.socket_name: str | None = None
+        self.attr_name: str | None = None
+        self.param_name: str | None = None
+
+    def __set_name__(self, owner, name: str):
+        self.attr_name = name
+        self.param_name = name.removeprefix("i_")
+
+    def __get__(self, obj, objtype=None) -> SocketLinker:
+        if obj is None:
+            return self  # type: ignore[return-value]
+        return obj._input(self.socket_name)
+
+
+class OutputSpec:
+    """Descriptor for declaring a node group output socket.
+
+    Accepts a ``functools.partial`` (or any callable) that will create the
+    :class:`SocketBase` when the group tree is first built::
+
+        from functools import partial
+
+        o_other_vertex = OutputSpec(partial(SocketInt, "Other Vertex"))
+
+    The descriptor also acts as an ``o_*`` property on instances, returning
+    the live :class:`SocketLinker`.
+    """
+
+    def __init__(self, socket_factory: Callable[[], SocketBase]):
+        self.socket_factory = socket_factory
+        self.socket_name: str | None = None
+        self.attr_name: str | None = None
+
+    def __set_name__(self, owner, name: str):
+        self.attr_name = name
+
+    def __get__(self, obj, objtype=None) -> SocketLinker:
+        if obj is None:
+            return self  # type: ignore[return-value]
+        return obj._output(self.socket_name)
+
+
+class NodeGroupBuilder(NodeBuilder):
+    """Base class for custom node groups.
+
+    Subclasses declare inputs/outputs as :class:`InputSpec` / :class:`OutputSpec`
+    descriptors and implement :meth:`_build_group` with the node-graph logic.
+
+    The base class handles:
+    - Caching the node group in ``bpy.data.node_groups``
+    - Creating interface sockets from descriptor metadata
+    - Mapping ``__init__`` kwargs to socket names and calling ``_establish_links``
     """
 
     _node_group_name: str
     _bl_idname = "GeometryNodeGroup"
     node: bpy.types.GeometryNodeGroup
+    _group_inputs: ClassVar[dict[str, InputSpec]]
+    _group_outputs: ClassVar[dict[str, OutputSpec]]
 
-    def __init__(self):
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls._group_inputs = {}
+        cls._group_outputs = {}
+        for name in list(vars(cls)):
+            val = vars(cls)[name]
+            if isinstance(val, InputSpec):
+                cls._group_inputs[name] = val
+            elif isinstance(val, OutputSpec):
+                cls._group_outputs[name] = val
+
+    def __init__(self, **kwargs):
         super().__init__()
+        self.node.node_tree = self._get_or_create_group()
+        key_args = {}
+        for spec in self._group_inputs.values():
+            if spec.param_name in kwargs:
+                key_args[spec.socket_name] = kwargs[spec.param_name]
+        self._establish_links(**key_args)
 
-    def _generate_node_group(self, name: str) -> bpy.types.GeometryNodeGroup: ...
+    def _get_or_create_group(self) -> bpy.types.GeometryNodeTree:
+        name = self._node_group_name
+        if name in bpy.data.node_groups:
+            return bpy.data.node_groups[name]
+        return self._create_group(name)
+
+    def _create_group(self, name: str) -> bpy.types.GeometryNodeTree:
+        with TreeBuilder(name) as tree:
+            # Create input sockets from InputSpec descriptors
+            input_sockets: dict[str, SocketBase] = {}
+            with tree.inputs:
+                for spec in self._group_inputs.values():
+                    sock = spec.socket_factory()
+                    spec.socket_name = sock.interface_socket.name
+                    input_sockets[spec.param_name] = sock
+
+            # Let the subclass build the graph — inputs passed as kwargs
+            output_mapping = self._build_group(tree, **input_sockets)
+
+            # Create output sockets from OutputSpec descriptors
+            with tree.outputs:
+                for spec in self._group_outputs.values():
+                    out_sock = spec.socket_factory()
+                    spec.socket_name = out_sock.interface_socket.name
+                    source = output_mapping.get(spec.socket_name)
+                    if source is not None:
+                        source >> out_sock
+
+            return tree.tree
+
+    @classmethod
+    def _build_group(
+        cls, tree: TreeBuilder, *args: Any, **kwargs: Any
+    ) -> Mapping[str, Union[SocketLinker, NodeBuilder]]:
+        """Build the node group internals.
+
+        Override with a typed signature matching the :class:`InputSpec`
+        descriptors::
+
+            @classmethod
+            def _build_group(cls, tree, vertex_index: SocketInt, edge_number: SocketInt):
+                ...
+                return {"Other Vertex": some_socket}
+
+        Returns:
+            Mapping of output socket names to the :class:`SocketLinker` that
+            should be wired to each output.
+        """
+        raise NotImplementedError

@@ -505,8 +505,6 @@ class TestComparisonEqualNotEqual:
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "FLOAT"
 
-<<<<<<< HEAD
-=======
     def test_comparison_float_socket(self):
         """Test float comparison with socket."""
         with TreeBuilder("TestCompareFloatSocket"):
@@ -539,7 +537,6 @@ class TestComparisonEqualNotEqual:
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "STRING"
 
->>>>>>> main
     def test_comparison_int(self):
         """Test int comparison."""
         with TreeBuilder("TestCompareInt"):
@@ -556,23 +553,16 @@ class TestComparisonEqualNotEqual:
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "BOOLEAN"
 
-<<<<<<< HEAD
-        with pytest.raises(ValueError):
-=======
         with pytest.raises(ValueError, match="Cannot infer compatible type from"):
->>>>>>> main
             with TreeBuilder("TestCompareInt"):
                 # we don't automatically infer changing data types of string & numeric
                 result = (g.Integer(5) == 4).switch("str", 5.0)
 
-<<<<<<< HEAD
-=======
     def test_raise_warning(self):
         with pytest.raises(ValueError, match="Cannot infer compatible type from"):
             with TreeBuilder("TestCompareInt"):
                 _ = (g.Integer(5) == 4).switch(list, int)
 
->>>>>>> main
     def test_comparison_into_switch(self):
         """Test using a comparison result as a switch condition."""
         with TreeBuilder("TestCompareSwitch"):

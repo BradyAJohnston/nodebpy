@@ -104,13 +104,8 @@ This saves us some time having to directly use `g.Switch.float(pos.z > v, ...)`
 ```{python}
 with TreeBuilder("SwitchDemo") as tree:
     v = g.Value(5.0)
-<<<<<<< HEAD
     pos = g.Position().o_position
     result = (pos.z > v).switch(g.RandomValue.float(), 5.0 ** g.Value(10.0))
-=======
-    pos = g.Position() >> g.SeparateXYZ()
-    result = (pos.o_z > v).switch(g.RandomValue.float(), 5.0 ** g.Value(10.0))
->>>>>>> main
 
 tree
 ```

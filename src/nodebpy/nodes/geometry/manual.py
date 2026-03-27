@@ -5,7 +5,7 @@ import bpy
 from ...builder import (
     DynamicInputsMixin,
     NodeBuilder,
-    NodeGroupBase,
+    NodeGroupBuilder,
     NodeSocket,
     SocketError,
     SocketInt,
@@ -1896,12 +1896,6 @@ class Compare(NodeBuilder):
         ]:
             # Check plain Python types first (most specific to least)
             # bool must come before int since bool is a subclass of int
-<<<<<<< HEAD
-            has_float = isinstance(a, float) or isinstance(b, float)
-            has_bool = isinstance(a, bool) or isinstance(b, bool)
-            has_int = isinstance(a, int) or isinstance(b, int)
-            both_str = isinstance(a, str) and isinstance(b, str)
-=======
             has_str = isinstance(a, str) or isinstance(b, str)
             has_numeric = isinstance(a, (int, float)) or isinstance(b, (int, float))
 
@@ -1914,7 +1908,6 @@ class Compare(NodeBuilder):
             has_float = isinstance(a, float) or isinstance(b, float)
             has_bool = isinstance(a, bool) or isinstance(b, bool)
             has_int = isinstance(a, int) or isinstance(b, int)
->>>>>>> main
 
             set_types = [
                 x._default_output_socket.type
@@ -1938,11 +1931,7 @@ class Compare(NodeBuilder):
                 return "BOOLEAN"
             if has_int:
                 return "INT"
-<<<<<<< HEAD
-            if both_str:
-=======
             if has_str:
->>>>>>> main
                 return "STRING"
 
             raise ValueError(f"Cannot infer compatible type from {a} and {b}")
