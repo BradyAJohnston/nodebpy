@@ -1156,10 +1156,20 @@ class IntegerSocketLinker(SocketLinker):
     def _is_geometry_tree(self) -> bool:
         return self._tree.tree.bl_idname == "GeometryNodeTree"
 
+    @staticmethod
+    def _is_integer_socket(value: Any) -> bool:
+        socket = getattr(
+            value, "socket", getattr(value, "_default_output_socket", None)
+        )
+        return isinstance(socket, NodeSocket) and socket.type == "INT"
+
+    def _other_is_integer(self, other: Any) -> bool:
+        return isinstance(other, int) or self._is_integer_socket(other)
+
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
     ) -> "NodeBuilder":
-        if self._is_geometry_tree and isinstance(other, int):
+        if self._is_geometry_tree and self._other_is_integer(other):
             from .nodes.geometry.converter import IntegerMath
 
             values = (self.socket, other) if not reverse else (other, self.socket)
@@ -1177,7 +1187,7 @@ class IntegerSocketLinker(SocketLinker):
         return super()._dispatch_unary(operation)
 
     def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "NodeBuilder":
-        if self._is_geometry_tree and isinstance(other, int):
+        if self._is_geometry_tree and self._other_is_integer(other):
             from .nodes.geometry.converter import IntegerMath
 
             values = (self.socket, other) if not reverse else (other, self.socket)
@@ -1420,6 +1430,9 @@ class SocketVector(SocketBase):
         structure_type: _SocketShapeStructureType = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
+        default_input: Literal[
+            "VALUE", "NORMAL", "POSITION", "HANDLE_LEFT", "HANDLE_RIGHT"
+        ] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
     ):
         assert len(default_value) == dimensions, (
@@ -1436,6 +1449,7 @@ class SocketVector(SocketBase):
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             subtype=subtype,
+            default_input=default_input,
             default_attribute=default_attribute,
             attribute_domain=attribute_domain,
         )
@@ -1856,6 +1870,20 @@ class NodeGroupBuilder(NodeBuilder):
 
     _node_group_name: str
     _bl_idname = "GeometryNodeGroup"
+    _warning_propagation: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"] = (
+        "ALL"
+    )
+    _color_tag: Literal[
+        "NONE",
+        "ATTRIBUTE",
+        "COLOR",
+        "CONVERTER",
+        "GEOMETRY",
+        "INPUT",
+        "OUTPUT",
+        "TEXTURE",
+        "VECTOR",
+    ] = "NONE"
     node: bpy.types.GeometryNodeGroup
     _group_inputs: ClassVar[dict[str, InputSpec]]
     _group_outputs: ClassVar[dict[str, OutputSpec]]
@@ -1874,6 +1902,8 @@ class NodeGroupBuilder(NodeBuilder):
     def __init__(self, **kwargs):
         super().__init__()
         self.node.node_tree = self._get_or_create_group()
+        self.node.show_options = False
+        self.node.warning_propagation = self._warning_propagation
         key_args = {}
         for spec in self._group_inputs.values():
             if spec.param_name in kwargs:
@@ -1907,6 +1937,8 @@ class NodeGroupBuilder(NodeBuilder):
                     source = output_mapping.get(spec.socket_name)
                     if source is not None:
                         source >> out_sock
+
+            tree.tree.color_tag = self._color_tag
 
             return tree.tree
 

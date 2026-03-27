@@ -1,0 +1,300 @@
+---
+title: Custom Node Groups
+---
+
+```{python}
+#| echo: false
+from functools import partial
+from nodebpy import TreeBuilder, geometry as g, sockets as s
+from nodebpy.builder import NodeGroupBuilder, InputSpec, OutputSpec
+```
+
+Custom node groups let you encapsulate reusable logic into a single node. With `NodeGroupBuilder`, you define a Python class that:
+
+1. **Declares inputs and outputs** as class-level descriptors.
+2. **Implements the internal graph** in a `_build_group` classmethod.
+3. **Works like any other node** -- full IDE autocomplete, type hints, `>>` chaining, and operator support.
+
+The group's node tree is built once on first use and cached in `bpy.data.node_groups`, so creating many instances of the same group is cheap.
+
+## Anatomy of a Custom Node Group
+
+A custom node group class has four parts:
+
+```python
+from functools import partial
+from nodebpy.builder import NodeGroupBuilder, InputSpec, OutputSpec
+from nodebpy import sockets as s
+
+class MyNode(NodeGroupBuilder):
+    _node_group_name = "My Node"                                  # 1. Name
+
+    i_value = InputSpec(partial(s.SocketFloat, "Value"))           # 2. Inputs / Outputs
+    o_result = OutputSpec(partial(s.SocketFloat, "Result"))
+
+    def __init__(self, value: float = 0.0):                       # 3. Constructor
+        super().__init__(value=value)
+
+    @classmethod
+    def _build_group(cls, tree, value: s.SocketFloat):            # 4. Graph logic
+        return {"Result": value * 2.0}
+```
+
+### 1. `_node_group_name`
+The display name for the group inside Blender. This is also the key used to cache it in `bpy.data.node_groups`.
+
+### 2. `InputSpec` / `OutputSpec`
+Each input and output is declared as a class-level descriptor wrapping a `functools.partial` call. The `partial` defers socket creation (sockets can only be created inside a tree context) while preserving full IDE autocomplete on the socket constructor arguments.
+
+The naming convention matters:
+
+- **`i_<name>`** -- input descriptor. The `<name>` part becomes the keyword argument name in `__init__` and `_build_group`. For example, `i_vertex_index` maps to keyword `vertex_index`.
+- **`o_<name>`** -- output descriptor. On instances, `node.o_result` returns the live output `SocketLinker` for chaining.
+
+### 3. `__init__`
+The constructor provides the typed signature that IDEs use for autocomplete. The body is always just `super().__init__(...)` with keyword arguments matching the `i_*` param names. This is where you set default values and type hints.
+
+### 4. `_build_group`
+A classmethod that receives the `TreeBuilder` and each input socket as a typed keyword argument. Build your node graph using the same API as any tree, then return a dict mapping output socket names to the nodes or sockets that feed them.
+
+
+## A First Example: Clamped Remap
+
+Let's build a node that remaps a value from one range to another, clamped to the output range.
+
+```{python}
+class ClampedRemap(NodeGroupBuilder):
+    """Remap a value from one range to another, clamping the result."""
+
+    _node_group_name = "Clamped Remap"
+
+    i_value = InputSpec(partial(s.SocketFloat, "Value"))
+    i_from_min = InputSpec(partial(s.SocketFloat, "From Min", 0.0))
+    i_from_max = InputSpec(partial(s.SocketFloat, "From Max", 1.0))
+    i_to_min = InputSpec(partial(s.SocketFloat, "To Min", 0.0))
+    i_to_max = InputSpec(partial(s.SocketFloat, "To Max", 1.0))
+    o_value = OutputSpec(partial(s.SocketFloat, "Value"))
+
+    def __init__(
+        self,
+        value=None,
+        from_min: float = 0.0,
+        from_max: float = 1.0,
+        to_min: float = 0.0,
+        to_max: float = 1.0,
+    ):
+        super().__init__(
+            value=value,
+            from_min=from_min,
+            from_max=from_max,
+            to_min=to_min,
+            to_max=to_max,
+        )
+
+    @classmethod
+    def _build_group(
+        cls,
+        tree,
+        value: s.SocketFloat,
+        from_min: s.SocketFloat,
+        from_max: s.SocketFloat,
+        to_min: s.SocketFloat,
+        to_max: s.SocketFloat,
+    ):
+        normalized = (value - from_min) / (from_max - from_min)
+        result = g.Clamp(normalized * (to_max - to_min) + to_min, to_min, to_max)
+        return {"Value": result}
+```
+
+Now we can use it just like a built-in node. Let's see what the internal tree looks like:
+
+```{python}
+with TreeBuilder("ClampedRemapDemo") as tree:
+    remap = ClampedRemap()
+
+tree
+```
+
+```{python}
+#| echo: false
+TreeBuilder(remap.node.node_tree)
+```
+
+And we can use it in a larger tree with operators:
+
+```{python}
+with TreeBuilder("RemapUsage") as tree:
+    with tree.outputs:
+        out = s.SocketGeometry()
+
+    pos = g.Position()
+    height = g.SeparateXYZ(pos).o_z
+
+    remapped = ClampedRemap(height, from_min=-1.0, from_max=1.0, to_min=0.0, to_max=3.0)
+
+    _ = (
+        g.Cube(size=4)
+        >> g.SetPosition(offset=g.CombineXYZ(z=remapped))
+        >> out
+    )
+
+tree
+```
+
+## Evaluating Fields at an Offset
+
+This example creates a node group that looks up the value of a vector field at an offset from the current index -- useful for comparing neighboring values.
+
+```{python}
+from nodebpy.types import TYPE_INPUT_INT, TYPE_INPUT_VECTOR
+
+
+class OffsetVector(NodeGroupBuilder):
+    """Evaluate a vector field at an offset from the current index."""
+
+    _node_group_name = "Offset Vector"
+    _color_tag = "INPUT"
+
+    i_index = InputSpec(partial(s.SocketInt, "Index", default_input="INDEX"))
+    i_vector = InputSpec(partial(s.SocketVector, "Vector"))
+    i_offset = InputSpec(partial(s.SocketInt, "Offset"))
+    o_vector = OutputSpec(partial(s.SocketVector, "Vector"))
+
+    def __init__(
+        self,
+        index: TYPE_INPUT_INT = None,
+        vector: TYPE_INPUT_VECTOR = None,
+        offset: TYPE_INPUT_INT = 0,
+    ):
+        super().__init__(index=index, vector=vector, offset=offset)
+
+    @classmethod
+    def _build_group(cls, tree, index: s.SocketInt, vector: s.SocketVector, offset: s.SocketInt):
+        return {"Vector": g.EvaluateAtIndex.point.vector(vector, index + offset)}
+```
+
+```{python}
+with TreeBuilder("OffsetVectorDemo") as tree:
+    offset = OffsetVector()
+
+tree
+```
+
+```{python}
+#|echo: false
+TreeBuilder(offset.node.node_tree)
+```
+
+Notice `_color_tag = "INPUT"` -- this sets the colour of the node group header in Blender, matching it visually with built-in input nodes.
+
+
+## Finding the Other Vertex of an Edge
+
+This one is a bit more involved. Given a vertex and one of its edges, it returns the *other* vertex of that edge. This is handy for mesh traversal algorithms.
+
+```{python}
+class OtherVertex(NodeGroupBuilder):
+    """Given a vertex index and an edge number, return the other vertex of that edge."""
+
+    _node_group_name = "Other Vertex"
+
+    i_vertex_index = InputSpec(partial(s.SocketInt, "Vertex Index", default_input="INDEX"))
+    i_edge_number = InputSpec(partial(s.SocketInt, "Edge Number"))
+    o_other_vertex = OutputSpec(partial(s.SocketInt, "Other Vertex"))
+
+    def __init__(
+        self, vertex_index: TYPE_INPUT_INT = None, edge_number: TYPE_INPUT_INT = 0
+    ):
+        super().__init__(vertex_index=vertex_index, edge_number=edge_number)
+
+    @classmethod
+    def _build_group(cls, tree, vertex_index: s.SocketInt, edge_number: s.SocketInt):
+        eov = g.EdgesOfVertex(vertex_index, sort_index=edge_number)
+        ev = g.EdgeVertices()
+        vert_1 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
+        vert_2 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
+        switch = (vert_1 != vertex_index) >> g.Switch.integer(..., vert_1, vert_2)
+        return {"Other Vertex": switch}
+```
+
+```{python}
+with TreeBuilder("OtherVertexDemo") as tree:
+    _ = OtherVertex()
+
+tree
+```
+
+The `>>` chaining and `!=` comparison work inside `_build_group` exactly as they do in a regular tree.
+
+## Composing Custom Groups Together
+
+The real power of custom node groups is composing them. Because each group class behaves like any other node, you can chain them with `>>`, use them in expressions with operators, and pass their outputs to other nodes.
+
+Let's build a tree that walks along edges of a mesh. Starting from each vertex, it follows edge 0 to a neighbour, then follows edge 1 from that neighbour, and so on. We use `OtherVertex` repeatedly with `>>` chaining.
+
+```{python}
+with TreeBuilder("EdgeWalk") as tree:
+    with tree.inputs:
+        steps = s.SocketInt("Steps", 3, min_value=0, max_value=10)
+
+    with tree.outputs:
+        out = s.SocketGeometry()
+
+    # Walk along alternating edges from each vertex
+    step_1 = OtherVertex(edge_number=0)
+    step_2 = step_1 >> OtherVertex(edge_number=1)
+    step_3 = step_2 >> OtherVertex(edge_number=0)
+
+    # Look up the position of the final vertex we reached
+    target_pos = g.EvaluateAtIndex.point.vector(g.Position(), step_3)
+
+    # Interpolate between the original position and the target
+    frac = g.Math.divide(g.Index() % steps, steps)
+    blended = g.VectorMath.add(
+        g.Position() * (1.0 - frac),
+        target_pos * frac,
+    )
+
+    _ = g.Grid(10, 10, 10, 10) >> g.SetPosition(position=blended) >> out
+
+tree
+```
+
+Here we also used `OffsetVector` alongside `OtherVertex` to sample a neighbour's position and blend toward it. Each custom group appears as a single, clean node in the tree -- keeping the graph readable even as the logic grows.
+
+```{python}
+with TreeBuilder("NeighbourBlend") as tree:
+    with tree.outputs:
+        out = s.SocketGeometry()
+
+    # Get the neighbour's position via edge 0
+    neighbour_idx = OtherVertex(edge_number=0)
+    neighbour_pos = OffsetVector(offset=neighbour_idx)
+
+    # Blend halfway between self and neighbour
+    blended = g.Position() * 0.5 + neighbour_pos * 0.5
+
+    _ = g.Grid(10, 10, 10, 10) >> g.SetPosition(position=blended) >> out
+
+tree
+```
+
+## Class Options
+
+`NodeGroupBuilder` supports a few class-level options:
+
+| Attribute | Type | Default | Description |
+|:----------|:-----|:--------|:------------|
+| `_node_group_name` | `str` | *(required)* | Display name and cache key for the group |
+| `_color_tag` | `str` | `"NONE"` | Header colour in Blender (`"INPUT"`, `"CONVERTER"`, `"GEOMETRY"`, etc.) |
+| `_warning_propagation` | `str` | `"ALL"` | How warnings propagate (`"ALL"`, `"ERRORS_AND_WARNINGS"`, `"ERRORS"`, `"NONE"`) |
+
+## Summary
+
+| Step | What you write | What it does |
+|:-----|:---------------|:-------------|
+| Declare `i_*` | `i_val = InputSpec(partial(s.SocketFloat, "Value"))` | Defines group input socket + `node.i_val` property |
+| Declare `o_*` | `o_result = OutputSpec(partial(s.SocketFloat, "Result"))` | Defines group output socket + `node.o_result` property |
+| Write `__init__` | `def __init__(self, value=None): super().__init__(value=value)` | Typed constructor for IDE autocomplete |
+| Write `_build_group` | `def _build_group(cls, tree, value: s.SocketFloat): ...` | Internal graph logic with typed inputs |
+| Return outputs | `return {"Result": some_socket}` | Maps output names to the sockets that feed them |
