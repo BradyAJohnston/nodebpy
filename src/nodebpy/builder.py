@@ -599,7 +599,15 @@ class NodeBuilder:
 
     def _output_idx(self, identifier: str) -> int:
         output_ids = [output.identifier for output in self.node.outputs]
-        return output_ids.index(identifier)
+        if identifier in output_ids:
+            return output_ids.index(identifier)
+        output_names = [output.name for output in self.node.outputs]
+        if identifier in output_names:
+            return output_names.index(identifier)
+        raise RuntimeError(
+            f"Output '{identifier}' not found on {self.node.bl_idname}. "
+            f"Available outputs: {output_names}"
+        )
 
     def _input(self, identifier: str, subtype: None = None) -> SocketLinker:
         """Input socket: Vector"""
