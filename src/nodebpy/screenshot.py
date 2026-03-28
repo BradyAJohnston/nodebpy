@@ -1,18 +1,21 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Programmatic node tree screenshot capture.
+"""Node tree diagrams and viewport rendering.
 
-This module provides functions to capture screenshots of Blender node trees
-without UI interaction. Screenshots can be returned as PIL Images or numpy arrays
-for use in Jupyter notebooks or other contexts.
+This module provides functions to generate Mermaid diagrams of node trees
+and render viewport previews of geometry node output for documentation.
 """
 
 from __future__ import annotations
 
+import math
+import tempfile
+from pathlib import Path
 from typing import TYPE_CHECKING
 
+import bpy
 
 if TYPE_CHECKING:
-    pass
+    from .builder import TreeBuilder
 
 # Mermaid diagram generation (no subprocess needed)
 
@@ -76,7 +79,8 @@ def generate_mermaid_diagram(tree) -> str:
     input_nodes = [n for n in node_tree.nodes if "GroupInput" in n.bl_idname]
     output_nodes = [n for n in node_tree.nodes if "GroupOutput" in n.bl_idname]
     regular_nodes = [
-        n for n in node_tree.nodes
+        n
+        for n in node_tree.nodes
         if n not in input_nodes + output_nodes and n.name not in reroute_names
     ]
 
@@ -96,7 +100,11 @@ def generate_mermaid_diagram(tree) -> str:
 
         # Use bl_label for the display name — it's the human-readable name Blender shows.
         # For node groups, show the group tree name instead of generic "Group".
-        if node.bl_idname == "GeometryNodeGroup" and hasattr(node, "node_tree") and node.node_tree:
+        if (
+            node.bl_idname == "GeometryNodeGroup"
+            and hasattr(node, "node_tree")
+            and node.node_tree
+        ):
             node_type_clean = node.node_tree.name.replace('"', "'")
         else:
             node_type_clean = node.bl_label.replace('"', "'")
@@ -260,3 +268,307 @@ def save_mermaid_diagram(filepath: str, tree, format: str = "md") -> None:
             lines = mermaid_diagram.split("\n")
             mermaid_content = "\n".join(lines[1:-1])  # Remove ```mermaid and ``` lines
             f.write(mermaid_content)
+
+
+def _ensure_camera() -> bpy.types.Object:
+    """Get or create a camera and set it as the active scene camera."""
+    scene = bpy.context.scene
+    cam_data = bpy.data.cameras.get("nodebpy_cam")
+    if cam_data is None:
+        cam_data = bpy.data.cameras.new("nodebpy_cam")
+    cam_obj = bpy.data.objects.get("nodebpy_cam")
+    if cam_obj is None:
+        cam_obj = bpy.data.objects.new("nodebpy_cam", cam_data)
+        scene.collection.objects.link(cam_obj)
+    scene.camera = cam_obj
+    return cam_obj
+
+
+def _frame_camera_to_object(
+    cam_obj: bpy.types.Object,
+    target: bpy.types.Object,
+    padding: float = 1.4,
+) -> None:
+    """Position the camera to frame the target object's bounding box.
+
+    Places the camera at a 30-degree elevation looking down at the object,
+    pulled back far enough that the bounding box fits within the frame
+    (with *padding* as a multiplier).
+    """
+    from mathutils import Matrix, Vector
+
+    # Evaluate the object to get its final bounding box after modifiers
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    eval_obj = target.evaluated_get(depsgraph)
+
+    bbox_corners = [target.matrix_world @ Vector(c) for c in eval_obj.bound_box]
+    center = sum(bbox_corners, Vector()) / 8
+    radius = max((c - center).length for c in bbox_corners)
+
+    cam_data = cam_obj.data
+    # Use a sensible default FOV if not set
+    fov = cam_data.angle  # horizontal FOV in radians
+
+    # Distance to fit the bounding sphere in the camera frustum
+    aspect = (
+        bpy.context.scene.render.resolution_x / bpy.context.scene.render.resolution_y
+    )
+    if aspect < 1:
+        fov_effective = 2 * math.atan(math.tan(fov / 2) * aspect)
+    else:
+        fov_effective = fov
+    distance = (radius * padding) / math.tan(fov_effective / 2)
+
+    # Camera at 30° elevation, 30° azimuth from front
+    elevation = math.radians(30)
+    azimuth = math.radians(30)
+
+    offset = Vector(
+        (
+            distance * math.cos(elevation) * math.sin(azimuth),
+            -distance * math.cos(elevation) * math.cos(azimuth),
+            distance * math.sin(elevation),
+        )
+    )
+    cam_obj.location = center + offset
+
+    # Point at center
+    direction = center - cam_obj.location
+    rot_quat = direction.to_track_quat("-Z", "Y")
+    cam_obj.rotation_euler = rot_quat.to_euler()
+
+
+def _clear_scene(keep: bpy.types.Object | None = None) -> None:
+    """Remove all objects and lights from the scene except *keep*."""
+    for obj in list(bpy.data.objects):
+        if obj is keep:
+            continue
+        bpy.data.objects.remove(obj, do_unlink=True)
+    # Clean up orphaned meshes, lights, cameras left behind
+    for block in list(bpy.data.meshes):
+        if not block.users:
+            bpy.data.meshes.remove(block)
+    for block in list(bpy.data.lights):
+        if not block.users:
+            bpy.data.lights.remove(block)
+
+
+def _setup_eevee(
+    width: int = 720,
+    height: int = 480,
+    samples: int = 16,
+) -> None:
+    """Configure the scene for a fast EEVEE render."""
+    scene = bpy.context.scene
+    # "BLENDER_EEVEE_NEXT" in Blender 4.2+, "BLENDER_EEVEE" in older versions
+    try:
+        scene.render.engine = "BLENDER_EEVEE_NEXT"
+    except TypeError:
+        scene.render.engine = "BLENDER_EEVEE"
+    scene.render.resolution_x = width
+    scene.render.resolution_y = height
+    scene.render.resolution_percentage = 100
+    scene.render.image_settings.file_format = "PNG"
+    scene.render.image_settings.color_mode = "RGBA"
+    if hasattr(scene.eevee, "taa_render_samples"):
+        scene.eevee.taa_render_samples = samples
+    scene.render.film_transparent = True
+
+
+def _get_ao_material() -> bpy.types.Material:
+    """Get or create a simple Ambient Occlusion material.
+
+    Uses an AO node piped into an Emission shader so the geometry is
+    lit purely by occlusion with no dependency on scene lights.
+    """
+    mat = bpy.data.materials.get("nodebpy_ao")
+    if mat is not None:
+        return mat
+
+    from .builder import TreeBuilder
+    from .nodes.shader import AmbientOcclusion, Emission, MaterialOutput
+
+    mat = bpy.data.materials.new("nodebpy_ao")
+    mat.use_nodes = True
+    # Clear the default Principled BSDF tree
+    mat.node_tree.nodes.clear()
+
+    with TreeBuilder(mat.node_tree):
+        ao = AmbientOcclusion(distance=2)
+        MaterialOutput(surface=Emission(color=ao.o_color ** 50))
+
+    return mat
+
+
+def _inject_ao_material(
+    node_tree: bpy.types.NodeTree, material: bpy.types.Material
+) -> None:
+    """Insert a Set Material node before the Group Output in a geometry node tree.
+
+    Finds geometry socket links going into the Group Output and splices a
+    Set Material node in between. Skips if already injected.
+    """
+    output_node = None
+    for node in node_tree.nodes:
+        if "GroupOutput" in node.bl_idname:
+            output_node = node
+            break
+    if output_node is None:
+        return
+
+    # Check if we already injected — look for our Set Material node
+    for node in node_tree.nodes:
+        if node.label == "_nodebpy_ao":
+            return
+
+    for input_socket in output_node.inputs:
+        if input_socket.type != "GEOMETRY" or not input_socket.is_linked:
+            continue
+
+        link = input_socket.links[0]
+        source_socket = link.from_socket
+
+        # Create a Set Material node
+        set_mat = node_tree.nodes.new("GeometryNodeSetMaterial")
+        set_mat.label = "_nodebpy_ao"
+        set_mat.inputs["Material"].default_value = material
+
+        # Re-wire: source -> SetMaterial -> GroupOutput
+        node_tree.links.remove(link)
+        node_tree.links.new(source_socket, set_mat.inputs["Geometry"])
+        node_tree.links.new(set_mat.outputs["Geometry"], input_socket)
+
+
+def _remove_ao_material(node_tree: bpy.types.NodeTree) -> None:
+    """Remove any injected AO Set Material nodes, restoring original links."""
+    for node in list(node_tree.nodes):
+        if node.label != "_nodebpy_ao":
+            continue
+
+        # Find the source feeding into this node's Geometry input
+        geo_in = node.inputs["Geometry"]
+        geo_out = node.outputs["Geometry"]
+
+        source_socket = geo_in.links[0].from_socket if geo_in.is_linked else None
+        target_sockets = (
+            [l.to_socket for l in geo_out.links] if geo_out.is_linked else []
+        )
+
+        # Re-wire original connections
+        if source_socket:
+            for target in target_sockets:
+                node_tree.links.new(source_socket, target)
+
+        node_tree.nodes.remove(node)
+
+
+def apply_tree(
+    tree: TreeBuilder,
+    obj: bpy.types.Object | None = None,
+    modifier_name: str = "nodebpy",
+) -> bpy.types.Object:
+    """Apply a geometry node tree to an object as a modifier.
+
+    If *obj* is ``None`` a new empty mesh object is created. Returns the object.
+    """
+    if obj is None:
+        mesh = bpy.data.meshes.new("nodebpy_mesh")
+        obj = bpy.data.objects.new("nodebpy_obj", mesh)
+        bpy.context.scene.collection.objects.link(obj)
+
+    bpy.context.view_layer.objects.active = obj
+
+    node_tree = tree.tree if hasattr(tree, "tree") else tree
+    mod = obj.modifiers.get(modifier_name)
+    if mod is None:
+        mod = obj.modifiers.new(name=modifier_name, type="NODES")
+    mod.node_group = node_tree
+    return obj
+
+
+def render_preview(
+    tree: TreeBuilder | None = None,
+    obj: bpy.types.Object | None = None,
+    filepath: str | Path | None = None,
+    width: int = 720,
+    height: int = 480,
+    samples: int = 16,
+    padding: float = 1.4,
+) -> str:
+    """Render a viewport preview of a geometry node tree.
+
+    Either *tree* or *obj* must be provided. If *tree* is given it is applied
+    to *obj* (or a new empty object) as a Geometry Nodes modifier. The camera
+    is automatically framed to the object and a quick EEVEE render is saved.
+
+    Args:
+        tree: A :class:`TreeBuilder` to apply as a modifier.
+        obj: An existing Blender object to render. If *tree* is also given
+            the modifier is applied to this object.
+        filepath: Where to save the PNG. Defaults to a temp file.
+        width: Render width in pixels.
+        height: Render height in pixels.
+        samples: EEVEE render samples.
+        padding: Camera framing padding multiplier.
+
+    Returns:
+        The absolute path to the rendered PNG image.
+    """
+    # Clear the scene before setting up the render
+    _clear_scene(keep=obj)
+
+    if tree is not None:
+        # Inject a SetMaterial node with AO material before the Group Output
+        ao_mat = _get_ao_material()
+        node_tree = tree.tree if hasattr(tree, "tree") else tree
+        _inject_ao_material(node_tree, ao_mat)
+
+        obj = apply_tree(tree, obj)
+    if obj is None:
+        raise ValueError("Either tree or obj must be provided")
+
+    _setup_eevee(width=width, height=height, samples=samples)
+    cam = _ensure_camera()
+    _frame_camera_to_object(cam, obj, padding=padding)
+
+    if filepath is None:
+        filepath = tempfile.mktemp(suffix=".png", prefix="nodebpy_render_")
+    filepath = str(filepath)
+
+    bpy.context.scene.render.filepath = filepath
+    bpy.ops.render.render(write_still=True)
+
+    # Clean up injected AO material node so the user's tree is unmodified
+    if tree is not None:
+        _remove_ao_material(node_tree)
+
+    return filepath
+
+
+def display_render(
+    tree: TreeBuilder | None = None,
+    obj: bpy.types.Object | None = None,
+    filepath: str | Path | None = None,
+    width: int = 720,
+    height: int = 480,
+    samples: int = 16,
+    padding: float = 1.4,
+) -> None:
+    """Render a preview and display it inline in a Jupyter/Quarto notebook.
+
+    Accepts the same arguments as :func:`render_preview`. The image is
+    displayed using IPython's display machinery, which Quarto picks up
+    automatically.
+    """
+    from IPython.display import Image, display
+
+    path = render_preview(
+        tree=tree,
+        obj=obj,
+        filepath=filepath,
+        width=width,
+        height=height,
+        samples=samples,
+        padding=padding,
+    )
+    display(Image(filename=path, width=width))

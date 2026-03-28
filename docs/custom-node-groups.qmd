@@ -6,7 +6,9 @@ title: Custom Node Groups
 #| echo: false
 from functools import partial
 from nodebpy import TreeBuilder, geometry as g, sockets as s
+from nodebpy import display_render
 from nodebpy.builder import NodeGroupBuilder, InputSpec, OutputSpec
+from nodebpy.types import TYPE_INPUT_VALUE, TYPE_INPUT_INT, TYPE_INPUT_VECTOR, TYPE_INPUT_GEOMETRY
 ```
 
 Custom node groups let you encapsulate reusable logic into a single node. With `NodeGroupBuilder`, you define a Python class that:
@@ -58,226 +60,188 @@ The constructor provides the typed signature that IDEs use for autocomplete. The
 A classmethod that receives the `TreeBuilder` and each input socket as a typed keyword argument. Build your node graph using the same API as any tree, then return a dict mapping output socket names to the nodes or sockets that feed them.
 
 
-## A First Example: Clamped Remap
+## A First Example: Jitter
 
-Let's build a node that remaps a value from one range to another, clamped to the output range.
+Let's start with something visually obvious -- a node that randomly displaces each point on a mesh. This is useful any time you want to add organic variation to geometry.
 
 ```{python}
-class ClampedRemap(NodeGroupBuilder):
-    """Remap a value from one range to another, clamping the result."""
+class Jitter(NodeGroupBuilder):
+    """Randomly offset each point by a bounded amount."""
 
-    _node_group_name = "Clamped Remap"
+    _node_group_name = "Jitter"
+    _color_tag = "GEOMETRY"
 
-    i_value = InputSpec(partial(s.SocketFloat, "Value"))
-    i_from_min = InputSpec(partial(s.SocketFloat, "From Min", 0.0))
-    i_from_max = InputSpec(partial(s.SocketFloat, "From Max", 1.0))
-    i_to_min = InputSpec(partial(s.SocketFloat, "To Min", 0.0))
-    i_to_max = InputSpec(partial(s.SocketFloat, "To Max", 1.0))
-    o_value = OutputSpec(partial(s.SocketFloat, "Value"))
+    i_geometry = InputSpec(partial(s.SocketGeometry, "Geometry"))
+    i_amount = InputSpec(partial(s.SocketFloat, "Amount", 0.2))
+    i_seed = InputSpec(partial(s.SocketInt, "Seed"))
+    o_geometry = OutputSpec(partial(s.SocketGeometry, "Geometry"))
 
     def __init__(
         self,
-        value=None,
-        from_min: float = 0.0,
-        from_max: float = 1.0,
-        to_min: float = 0.0,
-        to_max: float = 1.0,
+        geometry: TYPE_INPUT_GEOMETRY = ...,
+        amount: TYPE_INPUT_VALUE = 0.2,
+        seed: TYPE_INPUT_INT = 0,
     ):
-        super().__init__(
-            value=value,
-            from_min=from_min,
-            from_max=from_max,
-            to_min=to_min,
-            to_max=to_max,
-        )
+        super().__init__(geometry=geometry, amount=amount, seed=seed)
 
     @classmethod
     def _build_group(
-        cls,
-        tree,
-        value: s.SocketFloat,
-        from_min: s.SocketFloat,
-        from_max: s.SocketFloat,
-        to_min: s.SocketFloat,
-        to_max: s.SocketFloat,
+        cls, tree, geometry: s.SocketGeometry, amount: s.SocketFloat, seed: s.SocketInt,
     ):
-        normalized = (value - from_min) / (from_max - from_min)
-        result = g.Clamp(normalized * (to_max - to_min) + to_min, to_min, to_max)
-        return {"Value": result}
+        offset = g.RandomValue.vector(min=-1, seed=seed) * amount
+        result = geometry >> g.SetPosition(offset=offset)
+        return {"Geometry": result}
 ```
 
-Now we can use it just like a built-in node. Let's see what the internal tree looks like:
+Let's see the internal node graph:
 
 ```{python}
-with TreeBuilder("ClampedRemapDemo") as tree:
-    remap = ClampedRemap()
+with TreeBuilder("JitterInternal") as tree:
+    _ = Jitter()
 
 tree
 ```
 
 ```{python}
 #| echo: false
-TreeBuilder(remap.node.node_tree)
+TreeBuilder(_.node.node_tree)
 ```
 
-And we can use it in a larger tree with operators:
+Now use it like any built-in node -- apply it to an ico sphere:
 
 ```{python}
-with TreeBuilder("RemapUsage") as tree:
+with TreeBuilder("JitterDemo") as tree:
     with tree.outputs:
         out = s.SocketGeometry()
 
-    pos = g.Position()
-    height = g.SeparateXYZ(pos).o_z
+    _ = g.IcoSphere(subdivisions=4) >> Jitter(amount=0.15) >> out
 
-    remapped = ClampedRemap(height, from_min=-1.0, from_max=1.0, to_min=0.0, to_max=3.0)
+tree
+```
 
+```{python}
+display_render(tree)
+```
+
+## Radial Array
+
+Next, a node that distributes instances in a ring. This is a common pattern for creating wheels, flower petals, gears, and other radially symmetric objects.
+
+```{python}
+from math import tau
+
+class RadialArray(NodeGroupBuilder):
+    """Distribute instances evenly around a circle."""
+
+    _node_group_name = "Radial Array"
+    _color_tag = "GEOMETRY"
+
+    i_geometry = InputSpec(partial(s.SocketGeometry, "Geometry"))
+    i_count = InputSpec(partial(s.SocketInt, "Count", 6, min_value=1))
+    i_radius = InputSpec(partial(s.SocketFloat, "Radius", 2.0))
+    o_geometry = OutputSpec(partial(s.SocketGeometry, "Instances"))
+
+    def __init__(
+        self,
+        geometry: TYPE_INPUT_GEOMETRY = ...,
+        count: TYPE_INPUT_INT = 6,
+        radius: TYPE_INPUT_VALUE = 2.0,
+    ):
+        super().__init__(geometry=geometry, count=count, radius=radius)
+
+    @classmethod
+    def _build_group(
+        cls, tree, geometry: s.SocketGeometry, count: s.SocketInt, radius: s.SocketFloat,
+    ):
+        # Create points arranged in a circle
+        angle = g.Math.divide(g.Index() * tau, count)
+        x = g.Math.cosine(angle) * radius
+        y = g.Math.sine(angle) * radius
+        circle_pos = g.CombineXYZ(x=x, y=y)
+
+        # Place instances at each point, rotated to face outward
+        rotation = g.CombineXYZ(z=angle)
+        result = (
+            g.Points(count)
+            >> g.SetPosition(position=circle_pos)
+            >> g.InstanceOnPoints(instance=geometry, rotation=rotation)
+        )
+        return {"Instances": result}
+```
+
+```{python}
+with TreeBuilder("RadialInternal") as tree:
+    _ = RadialArray()
+
+tree
+```
+
+```{python}
+#| echo: false
+TreeBuilder(_.node.node_tree)
+```
+
+```{python}
+with TreeBuilder("RadialDemo") as tree:
+    with tree.outputs:
+        out = s.SocketGeometry()
+
+    petal = g.Cone(vertices=4, radius_bottom=0.3, depth=0.8)
     _ = (
-        g.Cube(size=4)
-        >> g.SetPosition(offset=g.CombineXYZ(z=remapped))
+        petal
+        >> RadialArray(count=8, radius=2.0)
+        >> g.RealizeInstances()
         >> out
     )
 
 tree
 ```
 
-## Evaluating Fields at an Offset
-
-This example creates a node group that looks up the value of a vector field at an offset from the current index -- useful for comparing neighboring values.
-
 ```{python}
-from nodebpy.types import TYPE_INPUT_INT, TYPE_INPUT_VECTOR
-
-
-class OffsetVector(NodeGroupBuilder):
-    """Evaluate a vector field at an offset from the current index."""
-
-    _node_group_name = "Offset Vector"
-    _color_tag = "INPUT"
-
-    i_index = InputSpec(partial(s.SocketInt, "Index", default_input="INDEX"))
-    i_vector = InputSpec(partial(s.SocketVector, "Vector"))
-    i_offset = InputSpec(partial(s.SocketInt, "Offset"))
-    o_vector = OutputSpec(partial(s.SocketVector, "Vector"))
-
-    def __init__(
-        self,
-        index: TYPE_INPUT_INT = None,
-        vector: TYPE_INPUT_VECTOR = None,
-        offset: TYPE_INPUT_INT = 0,
-    ):
-        super().__init__(index=index, vector=vector, offset=offset)
-
-    @classmethod
-    def _build_group(cls, tree, index: s.SocketInt, vector: s.SocketVector, offset: s.SocketInt):
-        return {"Vector": g.EvaluateAtIndex.point.vector(vector, index + offset)}
+display_render(tree)
 ```
 
-```{python}
-with TreeBuilder("OffsetVectorDemo") as tree:
-    offset = OffsetVector()
-
-tree
-```
-
-```{python}
-#|echo: false
-TreeBuilder(offset.node.node_tree)
-```
-
-Notice `_color_tag = "INPUT"` -- this sets the colour of the node group header in Blender, matching it visually with built-in input nodes.
+## Composing Groups: Jittered Flower
 
 
-## Finding the Other Vertex of an Edge
+Custom groups compose naturally -- they chain with `>>`, accept each other's outputs, and mix with operators just like built-in nodes. Let's combine `Jitter` and `RadialArray` to build a flower-like structure with some organic randomness.
 
-This one is a bit more involved. Given a vertex and one of its edges, it returns the *other* vertex of that edge. This is handy for mesh traversal algorithms.
+
+
 
 ```{python}
-class OtherVertex(NodeGroupBuilder):
-    """Given a vertex index and an edge number, return the other vertex of that edge."""
-
-    _node_group_name = "Other Vertex"
-
-    i_vertex_index = InputSpec(partial(s.SocketInt, "Vertex Index", default_input="INDEX"))
-    i_edge_number = InputSpec(partial(s.SocketInt, "Edge Number"))
-    o_other_vertex = OutputSpec(partial(s.SocketInt, "Other Vertex"))
-
-    def __init__(
-        self, vertex_index: TYPE_INPUT_INT = None, edge_number: TYPE_INPUT_INT = 0
-    ):
-        super().__init__(vertex_index=vertex_index, edge_number=edge_number)
-
-    @classmethod
-    def _build_group(cls, tree, vertex_index: s.SocketInt, edge_number: s.SocketInt):
-        eov = g.EdgesOfVertex(vertex_index, sort_index=edge_number)
-        ev = g.EdgeVertices()
-        vert_1 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
-        vert_2 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
-        switch = (vert_1 != vertex_index) >> g.Switch.integer(..., vert_1, vert_2)
-        return {"Other Vertex": switch}
-```
-
-```{python}
-with TreeBuilder("OtherVertexDemo") as tree:
-    _ = OtherVertex()
-
-tree
-```
-
-The `>>` chaining and `!=` comparison work inside `_build_group` exactly as they do in a regular tree.
-
-## Composing Custom Groups Together
-
-The real power of custom node groups is composing them. Because each group class behaves like any other node, you can chain them with `>>`, use them in expressions with operators, and pass their outputs to other nodes.
-
-Let's build a tree that walks along edges of a mesh. Starting from each vertex, it follows edge 0 to a neighbour, then follows edge 1 from that neighbour, and so on. We use `OtherVertex` repeatedly with `>>` chaining.
-
-```{python}
-with TreeBuilder("EdgeWalk") as tree:
+with TreeBuilder("JitteredFlower") as tree:
     with tree.inputs:
-        steps = s.SocketInt("Steps", 3, min_value=0, max_value=10)
+        petals = s.SocketInt("Petals", 20, min_value=3, max_value=24)
+        radius = s.SocketFloat("Radius", 0.5, min_value=0.1)
+        jitter = s.SocketFloat("Jitter", 0.1)
 
     with tree.outputs:
         out = s.SocketGeometry()
 
-    # Walk along alternating edges from each vertex
-    step_1 = OtherVertex(edge_number=0)
-    step_2 = step_1 >> OtherVertex(edge_number=1)
-    step_3 = step_2 >> OtherVertex(edge_number=0)
+    petal_length = 0.8
 
-    # Look up the position of the final vertex we reached
-    target_pos = g.EvaluateAtIndex.point.vector(g.Position(), step_3)
-
-    # Interpolate between the original position and the target
-    frac = g.Math.divide(g.Index() % steps, steps)
-    blended = g.VectorMath.add(
-        g.Position() * (1.0 - frac),
-        target_pos * frac,
+    petal = (
+        g.Cube(size=(petal_length, 0.2, 0.1))
+        >> g.TransformGeometry(translation=(petal_length / 4, 0, 0))
     )
-
-    _ = g.Grid(10, 10, 10, 10) >> g.SetPosition(position=blended) >> out
+    ring = (
+        petal
+        >> RadialArray(count=petals, radius=radius)
+        >> Jitter(amount=jitter)
+        >> g.RotateInstances(rotation=(0, -tau / 16, 0))
+    )
+    center = g.IcoSphere(radius=0.4, subdivisions=3)
+    _ = g.JoinGeometry(ring, center) >> g.RealizeInstances() >> out
 
 tree
 ```
-
-Here we also used `OffsetVector` alongside `OtherVertex` to sample a neighbour's position and blend toward it. Each custom group appears as a single, clean node in the tree -- keeping the graph readable even as the logic grows.
 
 ```{python}
-with TreeBuilder("NeighbourBlend") as tree:
-    with tree.outputs:
-        out = s.SocketGeometry()
-
-    # Get the neighbour's position via edge 0
-    neighbour_idx = OtherVertex(edge_number=0)
-    neighbour_pos = OffsetVector(offset=neighbour_idx)
-
-    # Blend halfway between self and neighbour
-    blended = g.Position() * 0.5 + neighbour_pos * 0.5
-
-    _ = g.Grid(10, 10, 10, 10) >> g.SetPosition(position=blended) >> out
-
-tree
+display_render(tree)
 ```
+
+Each custom group appears as a single, named node in the tree -- keeping the graph readable even as the logic grows.
 
 ## Class Options
 
