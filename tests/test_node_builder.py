@@ -10,7 +10,13 @@ from math import pi
 
 import bpy
 import pytest
-from bpy.types import NodeSocketBool, NodeSocketColor, NodeSocketInt, NodeSocketMatrix
+from bpy.types import (
+    NodeSocketBool,
+    NodeSocketColor,
+    NodeSocketInt,
+    NodeSocketMatrix,
+    NodeSocketShader,
+)
 from numpy.testing import assert_allclose
 
 from nodebpy import TreeBuilder
@@ -617,15 +623,15 @@ def test_add_all_nodes(module, tree_type):
                 input = getattr(node, prop)
             except RuntimeError:
                 continue
-            if isinstance(
-                input.socket,
-                (
+            if any(
+                x.bl_rna.identifier in input.socket.bl_idname
+                for x in (
                     NodeSocketFloat,
                     NodeSocketInt,
                     NodeSocketVector,
                     NodeSocketColor,
                     NodeSocketBool,
-                ),
+                )
             ):
                 value = module.Value(10.0)
                 try:
@@ -634,6 +640,11 @@ def test_add_all_nodes(module, tree_type):
                     assert result.socket.links[0].from_node == value.node
                 except RuntimeError:
                     pass
+            if isinstance(input.socket, NodeSocketShader):
+                value = s.DiffuseBSDF()
+                result = value >> input
+                assert result.node is not None
+                assert result.socket.links[0].from_node == value.node
 
     with TreeBuilder(tree_type=tree_type, arrange=None):
         for name in dir(module):
