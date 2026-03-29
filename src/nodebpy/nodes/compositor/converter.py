@@ -39,17 +39,17 @@ class AlphaConvert(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_type(self) -> SocketLinker:
         """Input socket: Type"""
-        return self._input("Type")
+        return self.inputs.get("Type")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class CombineColor(NodeBuilder):
@@ -79,27 +79,27 @@ class CombineColor(NodeBuilder):
     @property
     def i_red(self) -> SocketLinker:
         """Input socket: Red"""
-        return self._input("Red")
+        return self.inputs.get("Red")
 
     @property
     def i_green(self) -> SocketLinker:
         """Input socket: Green"""
-        return self._input("Green")
+        return self.inputs.get("Green")
 
     @property
     def i_blue(self) -> SocketLinker:
         """Input socket: Blue"""
-        return self._input("Blue")
+        return self.inputs.get("Blue")
 
     @property
     def i_alpha(self) -> SocketLinker:
         """Input socket: Alpha"""
-        return self._input("Alpha")
+        return self.inputs.get("Alpha")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
     @property
     def mode(self) -> Literal["RGB", "HSV", "HSL", "YCC", "YUV"]:
@@ -194,12 +194,12 @@ class ConvertColorspace(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
     @property
     def from_color_space(
@@ -353,17 +353,17 @@ class ConvertToDisplay(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_invert(self) -> SocketLinker:
         """Input socket: Invert"""
-        return self._input("Invert")
+        return self.inputs.get("Invert")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class IDMask(NodeBuilder):
@@ -388,22 +388,22 @@ class IDMask(NodeBuilder):
     @property
     def i_id_value(self) -> SocketLinker:
         """Input socket: ID value"""
-        return self._input("ID value")
+        return self.inputs.get("ID value")
 
     @property
     def i_index(self) -> SocketLinker:
         """Input socket: Index"""
-        return self._input("Index")
+        return self.inputs.get("Index")
 
     @property
     def i_anti_alias(self) -> SocketLinker:
         """Input socket: Anti-Alias"""
-        return self._input("Anti-Alias")
+        return self.inputs.get("Anti-Alias")
 
     @property
     def o_alpha(self) -> SocketLinker:
         """Output socket: Alpha"""
-        return self._output("Alpha")
+        return self.outputs.get("Alpha")
 
 
 class Levels(NodeBuilder):
@@ -428,22 +428,22 @@ class Levels(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_channel(self) -> SocketLinker:
         """Input socket: Channel"""
-        return self._input("Channel")
+        return self.inputs.get("Channel")
 
     @property
     def o_mean(self) -> SocketLinker:
         """Output socket: Mean"""
-        return self._output("Mean")
+        return self.outputs.get("Mean")
 
     @property
     def o_standard_deviation(self) -> SocketLinker:
         """Output socket: Standard Deviation"""
-        return self._output("Standard Deviation")
+        return self.outputs.get("Standard Deviation")
 
 
 class Mix(NodeBuilder):
@@ -548,72 +548,72 @@ class Mix(NodeBuilder):
     @property
     def i_factor_float(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Factor_Float")
+        return self.inputs.get("Factor_Float")
 
     @property
     def i_factor_vector(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Factor_Vector")
+        return self.inputs.get("Factor_Vector")
 
     @property
     def i_a_float(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Float")
+        return self.inputs.get("A_Float")
 
     @property
     def i_b_float(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Float")
+        return self.inputs.get("B_Float")
 
     @property
     def i_a_vector(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Vector")
+        return self.inputs.get("A_Vector")
 
     @property
     def i_b_vector(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Vector")
+        return self.inputs.get("B_Vector")
 
     @property
     def i_a_color(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Color")
+        return self.inputs.get("A_Color")
 
     @property
     def i_b_color(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Color")
+        return self.inputs.get("B_Color")
 
     @property
     def i_a_rotation(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Rotation")
+        return self.inputs.get("A_Rotation")
 
     @property
     def i_b_rotation(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Rotation")
+        return self.inputs.get("B_Rotation")
 
     @property
     def o_result_float(self) -> SocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Float")
+        return self.outputs.get("Result_Float")
 
     @property
     def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Vector")
+        return self.outputs.get("Result_Vector")
 
     @property
     def o_result_color(self) -> ColorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Color")
+        return self.outputs.get("Result_Color")
 
     @property
     def o_result_rotation(self) -> SocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Rotation")
+        return self.outputs.get("Result_Rotation")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
@@ -718,12 +718,12 @@ class RGBToBw(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def o_val(self) -> SocketLinker:
         """Output socket: Val"""
-        return self._output("Val")
+        return self.outputs.get("Val")
 
 
 class RelativeToPixel(NodeBuilder):
@@ -772,27 +772,27 @@ class RelativeToPixel(NodeBuilder):
     @property
     def i_vector_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Vector Value")
+        return self.inputs.get("Vector Value")
 
     @property
     def i_float_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Float Value")
+        return self.inputs.get("Float Value")
 
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def o_float_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Float Value")
+        return self.outputs.get("Float Value")
 
     @property
     def o_vector_value(self) -> VectorSocketLinker:
         """Output socket: Value"""
-        return self._output("Vector Value")
+        return self.outputs.get("Vector Value")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR"]:
@@ -840,27 +840,27 @@ class SeparateColor(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def o_red(self) -> SocketLinker:
         """Output socket: Red"""
-        return self._output("Red")
+        return self.outputs.get("Red")
 
     @property
     def o_green(self) -> SocketLinker:
         """Output socket: Green"""
-        return self._output("Green")
+        return self.outputs.get("Green")
 
     @property
     def o_blue(self) -> SocketLinker:
         """Output socket: Blue"""
-        return self._output("Blue")
+        return self.outputs.get("Blue")
 
     @property
     def o_alpha(self) -> SocketLinker:
         """Output socket: Alpha"""
-        return self._output("Alpha")
+        return self.outputs.get("Alpha")
 
     @property
     def mode(self) -> Literal["RGB", "HSV", "HSL", "YCC", "YUV"]:
@@ -901,22 +901,22 @@ class SetAlpha(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_alpha(self) -> SocketLinker:
         """Input socket: Alpha"""
-        return self._input("Alpha")
+        return self.inputs.get("Alpha")
 
     @property
     def i_type(self) -> SocketLinker:
         """Input socket: Type"""
-        return self._input("Type")
+        return self.inputs.get("Type")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class Split(NodeBuilder):
@@ -947,27 +947,27 @@ class Split(NodeBuilder):
     @property
     def i_position(self) -> SocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self.inputs.get("Position")
 
     @property
     def i_rotation(self) -> SocketLinker:
         """Input socket: Rotation"""
-        return self._input("Rotation")
+        return self.inputs.get("Rotation")
 
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_image_001(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image_001")
+        return self.inputs.get("Image_001")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class Switch(NodeBuilder):
@@ -992,22 +992,22 @@ class Switch(NodeBuilder):
     @property
     def i_switch(self) -> SocketLinker:
         """Input socket: Switch"""
-        return self._input("Switch")
+        return self.inputs.get("Switch")
 
     @property
     def i_off(self) -> SocketLinker:
         """Input socket: Off"""
-        return self._input("Off")
+        return self.inputs.get("Off")
 
     @property
     def i_on(self) -> SocketLinker:
         """Input socket: On"""
-        return self._input("On")
+        return self.inputs.get("On")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class SwitchView(NodeBuilder):
@@ -1031,14 +1031,14 @@ class SwitchView(NodeBuilder):
     @property
     def i_left(self) -> SocketLinker:
         """Input socket: left"""
-        return self._input("left")
+        return self.inputs.get("left")
 
     @property
     def i_right(self) -> SocketLinker:
         """Input socket: right"""
-        return self._input("right")
+        return self.inputs.get("right")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")

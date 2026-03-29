@@ -40,22 +40,22 @@ class CombineColor(NodeBuilder):
     @property
     def i_red(self) -> SocketLinker:
         """Input socket: Red"""
-        return self._input("Red")
+        return self.inputs.get("Red")
 
     @property
     def i_green(self) -> SocketLinker:
         """Input socket: Green"""
-        return self._input("Green")
+        return self.inputs.get("Green")
 
     @property
     def i_blue(self) -> SocketLinker:
         """Input socket: Blue"""
-        return self._input("Blue")
+        return self.inputs.get("Blue")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def mode(self) -> Literal["RGB", "HSV", "HSL"]:
@@ -92,7 +92,7 @@ class EvaluateClosure(NodeBuilder):
     @property
     def i_closure(self) -> SocketLinker:
         """Input socket: Closure"""
-        return self._input("Closure")
+        return self.inputs.get("Closure")
 
     @property
     def active_input_index(self) -> int:
@@ -221,72 +221,72 @@ class Mix(NodeBuilder):
     @property
     def i_factor_float(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Factor_Float")
+        return self.inputs.get("Factor_Float")
 
     @property
     def i_factor_vector(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Factor_Vector")
+        return self.inputs.get("Factor_Vector")
 
     @property
     def i_a_float(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Float")
+        return self.inputs.get("A_Float")
 
     @property
     def i_b_float(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Float")
+        return self.inputs.get("B_Float")
 
     @property
     def i_a_vector(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Vector")
+        return self.inputs.get("A_Vector")
 
     @property
     def i_b_vector(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Vector")
+        return self.inputs.get("B_Vector")
 
     @property
     def i_a_color(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Color")
+        return self.inputs.get("A_Color")
 
     @property
     def i_b_color(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Color")
+        return self.inputs.get("B_Color")
 
     @property
     def i_a_rotation(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A_Rotation")
+        return self.inputs.get("A_Rotation")
 
     @property
     def i_b_rotation(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B_Rotation")
+        return self.inputs.get("B_Rotation")
 
     @property
     def o_result_float(self) -> SocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Float")
+        return self.outputs.get("Result_Float")
 
     @property
     def o_result_vector(self) -> VectorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Vector")
+        return self.outputs.get("Result_Vector")
 
     @property
     def o_result_color(self) -> ColorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Color")
+        return self.outputs.get("Result_Color")
 
     @property
     def o_result_rotation(self) -> SocketLinker:
         """Output socket: Result"""
-        return self._output("Result_Rotation")
+        return self.outputs.get("Result_Rotation")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
@@ -391,12 +391,12 @@ class RGBToBw(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def o_val(self) -> SocketLinker:
         """Output socket: Val"""
-        return self._output("Val")
+        return self.outputs.get("Val")
 
 
 class SeparateColor(NodeBuilder):
@@ -421,22 +421,22 @@ class SeparateColor(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def o_red(self) -> SocketLinker:
         """Output socket: Red"""
-        return self._output("Red")
+        return self.outputs.get("Red")
 
     @property
     def o_green(self) -> SocketLinker:
         """Output socket: Green"""
-        return self._output("Green")
+        return self.outputs.get("Green")
 
     @property
     def o_blue(self) -> SocketLinker:
         """Output socket: Blue"""
-        return self._output("Blue")
+        return self.outputs.get("Blue")
 
     @property
     def mode(self) -> Literal["RGB", "HSV", "HSL"]:
@@ -465,17 +465,17 @@ class ShaderToRGB(NodeBuilder):
     @property
     def i_shader(self) -> SocketLinker:
         """Input socket: Shader"""
-        return self._input("Shader")
+        return self.inputs.get("Shader")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def o_alpha(self) -> SocketLinker:
         """Output socket: Alpha"""
-        return self._output("Alpha")
+        return self.outputs.get("Alpha")
 
 
 class Wavelength(NodeBuilder):
@@ -495,9 +495,9 @@ class Wavelength(NodeBuilder):
     @property
     def i_wavelength(self) -> SocketLinker:
         """Input socket: Wavelength"""
-        return self._input("Wavelength")
+        return self.inputs.get("Wavelength")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")

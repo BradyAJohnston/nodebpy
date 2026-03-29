@@ -61,62 +61,62 @@ class BrickTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_color1(self) -> SocketLinker:
         """Input socket: Color1"""
-        return self._input("Color1")
+        return self.inputs.get("Color1")
 
     @property
     def i_color2(self) -> SocketLinker:
         """Input socket: Color2"""
-        return self._input("Color2")
+        return self.inputs.get("Color2")
 
     @property
     def i_mortar(self) -> SocketLinker:
         """Input socket: Mortar"""
-        return self._input("Mortar")
+        return self.inputs.get("Mortar")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def i_mortar_size(self) -> SocketLinker:
         """Input socket: Mortar Size"""
-        return self._input("Mortar Size")
+        return self.inputs.get("Mortar Size")
 
     @property
     def i_mortar_smooth(self) -> SocketLinker:
         """Input socket: Mortar Smooth"""
-        return self._input("Mortar Smooth")
+        return self.inputs.get("Mortar Smooth")
 
     @property
     def i_bias(self) -> SocketLinker:
         """Input socket: Bias"""
-        return self._input("Bias")
+        return self.inputs.get("Bias")
 
     @property
     def i_brick_width(self) -> SocketLinker:
         """Input socket: Brick Width"""
-        return self._input("Brick Width")
+        return self.inputs.get("Brick Width")
 
     @property
     def i_row_height(self) -> SocketLinker:
         """Input socket: Row Height"""
-        return self._input("Row Height")
+        return self.inputs.get("Row Height")
 
     @property
     def o_color(self) -> SocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
-        return self._output("Fac")
+        return self.outputs.get("Fac")
 
     @property
     def offset_frequency(self) -> int:
@@ -179,32 +179,32 @@ class CheckerTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_color1(self) -> SocketLinker:
         """Input socket: Color1"""
-        return self._input("Color1")
+        return self.inputs.get("Color1")
 
     @property
     def i_color2(self) -> SocketLinker:
         """Input socket: Color2"""
-        return self._input("Color2")
+        return self.inputs.get("Color2")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def o_color(self) -> SocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
-        return self._output("Fac")
+        return self.outputs.get("Fac")
 
 
 class GaborTexture(NodeBuilder):
@@ -241,47 +241,47 @@ class GaborTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def i_frequency(self) -> SocketLinker:
         """Input socket: Frequency"""
-        return self._input("Frequency")
+        return self.inputs.get("Frequency")
 
     @property
     def i_anisotropy(self) -> SocketLinker:
         """Input socket: Anisotropy"""
-        return self._input("Anisotropy")
+        return self.inputs.get("Anisotropy")
 
     @property
     def i_orientation_2d(self) -> SocketLinker:
         """Input socket: Orientation"""
-        return self._input("Orientation 2D")
+        return self.inputs.get("Orientation 2D")
 
     @property
     def i_orientation_3d(self) -> SocketLinker:
         """Input socket: Orientation"""
-        return self._input("Orientation 3D")
+        return self.inputs.get("Orientation 3D")
 
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self.outputs.get("Value")
 
     @property
     def o_phase(self) -> SocketLinker:
         """Output socket: Phase"""
-        return self._output("Phase")
+        return self.outputs.get("Phase")
 
     @property
     def o_intensity(self) -> SocketLinker:
         """Output socket: Intensity"""
-        return self._output("Intensity")
+        return self.outputs.get("Intensity")
 
     @property
     def gabor_type(self) -> Literal["2D", "3D"]:
@@ -322,17 +322,17 @@ class GradientTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def o_color(self) -> SocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
-        return self._output("Fac")
+        return self.outputs.get("Fac")
 
     @property
     def gradient_type(
@@ -388,27 +388,27 @@ class MagicTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def i_distortion(self) -> SocketLinker:
         """Input socket: Distortion"""
-        return self._input("Distortion")
+        return self.inputs.get("Distortion")
 
     @property
     def o_color(self) -> SocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
-        return self._output("Fac")
+        return self.outputs.get("Fac")
 
     @property
     def turbulence_depth(self) -> int:
@@ -469,57 +469,57 @@ class NoiseTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_w(self) -> SocketLinker:
         """Input socket: W"""
-        return self._input("W")
+        return self.inputs.get("W")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def i_detail(self) -> SocketLinker:
         """Input socket: Detail"""
-        return self._input("Detail")
+        return self.inputs.get("Detail")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_lacunarity(self) -> SocketLinker:
         """Input socket: Lacunarity"""
-        return self._input("Lacunarity")
+        return self.inputs.get("Lacunarity")
 
     @property
     def i_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Offset")
+        return self.inputs.get("Offset")
 
     @property
     def i_gain(self) -> SocketLinker:
         """Input socket: Gain"""
-        return self._input("Gain")
+        return self.inputs.get("Gain")
 
     @property
     def i_distortion(self) -> SocketLinker:
         """Input socket: Distortion"""
-        return self._input("Distortion")
+        return self.inputs.get("Distortion")
 
     @property
     def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
-        return self._output("Fac")
+        return self.outputs.get("Fac")
 
     @property
     def o_color(self) -> SocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def noise_dimensions(self) -> Literal["1D", "2D", "3D", "4D"]:
@@ -613,72 +613,72 @@ class VoronoiTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_w(self) -> SocketLinker:
         """Input socket: W"""
-        return self._input("W")
+        return self.inputs.get("W")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def i_detail(self) -> SocketLinker:
         """Input socket: Detail"""
-        return self._input("Detail")
+        return self.inputs.get("Detail")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_lacunarity(self) -> SocketLinker:
         """Input socket: Lacunarity"""
-        return self._input("Lacunarity")
+        return self.inputs.get("Lacunarity")
 
     @property
     def i_smoothness(self) -> SocketLinker:
         """Input socket: Smoothness"""
-        return self._input("Smoothness")
+        return self.inputs.get("Smoothness")
 
     @property
     def i_exponent(self) -> SocketLinker:
         """Input socket: Exponent"""
-        return self._input("Exponent")
+        return self.inputs.get("Exponent")
 
     @property
     def i_randomness(self) -> SocketLinker:
         """Input socket: Randomness"""
-        return self._input("Randomness")
+        return self.inputs.get("Randomness")
 
     @property
     def o_distance(self) -> SocketLinker:
         """Output socket: Distance"""
-        return self._output("Distance")
+        return self.outputs.get("Distance")
 
     @property
     def o_color(self) -> SocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def o_position(self) -> SocketLinker:
         """Output socket: Position"""
-        return self._output("Position")
+        return self.outputs.get("Position")
 
     @property
     def o_w(self) -> SocketLinker:
         """Output socket: W"""
-        return self._output("W")
+        return self.outputs.get("W")
 
     @property
     def o_radius(self) -> SocketLinker:
         """Output socket: Radius"""
-        return self._output("Radius")
+        return self.outputs.get("Radius")
 
     @property
     def voronoi_dimensions(self) -> Literal["1D", "2D", "3D", "4D"]:
@@ -762,47 +762,47 @@ class WaveTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def i_distortion(self) -> SocketLinker:
         """Input socket: Distortion"""
-        return self._input("Distortion")
+        return self.inputs.get("Distortion")
 
     @property
     def i_detail(self) -> SocketLinker:
         """Input socket: Detail"""
-        return self._input("Detail")
+        return self.inputs.get("Detail")
 
     @property
     def i_detail_scale(self) -> SocketLinker:
         """Input socket: Detail Scale"""
-        return self._input("Detail Scale")
+        return self.inputs.get("Detail Scale")
 
     @property
     def i_detail_roughness(self) -> SocketLinker:
         """Input socket: Detail Roughness"""
-        return self._input("Detail Roughness")
+        return self.inputs.get("Detail Roughness")
 
     @property
     def i_phase_offset(self) -> SocketLinker:
         """Input socket: Phase Offset"""
-        return self._input("Phase Offset")
+        return self.inputs.get("Phase Offset")
 
     @property
     def o_color(self) -> SocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
-        return self._output("Fac")
+        return self.outputs.get("Fac")
 
     @property
     def wave_type(self) -> Literal["BANDS", "RINGS"]:
@@ -860,22 +860,22 @@ class WhiteNoiseTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_w(self) -> SocketLinker:
         """Input socket: W"""
-        return self._input("W")
+        return self.inputs.get("W")
 
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self.outputs.get("Value")
 
     @property
     def o_color(self) -> SocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def noise_dimensions(self) -> Literal["1D", "2D", "3D", "4D"]:

@@ -172,7 +172,7 @@ def generate_mermaid_diagram(tree) -> str:
     def trace_source(node, socket):
         """Follow reroute chains backward to find the real source."""
         while node.bl_idname == "NodeReroute":
-            input_links = [l for l in node_tree.links if l.to_node == node]
+            input_links = [link for link in node_tree.links if link.to_node == node]
             if not input_links:
                 return node, socket
             link = input_links[0]
@@ -295,7 +295,7 @@ def _frame_camera_to_object(
     pulled back far enough that the bounding box fits within the frame
     (with *padding* as a multiplier).
     """
-    from mathutils import Matrix, Vector
+    from mathutils import Vector
 
     # Evaluate the object to get its final bounding box after modifiers
     depsgraph = bpy.context.evaluated_depsgraph_get()
@@ -395,7 +395,7 @@ def _get_ao_material() -> bpy.types.Material:
 
     with TreeBuilder(mat.node_tree):
         ao = AmbientOcclusion(distance=2)
-        MaterialOutput(surface=Emission(color=ao.o_color ** 50))
+        MaterialOutput(surface=Emission(color=ao.o_color**50))
 
     return mat
 
@@ -451,7 +451,7 @@ def _remove_ao_material(node_tree: bpy.types.NodeTree) -> None:
 
         source_socket = geo_in.links[0].from_socket if geo_in.is_linked else None
         target_sockets = (
-            [l.to_socket for l in geo_out.links] if geo_out.is_linked else []
+            [link.to_socket for link in geo_out.links] if geo_out.is_linked else []
         )
 
         # Re-wire original connections

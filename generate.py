@@ -221,7 +221,7 @@ class SocketInfo:
         else:
             return_type = "SocketLinker"
 
-        return_value = "self._{}('{}')".format(
+        return_value = "self.{}s.get('{}')".format(
             "output" if self.is_output else "input",
             self.identifier,
         )

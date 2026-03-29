@@ -32,17 +32,17 @@ class Gamma(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_gamma(self) -> SocketLinker:
         """Input socket: Gamma"""
-        return self._input("Gamma")
+        return self.inputs.get("Gamma")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
 
 class RGBCurves(NodeBuilder):
@@ -66,14 +66,14 @@ class RGBCurves(NodeBuilder):
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")

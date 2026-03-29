@@ -19,9 +19,9 @@ def test_custom_group_simple():
     class GroupWithoutMethod(NodeGroupBuilder):
         _node_group_name = "This Should Error"
 
-    with TreeBuilder() as tb:
+    with TreeBuilder():
         with pytest.raises(NotImplementedError):
-            group = GroupWithoutMethod()
+            GroupWithoutMethod()
 
 
 def test_custom_group():
@@ -106,7 +106,7 @@ def test_init_subclass_collects_specs():
 
 def test_kwarg_mapping():
     """InputSpec.param_name maps __init__ kwargs to socket names."""
-    with TreeBuilder() as tb:
+    with TreeBuilder():
         OtherVertex(edge_number=3)
 
     spec = OtherVertex._group_inputs["i_edge_number"]
@@ -119,7 +119,7 @@ def test_kwarg_mapping():
 
 def test_descriptor_get_returns_socket_linker():
     """Accessing i_* on an instance returns a SocketLinker for that socket."""
-    with TreeBuilder() as tb:
+    with TreeBuilder():
         node = OtherVertex()
         linker = node.i_vertex_index
 
@@ -129,7 +129,7 @@ def test_descriptor_get_returns_socket_linker():
 
 def test_output_descriptor_returns_socket_linker():
     """o_* descriptors return a SocketLinker that can be chained."""
-    with TreeBuilder() as tb:
+    with TreeBuilder():
         node = OtherVertex()
         out = node.o_other_vertex
 
@@ -141,7 +141,7 @@ def test_output_descriptor_returns_socket_linker():
 
 def test_group_reuses_existing_node_group():
     """Second instantiation reuses the cached node group, not a new one."""
-    with TreeBuilder() as tb:
+    with TreeBuilder():
         a = OtherVertex()
         b = OtherVertex()
 

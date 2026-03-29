@@ -346,7 +346,7 @@ def test_menu_switch():
             for name, x in switch.inputs.items()
         ]
     )
-    assert switch.inputs["Item_5"].socket.default_value == 5
+    assert switch.inputs["Input_5"].socket.default_value == 5
 
 
 def test_menu_switch_menu_connection():

@@ -27,12 +27,12 @@ class RepeatInput(NodeBuilder):
     @property
     def i_iterations(self) -> SocketLinker:
         """Input socket: Iterations"""
-        return self._input("Iterations")
+        return self.inputs.get("Iterations")
 
     @property
     def o_iteration(self) -> SocketLinker:
         """Output socket: Iteration"""
-        return self._output("Iteration")
+        return self.outputs.get("Iteration")
 
 
 class RepeatOutput(NodeBuilder):

@@ -5,12 +5,9 @@ import bpy
 from ...builder import (
     DynamicInputsMixin,
     NodeBuilder,
-    NodeGroupBuilder,
     NodeSocket,
     SocketError,
-    SocketInt,
     SocketLinker,
-    TreeBuilder,
 )
 from ...types import (
     LINKABLE,
@@ -108,28 +105,14 @@ class Bake(NodeBuilder, DynamicInputsMixin):
         return self.node.inputs[item.name]
 
     @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.node.bake_items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.node.bake_items
-        }
-
-    @property
     def i_input_socket(self) -> SocketLinker:
         """Input socket:"""
-        return self._input("__extend__")
+        return self.inputs.get("__extend__")
 
     @property
     def o_input_socket(self) -> SocketLinker:
         """Output socket:"""
-        return self._output("__extend__")
+        return self.outputs.get("__extend__")
 
 
 class GeometryToInstance(NodeBuilder):
@@ -149,12 +132,12 @@ class GeometryToInstance(NodeBuilder):
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
-        return self._input("Geometry")
+        return self.inputs.get("Geometry")
 
     @property
     def o_instances(self) -> SocketLinker:
         """Output socket: Instances"""
-        return self._output("Instances")
+        return self.outputs.get("Instances")
 
 
 ### === ###
@@ -187,7 +170,7 @@ class Collection(NodeBuilder):
     @property
     def o_collection(self) -> SocketLinker:
         """Output socket: Collection"""
-        return self._output("Collection")
+        return self.outputs.get("Collection")
 
 
 class Material(NodeBuilder):
@@ -215,7 +198,7 @@ class Material(NodeBuilder):
     @property
     def o_material(self) -> SocketLinker:
         """Output socket: Material"""
-        return self._output("Material")
+        return self.outputs.get("Material")
 
 
 class Object(NodeBuilder):
@@ -243,7 +226,7 @@ class Object(NodeBuilder):
     @property
     def o_object(self) -> SocketLinker:
         """Output socket: Object"""
-        return self._output("Object")
+        return self.outputs.get("Object")
 
 
 class Value(NodeBuilder):
@@ -269,7 +252,7 @@ class Value(NodeBuilder):
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self.outputs.get("Value")
 
 
 ### === ###
@@ -315,22 +298,24 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
     @property
     def i_format(self) -> SocketLinker:
         """Input socket: Format"""
-        return self._input("Format")
+        return self.inputs.get("Format")
 
     @property
     def i_input_socket(self) -> SocketLinker:
         """Input socket:"""
-        return self._input("__extend__")
+        return self.inputs.get("__extend__")
 
     @property
     def items(self) -> dict[str, SocketLinker]:
         """Input sockets:"""
-        return {socket.name: self._input(socket.name) for socket in self.node.inputs}
+        return {
+            socket.name: self.inputs.get(socket.name) for socket in self.node.inputs
+        }
 
     @property
     def o_string(self) -> SocketLinker:
         """Output socket: String"""
-        return self._output("String")
+        return self.outputs.get("String")
 
 
 class JoinStrings(NodeBuilder):
@@ -349,17 +334,17 @@ class JoinStrings(NodeBuilder):
     @property
     def i_delimiter(self) -> SocketLinker:
         """Input socket: Delimiter"""
-        return self._input("Delimiter")
+        return self.inputs.get("Delimiter")
 
     @property
     def i_strings(self) -> SocketLinker:
         """Input socket: Strings"""
-        return self._input("Strings")
+        return self.inputs.get("Strings")
 
     @property
     def o_string(self) -> SocketLinker:
         """Output socket: String"""
-        return self._output("String")
+        return self.outputs.get("String")
 
 
 class MeshBoolean(NodeBuilder):
@@ -458,24 +443,24 @@ class MeshBoolean(NodeBuilder):
     @property
     def i_mesh_1(self) -> SocketLinker:
         """Input socket: Mesh 1"""
-        return self._input("Mesh 1")
+        return self.inputs.get("Mesh 1")
 
     @property
     def i_mesh_2(self) -> SocketLinker:
         """Input socket: Mesh 2"""
-        return self._input("Mesh 2")
+        return self.inputs.get("Mesh 2")
 
     @property
     def o_mesh(self) -> SocketLinker:
         """Output socket: Mesh"""
-        return self._output("Mesh")
+        return self.outputs.get("Mesh")
 
     @property
     def o_intersecting_edges(self) -> SocketLinker:
         """Output socket: Mesh"""
         if self.solver == "FLOAT":
             raise ValueError("Intersecting Edges is not supported for FLOAT solver")
-        return self._output("Intersecting Edges")
+        return self.outputs.get("Intersecting Edges")
 
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
@@ -511,12 +496,12 @@ class JoinGeometry(NodeBuilder):
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
-        return self._input("Geometry")
+        return self.inputs.get("Geometry")
 
     @property
     def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
-        return self._output("Geometry")
+        return self.outputs.get("Geometry")
 
 
 class SetHandleType(NodeBuilder):
@@ -544,17 +529,17 @@ class SetHandleType(NodeBuilder):
     @property
     def i_curve(self) -> SocketLinker:
         """Input socket: Curve"""
-        return self._input("Curve")
+        return self.inputs.get("Curve")
 
     @property
     def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
-        return self._input("Selection")
+        return self.inputs.get("Selection")
 
     @property
     def o_curve(self) -> SocketLinker:
         """Output socket: Curve"""
-        return self._output("Curve")
+        return self.outputs.get("Curve")
 
     @property
     def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
@@ -617,7 +602,7 @@ class HandleTypeSelection(NodeBuilder):
     @property
     def o_selection(self) -> SocketLinker:
         """Output socket: Selection"""
-        return self._output("Selection")
+        return self.outputs.get("Selection")
 
     @property
     def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
@@ -732,12 +717,12 @@ class IndexSwitch(NodeBuilder):
     @property
     def i_index(self) -> SocketLinker:
         """Input socket: Index"""
-        return self._input("Index")
+        return self.inputs.get("Index")
 
     @property
     def o_output(self) -> SocketLinker:
         """Output socket: Output"""
-        return self._output("Output")
+        return self.outputs.get("Output")
 
     @property
     def data_type(self) -> SOCKET_TYPES:
@@ -789,7 +774,7 @@ class _MenuSwitchBase(NodeBuilder):
     def _link_args(self, *args: TYPE_INPUT_ALL, **kwargs: TYPE_INPUT_ALL):
         for arg in args:
             if _is_default_value(arg):
-                socket = self._create_socket(f"Item_{len(self.node.enum_items)}")
+                socket = self._create_socket(f"Input_{len(self.node.enum_items)}")
                 socket.default_value = arg
             else:
                 source = self._source_socket(arg)
@@ -812,12 +797,12 @@ class _MenuSwitchBase(NodeBuilder):
     @property
     def i_menu(self) -> SocketLinker:
         """Input socket: Menu"""
-        return self._input("Menu")
+        return self.inputs.get("Menu")
 
     @property
     def o_output(self) -> SocketLinker:
         """Output socket: Output"""
-        return self._output("Output")
+        return self.outputs.get("Output")
 
     @property
     def data_type(self) -> SOCKET_TYPES:
@@ -927,32 +912,18 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         return SocketLinker(self.node.outputs[next(iter(input_dict))])
 
     @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.node.capture_items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.node.capture_items
-        }
-
-    @property
     def _items(self) -> bpy.types.NodeGeometryCaptureAttributeItems:
         return self.node.capture_items
 
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
-        return self._input("Geometry")
+        return self.inputs.get("Geometry")
 
     @property
     def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
-        return self._output("Geometry")
+        return self.outputs.get("Geometry")
 
     @property
     def domain(
@@ -1053,23 +1024,9 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
         return cls(*args, data_type="BOOLEAN", topology=topology, **kwargs)
 
     @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name])
-            for item in self.node.grid_items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name])
-            for item in self.node.grid_items
-        }
-
-    @property
     def i_topology(self) -> SocketLinker:
         """Input socket: Topology"""
-        return self._input("Topology")
+        return self.inputs.get("Topology")
 
     @property
     def data_type(
@@ -1106,7 +1063,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
+            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
         return node
 
     @classmethod
@@ -1118,7 +1075,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
+            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
         return node
 
     @classmethod
@@ -1129,27 +1086,27 @@ class SDFGridBoolean(NodeBuilder):
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
-        node._link_from(*node._find_best_socket_pair(grid_1, node._input("Grid 1")))
+        node._link_from(*node._find_best_socket_pair(grid_1, node.inputs["Grid 1"]))
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(*node._find_best_socket_pair(arg, node._input("Grid 2")))
+            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
         return node
 
     @property
     def i_grid_1(self) -> SocketLinker:
         """Input socket: Grid 1"""
-        return self._input("Grid 1")
+        return self.inputs.get("Grid 1")
 
     @property
     def i_grid_2(self) -> SocketLinker:
         """Input socket: Grid 2"""
-        return self._input("Grid 2")
+        return self.inputs.get("Grid 2")
 
     @property
     def o_grid(self) -> SocketLinker:
         """Output socket: Grid"""
-        return self._output("Grid")
+        return self.outputs.get("Grid")
 
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
@@ -1229,27 +1186,27 @@ class AccumulateField(NodeBuilder):
     @property
     def i_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Value")
+        return self.inputs.get("Value")
 
     @property
     def i_group_id(self) -> SocketLinker:
         """Input socket: Group ID"""
-        return self._input("Group Index")
+        return self.inputs.get("Group Index")
 
     @property
     def o_leading(self) -> SocketLinker:
         """Output socket: Leading"""
-        return self._output("Leading")
+        return self.outputs.get("Leading")
 
     @property
     def o_trailing(self) -> SocketLinker:
         """Output socket: Trailing"""
-        return self._output("Trailing")
+        return self.outputs.get("Trailing")
 
     @property
     def o_total(self) -> SocketLinker:
         """Output socket: Total"""
-        return self._output("Total")
+        return self.outputs.get("Total")
 
     @property
     def data_type(self) -> _AccumulateFieldDataTypes:
@@ -1341,17 +1298,17 @@ class EvaluateAtIndex(NodeBuilder):
     @property
     def i_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Value")
+        return self.inputs.get("Value")
 
     @property
     def i_index(self) -> SocketLinker:
         """Input socket: Index"""
-        return self._input("Index")
+        return self.inputs.get("Index")
 
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self.outputs.get("Value")
 
     @property
     def domain(
@@ -1436,22 +1393,22 @@ class FieldAverage(NodeBuilder):
     @property
     def i_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Value")
+        return self.inputs.get("Value")
 
     @property
     def i_group_id(self) -> SocketLinker:
         """Input socket: Group ID"""
-        return self._input("Group Index")
+        return self.inputs.get("Group Index")
 
     @property
     def o_mean(self) -> SocketLinker:
         """Output socket: Mean"""
-        return self._output("Mean")
+        return self.outputs.get("Mean")
 
     @property
     def o_median(self) -> SocketLinker:
         """Output socket: Median"""
-        return self._output("Median")
+        return self.outputs.get("Median")
 
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
@@ -1541,22 +1498,22 @@ class FieldMinAndMax(NodeBuilder):
     @property
     def i_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Value")
+        return self.inputs.get("Value")
 
     @property
     def i_group_id(self) -> SocketLinker:
         """Input socket: Group ID"""
-        return self._input("Group Index")
+        return self.inputs.get("Group Index")
 
     @property
     def o_min(self) -> SocketLinker:
         """Output socket: Min"""
-        return self._output("Min")
+        return self.outputs.get("Min")
 
     @property
     def o_max(self) -> SocketLinker:
         """Output socket: Max"""
-        return self._output("Max")
+        return self.outputs.get("Max")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR"]:
@@ -1639,12 +1596,12 @@ class EvaluateOnDomain(NodeBuilder):
     @property
     def i_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Value")
+        return self.inputs.get("Value")
 
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self.outputs.get("Value")
 
     @property
     def domain(
@@ -1729,22 +1686,22 @@ class FieldVariance(NodeBuilder):
     @property
     def i_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Value")
+        return self.inputs.get("Value")
 
     @property
     def i_group_id(self) -> SocketLinker:
         """Input socket: Group ID"""
-        return self._input("Group Index")
+        return self.inputs.get("Group Index")
 
     @property
     def o_standard_deviation(self) -> SocketLinker:
         """Output socket: Standard Deviation"""
-        return self._output("Standard Deviation")
+        return self.outputs.get("Standard Deviation")
 
     @property
     def o_variance(self) -> SocketLinker:
         """Output socket: Variance"""
-        return self._output("Variance")
+        return self.outputs.get("Variance")
 
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
@@ -2038,17 +1995,17 @@ class Compare(NodeBuilder):
     @property
     def i_a(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input(f"A{self._suffix()}")
+        return self.inputs.get(f"A{self._suffix()}")
 
     @property
     def i_b(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input(f"B{self._suffix()}")
+        return self.inputs.get(f"B{self._suffix()}")
 
     @property
     def o_result(self) -> SocketLinker:
         """Output socket: Result"""
-        return self._output("Result")
+        return self.outputs.get("Result")
 
     @property
     def operation(
@@ -2125,57 +2082,57 @@ class AttributeStatistic(NodeBuilder):
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
-        return self._input("Geometry")
+        return self.inputs.get("Geometry")
 
     @property
     def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
-        return self._input("Selection")
+        return self.inputs.get("Selection")
 
     @property
     def i_attribute(self) -> SocketLinker:
         """Input socket: Attribute"""
-        return self._input("Attribute")
+        return self.inputs.get("Attribute")
 
     @property
     def o_mean(self) -> SocketLinker:
         """Output socket: Mean"""
-        return self._output("Mean")
+        return self.outputs.get("Mean")
 
     @property
     def o_median(self) -> SocketLinker:
         """Output socket: Median"""
-        return self._output("Median")
+        return self.outputs.get("Median")
 
     @property
     def o_sum(self) -> SocketLinker:
         """Output socket: Sum"""
-        return self._output("Sum")
+        return self.outputs.get("Sum")
 
     @property
     def o_min(self) -> SocketLinker:
         """Output socket: Min"""
-        return self._output("Min")
+        return self.outputs.get("Min")
 
     @property
     def o_max(self) -> SocketLinker:
         """Output socket: Max"""
-        return self._output("Max")
+        return self.outputs.get("Max")
 
     @property
     def o_range(self) -> SocketLinker:
         """Output socket: Range"""
-        return self._output("Range")
+        return self.outputs.get("Range")
 
     @property
     def o_standard_deviation(self) -> SocketLinker:
         """Output socket: Standard Deviation"""
-        return self._output("Standard Deviation")
+        return self.outputs.get("Standard Deviation")
 
     @property
     def o_variance(self) -> SocketLinker:
         """Output socket: Variance"""
-        return self._output("Variance")
+        return self.outputs.get("Variance")
 
     @property
     def data_type(
