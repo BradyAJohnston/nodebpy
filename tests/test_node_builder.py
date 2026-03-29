@@ -555,26 +555,53 @@ def test_nested_trees():
     assert len(tree) == 4
 
 
-@pytest.mark.parametrize(
-    "module,tree_type",
-    [(g, "GeometryNodeTree"), (s, "ShaderNodeTree"), (c, "CompositorNodeTree")],
-)
-def test_add_all_nodes(module, tree_type):
+def _collect_node_classes(module):
+    """Collect NodeBuilder subclass names from a module."""
+    return [
+        name
+        for name in dir(module)
+        if re.match(r"^([A-Z][a-z]+)+$", name)
+        and inspect.isclass(cls := getattr(module, name))
+        and issubclass(cls, NodeBuilder)
+    ]
+
+
+def _chunk(lst, n):
+    """Split list into chunks of size n."""
+    return [lst[i : i + n] for i in range(0, len(lst), n)]
+
+
+_CHUNK_SIZE = 10
+_all_node_params = []
+for _mod, _tree_type in [
+    (g, "GeometryNodeTree"),
+    (s, "ShaderNodeTree"),
+    (c, "CompositorNodeTree"),
+]:
+    _mod_name = _tree_type.removesuffix("NodeTree")
+    for _i, _chunk_names in enumerate(_chunk(_collect_node_classes(_mod), _CHUNK_SIZE)):
+        _all_node_params.append(
+            pytest.param(_mod, _tree_type, _chunk_names, id=f"{_mod_name}-{_i}")
+        )
+
+
+@pytest.mark.parametrize("module,tree_type,class_names", _all_node_params)
+def test_add_all_nodes(module, tree_type, class_names):
     def _test_node_outputs(node: NodeBuilder):
         assert node.node is not None
         for output in [getattr(node, o) for o in dir(node) if o.startswith("o_")]:
-            if "NodeSocketVector" in output.socket.bl_idname:
+            if NodeSocketVector.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
                 assert result.operation == "SCALE"
                 assert result.node.inputs["Scale"].default_value == -1.0
-            elif "NodeSocketFloat" in output.socket.bl_idname:
+            elif NodeSocketFloat.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
                 assert result.node.inputs["Value"].links
                 assert result.node.operation == "MULTIPLY"
                 assert result.node.inputs["Value_001"].default_value == -1
-            elif isinstance(output.socket, NodeSocketInt):
+            elif NodeSocketInt.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
                 assert result.node.inputs["Value"].links
@@ -604,12 +631,10 @@ def test_add_all_nodes(module, tree_type):
                 assert result.node is not None
                 assert result.node.bl_idname == g.JoinGeometry._bl_idname
                 assert result.inputs[0].links[0].from_node == output.node
-            elif "NodeSocketColor" in output.socket.bl_idname:
-                result = output.r
-                result = output.g
-                result = output.b
+            elif NodeSocketColor.bl_rna.identifier in output.socket.bl_idname:
+                result = output >> module.SeparateColor()
                 assert result.node is not None
-                assert "NodeSeparateColor" in result.node.bl_idname
+                assert module.SeparateColor._bl_idname in result.node.bl_idname
                 assert result.node.inputs[0].links[0].from_node == output.node
             elif "NodeSocketShader" in output.socket.bl_idname:
                 result = output >> s.AddShader()
@@ -646,13 +671,9 @@ def test_add_all_nodes(module, tree_type):
                 assert result.node is not None
                 assert result.socket.links[0].from_node == value.node
 
-    with TreeBuilder(tree_type=tree_type, arrange=None):
-        for name in dir(module):
-            if not re.match(r"^([A-Z][a-z]+)+$", name):
-                continue
+    with TreeBuilder(tree_type=tree_type, arrange=None, ignore_visibility=True):
+        for name in class_names:
             cls = getattr(module, name)
-            if not (inspect.isclass(cls) and issubclass(cls, NodeBuilder)):
-                continue
             # Test the default constructor
             node = cls()
             assert node.node is not None

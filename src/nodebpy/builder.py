@@ -163,17 +163,29 @@ class SocketAccessor:
         return self.get(key)
 
     @property
+    def _ignore_visibility(self) -> bool:
+        """Whether to ignore socket visibility when selecting available sockets."""
+        tree_context = TreeBuilder._tree_contexts[-1]
+        return tree_context.ignore_visibility
+
+    @property
     def available(self) -> list[NodeSocket]:
         """Sockets eligible for automatic linking."""
         if self._direction == "input":
             return [
                 s
                 for s in self._sockets
-                if not s.is_inactive
-                and s.is_icon_visible
+                if (
+                    self._ignore_visibility
+                    or (not s.is_inactive and s.is_icon_visible)
+                )
                 and (not s.links or s.is_multi_input)
             ]
-        return [s for s in self._sockets if s.is_icon_visible]
+        return [
+            s
+            for s in self._sockets
+            if self._ignore_visibility or s.is_icon_visible
+        ]
 
     def best_match(self, socket_type: str) -> NodeSocket:
         """Find the best compatible socket for the given type."""
@@ -333,6 +345,7 @@ class TreeBuilder:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
+        ignore_visibility: bool = False,
     ):
         if isinstance(tree, str):
             self.tree = bpy.data.node_groups.new(tree, tree_type)
@@ -346,6 +359,7 @@ class TreeBuilder:
         self._arrange = arrange
         self.collapse = collapse
         self.fake_user = fake_user
+        self.ignore_visibility = ignore_visibility
 
     @classmethod
     def geometry(
