@@ -10,7 +10,7 @@ from math import pi
 
 import bpy
 import pytest
-from bpy.types import NodeSocketInt
+from bpy.types import NodeSocketBool, NodeSocketColor, NodeSocketInt, NodeSocketMatrix
 from numpy.testing import assert_allclose
 
 from nodebpy import TreeBuilder
@@ -19,7 +19,7 @@ from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
 from nodebpy.builder import ColorSocketLinker, NodeBuilder, VectorSocketLinker
-from nodebpy.types import NodeSocketFloat
+from nodebpy.types import NodeSocketFloat, NodeSocketGeometry, NodeSocketVector
 
 
 class TestTreeBuilder:
@@ -557,12 +557,12 @@ def test_add_all_nodes(module, tree_type):
     def _test_node_outputs(node: NodeBuilder):
         assert node.node is not None
         for output in node.outputs.values():
-            if isinstance(output, VectorSocketLinker):
+            if "NodeSocketVector" in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
                 assert result.operation == "SCALE"
                 assert result.node.inputs["Scale"].default_value == -1.0
-            elif isinstance(output.socket, NodeSocketFloat):
+            elif "NodeSocketFloat" in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
                 assert result.node.inputs["Value"].links
@@ -577,6 +577,34 @@ def test_add_all_nodes(module, tree_type):
                     if result.tree.tree.type == "GEOMETRY"
                     else "MULTIPLY"
                 )
+            elif isinstance(output.socket, NodeSocketBool):
+                if not tree_type == "GeometryNodeTree":
+                    continue
+                result = output | True
+                assert result.node is not None
+                assert result.node.bl_idname == g.BooleanMath._bl_idname
+                assert result.node.inputs[0].links
+                assert not result.node.inputs[1].links
+                assert result.node.inputs[1].default_value == True
+                assert result.operation == "OR"
+            elif isinstance(output.socket, NodeSocketMatrix):
+                if not tree_type == "GeometryNodeTree":
+                    continue
+                result = output @ g.CombineTransform()
+                assert result.node is not None
+                assert result.node.bl_idname == g.MultiplyMatrices._bl_idname
+            elif "NodeSocketGeometry" in output.socket.bl_idname:
+                result = output >> g.JoinGeometry()
+                assert result.node is not None
+                assert result.node.bl_idname == g.JoinGeometry._bl_idname
+                assert result.inputs[0].links[0].from_node == output.node
+            elif "NodeSocketColor" in output.socket.bl_idname:
+                result = output.r
+                result = output.g
+                result = output.b
+                assert result.node is not None
+                assert "NodeSeparateColor" in result.node.bl_idname
+                assert result.node.inputs[0].links[0].from_node == output.node
 
     with TreeBuilder(tree_type=tree_type):
         for name in dir(module):
