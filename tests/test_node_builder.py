@@ -587,7 +587,7 @@ for _mod, _tree_type in [
 
 @pytest.mark.parametrize("module,tree_type,class_names", _all_node_params)
 def test_add_all_nodes(module, tree_type, class_names):
-    def _test_node_outputs(node: NodeBuilder):
+    def _test_node_property_access(node: NodeBuilder):
         assert node.node is not None
         for output in [getattr(node, o) for o in dir(node) if o.startswith("o_")]:
             if NodeSocketVector.bl_rna.identifier in output.socket.bl_idname:
@@ -641,6 +641,11 @@ def test_add_all_nodes(module, tree_type, class_names):
                 assert result.node is not None
                 assert result.node.bl_idname == s.AddShader._bl_idname
                 assert result.node.inputs[0].links[0].from_node == output.node
+            elif NodeSocketMatrix.bl_rna.identifier in output.socket.bl_idname:
+                result = output @ g.Position()
+                assert result.node is not None
+                assert result.node.bl_idname == g.TransformPoint._bl_idname
+                assert result.node.inputs[0].links[0].from_node == output.node
         for prop in dir(node):
             if not prop.startswith("i_"):
                 continue
@@ -663,13 +668,19 @@ def test_add_all_nodes(module, tree_type, class_names):
                     result = value >> input
                     assert result.node is not None
                     assert result.socket.links[0].from_node == value.node
-                except RuntimeError:
-                    pass
-            if isinstance(input.socket, NodeSocketShader):
+                except RuntimeError as e:
+                    print(
+                        f"Failed to link {value.name} to {input.name} due to error: {e}"
+                    )
+            elif isinstance(input.socket, NodeSocketShader):
                 value = s.DiffuseBSDF()
                 result = value >> input
                 assert result.node is not None
                 assert result.socket.links[0].from_node == value.node
+            elif isinstance(input.socket, NodeSocketMatrix):
+                trans = g.CombineTransform()
+                result = trans >> input
+                assert input.socket.links[0].from_node == trans.node
 
     with TreeBuilder(tree_type=tree_type, arrange=None, ignore_visibility=True):
         for name in class_names:
@@ -682,7 +693,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                 for x in ["Repeat", "Zone", "Foreach", "Element", "Simulation"]
             ):
                 continue
-            _test_node_outputs(node)
+            _test_node_property_access(node)
             # Test each classmethod defined on this class (not inherited from NodeBuilder)
             for method_name in dir(cls):
                 if isinstance(
@@ -690,7 +701,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                 ) and method_name not in dir(NodeBuilder):
                     node = getattr(cls, method_name)()
                     assert node.node is not None
-                    _test_node_outputs(node)
+                    _test_node_property_access(node)
 
 
 def test_iter_outputs():

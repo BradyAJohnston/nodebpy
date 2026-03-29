@@ -176,15 +176,12 @@ class SocketAccessor:
                 s
                 for s in self._sockets
                 if (
-                    self._ignore_visibility
-                    or (not s.is_inactive and s.is_icon_visible)
+                    self._ignore_visibility or (not s.is_inactive and s.is_icon_visible)
                 )
                 and (not s.links or s.is_multi_input)
             ]
         return [
-            s
-            for s in self._sockets
-            if self._ignore_visibility or s.is_icon_visible
+            s for s in self._sockets if self._ignore_visibility or s.is_icon_visible
         ]
 
     def best_match(self, socket_type: str) -> NodeSocket:
@@ -522,7 +519,10 @@ class TreeBuilder:
 
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
 
-        if any(socket.is_inactive for socket in [socket1, socket2]):
+        if (
+            any(socket.is_inactive for socket in [socket1, socket2])
+            and not self.ignore_visibility
+        ):
             assert socket1.node
             assert socket2.node
             # the warning message should report which sockets from which nodes were linked and which were innactive
