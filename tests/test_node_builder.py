@@ -605,8 +605,37 @@ def test_add_all_nodes(module, tree_type):
                 assert result.node is not None
                 assert "NodeSeparateColor" in result.node.bl_idname
                 assert result.node.inputs[0].links[0].from_node == output.node
+            elif "NodeSocketShader" in output.socket.bl_idname:
+                result = output >> s.AddShader()
+                assert result.node is not None
+                assert result.node.bl_idname == s.AddShader._bl_idname
+                assert result.node.inputs[0].links[0].from_node == output.node
+        for prop in dir(node):
+            if not prop.startswith("i_"):
+                continue
+            try:
+                input = getattr(node, prop)
+            except RuntimeError:
+                continue
+            if isinstance(
+                input.socket,
+                (
+                    NodeSocketFloat,
+                    NodeSocketInt,
+                    NodeSocketVector,
+                    NodeSocketColor,
+                    NodeSocketBool,
+                ),
+            ):
+                value = module.Value(10.0)
+                try:
+                    result = value >> input
+                    assert result.node is not None
+                    assert result.socket.links[0].from_node == value.node
+                except RuntimeError:
+                    pass
 
-    with TreeBuilder(tree_type=tree_type):
+    with TreeBuilder(tree_type=tree_type, arrange=None):
         for name in dir(module):
             if not re.match(r"^([A-Z][a-z]+)+$", name):
                 continue

@@ -1986,7 +1986,7 @@ class Compare(NodeBuilder):
         suffix_lookup = {
             "FLOAT": "",
             "INT": "_INT",
-            "VECTOR": "_VEC",
+            "VECTOR": "_VEC3",
             "RGBA": "_COL",
             "STRING": "_STR",
         }

@@ -151,7 +151,7 @@ class SocketAccessor:
             return names.index(key)
         raise RuntimeError(
             f"{self._direction.title()} '{key}' not found on "
-            f"{self._node.bl_idname}. Available: {names}"
+            f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"
         )
 
     def get(self, key: str | int) -> "SocketLinker":
