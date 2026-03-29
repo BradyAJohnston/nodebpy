@@ -556,7 +556,7 @@ def test_nested_trees():
 def test_add_all_nodes(module, tree_type):
     def _test_node_outputs(node: NodeBuilder):
         assert node.node is not None
-        for output in node.outputs.values():
+        for output in [getattr(node, o) for o in dir(node) if o.startswith("o_")]:
             if "NodeSocketVector" in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
