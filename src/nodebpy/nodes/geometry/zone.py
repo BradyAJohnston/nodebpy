@@ -35,7 +35,6 @@ class BaseZone(DynamicInputsMixin, NodeBuilder, ABC):
         """Return the items collection"""
         pass
 
-
     def capture(
         self, value: LINKABLE, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:

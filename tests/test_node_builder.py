@@ -24,8 +24,8 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
-from nodebpy.builder import ColorSocketLinker, NodeBuilder, VectorSocketLinker
-from nodebpy.types import NodeSocketFloat, NodeSocketGeometry, NodeSocketVector
+from nodebpy.builder import ColorSocketLinker, NodeBuilder
+from nodebpy.types import NodeSocketFloat, NodeSocketVector
 
 
 class TestTreeBuilder:
@@ -618,7 +618,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                 assert result.node.bl_idname == g.BooleanMath._bl_idname
                 assert result.node.inputs[0].links
                 assert not result.node.inputs[1].links
-                assert result.node.inputs[1].default_value == True
+                assert result.node.inputs[1].default_value
                 assert result.operation == "OR"
             elif isinstance(output.socket, NodeSocketMatrix):
                 if not tree_type == "GeometryNodeTree":
