@@ -1082,11 +1082,12 @@ class SDFGridBoolean(NodeBuilder):
     def difference(
         cls,
         *args: LINKABLE,
-        grid_1: LINKABLE,
+        grid_1: LINKABLE = None,
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
-        node._link_from(*node._find_best_socket_pair(grid_1, node.inputs["Grid 1"]))
+        if grid_1 is not None:
+            node._link_from(*node._find_best_socket_pair(grid_1, node.inputs["Grid 1"]))
         for arg in args:
             if arg is None:
                 continue

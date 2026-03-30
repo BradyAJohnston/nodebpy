@@ -560,7 +560,7 @@ def _collect_node_classes(module):
     return [
         name
         for name in dir(module)
-        if re.match(r"^([A-Z][a-z]+)+$", name)
+        if re.match(r"^[A-Z][a-zA-Z0-9]+$", name)
         and inspect.isclass(cls := getattr(module, name))
         and issubclass(cls, NodeBuilder)
     ]
@@ -651,7 +651,8 @@ def test_add_all_nodes(module, tree_type, class_names):
                 continue
             try:
                 input = getattr(node, prop)
-            except RuntimeError:
+            except RuntimeError as e:
+                print(f"Failed to get input {prop} due to error: {e}")
                 continue
             if any(
                 x.bl_rna.identifier in input.socket.bl_idname
@@ -672,7 +673,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                     print(
                         f"Failed to link {value.name} to {input.name} due to error: {e}"
                     )
-            elif isinstance(input.socket, NodeSocketShader):
+            elif NodeSocketShader.bl_rna.identifier in input.socket.bl_idname:
                 value = s.DiffuseBSDF()
                 result = value >> input
                 assert result.node is not None
