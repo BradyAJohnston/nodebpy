@@ -109,7 +109,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "Frame",
         "Reroute",
     ],
-    manually_defined=("MenuSwitch",),
+    manually_defined=("MenuSwitch", "RepeatInput", "RepeatOutput", "RepeatZone"),
     class_name_prefix_strips=[
         "ShaderNode",
         "Node",

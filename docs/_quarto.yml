@@ -104,7 +104,6 @@ quartodoc:
         - nodes.shader.shader
         - nodes.shader.texture
         - nodes.shader.vector
-        - nodes.shader.zone
     - title: Compositor Nodes
       desc: Nodes for use in the compositor
       contents:
@@ -118,7 +117,6 @@ quartodoc:
         - nodes.compositor.manual
         - nodes.compositor.matte
         - nodes.compositor.output
-        - nodes.compositor.texture
         - nodes.compositor.vector
 
     - title: Internals
