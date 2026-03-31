@@ -1,7 +1,7 @@
 from functools import partial
 
 from ...builder import InputSpec, NodeGroupBuilder, OutputSpec, SocketInt, SocketVector
-from ...types import TYPE_INPUT_INT
+from ...types import TYPE_INPUT_INT, TYPE_INPUT_VECTOR
 from . import EdgesOfVertex, EdgeVertices, EvaluateAtIndex, Switch
 
 
@@ -14,10 +14,10 @@ class OtherVertex(NodeGroupBuilder):
     _node_group_name = "Other Vertex"
     _color_tag = "INPUT"
 
-    i_vertex_index = InputSpec(
+    i_vertex_index: SocketInt = InputSpec(
         partial(SocketInt, "Vertex Index", default_input="INDEX")
     )
-    i_edge_number = InputSpec(partial(SocketInt, "Edge Number"))
+    i_edge_number: SocketInt = InputSpec(partial(SocketInt, "Edge Number"), default=0)
     o_other_vertex = OutputSpec(partial(SocketInt, "Other Vertex"))
 
     def __init__(
@@ -43,21 +43,23 @@ class OffsetVector(NodeGroupBuilder):
     _node_group_name = "Offset Vector"
     _color_tag = "INPUT"
 
-    i_index = InputSpec(partial(SocketInt, "Index", default_input="INDEX"))
-    i_vector = InputSpec(partial(SocketVector, "Vector", default_input="POSITION"))
-    i_offset = InputSpec(partial(SocketInt, "Offset"))
+    i_index: SocketInt = InputSpec(partial(SocketInt, "Index", default_input="INDEX"))
+    i_vector: SocketVector = InputSpec(
+        partial(SocketVector, "Vector", default_input="POSITION")
+    )
+    i_offset: SocketInt = InputSpec(partial(SocketInt, "Offset"), default=0)
     o_vector = OutputSpec(partial(SocketVector, "Vector"))
 
     def __init__(
         self,
         index: TYPE_INPUT_INT = None,
-        vector: TYPE_INPUT_INT = None,
+        vector: TYPE_INPUT_VECTOR = None,
         offset: TYPE_INPUT_INT = 0,
     ):
         super().__init__(index=index, vector=vector, offset=offset)
 
     @classmethod
     def _build_group(
-        cls, tree, index: SocketInt, vector: SocketVector, offset: SocketVector
+        cls, tree, index: SocketInt, vector: SocketVector, offset: SocketInt
     ):
         return {"Vector": EvaluateAtIndex.point.vector(vector, index + offset)}

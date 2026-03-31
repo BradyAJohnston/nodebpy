@@ -1,7 +1,19 @@
 from __future__ import annotations
 
+import dataclasses
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Callable, ClassVar, Iterable, Literal, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Generic,
+    Iterable,
+    Literal,
+    TypeVar,
+    Union,
+    overload,
+)
 
 if TYPE_CHECKING:
     from .nodes.geometry.converter import BooleanMath, MultiplyMatrices, TransformPoint
@@ -1853,7 +1865,10 @@ class SocketShader(SocketBase):
         )
 
 
-class InputSpec:
+_T = TypeVar("_T", bound="SocketBase")
+
+
+class InputSpec(Generic[_T]):
     """Descriptor for declaring a node group input socket.
 
     Accepts a ``functools.partial`` (or any callable) that will create the
@@ -1862,31 +1877,46 @@ class InputSpec:
 
         from functools import partial
 
-        i_vertex_index = InputSpec(partial(SocketInt, "Vertex Index", default_input="INDEX"))
+        i_vertex_index: SocketInt = InputSpec(partial(SocketInt, "Vertex Index", default_input="INDEX"))
 
     The descriptor also:
-    - Acts as an ``i_*`` property on instances, returning the live :class:`SocketLinker`.
+    - Acts as an ``i_*`` property on instances, returning the live socket (typed as ``_T``).
     - Maps ``__init__`` kwargs to socket names (``i_vertex_index`` → kwarg ``vertex_index``
       → socket ``"Vertex Index"``).
+
+    When subclassing :class:`NodeGroupBuilder`, ``@dataclass_transform`` causes type checkers
+    to synthesize ``__init__`` from annotated ``InputSpec`` fields — no manual ``__init__``
+    is required.
     """
 
-    def __init__(self, socket_factory: Callable[[], SocketBase]):
+    def __init__(
+        self,
+        socket_factory: Callable[[], _T],
+        *,
+        default: Any = dataclasses.MISSING,
+    ):
         self.socket_factory = socket_factory
         self.socket_name: str | None = None
         self.attr_name: str | None = None
         self.param_name: str | None = None
+        self.default = default
 
     def __set_name__(self, owner, name: str):
         self.attr_name = name
         self.param_name = name.removeprefix("i_")
 
-    def __get__(self, obj, objtype=None) -> SocketLinker:
+    @overload
+    def __get__(self, obj: None, objtype: type) -> InputSpec[_T]: ...
+    @overload
+    def __get__(self, obj: NodeGroupBuilder, objtype: type) -> _T: ...
+
+    def __get__(self, obj, objtype=None) -> InputSpec[_T] | _T:
         if obj is None:
-            return self  # type: ignore[return-value]
-        return obj.inputs.get(self.socket_name)
+            return self
+        return obj.inputs.get(self.socket_name)  # type: ignore[return-value]
 
 
-class OutputSpec:
+class OutputSpec(Generic[_T]):
     """Descriptor for declaring a node group output socket.
 
     Accepts a ``functools.partial`` (or any callable) that will create the
@@ -1894,31 +1924,57 @@ class OutputSpec:
 
         from functools import partial
 
-        o_other_vertex = OutputSpec(partial(SocketInt, "Other Vertex"))
+        o_other_vertex: SocketInt = OutputSpec(partial(SocketInt, "Other Vertex"))
 
-    The descriptor also acts as an ``o_*`` property on instances, returning
-    the live :class:`SocketLinker`.
+    The descriptor acts as an ``o_*`` property on instances, returning the live
+    socket typed as ``_T``.  Output fields are excluded from the synthesized
+    ``__init__`` (``init=False``).
     """
 
-    def __init__(self, socket_factory: Callable[[], SocketBase]):
+    def __init__(
+        self,
+        socket_factory: Callable[[], _T],
+        *,
+        init: bool = False,
+    ):
         self.socket_factory = socket_factory
         self.socket_name: str | None = None
         self.attr_name: str | None = None
+        self.init = init
 
     def __set_name__(self, owner, name: str):
         self.attr_name = name
 
-    def __get__(self, obj, objtype=None) -> SocketLinker:
+    @overload
+    def __get__(self, obj: None, objtype: type) -> OutputSpec[_T]: ...
+    @overload
+    def __get__(self, obj: NodeGroupBuilder, objtype: type) -> _T: ...
+
+    def __get__(self, obj, objtype=None) -> OutputSpec[_T] | _T:
         if obj is None:
-            return self  # type: ignore[return-value]
-        return obj.outputs.get(self.socket_name)
+            return self
+        return obj.outputs.get(self.socket_name)  # type: ignore[return-value]
 
 
 class NodeGroupBuilder(NodeBuilder):
     """Base class for custom node groups.
 
     Subclasses declare inputs/outputs as :class:`InputSpec` / :class:`OutputSpec`
-    descriptors and implement :meth:`_build_group` with the node-graph logic.
+    descriptors and implement :meth:`_build_group` with the node-graph logic::
+
+        class Jitter(NodeGroupBuilder):
+            _node_group_name = "Jitter"
+
+            i_geometry: SocketGeometry = InputSpec(partial(SocketGeometry, "Geometry"))
+            i_amount:   SocketFloat    = InputSpec(partial(SocketFloat, "Amount", 0.2), default=0.2)
+            o_geometry                 = OutputSpec(partial(SocketGeometry, "Geometry"))
+
+            def __init__(self, geometry: TYPE_INPUT_GEOMETRY = None, amount: TYPE_INPUT_VALUE = 0.2):
+                super().__init__(geometry=geometry, amount=amount)
+
+            @classmethod
+            def _build_group(cls, tree, geometry: SocketGeometry, amount: SocketFloat):
+                ...
 
     The base class handles:
     - Caching the node group in ``bpy.data.node_groups``
