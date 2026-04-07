@@ -787,6 +787,33 @@ def test_color_socket_linker_channel_into_math():
 class TestSocketAccessor:
     """Tests for SocketAccessor visibility and context-guard behaviour."""
 
+    def test_iter(self):
+        """values()/items()/keys() should respect node-level visibility rules."""
+
+        def _assert_equal(dict1, dict2):
+            # if we just compare the socket accessors then it creates compare
+            # nodes so we have to get the sockets and keys from each to compare them
+            for items1, items2 in zip(dict1.items(), dict2.items()):
+                assert items1[0] == items2[0], f"Expected {items2[0]}, got {items1[0]}"
+                assert items1[1].socket == items2[1].socket, (
+                    f"Expected {items2[1]}, got {items1[1]}"
+                )
+
+        with TreeBuilder("IterTest") as tree:
+            pos = g.Position()
+            _assert_equal(dict(**pos.outputs), {"Position": pos.o_position})
+
+            setpos = g.SetPosition()
+            _assert_equal(
+                dict(**setpos.inputs),
+                {
+                    "Geometry": setpos.i_geometry,
+                    "Selection": setpos.i_selection,
+                    "Position": setpos.i_position,
+                    "Offset": setpos.i_offset,
+                },
+            )
+
     def test_ignore_visibility_outside_context_returns_false(self):
         """_ignore_visibility must not crash when called outside a tree context."""
         with TreeBuilder("AccessorGuardTest") as tree:
