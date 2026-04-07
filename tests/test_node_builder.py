@@ -814,6 +814,16 @@ class TestSocketAccessor:
                 },
             )
 
+            assert all(
+                [
+                    a == b
+                    for a, b in zip(
+                        ["Geometry", "Selection", "Position", "Offset"],
+                        list(setpos.inputs),
+                    )
+                ]
+            )
+
     def test_ignore_visibility_outside_context_returns_false(self):
         """_ignore_visibility must not crash when called outside a tree context."""
         with TreeBuilder("AccessorGuardTest"):
