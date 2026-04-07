@@ -587,25 +587,19 @@ def test_math_methods():
 
 def test_inputs():
     with TreeBuilder() as tree:
-        _ = g.ObjectInfo(bpy.data.objects["Cube"])
-        object = g.Object(bpy.data.objects["Cube"]) >> g.ObjectInfo()
-        material = g.SetMaterial(
-            object, material=g.Material(bpy.data.materials["Material"])
-        )
-        coll = g.CollectionInfo(
-            g.Collection(bpy.data.collections.new("TestColelction"))
-        )
+        cube = bpy.data.objects["Cube"]
+        material = bpy.data.materials["Material"]
+        object = g.ObjectInfo(g.Object(cube))
+        set_material = g.SetMaterial(object, material=g.Material(material))
+        coll = g.CollectionInfo(g.Collection(bpy.data.collections["Collection"]))
 
-    assert len(tree) == 7
+    assert len(tree) == 6
+    assert object.i_object.socket.links[0].from_node.object == bpy.data.objects["Cube"]
     assert (
-        object.node.inputs[0].links[0].from_socket.default_value
-        == bpy.data.objects["Cube"]
-    )
-    assert (
-        material.i_material.links[0].from_socket.default_value
+        set_material.i_material.socket.links[0].from_node.material
         == bpy.data.materials["Material"]
     )
     assert (
-        coll.i_collection.links[0].from_socket.default_value
-        == bpy.data.collections["TestColelction"]
+        coll.i_collection.links[0].from_node.collection
+        == bpy.data.collections["Collection"]
     )

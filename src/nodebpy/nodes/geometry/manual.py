@@ -141,8 +141,8 @@ class GeometryToInstance(NodeBuilder):
 
 
 ### === ###
-# These nodes don't have a proper value property and instead they directly display
-# and access the default values from the output sockets themselves
+# The input properties for these nodes aren't being properly picked
+# up by the generate script. TODO: debug why not
 
 
 class Collection(NodeBuilder):
@@ -155,17 +155,16 @@ class Collection(NodeBuilder):
 
     def __init__(self, collection: bpy.types.Collection | None = None):
         super().__init__()
-        if collection is not None:
-            self.collection = collection
+        self.collection = collection
 
     @property
     def collection(self) -> bpy.types.Collection | None:
         """Input socket: Collection"""
-        return self.node.outputs[0].default_value
+        return self.node.collection
 
     @collection.setter
     def collection(self, value: bpy.types.Collection | None):
-        self.node.outputs[0].default_value = value
+        self.node.collection = value
 
     @property
     def o_collection(self) -> SocketLinker:
@@ -183,17 +182,16 @@ class Material(NodeBuilder):
 
     def __init__(self, material: bpy.types.Material | None = None):
         super().__init__()
-        if material is not None:
-            self.material = material
+        self.material = material
 
     @property
     def material(self) -> bpy.types.Material | None:
         """Input socket: Material"""
-        return self.node.outputs[0].default_value
+        return self.node.material
 
     @material.setter
     def material(self, value: bpy.types.Material | None):
-        self.node.outputs[0].default_value = value
+        self.node.material = value
 
     @property
     def o_material(self) -> SocketLinker:
@@ -211,22 +209,26 @@ class Object(NodeBuilder):
 
     def __init__(self, object: bpy.types.Object | None = None):
         super().__init__()
-        if object is not None:
-            self.object = object
+        self.object = object
 
     @property
     def object(self) -> bpy.types.Object | None:
         """Input socket: Object"""
-        return self.node.outputs[0].default_value
+        return self.node.object
 
     @object.setter
     def object(self, value: bpy.types.Object | None):
-        self.node.outputs[0].default_value = value
+        self.node.object = value
 
     @property
     def o_object(self) -> SocketLinker:
         """Output socket: Object"""
         return self.outputs.get("Object")
+
+
+### === ###
+# The value node doesn't have a proper value property and instead it directly display
+# and access the default values from the output sockets themselves
 
 
 class Value(NodeBuilder):
