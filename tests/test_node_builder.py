@@ -24,7 +24,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
-from nodebpy.builder import ColorSocketLinker, NodeBuilder, SocketAccessor
+from nodebpy.builder import ColorSocketLinker, NodeBuilder
 from nodebpy.types import NodeSocketFloat, NodeSocketVector
 
 
@@ -799,7 +799,7 @@ class TestSocketAccessor:
                     f"Expected {items2[1]}, got {items1[1]}"
                 )
 
-        with TreeBuilder("IterTest") as tree:
+        with TreeBuilder("IterTest"):
             pos = g.Position()
             _assert_equal(dict(**pos.outputs), {"Position": pos.o_position})
 
@@ -816,7 +816,7 @@ class TestSocketAccessor:
 
     def test_ignore_visibility_outside_context_returns_false(self):
         """_ignore_visibility must not crash when called outside a tree context."""
-        with TreeBuilder("AccessorGuardTest") as tree:
+        with TreeBuilder("AccessorGuardTest"):
             pos = g.Position()
             # grab a SocketAccessor while inside the context so we have a valid node
             accessor = pos.outputs
@@ -827,7 +827,7 @@ class TestSocketAccessor:
 
     def test_ignore_visibility_inside_context_default_false(self):
         """Inside a normal tree context, ignore_visibility defaults to False."""
-        with TreeBuilder("NormalContext") as tree:
+        with TreeBuilder("NormalContext"):
             pos = g.Position()
             assert pos.outputs._ignore_visibility is False
 
