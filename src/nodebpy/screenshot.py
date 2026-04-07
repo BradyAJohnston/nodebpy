@@ -7,16 +7,6 @@ and render viewport previews of geometry node output for documentation.
 
 from __future__ import annotations
 
-import math
-import tempfile
-from pathlib import Path
-from typing import TYPE_CHECKING
-
-import bpy
-
-if TYPE_CHECKING:
-    from .builder import TreeBuilder
-
 # Mermaid diagram generation (no subprocess needed)
 
 # Margin for node bounds to ensure sockets and links are included.
