@@ -24,7 +24,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
-from nodebpy.builder import ColorSocketLinker, NodeBuilder
+from nodebpy.builder import ColorSocketLinker, NodeBuilder, SocketAccessor
 from nodebpy.types import NodeSocketFloat, NodeSocketVector
 
 
@@ -782,3 +782,65 @@ def test_color_socket_linker_channel_into_math():
     assert result.node is not None
     assert result.node.bl_idname == "ShaderNodeMath"
     assert result.node.operation == "ADD"
+
+
+class TestSocketAccessor:
+    """Tests for SocketAccessor visibility and context-guard behaviour."""
+
+    def test_ignore_visibility_outside_context_returns_false(self):
+        """_ignore_visibility must not crash when called outside a tree context."""
+        with TreeBuilder("AccessorGuardTest") as tree:
+            pos = g.Position()
+            # grab a SocketAccessor while inside the context so we have a valid node
+            accessor = pos.outputs
+
+        # Now we're outside the context — _tree_contexts is empty.
+        # This should return False rather than raise IndexError.
+        assert accessor._ignore_visibility is False
+
+    def test_ignore_visibility_inside_context_default_false(self):
+        """Inside a normal tree context, ignore_visibility defaults to False."""
+        with TreeBuilder("NormalContext") as tree:
+            pos = g.Position()
+            assert pos.outputs._ignore_visibility is False
+
+    def test_ignore_visibility_inside_context_when_set_true(self):
+        """Inside an ignore_visibility=True context, the flag propagates."""
+        with TreeBuilder("IgnoreVisContext", ignore_visibility=True):
+            pos = g.Position()
+            assert pos.outputs._ignore_visibility is True
+
+    def test_values_unaffected_by_ignore_visibility(self):
+        """values() / items() / keys() should not change when ignore_visibility=True.
+
+        Only ``available`` / ``best_match`` (the auto-linking heuristics) are
+        affected by the flag — enumeration uses node-level visibility rules.
+        """
+        with TreeBuilder("NormalVis", arrange=None) as _:
+            node_normal = g.SeparateXYZ(g.Position())
+            normal_values = node_normal.outputs.values()
+            normal_keys = node_normal.outputs.keys()
+
+        with TreeBuilder("IgnoreVis", arrange=None, ignore_visibility=True) as _:
+            node_ignore = g.SeparateXYZ(g.Position())
+            ignore_values = node_ignore.outputs.values()
+            ignore_keys = node_ignore.outputs.keys()
+
+        # SeparateXYZ has three visible outputs (X, Y, Z) regardless of the flag.
+        assert len(normal_values) == len(ignore_values)
+        assert normal_keys == ignore_keys
+
+    def test_available_respects_ignore_visibility(self):
+        """available does change when ignore_visibility=True for nodes with hidden sockets."""
+        # Mix node has inactive sockets depending on data_type — use it as an example
+        # of a node whose visible socket count varies.  With ignore_visibility the
+        # accessor should expose more (or equal) sockets than without it.
+        with TreeBuilder("NormalAvail", arrange=None):
+            mix = g.Mix()
+            normal_available = len(mix.inputs.available)
+
+        with TreeBuilder("IgnoreAvail", arrange=None, ignore_visibility=True):
+            mix = g.Mix()
+            ignore_available = len(mix.inputs.available)
+
+        assert ignore_available >= normal_available
