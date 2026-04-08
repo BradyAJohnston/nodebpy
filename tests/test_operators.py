@@ -190,7 +190,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestLtFloat"):
             result = g.Value(1.0) < 2.0
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "LESS_THAN"
         assert result.node.data_type == "FLOAT"
 
@@ -198,7 +198,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestGtFloat"):
             result = g.Value(5.0) > 2.0
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "GREATER_THAN"
         assert result.node.data_type == "FLOAT"
 
@@ -206,7 +206,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestLeFloat"):
             result = g.Value(1.0) <= 2.0
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "LESS_EQUAL"
         assert result.node.data_type == "FLOAT"
 
@@ -214,7 +214,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestGeFloat"):
             result = g.Value(5.0) >= 2.0
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "GREATER_EQUAL"
         assert result.node.data_type == "FLOAT"
 
@@ -222,7 +222,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestLtInt"):
             result = g.Integer(1) < 2
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "LESS_THAN"
         assert result.node.data_type == "INT"
 
@@ -230,7 +230,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestGtInt"):
             result = g.Integer(5) > 2
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "GREATER_THAN"
         assert result.node.data_type == "INT"
 
@@ -238,7 +238,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestLeInt"):
             result = g.Integer(1) <= 2
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "LESS_EQUAL"
         assert result.node.data_type == "INT"
 
@@ -246,7 +246,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestGeInt"):
             result = g.Integer(5) >= 2
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "GREATER_EQUAL"
         assert result.node.data_type == "INT"
 
@@ -254,7 +254,7 @@ class TestComparisonOperators:
         with TreeBuilder("TestLtVector"):
             result = g.Vector((1, 2, 3)) < (4, 5, 6)
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "LESS_THAN"
         assert result.node.data_type == "VECTOR"
 
@@ -264,7 +264,7 @@ class TestComparisonOperators:
             b = g.Value(2.0)
             result = a < b
 
-        assert result.node.bl_idname == "FunctionNodeCompare"
+        assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "LESS_THAN"
         assert len(result.node.inputs["A"].links) == 1
         assert len(result.node.inputs["B"].links) == 1
@@ -618,13 +618,13 @@ class TestComparisonChaining:
             val = g.Value(5.0)
             result = (val > 1.0) & (val < 10.0)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "AND"
         assert (
-            result.node.inputs[0].links[0].from_node.bl_idname == "FunctionNodeCompare"
+            result.node.inputs[0].links[0].from_node.bl_idname == g.Compare._bl_idname
         )
         assert (
-            result.node.inputs[1].links[0].from_node.bl_idname == "FunctionNodeCompare"
+            result.node.inputs[1].links[0].from_node.bl_idname == g.Compare._bl_idname
         )
 
     def test_comparison_or_chain(self):
@@ -633,7 +633,7 @@ class TestComparisonChaining:
             val = g.Value(5.0)
             result = (val < 1.0) | (val > 10.0)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "OR"
         lt_node = result.node.inputs[0].links[0].from_node
         gt_node = result.node.inputs[1].links[0].from_node
@@ -645,10 +645,10 @@ class TestComparisonChaining:
         with TreeBuilder("TestCompareNegated"):
             result = ~(g.Value(3.0) > 5.0)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "NOT"
         assert (
-            result.node.inputs[0].links[0].from_node.bl_idname == "FunctionNodeCompare"
+            result.node.inputs[0].links[0].from_node.bl_idname == g.Compare._bl_idname
         )
 
     def test_comparison_xor(self):
@@ -658,7 +658,7 @@ class TestComparisonChaining:
             b = g.Value(2.0)
             result = (a > 0.0) ^ (b > 0.0)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "XOR"
 
     def test_multi_condition_and_or(self):
@@ -669,10 +669,10 @@ class TestComparisonChaining:
             c = g.Value(3.0)
             result = ((a > 0.0) & (b > 0.0)) | (c > 0.0)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "OR"
         and_node = result.node.inputs[0].links[0].from_node
-        assert and_node.bl_idname == "FunctionNodeBooleanMath"
+        assert and_node.bl_idname == g.BooleanMath._bl_idname
         assert and_node.operation == "AND"
 
     def test_integer_comparison_with_boolean_ops(self):
@@ -681,7 +681,7 @@ class TestComparisonChaining:
             idx = g.Index()
             result = (idx >= 5) & (idx <= 100)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "AND"
         ge_node = result.node.inputs[0].links[0].from_node
         le_node = result.node.inputs[1].links[0].from_node
@@ -730,6 +730,7 @@ class TestComplexExpressions:
             val = g.Value(3.0)
             result = (val**2 + 1) % 10
 
+        assert result.node.bl_idname == g.Math._bl_idname
         assert result.node.operation == "FLOORED_MODULO"
 
     def test_vector_expression(self):
@@ -738,7 +739,7 @@ class TestComplexExpressions:
             pos = g.Position()
             result = (pos * 2 + (0, 0, 1)) // (1, 1, 1)
 
-        assert result.node.bl_idname == "ShaderNodeVectorMath"
+        assert result.node.bl_idname == g.VectorMath._bl_idname
         assert result.node.operation == "FLOOR"
 
     def test_negation_and_abs_chain(self):
@@ -747,7 +748,7 @@ class TestComplexExpressions:
             val = g.Value(5.0)
             result = abs(-val) ** 2
 
-        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.bl_idname == g.Math._bl_idname
         assert result.node.operation == "POWER"
 
     def test_selection_logic(self):
@@ -779,7 +780,7 @@ class TestComplexExpressions:
             idx = g.Index()
             result = (idx + 5) // 3
 
-        assert result.node.bl_idname == "FunctionNodeIntegerMath"
+        assert result.node.bl_idname == g.IntegerMath._bl_idname
         assert result.node.operation == "DIVIDE_FLOOR"
 
     def test_full_workflow(self):
@@ -813,14 +814,14 @@ class TestReverseOperators:
         with TreeBuilder("TestRMul"):
             result = 3.0 * g.Value(2.0)
 
-        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.bl_idname == g.Math._bl_idname
         assert result.node.operation == "MULTIPLY"
 
     def test_rtruediv(self):
         with TreeBuilder("TestRTrueDiv"):
             result = 10.0 / g.Value(2.0)
 
-        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.bl_idname == g.Math._bl_idname
         assert result.node.operation == "DIVIDE"
         assert result.node.inputs[0].default_value == 10.0
 
@@ -828,14 +829,14 @@ class TestReverseOperators:
         with TreeBuilder("TestRAdd"):
             result = 5.0 + g.Value(3.0)
 
-        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.bl_idname == g.Math._bl_idname
         assert result.node.operation == "ADD"
 
     def test_rsub(self):
         with TreeBuilder("TestRSub"):
             result = 10.0 - g.Value(3.0)
 
-        assert result.node.bl_idname == "ShaderNodeMath"
+        assert result.node.bl_idname == g.Math._bl_idname
         assert result.node.operation == "SUBTRACT"
         assert result.node.inputs[0].default_value == 10.0
 
@@ -843,21 +844,21 @@ class TestReverseOperators:
         with TreeBuilder("TestRAnd"):
             result = True & g.Boolean(False)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "AND"
 
     def test_ror(self):
         with TreeBuilder("TestROr"):
             result = False | g.Boolean(True)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "OR"
 
     def test_rxor(self):
         with TreeBuilder("TestRXor"):
             result = True ^ g.Boolean(False)
 
-        assert result.node.bl_idname == "FunctionNodeBooleanMath"
+        assert result.node.bl_idname == g.BooleanMath._bl_idname
         assert result.node.operation == "XOR"
 
     def test_matmul(self):
@@ -866,8 +867,8 @@ class TestReverseOperators:
             a = g.CombineTransform(translation=(1, 0, 0))
             result = a @ mat
             result2 = mat @ a
-        assert result.node.bl_idname == "FunctionNodeMatrixMultiply"
-        assert result2.node.bl_idname == "FunctionNodeMatrixMultiply"
+        assert result.node.bl_idname == g.MultiplyMatrices._bl_idname
+        assert result2.node.bl_idname == g.MultiplyMatrices._bl_idname
         assert np.allclose(
             mat.ravel(),
             [i.default_value for i in result.node.inputs[1].links[0].from_node.inputs],
@@ -886,8 +887,8 @@ class TestReverseOperators:
             result = a.o_transform.socket @ b
             result2 = mat @ a
 
-        assert result.node.bl_idname == "FunctionNodeMatrixMultiply"
-        assert result2.node.bl_idname == "FunctionNodeMatrixMultiply"
+        assert result.node.bl_idname == g.MultiplyMatrices._bl_idname
+        assert result2.node.bl_idname == g.MultiplyMatrices._bl_idname
         assert np.allclose(
             mat.ravel(),
             [i.default_value for i in result2.node.inputs[0].links[0].from_node.inputs],
@@ -902,13 +903,13 @@ class TestReverseOperators:
             result2 = mat @ np.random.rand(4, 4)
             _ = mat @ result2
 
-        assert result.node.bl_idname == "FunctionNodeTransformPoint"
+        assert result.node.bl_idname == g.TransformPoint._bl_idname
         assert result.node.inputs[0].links[0].from_node == vec.node
         assert result.node.inputs[1].links[0].from_node == mat.node
         assert result2.node.inputs[0].links[0].from_node == mat.node
         assert (
             result2.node.inputs[1].links[0].from_node.bl_idname
-            == "FunctionNodeCombineMatrix"
+            == g.CombineMatrix._bl_idname
         )
 
         with tree:
@@ -933,10 +934,10 @@ class TestMatrixMultiplcation:
                 >> out
             )
 
-        assert cube.o_mesh.links[0].to_node.bl_idname == "GeometryNodeSetPosition"
+        assert cube.o_mesh.links[0].to_node.bl_idname == g.SetPosition._bl_idname
         assert (
             cube.o_mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname  # type: ignore
-            == "FunctionNodeTransformPoint"
+            == g.TransformPoint._bl_idname
         )
         assert (
             cube.o_mesh.links[0]  # type: ignore
@@ -945,5 +946,5 @@ class TestMatrixMultiplcation:
             .from_node.inputs["Transform"]
             .links[0]
             .from_node.bl_idname
-            == "FunctionNodeMatrixMultiply"
+            == g.MultiplyMatrices._bl_idname
         )
