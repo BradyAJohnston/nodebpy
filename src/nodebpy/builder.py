@@ -153,7 +153,7 @@ class SocketAccessor:
         if key in ids:
             return ids.index(key)
         names = [s.name for s in self._sockets]
-        for key in [key, key.replace("_", " ").title()]:
+        for key in (key, denormalize_name(key)):
             if key in names:
                 if names.count(key) > 1:
                     raise RuntimeError(
@@ -363,8 +363,6 @@ class TreeBuilder:
     """
 
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
-    just_added: "Node | None" = None
-    collapse: bool = False
 
     def __init__(
         self,
@@ -1887,121 +1885,10 @@ class SocketShader(SocketBase):
         )
 
 
-_T = TypeVar("_T", bound="SocketBase")
-
-
-class InputSpec(Generic[_T]):
-    """Descriptor for declaring a node group input socket.
-
-    Accepts a ``functools.partial`` (or any callable) that will create the
-    :class:`SocketBase` when the group tree is first built.  Using ``partial``
-    preserves IDE autocomplete and catches typos at call-time::
-
-        from functools import partial
-
-        i_vertex_index: SocketInt = InputSpec(partial(SocketInt, "Vertex Index", default_input="INDEX"))
-
-    The descriptor also:
-    - Acts as an ``i_*`` property on instances, returning the live socket (typed as ``_T``).
-    - Maps ``__init__`` kwargs to socket names (``i_vertex_index`` → kwarg ``vertex_index``
-      → socket ``"Vertex Index"``).
-
-    When subclassing :class:`NodeGroupBuilder`, ``@dataclass_transform`` causes type checkers
-    to synthesize ``__init__`` from annotated ``InputSpec`` fields — no manual ``__init__``
-    is required.
-    """
-
-    def __init__(
-        self,
-        socket_factory: Callable[[], _T],
-        *,
-        default: Any = dataclasses.MISSING,
-    ):
-        self.socket_factory = socket_factory
-        self.socket_name: str | None = None
-        self.attr_name: str | None = None
-        self.param_name: str | None = None
-        self.default = default
-
-    def __set_name__(self, owner, name: str):
-        self.attr_name = name
-        self.param_name = name.removeprefix("i_")
-
-    @overload
-    def __get__(self, obj: None, objtype: type) -> InputSpec[_T]: ...
-    @overload
-    def __get__(self, obj: NodeGroupBuilder, objtype: type) -> _T: ...
-
-    def __get__(self, obj, objtype=None) -> InputSpec[_T] | _T:
-        if obj is None:
-            return self
-        return obj.inputs.get(self.socket_name)  # type: ignore[return-value]
-
-
-class OutputSpec(Generic[_T]):
-    """Descriptor for declaring a node group output socket.
-
-    Accepts a ``functools.partial`` (or any callable) that will create the
-    :class:`SocketBase` when the group tree is first built::
-
-        from functools import partial
-
-        o_other_vertex: SocketInt = OutputSpec(partial(SocketInt, "Other Vertex"))
-
-    The descriptor acts as an ``o_*`` property on instances, returning the live
-    socket typed as ``_T``.  Output fields are excluded from the synthesized
-    ``__init__`` (``init=False``).
-    """
-
-    def __init__(
-        self,
-        socket_factory: Callable[[], _T],
-        *,
-        init: bool = False,
-    ):
-        self.socket_factory = socket_factory
-        self.socket_name: str | None = None
-        self.attr_name: str | None = None
-        self.init = init
-
-    def __set_name__(self, owner, name: str):
-        self.attr_name = name
-
-    @overload
-    def __get__(self, obj: None, objtype: type) -> OutputSpec[_T]: ...
-    @overload
-    def __get__(self, obj: NodeGroupBuilder, objtype: type) -> _T: ...
-
-    def __get__(self, obj, objtype=None) -> OutputSpec[_T] | _T:
-        if obj is None:
-            return self
-        return obj.outputs.get(self.socket_name)  # type: ignore[return-value]
-
-
 class NodeGroupBuilder(NodeBuilder):
     """Base class for custom node groups.
 
-    Subclasses declare inputs/outputs as :class:`InputSpec` / :class:`OutputSpec`
-    descriptors and implement :meth:`_build_group` with the node-graph logic::
-
-        class Jitter(NodeGroupBuilder):
-            _name = "Jitter"
-
-            i_geometry: SocketGeometry = InputSpec(partial(SocketGeometry, "Geometry"))
-            i_amount:   SocketFloat    = InputSpec(partial(SocketFloat, "Amount", 0.2), default=0.2)
-            o_geometry                 = OutputSpec(partial(SocketGeometry, "Geometry"))
-
-            def __init__(self, geometry: TYPE_INPUT_GEOMETRY = None, amount: TYPE_INPUT_VALUE = 0.2):
-                super().__init__(geometry=geometry, amount=amount)
-
-            @classmethod
-            def _build_group(cls, tree, geometry: SocketGeometry, amount: SocketFloat):
-                ...
-
-    The base class handles:
-    - Caching the node group in ``bpy.data.node_groups``
-    - Creating interface sockets from descriptor metadata
-    - Mapping ``__init__`` kwargs to socket names and calling ``_establish_links``
+    Subclasses implement :meth:`_build_group` with the node-graph logic.
     """
 
     _name: str
@@ -2033,30 +1920,14 @@ class NodeGroupBuilder(NodeBuilder):
         name = self._name
         if name in bpy.data.node_groups:
             return bpy.data.node_groups[name]
-        return self._create_group(name)
 
-    def _create_group(self, name: str) -> bpy.types.GeometryNodeTree:
         with TreeBuilder(name) as tree:
             self._build_group(tree)
             tree.tree.color_tag = self._color_tag
-            return tree.tree
+
+        return tree.tree
 
     @classmethod
-    def _build_group(
-        cls, tree: TreeBuilder, *args: Any, **kwargs: Any
-    ) -> Mapping[str, Union[SocketLinker, NodeBuilder]]:
-        """Build the node group internals.
-
-        Override with a typed signature matching the :class:`InputSpec`
-        descriptors::
-
-            @classmethod
-            def _build_group(cls, tree, vertex_index: SocketInt, edge_number: SocketInt):
-                ...
-                return {"Other Vertex": some_socket}
-
-        Returns:
-            Mapping of output socket names to the :class:`SocketLinker` that
-            should be wired to each output.
-        """
+    def _build_group(cls, tree: TreeBuilder) -> None:
+        """Build the node group internals."""
         raise NotImplementedError

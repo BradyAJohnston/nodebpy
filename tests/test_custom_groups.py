@@ -1,14 +1,11 @@
-from functools import partial, reduce
+from functools import reduce
 
+import bpy
 import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy.builder import (
-    InputSpec,
     NodeGroupBuilder,
-    OutputSpec,
-    SocketFloat,
-    SocketInt,
     SocketLinker,
 )
 from nodebpy.nodes.geometry import IntegerMath
@@ -33,6 +30,8 @@ def test_custom_group():
     assert last_group.node.node_tree.name == "Other Vertex"
     assert len(tb) == 5
     assert len(tb.tree.links) == 4
+    # we should be re-using the same node group for multiple instances
+    assert len(bpy.data.node_groups) == 2
 
 
 def test_custom_group_with_offset():

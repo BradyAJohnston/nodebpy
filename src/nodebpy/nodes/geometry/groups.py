@@ -1,13 +1,7 @@
-from functools import partial
-
 from ...builder import (
-    InputSpec,
-    IntegerSocketLinker,
     NodeGroupBuilder,
-    OutputSpec,
     SocketInt,
     SocketVector,
-    VectorSocketLinker,
 )
 from ...types import TYPE_INPUT_INT, TYPE_INPUT_VECTOR
 from . import EdgesOfVertex, EdgeVertices, EvaluateAtIndex, Switch
