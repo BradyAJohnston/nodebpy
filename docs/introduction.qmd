@@ -1,5 +1,5 @@
 ---
-title: What happens when we add nodes?
+title: Creating Node Groups
 ---
 
 ```{python}

@@ -36,37 +36,37 @@ class RadialTiling(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_sides(self) -> SocketLinker:
         """Input socket: Sides"""
-        return self._input("Sides")
+        return self.inputs.get("Sides")
 
     @property
     def i_roundness(self) -> SocketLinker:
         """Input socket: Roundness"""
-        return self._input("Roundness")
+        return self.inputs.get("Roundness")
 
     @property
     def o_segment_coordinates(self) -> VectorSocketLinker:
         """Output socket: Segment Coordinates"""
-        return self._output("Segment Coordinates")
+        return self.outputs.get("Segment Coordinates")
 
     @property
     def o_segment_id(self) -> SocketLinker:
         """Output socket: Segment ID"""
-        return self._output("Segment ID")
+        return self.outputs.get("Segment ID")
 
     @property
     def o_segment_width(self) -> SocketLinker:
         """Output socket: Segment Width"""
-        return self._output("Segment Width")
+        return self.outputs.get("Segment Width")
 
     @property
     def o_segment_rotation(self) -> SocketLinker:
         """Output socket: Segment Rotation"""
-        return self._output("Segment Rotation")
+        return self.outputs.get("Segment Rotation")
 
     @property
     def normalize(self) -> bool:
@@ -98,17 +98,17 @@ class VectorCurves(NodeBuilder):
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self.outputs.get("Vector")
 
 
 class VectorMath(NodeBuilder):
@@ -383,32 +383,32 @@ class VectorMath(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_vector_001(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector_001")
+        return self.inputs.get("Vector_001")
 
     @property
     def i_vector_002(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector_002")
+        return self.inputs.get("Vector_002")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self.outputs.get("Vector")
 
     @property
     def o_value(self) -> SocketLinker:
         """Output socket: Value"""
-        return self._output("Value")
+        return self.outputs.get("Value")
 
     @property
     def operation(
@@ -520,32 +520,32 @@ class VectorRotate(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_center(self) -> SocketLinker:
         """Input socket: Center"""
-        return self._input("Center")
+        return self.inputs.get("Center")
 
     @property
     def i_axis(self) -> SocketLinker:
         """Input socket: Axis"""
-        return self._input("Axis")
+        return self.inputs.get("Axis")
 
     @property
     def i_angle(self) -> SocketLinker:
         """Input socket: Angle"""
-        return self._input("Angle")
+        return self.inputs.get("Angle")
 
     @property
     def i_rotation(self) -> SocketLinker:
         """Input socket: Rotation"""
-        return self._input("Rotation")
+        return self.inputs.get("Rotation")
 
     @property
     def o_vector(self) -> VectorSocketLinker:
         """Output socket: Vector"""
-        return self._output("Vector")
+        return self.outputs.get("Vector")
 
     @property
     def rotation_type(

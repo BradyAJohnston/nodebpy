@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Iterable, Literal
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Iterable,
+    Literal,
+)
 
 if TYPE_CHECKING:
     from .nodes.geometry.converter import BooleanMath, MultiplyMatrices, TransformPoint
@@ -106,6 +112,150 @@ def _allow_innactive_sockets(node: bpy.types.Node) -> bool:
 
 class SocketError(Exception):
     """Raised when a socket operation fails."""
+
+
+class SocketAccessor:
+    """Unified accessor for a node's input or output socket collection.
+
+    Supports identifier/name lookup, dict-style ``[]`` access, availability
+    filtering, and type-compatible matching — replacing the former pairs of
+    ``_input_idx``/``_output_idx``, ``_input``/``_output``,
+    ``_available_inputs``/``_available_outputs``, and ``_best_output_socket``.
+    """
+
+    def __init__(
+        self,
+        sockets: Any,
+        direction: Literal["input", "output"],
+        node: bpy.types.Node,
+    ):
+        self._sockets = sockets
+        self._direction = direction
+        self._node = node
+
+    def index(self, key: str | int) -> int:
+        """Find socket index by identifier, falling back to name.
+
+        Tries identifier match first. If no identifier matches, falls back to
+        name lookup — but raises if the name is duplicated (ambiguous).
+        Integer keys are returned directly.
+        """
+        if isinstance(key, int):
+            return key
+        ids = [s.identifier for s in self._sockets]
+        if key in ids:
+            return ids.index(key)
+        names = [s.name for s in self._sockets]
+        if key in names:
+            if names.count(key) > 1:
+                raise RuntimeError(
+                    f"{self._direction.title()} name '{key}' is ambiguous on "
+                    f"{self._node.bl_idname} (appears {names.count(key)} times). "
+                    f"Use the socket identifier instead."
+                )
+            return names.index(key)
+        raise RuntimeError(
+            f"{self._direction.title()} '{key}' not found on "
+            f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"
+        )
+
+    def get(self, key: str | int) -> "SocketLinker":
+        """Get a SocketLinker for a socket by identifier, name, or index."""
+        return _get_socket_linker(self._sockets[self.index(key)])
+
+    def __getitem__(self, key: str | int) -> "SocketLinker":
+        """Access by identifier, name, or integer index."""
+        return self.get(key)
+
+    @property
+    def _ignore_visibility(self) -> bool:
+        """Whether to ignore socket visibility when selecting available sockets.
+
+        Only affects ``available`` / ``best_match`` (the auto-linking heuristics).
+        ``values()`` / ``items()`` always respect node-level visibility so that
+        iteration over a node's sockets stays predictable regardless of context.
+        Returns False when called outside a tree context (e.g. from a bare
+        SocketLinker that was created outside a ``with tree:`` block).
+        """
+        if not TreeBuilder._tree_contexts:
+            return False
+        return TreeBuilder._tree_contexts[-1].ignore_visibility
+
+    def _visible_sockets(self) -> list[NodeSocket]:
+        """Sockets that should appear in iteration (values/items/keys).
+
+        Uses the per-node allowlist (``_allow_innactive_sockets``) rather than
+        the tree-level ``ignore_visibility`` flag — enumeration should always
+        reflect what is meaningfully present on the node, not the linking context.
+        """
+        if self._direction == "input":
+            return [
+                s
+                for s in self._sockets
+                if _allow_innactive_sockets(self._node)
+                or (not s.is_inactive and s.is_icon_visible)
+            ]
+        return [s for s in self._sockets if s.is_icon_visible]
+
+    @property
+    def available(self) -> list[NodeSocket]:
+        """Sockets eligible for automatic linking.
+
+        Respects ``ignore_visibility`` on the active ``TreeBuilder`` context, so
+        nodes with normally-hidden sockets can still be auto-linked when that flag
+        is set (e.g. during ``test_add_all_nodes``).
+        """
+        if self._direction == "input":
+            return [
+                s
+                for s in self._sockets
+                if (
+                    self._ignore_visibility or (not s.is_inactive and s.is_icon_visible)
+                )
+                and (not s.links or s.is_multi_input)
+            ]
+        return [
+            s for s in self._sockets if self._ignore_visibility or s.is_icon_visible
+        ]
+
+    def best_match(self, socket_type: str) -> NodeSocket:
+        """Find the best compatible socket for the given type."""
+        compatible = SOCKET_COMPATIBILITY.get(socket_type, ())
+        possible = [s for s in self.available if s.type in compatible]
+        if possible:
+            possible.sort(key=lambda x: compatible.index(x.type))
+            return possible[0]
+        raise SocketError(
+            f"No compatible {self._direction} socket found for type "
+            f"{socket_type} on {self._node.name}"
+        )
+
+    def values(self) -> "list[SocketLinker]":
+        """All visible sockets as SocketLinkers.
+
+        Uses node-level visibility rules regardless of ``ignore_visibility`` —
+        see ``_visible_sockets`` for rationale.
+        """
+        return [_get_socket_linker(s) for s in self._visible_sockets()]
+
+    def items(self) -> "list[tuple[str, SocketLinker]]":
+        """All visible sockets as (name, SocketLinker) pairs.
+
+        Uses node-level visibility rules regardless of ``ignore_visibility`` —
+        see ``_visible_sockets`` for rationale.
+        """
+        return [(s.name, _get_socket_linker(s)) for s in self._visible_sockets()]
+
+    def keys(self) -> list[str]:
+        """All visible socket names."""
+        return [name for name, _ in self.items()]
+
+    def __len__(self) -> int:
+        return len(self.items())
+
+    def __iter__(self):
+        """Iterate over socket names (enables ``**node.outputs`` unpacking)."""
+        return iter(self.keys())
 
 
 class PanelContext:
@@ -218,6 +368,7 @@ class TreeBuilder:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
+        ignore_visibility: bool = False,
     ):
         if isinstance(tree, str):
             self.tree = bpy.data.node_groups.new(tree, tree_type)
@@ -231,6 +382,7 @@ class TreeBuilder:
         self._arrange = arrange
         self.collapse = collapse
         self.fake_user = fake_user
+        self.ignore_visibility = ignore_visibility
 
     @classmethod
     def geometry(
@@ -393,7 +545,10 @@ class TreeBuilder:
 
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
 
-        if any(socket.is_inactive for socket in [socket1, socket2]):
+        if (
+            any(socket.is_inactive for socket in [socket1, socket2])
+            and not self.ignore_visibility
+        ):
             assert socket1.node
             assert socket2.node
             # the warning message should report which sockets from which nodes were linked and which were innactive
@@ -469,13 +624,13 @@ class NodeBuilder:
     @property
     def _default_input_socket(self) -> NodeSocket:
         if self._default_input_id is not None:
-            return self.node.inputs[self._input_idx(self._default_input_id)]
+            return self.node.inputs[self.inputs.index(self._default_input_id)]
         return self.node.inputs[0]
 
     @property
     def _default_output_socket(self) -> NodeSocket:
         if self._default_output_id is not None:
-            return self.node.outputs[self._output_idx(self._default_output_id)]
+            return self.node.outputs[self.outputs.index(self._default_output_id)]
 
         counter = 0
         socket = self.node.outputs[counter]
@@ -506,34 +661,6 @@ class NodeBuilder:
         else:
             raise TypeError(f"Unsupported type: {type(node)}")
 
-    @property
-    def _available_outputs(self) -> list[NodeSocket]:
-        return [socket for socket in self.node.outputs if socket.is_icon_visible]
-
-    @property
-    def _available_inputs(self) -> list[NodeSocket]:
-        return [
-            socket
-            for socket in self.node.inputs
-            # only sockets that are available, don't have a link already (unless multi-input)
-            if not socket.is_inactive
-            and socket.is_icon_visible
-            and (not socket.links or socket.is_multi_input)
-        ]
-
-    def _best_output_socket(self, type: str) -> NodeSocket:
-        compatible = SOCKET_COMPATIBILITY.get(type, ())
-        possible = [
-            socket for socket in self._available_outputs if socket.type in compatible
-        ]
-        if possible:
-            possible.sort(key=lambda x: compatible.index(x.type))
-            return possible[0]
-
-        message = f"No compatible output sockets found for type {type} between {self.node.name} and {type} with compatible types: {compatible}"
-
-        raise SocketError(message)
-
     def _find_best_socket_pair(
         self,
         source: "NodeBuilder | SocketLinker | NodeSocket",
@@ -543,12 +670,12 @@ class NodeBuilder:
         the currently available outputs from the source and the inputs from the target"""
         possible_combos = []
         if isinstance(source, (NodeBuilder, SocketLinker)):
-            outputs = source._available_outputs
+            outputs = source.outputs.available
         elif isinstance(source, NodeSocket):
             outputs = [source]
 
         if isinstance(target, (NodeBuilder, SocketLinker)):
-            inputs = target._available_inputs
+            inputs = target.inputs.available
         else:
             inputs = [target]
         for output in outputs:
@@ -572,43 +699,6 @@ class NodeBuilder:
             f"Available input types: {[f'{i.name}:{i.type}' for i in inputs]}"
         )
 
-    def _input_idx(self, identifier: str) -> int:
-        # currently there is a Blender bug that is preventing the lookup of sockets from identifiers on some
-        # nodes but not others
-        # This currently fails:
-        #
-        # node = bpy.data.node_groups["Geometry Nodes"].nodes['Mix']
-        # node.inputs[node.inputs[0].identifier]
-        #
-        # This should succeed because it should be able to lookup the socket by identifier
-        # so instead we have to convert the identifier to an index and then lookup the socket
-        # from the index instead
-        input_ids = [input.identifier for input in self.node.inputs]
-        if identifier in input_ids:
-            idx = input_ids.index(identifier)
-            return idx
-        input_names = [input.name for input in self.node.inputs]
-        if identifier in input_names:
-            return input_names.index(identifier)
-
-        raise RuntimeError(
-            f"Input '{identifier}' not found on {self.node.bl_idname}. "
-            f"Available inputs: {input_names}"
-        )
-
-    def _output_idx(self, identifier: str) -> int:
-        output_ids = [output.identifier for output in self.node.outputs]
-        return output_ids.index(identifier)
-
-    def _input(self, identifier: str, subtype: None = None) -> SocketLinker:
-        """Input socket: Vector"""
-        input = self.node.inputs[self._input_idx(identifier)]
-        return SocketLinker(input)
-
-    def _output(self, identifier: str) -> SocketLinker:
-        """Output socket"""
-        return _get_socket_linker(self.node.outputs[self._output_idx(identifier)])
-
     def _link(
         self, source: LINKABLE | SocketLinker | NodeSocket, target: LINKABLE
     ) -> bpy.types.NodeLink:
@@ -625,7 +715,7 @@ class NodeBuilder:
             try:
                 self._link(source, self.node.inputs[input])
             except KeyError:
-                self._link(source, self.node.inputs[self._input_idx(input)])
+                self._link(source, self.node.inputs[self.inputs.index(input)])
         else:
             self._link(source, input)
 
@@ -668,33 +758,27 @@ class NodeBuilder:
             elif isinstance(value, NodeSocket):
                 self._link_from(value, name)
             elif isinstance(value, NodeBuilder):
-                self._link_from(value._best_output_socket(self._input(name).type), name)
+                self._link_from(
+                    value.outputs.best_match(self.inputs.get(name).type), name
+                )
             else:
                 if name in input_ids:
                     input = self.node.inputs[input_ids.index(name)]
                     self._set_input_default_value(input, value)
                 else:
-                    input = self.node.inputs[name.replace("_", "").capitalize()]
+                    if name in self.node.inputs:
+                        input = self.node.inputs[name]
+                    else:
+                        input = self.node.inputs[name.replace("_", "").capitalize()]
                     self._set_input_default_value(input, value)
 
     @property
-    def outputs(self) -> dict[str, "SocketLinker"]:
-        """Return all visible output sockets as a dict keyed by socket name."""
-        return {
-            output.name: _get_socket_linker(output)
-            for output in self._available_outputs
-        }
+    def outputs(self) -> SocketAccessor:
+        return SocketAccessor(self.node.outputs, "output", self.node)
 
     @property
-    def inputs(self) -> dict[str, "SocketLinker"]:
-        """Return all visible input sockets as a dict keyed by socket name."""
-
-        return {
-            input.name: SocketLinker(input)
-            for input in self.node.inputs
-            if _allow_innactive_sockets(self.node)
-            or (not input.is_inactive and input.is_icon_visible)
-        }
+    def inputs(self) -> SocketAccessor:
+        return SocketAccessor(self.node.inputs, "input", self.node)
 
     def __rshift__(self, other: "NodeBuilder | SocketLinker") -> "NodeBuilder":
         """Chain nodes using >> operator. Links output to input.
@@ -718,8 +802,8 @@ class NodeBuilder:
             try:
                 target = other.node.inputs[name]
             except KeyError:
-                target = other.node.inputs[other._input_idx(name)]
-            source = self._best_output_socket(target.type)
+                target = other.node.inputs[other.inputs.index(name)]
+            source = self.outputs.best_match(target.type)
         else:
             try:
                 source, target = self._find_best_socket_pair(self, other)
@@ -950,7 +1034,7 @@ class DynamicInputsMixin:
                 items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
-            socket_source, type = self._match_compatible_data(source._available_outputs)
+            socket_source, type = self._match_compatible_data(source.outputs.available)
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)
@@ -974,12 +1058,16 @@ class SocketLinker(NodeBuilder):
         return links
 
     @property
-    def _available_outputs(self) -> list[NodeSocket]:
-        return [self.socket]
+    def _default_output_socket(self) -> NodeSocket:
+        return self.socket
 
     @property
-    def _available_inputs(self) -> list[NodeSocket]:
-        return [self.socket]
+    def outputs(self) -> SocketAccessor:
+        return SocketAccessor([self.socket], "output", self.node)
+
+    @property
+    def inputs(self) -> SocketAccessor:
+        return SocketAccessor([self.socket], "input", self.node)
 
     @property
     def type(self) -> SOCKET_TYPES:
@@ -1152,10 +1240,20 @@ class IntegerSocketLinker(SocketLinker):
     def _is_geometry_tree(self) -> bool:
         return self._tree.tree.bl_idname == "GeometryNodeTree"
 
+    @staticmethod
+    def _is_integer_socket(value: Any) -> bool:
+        socket = getattr(
+            value, "socket", getattr(value, "_default_output_socket", None)
+        )
+        return isinstance(socket, NodeSocket) and socket.type == "INT"
+
+    def _other_is_integer(self, other: Any) -> bool:
+        return isinstance(other, int) or self._is_integer_socket(other)
+
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
     ) -> "NodeBuilder":
-        if self._is_geometry_tree and isinstance(other, int):
+        if self._is_geometry_tree and self._other_is_integer(other):
             from .nodes.geometry.converter import IntegerMath
 
             values = (self.socket, other) if not reverse else (other, self.socket)
@@ -1173,7 +1271,7 @@ class IntegerSocketLinker(SocketLinker):
         return super()._dispatch_unary(operation)
 
     def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "NodeBuilder":
-        if self._is_geometry_tree and isinstance(other, int):
+        if self._is_geometry_tree and self._other_is_integer(other):
             from .nodes.geometry.converter import IntegerMath
 
             values = (self.socket, other) if not reverse else (other, self.socket)
@@ -1416,6 +1514,9 @@ class SocketVector(SocketBase):
         structure_type: _SocketShapeStructureType = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
+        default_input: Literal[
+            "VALUE", "NORMAL", "POSITION", "HANDLE_LEFT", "HANDLE_RIGHT"
+        ] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
     ):
         assert len(default_value) == dimensions, (
@@ -1432,6 +1533,7 @@ class SocketVector(SocketBase):
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             subtype=subtype,
+            default_input=default_input,
             default_attribute=default_attribute,
             attribute_domain=attribute_domain,
         )
