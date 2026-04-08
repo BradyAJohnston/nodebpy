@@ -1,6 +1,7 @@
 project:
   type: website
   output-dir: _build
+  pre-render: _config.py
 
 website:
   title: "nodebpy {{< var version >}}"
