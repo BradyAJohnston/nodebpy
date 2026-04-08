@@ -153,14 +153,15 @@ class SocketAccessor:
         if key in ids:
             return ids.index(key)
         names = [s.name for s in self._sockets]
-        if key in names:
-            if names.count(key) > 1:
-                raise RuntimeError(
-                    f"{self._direction.title()} name '{key}' is ambiguous on "
-                    f"{self._node.bl_idname} (appears {names.count(key)} times). "
-                    f"Use the socket identifier instead."
-                )
-            return names.index(key)
+        for key in [key, key.replace("_", " ").title()]:
+            if key in names:
+                if names.count(key) > 1:
+                    raise RuntimeError(
+                        f"{self._direction.title()} name '{key}' is ambiguous on "
+                        f"{self._node.bl_idname} (appears {names.count(key)} times). "
+                        f"Use the socket identifier instead."
+                    )
+                return names.index(key)
         raise RuntimeError(
             f"{self._direction.title()} '{key}' not found on "
             f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"
@@ -776,7 +777,7 @@ class NodeBuilder:
                     if name in self.node.inputs:
                         input = self.node.inputs[name]
                     else:
-                        input = self.node.inputs[name.replace("_", "").capitalize()]
+                        input = self.node.inputs[name.replace("_", " ").title()]
                     self._set_input_default_value(input, value)
 
     @property
@@ -1984,7 +1985,7 @@ class NodeGroupBuilder(NodeBuilder):
     descriptors and implement :meth:`_build_group` with the node-graph logic::
 
         class Jitter(NodeGroupBuilder):
-            _node_group_name = "Jitter"
+            _name = "Jitter"
 
             i_geometry: SocketGeometry = InputSpec(partial(SocketGeometry, "Geometry"))
             i_amount:   SocketFloat    = InputSpec(partial(SocketFloat, "Amount", 0.2), default=0.2)
@@ -2003,7 +2004,7 @@ class NodeGroupBuilder(NodeBuilder):
     - Mapping ``__init__`` kwargs to socket names and calling ``_establish_links``
     """
 
-    _node_group_name: str
+    _name: str
     _bl_idname = "GeometryNodeGroup"
     _warning_propagation: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"] = (
         "ALL"
@@ -2020,61 +2021,24 @@ class NodeGroupBuilder(NodeBuilder):
         "VECTOR",
     ] = "NONE"
     node: bpy.types.GeometryNodeGroup
-    _group_inputs: ClassVar[dict[str, InputSpec]]
-    _group_outputs: ClassVar[dict[str, OutputSpec]]
-
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        cls._group_inputs = {}
-        cls._group_outputs = {}
-        for name in list(vars(cls)):
-            val = vars(cls)[name]
-            if isinstance(val, InputSpec):
-                cls._group_inputs[name] = val
-            elif isinstance(val, OutputSpec):
-                cls._group_outputs[name] = val
 
     def __init__(self, **kwargs):
         super().__init__()
         self.node.node_tree = self._get_or_create_group()
         self.node.show_options = False
         self.node.warning_propagation = self._warning_propagation
-        key_args = {}
-        for spec in self._group_inputs.values():
-            if spec.param_name in kwargs:
-                key_args[spec.socket_name] = kwargs[spec.param_name]
-        self._establish_links(**key_args)
+        self._establish_links(**kwargs)
 
     def _get_or_create_group(self) -> bpy.types.GeometryNodeTree:
-        name = self._node_group_name
+        name = self._name
         if name in bpy.data.node_groups:
             return bpy.data.node_groups[name]
         return self._create_group(name)
 
     def _create_group(self, name: str) -> bpy.types.GeometryNodeTree:
         with TreeBuilder(name) as tree:
-            # Create input sockets from InputSpec descriptors
-            input_sockets: dict[str, SocketBase] = {}
-            with tree.inputs:
-                for spec in self._group_inputs.values():
-                    sock = spec.socket_factory()
-                    spec.socket_name = sock.interface_socket.name
-                    input_sockets[spec.param_name] = sock
-
-            # Let the subclass build the graph — inputs passed as kwargs
-            output_mapping = self._build_group(tree, **input_sockets)
-
-            # Create output sockets from OutputSpec descriptors
-            with tree.outputs:
-                for spec in self._group_outputs.values():
-                    out_sock = spec.socket_factory()
-                    spec.socket_name = out_sock.interface_socket.name
-                    source = output_mapping.get(spec.socket_name)
-                    if source is not None:
-                        source >> out_sock
-
+            self._build_group(tree)
             tree.tree.color_tag = self._color_tag
-
             return tree.tree
 
     @classmethod

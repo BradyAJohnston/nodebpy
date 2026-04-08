@@ -7,7 +7,7 @@ title: Custom Node Groups
 from functools import partial
 from nodebpy import TreeBuilder, geometry as g, sockets as s
 from nodebpy import display_render
-from nodebpy.builder import NodeGroupBuilder, InputSpec, OutputSpec
+from nodebpy import builder
 from nodebpy.types import TYPE_INPUT_VALUE, TYPE_INPUT_INT, TYPE_INPUT_VECTOR, TYPE_INPUT_GEOMETRY
 ```
 
@@ -29,7 +29,7 @@ from nodebpy.builder import NodeGroupBuilder, InputSpec, OutputSpec
 from nodebpy import sockets as s
 
 class MyNode(NodeGroupBuilder):
-    _node_group_name = "My Node"                                  # 1. Name
+    _name = "My Node"                                  # 1. Name
 
     i_value = InputSpec(partial(s.SocketFloat, "Value"))           # 2. Inputs / Outputs
     o_result = OutputSpec(partial(s.SocketFloat, "Result"))
@@ -42,7 +42,7 @@ class MyNode(NodeGroupBuilder):
         return {"Result": value * 2.0}
 ```
 
-### 1. `_node_group_name`
+### 1. `_name`
 The display name for the group inside Blender. This is also the key used to cache it in `bpy.data.node_groups`.
 
 ### 2. `InputSpec` / `OutputSpec`
@@ -65,17 +65,12 @@ A classmethod that receives the `TreeBuilder` and each input socket as a typed k
 Let's start with something visually obvious -- a node that randomly displaces each point on a mesh. This is useful any time you want to add organic variation to geometry.
 
 ```{python}
-class Jitter(NodeGroupBuilder):
+class Jitter(builder.NodeGroupBuilder):
     """Randomly offset each point by a bounded amount."""
 
-    _node_group_name = "Jitter"
+    _name = "Jitter"
     _color_tag = "GEOMETRY"
-
-    i_geometry = InputSpec(partial(s.SocketGeometry, "Geometry"))
-    i_amount = InputSpec(partial(s.SocketFloat, "Amount", 0.2))
-    i_seed = InputSpec(partial(s.SocketInt, "Seed"))
-    o_geometry = OutputSpec(partial(s.SocketGeometry, "Geometry"))
-
+    
     def __init__(
         self,
         geometry: TYPE_INPUT_GEOMETRY = ...,
@@ -83,14 +78,35 @@ class Jitter(NodeGroupBuilder):
         seed: TYPE_INPUT_INT = 0,
     ):
         super().__init__(geometry=geometry, amount=amount, seed=seed)
+    
+    @property
+    def i_geometry(self) -> builder.IntegerSocketLinker:
+        return self.inputs.get("Geometry")
+    
+    @property
+    def i_amount(self) -> builder.SocketLinker:
+        return self.inputs.get("Amount")
+    
+    @property
+    def i_seed(self) -> builder.IntegerSocketLinker:
+        return self.inputs.get("Amount")
+    
+    @property
+    def o_geometry(self) -> builder.SocketLinker:
+        return self.outputs.get("Geometry")
 
     @classmethod
-    def _build_group(
-        cls, tree, geometry: s.SocketGeometry, amount: s.SocketFloat, seed: s.SocketInt,
-    ):
+    def _build_group(cls, tree):
+        with tree.inputs;
+            geometry = s.SocketGeometry("Geometry")
+            amount = s.SocketFloat("Amount", 0.2)
+            seed = s.SocketInt("Seed")
+        
         offset = g.RandomValue.vector(min=-1, seed=seed) * amount
         result = geometry >> g.SetPosition(offset=offset)
-        return {"Geometry": result}
+        
+        with tree.outputs:
+            _ = result >> s.SocketGeometry
 ```
 
 Let's see the internal node graph:
@@ -133,7 +149,7 @@ from math import tau
 class RadialArray(NodeGroupBuilder):
     """Distribute instances evenly around a circle."""
 
-    _node_group_name = "Radial Array"
+    _name = "Radial Array"
     _color_tag = "GEOMETRY"
 
     i_geometry = InputSpec(partial(s.SocketGeometry, "Geometry"))
@@ -249,7 +265,7 @@ Each custom group appears as a single, named node in the tree -- keeping the gra
 
 | Attribute | Type | Default | Description |
 |:----------|:-----|:--------|:------------|
-| `_node_group_name` | `str` | *(required)* | Display name and cache key for the group |
+| `_name` | `str` | *(required)* | Display name and cache key for the group |
 | `_color_tag` | `str` | `"NONE"` | Header colour in Blender (`"INPUT"`, `"CONVERTER"`, `"GEOMETRY"`, etc.) |
 | `_warning_propagation` | `str` | `"ALL"` | How warnings propagate (`"ALL"`, `"ERRORS_AND_WARNINGS"`, `"ERRORS"`, `"NONE"`) |
 

@@ -1,6 +1,14 @@
 from functools import partial
 
-from ...builder import InputSpec, NodeGroupBuilder, OutputSpec, SocketInt, SocketVector
+from ...builder import (
+    InputSpec,
+    IntegerSocketLinker,
+    NodeGroupBuilder,
+    OutputSpec,
+    SocketInt,
+    SocketVector,
+    VectorSocketLinker,
+)
 from ...types import TYPE_INPUT_INT, TYPE_INPUT_VECTOR
 from . import EdgesOfVertex, EdgeVertices, EvaluateAtIndex, Switch
 
@@ -11,14 +19,8 @@ class OtherVertex(NodeGroupBuilder):
     vertex of that edge.
     """
 
-    _node_group_name = "Other Vertex"
+    _name = "Other Vertex"
     _color_tag = "INPUT"
-
-    i_vertex_index: SocketInt = InputSpec(
-        partial(SocketInt, "Vertex Index", default_input="INDEX")
-    )
-    i_edge_number: SocketInt = InputSpec(partial(SocketInt, "Edge Number"), default=0)
-    o_other_vertex = OutputSpec(partial(SocketInt, "Other Vertex"))
 
     def __init__(
         self, vertex_index: TYPE_INPUT_INT = None, edge_number: TYPE_INPUT_INT = 0
@@ -26,13 +28,19 @@ class OtherVertex(NodeGroupBuilder):
         super().__init__(vertex_index=vertex_index, edge_number=edge_number)
 
     @classmethod
-    def _build_group(cls, tree, vertex_index: SocketInt, edge_number: SocketInt):
+    def _build_group(cls, tree):
+        with tree.inputs:
+            vertex_index = SocketInt("Vertex Index", default_input="INDEX")
+            edge_number = SocketInt("Edge Number")
+
         eov = EdgesOfVertex(vertex_index, sort_index=edge_number)
         ev = EdgeVertices()
         vert_1 = EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
         vert_2 = EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
         switch = (vert_1 != vertex_index) >> Switch.integer(..., vert_1, vert_2)
-        return {"Other Vertex": switch}
+
+        with tree.outputs:
+            _ = switch >> SocketInt("Other Vertex")
 
 
 class OffsetVector(NodeGroupBuilder):
@@ -40,15 +48,8 @@ class OffsetVector(NodeGroupBuilder):
     Evaluate a given vector field at an offset to the current `Index`.
     """
 
-    _node_group_name = "Offset Vector"
+    _name = "Offset Vector"
     _color_tag = "INPUT"
-
-    i_index: SocketInt = InputSpec(partial(SocketInt, "Index", default_input="INDEX"))
-    i_vector: SocketVector = InputSpec(
-        partial(SocketVector, "Vector", default_input="POSITION")
-    )
-    i_offset: SocketInt = InputSpec(partial(SocketInt, "Offset"), default=0)
-    o_vector = OutputSpec(partial(SocketVector, "Vector"))
 
     def __init__(
         self,
@@ -59,7 +60,13 @@ class OffsetVector(NodeGroupBuilder):
         super().__init__(index=index, vector=vector, offset=offset)
 
     @classmethod
-    def _build_group(
-        cls, tree, index: SocketInt, vector: SocketVector, offset: SocketInt
-    ):
-        return {"Vector": EvaluateAtIndex.point.vector(vector, index + offset)}
+    def _build_group(cls, tree):
+        with tree.inputs:
+            index = SocketInt("Index", default_input="INDEX")
+            vector = SocketVector("Vector", default_input="POSITION")
+            offset = SocketInt("Offset")
+
+        value = EvaluateAtIndex.point.vector(vector, index + offset)
+
+        with tree.outputs:
+            _ = value >> SocketVector("Vector")
