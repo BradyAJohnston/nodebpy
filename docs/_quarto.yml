@@ -14,7 +14,6 @@ website:
         menu:
           - introduction.qmd
           - operators.qmd
-          - custom-node-groups.qmd
       - href: reference/
         text: Reference
     right:
