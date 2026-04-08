@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-efceea6a8b73a9818cc2ca84b2db194b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-da57242f58c476a49001d331373b5faa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.7.1</span>
+    <span class="navbar-title">nodebpy 0.9.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -130,14 +130,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../introduction.html"> 
-<span class="menu-text">Introduction</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Documentation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-documentation">    
+        <li>
+    <a class="dropdown-item" href="../introduction.html">
+ <span class="dropdown-text">Creating Node Groups</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../operators.html"> 
-<span class="menu-text">Operators</span></a>
+        <li>
+    <a class="dropdown-item" href="../operators.html">
+ <span class="dropdown-text">Math Operators</span></a>
   </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../reference/"> 
 <span class="menu-text">Reference</span></a>
@@ -347,12 +354,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">nodes.shader.vector</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.zone.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.zone</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -422,12 +423,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.compositor.output.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.compositor.output</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.texture.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.texture</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -1035,7 +1030,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Arc.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Arc.mode">mode</a></td>
@@ -1067,7 +1062,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Arc.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Arc.tree">tree</a></td>
@@ -1125,7 +1120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.BezierSegment.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.BezierSegment.mode">mode</a></td>
@@ -1145,7 +1140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.BezierSegment.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.BezierSegment.tree">tree</a></td>
@@ -1183,7 +1178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.BoundingBox.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.BoundingBox.name">name</a></td>
@@ -1207,7 +1202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.BoundingBox.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.BoundingBox.tree">tree</a></td>
@@ -1274,7 +1269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cone.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cone.name">name</a></td>
@@ -1306,7 +1301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cone.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cone.tree">tree</a></td>
@@ -1340,7 +1335,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ConvexHull.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ConvexHull.name">name</a></td>
@@ -1356,7 +1351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ConvexHull.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ConvexHull.tree">tree</a></td>
@@ -1402,7 +1397,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cube.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cube.name">name</a></td>
@@ -1422,7 +1417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cube.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cube.tree">tree</a></td>
@@ -1480,7 +1475,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveCircle.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveCircle.mode">mode</a></td>
@@ -1504,7 +1499,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveCircle.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveCircle.tree">tree</a></td>
@@ -1538,7 +1533,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveLength.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveLength.name">name</a></td>
@@ -1554,7 +1549,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveLength.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveLength.tree">tree</a></td>
@@ -1600,7 +1595,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveLine.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveLine.mode">mode</a></td>
@@ -1620,7 +1615,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveLine.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveLine.tree">tree</a></td>
@@ -1666,7 +1661,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveToMesh.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveToMesh.name">name</a></td>
@@ -1682,7 +1677,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveToMesh.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveToMesh.tree">tree</a></td>
@@ -1724,7 +1719,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveToPoints.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveToPoints.mode">mode</a></td>
@@ -1756,7 +1751,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveToPoints.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurveToPoints.tree">tree</a></td>
@@ -1798,7 +1793,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.name">name</a></td>
@@ -1814,7 +1809,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.tree">tree</a></td>
@@ -1876,7 +1871,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cylinder.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cylinder.name">name</a></td>
@@ -1908,7 +1903,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cylinder.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Cylinder.tree">tree</a></td>
@@ -1942,7 +1937,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.name">name</a></td>
@@ -1958,7 +1953,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.tree">tree</a></td>
@@ -2000,7 +1995,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DeleteGeometry.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DeleteGeometry.mode">mode</a></td>
@@ -2020,7 +2015,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DeleteGeometry.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DeleteGeometry.tree">tree</a></td>
@@ -2160,7 +2155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.name">name</a></td>
@@ -2184,7 +2179,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.tree">tree</a></td>
@@ -2226,7 +2221,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DualMesh.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DualMesh.name">name</a></td>
@@ -2242,7 +2237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DualMesh.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DualMesh.tree">tree</a></td>
@@ -2288,7 +2283,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DuplicateElements.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DuplicateElements.name">name</a></td>
@@ -2308,7 +2303,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.DuplicateElements.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.DuplicateElements.tree">tree</a></td>
@@ -2417,7 +2412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.name">name</a></td>
@@ -2433,7 +2428,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.tree">tree</a></td>
@@ -2491,7 +2486,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ExtrudeMesh.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ExtrudeMesh.mode">mode</a></td>
@@ -2519,7 +2514,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ExtrudeMesh.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ExtrudeMesh.tree">tree</a></td>
@@ -2561,7 +2556,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.FillCurve.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.FillCurve.name">name</a></td>
@@ -2577,7 +2572,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.FillCurve.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.FillCurve.tree">tree</a></td>
@@ -2627,7 +2622,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.FilletCurve.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.FilletCurve.name">name</a></td>
@@ -2643,7 +2638,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.FilletCurve.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.FilletCurve.tree">tree</a></td>
@@ -2681,7 +2676,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.FlipFaces.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.FlipFaces.name">name</a></td>
@@ -2697,7 +2692,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.FlipFaces.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.FlipFaces.tree">tree</a></td>
@@ -2750,7 +2745,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.GeometryProximity.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.GeometryProximity.name">name</a></td>
@@ -2774,7 +2769,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.GeometryProximity.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.GeometryProximity.target_element">target_element</a></td>
@@ -2824,7 +2819,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.name">name</a></td>
@@ -2840,7 +2835,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.tree">tree</a></td>
@@ -2886,7 +2881,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Grid.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Grid.name">name</a></td>
@@ -2906,7 +2901,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Grid.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Grid.tree">tree</a></td>
@@ -2944,7 +2939,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.IcoSphere.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.IcoSphere.name">name</a></td>
@@ -2964,7 +2959,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.IcoSphere.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.IcoSphere.tree">tree</a></td>
@@ -3030,7 +3025,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.InstanceOnPoints.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.InstanceOnPoints.name">name</a></td>
@@ -3046,7 +3041,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.InstanceOnPoints.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.InstanceOnPoints.tree">tree</a></td>
@@ -3093,7 +3088,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.InstancesToPoints.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.InstancesToPoints.name">name</a></td>
@@ -3109,7 +3104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.InstancesToPoints.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.InstancesToPoints.tree">tree</a></td>
@@ -3175,7 +3170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.InterpolateCurves.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.InterpolateCurves.name">name</a></td>
@@ -3199,7 +3194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.InterpolateCurves.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.InterpolateCurves.tree">tree</a></td>
@@ -3233,7 +3228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MaterialSelection.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MaterialSelection.name">name</a></td>
@@ -3249,7 +3244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MaterialSelection.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MaterialSelection.tree">tree</a></td>
@@ -3295,7 +3290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MergeByDistance.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MergeByDistance.name">name</a></td>
@@ -3311,7 +3306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MergeByDistance.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MergeByDistance.tree">tree</a></td>
@@ -3359,7 +3354,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MergeLayers.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MergeLayers.mode">mode</a></td>
@@ -3379,7 +3374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MergeLayers.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MergeLayers.tree">tree</a></td>
@@ -3433,7 +3428,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshBoolean.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshBoolean.name">name</a></td>
@@ -3457,7 +3452,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshBoolean.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshBoolean.solver">solver</a></td>
@@ -3543,7 +3538,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshCircle.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshCircle.name">name</a></td>
@@ -3559,7 +3554,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshCircle.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshCircle.tree">tree</a></td>
@@ -3617,7 +3612,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshLine.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshLine.mode">mode</a></td>
@@ -3637,7 +3632,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshLine.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshLine.tree">tree</a></td>
@@ -3675,7 +3670,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshToCurve.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshToCurve.mode">mode</a></td>
@@ -3695,7 +3690,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshToCurve.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshToCurve.tree">tree</a></td>
@@ -3748,7 +3743,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshToPoints.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshToPoints.mode">mode</a></td>
@@ -3768,7 +3763,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshToPoints.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.MeshToPoints.tree">tree</a></td>
@@ -3810,7 +3805,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Points.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Points.name">name</a></td>
@@ -3826,7 +3821,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Points.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Points.tree">tree</a></td>
@@ -3868,7 +3863,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.PointsToCurves.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.PointsToCurves.name">name</a></td>
@@ -3884,7 +3879,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.PointsToCurves.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.PointsToCurves.tree">tree</a></td>
@@ -3922,7 +3917,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.PointsToVertices.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.PointsToVertices.name">name</a></td>
@@ -3938,7 +3933,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.PointsToVertices.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.PointsToVertices.tree">tree</a></td>
@@ -3984,7 +3979,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.QuadraticBezier.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.QuadraticBezier.name">name</a></td>
@@ -4000,7 +3995,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.QuadraticBezier.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.QuadraticBezier.tree">tree</a></td>
@@ -4088,7 +4083,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Quadrilateral.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Quadrilateral.mode">mode</a></td>
@@ -4108,7 +4103,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Quadrilateral.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Quadrilateral.tree">tree</a></td>
@@ -4175,7 +4170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Raycast.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Raycast.name">name</a></td>
@@ -4207,7 +4202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Raycast.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Raycast.tree">tree</a></td>
@@ -4378,7 +4373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.RealizeInstances.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.RealizeInstances.name">name</a></td>
@@ -4394,7 +4389,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.RealizeInstances.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.RealizeInstances.tree">tree</a></td>
@@ -4436,7 +4431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ReplaceMaterial.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ReplaceMaterial.name">name</a></td>
@@ -4452,7 +4447,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ReplaceMaterial.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ReplaceMaterial.tree">tree</a></td>
@@ -4510,7 +4505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ResampleCurve.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ResampleCurve.keep_last_segment">keep_last_segment</a></td>
@@ -4530,7 +4525,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ResampleCurve.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ResampleCurve.tree">tree</a></td>
@@ -4568,7 +4563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ReverseCurve.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ReverseCurve.name">name</a></td>
@@ -4584,7 +4579,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ReverseCurve.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ReverseCurve.tree">tree</a></td>
@@ -4640,7 +4635,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.RotateInstances.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.RotateInstances.name">name</a></td>
@@ -4656,7 +4651,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.RotateInstances.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.RotateInstances.tree">tree</a></td>
@@ -4720,7 +4715,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleCurve.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleCurve.mode">mode</a></td>
@@ -4752,7 +4747,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleCurve.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleCurve.tree">tree</a></td>
@@ -4894,7 +4889,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleIndex.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleIndex.name">name</a></td>
@@ -4910,7 +4905,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleIndex.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleIndex.tree">tree</a></td>
@@ -5091,7 +5086,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleNearest.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleNearest.name">name</a></td>
@@ -5107,7 +5102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleNearest.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleNearest.tree">tree</a></td>
@@ -5218,7 +5213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleNearestSurface.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleNearestSurface.name">name</a></td>
@@ -5238,7 +5233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleNearestSurface.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleNearestSurface.tree">tree</a></td>
@@ -5401,7 +5396,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleUVSurface.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleUVSurface.name">name</a></td>
@@ -5421,7 +5416,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleUVSurface.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SampleUVSurface.tree">tree</a></td>
@@ -5564,7 +5559,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ScaleElements.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ScaleElements.name">name</a></td>
@@ -5580,7 +5575,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ScaleElements.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ScaleElements.tree">tree</a></td>
@@ -5679,7 +5674,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ScaleInstances.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ScaleInstances.name">name</a></td>
@@ -5695,7 +5690,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.ScaleInstances.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.ScaleInstances.tree">tree</a></td>
@@ -5729,7 +5724,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SeparateComponents.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SeparateComponents.name">name</a></td>
@@ -5765,7 +5760,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SeparateComponents.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SeparateComponents.tree">tree</a></td>
@@ -5807,7 +5802,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SeparateGeometry.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SeparateGeometry.name">name</a></td>
@@ -5827,7 +5822,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SeparateGeometry.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SeparateGeometry.tree">tree</a></td>
@@ -5940,7 +5935,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveNormal.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveNormal.name">name</a></td>
@@ -5956,7 +5951,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveNormal.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveNormal.tree">tree</a></td>
@@ -5998,7 +5993,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveRadius.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveRadius.name">name</a></td>
@@ -6014,7 +6009,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveRadius.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveRadius.tree">tree</a></td>
@@ -6056,7 +6051,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveTilt.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveTilt.name">name</a></td>
@@ -6072,7 +6067,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveTilt.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetCurveTilt.tree">tree</a></td>
@@ -6114,7 +6109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetFaceSet.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetFaceSet.name">name</a></td>
@@ -6130,7 +6125,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetFaceSet.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetFaceSet.tree">tree</a></td>
@@ -6168,7 +6163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGeometryName.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGeometryName.name">name</a></td>
@@ -6184,7 +6179,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGeometryName.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGeometryName.tree">tree</a></td>
@@ -6237,7 +6232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.mode">mode</a></td>
@@ -6257,7 +6252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.tree">tree</a></td>
@@ -6295,7 +6290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.name">name</a></td>
@@ -6311,7 +6306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.tree">tree</a></td>
@@ -6353,7 +6348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.name">name</a></td>
@@ -6369,7 +6364,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.tree">tree</a></td>
@@ -6422,7 +6417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetHandlePositions.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetHandlePositions.mode">mode</a></td>
@@ -6442,7 +6437,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetHandlePositions.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetHandlePositions.tree">tree</a></td>
@@ -6484,7 +6479,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetID.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetID.name">name</a></td>
@@ -6500,7 +6495,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetID.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetID.tree">tree</a></td>
@@ -6542,7 +6537,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetInstanceTransform.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetInstanceTransform.name">name</a></td>
@@ -6558,7 +6553,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetInstanceTransform.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetInstanceTransform.tree">tree</a></td>
@@ -6600,7 +6595,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMaterial.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMaterial.name">name</a></td>
@@ -6616,7 +6611,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMaterial.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMaterial.tree">tree</a></td>
@@ -6658,7 +6653,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMaterialIndex.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMaterialIndex.name">name</a></td>
@@ -6674,7 +6669,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMaterialIndex.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMaterialIndex.tree">tree</a></td>
@@ -6732,7 +6727,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMeshNormal.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMeshNormal.mode">mode</a></td>
@@ -6752,7 +6747,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMeshNormal.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetMeshNormal.tree">tree</a></td>
@@ -6839,7 +6834,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetPointRadius.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetPointRadius.name">name</a></td>
@@ -6855,7 +6850,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetPointRadius.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetPointRadius.tree">tree</a></td>
@@ -6901,7 +6896,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetPosition.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetPosition.name">name</a></td>
@@ -6917,7 +6912,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetPosition.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetPosition.tree">tree</a></td>
@@ -6965,7 +6960,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSelection.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSelection.name">name</a></td>
@@ -6981,7 +6976,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSelection.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSelection.selection_type">selection_type</a></td>
@@ -7086,7 +7081,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetShadeSmooth.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetShadeSmooth.name">name</a></td>
@@ -7102,7 +7097,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetShadeSmooth.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetShadeSmooth.tree">tree</a></td>
@@ -7175,7 +7170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineCyclic.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineCyclic.name">name</a></td>
@@ -7191,7 +7186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineCyclic.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineCyclic.tree">tree</a></td>
@@ -7233,7 +7228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineResolution.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineResolution.name">name</a></td>
@@ -7249,7 +7244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineResolution.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineResolution.tree">tree</a></td>
@@ -7287,7 +7282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineType.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineType.name">name</a></td>
@@ -7303,7 +7298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineType.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SetSplineType.spline_type">spline_type</a></td>
@@ -7364,7 +7359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SortElements.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SortElements.name">name</a></td>
@@ -7380,7 +7375,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SortElements.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SortElements.tree">tree</a></td>
@@ -7499,7 +7494,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Spiral.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Spiral.name">name</a></td>
@@ -7515,7 +7510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Spiral.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Spiral.tree">tree</a></td>
@@ -7553,7 +7548,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SplitEdges.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SplitEdges.name">name</a></td>
@@ -7569,7 +7564,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SplitEdges.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SplitEdges.tree">tree</a></td>
@@ -7615,7 +7610,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SplitToInstances.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SplitToInstances.name">name</a></td>
@@ -7635,7 +7630,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SplitToInstances.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SplitToInstances.tree">tree</a></td>
@@ -7748,7 +7743,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Star.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Star.name">name</a></td>
@@ -7768,7 +7763,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Star.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Star.tree">tree</a></td>
@@ -7847,7 +7842,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.StringToCurves.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.StringToCurves.name">name</a></td>
@@ -7875,7 +7870,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.StringToCurves.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.StringToCurves.overflow">overflow</a></td>
@@ -7921,7 +7916,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivideCurve.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivideCurve.name">name</a></td>
@@ -7937,7 +7932,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivideCurve.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivideCurve.tree">tree</a></td>
@@ -7975,7 +7970,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivideMesh.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivideMesh.name">name</a></td>
@@ -7991,7 +7986,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivideMesh.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivideMesh.tree">tree</a></td>
@@ -8057,7 +8052,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivisionSurface.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivisionSurface.name">name</a></td>
@@ -8073,7 +8068,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivisionSurface.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.SubdivisionSurface.tree">tree</a></td>
@@ -8134,7 +8129,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.TransformGeometry.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.TransformGeometry.name">name</a></td>
@@ -8150,7 +8145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.TransformGeometry.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.TransformGeometry.tree">tree</a></td>
@@ -8201,7 +8196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.TranslateInstances.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.TranslateInstances.name">name</a></td>
@@ -8217,7 +8212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.TranslateInstances.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.TranslateInstances.tree">tree</a></td>
@@ -8268,7 +8263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Triangulate.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Triangulate.name">name</a></td>
@@ -8284,7 +8279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.Triangulate.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.Triangulate.tree">tree</a></td>
@@ -8347,7 +8342,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.TrimCurve.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.TrimCurve.mode">mode</a></td>
@@ -8367,7 +8362,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.TrimCurve.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.TrimCurve.tree">tree</a></td>
@@ -8409,7 +8404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.UVSphere.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.UVSphere.name">name</a></td>
@@ -8429,7 +8424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.geometry.UVSphere.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.geometry.UVSphere.tree">tree</a></td>

@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-efceea6a8b73a9818cc2ca84b2db194b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-da57242f58c476a49001d331373b5faa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.7.1</span>
+    <span class="navbar-title">nodebpy 0.9.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -130,14 +130,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../introduction.html"> 
-<span class="menu-text">Introduction</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Documentation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-documentation">    
+        <li>
+    <a class="dropdown-item" href="../introduction.html">
+ <span class="dropdown-text">Creating Node Groups</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../operators.html"> 
-<span class="menu-text">Operators</span></a>
+        <li>
+    <a class="dropdown-item" href="../operators.html">
+ <span class="dropdown-text">Math Operators</span></a>
   </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../reference/"> 
 <span class="menu-text">Reference</span></a>
@@ -347,12 +354,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">nodes.shader.vector</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.zone.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.zone</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -422,12 +423,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.compositor.output.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.compositor.output</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.texture.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.texture</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -608,7 +603,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.BoxMask.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.BoxMask.name">name</a></td>
@@ -624,7 +619,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.BoxMask.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.BoxMask.tree">tree</a></td>
@@ -720,7 +715,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.name">name</a></td>
@@ -740,7 +735,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.tree">tree</a></td>
@@ -796,7 +791,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.name">name</a></td>
@@ -816,7 +811,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.tree">tree</a></td>
@@ -866,7 +861,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorKey.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorKey.name">name</a></td>
@@ -886,7 +881,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorKey.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorKey.tree">tree</a></td>
@@ -957,7 +952,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.name">name</a></td>
@@ -973,7 +968,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.tree">tree</a></td>
@@ -1019,7 +1014,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.name">name</a></td>
@@ -1039,7 +1034,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.tree">tree</a></td>
@@ -1095,7 +1090,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.name">name</a></td>
@@ -1115,7 +1110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.tree">tree</a></td>
@@ -1166,7 +1161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.name">name</a></td>
@@ -1182,7 +1177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.tree">tree</a></td>
@@ -1243,7 +1238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.name">name</a></td>
@@ -1259,7 +1254,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.tree">tree</a></td>
@@ -1370,7 +1365,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.Keying.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.Keying.name">name</a></td>
@@ -1394,7 +1389,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.Keying.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.Keying.tree">tree</a></td>
@@ -1428,7 +1423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.name">name</a></td>
@@ -1444,7 +1439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.tracking_object">tracking_object</a></td>
@@ -1490,7 +1485,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.name">name</a></td>
@@ -1510,7 +1505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.tree">tree</a></td>

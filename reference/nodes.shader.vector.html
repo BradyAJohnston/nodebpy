@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.shader.zone.html" rel="next">
+<link href="../reference/nodes.compositor.color.html" rel="next">
 <link href="../reference/nodes.shader.texture.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-efceea6a8b73a9818cc2ca84b2db194b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-da57242f58c476a49001d331373b5faa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.7.1</span>
+    <span class="navbar-title">nodebpy 0.9.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -130,14 +130,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../introduction.html"> 
-<span class="menu-text">Introduction</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Documentation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-documentation">    
+        <li>
+    <a class="dropdown-item" href="../introduction.html">
+ <span class="dropdown-text">Creating Node Groups</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../operators.html"> 
-<span class="menu-text">Operators</span></a>
+        <li>
+    <a class="dropdown-item" href="../operators.html">
+ <span class="dropdown-text">Math Operators</span></a>
   </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../reference/"> 
 <span class="menu-text">Reference</span></a>
@@ -347,12 +354,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">nodes.shader.vector</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.zone.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.zone</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -422,12 +423,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.compositor.output.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.compositor.output</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.texture.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.texture</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -580,7 +575,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.Bump.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.Bump.invert">invert</a></td>
@@ -600,7 +595,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.Bump.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.Bump.tree">tree</a></td>
@@ -653,7 +648,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.Displacement.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.Displacement.name">name</a></td>
@@ -669,7 +664,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.Displacement.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.Displacement.space">space</a></td>
@@ -726,7 +721,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.Mapping.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.Mapping.name">name</a></td>
@@ -742,7 +737,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.Mapping.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.Mapping.tree">tree</a></td>
@@ -780,7 +775,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.Normal.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.Normal.name">name</a></td>
@@ -800,7 +795,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.Normal.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.Normal.tree">tree</a></td>
@@ -838,7 +833,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.NormalMap.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.NormalMap.name">name</a></td>
@@ -854,7 +849,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.NormalMap.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.NormalMap.space">space</a></td>
@@ -904,7 +899,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.name">name</a></td>
@@ -920,7 +915,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.VectorDisplacement.space">space</a></td>
@@ -972,7 +967,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.VectorTransform.inputs">inputs</a></td>
-<td>Return all visible input sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.VectorTransform.name">name</a></td>
@@ -988,7 +983,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.shader.vector.VectorTransform.outputs">outputs</a></td>
-<td>Return all visible output sockets as a dict keyed by socket name.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.shader.vector.VectorTransform.tree">tree</a></td>
@@ -1419,8 +1414,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.shader.zone.html" class="pagination-link" aria-label="nodes.shader.zone">
-        <span class="nav-page-text">nodes.shader.zone</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.compositor.color.html" class="pagination-link" aria-label="nodes.compositor.color">
+        <span class="nav-page-text">nodes.compositor.color</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

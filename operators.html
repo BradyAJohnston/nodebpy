@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Operators – nodebpy 0.7.1</title>
+<title>Math Operators – nodebpy 0.9.1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,6 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./introduction.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -75,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-efceea6a8b73a9818cc2ca84b2db194b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-da57242f58c476a49001d331373b5faa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-sidebar floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -118,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 0.7.1</span>
+    <span class="navbar-title">nodebpy 0.9.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -131,14 +132,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./introduction.html"> 
-<span class="menu-text">Introduction</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Documentation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-documentation">    
+        <li>
+    <a class="dropdown-item" href="./introduction.html">
+ <span class="dropdown-text">Creating Node Groups</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link active" href="./operators.html" aria-current="page"> 
-<span class="menu-text">Operators</span></a>
+        <li>
+    <a class="dropdown-item" href="./operators.html">
+ <span class="dropdown-text">Math Operators</span></a>
   </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./reference/"> 
 <span class="menu-text">Reference</span></a>
@@ -156,10 +164,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./operators.html">Math Operators</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Creating Node Groups</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./operators.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Math Operators</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -189,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Operators</h1>
+<h1 class="title">Math Operators</h1>
 </div>
 
 
@@ -210,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="arithmetic-operators" class="level2">
 <h2 class="anchored" data-anchor-id="arithmetic-operators">Arithmetic Operators</h2>
 <p>The standard arithmetic operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> are joined by <code>**</code> (power), <code>%</code> (modulo), <code>//</code> (floor division), unary <code>-</code> (negate), and <code>abs()</code>.</p>
-<div id="e2842770" class="cell" data-execution_count="2">
+<div id="5e0bdb4e" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"ArithmeticDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -238,13 +275,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N1("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
     N2("Math&lt;br/&gt;&lt;small&gt;(DIVIDE)&lt;/small&gt;"):::converter-node
     N3("Math&lt;br/&gt;&lt;small&gt;(FLOORED_MODULO)&lt;/small&gt;"):::converter-node
-    N4("RandomValue&lt;br/&gt;&lt;small&gt;(-1,-1,-1)&lt;/small&gt;"):::converter-node
-    N5("InputPosition"):::input-node
+    N4("Random Value&lt;br/&gt;&lt;small&gt;(-1,-1,-1)&lt;/small&gt;"):::converter-node
+    N5("Position"):::input-node
     N6("Math&lt;br/&gt;&lt;small&gt;(FLOOR)&lt;/small&gt;"):::converter-node
     N7("Points"):::geometry-node
-    N8("VectorMath&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;"):::vector-node
-    N9("SetPosition"):::geometry-node
-    N10("NodeGroupOutput"):::default-node
+    N8("Vector Math&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;"):::vector-node
+    N9("Set Position"):::geometry-node
+    N10("Group Output"):::default-node
     N0 --&gt;|"Value-&gt;Value"| N1
     N1 --&gt;|"Value-&gt;Value"| N3
     N1 --&gt;|"Value-&gt;Value"| N2
@@ -273,7 +310,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>All operators automatically select the right node type. With integers you get <code>IntegerMath</code>, with vectors you get <code>VectorMath</code>, and scalars are broadcast when mixed with vectors:</p>
-<div id="1ead6eb3" class="cell" data-execution_count="3">
+<div id="e1051950" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"TypeDispatch"</span>) <span class="im">as</span> tree:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -298,15 +335,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputPosition"):::input-node
-    N1("MeshGrid"):::geometry-node
-    N2("VectorMath&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;(2,2,2)&lt;/small&gt;"):::vector-node
-    N3("VectorMath&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::vector-node
-    N4("SetPosition"):::geometry-node
-    N5("InputIndex"):::input-node
-    N6("IntegerMath&lt;br/&gt;&lt;small&gt;(DIVIDE_FLOOR)&lt;/small&gt;"):::converter-node
-    N7("IntegerMath&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
-    N8("NodeGroupOutput"):::default-node
+    N0("Position"):::input-node
+    N1("Grid"):::geometry-node
+    N2("Vector Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;(2,2,2)&lt;/small&gt;"):::vector-node
+    N3("Vector Math&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::vector-node
+    N4("Set Position"):::geometry-node
+    N5("Index"):::input-node
+    N6("Integer Math&lt;br/&gt;&lt;small&gt;(DIVIDE_FLOOR)&lt;/small&gt;"):::converter-node
+    N7("Integer Math&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
+    N8("Group Output"):::default-node
     N5 --&gt;|"Index-&gt;Value"| N6
     N5 --&gt;|"Index-&gt;Value"| N7
     N0 --&gt;|"Position-&gt;Vector"| N2
@@ -334,7 +371,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="negation-and-absolute-value" class="level3">
 <h3 class="anchored" data-anchor-id="negation-and-absolute-value">Negation and Absolute Value</h3>
 <p>The unary <code>-</code> and <code>abs()</code> operators work with all numeric types:</p>
-<div id="ab2af024" class="cell" data-results="false" data-execution_count="4">
+<div id="0caf6988" class="cell" data-results="false" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"UnaryOps"</span>) <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> (</span>
@@ -351,12 +388,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputPosition"):::input-node
-    N1("VectorMath&lt;br/&gt;&lt;small&gt;(ABSOLUTE)&lt;/small&gt;"):::vector-node
-    N2("MeshCube"):::geometry-node
-    N3("VectorMath&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×-1&lt;/small&gt;"):::vector-node
-    N4("SetPosition"):::geometry-node
-    N5("NodeGroupOutput"):::default-node
+    N0("Position"):::input-node
+    N1("Vector Math&lt;br/&gt;&lt;small&gt;(ABSOLUTE)&lt;/small&gt;"):::vector-node
+    N2("Cube"):::geometry-node
+    N3("Vector Math&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×-1&lt;/small&gt;"):::vector-node
+    N4("Set Position"):::geometry-node
+    N5("Group Output"):::default-node
     N0 --&gt;|"Position-&gt;Vector"| N1
     N1 --&gt;|"Vector-&gt;Vector"| N3
     N3 --&gt;|"Vector-&gt;Offset"| N4
@@ -384,7 +421,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="comparison-operators" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-operators">Comparison Operators</h2>
 <p>The <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> operators create <code>Compare</code> nodes that output boolean sockets. The correct data type (float, integer, or vector) is inferred from the left-hand operand.</p>
-<div id="90ce52a7" class="cell" data-execution_count="5">
+<div id="33a72121" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"CompareDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -409,13 +446,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputPosition"):::input-node
-    N1("SeparateXYZ"):::converter-node
-    N2("MeshCube&lt;br/&gt;&lt;small&gt;(1e+01,1e+01,1e+01)&lt;/small&gt;"):::geometry-node
+    N0("Position"):::input-node
+    N1("Separate XYZ"):::converter-node
+    N2("Cube&lt;br/&gt;&lt;small&gt;(1e+01,1e+01,1e+01)&lt;/small&gt;"):::geometry-node
     N3("Compare&lt;br/&gt;&lt;small&gt;(LESS_EQUAL)&lt;/small&gt;"):::converter-node
     N4("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
-    N5("SetPosition&lt;br/&gt;&lt;small&gt;+(0,0,1)&lt;/small&gt;"):::geometry-node
-    N6("NodeGroupOutput"):::default-node
+    N5("Set Position&lt;br/&gt;&lt;small&gt;+(0,0,1)&lt;/small&gt;"):::geometry-node
+    N6("Group Output"):::default-node
     N0 --&gt;|"Position-&gt;Vector"| N1
     N1 --&gt;|"Z-&gt;A"| N4
     N1 --&gt;|"Z-&gt;A"| N3
@@ -443,11 +480,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="comparison-into-a-switch" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-into-a-switch">Comparison into a Switch</h2>
 <p>The result of a comparison is a <code>Compare</code> node, which can be used to directly chain into a <code>Switch</code> node when in a Geometry node tree. This saves us some time having to directly use <code>g.Switch.float(pos.z &gt; v, ...)</code></p>
-<div id="ba25b3c7" class="cell" data-execution_count="6">
+<div id="95c6b62e" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"SwitchDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    v <span class="op">=</span> g.Value(<span class="fl">5.0</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position() <span class="op">&gt;&gt;</span> g.SeparateXYZ()</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> (pos.o_z <span class="op">&gt;</span> v).switch(g.RandomValue.<span class="bu">float</span>(), <span class="fl">5.0</span> <span class="op">**</span> g.Value(<span class="fl">10.0</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position().o_position</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> (pos.z <span class="op">&gt;</span> v).switch(g.RandomValue.<span class="bu">float</span>(), <span class="fl">5.0</span> <span class="op">**</span> g.Value(<span class="fl">10.0</span>))</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="6">
@@ -457,12 +494,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputPosition"):::input-node
-    N1("SeparateXYZ"):::converter-node
+    N0("Position"):::input-node
+    N1("Separate XYZ"):::converter-node
     N2("Value"):::input-node
     N3("Value"):::input-node
     N4("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
-    N5("RandomValue"):::converter-node
+    N5("Random Value"):::converter-node
     N6("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
     N7("Switch"):::converter-node
     N0 --&gt;|"Position-&gt;Vector"| N1
@@ -493,7 +530,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="boolean-operators" class="level2">
 <h2 class="anchored" data-anchor-id="boolean-operators">Boolean Operators</h2>
 <p>Python’s bitwise operators <code>&amp;</code> (and), <code>|</code> (or), <code>^</code> (xor), and <code>~</code> (not) map to <code>BooleanMath</code> nodes. These are especially useful for combining comparison results into complex selections.</p>
-<div id="181c093a" class="cell" data-execution_count="7">
+<div id="e9486de0" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"BooleanDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -518,15 +555,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputPosition"):::input-node
-    N1("SeparateXYZ"):::converter-node
-    N2("MeshCube&lt;br/&gt;&lt;small&gt;(6,6,6)&lt;/small&gt;"):::geometry-node
+    N0("Position"):::input-node
+    N1("Separate XYZ"):::converter-node
+    N2("Cube&lt;br/&gt;&lt;small&gt;(6,6,6)&lt;/small&gt;"):::geometry-node
     N3("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
     N4("Compare&lt;br/&gt;&lt;small&gt;(LESS_THAN)&lt;/small&gt;"):::converter-node
-    N5("MeshToPoints"):::geometry-node
-    N6("BooleanMath&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
-    N7("SetPosition&lt;br/&gt;&lt;small&gt;+(1,0,0)&lt;/small&gt;"):::geometry-node
-    N8("NodeGroupOutput"):::default-node
+    N5("Mesh to Points"):::geometry-node
+    N6("Boolean Math&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
+    N7("Set Position&lt;br/&gt;&lt;small&gt;+(1,0,0)&lt;/small&gt;"):::geometry-node
+    N8("Group Output"):::default-node
     N0 --&gt;|"Position-&gt;Vector"| N1
     N1 --&gt;|"Z-&gt;A"| N3
     N1 --&gt;|"Z-&gt;A"| N4
@@ -554,7 +591,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The <code>~</code> operator inverts a boolean:</p>
-<div id="99f9baaa" class="cell" data-execution_count="8">
+<div id="cb8e8c95" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"InvertDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -577,14 +614,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputIndex"):::input-node
-    N1("IntegerMath&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
-    N2("MeshLine&lt;br/&gt;&lt;small&gt;+(0,0,1)&lt;/small&gt;"):::geometry-node
+    N0("Index"):::input-node
+    N1("Integer Math&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
+    N2("Mesh Line&lt;br/&gt;&lt;small&gt;+(0,0,1)&lt;/small&gt;"):::geometry-node
     N3("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
-    N4("MeshToPoints"):::geometry-node
-    N5("BooleanMath&lt;br/&gt;&lt;small&gt;(NOT)&lt;/small&gt;"):::converter-node
-    N6("SetPosition&lt;br/&gt;&lt;small&gt;+(0,0,0.5)&lt;/small&gt;"):::geometry-node
-    N7("NodeGroupOutput"):::default-node
+    N4("Mesh to Points"):::geometry-node
+    N5("Boolean Math&lt;br/&gt;&lt;small&gt;(NOT)&lt;/small&gt;"):::converter-node
+    N6("Set Position&lt;br/&gt;&lt;small&gt;+(0,0,0.5)&lt;/small&gt;"):::geometry-node
+    N7("Group Output"):::default-node
     N0 --&gt;|"Index-&gt;Value"| N1
     N1 --&gt;|"Value-&gt;A"| N3
     N3 --&gt;|"Result-&gt;Boolean"| N5
@@ -613,7 +650,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="matrix-multiplication" class="level2">
 <h2 class="anchored" data-anchor-id="matrix-multiplication">Matrix Multiplication</h2>
 <p>The <code>@</code> operator maps to <code>MultiplyMatrices</code>, composing two 4x4 transformation matrices. You can also multiply a matrix by a vector using <code>@</code> and a <code>TransformPoint</code> will automatically be added.</p>
-<div id="1b120550" class="cell" data-execution_count="9">
+<div id="1fafa7c8" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"MatmulDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -635,14 +672,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("CombineTransform&lt;br/&gt;&lt;small&gt;(0,4e+01,0)&lt;/small&gt;"):::converter-node
-    N1("CombineTransform&lt;br/&gt;&lt;small&gt;(2,0,0)&lt;/small&gt;"):::converter-node
-    N2("InputPosition"):::input-node
-    N3("MatrixMultiply"):::converter-node
-    N4("MeshCube"):::geometry-node
-    N5("TransformPoint"):::converter-node
-    N6("SetPosition"):::geometry-node
-    N7("NodeGroupOutput"):::default-node
+    N0("Combine Transform&lt;br/&gt;&lt;small&gt;(0,4e+01,0)&lt;/small&gt;"):::converter-node
+    N1("Combine Transform&lt;br/&gt;&lt;small&gt;(2,0,0)&lt;/small&gt;"):::converter-node
+    N2("Position"):::input-node
+    N3("Multiply Matrices"):::converter-node
+    N4("Cube"):::geometry-node
+    N5("Transform Point"):::converter-node
+    N6("Set Position"):::geometry-node
+    N7("Group Output"):::default-node
     N0 --&gt;|"Transform-&gt;Matrix"| N3
     N1 --&gt;|"Transform-&gt;Matrix"| N3
     N2 --&gt;|"Position-&gt;Vector"| N5
@@ -674,7 +711,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="checkerboard-selection" class="level3">
 <h3 class="anchored" data-anchor-id="checkerboard-selection">Checkerboard Selection</h3>
 <p>Select alternating faces on a grid using integer modulo and comparisons:</p>
-<div id="cb968b3d" class="cell" data-execution_count="10">
+<div id="f1544699" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Checkerboard"</span>) <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -698,15 +735,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputIndex"):::input-node
-    N1("IntegerMath&lt;br/&gt;&lt;small&gt;(DIVIDE_FLOOR)&lt;/small&gt;"):::converter-node
-    N2("IntegerMath&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
-    N3("Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::converter-node
-    N4("Math&lt;br/&gt;&lt;small&gt;(FLOORED_MODULO)&lt;/small&gt;"):::converter-node
-    N5("MeshGrid"):::geometry-node
+    N0("Index"):::input-node
+    N1("Integer Math&lt;br/&gt;&lt;small&gt;(DIVIDE_FLOOR)&lt;/small&gt;"):::converter-node
+    N2("Integer Math&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
+    N3("Integer Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::converter-node
+    N4("Integer Math&lt;br/&gt;&lt;small&gt;(MODULO)&lt;/small&gt;"):::converter-node
+    N5("Grid"):::geometry-node
     N6("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
-    N7("SetPosition&lt;br/&gt;&lt;small&gt;+(0,0,0.5)&lt;/small&gt;"):::geometry-node
-    N8("NodeGroupOutput"):::default-node
+    N7("Set Position&lt;br/&gt;&lt;small&gt;+(0,0,0.5)&lt;/small&gt;"):::geometry-node
+    N8("Group Output"):::default-node
     N0 --&gt;|"Index-&gt;Value"| N1
     N0 --&gt;|"Index-&gt;Value"| N2
     N1 --&gt;|"Value-&gt;Value"| N3
@@ -737,7 +774,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="layered-selection" class="level3">
 <h3 class="anchored" data-anchor-id="layered-selection">Layered Selection</h3>
 <p>Divide space into layers using floor division, then select specific layers:</p>
-<div id="b9eed60c" class="cell" data-execution_count="11">
+<div id="2a3308c8" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Layers"</span>) <span class="im">as</span> tree:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -762,22 +799,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputPosition"):::input-node
-    N1("VectorMath&lt;br/&gt;&lt;small&gt;(DIVIDE)&lt;/small&gt;"):::vector-node
-    N2("VectorMath&lt;br/&gt;&lt;small&gt;(FLOOR)&lt;/small&gt;"):::vector-node
-    N3("SeparateXYZ"):::converter-node
+    N0("Position"):::input-node
+    N1("Vector Math&lt;br/&gt;&lt;small&gt;(DIVIDE)&lt;/small&gt;"):::vector-node
+    N2("Vector Math&lt;br/&gt;&lt;small&gt;(FLOOR)&lt;/small&gt;"):::vector-node
+    N3("Separate XYZ"):::converter-node
     N4("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
     N5("Compare&lt;br/&gt;&lt;small&gt;(LESS_THAN)&lt;/small&gt;"):::converter-node
     N6("Compare&lt;br/&gt;&lt;small&gt;(GREATER_THAN)&lt;/small&gt;"):::converter-node
-    N7("MeshCube&lt;br/&gt;&lt;small&gt;(5,5,5)&lt;/small&gt;"):::geometry-node
-    N8("BooleanMath&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
-    N9("BooleanMath&lt;br/&gt;&lt;small&gt;(NOT)&lt;/small&gt;"):::converter-node
-    N10("MeshToPoints"):::geometry-node
-    N11("BooleanMath&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
-    N12("InputPosition"):::input-node
-    N13("SetPosition&lt;br/&gt;&lt;small&gt;+(1,0,0)&lt;/small&gt;"):::geometry-node
-    N14("SeparateXYZ"):::converter-node
-    N15("NodeGroupOutput"):::default-node
+    N7("Cube&lt;br/&gt;&lt;small&gt;(5,5,5)&lt;/small&gt;"):::geometry-node
+    N8("Boolean Math&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
+    N9("Boolean Math&lt;br/&gt;&lt;small&gt;(NOT)&lt;/small&gt;"):::converter-node
+    N10("Mesh to Points"):::geometry-node
+    N11("Boolean Math&lt;br/&gt;&lt;small&gt;(AND)&lt;/small&gt;"):::converter-node
+    N12("Position"):::input-node
+    N13("Set Position&lt;br/&gt;&lt;small&gt;+(1,0,0)&lt;/small&gt;"):::geometry-node
+    N14("Separate XYZ"):::converter-node
+    N15("Group Output"):::default-node
     N12 --&gt;|"Position-&gt;Vector"| N14
     N0 --&gt;|"Position-&gt;Vector"| N1
     N1 --&gt;|"Vector-&gt;Vector"| N2
@@ -815,7 +852,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="spiral-point-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="spiral-point-distribution">Spiral Point Distribution</h3>
 <p>Use power and modulo to create a spiral-like displacement pattern:</p>
-<div id="7eaa7432" class="cell" data-execution_count="12">
+<div id="a518d025" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Spiral"</span>) <span class="im">as</span> tree:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
@@ -844,43 +881,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputPosition"):::input-node
-    N1("NodeReroute"):::default-node
-    N2("SeparateXYZ"):::converter-node
-    N3("SeparateXYZ"):::converter-node
-    N4("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-    N5("Math&lt;br/&gt;&lt;small&gt;(ABSOLUTE)&lt;/small&gt;"):::converter-node
-    N6("Math&lt;br/&gt;&lt;small&gt;(COSINE)&lt;/small&gt;"):::converter-node
-    N7("Math&lt;br/&gt;&lt;small&gt;(SINE)&lt;/small&gt;"):::converter-node
-    N8("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
-    N9("RandomValue&lt;br/&gt;&lt;small&gt;(-1,-1,-1)&lt;/small&gt;"):::converter-node
+    N0("Position"):::input-node
+    N1("Separate XYZ"):::converter-node
+    N2("Separate XYZ"):::converter-node
+    N3("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
+    N4("Math&lt;br/&gt;&lt;small&gt;(ABSOLUTE)&lt;/small&gt;"):::converter-node
+    N5("Math&lt;br/&gt;&lt;small&gt;(COSINE)&lt;/small&gt;"):::converter-node
+    N6("Math&lt;br/&gt;&lt;small&gt;(SINE)&lt;/small&gt;"):::converter-node
+    N7("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
+    N8("Random Value&lt;br/&gt;&lt;small&gt;(-1,-1,-1)&lt;/small&gt;"):::converter-node
+    N9("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
     N10("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-    N11("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-    N12("SeparateXYZ"):::converter-node
-    N13("Points"):::geometry-node
-    N14("CombineXYZ"):::converter-node
-    N15("SetPosition"):::geometry-node
-    N16("NodeGroupOutput"):::default-node
+    N11("Separate XYZ"):::converter-node
+    N12("Points"):::geometry-node
+    N13("Combine XYZ"):::converter-node
+    N14("Set Position"):::geometry-node
+    N15("Group Output"):::default-node
+    N0 --&gt;|"Position-&gt;Vector"| N1
+    N1 --&gt;|"X-&gt;Value"| N3
     N0 --&gt;|"Position-&gt;Vector"| N2
-    N2 --&gt;|"X-&gt;Value"| N4
-    N0 --&gt;|"Position-&gt;Vector"| N3
-    N3 --&gt;|"Y-&gt;Value"| N5
-    N5 --&gt;|"Value-&gt;Value"| N8
-    N4 --&gt;|"Value-&gt;Value"| N6
-    N6 --&gt;|"Value-&gt;Value"| N10
-    N8 --&gt;|"Value-&gt;Value"| N10
+    N2 --&gt;|"Y-&gt;Value"| N4
     N4 --&gt;|"Value-&gt;Value"| N7
-    N7 --&gt;|"Value-&gt;Value"| N11
-    N8 --&gt;|"Value-&gt;Value"| N11
-    N10 --&gt;|"Value-&gt;X"| N14
-    N11 --&gt;|"Value-&gt;Y"| N14
-    N12 --&gt;|"Z-&gt;Z"| N14
-    N9 --&gt;|"Value-&gt;Position"| N13
-    N14 --&gt;|"Vector-&gt;Position"| N15
-    N13 --&gt;|"Points-&gt;Geometry"| N15
-    N15 --&gt;|"Geometry-&gt;Geometry"| N16
-    N0 --&gt;|"Position-&gt;Input"| N1
-    N1 --&gt;|"Output-&gt;Vector"| N12
+    N3 --&gt;|"Value-&gt;Value"| N5
+    N5 --&gt;|"Value-&gt;Value"| N9
+    N7 --&gt;|"Value-&gt;Value"| N9
+    N3 --&gt;|"Value-&gt;Value"| N6
+    N6 --&gt;|"Value-&gt;Value"| N10
+    N7 --&gt;|"Value-&gt;Value"| N10
+    N9 --&gt;|"Value-&gt;X"| N13
+    N10 --&gt;|"Value-&gt;Y"| N13
+    N11 --&gt;|"Z-&gt;Z"| N13
+    N8 --&gt;|"Value-&gt;Position"| N12
+    N13 --&gt;|"Vector-&gt;Position"| N14
+    N12 --&gt;|"Points-&gt;Geometry"| N14
+    N14 --&gt;|"Geometry-&gt;Geometry"| N15
+    N0 --&gt;|"Position-&gt;Vector"| N11
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -1418,6 +1453,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./introduction.html" class="pagination-link" aria-label="Creating Node Groups">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Creating Node Groups</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

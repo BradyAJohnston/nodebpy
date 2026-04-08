@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>What happens when we add nodes? – nodebpy 0.7.1</title>
+<title>Creating Node Groups – nodebpy 0.9.1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,6 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./operators.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -75,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-4d9afe2b8d18ee9fa5d0d57b5ed4214d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-efceea6a8b73a9818cc2ca84b2db194b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-da57242f58c476a49001d331373b5faa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-sidebar floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -118,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 0.7.1</span>
+    <span class="navbar-title">nodebpy 0.9.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -131,14 +132,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link active" href="./introduction.html" aria-current="page"> 
-<span class="menu-text">Introduction</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Documentation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-documentation">    
+        <li>
+    <a class="dropdown-item" href="./introduction.html">
+ <span class="dropdown-text">Creating Node Groups</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./operators.html"> 
-<span class="menu-text">Operators</span></a>
+        <li>
+    <a class="dropdown-item" href="./operators.html">
+ <span class="dropdown-text">Math Operators</span></a>
   </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./reference/"> 
 <span class="menu-text">Reference</span></a>
@@ -156,10 +164,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./introduction.html">Creating Node Groups</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Creating Node Groups</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Math Operators</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -177,7 +214,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">What happens when we add nodes?</h1>
+<h1 class="title">Creating Node Groups</h1>
 </div>
 
 
@@ -194,14 +231,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="b53db171" class="cell" data-execution_count="1">
+<div id="5531afd9" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder, geometry <span class="im">as</span> g, sockets <span class="im">as</span> s</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="adding-nodes" class="level2">
 <h2 class="anchored" data-anchor-id="adding-nodes">Adding Nodes</h2>
 <p>Adding nodes must be done inside of a context. We enter a context using the <code>with</code> keyword. While inside of this context, whenever you call a node class (<code>g.SetPosition()</code>) a node of that type will be added to the current tree.</p>
 <p>This first example creates a new tree and adds two new nodes, linking the <code>Set Position</code> node into the <code>Transform Geometry</code> node. The output and input sockets for each are inferred based on simple heuristics around socket type and order.</p>
-<div id="c2fd8204" class="cell" data-execution_count="2">
+<div id="5ec4e875" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"NewTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    g.SetPosition() <span class="op">&gt;&gt;</span> g.TransformGeometry()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -213,8 +250,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("SetPosition"):::geometry-node
-    N1("Transform"):::geometry-node
+    N0("Set Position"):::geometry-node
+    N1("Transform Geometry"):::geometry-node
     N0 --&gt;|"Geometry-&gt;Geometry"| N1
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
@@ -239,7 +276,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Individual Socket Access</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Using Arguments to Class</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="fe9701a6" class="cell" data-execution_count="3">
+<div id="561806fe" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"AnotherTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.SetPosition()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -248,7 +285,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="10c7f94c" class="cell" data-execution_count="4">
+<div id="b259b642" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"AnotherAnotherTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    g.SetPosition(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        offset <span class="op">=</span> g.Vector(),</span>
@@ -258,7 +295,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="d441a963" class="cell" data-execution_count="5">
+<div id="30e31940" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -266,10 +303,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("InputPosition"):::input-node
-    N1("VectorMath&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×0.5&lt;/small&gt;"):::vector-node
-    N2("InputVector"):::input-node
-    N3("SetPosition"):::geometry-node
+    N0("Position"):::input-node
+    N1("Vector Math&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×0.5&lt;/small&gt;"):::vector-node
+    N2("Vector"):::input-node
+    N3("Set Position"):::geometry-node
     N0 --&gt;|"Position-&gt;Vector"| N1
     N1 --&gt;|"Vector-&gt;Position"| N3
     N2 --&gt;|"Vector-&gt;Offset"| N3
@@ -295,7 +332,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="node-input-sockets">Node Input Sockets</h2>
 <p>The socket interface nodes define what values / sockets are available as inputs for the node tree.</p>
 <p>We define them in a similar way to the socekts themselves, using context with the <code>tree.inputs</code> and <code>tree.outputs</code> and adding sockets with the <code>s.SocketGeometry()</code>.</p>
-<div id="7929a4e9" class="cell" data-execution_count="6">
+<div id="30310349" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"NewTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        geom_inputs <span class="op">=</span> [s.SocketGeometry(<span class="ss">f"Geometry_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>)]</span>
@@ -311,9 +348,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("NodeGroupInput"):::default-node
-    N1("JoinGeometry"):::geometry-node
-    N2("NodeGroupOutput"):::default-node
+    N0("Group Input"):::default-node
+    N1("Join Geometry"):::geometry-node
+    N2("Group Output"):::default-node
     N0 --&gt;|"Geometry_4-&gt;Geometry"| N1
     N0 --&gt;|"Geometry_3-&gt;Geometry"| N1
     N0 --&gt;|"Geometry_2-&gt;Geometry"| N1
@@ -337,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="0ab58912" class="cell" data-execution_count="7">
+<div id="db1b798e" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder() <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> s.SocketInt(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
@@ -359,10 +396,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("NodeGroupInput"):::default-node
-    N1("RandomValue&lt;br/&gt;&lt;small&gt;(-0.1,-0.1,-0.2)&lt;/small&gt;"):::converter-node
+    N0("Group Input"):::default-node
+    N1("Random Value&lt;br/&gt;&lt;small&gt;(-0.1,-0.1,-0.2)&lt;/small&gt;"):::converter-node
     N2("Points"):::geometry-node
-    N3("NodeGroupOutput"):::default-node
+    N3("Group Output"):::default-node
     N1 --&gt;|"Value-&gt;Position"| N2
     N0 --&gt;|"Count-&gt;Count"| N2
     N2 --&gt;|"Points-&gt;Geometry"| N3
@@ -383,7 +420,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="0d3e473f" class="cell" data-execution_count="8">
+<div id="c9acc1f3" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder() <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.inputs:</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> s.SocketInt(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
@@ -405,13 +442,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("NodeGroupInput"):::default-node
-    N1("RandomValue"):::converter-node
-    N2("VectorMath&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×0.5&lt;/small&gt;"):::vector-node
-    N3("InputPosition"):::input-node
-    N4("VectorMath&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::vector-node
+    N0("Group Input"):::default-node
+    N1("Random Value"):::converter-node
+    N2("Vector Math&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×0.5&lt;/small&gt;"):::vector-node
+    N3("Position"):::input-node
+    N4("Vector Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::vector-node
     N5("Points"):::geometry-node
-    N6("NodeGroupOutput"):::default-node
+    N6("Group Output"):::default-node
     N1 --&gt;|"Value-&gt;Vector"| N2
     N2 --&gt;|"Vector-&gt;Vector"| N4
     N3 --&gt;|"Position-&gt;Vector"| N4
@@ -441,7 +478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Zones like the repeat and simulation zone are initialized with their <code>SimulationZone()</code> and <code>RepeatZone()</code> constructors. You can add individvual <code>RepeatInput()</code> node and output, but they require additional setup to be actually linked. The repeat zone can be initialized with a repeat count, which can also be linked to from elsewhere.</p>
 <p>We can access the input and output nodes with <code>zone.input</code> and <code>zone.output</code>. The repeat zone as the <code>zone.i</code> which is the iteration number of the current zone. Simulation zone has the <code>zone.output.o_delta_time</code> which is the time between previous and current simulation loop.</p>
 <p>Both input and output nodes can automatically detect and capture links when you attempt to link into them with <code>&gt;&gt;</code>. The <code>zone.input.capture()</code> method also allows you to explicitly capture a link or a value, returning the output socket for further linking.</p>
-<div id="78fc1138" class="cell" data-execution_count="9">
+<div id="3695ee3e" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(arrange<span class="op">=</span><span class="va">None</span>) <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    zone <span class="op">=</span> g.RepeatZone(<span class="dv">10</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    join <span class="op">=</span> g.JoinGeometry()</span>
@@ -460,11 +497,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph LR
-    N0("RepeatInput"):::default-node
-    N1("RepeatOutput"):::default-node
-    N2("JoinGeometry"):::geometry-node
-    N3("SetPosition"):::geometry-node
-    N4("RandomValue"):::converter-node
+    N0("Repeat Input"):::default-node
+    N1("Repeat Output"):::default-node
+    N2("Join Geometry"):::geometry-node
+    N3("Set Position"):::geometry-node
+    N4("Random Value"):::converter-node
     N5("Points"):::geometry-node
     N2 --&gt;|"Geometry-&gt;Geometry"| N1
     N1 --&gt;|"Geometry-&gt;Geometry"| N3
@@ -490,7 +527,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="4c8c206a" class="cell" data-execution_count="10">
+<div id="d18305c8" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(arrange<span class="op">=</span><span class="va">None</span>) <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this initializes the zone with two socket inputs for each of the values</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    zone <span class="op">=</span> g.SimulationZone(g.Value(), g.Vector())</span>
@@ -512,11 +549,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <pre class="mermaid mermaid-js">graph LR
     N0("Value"):::input-node
-    N1("InputVector"):::input-node
-    N2("SimulationInput"):::default-node
-    N3("SimulationOutput"):::default-node
+    N1("Vector"):::input-node
+    N2("Simulation Input"):::default-node
+    N3("Simulation Output"):::default-node
     N4("Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::converter-node
-    N5("VectorMath&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::vector-node
+    N5("Vector Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::vector-node
     N0 --&gt;|"Value-&gt;Value"| N2
     N1 --&gt;|"Vector-&gt;Vector"| N2
     N2 --&gt;|"Value-&gt;Value"| N4
@@ -945,6 +982,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./operators.html" class="pagination-link" aria-label="Math Operators">
+        <span class="nav-page-text">Math Operators</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
