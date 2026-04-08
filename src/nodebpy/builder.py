@@ -176,13 +176,42 @@ class SocketAccessor:
 
     @property
     def _ignore_visibility(self) -> bool:
-        """Whether to ignore socket visibility when selecting available sockets."""
-        tree_context = TreeBuilder._tree_contexts[-1]
-        return tree_context.ignore_visibility
+        """Whether to ignore socket visibility when selecting available sockets.
+
+        Only affects ``available`` / ``best_match`` (the auto-linking heuristics).
+        ``values()`` / ``items()`` always respect node-level visibility so that
+        iteration over a node's sockets stays predictable regardless of context.
+        Returns False when called outside a tree context (e.g. from a bare
+        SocketLinker that was created outside a ``with tree:`` block).
+        """
+        if not TreeBuilder._tree_contexts:
+            return False
+        return TreeBuilder._tree_contexts[-1].ignore_visibility
+
+    def _visible_sockets(self) -> list[NodeSocket]:
+        """Sockets that should appear in iteration (values/items/keys).
+
+        Uses the per-node allowlist (``_allow_innactive_sockets``) rather than
+        the tree-level ``ignore_visibility`` flag — enumeration should always
+        reflect what is meaningfully present on the node, not the linking context.
+        """
+        if self._direction == "input":
+            return [
+                s
+                for s in self._sockets
+                if _allow_innactive_sockets(self._node)
+                or (not s.is_inactive and s.is_icon_visible)
+            ]
+        return [s for s in self._sockets if s.is_icon_visible]
 
     @property
     def available(self) -> list[NodeSocket]:
-        """Sockets eligible for automatic linking."""
+        """Sockets eligible for automatic linking.
+
+        Respects ``ignore_visibility`` on the active ``TreeBuilder`` context, so
+        nodes with normally-hidden sockets can still be auto-linked when that flag
+        is set (e.g. during ``test_add_all_nodes``).
+        """
         if self._direction == "input":
             return [
                 s
@@ -209,28 +238,20 @@ class SocketAccessor:
         )
 
     def values(self) -> "list[SocketLinker]":
-        """All visible sockets as SocketLinkers."""
-        if self._direction == "input":
-            return [
-                _get_socket_linker(s)
-                for s in self._sockets
-                if _allow_innactive_sockets(self._node)
-                or (not s.is_inactive and s.is_icon_visible)
-            ]
-        return [_get_socket_linker(s) for s in self._sockets if s.is_icon_visible]
+        """All visible sockets as SocketLinkers.
+
+        Uses node-level visibility rules regardless of ``ignore_visibility`` —
+        see ``_visible_sockets`` for rationale.
+        """
+        return [_get_socket_linker(s) for s in self._visible_sockets()]
 
     def items(self) -> "list[tuple[str, SocketLinker]]":
-        """All visible sockets as (name, SocketLinker) pairs."""
-        if self._direction == "input":
-            return [
-                (s.name, _get_socket_linker(s))
-                for s in self._sockets
-                if _allow_innactive_sockets(self._node)
-                or (not s.is_inactive and s.is_icon_visible)
-            ]
-        return [
-            (s.name, _get_socket_linker(s)) for s in self._sockets if s.is_icon_visible
-        ]
+        """All visible sockets as (name, SocketLinker) pairs.
+
+        Uses node-level visibility rules regardless of ``ignore_visibility`` —
+        see ``_visible_sockets`` for rationale.
+        """
+        return [(s.name, _get_socket_linker(s)) for s in self._visible_sockets()]
 
     def keys(self) -> list[str]:
         """All visible socket names."""
