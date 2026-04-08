@@ -922,7 +922,7 @@ class TestIntegerSocketLinker:
             # socket linker should use IntegerMath.add, not Math.add
             result = a.o_integer + b.o_integer
 
-        assert g.IntegerMath._is_node(result)
+        assert isinstance(result, g.IntegerMath)
         assert result.node.operation == "ADD"
 
     def test_integer_plus_node_builder_uses_integer_math(self):
@@ -937,7 +937,7 @@ class TestIntegerSocketLinker:
             # Use the NodeBuilder directly (not its output socket linker)
             result = a.o_integer + b
 
-        assert g.IntegerMath._is_node(result)
+        assert isinstance(result, g.IntegerMath)
         assert result.node.operation == "ADD"
 
     def test_integer_floordiv_non_integer_falls_back_to_math(self):
@@ -951,7 +951,7 @@ class TestIntegerSocketLinker:
             result = n.o_integer // 2.5
 
         # Should be the Math.floor wrapping a Math.divide — not IntegerMath
-        assert g.Math._is_node(result)
+        assert isinstance(result, g.Math)
         assert result.node.operation == "FLOOR"
 
     def test_integer_compare_in_shader_tree_falls_back(self):
@@ -969,7 +969,7 @@ class TestIntegerSocketLinker:
             result = val > 0.5
 
         # In shader tree the compare falls through to Math.greater_than
-        assert g.Math._is_node(result)
+        assert result.node.bl_idname == "ShaderNodeMath"
         assert result.node.operation == "GREATER_THAN"
 
 

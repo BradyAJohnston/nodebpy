@@ -639,15 +639,6 @@ class NodeBuilder:
             socket = self.node.outputs[counter]
         return socket
 
-    @classmethod
-    def _is_node(cls, node: bpy.types.Node | NodeBuilder) -> bool:
-        """Check if a node is an instance of this node type."""
-        if isinstance(node, NodeBuilder):
-            return node.node.bl_idname == cls._bl_idname
-        elif isinstance(node, bpy.types.Node):
-            return node.bl_idname == cls._bl_idname
-        return False
-
     def _source_socket(self, node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
         assert node
         if isinstance(node, NodeSocket):
