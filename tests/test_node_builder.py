@@ -881,3 +881,27 @@ class TestSocketAccessor:
             ignore_available = len(mix.inputs.available)
 
         assert ignore_available >= normal_available
+
+    def test_index_ambiguous_name_raises(self):
+        """index() raises when a socket name is duplicated and lookup falls through to name."""
+        from nodebpy.builder import SocketAccessor
+
+        # Synthetic sockets: two distinct identifiers that share the same display name.
+        class _FakeSocket:
+            def __init__(self, identifier, name):
+                self.identifier = identifier
+                self.name = name
+
+        with TreeBuilder("AmbiguousName", arrange=None):
+            pos = g.Position()
+            fake_sockets = [
+                _FakeSocket("unique_id_1", "Value"),
+                _FakeSocket("unique_id_2", "Value"),  # same name, different identifier
+            ]
+            accessor = SocketAccessor(fake_sockets, "input", pos.node)
+
+            # Unique identifier lookup is fine.
+            assert accessor.index("unique_id_1") == 0
+            # Duplicate name lookup must raise with a clear message.
+            with pytest.raises(RuntimeError, match="ambiguous"):
+                accessor.index("Value")
