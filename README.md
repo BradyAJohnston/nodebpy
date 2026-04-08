@@ -33,7 +33,6 @@ In `nodebpy` we use the `>>` operator to link from one node or socket into anoth
 This should feel and behave much like the <kbd>Alt</kbd> + <kbd>Right Click</kbd> drag between nodes in [Node Wrangler](https://docs.blender.org/manual/en/latest/addons/node/node_wrangler.html). It will use some smart logic to match the most compatible sockets between the nodes, but if you ever want to be explicit you do so. The input and output sockets of a node are accessible as properties via the `i_*` and `o_*` prefixes, or you can use the `...` placeholder to specify the particular input to be user, or pass in the previous node as a named argument.
 
 ```py
-g.Vector() >> g.SetPosition().i_offset
 g.Vector() >> g.SetPosition(offset=...)
 g.SetPosition(offset=g.Vector())
 ```

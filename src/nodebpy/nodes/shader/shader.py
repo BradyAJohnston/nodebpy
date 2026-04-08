@@ -35,17 +35,17 @@ class AddShader(NodeBuilder):
     @property
     def i_shader(self) -> SocketLinker:
         """Input socket: Shader"""
-        return self._input("Shader")
+        return self.inputs.get("Shader")
 
     @property
     def i_shader_001(self) -> SocketLinker:
         """Input socket: Shader"""
-        return self._input("Shader_001")
+        return self.inputs.get("Shader_001")
 
     @property
     def o_shader(self) -> SocketLinker:
         """Output socket: Shader"""
-        return self._output("Shader")
+        return self.outputs.get("Shader")
 
 
 class Background(NodeBuilder):
@@ -71,22 +71,22 @@ class Background(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_strength(self) -> SocketLinker:
         """Input socket: Strength"""
-        return self._input("Strength")
+        return self.inputs.get("Strength")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_background(self) -> SocketLinker:
         """Output socket: Background"""
-        return self._output("Background")
+        return self.outputs.get("Background")
 
 
 class DiffuseBSDF(NodeBuilder):
@@ -117,27 +117,27 @@ class DiffuseBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
 
 class Emission(NodeBuilder):
@@ -162,22 +162,22 @@ class Emission(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_strength(self) -> SocketLinker:
         """Input socket: Strength"""
-        return self._input("Strength")
+        return self.inputs.get("Strength")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_emission(self) -> SocketLinker:
         """Output socket: Emission"""
-        return self._output("Emission")
+        return self.outputs.get("Emission")
 
 
 class GlassBSDF(NodeBuilder):
@@ -216,42 +216,42 @@ class GlassBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_ior(self) -> SocketLinker:
         """Input socket: IOR"""
-        return self._input("IOR")
+        return self.inputs.get("IOR")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def i_thin_film_thickness(self) -> SocketLinker:
         """Input socket: Thin Film Thickness"""
-        return self._input("Thin Film Thickness")
+        return self.inputs.get("Thin Film Thickness")
 
     @property
     def i_thin_film_ior(self) -> SocketLinker:
         """Input socket: Thin Film IOR"""
-        return self._input("Thin Film IOR")
+        return self.inputs.get("Thin Film IOR")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def distribution(self) -> Literal["BECKMANN", "GGX", "MULTI_GGX"]:
@@ -300,42 +300,42 @@ class GlossyBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_anisotropy(self) -> SocketLinker:
         """Input socket: Anisotropy"""
-        return self._input("Anisotropy")
+        return self.inputs.get("Anisotropy")
 
     @property
     def i_rotation(self) -> SocketLinker:
         """Input socket: Rotation"""
-        return self._input("Rotation")
+        return self.inputs.get("Rotation")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_tangent(self) -> SocketLinker:
         """Input socket: Tangent"""
-        return self._input("Tangent")
+        return self.inputs.get("Tangent")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def distribution(
@@ -384,37 +384,37 @@ class HairBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Offset")
+        return self.inputs.get("Offset")
 
     @property
     def i_roughnessu(self) -> SocketLinker:
         """Input socket: RoughnessU"""
-        return self._input("RoughnessU")
+        return self.inputs.get("RoughnessU")
 
     @property
     def i_roughnessv(self) -> SocketLinker:
         """Input socket: RoughnessV"""
-        return self._input("RoughnessV")
+        return self.inputs.get("RoughnessV")
 
     @property
     def i_tangent(self) -> SocketLinker:
         """Input socket: Tangent"""
-        return self._input("Tangent")
+        return self.inputs.get("Tangent")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def component(self) -> Literal["Reflection", "Transmission"]:
@@ -443,12 +443,12 @@ class Holdout(NodeBuilder):
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_holdout(self) -> SocketLinker:
         """Output socket: Holdout"""
-        return self._output("Holdout")
+        return self.outputs.get("Holdout")
 
 
 class MetallicBSDF(NodeBuilder):
@@ -499,67 +499,67 @@ class MetallicBSDF(NodeBuilder):
     @property
     def i_base_color(self) -> SocketLinker:
         """Input socket: Base Color"""
-        return self._input("Base Color")
+        return self.inputs.get("Base Color")
 
     @property
     def i_edge_tint(self) -> SocketLinker:
         """Input socket: Edge Tint"""
-        return self._input("Edge Tint")
+        return self.inputs.get("Edge Tint")
 
     @property
     def i_ior(self) -> SocketLinker:
         """Input socket: IOR"""
-        return self._input("IOR")
+        return self.inputs.get("IOR")
 
     @property
     def i_extinction(self) -> SocketLinker:
         """Input socket: Extinction"""
-        return self._input("Extinction")
+        return self.inputs.get("Extinction")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_anisotropy(self) -> SocketLinker:
         """Input socket: Anisotropy"""
-        return self._input("Anisotropy")
+        return self.inputs.get("Anisotropy")
 
     @property
     def i_rotation(self) -> SocketLinker:
         """Input socket: Rotation"""
-        return self._input("Rotation")
+        return self.inputs.get("Rotation")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_tangent(self) -> SocketLinker:
         """Input socket: Tangent"""
-        return self._input("Tangent")
+        return self.inputs.get("Tangent")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def i_thin_film_thickness(self) -> SocketLinker:
         """Input socket: Thin Film Thickness"""
-        return self._input("Thin Film Thickness")
+        return self.inputs.get("Thin Film Thickness")
 
     @property
     def i_thin_film_ior(self) -> SocketLinker:
         """Input socket: Thin Film IOR"""
-        return self._input("Thin Film IOR")
+        return self.inputs.get("Thin Film IOR")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def distribution(self) -> Literal["BECKMANN", "GGX", "MULTI_GGX"]:
@@ -600,22 +600,22 @@ class MixShader(NodeBuilder):
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def i_shader(self) -> SocketLinker:
         """Input socket: Shader"""
-        return self._input("Shader")
+        return self.inputs.get("Shader")
 
     @property
     def i_shader_001(self) -> SocketLinker:
         """Input socket: Shader"""
-        return self._input("Shader_001")
+        return self.inputs.get("Shader_001")
 
     @property
     def o_shader(self) -> SocketLinker:
         """Output socket: Shader"""
-        return self._output("Shader")
+        return self.outputs.get("Shader")
 
 
 class PrincipledBSDF(NodeBuilder):
@@ -706,162 +706,162 @@ class PrincipledBSDF(NodeBuilder):
     @property
     def i_base_color(self) -> SocketLinker:
         """Input socket: Base Color"""
-        return self._input("Base Color")
+        return self.inputs.get("Base Color")
 
     @property
     def i_metallic(self) -> SocketLinker:
         """Input socket: Metallic"""
-        return self._input("Metallic")
+        return self.inputs.get("Metallic")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_ior(self) -> SocketLinker:
         """Input socket: IOR"""
-        return self._input("IOR")
+        return self.inputs.get("IOR")
 
     @property
     def i_alpha(self) -> SocketLinker:
         """Input socket: Alpha"""
-        return self._input("Alpha")
+        return self.inputs.get("Alpha")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def i_diffuse_roughness(self) -> SocketLinker:
         """Input socket: Diffuse Roughness"""
-        return self._input("Diffuse Roughness")
+        return self.inputs.get("Diffuse Roughness")
 
     @property
     def i_subsurface_weight(self) -> SocketLinker:
         """Input socket: Subsurface Weight"""
-        return self._input("Subsurface Weight")
+        return self.inputs.get("Subsurface Weight")
 
     @property
     def i_subsurface_radius(self) -> SocketLinker:
         """Input socket: Subsurface Radius"""
-        return self._input("Subsurface Radius")
+        return self.inputs.get("Subsurface Radius")
 
     @property
     def i_subsurface_scale(self) -> SocketLinker:
         """Input socket: Subsurface Scale"""
-        return self._input("Subsurface Scale")
+        return self.inputs.get("Subsurface Scale")
 
     @property
     def i_subsurface_ior(self) -> SocketLinker:
         """Input socket: Subsurface IOR"""
-        return self._input("Subsurface IOR")
+        return self.inputs.get("Subsurface IOR")
 
     @property
     def i_subsurface_anisotropy(self) -> SocketLinker:
         """Input socket: Subsurface Anisotropy"""
-        return self._input("Subsurface Anisotropy")
+        return self.inputs.get("Subsurface Anisotropy")
 
     @property
     def i_specular_ior_level(self) -> SocketLinker:
         """Input socket: Specular IOR Level"""
-        return self._input("Specular IOR Level")
+        return self.inputs.get("Specular IOR Level")
 
     @property
     def i_specular_tint(self) -> SocketLinker:
         """Input socket: Specular Tint"""
-        return self._input("Specular Tint")
+        return self.inputs.get("Specular Tint")
 
     @property
     def i_anisotropic(self) -> SocketLinker:
         """Input socket: Anisotropic"""
-        return self._input("Anisotropic")
+        return self.inputs.get("Anisotropic")
 
     @property
     def i_anisotropic_rotation(self) -> SocketLinker:
         """Input socket: Anisotropic Rotation"""
-        return self._input("Anisotropic Rotation")
+        return self.inputs.get("Anisotropic Rotation")
 
     @property
     def i_tangent(self) -> SocketLinker:
         """Input socket: Tangent"""
-        return self._input("Tangent")
+        return self.inputs.get("Tangent")
 
     @property
     def i_transmission_weight(self) -> SocketLinker:
         """Input socket: Transmission Weight"""
-        return self._input("Transmission Weight")
+        return self.inputs.get("Transmission Weight")
 
     @property
     def i_coat_weight(self) -> SocketLinker:
         """Input socket: Coat Weight"""
-        return self._input("Coat Weight")
+        return self.inputs.get("Coat Weight")
 
     @property
     def i_coat_roughness(self) -> SocketLinker:
         """Input socket: Coat Roughness"""
-        return self._input("Coat Roughness")
+        return self.inputs.get("Coat Roughness")
 
     @property
     def i_coat_ior(self) -> SocketLinker:
         """Input socket: Coat IOR"""
-        return self._input("Coat IOR")
+        return self.inputs.get("Coat IOR")
 
     @property
     def i_coat_tint(self) -> SocketLinker:
         """Input socket: Coat Tint"""
-        return self._input("Coat Tint")
+        return self.inputs.get("Coat Tint")
 
     @property
     def i_coat_normal(self) -> SocketLinker:
         """Input socket: Coat Normal"""
-        return self._input("Coat Normal")
+        return self.inputs.get("Coat Normal")
 
     @property
     def i_sheen_weight(self) -> SocketLinker:
         """Input socket: Sheen Weight"""
-        return self._input("Sheen Weight")
+        return self.inputs.get("Sheen Weight")
 
     @property
     def i_sheen_roughness(self) -> SocketLinker:
         """Input socket: Sheen Roughness"""
-        return self._input("Sheen Roughness")
+        return self.inputs.get("Sheen Roughness")
 
     @property
     def i_sheen_tint(self) -> SocketLinker:
         """Input socket: Sheen Tint"""
-        return self._input("Sheen Tint")
+        return self.inputs.get("Sheen Tint")
 
     @property
     def i_emission_color(self) -> SocketLinker:
         """Input socket: Emission Color"""
-        return self._input("Emission Color")
+        return self.inputs.get("Emission Color")
 
     @property
     def i_emission_strength(self) -> SocketLinker:
         """Input socket: Emission Strength"""
-        return self._input("Emission Strength")
+        return self.inputs.get("Emission Strength")
 
     @property
     def i_thin_film_thickness(self) -> SocketLinker:
         """Input socket: Thin Film Thickness"""
-        return self._input("Thin Film Thickness")
+        return self.inputs.get("Thin Film Thickness")
 
     @property
     def i_thin_film_ior(self) -> SocketLinker:
         """Input socket: Thin Film IOR"""
-        return self._input("Thin Film IOR")
+        return self.inputs.get("Thin Film IOR")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def distribution(self) -> Literal["GGX", "MULTI_GGX"]:
@@ -942,97 +942,97 @@ class PrincipledHairBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_melanin(self) -> SocketLinker:
         """Input socket: Melanin"""
-        return self._input("Melanin")
+        return self.inputs.get("Melanin")
 
     @property
     def i_melanin_redness(self) -> SocketLinker:
         """Input socket: Melanin Redness"""
-        return self._input("Melanin Redness")
+        return self.inputs.get("Melanin Redness")
 
     @property
     def i_tint(self) -> SocketLinker:
         """Input socket: Tint"""
-        return self._input("Tint")
+        return self.inputs.get("Tint")
 
     @property
     def i_absorption_coefficient(self) -> SocketLinker:
         """Input socket: Absorption Coefficient"""
-        return self._input("Absorption Coefficient")
+        return self.inputs.get("Absorption Coefficient")
 
     @property
     def i_aspect_ratio(self) -> SocketLinker:
         """Input socket: Aspect Ratio"""
-        return self._input("Aspect Ratio")
+        return self.inputs.get("Aspect Ratio")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_radial_roughness(self) -> SocketLinker:
         """Input socket: Radial Roughness"""
-        return self._input("Radial Roughness")
+        return self.inputs.get("Radial Roughness")
 
     @property
     def i_coat(self) -> SocketLinker:
         """Input socket: Coat"""
-        return self._input("Coat")
+        return self.inputs.get("Coat")
 
     @property
     def i_ior(self) -> SocketLinker:
         """Input socket: IOR"""
-        return self._input("IOR")
+        return self.inputs.get("IOR")
 
     @property
     def i_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Offset")
+        return self.inputs.get("Offset")
 
     @property
     def i_random_color(self) -> SocketLinker:
         """Input socket: Random Color"""
-        return self._input("Random Color")
+        return self.inputs.get("Random Color")
 
     @property
     def i_random_roughness(self) -> SocketLinker:
         """Input socket: Random Roughness"""
-        return self._input("Random Roughness")
+        return self.inputs.get("Random Roughness")
 
     @property
     def i_random(self) -> SocketLinker:
         """Input socket: Random"""
-        return self._input("Random")
+        return self.inputs.get("Random")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def i_r_lobe(self) -> SocketLinker:
         """Input socket: Reflection"""
-        return self._input("R lobe")
+        return self.inputs.get("R lobe")
 
     @property
     def i_tt_lobe(self) -> SocketLinker:
         """Input socket: Transmission"""
-        return self._input("TT lobe")
+        return self.inputs.get("TT lobe")
 
     @property
     def i_trt_lobe(self) -> SocketLinker:
         """Input socket: Secondary Reflection"""
-        return self._input("TRT lobe")
+        return self.inputs.get("TRT lobe")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def model(self) -> Literal["CHIANG", "HUANG"]:
@@ -1079,27 +1079,27 @@ class RayPortalBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_position(self) -> SocketLinker:
         """Input socket: Position"""
-        return self._input("Position")
+        return self.inputs.get("Position")
 
     @property
     def i_direction(self) -> SocketLinker:
         """Input socket: Direction"""
-        return self._input("Direction")
+        return self.inputs.get("Direction")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
 
 class RefractionBSDF(NodeBuilder):
@@ -1134,32 +1134,32 @@ class RefractionBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_ior(self) -> SocketLinker:
         """Input socket: IOR"""
-        return self._input("IOR")
+        return self.inputs.get("IOR")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def distribution(self) -> Literal["BECKMANN", "GGX"]:
@@ -1201,27 +1201,27 @@ class SheenBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def distribution(self) -> Literal["ASHIKHMIN", "MICROFIBER"]:
@@ -1272,57 +1272,57 @@ class SpecularBSDF(NodeBuilder):
     @property
     def i_base_color(self) -> SocketLinker:
         """Input socket: Base Color"""
-        return self._input("Base Color")
+        return self.inputs.get("Base Color")
 
     @property
     def i_specular(self) -> SocketLinker:
         """Input socket: Specular"""
-        return self._input("Specular")
+        return self.inputs.get("Specular")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_emissive_color(self) -> SocketLinker:
         """Input socket: Emissive Color"""
-        return self._input("Emissive Color")
+        return self.inputs.get("Emissive Color")
 
     @property
     def i_transparency(self) -> SocketLinker:
         """Input socket: Transparency"""
-        return self._input("Transparency")
+        return self.inputs.get("Transparency")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_clear_coat(self) -> SocketLinker:
         """Input socket: Clear Coat"""
-        return self._input("Clear Coat")
+        return self.inputs.get("Clear Coat")
 
     @property
     def i_clear_coat_roughness(self) -> SocketLinker:
         """Input socket: Clear Coat Roughness"""
-        return self._input("Clear Coat Roughness")
+        return self.inputs.get("Clear Coat Roughness")
 
     @property
     def i_clear_coat_normal(self) -> SocketLinker:
         """Input socket: Clear Coat Normal"""
-        return self._input("Clear Coat Normal")
+        return self.inputs.get("Clear Coat Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
 
 class SubsurfaceScattering(NodeBuilder):
@@ -1364,47 +1364,47 @@ class SubsurfaceScattering(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_scale(self) -> SocketLinker:
         """Input socket: Scale"""
-        return self._input("Scale")
+        return self.inputs.get("Scale")
 
     @property
     def i_radius(self) -> SocketLinker:
         """Input socket: Radius"""
-        return self._input("Radius")
+        return self.inputs.get("Radius")
 
     @property
     def i_ior(self) -> SocketLinker:
         """Input socket: IOR"""
-        return self._input("IOR")
+        return self.inputs.get("IOR")
 
     @property
     def i_roughness(self) -> SocketLinker:
         """Input socket: Roughness"""
-        return self._input("Roughness")
+        return self.inputs.get("Roughness")
 
     @property
     def i_anisotropy(self) -> SocketLinker:
         """Input socket: Anisotropy"""
-        return self._input("Anisotropy")
+        return self.inputs.get("Anisotropy")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bssrdf(self) -> SocketLinker:
         """Output socket: BSSRDF"""
-        return self._output("BSSRDF")
+        return self.outputs.get("BSSRDF")
 
     @property
     def falloff(self) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]:
@@ -1447,32 +1447,32 @@ class ToonBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_size(self) -> SocketLinker:
         """Input socket: Size"""
-        return self._input("Size")
+        return self.inputs.get("Size")
 
     @property
     def i_smooth(self) -> SocketLinker:
         """Input socket: Smooth"""
-        return self._input("Smooth")
+        return self.inputs.get("Smooth")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
     @property
     def component(self) -> Literal["DIFFUSE", "GLOSSY"]:
@@ -1505,22 +1505,22 @@ class TranslucentBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_normal(self) -> SocketLinker:
         """Input socket: Normal"""
-        return self._input("Normal")
+        return self.inputs.get("Normal")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")
 
 
 class TransparentBSDF(NodeBuilder):
@@ -1544,14 +1544,14 @@ class TransparentBSDF(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_weight(self) -> SocketLinker:
         """Input socket: Weight"""
-        return self._input("Weight")
+        return self.inputs.get("Weight")
 
     @property
     def o_bsdf(self) -> SocketLinker:
         """Output socket: BSDF"""
-        return self._output("BSDF")
+        return self.outputs.get("BSDF")

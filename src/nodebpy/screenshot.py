@@ -1,18 +1,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Programmatic node tree screenshot capture.
+"""Node tree diagrams and viewport rendering.
 
-This module provides functions to capture screenshots of Blender node trees
-without UI interaction. Screenshots can be returned as PIL Images or numpy arrays
-for use in Jupyter notebooks or other contexts.
+This module provides functions to generate Mermaid diagrams of node trees
+and render viewport previews of geometry node output for documentation.
 """
 
 from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-
-if TYPE_CHECKING:
-    pass
 
 # Mermaid diagram generation (no subprocess needed)
 
@@ -68,11 +61,18 @@ def generate_mermaid_diagram(tree) -> str:
         "OUTPUT": "output-node",
     }
 
+    # Skip reroute nodes — trace through them when building links
+    reroute_names = {n.name for n in node_tree.nodes if n.bl_idname == "NodeReroute"}
+
     # Enhanced sorting to better match visual flow in Blender
     # First, try to identify input/output nodes for special handling
     input_nodes = [n for n in node_tree.nodes if "GroupInput" in n.bl_idname]
     output_nodes = [n for n in node_tree.nodes if "GroupOutput" in n.bl_idname]
-    regular_nodes = [n for n in node_tree.nodes if n not in input_nodes + output_nodes]
+    regular_nodes = [
+        n
+        for n in node_tree.nodes
+        if n not in input_nodes + output_nodes and n.name not in reroute_names
+    ]
 
     # Sort regular nodes primarily by X position (left to right flow), then by Y position
     sorted_regular = sorted(
@@ -88,13 +88,16 @@ def generate_mermaid_diagram(tree) -> str:
         node_id = f"N{i}"
         node_map[node.name] = node_id
 
-        # Clean up the node type name for display - use just the type, not the full name
-        node_type = (
-            node.bl_idname.replace("GeometryNode", "")
-            .replace("ShaderNode", "")
-            .replace("FunctionNode", "")
-        )
-        node_type_clean = node_type.replace('"', "'")
+        # Use bl_label for the display name — it's the human-readable name Blender shows.
+        # For node groups, show the group tree name instead of generic "Group".
+        if (
+            node.bl_idname == "GeometryNodeGroup"
+            and hasattr(node, "node_tree")
+            and node.node_tree
+        ):
+            node_type_clean = node.node_tree.name.replace('"', "'")
+        else:
+            node_type_clean = node.bl_label.replace('"', "'")
 
         # Only show the most critical non-default values
         key_params = []
@@ -155,20 +158,49 @@ def generate_mermaid_diagram(tree) -> str:
 
         mermaid_lines.append(f'    {node_id}("{node_label}"):::{css_class}')
 
-    # Create connections with socket labels
+    # Trace through reroute chains to find the real source node/socket
+    def trace_source(node, socket):
+        """Follow reroute chains backward to find the real source."""
+        while node.bl_idname == "NodeReroute":
+            input_links = [link for link in node_tree.links if link.to_node == node]
+            if not input_links:
+                return node, socket
+            link = input_links[0]
+            node = link.from_node
+            socket = link.from_socket
+        return node, socket
+
+    # Create connections with socket labels, skipping reroute intermediaries
+    seen_edges = set()
     for link in node_tree.links:
-        from_node_id = node_map[link.from_node.name]
+        # Skip links that feed into reroutes — we trace from the output side
+        if link.to_node.name in reroute_names:
+            continue
+
+        from_node = link.from_node
+        from_socket = link.from_socket
+
+        # If source is a reroute, trace back to the real source
+        if from_node.name in reroute_names:
+            from_node, from_socket = trace_source(from_node, from_socket)
+
+        if from_node.name not in node_map or link.to_node.name not in node_map:
+            continue
+
+        from_node_id = node_map[from_node.name]
         to_node_id = node_map[link.to_node.name]
 
-        # Get socket names
-        from_socket = link.from_socket.name if hasattr(link.from_socket, "name") else ""
-        to_socket = link.to_socket.name if hasattr(link.to_socket, "name") else ""
+        # Deduplicate edges (multiple reroute paths can resolve to the same pair)
+        edge_key = (from_node_id, to_node_id, from_socket.name, link.to_socket.name)
+        if edge_key in seen_edges:
+            continue
+        seen_edges.add(edge_key)
 
-        # Create socket label with full names
-        if from_socket and to_socket:
-            # Always show from -> to format with full socket names
-            label = f"{from_socket}->{to_socket}"
+        from_socket_name = from_socket.name if hasattr(from_socket, "name") else ""
+        to_socket_name = link.to_socket.name if hasattr(link.to_socket, "name") else ""
 
+        if from_socket_name and to_socket_name:
+            label = f"{from_socket_name}->{to_socket_name}"
             mermaid_lines.append(f'    {from_node_id} -->|"{label}"| {to_node_id}')
         else:
             mermaid_lines.append(f"    {from_node_id} --> {to_node_id}")

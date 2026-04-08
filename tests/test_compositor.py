@@ -24,7 +24,7 @@ def test_initial_compositor():
         with t.outputs:
             output_color = s.SocketColor("Image")
 
-        ao_factor = (ao >> c.InvertColor()) ** 0.94 >> c.Kuwahara(size=4.0).i_image
+        ao_factor = (ao >> c.InvertColor()) ** 0.94 >> c.Kuwahara(..., size=4.0)
         active_image = c.Mix.color(ao_factor, image)
         depth_line = c.Filter(depth, type="Sobel") > (outline_depth / 100)
         normal_line = c.Filter(normal, type="Sobel") > 1.5

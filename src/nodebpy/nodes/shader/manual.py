@@ -1,4 +1,7 @@
+from ..geometry import RepeatInput, RepeatOutput, RepeatZone
 from ..geometry.manual import _MenuSwitchBase
+
+__all__ = ["MenuSwitch", "RepeatInput", "RepeatOutput", "RepeatZone"]
 
 
 class MenuSwitch(_MenuSwitchBase):

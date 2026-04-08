@@ -45,32 +45,32 @@ class AlphaOver(NodeBuilder):
     @property
     def i_background(self) -> SocketLinker:
         """Input socket: Background"""
-        return self._input("Background")
+        return self.inputs.get("Background")
 
     @property
     def i_foreground(self) -> SocketLinker:
         """Input socket: Foreground"""
-        return self._input("Foreground")
+        return self.inputs.get("Foreground")
 
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def i_type(self) -> SocketLinker:
         """Input socket: Type"""
-        return self._input("Type")
+        return self.inputs.get("Type")
 
     @property
     def i_straight_alpha(self) -> SocketLinker:
         """Input socket: Straight Alpha"""
-        return self._input("Straight Alpha")
+        return self.inputs.get("Straight Alpha")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class Brightnesscontrast(NodeBuilder):
@@ -95,22 +95,22 @@ class Brightnesscontrast(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_bright(self) -> SocketLinker:
         """Input socket: Brightness"""
-        return self._input("Bright")
+        return self.inputs.get("Bright")
 
     @property
     def i_contrast(self) -> SocketLinker:
         """Input socket: Contrast"""
-        return self._input("Contrast")
+        return self.inputs.get("Contrast")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class ColorBalance(NodeBuilder):
@@ -178,102 +178,102 @@ class ColorBalance(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def i_type(self) -> SocketLinker:
         """Input socket: Type"""
-        return self._input("Type")
+        return self.inputs.get("Type")
 
     @property
     def i_base_lift(self) -> SocketLinker:
         """Input socket: Lift"""
-        return self._input("Base Lift")
+        return self.inputs.get("Base Lift")
 
     @property
     def i_color_lift(self) -> SocketLinker:
         """Input socket: Lift"""
-        return self._input("Color Lift")
+        return self.inputs.get("Color Lift")
 
     @property
     def i_base_gamma(self) -> SocketLinker:
         """Input socket: Gamma"""
-        return self._input("Base Gamma")
+        return self.inputs.get("Base Gamma")
 
     @property
     def i_color_gamma(self) -> SocketLinker:
         """Input socket: Gamma"""
-        return self._input("Color Gamma")
+        return self.inputs.get("Color Gamma")
 
     @property
     def i_base_gain(self) -> SocketLinker:
         """Input socket: Gain"""
-        return self._input("Base Gain")
+        return self.inputs.get("Base Gain")
 
     @property
     def i_color_gain(self) -> SocketLinker:
         """Input socket: Gain"""
-        return self._input("Color Gain")
+        return self.inputs.get("Color Gain")
 
     @property
     def i_base_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Base Offset")
+        return self.inputs.get("Base Offset")
 
     @property
     def i_color_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Color Offset")
+        return self.inputs.get("Color Offset")
 
     @property
     def i_base_power(self) -> SocketLinker:
         """Input socket: Power"""
-        return self._input("Base Power")
+        return self.inputs.get("Base Power")
 
     @property
     def i_color_power(self) -> SocketLinker:
         """Input socket: Power"""
-        return self._input("Color Power")
+        return self.inputs.get("Color Power")
 
     @property
     def i_base_slope(self) -> SocketLinker:
         """Input socket: Slope"""
-        return self._input("Base Slope")
+        return self.inputs.get("Base Slope")
 
     @property
     def i_color_slope(self) -> SocketLinker:
         """Input socket: Slope"""
-        return self._input("Color Slope")
+        return self.inputs.get("Color Slope")
 
     @property
     def i_input_temperature(self) -> SocketLinker:
         """Input socket: Temperature"""
-        return self._input("Input Temperature")
+        return self.inputs.get("Input Temperature")
 
     @property
     def i_input_tint(self) -> SocketLinker:
         """Input socket: Tint"""
-        return self._input("Input Tint")
+        return self.inputs.get("Input Tint")
 
     @property
     def i_output_temperature(self) -> SocketLinker:
         """Input socket: Temperature"""
-        return self._input("Output Temperature")
+        return self.inputs.get("Output Temperature")
 
     @property
     def i_output_tint(self) -> SocketLinker:
         """Input socket: Tint"""
-        return self._input("Output Tint")
+        return self.inputs.get("Output Tint")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
     @property
     def input_whitepoint(self) -> tuple[float, float, float]:
@@ -366,142 +366,142 @@ class ColorCorrection(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_mask(self) -> SocketLinker:
         """Input socket: Mask"""
-        return self._input("Mask")
+        return self.inputs.get("Mask")
 
     @property
     def i_master_saturation(self) -> SocketLinker:
         """Input socket: Saturation"""
-        return self._input("Master Saturation")
+        return self.inputs.get("Master Saturation")
 
     @property
     def i_master_contrast(self) -> SocketLinker:
         """Input socket: Contrast"""
-        return self._input("Master Contrast")
+        return self.inputs.get("Master Contrast")
 
     @property
     def i_master_gamma(self) -> SocketLinker:
         """Input socket: Gamma"""
-        return self._input("Master Gamma")
+        return self.inputs.get("Master Gamma")
 
     @property
     def i_master_gain(self) -> SocketLinker:
         """Input socket: Gain"""
-        return self._input("Master Gain")
+        return self.inputs.get("Master Gain")
 
     @property
     def i_master_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Master Offset")
+        return self.inputs.get("Master Offset")
 
     @property
     def i_highlights_saturation(self) -> SocketLinker:
         """Input socket: Saturation"""
-        return self._input("Highlights Saturation")
+        return self.inputs.get("Highlights Saturation")
 
     @property
     def i_highlights_contrast(self) -> SocketLinker:
         """Input socket: Contrast"""
-        return self._input("Highlights Contrast")
+        return self.inputs.get("Highlights Contrast")
 
     @property
     def i_highlights_gamma(self) -> SocketLinker:
         """Input socket: Gamma"""
-        return self._input("Highlights Gamma")
+        return self.inputs.get("Highlights Gamma")
 
     @property
     def i_highlights_gain(self) -> SocketLinker:
         """Input socket: Gain"""
-        return self._input("Highlights Gain")
+        return self.inputs.get("Highlights Gain")
 
     @property
     def i_highlights_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Highlights Offset")
+        return self.inputs.get("Highlights Offset")
 
     @property
     def i_midtones_saturation(self) -> SocketLinker:
         """Input socket: Saturation"""
-        return self._input("Midtones Saturation")
+        return self.inputs.get("Midtones Saturation")
 
     @property
     def i_midtones_contrast(self) -> SocketLinker:
         """Input socket: Contrast"""
-        return self._input("Midtones Contrast")
+        return self.inputs.get("Midtones Contrast")
 
     @property
     def i_midtones_gamma(self) -> SocketLinker:
         """Input socket: Gamma"""
-        return self._input("Midtones Gamma")
+        return self.inputs.get("Midtones Gamma")
 
     @property
     def i_midtones_gain(self) -> SocketLinker:
         """Input socket: Gain"""
-        return self._input("Midtones Gain")
+        return self.inputs.get("Midtones Gain")
 
     @property
     def i_midtones_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Midtones Offset")
+        return self.inputs.get("Midtones Offset")
 
     @property
     def i_shadows_saturation(self) -> SocketLinker:
         """Input socket: Saturation"""
-        return self._input("Shadows Saturation")
+        return self.inputs.get("Shadows Saturation")
 
     @property
     def i_shadows_contrast(self) -> SocketLinker:
         """Input socket: Contrast"""
-        return self._input("Shadows Contrast")
+        return self.inputs.get("Shadows Contrast")
 
     @property
     def i_shadows_gamma(self) -> SocketLinker:
         """Input socket: Gamma"""
-        return self._input("Shadows Gamma")
+        return self.inputs.get("Shadows Gamma")
 
     @property
     def i_shadows_gain(self) -> SocketLinker:
         """Input socket: Gain"""
-        return self._input("Shadows Gain")
+        return self.inputs.get("Shadows Gain")
 
     @property
     def i_shadows_offset(self) -> SocketLinker:
         """Input socket: Offset"""
-        return self._input("Shadows Offset")
+        return self.inputs.get("Shadows Offset")
 
     @property
     def i_midtones_start(self) -> SocketLinker:
         """Input socket: Midtones Start"""
-        return self._input("Midtones Start")
+        return self.inputs.get("Midtones Start")
 
     @property
     def i_midtones_end(self) -> SocketLinker:
         """Input socket: Midtones End"""
-        return self._input("Midtones End")
+        return self.inputs.get("Midtones End")
 
     @property
     def i_apply_on_red(self) -> SocketLinker:
         """Input socket: Red"""
-        return self._input("Apply On Red")
+        return self.inputs.get("Apply On Red")
 
     @property
     def i_apply_on_green(self) -> SocketLinker:
         """Input socket: Green"""
-        return self._input("Apply On Green")
+        return self.inputs.get("Apply On Green")
 
     @property
     def i_apply_on_blue(self) -> SocketLinker:
         """Input socket: Blue"""
-        return self._input("Apply On Blue")
+        return self.inputs.get("Apply On Blue")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class DepthCombine(NodeBuilder):
@@ -536,42 +536,42 @@ class DepthCombine(NodeBuilder):
     @property
     def i_a(self) -> SocketLinker:
         """Input socket: A"""
-        return self._input("A")
+        return self.inputs.get("A")
 
     @property
     def i_depth_a(self) -> SocketLinker:
         """Input socket: Depth A"""
-        return self._input("Depth A")
+        return self.inputs.get("Depth A")
 
     @property
     def i_b(self) -> SocketLinker:
         """Input socket: B"""
-        return self._input("B")
+        return self.inputs.get("B")
 
     @property
     def i_depth_b(self) -> SocketLinker:
         """Input socket: Depth B"""
-        return self._input("Depth B")
+        return self.inputs.get("Depth B")
 
     @property
     def i_use_alpha(self) -> SocketLinker:
         """Input socket: Use Alpha"""
-        return self._input("Use Alpha")
+        return self.inputs.get("Use Alpha")
 
     @property
     def i_anti_alias(self) -> SocketLinker:
         """Input socket: Anti-Alias"""
-        return self._input("Anti-Alias")
+        return self.inputs.get("Anti-Alias")
 
     @property
     def o_result(self) -> ColorSocketLinker:
         """Output socket: Result"""
-        return self._output("Result")
+        return self.outputs.get("Result")
 
     @property
     def o_depth(self) -> SocketLinker:
         """Output socket: Depth"""
-        return self._output("Depth")
+        return self.outputs.get("Depth")
 
 
 class Exposure(NodeBuilder):
@@ -595,17 +595,17 @@ class Exposure(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_exposure(self) -> SocketLinker:
         """Input socket: Exposure"""
-        return self._input("Exposure")
+        return self.inputs.get("Exposure")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class HueCorrect(NodeBuilder):
@@ -629,17 +629,17 @@ class HueCorrect(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class Huesaturationvalue(NodeBuilder):
@@ -672,32 +672,32 @@ class Huesaturationvalue(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_hue(self) -> SocketLinker:
         """Input socket: Hue"""
-        return self._input("Hue")
+        return self.inputs.get("Hue")
 
     @property
     def i_saturation(self) -> SocketLinker:
         """Input socket: Saturation"""
-        return self._input("Saturation")
+        return self.inputs.get("Saturation")
 
     @property
     def i_value(self) -> SocketLinker:
         """Input socket: Value"""
-        return self._input("Value")
+        return self.inputs.get("Value")
 
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class InvertColor(NodeBuilder):
@@ -728,27 +728,27 @@ class InvertColor(NodeBuilder):
     @property
     def i_color(self) -> SocketLinker:
         """Input socket: Color"""
-        return self._input("Color")
+        return self.inputs.get("Color")
 
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def i_invert_color(self) -> SocketLinker:
         """Input socket: Invert Color"""
-        return self._input("Invert Color")
+        return self.inputs.get("Invert Color")
 
     @property
     def i_invert_alpha(self) -> SocketLinker:
         """Input socket: Invert Alpha"""
-        return self._input("Invert Alpha")
+        return self.inputs.get("Invert Alpha")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
 
 class Posterize(NodeBuilder):
@@ -772,17 +772,17 @@ class Posterize(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_steps(self) -> SocketLinker:
         """Input socket: Steps"""
-        return self._input("Steps")
+        return self.inputs.get("Steps")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class RGBCurves(NodeBuilder):
@@ -813,27 +813,27 @@ class RGBCurves(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_fac(self) -> SocketLinker:
         """Input socket: Factor"""
-        return self._input("Fac")
+        return self.inputs.get("Fac")
 
     @property
     def i_black_level(self) -> SocketLinker:
         """Input socket: Black Level"""
-        return self._input("Black Level")
+        return self.inputs.get("Black Level")
 
     @property
     def i_white_level(self) -> SocketLinker:
         """Input socket: White Level"""
-        return self._input("White Level")
+        return self.inputs.get("White Level")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")
 
 
 class Tonemap(NodeBuilder):
@@ -875,49 +875,49 @@ class Tonemap(NodeBuilder):
     @property
     def i_image(self) -> SocketLinker:
         """Input socket: Image"""
-        return self._input("Image")
+        return self.inputs.get("Image")
 
     @property
     def i_type(self) -> SocketLinker:
         """Input socket: Type"""
-        return self._input("Type")
+        return self.inputs.get("Type")
 
     @property
     def i_key(self) -> SocketLinker:
         """Input socket: Key"""
-        return self._input("Key")
+        return self.inputs.get("Key")
 
     @property
     def i_balance(self) -> SocketLinker:
         """Input socket: Balance"""
-        return self._input("Balance")
+        return self.inputs.get("Balance")
 
     @property
     def i_gamma(self) -> SocketLinker:
         """Input socket: Gamma"""
-        return self._input("Gamma")
+        return self.inputs.get("Gamma")
 
     @property
     def i_intensity(self) -> SocketLinker:
         """Input socket: Intensity"""
-        return self._input("Intensity")
+        return self.inputs.get("Intensity")
 
     @property
     def i_contrast(self) -> SocketLinker:
         """Input socket: Contrast"""
-        return self._input("Contrast")
+        return self.inputs.get("Contrast")
 
     @property
     def i_light_adaptation(self) -> SocketLinker:
         """Input socket: Light Adaptation"""
-        return self._input("Light Adaptation")
+        return self.inputs.get("Light Adaptation")
 
     @property
     def i_chromatic_adaptation(self) -> SocketLinker:
         """Input socket: Chromatic Adaptation"""
-        return self._input("Chromatic Adaptation")
+        return self.inputs.get("Chromatic Adaptation")
 
     @property
     def o_image(self) -> ColorSocketLinker:
         """Output socket: Image"""
-        return self._output("Image")
+        return self.outputs.get("Image")

@@ -18,9 +18,6 @@ def generate_variables_file():
     """
     Generate _variables.yml file in the quartodoc project directory
     """
-    if variables_filepath.exists():
-        return
-
     version = get_version("nodebpy")
     contents = VARIABLES_TPL.format(version=version)
     variables_filepath.write_text(contents)

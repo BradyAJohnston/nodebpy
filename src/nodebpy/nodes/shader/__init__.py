@@ -2,6 +2,9 @@
 
 from .manual import (
     MenuSwitch,
+    RepeatInput,
+    RepeatOutput,
+    RepeatZone,
 )
 from ..geometry.color import (
     Gamma,
@@ -24,8 +27,6 @@ from ..geometry.interface import (
     GroupOutput,
 )
 from ..geometry.manual import (
-    RepeatInput,
-    RepeatOutput,
     Value,
 )
 from ..geometry.texture import (
@@ -218,6 +219,7 @@ __all__ = (
     "RefractionBSDF",
     "RepeatInput",
     "RepeatOutput",
+    "RepeatZone",
     "Script",
     "SeparateBundle",
     "SeparateColor",

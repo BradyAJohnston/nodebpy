@@ -35,20 +35,6 @@ class BaseZone(DynamicInputsMixin, NodeBuilder, ABC):
         """Return the items collection"""
         pass
 
-    @property
-    def outputs(self) -> dict[str, SocketLinker]:
-        """Get all output sockets based on items collection"""
-        return {
-            item.name: SocketLinker(self.node.outputs[item.name]) for item in self.items
-        }
-
-    @property
-    def inputs(self) -> dict[str, SocketLinker]:
-        """Get all input sockets based on items collection"""
-        return {
-            item.name: SocketLinker(self.node.inputs[item.name]) for item in self.items
-        }
-
     def capture(
         self, value: LINKABLE, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
@@ -129,7 +115,7 @@ class SimulationInput(BaseSimulationZone, BaseZoneInput):
     @property
     def o_delta_time(self) -> SocketLinker:
         """Output socket: Delta Time"""
-        return self._output("Delta Time")
+        return self.outputs.get("Delta Time")
 
 
 class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
@@ -141,7 +127,7 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
     @property
     def i_skip(self) -> SocketLinker:
         """Input socket: Skip simluation frame"""
-        return self._input("Skip")
+        return self.inputs.get("Skip")
 
 
 class SimulationZone:
@@ -206,7 +192,7 @@ class RepeatInput(BaseRepeatZone, BaseZoneInput):
     @property
     def o_iteration(self) -> SocketLinker:
         """Output socket: Iteration"""
-        return self._output("Iteration")
+        return self.outputs.get("Iteration")
 
 
 class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
@@ -322,17 +308,17 @@ class ForEachGeometryElementInput(BaseZoneInput):
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
-        return self._input("Geometry")
+        return self.inputs.get("Geometry")
 
     @property
     def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
-        return self._input("Selection")
+        return self.inputs.get("Selection")
 
     @property
     def o_index(self) -> SocketLinker:
         """Output socket: Index"""
-        return self._output("Index")
+        return self.outputs.get("Index")
 
 
 class ForEachGeometryElementOutput(BaseZoneOutput):
@@ -411,17 +397,17 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
-        return self._input("Generation_0")
+        return self.inputs.get("Generation_0")
 
     @property
     def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
-        return self._output("Geometry")
+        return self.outputs.get("Geometry")
 
     @property
     def o_generation(self) -> SocketLinker:
         """Output socket: Geometry"""
-        return self._output("Generation_0")
+        return self.outputs.get("Generation_0")
 
     @property
     def domain(

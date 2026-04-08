@@ -36,12 +36,12 @@ class EnvironmentTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def projection(self) -> Literal["EQUIRECTANGULAR", "MIRROR_BALL"]:
@@ -85,17 +85,17 @@ class IesTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def i_strength(self) -> SocketLinker:
         """Input socket: Strength"""
-        return self._input("Strength")
+        return self.inputs.get("Strength")
 
     @property
     def o_fac(self) -> SocketLinker:
         """Output socket: Factor"""
-        return self._output("Fac")
+        return self.outputs.get("Fac")
 
     @property
     def filepath(self) -> str:
@@ -142,17 +142,17 @@ class ImageTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def o_alpha(self) -> SocketLinker:
         """Output socket: Alpha"""
-        return self._output("Alpha")
+        return self.outputs.get("Alpha")
 
     @property
     def projection(self) -> Literal["FLAT", "BOX", "SPHERE", "TUBE"]:
@@ -235,12 +235,12 @@ class SkyTexture(NodeBuilder):
     @property
     def i_vector(self) -> SocketLinker:
         """Input socket: Vector"""
-        return self._input("Vector")
+        return self.inputs.get("Vector")
 
     @property
     def o_color(self) -> ColorSocketLinker:
         """Output socket: Color"""
-        return self._output("Color")
+        return self.outputs.get("Color")
 
     @property
     def sky_type(
