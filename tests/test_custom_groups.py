@@ -52,21 +52,21 @@ def test_custom_group_with_offset():
 # --- Instance access returns SocketLinker (Blender) ---
 
 
-def test_descriptor_get_returns_socket_linker():
-    """Accessing i_* on an instance returns a SocketLinker for that socket."""
+def test_i_prefix_returns_socket_linker():
+    """Accessing i_* on an instance returns a SocketLinker for that input socket."""
     with TreeBuilder():
         node = OtherVertex()
-        linker = node.inputs["vertex_index"]
+        linker = node.i_vertex_index
 
     assert isinstance(linker, SocketLinker)
     assert linker.socket_name == "Vertex Index"
 
 
-def test_output_descriptor_returns_socket_linker():
-    """o_* descriptors return a SocketLinker that can be chained."""
+def test_o_prefix_returns_socket_linker():
+    """Accessing o_* on an instance returns a SocketLinker for that output socket."""
     with TreeBuilder():
         node = OtherVertex()
-        out = node.outputs["other_vertex"]
+        out = node.o_other_vertex
 
     assert isinstance(out, SocketLinker)
 
@@ -81,3 +81,4 @@ def test_group_reuses_existing_node_group():
         b = OtherVertex()
 
     assert a.node.node_tree is b.node.node_tree
+    assert a.node is not b.node

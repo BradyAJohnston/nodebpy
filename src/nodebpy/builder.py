@@ -1927,6 +1927,19 @@ class NodeGroupBuilder(NodeBuilder):
 
         return tree.tree
 
+    def __getattr__(self, name: str) -> "SocketLinker":
+        """Allow ``i_*`` / ``o_*`` attribute access to resolve to input/output sockets.
+
+        ``node.i_vertex_index`` is equivalent to ``node.inputs["vertex_index"]``.
+        ``node.o_other_vertex`` is equivalent to ``node.outputs["other_vertex"]``.
+        The suffix is denormalized (snake_case → Title Case) via :func:`denormalize_name`.
+        """
+        if name.startswith("i_"):
+            return self.inputs.get(name[2:])
+        if name.startswith("o_"):
+            return self.outputs.get(name[2:])
+        raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
+
     @classmethod
     def _build_group(cls, tree: TreeBuilder) -> None:
         """Build the node group internals."""
