@@ -1,0 +1,225 @@
+---
+title: Custom Node Groups
+---
+
+```{python}
+from nodebpy import TreeBuilder, geometry as g, sockets as s
+from nodebpy import builder
+from nodebpy.types import (
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_VECTOR,
+    TYPE_INPUT_GEOMETRY,
+)
+```
+
+Custom node groups let you encapsulate reusable logic into a single node. With `NodeGroupBuilder`, you define a Python class that:
+
+1. **Declares inputs and outputs** as class-level descriptors.
+2. **Implements the internal graph** in a `_build_group` classmethod.
+3. **Works like any other node** -- full IDE autocomplete, type hints, `>>` chaining, and operator support.
+
+The group's node tree is built once on first use and cached in `bpy.data.node_groups`, so creating many instances of the same group is cheap.
+
+## Anatomy of a Custom Node Group
+
+A custom node group class has four parts:
+
+```{python}
+# | eval: false
+from nodebpy.builder import NodeGroupBuilder, InputSpec, OutputSpec
+from nodebpy import sockets as s
+
+
+class MyNode(NodeGroupBuilder):
+    _name = "My Node"  # 1. Name
+
+    def __init__(self, value: float = 0.0):  # 3. Constructor
+        super().__init__(value=value)
+
+    @classmethod
+    def _build_group(cls, tree):  # 4. Graph logic
+        return {"Result": value * 2.0}
+```
+
+### 1. `_name`
+The display name for the group inside Blender. This is also the key used to cache it in `bpy.data.node_groups`.
+
+## A First Example: Jitter
+
+Let's start with something visually obvious -- a node that randomly displaces each point on a mesh. This is useful any time you want to add organic variation to geometry.
+
+```{python}
+class Jitter(builder.NodeGroupBuilder):
+    """Randomly offset each point by a bounded amount."""
+
+    _name = "Jitter"
+    _color_tag = "GEOMETRY"
+
+    def __init__(
+        self,
+        geometry: TYPE_INPUT_GEOMETRY = ...,
+        amount: TYPE_INPUT_VALUE = 0.2,
+        seed: TYPE_INPUT_INT = 0,
+    ):
+        super().__init__(**{"Geometry": geometry, "Amount": amount, "Seed": seed})
+
+    @classmethod
+    def _build_group(cls, tree):
+        with tree.inputs:
+            geometry = s.SocketGeometry("Geometry")
+            amount = s.SocketFloat("Amount", 0.2)
+            seed = s.SocketInt("Seed")
+
+        offset = g.RandomValue.vector(min=-1, seed=seed) * amount
+        result = geometry >> g.SetPosition(offset=offset)
+
+        with tree.outputs:
+            _ = result >> s.SocketGeometry()
+```
+
+Let's see the internal node graph:
+
+```{python}
+with TreeBuilder("JitterInternal") as tree:
+    _ = Jitter()
+
+tree
+```
+
+Now use it like any built-in node -- apply it to an ico sphere:
+
+```{python}
+with TreeBuilder("JitterDemo") as tree:
+    with tree.outputs:
+        out = s.SocketGeometry()
+
+    _ = g.IcoSphere(subdivisions=4) >> Jitter(amount=0.15) >> out
+
+tree
+```
+
+
+## Radial Array
+
+Next, a node that distributes instances in a ring. This is a common pattern for creating wheels, flower petals, gears, and other radially symmetric objects.
+
+```{python}
+from math import tau
+
+
+class RadialArray(builder.NodeGroupBuilder):
+    """Distribute instances evenly around a circle."""
+
+    _name = "Radial Array"
+    _color_tag = "GEOMETRY"
+
+    def __init__(
+        self,
+        geometry: TYPE_INPUT_GEOMETRY = ...,
+        count: TYPE_INPUT_INT = 6,
+        radius: TYPE_INPUT_VALUE = 2.0,
+    ):
+        super().__init__(geometry=geometry, count=count, radius=radius)
+
+    @classmethod
+    def _build_group(cls, tree):
+        with tree.inputs:
+            geometry = s.SocketGeometry()
+            count = s.SocketInt("Count", 6)
+            radius = s.SocketFloat("Radius", 2.0)
+
+        # Create points arranged in a circle
+        angle = g.Index() * tau / count
+        circle_pos = g.CombineXYZ(
+            x=g.Math.cosine(angle) * radius, y=g.Math.sine(angle) * radius
+        )
+
+        # Place instances at each point, rotated to face outward
+        rotation = g.CombineXYZ(z=angle)
+        result = (
+            g.Points(count)
+            >> g.SetPosition(position=circle_pos)
+            >> g.InstanceOnPoints(instance=geometry, rotation=rotation)
+        )
+
+        with tree.outputs:
+            _ = result >> s.SocketGeometry()
+```
+
+```{python}
+with TreeBuilder("RadialInternal") as tree:
+    _ = RadialArray()
+
+tree
+```
+
+```{python}
+with TreeBuilder("RadialDemo") as tree:
+    with tree.outputs:
+        out = s.SocketGeometry()
+
+    petal = g.Cone(vertices=4, radius_bottom=0.3, depth=0.8)
+    _ = (
+        petal
+        >> RadialArray(count=8, radius=2.0)
+        >> g.RealizeInstances()
+        >> out
+    )
+
+tree
+```
+
+
+## Composing Groups: Jittered Flower
+
+Custom groups compose naturally -- they chain with `>>`, accept each other's outputs, and mix with operators just like built-in nodes. Let's combine `Jitter` and `RadialArray` to build a flower-like structure with some organic randomness.
+
+```{python}
+with TreeBuilder("JitteredFlower") as tree:
+    with tree.inputs:
+        petals = s.SocketInt("Petals", 20, min_value=3, max_value=24)
+        radius = s.SocketFloat("Radius", 0.5, min_value=0.1)
+        jitter = s.SocketFloat("Jitter", 0.1)
+
+    with tree.outputs:
+        out = s.SocketGeometry()
+
+    petal_length = 0.8
+
+    petal = (
+        g.Cube(size=(petal_length, 0.2, 0.1))
+        >> g.TransformGeometry(translation=(petal_length / 4, 0, 0))
+    )
+    ring = (
+        petal
+        >> RadialArray(count=petals, radius=radius)
+        >> Jitter(amount=jitter)
+        >> g.RotateInstances(rotation=(0, -tau / 16, 0))
+    )
+    center = g.IcoSphere(radius=0.4, subdivisions=3)
+    _ = g.JoinGeometry(ring, center) >> g.RealizeInstances() >> out
+
+tree
+```
+
+Each custom group appears as a single, named node in the tree -- keeping the graph readable even as the logic grows.
+
+## Class Options
+
+`NodeGroupBuilder` supports a few class-level options:
+
+| Attribute | Type | Default | Description |
+|:----------|:-----|:--------|:------------|
+| `_name` | `str` | *(required)* | Display name and cache key for the group |
+| `_color_tag` | `str` | `"NONE"` | Header colour in Blender (`"INPUT"`, `"CONVERTER"`, `"GEOMETRY"`, etc.) |
+| `_warning_propagation` | `str` | `"ALL"` | How warnings propagate (`"ALL"`, `"ERRORS_AND_WARNINGS"`, `"ERRORS"`, `"NONE"`) |
+
+## Summary
+
+| Step | What you write | What it does |
+|:-----|:---------------|:-------------|
+| Declare `i_*` | `i_val = InputSpec(partial(s.SocketFloat, "Value"))` | Defines group input socket + `node.i_val` property |
+| Declare `o_*` | `o_result = OutputSpec(partial(s.SocketFloat, "Result"))` | Defines group output socket + `node.o_result` property |
+| Write `__init__` | `def __init__(self, value=None): super().__init__(value=value)` | Typed constructor for IDE autocomplete |
+| Write `_build_group` | `def _build_group(cls, tree, value: s.SocketFloat): ...` | Internal graph logic with typed inputs |

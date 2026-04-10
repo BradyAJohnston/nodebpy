@@ -991,7 +991,7 @@ class TestLinkErrors:
 
     def test_find_best_socket_pair_no_match_raises(self):
         """_find_best_socket_pair raises SocketError when no compatible pair exists."""
-        with TreeBuilder("NoMatch") as tree:
+        with TreeBuilder("NoMatch"):
             geo = g.JoinGeometry()  # geometry output
             count = g.DomainSize()  # wants geometry input, produces INT outputs
 
@@ -1033,7 +1033,7 @@ class TestRShiftFallback:
         compatible input), then the target-side retry succeeds.
         """
         with TreeBuilder("RShiftFallback"):
-            pos = g.Position()
+            g.Position()
             join = g.JoinGeometry()
             # Position output is VECTOR; JoinGeometry normally takes GEOMETRY.
             # This should fail source-first and succeed target-side.

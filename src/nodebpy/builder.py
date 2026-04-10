@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -146,14 +147,15 @@ class SocketAccessor:
         if key in ids:
             return ids.index(key)
         names = [s.name for s in self._sockets]
-        if key in names:
-            if names.count(key) > 1:
-                raise RuntimeError(
-                    f"{self._direction.title()} name '{key}' is ambiguous on "
-                    f"{self._node.bl_idname} (appears {names.count(key)} times). "
-                    f"Use the socket identifier instead."
-                )
-            return names.index(key)
+        for key in (key, denormalize_name(key)):
+            if key in names:
+                if names.count(key) > 1:
+                    raise RuntimeError(
+                        f"{self._direction.title()} name '{key}' is ambiguous on "
+                        f"{self._node.bl_idname} (appears {names.count(key)} times). "
+                        f"Use the socket identifier instead."
+                    )
+                return names.index(key)
         raise RuntimeError(
             f"{self._direction.title()} '{key}' not found on "
             f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"
@@ -355,8 +357,6 @@ class TreeBuilder:
     """
 
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
-    just_added: "Node | None" = None
-    collapse: bool = False
 
     def __init__(
         self,
@@ -769,7 +769,7 @@ class NodeBuilder:
                     if name in self.node.inputs:
                         input = self.node.inputs[name]
                     else:
-                        input = self.node.inputs[name.replace("_", "").capitalize()]
+                        input = self.node.inputs[name.replace("_", " ").title()]
                     self._set_input_default_value(input, value)
 
     @property
@@ -1877,3 +1877,64 @@ class SocketShader(SocketBase):
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+
+
+class NodeGroupBuilder(NodeBuilder, ABC):
+    """Base class for custom node groups.
+
+    Subclasses implement :meth:`_build_group` with the node-graph logic.
+    """
+
+    _name: str
+    _bl_idname = "GeometryNodeGroup"
+    _warning_propagation: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"] = (
+        "ALL"
+    )
+    _color_tag: Literal[
+        "NONE",
+        "ATTRIBUTE",
+        "COLOR",
+        "CONVERTER",
+        "GEOMETRY",
+        "INPUT",
+        "OUTPUT",
+        "TEXTURE",
+        "VECTOR",
+    ] = "NONE"
+    node: bpy.types.GeometryNodeGroup
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.node.node_tree = self._get_or_create_group()
+        self.node.show_options = False
+        self.node.warning_propagation = self._warning_propagation
+        self._establish_links(**kwargs)
+
+    def _get_or_create_group(self) -> bpy.types.GeometryNodeTree:
+        name = self._name
+        if name in bpy.data.node_groups:
+            return bpy.data.node_groups[name]
+
+        with TreeBuilder(name) as tree:
+            self._build_group(tree)
+            tree.tree.color_tag = self._color_tag
+
+        return tree.tree
+
+    def __getattr__(self, name: str) -> "SocketLinker":
+        """Allow ``i_*`` / ``o_*`` attribute access to resolve to input/output sockets.
+
+        ``node.i_vertex_index`` is equivalent to ``node.inputs["vertex_index"]``.
+        ``node.o_other_vertex`` is equivalent to ``node.outputs["other_vertex"]``.
+        The suffix is denormalized (snake_case → Title Case) via :func:`denormalize_name`.
+        """
+        if name.startswith("i_"):
+            return self.inputs.get(name[2:])
+        if name.startswith("o_"):
+            return self.outputs.get(name[2:])
+        raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
+
+    @classmethod
+    @abstractmethod
+    def _build_group(cls, tree: TreeBuilder) -> None:
+        """Code that builds the node group internals and interface"""
