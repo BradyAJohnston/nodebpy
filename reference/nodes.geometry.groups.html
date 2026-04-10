@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>nodes.shader.manual – nodebpy {{&lt; var version &gt;}}</title>
+<title>nodes.geometry.groups – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.shader.output.html" rel="next">
-<link href="../reference/nodes.shader.interface.html" rel="prev">
+<link href="../reference/nodes.geometry.geometry.html" rel="next">
+<link href="../reference/nodes.geometry.grid.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -171,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.shader.color.html">Shader Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.shader.manual.html">nodes.shader.manual</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.geometry.input.html">Geometry Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.geometry.groups.html">nodes.geometry.groups</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -236,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.groups.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/nodes.geometry.groups.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">nodes.geometry.groups</span></a>
   </div>
 </li>
@@ -330,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.shader.manual</span></a>
   </div>
 </li>
@@ -476,25 +476,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.nodes.shader.manual" id="toc-nodebpy.nodes.shader.manual" class="nav-link active" data-scroll-target="#nodebpy.nodes.shader.manual">nodes.shader.manual</a>
+  <li><a href="#nodebpy.nodes.geometry.groups" id="toc-nodebpy.nodes.geometry.groups" class="nav-link active" data-scroll-target="#nodebpy.nodes.geometry.groups">nodes.geometry.groups</a>
   <ul class="collapse">
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
-  <li><a href="#nodebpy.nodes.shader.manual.MenuSwitch" id="toc-nodebpy.nodes.shader.manual.MenuSwitch" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.manual.MenuSwitch">MenuSwitch</a></li>
+  <li><a href="#nodebpy.nodes.geometry.groups.OffsetVector" id="toc-nodebpy.nodes.geometry.groups.OffsetVector" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.OffsetVector">OffsetVector</a></li>
+  <li><a href="#nodebpy.nodes.geometry.groups.OtherVertex" id="toc-nodebpy.nodes.geometry.groups.OtherVertex" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.OtherVertex">OtherVertex</a></li>
   </ul></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.shader.color.html">Shader Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.shader.manual.html">nodes.shader.manual</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.geometry.input.html">Geometry Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.geometry.groups.html">nodes.geometry.groups</a></li></ol></nav></header>
 
 
 
 
-<section id="nodebpy.nodes.shader.manual" class="level1">
-<h1>nodes.shader.manual</h1>
-<p><code>manual</code></p>
+<section id="nodebpy.nodes.geometry.groups" class="level1">
+<h1>nodes.geometry.groups</h1>
+<p><code>groups</code></p>
 <section id="classes" class="level2">
 <h2 class="anchored" data-anchor-id="classes">Classes</h2>
 <table class="caption-top table">
@@ -506,15 +507,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch">MenuSwitch</a></td>
-<td>Node builder for the Menu Switch node (Shader tree)</td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector">OffsetVector</a></td>
+<td>Evaluate a given vector field at an offset to the current <code>Index</code>.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex">OtherVertex</a></td>
+<td>Given a vertex and an edge number from that vertex, returns the other</td>
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.shader.manual.MenuSwitch" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.MenuSwitch">MenuSwitch</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>MenuSwitch(<span class="op">*</span>args, menu<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Node builder for the Menu Switch node (Shader tree)</p>
+<section id="nodebpy.nodes.geometry.groups.OffsetVector" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.groups.OffsetVector">OffsetVector</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>OffsetVector(index<span class="op">=</span><span class="va">None</span>, vector<span class="op">=</span><span class="va">None</span>, offset<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Evaluate a given vector field at an offset to the current <code>Index</code>.</p>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -526,75 +531,97 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.boolean">boolean</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.i_index"><code>i_index</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.bundle">bundle</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.i_offset"><code>i_offset</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.closure">closure</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.i_vector"><code>i_vector</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.color">color</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.inputs">inputs</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.data_type">data_type</a></td>
-<td>Input socket: Data Type</td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.name">name</a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.float">float</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.node">node</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.i_menu"><code>i_menu</code></a></td>
-<td>Input socket: Menu</td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.o_vector"><code>o_vector</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.outputs">outputs</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.integer">integer</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.menu">menu</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.type">type</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.groups.OtherVertex" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.groups.OtherVertex">OtherVertex</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>OtherVertex(vertex_index<span class="op">=</span><span class="va">None</span>, edge_number<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Given a vertex and an edge number from that vertex, returns the other vertex of that edge.</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.i_edge_number"><code>i_edge_number</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.i_vertex_index"><code>i_vertex_index</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.inputs">inputs</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.name">name</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.o_output"><code>o_output</code></a></td>
-<td>Output socket: Output</td>
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.node">node</a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.o_other_vertex"><code>o_other_vertex</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.shader">shader</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.outputs">outputs</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.tree">tree</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.type">type</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.shader.manual.MenuSwitch.vector">vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.type">type</a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1009,13 +1036,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/nodes.shader.interface.html" class="pagination-link" aria-label="nodes.shader.interface">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.shader.interface</span>
+      <a href="../reference/nodes.geometry.grid.html" class="pagination-link" aria-label="nodes.geometry.grid">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.geometry.grid</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.shader.output.html" class="pagination-link" aria-label="nodes.shader.output">
-        <span class="nav-page-text">nodes.shader.output</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.geometry.geometry.html" class="pagination-link" aria-label="nodes.geometry.geometry">
+        <span class="nav-page-text">nodes.geometry.geometry</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
