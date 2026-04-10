@@ -1,6 +1,7 @@
 from functools import reduce
 
 import bpy
+import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy.builder import (
@@ -58,6 +59,17 @@ def test_o_prefix_returns_socket_linker():
         out = node.o_other_vertex
 
     assert isinstance(out, SocketLinker)
+
+
+def test_wrong_attribute_access():
+    """Accessing a non-existent attribute raises an AttributeError."""
+    with TreeBuilder():
+        node = OtherVertex()
+
+        with pytest.raises(AttributeError):
+            node.wrong_attribute_name
+        with pytest.raises(RuntimeError):
+            node.o_wrong_attribute_name
 
 
 # --- Group caching ---
