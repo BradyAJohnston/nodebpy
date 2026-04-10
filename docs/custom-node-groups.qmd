@@ -3,12 +3,14 @@ title: Custom Node Groups
 ---
 
 ```{python}
-#| echo: false
-from functools import partial
 from nodebpy import TreeBuilder, geometry as g, sockets as s
-from nodebpy import display_render
 from nodebpy import builder
-from nodebpy.types import TYPE_INPUT_VALUE, TYPE_INPUT_INT, TYPE_INPUT_VECTOR, TYPE_INPUT_GEOMETRY
+from nodebpy.types import (
+    TYPE_INPUT_VALUE,
+    TYPE_INPUT_INT,
+    TYPE_INPUT_VECTOR,
+    TYPE_INPUT_GEOMETRY,
+)
 ```
 
 Custom node groups let you encapsulate reusable logic into a single node. With `NodeGroupBuilder`, you define a Python class that:
@@ -23,42 +25,25 @@ The group's node tree is built once on first use and cached in `bpy.data.node_gr
 
 A custom node group class has four parts:
 
-```python
-from functools import partial
+```{python}
+# | eval: false
 from nodebpy.builder import NodeGroupBuilder, InputSpec, OutputSpec
 from nodebpy import sockets as s
 
+
 class MyNode(NodeGroupBuilder):
-    _name = "My Node"                                  # 1. Name
+    _name = "My Node"  # 1. Name
 
-    i_value = InputSpec(partial(s.SocketFloat, "Value"))           # 2. Inputs / Outputs
-    o_result = OutputSpec(partial(s.SocketFloat, "Result"))
-
-    def __init__(self, value: float = 0.0):                       # 3. Constructor
+    def __init__(self, value: float = 0.0):  # 3. Constructor
         super().__init__(value=value)
 
     @classmethod
-    def _build_group(cls, tree, value: s.SocketFloat):            # 4. Graph logic
+    def _build_group(cls, tree):  # 4. Graph logic
         return {"Result": value * 2.0}
 ```
 
 ### 1. `_name`
 The display name for the group inside Blender. This is also the key used to cache it in `bpy.data.node_groups`.
-
-### 2. `InputSpec` / `OutputSpec`
-Each input and output is declared as a class-level descriptor wrapping a `functools.partial` call. The `partial` defers socket creation (sockets can only be created inside a tree context) while preserving full IDE autocomplete on the socket constructor arguments.
-
-The naming convention matters:
-
-- **`i_<name>`** -- input descriptor. The `<name>` part becomes the keyword argument name in `__init__` and `_build_group`. For example, `i_vertex_index` maps to keyword `vertex_index`.
-- **`o_<name>`** -- output descriptor. On instances, `node.o_result` returns the live output `SocketLinker` for chaining.
-
-### 3. `__init__`
-The constructor provides the typed signature that IDEs use for autocomplete. The body is always just `super().__init__(...)` with keyword arguments matching the `i_*` param names. This is where you set default values and type hints.
-
-### 4. `_build_group`
-A classmethod that receives the `TreeBuilder` and each input socket as a typed keyword argument. Build your node graph using the same API as any tree, then return a dict mapping output socket names to the nodes or sockets that feed them.
-
 
 ## A First Example: Jitter
 
@@ -102,11 +87,6 @@ with TreeBuilder("JitterInternal") as tree:
 tree
 ```
 
-```{python}
-#| echo: false
-TreeBuilder(_.node.node_tree)
-```
-
 Now use it like any built-in node -- apply it to an ico sphere:
 
 ```{python}
@@ -119,9 +99,6 @@ with TreeBuilder("JitterDemo") as tree:
 tree
 ```
 
-```{python}
-display_render(tree)
-```
 
 ## Radial Array
 
@@ -178,11 +155,6 @@ tree
 ```
 
 ```{python}
-#| echo: false
-TreeBuilder(_.node.node_tree)
-```
-
-```{python}
 with TreeBuilder("RadialDemo") as tree:
     with tree.outputs:
         out = s.SocketGeometry()
@@ -198,17 +170,10 @@ with TreeBuilder("RadialDemo") as tree:
 tree
 ```
 
-```{python}
-display_render(tree)
-```
 
 ## Composing Groups: Jittered Flower
 
-
 Custom groups compose naturally -- they chain with `>>`, accept each other's outputs, and mix with operators just like built-in nodes. Let's combine `Jitter` and `RadialArray` to build a flower-like structure with some organic randomness.
-
-
-
 
 ```{python}
 with TreeBuilder("JitteredFlower") as tree:
@@ -238,10 +203,6 @@ with TreeBuilder("JitteredFlower") as tree:
 tree
 ```
 
-```{python}
-display_render(tree)
-```
-
 Each custom group appears as a single, named node in the tree -- keeping the graph readable even as the logic grows.
 
 ## Class Options
@@ -262,4 +223,3 @@ Each custom group appears as a single, named node in the tree -- keeping the gra
 | Declare `o_*` | `o_result = OutputSpec(partial(s.SocketFloat, "Result"))` | Defines group output socket + `node.o_result` property |
 | Write `__init__` | `def __init__(self, value=None): super().__init__(value=value)` | Typed constructor for IDE autocomplete |
 | Write `_build_group` | `def _build_group(cls, tree, value: s.SocketFloat): ...` | Internal graph logic with typed inputs |
-| Return outputs | `return {"Result": some_socket}` | Maps output names to the sockets that feed them |
