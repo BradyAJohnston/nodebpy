@@ -70,43 +70,27 @@ class Jitter(builder.NodeGroupBuilder):
 
     _name = "Jitter"
     _color_tag = "GEOMETRY"
-    
+
     def __init__(
         self,
         geometry: TYPE_INPUT_GEOMETRY = ...,
         amount: TYPE_INPUT_VALUE = 0.2,
         seed: TYPE_INPUT_INT = 0,
     ):
-        super().__init__(geometry=geometry, amount=amount, seed=seed)
-    
-    @property
-    def i_geometry(self) -> builder.IntegerSocketLinker:
-        return self.inputs.get("Geometry")
-    
-    @property
-    def i_amount(self) -> builder.SocketLinker:
-        return self.inputs.get("Amount")
-    
-    @property
-    def i_seed(self) -> builder.IntegerSocketLinker:
-        return self.inputs.get("Amount")
-    
-    @property
-    def o_geometry(self) -> builder.SocketLinker:
-        return self.outputs.get("Geometry")
+        super().__init__(**{"Geometry": geometry, "Amount": amount, "Seed": seed})
 
     @classmethod
     def _build_group(cls, tree):
-        with tree.inputs;
+        with tree.inputs:
             geometry = s.SocketGeometry("Geometry")
             amount = s.SocketFloat("Amount", 0.2)
             seed = s.SocketInt("Seed")
-        
+
         offset = g.RandomValue.vector(min=-1, seed=seed) * amount
         result = geometry >> g.SetPosition(offset=offset)
-        
+
         with tree.outputs:
-            _ = result >> s.SocketGeometry
+            _ = result >> s.SocketGeometry()
 ```
 
 Let's see the internal node graph:
@@ -146,16 +130,12 @@ Next, a node that distributes instances in a ring. This is a common pattern for 
 ```{python}
 from math import tau
 
-class RadialArray(NodeGroupBuilder):
+
+class RadialArray(builder.NodeGroupBuilder):
     """Distribute instances evenly around a circle."""
 
     _name = "Radial Array"
     _color_tag = "GEOMETRY"
-
-    i_geometry = InputSpec(partial(s.SocketGeometry, "Geometry"))
-    i_count = InputSpec(partial(s.SocketInt, "Count", 6, min_value=1))
-    i_radius = InputSpec(partial(s.SocketFloat, "Radius", 2.0))
-    o_geometry = OutputSpec(partial(s.SocketGeometry, "Instances"))
 
     def __init__(
         self,
@@ -166,14 +146,17 @@ class RadialArray(NodeGroupBuilder):
         super().__init__(geometry=geometry, count=count, radius=radius)
 
     @classmethod
-    def _build_group(
-        cls, tree, geometry: s.SocketGeometry, count: s.SocketInt, radius: s.SocketFloat,
-    ):
+    def _build_group(cls, tree):
+        with tree.inputs:
+            geometry = s.SocketGeometry()
+            count = s.SocketInt("Count", 6)
+            radius = s.SocketFloat("Radius", 2.0)
+
         # Create points arranged in a circle
-        angle = g.Math.divide(g.Index() * tau, count)
-        x = g.Math.cosine(angle) * radius
-        y = g.Math.sine(angle) * radius
-        circle_pos = g.CombineXYZ(x=x, y=y)
+        angle = g.Index() * tau / count
+        circle_pos = g.CombineXYZ(
+            x=g.Math.cosine(angle) * radius, y=g.Math.sine(angle) * radius
+        )
 
         # Place instances at each point, rotated to face outward
         rotation = g.CombineXYZ(z=angle)
@@ -182,7 +165,9 @@ class RadialArray(NodeGroupBuilder):
             >> g.SetPosition(position=circle_pos)
             >> g.InstanceOnPoints(instance=geometry, rotation=rotation)
         )
-        return {"Instances": result}
+
+        with tree.outputs:
+            _ = result >> s.SocketGeometry()
 ```
 
 ```{python}

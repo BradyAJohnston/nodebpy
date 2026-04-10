@@ -25,7 +25,8 @@ class OtherVertex(NodeGroupBuilder):
     def __init__(
         self, vertex_index: TYPE_INPUT_INT = None, edge_number: TYPE_INPUT_INT = 0
     ):
-        super().__init__(vertex_index=vertex_index, edge_number=edge_number)
+        kwargs = {"Vertex Index": vertex_index, "Edge Number": edge_number}
+        super().__init__(**kwargs)
 
     @classmethod
     def _build_group(cls, tree):

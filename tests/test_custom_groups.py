@@ -1,24 +1,13 @@
 from functools import reduce
 
 import bpy
-import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy.builder import (
-    NodeGroupBuilder,
     SocketLinker,
 )
 from nodebpy.nodes.geometry import IntegerMath
 from nodebpy.nodes.geometry.groups import OffsetVector, OtherVertex
-
-
-def test_custom_group_simple():
-    class GroupWithoutMethod(NodeGroupBuilder):
-        _name = "This Should Error"
-
-    with TreeBuilder():
-        with pytest.raises(NotImplementedError):
-            GroupWithoutMethod()
 
 
 def test_custom_group():

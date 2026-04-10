@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -1878,7 +1879,7 @@ class SocketShader(SocketBase):
         )
 
 
-class NodeGroupBuilder(NodeBuilder):
+class NodeGroupBuilder(NodeBuilder, ABC):
     """Base class for custom node groups.
 
     Subclasses implement :meth:`_build_group` with the node-graph logic.
@@ -1934,6 +1935,7 @@ class NodeGroupBuilder(NodeBuilder):
         raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
 
     @classmethod
+    @abstractmethod
     def _build_group(cls, tree: TreeBuilder) -> None:
-        """Build the node group internals."""
-        raise NotImplementedError
+        """Code that builds the node group internals and interface"""
+        pass
