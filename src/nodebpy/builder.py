@@ -1938,4 +1938,3 @@ class NodeGroupBuilder(NodeBuilder, ABC):
     @abstractmethod
     def _build_group(cls, tree: TreeBuilder) -> None:
         """Code that builds the node group internals and interface"""
-        pass
