@@ -5,7 +5,7 @@ from ...builder import (
     SocketVector,
     VectorSocketLinker,
 )
-from ...types import TYPE_INPUT_INT, TYPE_INPUT_VECTOR
+from ...types import InputInteger, InputVector
 from . import EdgesOfVertex, EdgeVertices, EvaluateAtIndex, Switch
 
 
@@ -23,7 +23,7 @@ class OtherVertex(NodeGroupBuilder):
     o_other_vertex: IntegerSocketLinker
 
     def __init__(
-        self, vertex_index: TYPE_INPUT_INT = None, edge_number: TYPE_INPUT_INT = 0
+        self, vertex_index: InputInteger = None, edge_number: InputInteger = 0
     ):
         kwargs = {"Vertex Index": vertex_index, "Edge Number": edge_number}
         super().__init__(**kwargs)
@@ -59,9 +59,9 @@ class OffsetVector(NodeGroupBuilder):
 
     def __init__(
         self,
-        index: TYPE_INPUT_INT = None,
-        vector: TYPE_INPUT_VECTOR = None,
-        offset: TYPE_INPUT_INT = 0,
+        index: InputInteger = None,
+        vector: InputVector = None,
+        offset: InputInteger = 0,
     ):
         super().__init__(index=index, vector=vector, offset=offset)
 

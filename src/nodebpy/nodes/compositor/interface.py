@@ -7,13 +7,13 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputColor,
+    InputInteger,
+    InputMenu,
+    InputString,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -27,8 +27,8 @@ class EnableOutput(NodeBuilder):
 
     def __init__(
         self,
-        enable: TYPE_INPUT_BOOLEAN = False,
-        value: TYPE_INPUT_VALUE = 0.0,
+        enable: InputBoolean = False,
+        value: InputFloat = 0.0,
         *,
         data_type: Literal[
             "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"
@@ -41,49 +41,49 @@ class EnableOutput(NodeBuilder):
 
     @classmethod
     def float(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_VALUE = 0.0
+        cls, enable: InputBoolean = False, value: InputFloat = 0.0
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Float'."""
         return cls(data_type="FLOAT", enable=enable, value=value)
 
     @classmethod
     def integer(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_INT = 0
+        cls, enable: InputBoolean = False, value: InputInteger = 0
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Integer'."""
         return cls(data_type="INT", enable=enable, value=value)
 
     @classmethod
     def boolean(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_BOOLEAN = False
+        cls, enable: InputBoolean = False, value: InputBoolean = False
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", enable=enable, value=value)
 
     @classmethod
     def vector(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_VECTOR = None
+        cls, enable: InputBoolean = False, value: InputVector = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Vector'."""
         return cls(data_type="VECTOR", enable=enable, value=value)
 
     @classmethod
     def color(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_COLOR = None
+        cls, enable: InputBoolean = False, value: InputColor = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Color'."""
         return cls(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
     def string(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_STRING = ""
+        cls, enable: InputBoolean = False, value: InputString = ""
     ) -> "EnableOutput":
         """Create Enable Output with operation 'String'."""
         return cls(data_type="STRING", enable=enable, value=value)
 
     @classmethod
     def menu(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_MENU = None
+        cls, enable: InputBoolean = False, value: InputMenu = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Menu'."""
         return cls(data_type="MENU", enable=enable, value=value)

@@ -13,9 +13,11 @@ import pytest
 from bpy.types import (
     NodeSocketBool,
     NodeSocketColor,
+    NodeSocketFloat,
     NodeSocketInt,
     NodeSocketMatrix,
     NodeSocketShader,
+    NodeSocketVector,
 )
 from numpy.testing import assert_allclose
 
@@ -25,7 +27,6 @@ from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
 from nodebpy.builder import ColorSocketLinker, NodeBuilder, SocketAccessor, SocketError
-from nodebpy.types import NodeSocketFloat, NodeSocketVector
 
 
 class TestTreeBuilder:

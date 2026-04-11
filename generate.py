@@ -175,26 +175,26 @@ class SocketInfo:
     def type_mapped(self) -> str:
         """Get the Python type hint for a socket."""
         type_map = {
-            "NodeSocketFloat": "TYPE_INPUT_VALUE",
-            "NodeSocketInt": "TYPE_INPUT_INT",
-            "NodeSocketBool": "TYPE_INPUT_BOOLEAN",
-            "NodeSocketVector": "TYPE_INPUT_VECTOR",
-            "NodeSocketColor": "TYPE_INPUT_COLOR",
-            "NodeSocketRotation": "TYPE_INPUT_ROTATION",
-            "NodeSocketMatrix": "TYPE_INPUT_MATRIX",
-            "NodeSocketString": "TYPE_INPUT_STRING",
-            "NodeSocketMenu": "TYPE_INPUT_MENU",
-            "NodeSocketObject": "TYPE_INPUT_OBJECT",
-            "NodeSocketGeometry": "TYPE_INPUT_GEOMETRY",
-            "NodeSocketCollection": "TYPE_INPUT_COLLECTION",
-            "NodeSocketImage": "TYPE_INPUT_IMAGE",
-            "NodeSocketMaterial": "TYPE_INPUT_MATERIAL",
-            "NodeSocketBundle": "TYPE_INPUT_BUNDLE",
-            "NodeSocketClosure": "TYPE_INPUT_CLOSURE",
+            "NodeSocketFloat": "InputFloat",
+            "NodeSocketInt": "InputInteger",
+            "NodeSocketBool": "InputBoolean",
+            "NodeSocketVector": "InputVector",
+            "NodeSocketColor": "InputColor",
+            "NodeSocketRotation": "InputRotation",
+            "NodeSocketMatrix": "InputMatrix",
+            "NodeSocketString": "InputString",
+            "NodeSocketMenu": "InputMenu",
+            "NodeSocketObject": "InputObject",
+            "NodeSocketGeometry": "InputGeometry",
+            "NodeSocketCollection": "InputCollection",
+            "NodeSocketImage": "InputImage",
+            "NodeSocketMaterial": "InputMaterial",
+            "NodeSocketBundle": "InputBundle",
+            "NodeSocketClosure": "InputClosure",
             # Shader trees use NodeSocketShader for BSDF/closure outputs
-            "NodeSocketShader": "TYPE_INPUT_SHADER",
+            "NodeSocketShader": "InputShader",
             # Virtual sockets adapt to whatever is connected
-            "NodeSocketVirtual": "LINKABLE",
+            "NodeSocketVirtual": "InputLinkable",
         }
         # to handle all of the subtypes we have to iterate through and
         # instead just check to see if the name is in the socket type
@@ -930,7 +930,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         nonlocal has_sockets, has_linkable, has_vector_outputs, has_color_outputs
         has_sockets = True
         hint = socket.type_mapped
-        if hint == "LINKABLE":
+        if hint == "InputLinkable":
             has_linkable = True
         else:
             used_type_hints.add(hint)
@@ -964,29 +964,29 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
 
     # Types imports — use canonical order matching the type_map
     type_order = [
-        "LINKABLE",
-        "TYPE_INPUT_BOOLEAN",
-        "TYPE_INPUT_BUNDLE",
-        "TYPE_INPUT_CLOSURE",
-        "TYPE_INPUT_COLLECTION",
-        "TYPE_INPUT_COLOR",
-        "TYPE_INPUT_GEOMETRY",
-        "TYPE_INPUT_IMAGE",
-        "TYPE_INPUT_INT",
-        "TYPE_INPUT_MATERIAL",
-        "TYPE_INPUT_MATRIX",
-        "TYPE_INPUT_MENU",
-        "TYPE_INPUT_OBJECT",
-        "TYPE_INPUT_ROTATION",
-        "TYPE_INPUT_SHADER",
-        "TYPE_INPUT_STRING",
-        "TYPE_INPUT_VALUE",
-        "TYPE_INPUT_VECTOR",
+        "InputLinkable",
+        "InputBoolean",
+        "InputBundle",
+        "InputClosure",
+        "InputCollection",
+        "InputColor",
+        "InputGeometry",
+        "InputImage",
+        "InputInteger",
+        "InputMaterial",
+        "InputMatrix",
+        "InputMenu",
+        "InputObject",
+        "InputRotation",
+        "InputShader",
+        "InputString",
+        "InputFloat",
+        "InputVector",
     ]
     type_imports = [
         t
         for t in type_order
-        if t in used_type_hints or (t == "LINKABLE" and has_linkable)
+        if t in used_type_hints or (t == "InputLinkable" and has_linkable)
     ]
     if type_imports:
         imports_str = ",\n    ".join(type_imports)

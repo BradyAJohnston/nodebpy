@@ -7,13 +7,13 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_ROTATION,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputColor,
+    InputInteger,
+    InputMenu,
+    InputRotation,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -27,8 +27,8 @@ class AlphaConvert(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        type: TYPE_INPUT_MENU
+        image: InputColor = None,
+        type: InputMenu
         | Literal["To Premultiplied", "To Straight"] = "To Premultiplied",
     ):
         super().__init__()
@@ -62,10 +62,10 @@ class CombineColor(NodeBuilder):
 
     def __init__(
         self,
-        red: TYPE_INPUT_VALUE = 0.0,
-        green: TYPE_INPUT_VALUE = 0.0,
-        blue: TYPE_INPUT_VALUE = 0.0,
-        alpha: TYPE_INPUT_VALUE = 1.0,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
         *,
         mode: Literal["RGB", "HSV", "HSL", "YCC", "YUV"] = "RGB",
         ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
@@ -128,7 +128,7 @@ class ConvertColorspace(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
+        image: InputColor = None,
         *,
         from_color_space: Literal[
             "ACES 1.3 sRGB",
@@ -342,8 +342,8 @@ class ConvertToDisplay(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        invert: TYPE_INPUT_BOOLEAN = False,
+        image: InputColor = None,
+        invert: InputBoolean = False,
     ):
         super().__init__()
         key_args = {"Image": image, "Invert": invert}
@@ -376,9 +376,9 @@ class IDMask(NodeBuilder):
 
     def __init__(
         self,
-        id_value: TYPE_INPUT_VALUE = 1.0,
-        index: TYPE_INPUT_INT = 0,
-        anti_alias: TYPE_INPUT_BOOLEAN = False,
+        id_value: InputFloat = 1.0,
+        index: InputInteger = 0,
+        anti_alias: InputBoolean = False,
     ):
         super().__init__()
         key_args = {"ID value": id_value, "Index": index, "Anti-Alias": anti_alias}
@@ -416,8 +416,8 @@ class Levels(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        channel: TYPE_INPUT_MENU
+        image: InputColor = None,
+        channel: InputMenu
         | Literal["Combined", "Red", "Green", "Blue", "Luminance"] = "Combined",
     ):
         super().__init__()
@@ -456,16 +456,16 @@ class Mix(NodeBuilder):
 
     def __init__(
         self,
-        factor_float: TYPE_INPUT_VALUE = 0.5,
-        factor_vector: TYPE_INPUT_VECTOR = None,
-        a_float: TYPE_INPUT_VALUE = 0.0,
-        b_float: TYPE_INPUT_VALUE = 0.0,
-        a_vector: TYPE_INPUT_VECTOR = None,
-        b_vector: TYPE_INPUT_VECTOR = None,
-        a_color: TYPE_INPUT_COLOR = None,
-        b_color: TYPE_INPUT_COLOR = None,
-        a_rotation: TYPE_INPUT_ROTATION = None,
-        b_rotation: TYPE_INPUT_ROTATION = None,
+        factor_float: InputFloat = 0.5,
+        factor_vector: InputVector = None,
+        a_float: InputFloat = 0.0,
+        b_float: InputFloat = 0.0,
+        a_vector: InputVector = None,
+        b_vector: InputVector = None,
+        a_color: InputColor = None,
+        b_color: InputColor = None,
+        a_rotation: InputRotation = None,
+        b_rotation: InputRotation = None,
         *,
         data_type: Literal["FLOAT", "VECTOR", "RGBA"] = "FLOAT",
         factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
@@ -515,20 +515,14 @@ class Mix(NodeBuilder):
 
     @classmethod
     def float(
-        cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a: TYPE_INPUT_VALUE = 0.0,
-        b: TYPE_INPUT_VALUE = 0.0,
+        cls, factor: InputFloat = 0.5, a: InputFloat = 0.0, b: InputFloat = 0.0
     ) -> "Mix":
         """Create Mix with operation 'Float'."""
         return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
 
     @classmethod
     def vector(
-        cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a: TYPE_INPUT_VECTOR = None,
-        b: TYPE_INPUT_VECTOR = None,
+        cls, factor: InputFloat = 0.5, a: InputVector = None, b: InputVector = None
     ) -> "Mix":
         """Create Mix with operation 'Vector'."""
         return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
@@ -536,9 +530,9 @@ class Mix(NodeBuilder):
     @classmethod
     def color(
         cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a_color: TYPE_INPUT_COLOR = None,
-        b_color: TYPE_INPUT_COLOR = None,
+        factor: InputFloat = 0.5,
+        a_color: InputColor = None,
+        b_color: InputColor = None,
     ) -> "Mix":
         """Create Mix with operation 'Color'."""
         return cls(
@@ -709,7 +703,7 @@ class RGBToBw(NodeBuilder):
     _bl_idname = "CompositorNodeRGBToBW"
     node: bpy.types.CompositorNodeRGBToBW
 
-    def __init__(self, image: TYPE_INPUT_COLOR = None):
+    def __init__(self, image: InputColor = None):
         super().__init__()
         key_args = {"Image": image}
 
@@ -736,9 +730,9 @@ class RelativeToPixel(NodeBuilder):
 
     def __init__(
         self,
-        vector_value: TYPE_INPUT_VECTOR = None,
-        float_value: TYPE_INPUT_VALUE = 0.0,
-        image: TYPE_INPUT_COLOR = None,
+        vector_value: InputVector = None,
+        float_value: InputFloat = 0.0,
+        image: InputColor = None,
         *,
         data_type: Literal["FLOAT", "VECTOR"] = "FLOAT",
         reference_dimension: Literal[
@@ -757,14 +751,14 @@ class RelativeToPixel(NodeBuilder):
 
     @classmethod
     def float(
-        cls, float_value: TYPE_INPUT_VALUE = 0.0, image: TYPE_INPUT_COLOR = None
+        cls, float_value: InputFloat = 0.0, image: InputColor = None
     ) -> "RelativeToPixel":
         """Create Relative To Pixel with operation 'Float'."""
         return cls(data_type="FLOAT", float_value=float_value, image=image)
 
     @classmethod
     def vector(
-        cls, vector_value: TYPE_INPUT_VECTOR = None, image: TYPE_INPUT_COLOR = None
+        cls, vector_value: InputVector = None, image: InputColor = None
     ) -> "RelativeToPixel":
         """Create Relative To Pixel with operation 'Vector'."""
         return cls(data_type="VECTOR", vector_value=vector_value, image=image)
@@ -826,7 +820,7 @@ class SeparateColor(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
+        image: InputColor = None,
         *,
         mode: Literal["RGB", "HSV", "HSL", "YCC", "YUV"] = "RGB",
         ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
@@ -889,9 +883,9 @@ class SetAlpha(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        alpha: TYPE_INPUT_VALUE = 1.0,
-        type: TYPE_INPUT_MENU | Literal["Apply Mask", "Replace Alpha"] = "Apply Mask",
+        image: InputColor = None,
+        alpha: InputFloat = 1.0,
+        type: InputMenu | Literal["Apply Mask", "Replace Alpha"] = "Apply Mask",
     ):
         super().__init__()
         key_args = {"Image": image, "Alpha": alpha, "Type": type}
@@ -929,10 +923,10 @@ class Split(NodeBuilder):
 
     def __init__(
         self,
-        position: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_VALUE = 0.7854,
-        image: TYPE_INPUT_COLOR = None,
-        image_001: TYPE_INPUT_COLOR = None,
+        position: InputVector = None,
+        rotation: InputFloat = 0.7854,
+        image: InputColor = None,
+        image_001: InputColor = None,
     ):
         super().__init__()
         key_args = {
@@ -980,9 +974,9 @@ class Switch(NodeBuilder):
 
     def __init__(
         self,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        off: TYPE_INPUT_COLOR = None,
-        on: TYPE_INPUT_COLOR = None,
+        switch: InputBoolean = False,
+        off: InputColor = None,
+        on: InputColor = None,
     ):
         super().__init__()
         key_args = {"Switch": switch, "Off": off, "On": on}
@@ -1020,8 +1014,8 @@ class SwitchView(NodeBuilder):
 
     def __init__(
         self,
-        left: TYPE_INPUT_COLOR = None,
-        right: TYPE_INPUT_COLOR = None,
+        left: InputColor = None,
+        right: InputColor = None,
     ):
         super().__init__()
         key_args = {"left": left, "right": right}

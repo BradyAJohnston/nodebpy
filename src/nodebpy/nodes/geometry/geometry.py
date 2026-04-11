@@ -7,17 +7,17 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_GEOMETRY,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MATERIAL,
-    TYPE_INPUT_MATRIX,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_ROTATION,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputColor,
+    InputGeometry,
+    InputInteger,
+    InputMaterial,
+    InputMatrix,
+    InputMenu,
+    InputRotation,
+    InputString,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -31,16 +31,16 @@ class Arc(NodeBuilder):
 
     def __init__(
         self,
-        resolution: TYPE_INPUT_INT = 16,
-        start: TYPE_INPUT_VECTOR = None,
-        middle: TYPE_INPUT_VECTOR = None,
-        end: TYPE_INPUT_VECTOR = None,
-        radius: TYPE_INPUT_VALUE = 1.0,
-        start_angle: TYPE_INPUT_VALUE = 0.0,
-        sweep_angle: TYPE_INPUT_VALUE = 5.4978,
-        offset_angle: TYPE_INPUT_VALUE = 0.0,
-        connect_center: TYPE_INPUT_BOOLEAN = False,
-        invert_arc: TYPE_INPUT_BOOLEAN = False,
+        resolution: InputInteger = 16,
+        start: InputVector = None,
+        middle: InputVector = None,
+        end: InputVector = None,
+        radius: InputFloat = 1.0,
+        start_angle: InputFloat = 0.0,
+        sweep_angle: InputFloat = 5.4978,
+        offset_angle: InputFloat = 0.0,
+        connect_center: InputBoolean = False,
+        invert_arc: InputBoolean = False,
         *,
         mode: Literal["POINTS", "RADIUS"] = "RADIUS",
     ):
@@ -149,8 +149,8 @@ class BoundingBox(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        use_radius: TYPE_INPUT_BOOLEAN = True,
+        geometry: InputGeometry = None,
+        use_radius: InputBoolean = True,
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Use Radius": use_radius}
@@ -193,11 +193,11 @@ class BezierSegment(NodeBuilder):
 
     def __init__(
         self,
-        resolution: TYPE_INPUT_INT = 16,
-        start: TYPE_INPUT_VECTOR = None,
-        start_handle: TYPE_INPUT_VECTOR = None,
-        end_handle: TYPE_INPUT_VECTOR = None,
-        end: TYPE_INPUT_VECTOR = None,
+        resolution: InputInteger = 16,
+        start: InputVector = None,
+        start_handle: InputVector = None,
+        end_handle: InputVector = None,
+        end: InputVector = None,
         *,
         mode: Literal["POSITION", "OFFSET"] = "POSITION",
     ):
@@ -261,12 +261,12 @@ class Cone(NodeBuilder):
 
     def __init__(
         self,
-        vertices: TYPE_INPUT_INT = 32,
-        side_segments: TYPE_INPUT_INT = 1,
-        fill_segments: TYPE_INPUT_INT = 1,
-        radius_top: TYPE_INPUT_VALUE = 0.0,
-        radius_bottom: TYPE_INPUT_VALUE = 1.0,
-        depth: TYPE_INPUT_VALUE = 2.0,
+        vertices: InputInteger = 32,
+        side_segments: InputInteger = 1,
+        fill_segments: InputInteger = 1,
+        radius_top: InputFloat = 0.0,
+        radius_bottom: InputFloat = 1.0,
+        depth: InputFloat = 2.0,
         *,
         fill_type: Literal["NONE", "NGON", "TRIANGLE_FAN"] = "NGON",
     ):
@@ -354,7 +354,7 @@ class ConvexHull(NodeBuilder):
     _bl_idname = "GeometryNodeConvexHull"
     node: bpy.types.GeometryNodeConvexHull
 
-    def __init__(self, geometry: TYPE_INPUT_GEOMETRY = None):
+    def __init__(self, geometry: InputGeometry = None):
         super().__init__()
         key_args = {"Geometry": geometry}
 
@@ -381,10 +381,10 @@ class Cube(NodeBuilder):
 
     def __init__(
         self,
-        size: TYPE_INPUT_VECTOR = None,
-        vertices_x: TYPE_INPUT_INT = 2,
-        vertices_y: TYPE_INPUT_INT = 2,
-        vertices_z: TYPE_INPUT_INT = 2,
+        size: InputVector = None,
+        vertices_x: InputInteger = 2,
+        vertices_y: InputInteger = 2,
+        vertices_z: InputInteger = 2,
     ):
         super().__init__()
         key_args = {
@@ -437,11 +437,11 @@ class CurveCircle(NodeBuilder):
 
     def __init__(
         self,
-        resolution: TYPE_INPUT_INT = 32,
-        point_1: TYPE_INPUT_VECTOR = None,
-        point_2: TYPE_INPUT_VECTOR = None,
-        point_3: TYPE_INPUT_VECTOR = None,
-        radius: TYPE_INPUT_VALUE = 1.0,
+        resolution: InputInteger = 32,
+        point_1: InputVector = None,
+        point_2: InputVector = None,
+        point_3: InputVector = None,
+        radius: InputFloat = 1.0,
         *,
         mode: Literal["POINTS", "RADIUS"] = "RADIUS",
     ):
@@ -508,7 +508,7 @@ class CurveLength(NodeBuilder):
     _bl_idname = "GeometryNodeCurveLength"
     node: bpy.types.GeometryNodeCurveLength
 
-    def __init__(self, curve: TYPE_INPUT_GEOMETRY = None):
+    def __init__(self, curve: InputGeometry = None):
         super().__init__()
         key_args = {"Curve": curve}
 
@@ -535,10 +535,10 @@ class CurveLine(NodeBuilder):
 
     def __init__(
         self,
-        start: TYPE_INPUT_VECTOR = None,
-        end: TYPE_INPUT_VECTOR = None,
-        direction: TYPE_INPUT_VECTOR = None,
-        length: TYPE_INPUT_VALUE = 1.0,
+        start: InputVector = None,
+        end: InputVector = None,
+        direction: InputVector = None,
+        length: InputFloat = 1.0,
         *,
         mode: Literal["POINTS", "DIRECTION"] = "POINTS",
     ):
@@ -596,10 +596,10 @@ class CurveToMesh(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        profile_curve: TYPE_INPUT_GEOMETRY = None,
-        scale: TYPE_INPUT_VALUE = 1.0,
-        fill_caps: TYPE_INPUT_BOOLEAN = False,
+        curve: InputGeometry = None,
+        profile_curve: InputGeometry = None,
+        scale: InputFloat = 1.0,
+        fill_caps: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -647,9 +647,9 @@ class CurveToPoints(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        count: TYPE_INPUT_INT = 10,
-        length: TYPE_INPUT_VALUE = 0.1,
+        curve: InputGeometry = None,
+        count: InputInteger = 10,
+        length: InputFloat = 0.1,
         *,
         mode: Literal["EVALUATED", "COUNT", "LENGTH"] = "COUNT",
     ):
@@ -712,9 +712,9 @@ class CurvesToGreasePencil(NodeBuilder):
 
     def __init__(
         self,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        instances_as_layers: TYPE_INPUT_BOOLEAN = True,
+        curves: InputGeometry = None,
+        selection: InputBoolean = True,
+        instances_as_layers: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -756,11 +756,11 @@ class Cylinder(NodeBuilder):
 
     def __init__(
         self,
-        vertices: TYPE_INPUT_INT = 32,
-        side_segments: TYPE_INPUT_INT = 1,
-        fill_segments: TYPE_INPUT_INT = 1,
-        radius: TYPE_INPUT_VALUE = 1.0,
-        depth: TYPE_INPUT_VALUE = 2.0,
+        vertices: InputInteger = 32,
+        side_segments: InputInteger = 1,
+        fill_segments: InputInteger = 1,
+        radius: InputFloat = 1.0,
+        depth: InputFloat = 2.0,
         *,
         fill_type: Literal["NONE", "NGON", "TRIANGLE_FAN"] = "NGON",
     ):
@@ -842,7 +842,7 @@ class DeformCurvesOnSurface(NodeBuilder):
     _bl_idname = "GeometryNodeDeformCurvesOnSurface"
     node: bpy.types.GeometryNodeDeformCurvesOnSurface
 
-    def __init__(self, curves: TYPE_INPUT_GEOMETRY = None):
+    def __init__(self, curves: InputGeometry = None):
         super().__init__()
         key_args = {"Curves": curves}
 
@@ -869,8 +869,8 @@ class DeleteGeometry(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
         *,
         mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
         domain: Literal[
@@ -885,42 +885,42 @@ class DeleteGeometry(NodeBuilder):
 
     @classmethod
     def point(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Point'."""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Edge'."""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Spline'."""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def instance(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Instance'."""
         return cls(domain="INSTANCE", geometry=geometry, selection=selection)
 
     @classmethod
     def layer(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Layer'."""
         return cls(domain="LAYER", geometry=geometry, selection=selection)
@@ -969,13 +969,13 @@ class DistributePointsOnFaces(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        distance_min: TYPE_INPUT_VALUE = 0.0,
-        density_max: TYPE_INPUT_VALUE = 10.0,
-        density: TYPE_INPUT_VALUE = 10.0,
-        density_factor: TYPE_INPUT_VALUE = 1.0,
-        seed: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        distance_min: InputFloat = 0.0,
+        density_max: InputFloat = 10.0,
+        density: InputFloat = 10.0,
+        density_factor: InputFloat = 1.0,
+        seed: InputInteger = 0,
         *,
         distribute_method: Literal["RANDOM", "POISSON"] = "RANDOM",
         use_legacy_normal: bool = False,
@@ -1071,8 +1071,8 @@ class DualMesh(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        keep_boundaries: TYPE_INPUT_BOOLEAN = False,
+        mesh: InputGeometry = None,
+        keep_boundaries: InputBoolean = False,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Keep Boundaries": keep_boundaries}
@@ -1105,9 +1105,9 @@ class DuplicateElements(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        amount: TYPE_INPUT_INT = 1,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        amount: InputInteger = 1,
         *,
         domain: Literal[
             "POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"
@@ -1121,9 +1121,9 @@ class DuplicateElements(NodeBuilder):
     @classmethod
     def point(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        amount: TYPE_INPUT_INT = 1,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Point'."""
         return cls(
@@ -1133,9 +1133,9 @@ class DuplicateElements(NodeBuilder):
     @classmethod
     def edge(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        amount: TYPE_INPUT_INT = 1,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Edge'."""
         return cls(domain="EDGE", geometry=geometry, selection=selection, amount=amount)
@@ -1143,9 +1143,9 @@ class DuplicateElements(NodeBuilder):
     @classmethod
     def face(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        amount: TYPE_INPUT_INT = 1,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, selection=selection, amount=amount)
@@ -1153,9 +1153,9 @@ class DuplicateElements(NodeBuilder):
     @classmethod
     def spline(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        amount: TYPE_INPUT_INT = 1,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Spline'."""
         return cls(
@@ -1165,9 +1165,9 @@ class DuplicateElements(NodeBuilder):
     @classmethod
     def layer(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        amount: TYPE_INPUT_INT = 1,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Layer'."""
         return cls(
@@ -1177,9 +1177,9 @@ class DuplicateElements(NodeBuilder):
     @classmethod
     def instance(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        amount: TYPE_INPUT_INT = 1,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Instance'."""
         return cls(
@@ -1232,9 +1232,9 @@ class EdgePathsToCurves(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        start_vertices: TYPE_INPUT_BOOLEAN = True,
-        next_vertex_index: TYPE_INPUT_INT = -1,
+        mesh: InputGeometry = None,
+        start_vertices: InputBoolean = True,
+        next_vertex_index: InputInteger = -1,
     ):
         super().__init__()
         key_args = {
@@ -1276,11 +1276,11 @@ class ExtrudeMesh(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        offset: TYPE_INPUT_VECTOR = None,
-        offset_scale: TYPE_INPUT_VALUE = 1.0,
-        individual: TYPE_INPUT_BOOLEAN = True,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        offset: InputVector = None,
+        offset_scale: InputFloat = 1.0,
+        individual: InputBoolean = True,
         *,
         mode: Literal["VERTICES", "EDGES", "FACES"] = "FACES",
     ):
@@ -1354,9 +1354,9 @@ class FillCurve(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        group_id: TYPE_INPUT_INT = 0,
-        mode: TYPE_INPUT_MENU | Literal["Triangles", "N-gons"] = "Triangles",
+        curve: InputGeometry = None,
+        group_id: InputInteger = 0,
+        mode: InputMenu | Literal["Triangles", "N-gons"] = "Triangles",
     ):
         super().__init__()
         key_args = {"Curve": curve, "Group ID": group_id, "Mode": mode}
@@ -1394,11 +1394,11 @@ class FilletCurve(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        radius: TYPE_INPUT_VALUE = 0.25,
-        limit_radius: TYPE_INPUT_BOOLEAN = False,
-        mode: TYPE_INPUT_MENU | Literal["Bézier", "Poly"] = "Bézier",
-        count: TYPE_INPUT_INT = 1,
+        curve: InputGeometry = None,
+        radius: InputFloat = 0.25,
+        limit_radius: InputBoolean = False,
+        mode: InputMenu | Literal["Bézier", "Poly"] = "Bézier",
+        count: InputInteger = 1,
     ):
         super().__init__()
         key_args = {
@@ -1452,8 +1452,8 @@ class FlipFaces(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Selection": selection}
@@ -1486,10 +1486,10 @@ class GeometryProximity(NodeBuilder):
 
     def __init__(
         self,
-        target: TYPE_INPUT_GEOMETRY = None,
-        group_id: TYPE_INPUT_INT = 0,
-        source_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        target: InputGeometry = None,
+        group_id: InputInteger = 0,
+        source_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
         *,
         target_element: Literal["POINTS", "EDGES", "FACES"] = "FACES",
     ):
@@ -1557,9 +1557,9 @@ class GreasePencilToCurves(NodeBuilder):
 
     def __init__(
         self,
-        grease_pencil: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        layers_as_instances: TYPE_INPUT_BOOLEAN = True,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = True,
+        layers_as_instances: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -1601,10 +1601,10 @@ class Grid(NodeBuilder):
 
     def __init__(
         self,
-        size_x: TYPE_INPUT_VALUE = 1.0,
-        size_y: TYPE_INPUT_VALUE = 1.0,
-        vertices_x: TYPE_INPUT_INT = 3,
-        vertices_y: TYPE_INPUT_INT = 3,
+        size_x: InputFloat = 1.0,
+        size_y: InputFloat = 1.0,
+        vertices_x: InputInteger = 3,
+        vertices_y: InputInteger = 3,
     ):
         super().__init__()
         key_args = {
@@ -1657,8 +1657,8 @@ class IcoSphere(NodeBuilder):
 
     def __init__(
         self,
-        radius: TYPE_INPUT_VALUE = 1.0,
-        subdivisions: TYPE_INPUT_INT = 1,
+        radius: InputFloat = 1.0,
+        subdivisions: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Radius": radius, "Subdivisions": subdivisions}
@@ -1696,13 +1696,13 @@ class InstanceOnPoints(NodeBuilder):
 
     def __init__(
         self,
-        points: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        instance: TYPE_INPUT_GEOMETRY = None,
-        pick_instance: TYPE_INPUT_BOOLEAN = False,
-        instance_index: TYPE_INPUT_INT = 0,
-        rotation: TYPE_INPUT_ROTATION = None,
-        scale: TYPE_INPUT_VECTOR = None,
+        points: InputGeometry = None,
+        selection: InputBoolean = True,
+        instance: InputGeometry = None,
+        pick_instance: InputBoolean = False,
+        instance_index: InputInteger = 0,
+        rotation: InputRotation = None,
+        scale: InputVector = None,
     ):
         super().__init__()
         key_args = {
@@ -1769,10 +1769,10 @@ class InstancesToPoints(NodeBuilder):
 
     def __init__(
         self,
-        instances: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        position: TYPE_INPUT_VECTOR = None,
-        radius: TYPE_INPUT_VALUE = 0.05,
+        instances: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        radius: InputFloat = 0.05,
     ):
         super().__init__()
         key_args = {
@@ -1820,13 +1820,13 @@ class InterpolateCurves(NodeBuilder):
 
     def __init__(
         self,
-        guide_curves: TYPE_INPUT_GEOMETRY = None,
-        guide_up: TYPE_INPUT_VECTOR = None,
-        guide_group_id: TYPE_INPUT_INT = 0,
-        points: TYPE_INPUT_GEOMETRY = None,
-        point_up: TYPE_INPUT_VECTOR = None,
-        point_group_id: TYPE_INPUT_INT = 0,
-        max_neighbors: TYPE_INPUT_INT = 4,
+        guide_curves: InputGeometry = None,
+        guide_up: InputVector = None,
+        guide_group_id: InputInteger = 0,
+        points: InputGeometry = None,
+        point_up: InputVector = None,
+        point_group_id: InputInteger = 0,
+        max_neighbors: InputInteger = 4,
     ):
         super().__init__()
         key_args = {
@@ -1900,7 +1900,7 @@ class MaterialSelection(NodeBuilder):
     _bl_idname = "GeometryNodeMaterialSelection"
     node: bpy.types.GeometryNodeMaterialSelection
 
-    def __init__(self, material: TYPE_INPUT_MATERIAL = None):
+    def __init__(self, material: InputMaterial = None):
         super().__init__()
         key_args = {"Material": material}
 
@@ -1927,9 +1927,9 @@ class MergeLayers(NodeBuilder):
 
     def __init__(
         self,
-        grease_pencil: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
         *,
         mode: Literal["MERGE_BY_NAME", "MERGE_BY_ID"] = "MERGE_BY_NAME",
     ):
@@ -1981,10 +1981,10 @@ class MergeByDistance(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        mode: TYPE_INPUT_MENU | Literal["All", "Connected"] = "All",
-        distance: TYPE_INPUT_VALUE = 0.001,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        mode: InputMenu | Literal["All", "Connected"] = "All",
+        distance: InputFloat = 0.001,
     ):
         super().__init__()
         key_args = {
@@ -2032,10 +2032,10 @@ class MeshBoolean(NodeBuilder):
 
     def __init__(
         self,
-        mesh_1: TYPE_INPUT_GEOMETRY = None,
-        mesh_2: TYPE_INPUT_GEOMETRY = None,
-        self_intersection: TYPE_INPUT_BOOLEAN = False,
-        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
+        mesh_1: InputGeometry = None,
+        mesh_2: InputGeometry = None,
+        self_intersection: InputBoolean = False,
+        hole_tolerant: InputBoolean = False,
         *,
         operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
@@ -2052,18 +2052,18 @@ class MeshBoolean(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def intersect(cls, mesh_2: TYPE_INPUT_GEOMETRY = None) -> "MeshBoolean":
+    def intersect(cls, mesh_2: InputGeometry = None) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Intersect'."""
         return cls(operation="INTERSECT", mesh_2=mesh_2)
 
     @classmethod
-    def union(cls, mesh_2: TYPE_INPUT_GEOMETRY = None) -> "MeshBoolean":
+    def union(cls, mesh_2: InputGeometry = None) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Union'."""
         return cls(operation="UNION", mesh_2=mesh_2)
 
     @classmethod
     def difference(
-        cls, mesh_1: TYPE_INPUT_GEOMETRY = None, mesh_2: TYPE_INPUT_GEOMETRY = None
+        cls, mesh_1: InputGeometry = None, mesh_2: InputGeometry = None
     ) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Difference'."""
         return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
@@ -2125,8 +2125,8 @@ class MeshCircle(NodeBuilder):
 
     def __init__(
         self,
-        vertices: TYPE_INPUT_INT = 32,
-        radius: TYPE_INPUT_VALUE = 1.0,
+        vertices: InputInteger = 32,
+        radius: InputFloat = 1.0,
         *,
         fill_type: Literal["NONE", "NGON", "TRIANGLE_FAN"] = "NONE",
     ):
@@ -2169,10 +2169,10 @@ class MeshLine(NodeBuilder):
 
     def __init__(
         self,
-        count: TYPE_INPUT_INT = 10,
-        resolution: TYPE_INPUT_VALUE = 1.0,
-        start_location: TYPE_INPUT_VECTOR = None,
-        offset: TYPE_INPUT_VECTOR = None,
+        count: InputInteger = 10,
+        resolution: InputFloat = 1.0,
+        start_location: InputVector = None,
+        offset: InputVector = None,
         *,
         mode: Literal["OFFSET", "END_POINTS"] = "OFFSET",
         count_mode: Literal["TOTAL", "RESOLUTION"] = "TOTAL",
@@ -2240,8 +2240,8 @@ class MeshToCurve(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
         *,
         mode: Literal["EDGES", "FACES"] = "EDGES",
     ):
@@ -2284,10 +2284,10 @@ class MeshToPoints(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        position: TYPE_INPUT_VECTOR = None,
-        radius: TYPE_INPUT_VALUE = 0.05,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        radius: InputFloat = 0.05,
         *,
         mode: Literal["VERTICES", "EDGES", "FACES", "CORNERS"] = "VERTICES",
     ):
@@ -2345,9 +2345,9 @@ class Points(NodeBuilder):
 
     def __init__(
         self,
-        count: TYPE_INPUT_INT = 1,
-        position: TYPE_INPUT_VECTOR = None,
-        radius: TYPE_INPUT_VALUE = 0.1,
+        count: InputInteger = 1,
+        position: InputVector = None,
+        radius: InputFloat = 0.1,
     ):
         super().__init__()
         key_args = {"Count": count, "Position": position, "Radius": radius}
@@ -2385,9 +2385,9 @@ class PointsToCurves(NodeBuilder):
 
     def __init__(
         self,
-        points: TYPE_INPUT_GEOMETRY = None,
-        curve_group_id: TYPE_INPUT_INT = 0,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        points: InputGeometry = None,
+        curve_group_id: InputInteger = 0,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -2429,8 +2429,8 @@ class PointsToVertices(NodeBuilder):
 
     def __init__(
         self,
-        points: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        points: InputGeometry = None,
+        selection: InputBoolean = True,
     ):
         super().__init__()
         key_args = {"Points": points, "Selection": selection}
@@ -2463,10 +2463,10 @@ class QuadraticBezier(NodeBuilder):
 
     def __init__(
         self,
-        resolution: TYPE_INPUT_INT = 16,
-        start: TYPE_INPUT_VECTOR = None,
-        middle: TYPE_INPUT_VECTOR = None,
-        end: TYPE_INPUT_VECTOR = None,
+        resolution: InputInteger = 16,
+        start: InputVector = None,
+        middle: InputVector = None,
+        end: InputVector = None,
     ):
         super().__init__()
         key_args = {
@@ -2514,17 +2514,17 @@ class Quadrilateral(NodeBuilder):
 
     def __init__(
         self,
-        width: TYPE_INPUT_VALUE = 2.0,
-        height: TYPE_INPUT_VALUE = 2.0,
-        bottom_width: TYPE_INPUT_VALUE = 4.0,
-        top_width: TYPE_INPUT_VALUE = 2.0,
-        offset: TYPE_INPUT_VALUE = 1.0,
-        bottom_height: TYPE_INPUT_VALUE = 3.0,
-        top_height: TYPE_INPUT_VALUE = 1.0,
-        point_1: TYPE_INPUT_VECTOR = None,
-        point_2: TYPE_INPUT_VECTOR = None,
-        point_3: TYPE_INPUT_VECTOR = None,
-        point_4: TYPE_INPUT_VECTOR = None,
+        width: InputFloat = 2.0,
+        height: InputFloat = 2.0,
+        bottom_width: InputFloat = 4.0,
+        top_width: InputFloat = 2.0,
+        offset: InputFloat = 1.0,
+        bottom_height: InputFloat = 3.0,
+        top_height: InputFloat = 1.0,
+        point_1: InputVector = None,
+        point_2: InputVector = None,
+        point_3: InputVector = None,
+        point_4: InputVector = None,
         *,
         mode: Literal[
             "RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"
@@ -2631,13 +2631,12 @@ class Raycast(NodeBuilder):
 
     def __init__(
         self,
-        target_geometry: TYPE_INPUT_GEOMETRY = None,
-        attribute: TYPE_INPUT_VALUE = 0.0,
-        interpolation: TYPE_INPUT_MENU
-        | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = None,
-        ray_direction: TYPE_INPUT_VECTOR = None,
-        ray_length: TYPE_INPUT_VALUE = 100.0,
+        target_geometry: InputGeometry = None,
+        attribute: InputFloat = 0.0,
+        interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
+        source_position: InputVector = None,
+        ray_direction: InputVector = None,
+        ray_length: InputFloat = 100.0,
         *,
         data_type: Literal[
             "FLOAT",
@@ -2664,13 +2663,12 @@ class Raycast(NodeBuilder):
     @classmethod
     def float(
         cls,
-        target_geometry: TYPE_INPUT_GEOMETRY = None,
-        attribute: TYPE_INPUT_VALUE = 0.0,
-        interpolation: TYPE_INPUT_MENU
-        | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = None,
-        ray_direction: TYPE_INPUT_VECTOR = None,
-        ray_length: TYPE_INPUT_VALUE = 100.0,
+        target_geometry: InputGeometry = None,
+        attribute: InputFloat = 0.0,
+        interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
+        source_position: InputVector = None,
+        ray_direction: InputVector = None,
+        ray_length: InputFloat = 100.0,
     ) -> "Raycast":
         """Create Raycast with operation 'Float'."""
         return cls(
@@ -2686,13 +2684,12 @@ class Raycast(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        target_geometry: TYPE_INPUT_GEOMETRY = None,
-        attribute: TYPE_INPUT_INT = 0,
-        interpolation: TYPE_INPUT_MENU
-        | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = None,
-        ray_direction: TYPE_INPUT_VECTOR = None,
-        ray_length: TYPE_INPUT_VALUE = 100.0,
+        target_geometry: InputGeometry = None,
+        attribute: InputInteger = 0,
+        interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
+        source_position: InputVector = None,
+        ray_direction: InputVector = None,
+        ray_length: InputFloat = 100.0,
     ) -> "Raycast":
         """Create Raycast with operation 'Integer'."""
         return cls(
@@ -2708,13 +2705,12 @@ class Raycast(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        target_geometry: TYPE_INPUT_GEOMETRY = None,
-        attribute: TYPE_INPUT_BOOLEAN = False,
-        interpolation: TYPE_INPUT_MENU
-        | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = None,
-        ray_direction: TYPE_INPUT_VECTOR = None,
-        ray_length: TYPE_INPUT_VALUE = 100.0,
+        target_geometry: InputGeometry = None,
+        attribute: InputBoolean = False,
+        interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
+        source_position: InputVector = None,
+        ray_direction: InputVector = None,
+        ray_length: InputFloat = 100.0,
     ) -> "Raycast":
         """Create Raycast with operation 'Boolean'."""
         return cls(
@@ -2730,13 +2726,12 @@ class Raycast(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        target_geometry: TYPE_INPUT_GEOMETRY = None,
-        attribute: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
-        | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = None,
-        ray_direction: TYPE_INPUT_VECTOR = None,
-        ray_length: TYPE_INPUT_VALUE = 100.0,
+        target_geometry: InputGeometry = None,
+        attribute: InputVector = None,
+        interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
+        source_position: InputVector = None,
+        ray_direction: InputVector = None,
+        ray_length: InputFloat = 100.0,
     ) -> "Raycast":
         """Create Raycast with operation 'Vector'."""
         return cls(
@@ -2752,13 +2747,12 @@ class Raycast(NodeBuilder):
     @classmethod
     def color(
         cls,
-        target_geometry: TYPE_INPUT_GEOMETRY = None,
-        attribute: TYPE_INPUT_COLOR = None,
-        interpolation: TYPE_INPUT_MENU
-        | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = None,
-        ray_direction: TYPE_INPUT_VECTOR = None,
-        ray_length: TYPE_INPUT_VALUE = 100.0,
+        target_geometry: InputGeometry = None,
+        attribute: InputColor = None,
+        interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
+        source_position: InputVector = None,
+        ray_direction: InputVector = None,
+        ray_length: InputFloat = 100.0,
     ) -> "Raycast":
         """Create Raycast with operation 'Color'."""
         return cls(
@@ -2774,13 +2768,12 @@ class Raycast(NodeBuilder):
     @classmethod
     def quaternion(
         cls,
-        target_geometry: TYPE_INPUT_GEOMETRY = None,
-        attribute: TYPE_INPUT_ROTATION = None,
-        interpolation: TYPE_INPUT_MENU
-        | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = None,
-        ray_direction: TYPE_INPUT_VECTOR = None,
-        ray_length: TYPE_INPUT_VALUE = 100.0,
+        target_geometry: InputGeometry = None,
+        attribute: InputRotation = None,
+        interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
+        source_position: InputVector = None,
+        ray_direction: InputVector = None,
+        ray_length: InputFloat = 100.0,
     ) -> "Raycast":
         """Create Raycast with operation 'Quaternion'."""
         return cls(
@@ -2796,13 +2789,12 @@ class Raycast(NodeBuilder):
     @classmethod
     def matrix(
         cls,
-        target_geometry: TYPE_INPUT_GEOMETRY = None,
-        attribute: TYPE_INPUT_MATRIX = None,
-        interpolation: TYPE_INPUT_MENU
-        | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: TYPE_INPUT_VECTOR = None,
-        ray_direction: TYPE_INPUT_VECTOR = None,
-        ray_length: TYPE_INPUT_VALUE = 100.0,
+        target_geometry: InputGeometry = None,
+        attribute: InputMatrix = None,
+        interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
+        source_position: InputVector = None,
+        ray_direction: InputVector = None,
+        ray_length: InputFloat = 100.0,
     ) -> "Raycast":
         """Create Raycast with operation '4x4 Matrix'."""
         return cls(
@@ -2910,10 +2902,10 @@ class RealizeInstances(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        realize_all: TYPE_INPUT_BOOLEAN = True,
-        depth: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        realize_all: InputBoolean = True,
+        depth: InputInteger = 0,
     ):
         super().__init__()
         key_args = {
@@ -2961,9 +2953,9 @@ class ReplaceMaterial(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        old: TYPE_INPUT_MATERIAL = None,
-        new: TYPE_INPUT_MATERIAL = None,
+        geometry: InputGeometry = None,
+        old: InputMaterial = None,
+        new: InputMaterial = None,
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Old": old, "New": new}
@@ -3001,11 +2993,11 @@ class ResampleCurve(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        mode: TYPE_INPUT_MENU | Literal["Evaluated", "Count", "Length"] = "Count",
-        count: TYPE_INPUT_INT = 10,
-        length: TYPE_INPUT_VALUE = 0.1,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        mode: InputMenu | Literal["Evaluated", "Count", "Length"] = "Count",
+        count: InputInteger = 10,
+        length: InputFloat = 0.1,
         *,
         keep_last_segment: bool = False,
     ):
@@ -3069,8 +3061,8 @@ class ReverseCurve(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
     ):
         super().__init__()
         key_args = {"Curve": curve, "Selection": selection}
@@ -3103,11 +3095,11 @@ class RotateInstances(NodeBuilder):
 
     def __init__(
         self,
-        instances: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        rotation: TYPE_INPUT_ROTATION = None,
-        pivot_point: TYPE_INPUT_VECTOR = None,
-        local_space: TYPE_INPUT_BOOLEAN = True,
+        instances: InputGeometry = None,
+        selection: InputBoolean = True,
+        rotation: InputRotation = None,
+        pivot_point: InputVector = None,
+        local_space: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -3161,11 +3153,11 @@ class SampleCurve(NodeBuilder):
 
     def __init__(
         self,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        factor: TYPE_INPUT_VALUE = 0.0,
-        length: TYPE_INPUT_VALUE = 0.0,
-        curve_index: TYPE_INPUT_INT = 0,
+        curves: InputGeometry = None,
+        value: InputFloat = 0.0,
+        factor: InputFloat = 0.0,
+        length: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
         *,
         mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
         use_all_curves: bool = False,
@@ -3195,10 +3187,10 @@ class SampleCurve(NodeBuilder):
     @classmethod
     def float(
         cls,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        factor: TYPE_INPUT_VALUE = 0.0,
-        curve_index: TYPE_INPUT_INT = 0,
+        curves: InputGeometry = None,
+        value: InputFloat = 0.0,
+        factor: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Float'."""
         return cls(
@@ -3212,10 +3204,10 @@ class SampleCurve(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_INT = 0,
-        factor: TYPE_INPUT_VALUE = 0.0,
-        curve_index: TYPE_INPUT_INT = 0,
+        curves: InputGeometry = None,
+        value: InputInteger = 0,
+        factor: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Integer'."""
         return cls(
@@ -3229,10 +3221,10 @@ class SampleCurve(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_BOOLEAN = False,
-        factor: TYPE_INPUT_VALUE = 0.0,
-        curve_index: TYPE_INPUT_INT = 0,
+        curves: InputGeometry = None,
+        value: InputBoolean = False,
+        factor: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Boolean'."""
         return cls(
@@ -3246,10 +3238,10 @@ class SampleCurve(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VECTOR = None,
-        factor: TYPE_INPUT_VALUE = 0.0,
-        curve_index: TYPE_INPUT_INT = 0,
+        curves: InputGeometry = None,
+        value: InputVector = None,
+        factor: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Vector'."""
         return cls(
@@ -3263,10 +3255,10 @@ class SampleCurve(NodeBuilder):
     @classmethod
     def color(
         cls,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_COLOR = None,
-        factor: TYPE_INPUT_VALUE = 0.0,
-        curve_index: TYPE_INPUT_INT = 0,
+        curves: InputGeometry = None,
+        value: InputColor = None,
+        factor: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Color'."""
         return cls(
@@ -3280,10 +3272,10 @@ class SampleCurve(NodeBuilder):
     @classmethod
     def quaternion(
         cls,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_ROTATION = None,
-        factor: TYPE_INPUT_VALUE = 0.0,
-        curve_index: TYPE_INPUT_INT = 0,
+        curves: InputGeometry = None,
+        value: InputRotation = None,
+        factor: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation 'Quaternion'."""
         return cls(
@@ -3297,10 +3289,10 @@ class SampleCurve(NodeBuilder):
     @classmethod
     def matrix(
         cls,
-        curves: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
-        factor: TYPE_INPUT_VALUE = 0.0,
-        curve_index: TYPE_INPUT_INT = 0,
+        curves: InputGeometry = None,
+        value: InputMatrix = None,
+        factor: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
     ) -> "SampleCurve":
         """Create Sample Curve with operation '4x4 Matrix'."""
         return cls(
@@ -3412,9 +3404,9 @@ class SampleIndex(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
         *,
         data_type: Literal[
             "FLOAT",
@@ -3440,9 +3432,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def float(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Float'."""
         return cls(data_type="FLOAT", geometry=geometry, value=value, index=index)
@@ -3450,9 +3442,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_INT = 0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputInteger = 0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Integer'."""
         return cls(data_type="INT", geometry=geometry, value=value, index=index)
@@ -3460,9 +3452,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_BOOLEAN = False,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputBoolean = False,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", geometry=geometry, value=value, index=index)
@@ -3470,9 +3462,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VECTOR = None,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputVector = None,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Vector'."""
         return cls(
@@ -3482,9 +3474,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def color(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_COLOR = None,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputColor = None,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Color'."""
         return cls(data_type="FLOAT_COLOR", geometry=geometry, value=value, index=index)
@@ -3492,9 +3484,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def quaternion(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_ROTATION = None,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputRotation = None,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Quaternion'."""
         return cls(data_type="QUATERNION", geometry=geometry, value=value, index=index)
@@ -3502,9 +3494,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def matrix(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputMatrix = None,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation '4x4 Matrix'."""
         return cls(data_type="FLOAT4X4", geometry=geometry, value=value, index=index)
@@ -3512,9 +3504,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def point(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Point'."""
         return cls(domain="POINT", geometry=geometry, value=value, index=index)
@@ -3522,9 +3514,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def edge(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Edge'."""
         return cls(domain="EDGE", geometry=geometry, value=value, index=index)
@@ -3532,9 +3524,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def face(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, value=value, index=index)
@@ -3542,9 +3534,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def face_corner(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Face Corner'."""
         return cls(domain="CORNER", geometry=geometry, value=value, index=index)
@@ -3552,9 +3544,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def spline(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Spline'."""
         return cls(domain="CURVE", geometry=geometry, value=value, index=index)
@@ -3562,9 +3554,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def instance(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Instance'."""
         return cls(domain="INSTANCE", geometry=geometry, value=value, index=index)
@@ -3572,9 +3564,9 @@ class SampleIndex(NodeBuilder):
     @classmethod
     def layer(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        value: InputFloat = 0.0,
+        index: InputInteger = 0,
     ) -> "SampleIndex":
         """Create Sample Index with operation 'Layer'."""
         return cls(domain="LAYER", geometry=geometry, value=value, index=index)
@@ -3660,8 +3652,8 @@ class SampleNearest(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        sample_position: TYPE_INPUT_VECTOR = None,
+        geometry: InputGeometry = None,
+        sample_position: InputVector = None,
         *,
         domain: Literal["POINT", "EDGE", "FACE", "CORNER"] = "POINT",
     ):
@@ -3672,36 +3664,28 @@ class SampleNearest(NodeBuilder):
 
     @classmethod
     def point(
-        cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        sample_position: TYPE_INPUT_VECTOR = None,
+        cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Point'."""
         return cls(domain="POINT", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def edge(
-        cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        sample_position: TYPE_INPUT_VECTOR = None,
+        cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Edge'."""
         return cls(domain="EDGE", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def face(
-        cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        sample_position: TYPE_INPUT_VECTOR = None,
+        cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def face_corner(
-        cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        sample_position: TYPE_INPUT_VECTOR = None,
+        cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Face Corner'."""
         return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
@@ -3740,11 +3724,11 @@ class SampleNearestSurface(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        group_id: TYPE_INPUT_INT = 0,
-        sample_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        value: InputFloat = 0.0,
+        group_id: InputInteger = 0,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
         *,
         data_type: Literal[
             "FLOAT",
@@ -3770,11 +3754,11 @@ class SampleNearestSurface(NodeBuilder):
     @classmethod
     def float(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        group_id: TYPE_INPUT_INT = 0,
-        sample_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        value: InputFloat = 0.0,
+        group_id: InputInteger = 0,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
         """Create Sample Nearest Surface with operation 'Float'."""
         return cls(
@@ -3789,11 +3773,11 @@ class SampleNearestSurface(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_INT = 0,
-        group_id: TYPE_INPUT_INT = 0,
-        sample_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        value: InputInteger = 0,
+        group_id: InputInteger = 0,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
         """Create Sample Nearest Surface with operation 'Integer'."""
         return cls(
@@ -3808,11 +3792,11 @@ class SampleNearestSurface(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_BOOLEAN = False,
-        group_id: TYPE_INPUT_INT = 0,
-        sample_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        value: InputBoolean = False,
+        group_id: InputInteger = 0,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
         """Create Sample Nearest Surface with operation 'Boolean'."""
         return cls(
@@ -3827,11 +3811,11 @@ class SampleNearestSurface(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VECTOR = None,
-        group_id: TYPE_INPUT_INT = 0,
-        sample_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        value: InputVector = None,
+        group_id: InputInteger = 0,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
         """Create Sample Nearest Surface with operation 'Vector'."""
         return cls(
@@ -3846,11 +3830,11 @@ class SampleNearestSurface(NodeBuilder):
     @classmethod
     def color(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_COLOR = None,
-        group_id: TYPE_INPUT_INT = 0,
-        sample_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        value: InputColor = None,
+        group_id: InputInteger = 0,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
         """Create Sample Nearest Surface with operation 'Color'."""
         return cls(
@@ -3865,11 +3849,11 @@ class SampleNearestSurface(NodeBuilder):
     @classmethod
     def quaternion(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_ROTATION = None,
-        group_id: TYPE_INPUT_INT = 0,
-        sample_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        value: InputRotation = None,
+        group_id: InputInteger = 0,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
         """Create Sample Nearest Surface with operation 'Quaternion'."""
         return cls(
@@ -3884,11 +3868,11 @@ class SampleNearestSurface(NodeBuilder):
     @classmethod
     def matrix(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
-        group_id: TYPE_INPUT_INT = 0,
-        sample_position: TYPE_INPUT_VECTOR = None,
-        sample_group_id: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        value: InputMatrix = None,
+        group_id: InputInteger = 0,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
         """Create Sample Nearest Surface with operation '4x4 Matrix'."""
         return cls(
@@ -3975,10 +3959,10 @@ class SampleUVSurface(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        source_uv_map: TYPE_INPUT_VECTOR = None,
-        sample_uv: TYPE_INPUT_VECTOR = None,
+        mesh: InputGeometry = None,
+        value: InputFloat = 0.0,
+        source_uv_map: InputVector = None,
+        sample_uv: InputVector = None,
         *,
         data_type: Literal[
             "FLOAT",
@@ -4003,10 +3987,10 @@ class SampleUVSurface(NodeBuilder):
     @classmethod
     def float(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VALUE = 0.0,
-        source_uv_map: TYPE_INPUT_VECTOR = None,
-        sample_uv: TYPE_INPUT_VECTOR = None,
+        mesh: InputGeometry = None,
+        value: InputFloat = 0.0,
+        source_uv_map: InputVector = None,
+        sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
         """Create Sample UV Surface with operation 'Float'."""
         return cls(
@@ -4020,10 +4004,10 @@ class SampleUVSurface(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_INT = 0,
-        source_uv_map: TYPE_INPUT_VECTOR = None,
-        sample_uv: TYPE_INPUT_VECTOR = None,
+        mesh: InputGeometry = None,
+        value: InputInteger = 0,
+        source_uv_map: InputVector = None,
+        sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
         """Create Sample UV Surface with operation 'Integer'."""
         return cls(
@@ -4037,10 +4021,10 @@ class SampleUVSurface(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_BOOLEAN = False,
-        source_uv_map: TYPE_INPUT_VECTOR = None,
-        sample_uv: TYPE_INPUT_VECTOR = None,
+        mesh: InputGeometry = None,
+        value: InputBoolean = False,
+        source_uv_map: InputVector = None,
+        sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
         """Create Sample UV Surface with operation 'Boolean'."""
         return cls(
@@ -4054,10 +4038,10 @@ class SampleUVSurface(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_VECTOR = None,
-        source_uv_map: TYPE_INPUT_VECTOR = None,
-        sample_uv: TYPE_INPUT_VECTOR = None,
+        mesh: InputGeometry = None,
+        value: InputVector = None,
+        source_uv_map: InputVector = None,
+        sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
         """Create Sample UV Surface with operation 'Vector'."""
         return cls(
@@ -4071,10 +4055,10 @@ class SampleUVSurface(NodeBuilder):
     @classmethod
     def color(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_COLOR = None,
-        source_uv_map: TYPE_INPUT_VECTOR = None,
-        sample_uv: TYPE_INPUT_VECTOR = None,
+        mesh: InputGeometry = None,
+        value: InputColor = None,
+        source_uv_map: InputVector = None,
+        sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
         """Create Sample UV Surface with operation 'Color'."""
         return cls(
@@ -4088,10 +4072,10 @@ class SampleUVSurface(NodeBuilder):
     @classmethod
     def quaternion(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_ROTATION = None,
-        source_uv_map: TYPE_INPUT_VECTOR = None,
-        sample_uv: TYPE_INPUT_VECTOR = None,
+        mesh: InputGeometry = None,
+        value: InputRotation = None,
+        source_uv_map: InputVector = None,
+        sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
         """Create Sample UV Surface with operation 'Quaternion'."""
         return cls(
@@ -4105,10 +4089,10 @@ class SampleUVSurface(NodeBuilder):
     @classmethod
     def matrix(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        value: TYPE_INPUT_MATRIX = None,
-        source_uv_map: TYPE_INPUT_VECTOR = None,
-        sample_uv: TYPE_INPUT_VECTOR = None,
+        mesh: InputGeometry = None,
+        value: InputMatrix = None,
+        source_uv_map: InputVector = None,
+        sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
         """Create Sample UV Surface with operation '4x4 Matrix'."""
         return cls(
@@ -4189,12 +4173,12 @@ class ScaleElements(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        scale: TYPE_INPUT_VALUE = 1.0,
-        center: TYPE_INPUT_VECTOR = None,
-        scale_mode: TYPE_INPUT_MENU | Literal["Uniform", "Single Axis"] = "Uniform",
-        axis: TYPE_INPUT_VECTOR = None,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        scale: InputFloat = 1.0,
+        center: InputVector = None,
+        scale_mode: InputMenu | Literal["Uniform", "Single Axis"] = "Uniform",
+        axis: InputVector = None,
         *,
         domain: Literal["FACE", "EDGE"] = "FACE",
     ):
@@ -4213,11 +4197,11 @@ class ScaleElements(NodeBuilder):
     @classmethod
     def face(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        scale: TYPE_INPUT_VALUE = 1.0,
-        center: TYPE_INPUT_VECTOR = None,
-        scale_mode: TYPE_INPUT_MENU | Literal["Uniform", "Single Axis"] = "Uniform",
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        scale: InputFloat = 1.0,
+        center: InputVector = None,
+        scale_mode: InputMenu | Literal["Uniform", "Single Axis"] = "Uniform",
     ) -> "ScaleElements":
         """Create Scale Elements with operation 'Face'."""
         return cls(
@@ -4232,11 +4216,11 @@ class ScaleElements(NodeBuilder):
     @classmethod
     def edge(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        scale: TYPE_INPUT_VALUE = 1.0,
-        center: TYPE_INPUT_VECTOR = None,
-        scale_mode: TYPE_INPUT_MENU | Literal["Uniform", "Single Axis"] = "Uniform",
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        scale: InputFloat = 1.0,
+        center: InputVector = None,
+        scale_mode: InputMenu | Literal["Uniform", "Single Axis"] = "Uniform",
     ) -> "ScaleElements":
         """Create Scale Elements with operation 'Edge'."""
         return cls(
@@ -4302,11 +4286,11 @@ class ScaleInstances(NodeBuilder):
 
     def __init__(
         self,
-        instances: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        scale: TYPE_INPUT_VECTOR = None,
-        center: TYPE_INPUT_VECTOR = None,
-        local_space: TYPE_INPUT_BOOLEAN = True,
+        instances: InputGeometry = None,
+        selection: InputBoolean = True,
+        scale: InputVector = None,
+        center: InputVector = None,
+        local_space: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -4358,7 +4342,7 @@ class SeparateComponents(NodeBuilder):
     _bl_idname = "GeometryNodeSeparateComponents"
     node: bpy.types.GeometryNodeSeparateComponents
 
-    def __init__(self, geometry: TYPE_INPUT_GEOMETRY = None):
+    def __init__(self, geometry: InputGeometry = None):
         super().__init__()
         key_args = {"Geometry": geometry}
 
@@ -4410,8 +4394,8 @@ class SeparateGeometry(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
         *,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
@@ -4424,42 +4408,42 @@ class SeparateGeometry(NodeBuilder):
 
     @classmethod
     def point(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Point'."""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Edge'."""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Spline'."""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def instance(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Instance'."""
         return cls(domain="INSTANCE", geometry=geometry, selection=selection)
 
     @classmethod
     def layer(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Layer'."""
         return cls(domain="LAYER", geometry=geometry, selection=selection)
@@ -4505,11 +4489,10 @@ class SetCurveNormal(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        mode: TYPE_INPUT_MENU
-        | Literal["Minimum Twist", "Z Up", "Free"] = "Minimum Twist",
-        normal: TYPE_INPUT_VECTOR = None,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        mode: InputMenu | Literal["Minimum Twist", "Z Up", "Free"] = "Minimum Twist",
+        normal: InputVector = None,
     ):
         super().__init__()
         key_args = {
@@ -4557,9 +4540,9 @@ class SetCurveRadius(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        radius: TYPE_INPUT_VALUE = 0.005,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        radius: InputFloat = 0.005,
     ):
         super().__init__()
         key_args = {"Curve": curve, "Selection": selection, "Radius": radius}
@@ -4597,9 +4580,9 @@ class SetCurveTilt(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        tilt: TYPE_INPUT_VALUE = 0.0,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        tilt: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Curve": curve, "Selection": selection, "Tilt": tilt}
@@ -4637,9 +4620,9 @@ class SetFaceSet(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        face_set: TYPE_INPUT_INT = 0,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        face_set: InputInteger = 0,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Selection": selection, "Face Set": face_set}
@@ -4677,8 +4660,8 @@ class SetGeometryName(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
+        geometry: InputGeometry = None,
+        name: InputString = "",
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Name": name}
@@ -4711,10 +4694,10 @@ class SetGreasePencilColor(NodeBuilder):
 
     def __init__(
         self,
-        grease_pencil: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        color: TYPE_INPUT_COLOR = None,
-        opacity: TYPE_INPUT_VALUE = 1.0,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = True,
+        color: InputColor = None,
+        opacity: InputFloat = 1.0,
         *,
         mode: Literal["STROKE", "FILL"] = "STROKE",
     ):
@@ -4772,7 +4755,7 @@ class SetGreasePencilDepth(NodeBuilder):
 
     def __init__(
         self,
-        grease_pencil: TYPE_INPUT_GEOMETRY = None,
+        grease_pencil: InputGeometry = None,
         *,
         depth_order: Literal["2D", "3D"] = "2D",
     ):
@@ -4810,9 +4793,9 @@ class SetGreasePencilSoftness(NodeBuilder):
 
     def __init__(
         self,
-        grease_pencil: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        softness: TYPE_INPUT_VALUE = 0.0,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = True,
+        softness: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -4854,10 +4837,10 @@ class SetHandlePositions(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        position: TYPE_INPUT_VECTOR = None,
-        offset: TYPE_INPUT_VECTOR = None,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        offset: InputVector = None,
         *,
         mode: Literal["LEFT", "RIGHT"] = "LEFT",
     ):
@@ -4915,9 +4898,9 @@ class SetID(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        id: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        id: InputInteger = 0,
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Selection": selection, "ID": id}
@@ -4955,9 +4938,9 @@ class SetInstanceTransform(NodeBuilder):
 
     def __init__(
         self,
-        instances: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        transform: TYPE_INPUT_MATRIX = None,
+        instances: InputGeometry = None,
+        selection: InputBoolean = True,
+        transform: InputMatrix = None,
     ):
         super().__init__()
         key_args = {
@@ -4999,9 +4982,9 @@ class SetMaterial(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        material: TYPE_INPUT_MATERIAL = None,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        material: InputMaterial = None,
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Selection": selection, "Material": material}
@@ -5039,9 +5022,9 @@ class SetMaterialIndex(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        material_index: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        material_index: InputInteger = 0,
     ):
         super().__init__()
         key_args = {
@@ -5083,10 +5066,10 @@ class SetMeshNormal(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        remove_custom: TYPE_INPUT_BOOLEAN = True,
-        edge_sharpness: TYPE_INPUT_BOOLEAN = False,
-        face_sharpness: TYPE_INPUT_BOOLEAN = False,
+        mesh: InputGeometry = None,
+        remove_custom: InputBoolean = True,
+        edge_sharpness: InputBoolean = False,
+        face_sharpness: InputBoolean = False,
         *,
         mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
         domain: Literal["POINT", "FACE", "CORNER"] = "POINT",
@@ -5105,10 +5088,10 @@ class SetMeshNormal(NodeBuilder):
     @classmethod
     def point(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        remove_custom: TYPE_INPUT_BOOLEAN = True,
-        edge_sharpness: TYPE_INPUT_BOOLEAN = False,
-        face_sharpness: TYPE_INPUT_BOOLEAN = False,
+        mesh: InputGeometry = None,
+        remove_custom: InputBoolean = True,
+        edge_sharpness: InputBoolean = False,
+        face_sharpness: InputBoolean = False,
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Point'."""
         return cls(
@@ -5122,10 +5105,10 @@ class SetMeshNormal(NodeBuilder):
     @classmethod
     def face(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        remove_custom: TYPE_INPUT_BOOLEAN = True,
-        edge_sharpness: TYPE_INPUT_BOOLEAN = False,
-        face_sharpness: TYPE_INPUT_BOOLEAN = False,
+        mesh: InputGeometry = None,
+        remove_custom: InputBoolean = True,
+        edge_sharpness: InputBoolean = False,
+        face_sharpness: InputBoolean = False,
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Face'."""
         return cls(
@@ -5139,10 +5122,10 @@ class SetMeshNormal(NodeBuilder):
     @classmethod
     def face_corner(
         cls,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        remove_custom: TYPE_INPUT_BOOLEAN = True,
-        edge_sharpness: TYPE_INPUT_BOOLEAN = False,
-        face_sharpness: TYPE_INPUT_BOOLEAN = False,
+        mesh: InputGeometry = None,
+        remove_custom: InputBoolean = True,
+        edge_sharpness: InputBoolean = False,
+        face_sharpness: InputBoolean = False,
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Face Corner'."""
         return cls(
@@ -5205,9 +5188,9 @@ class SetPointRadius(NodeBuilder):
 
     def __init__(
         self,
-        points: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        radius: TYPE_INPUT_VALUE = 0.05,
+        points: InputGeometry = None,
+        selection: InputBoolean = True,
+        radius: InputFloat = 0.05,
     ):
         super().__init__()
         key_args = {"Points": points, "Selection": selection, "Radius": radius}
@@ -5245,10 +5228,10 @@ class SetPosition(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        position: TYPE_INPUT_VECTOR = None,
-        offset: TYPE_INPUT_VECTOR = None,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        offset: InputVector = None,
     ):
         super().__init__()
         key_args = {
@@ -5296,8 +5279,8 @@ class SetSelection(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
         *,
         domain: Literal["POINT", "EDGE", "FACE", "CURVE"] = "POINT",
         selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
@@ -5310,28 +5293,28 @@ class SetSelection(NodeBuilder):
 
     @classmethod
     def point(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSelection":
         """Create Set Selection with operation 'Point'."""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSelection":
         """Create Set Selection with operation 'Edge'."""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSelection":
         """Create Set Selection with operation 'Face'."""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
-        cls, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSelection":
         """Create Set Selection with operation 'Spline'."""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
@@ -5378,9 +5361,9 @@ class SetShadeSmooth(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        shade_smooth: TYPE_INPUT_BOOLEAN = True,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        shade_smooth: InputBoolean = True,
         *,
         domain: Literal["EDGE", "FACE"] = "FACE",
     ):
@@ -5396,9 +5379,9 @@ class SetShadeSmooth(NodeBuilder):
     @classmethod
     def edge(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        shade_smooth: TYPE_INPUT_BOOLEAN = True,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        shade_smooth: InputBoolean = True,
     ) -> "SetShadeSmooth":
         """Create Set Shade Smooth with operation 'Edge'."""
         return cls(
@@ -5411,9 +5394,9 @@ class SetShadeSmooth(NodeBuilder):
     @classmethod
     def face(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        shade_smooth: TYPE_INPUT_BOOLEAN = True,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        shade_smooth: InputBoolean = True,
     ) -> "SetShadeSmooth":
         """Create Set Shade Smooth with operation 'Face'."""
         return cls(
@@ -5462,9 +5445,9 @@ class SetSplineCyclic(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        cyclic: TYPE_INPUT_BOOLEAN = False,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        cyclic: InputBoolean = False,
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Selection": selection, "Cyclic": cyclic}
@@ -5502,9 +5485,9 @@ class SetSplineResolution(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        resolution: TYPE_INPUT_INT = 12,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        resolution: InputInteger = 12,
     ):
         super().__init__()
         key_args = {
@@ -5546,8 +5529,8 @@ class SetSplineType(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
         *,
         spline_type: Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"] = "POLY",
     ):
@@ -5590,10 +5573,10 @@ class SortElements(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
-        sort_weight: TYPE_INPUT_VALUE = 0.0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
         *,
         domain: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE"] = "POINT",
     ):
@@ -5610,10 +5593,10 @@ class SortElements(NodeBuilder):
     @classmethod
     def point(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
-        sort_weight: TYPE_INPUT_VALUE = 0.0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Point'."""
         return cls(
@@ -5627,10 +5610,10 @@ class SortElements(NodeBuilder):
     @classmethod
     def edge(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
-        sort_weight: TYPE_INPUT_VALUE = 0.0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Edge'."""
         return cls(
@@ -5644,10 +5627,10 @@ class SortElements(NodeBuilder):
     @classmethod
     def face(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
-        sort_weight: TYPE_INPUT_VALUE = 0.0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Face'."""
         return cls(
@@ -5661,10 +5644,10 @@ class SortElements(NodeBuilder):
     @classmethod
     def spline(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
-        sort_weight: TYPE_INPUT_VALUE = 0.0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Spline'."""
         return cls(
@@ -5678,10 +5661,10 @@ class SortElements(NodeBuilder):
     @classmethod
     def instance(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
-        sort_weight: TYPE_INPUT_VALUE = 0.0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Instance'."""
         return cls(
@@ -5736,12 +5719,12 @@ class Spiral(NodeBuilder):
 
     def __init__(
         self,
-        resolution: TYPE_INPUT_INT = 32,
-        rotations: TYPE_INPUT_VALUE = 2.0,
-        start_radius: TYPE_INPUT_VALUE = 1.0,
-        end_radius: TYPE_INPUT_VALUE = 2.0,
-        height: TYPE_INPUT_VALUE = 2.0,
-        reverse: TYPE_INPUT_BOOLEAN = False,
+        resolution: InputInteger = 32,
+        rotations: InputFloat = 2.0,
+        start_radius: InputFloat = 1.0,
+        end_radius: InputFloat = 2.0,
+        height: InputFloat = 2.0,
+        reverse: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -5801,8 +5784,8 @@ class SplitEdges(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Selection": selection}
@@ -5835,9 +5818,9 @@ class SplitToInstances(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
         *,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
@@ -5851,9 +5834,9 @@ class SplitToInstances(NodeBuilder):
     @classmethod
     def point(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Point'."""
         return cls(
@@ -5863,9 +5846,9 @@ class SplitToInstances(NodeBuilder):
     @classmethod
     def edge(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Edge'."""
         return cls(
@@ -5875,9 +5858,9 @@ class SplitToInstances(NodeBuilder):
     @classmethod
     def face(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Face'."""
         return cls(
@@ -5887,9 +5870,9 @@ class SplitToInstances(NodeBuilder):
     @classmethod
     def spline(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Spline'."""
         return cls(
@@ -5899,9 +5882,9 @@ class SplitToInstances(NodeBuilder):
     @classmethod
     def instance(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Instance'."""
         return cls(
@@ -5911,9 +5894,9 @@ class SplitToInstances(NodeBuilder):
     @classmethod
     def layer(
         cls,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        group_id: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Layer'."""
         return cls(
@@ -5966,10 +5949,10 @@ class Star(NodeBuilder):
 
     def __init__(
         self,
-        points: TYPE_INPUT_INT = 8,
-        inner_radius: TYPE_INPUT_VALUE = 1.0,
-        outer_radius: TYPE_INPUT_VALUE = 2.0,
-        twist: TYPE_INPUT_VALUE = 0.0,
+        points: InputInteger = 8,
+        inner_radius: InputFloat = 1.0,
+        outer_radius: InputFloat = 2.0,
+        twist: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -6022,13 +6005,13 @@ class StringToCurves(NodeBuilder):
 
     def __init__(
         self,
-        string: TYPE_INPUT_STRING = "",
-        size: TYPE_INPUT_VALUE = 1.0,
-        character_spacing: TYPE_INPUT_VALUE = 1.0,
-        word_spacing: TYPE_INPUT_VALUE = 1.0,
-        line_spacing: TYPE_INPUT_VALUE = 1.0,
-        text_box_width: TYPE_INPUT_VALUE = 0.0,
-        text_box_height: TYPE_INPUT_VALUE = 0.0,
+        string: InputString = "",
+        size: InputFloat = 1.0,
+        character_spacing: InputFloat = 1.0,
+        word_spacing: InputFloat = 1.0,
+        line_spacing: InputFloat = 1.0,
+        text_box_width: InputFloat = 0.0,
+        text_box_height: InputFloat = 0.0,
         *,
         overflow: Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"] = "OVERFLOW",
         align_x: Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"] = "LEFT",
@@ -6185,8 +6168,8 @@ class SubdivideCurve(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        cuts: TYPE_INPUT_INT = 1,
+        curve: InputGeometry = None,
+        cuts: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Curve": curve, "Cuts": cuts}
@@ -6219,8 +6202,8 @@ class SubdivideMesh(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        level: TYPE_INPUT_INT = 1,
+        mesh: InputGeometry = None,
+        level: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Level": level}
@@ -6253,12 +6236,12 @@ class SubdivisionSurface(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        level: TYPE_INPUT_INT = 1,
-        edge_crease: TYPE_INPUT_VALUE = 0.0,
-        vertex_crease: TYPE_INPUT_VALUE = 0.0,
-        limit_surface: TYPE_INPUT_BOOLEAN = True,
-        uv_smooth: TYPE_INPUT_MENU
+        mesh: InputGeometry = None,
+        level: InputInteger = 1,
+        edge_crease: InputFloat = 0.0,
+        vertex_crease: InputFloat = 0.0,
+        limit_surface: InputBoolean = True,
+        uv_smooth: InputMenu
         | Literal[
             "None",
             "Keep Corners",
@@ -6267,7 +6250,7 @@ class SubdivisionSurface(NodeBuilder):
             "Keep Boundaries",
             "All",
         ] = "Keep Boundaries",
-        boundary_smooth: TYPE_INPUT_MENU | Literal["Keep Corners", "All"] = "All",
+        boundary_smooth: InputMenu | Literal["Keep Corners", "All"] = "All",
     ):
         super().__init__()
         key_args = {
@@ -6333,12 +6316,12 @@ class TransformGeometry(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        mode: TYPE_INPUT_MENU | Literal["Components", "Matrix"] = "Components",
-        translation: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_ROTATION = None,
-        scale: TYPE_INPUT_VECTOR = None,
-        transform: TYPE_INPUT_MATRIX = None,
+        geometry: InputGeometry = None,
+        mode: InputMenu | Literal["Components", "Matrix"] = "Components",
+        translation: InputVector = None,
+        rotation: InputRotation = None,
+        scale: InputVector = None,
+        transform: InputMatrix = None,
     ):
         super().__init__()
         key_args = {
@@ -6398,10 +6381,10 @@ class TranslateInstances(NodeBuilder):
 
     def __init__(
         self,
-        instances: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        translation: TYPE_INPUT_VECTOR = None,
-        local_space: TYPE_INPUT_BOOLEAN = True,
+        instances: InputGeometry = None,
+        selection: InputBoolean = True,
+        translation: InputVector = None,
+        local_space: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -6449,9 +6432,9 @@ class Triangulate(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        quad_method: TYPE_INPUT_MENU
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        quad_method: InputMenu
         | Literal[
             "Beauty",
             "Fixed",
@@ -6459,7 +6442,7 @@ class Triangulate(NodeBuilder):
             "Shortest Diagonal",
             "Longest Diagonal",
         ] = "Shortest Diagonal",
-        n_gon_method: TYPE_INPUT_MENU | Literal["Beauty", "Clip"] = "Beauty",
+        n_gon_method: InputMenu | Literal["Beauty", "Clip"] = "Beauty",
     ):
         super().__init__()
         key_args = {
@@ -6507,12 +6490,12 @@ class TrimCurve(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        start: TYPE_INPUT_VALUE = 0.0,
-        end: TYPE_INPUT_VALUE = 1.0,
-        start_001: TYPE_INPUT_VALUE = 0.0,
-        end_001: TYPE_INPUT_VALUE = 1.0,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        start: InputFloat = 0.0,
+        end: InputFloat = 1.0,
+        start_001: InputFloat = 0.0,
+        end_001: InputFloat = 1.0,
         *,
         mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
     ):
@@ -6582,9 +6565,9 @@ class UVSphere(NodeBuilder):
 
     def __init__(
         self,
-        segments: TYPE_INPUT_INT = 32,
-        rings: TYPE_INPUT_INT = 16,
-        radius: TYPE_INPUT_VALUE = 1.0,
+        segments: InputInteger = 32,
+        rings: InputInteger = 16,
+        radius: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {"Segments": segments, "Rings": rings, "Radius": radius}

@@ -10,21 +10,20 @@ from ...builder import (
     SocketLinker,
 )
 from ...types import (
-    LINKABLE,
     SOCKET_TYPES,
-    TYPE_INPUT_ALL,
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_DATA,
-    TYPE_INPUT_GEOMETRY,
-    TYPE_INPUT_GRID,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MATRIX,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_ROTATION,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputAny,
+    InputBoolean,
+    InputColor,
+    InputFloat,
+    InputGeometry,
+    InputGrid,
+    InputInteger,
+    InputLinkable,
+    InputMatrix,
+    InputMenu,
+    InputRotation,
+    InputString,
+    InputVector,
     _AccumulateFieldDataTypes,
     _AttributeDataTypes,
     _AttributeDomains,
@@ -124,7 +123,7 @@ class GeometryToInstance(NodeBuilder):
     _bl_idname = "GeometryNodeGeometryToInstance"
     node: bpy.types.GeometryNodeGeometryToInstance
 
-    def __init__(self, *args: TYPE_INPUT_GEOMETRY):
+    def __init__(self, *args: InputGeometry):
         super().__init__()
         for arg in reversed(args):
             self._link_from(arg, "Geometry")
@@ -273,7 +272,7 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
     def __init__(
         self,
         *args,
-        format: TYPE_INPUT_STRING = "",
+        format: InputString = "",
         **kwargs,
     ):
         super().__init__()
@@ -326,7 +325,7 @@ class JoinStrings(NodeBuilder):
     _bl_idname = "GeometryNodeStringJoin"
     node: bpy.types.GeometryNodeStringJoin
 
-    def __init__(self, *args: LINKABLE, delimiter: TYPE_INPUT_STRING = ""):
+    def __init__(self, *args: InputLinkable, delimiter: InputString = ""):
         super().__init__()
 
         self._establish_links(Delimiter=delimiter)
@@ -357,7 +356,7 @@ class MeshBoolean(NodeBuilder):
 
     def __init__(
         self,
-        *args: TYPE_INPUT_GEOMETRY,
+        *args: InputGeometry,
         operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
         **kwargs,
@@ -374,9 +373,9 @@ class MeshBoolean(NodeBuilder):
     @classmethod
     def intersect(
         cls,
-        *args: TYPE_INPUT_GEOMETRY,
-        self_intersection: TYPE_INPUT_BOOLEAN = False,
-        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
+        *args: InputGeometry,
+        self_intersection: InputBoolean = False,
+        hole_tolerant: InputBoolean = False,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ):
         key_args = {}
@@ -393,9 +392,9 @@ class MeshBoolean(NodeBuilder):
     @classmethod
     def m_union(
         cls,
-        *args: TYPE_INPUT_GEOMETRY,
-        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
-        self_intersection: TYPE_INPUT_BOOLEAN = False,
+        *args: InputGeometry,
+        hole_tolerant: InputBoolean = False,
+        self_intersection: InputBoolean = False,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ):
         key_args = {}
@@ -412,10 +411,10 @@ class MeshBoolean(NodeBuilder):
     @classmethod
     def m_difference(
         cls,
-        *args: TYPE_INPUT_GEOMETRY,
-        mesh_1: TYPE_INPUT_GEOMETRY = None,
-        hole_tolerant: TYPE_INPUT_BOOLEAN = False,
-        self_intersection: TYPE_INPUT_BOOLEAN = False,
+        *args: InputGeometry,
+        mesh_1: InputGeometry = None,
+        hole_tolerant: InputBoolean = False,
+        self_intersection: InputBoolean = False,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ):
         key_args = {}
@@ -431,13 +430,15 @@ class MeshBoolean(NodeBuilder):
         )
 
     @classmethod
-    def union(cls, mesh_1: LINKABLE = None, mesh_2: LINKABLE = None) -> "MeshBoolean":
+    def union(
+        cls, mesh_1: InputLinkable = None, mesh_2: InputLinkable = None
+    ) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Union'."""
         return cls(operation="UNION", mesh_1=mesh_1, mesh_2=mesh_2)
 
     @classmethod
     def difference(
-        cls, mesh_1: LINKABLE = None, mesh_2: LINKABLE = None
+        cls, mesh_1: InputLinkable = None, mesh_2: InputLinkable = None
     ) -> "MeshBoolean":
         """Create Mesh Boolean with operation 'Difference'."""
         return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
@@ -487,7 +488,7 @@ class JoinGeometry(NodeBuilder):
     _bl_idname = "GeometryNodeJoinGeometry"
     node: bpy.types.GeometryNodeJoinGeometry
 
-    def __init__(self, *args: LINKABLE):
+    def __init__(self, *args: InputLinkable):
         super().__init__()
         for source in reversed(args):
             try:
@@ -514,8 +515,8 @@ class SetHandleType(NodeBuilder):
 
     def __init__(
         self,
-        curve: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
         *,
         left: bool = False,
         right: bool = False,
@@ -664,9 +665,7 @@ class IndexSwitch(NodeBuilder):
     @staticmethod
     def _typed(data_type: SOCKET_TYPES):
         @classmethod
-        def method(
-            cls, *args: TYPE_INPUT_ALL, index: TYPE_INPUT_INT = 0
-        ) -> "IndexSwitch":
+        def method(cls, *args: InputAny, index: InputInteger = 0) -> "IndexSwitch":
             """Create an IndexSwitch node with a pre-set data_type"""
             return cls(*args, index=index, data_type=data_type)
 
@@ -691,13 +690,13 @@ class IndexSwitch(NodeBuilder):
 
     def __init__(
         self,
-        *args: TYPE_INPUT_ALL,
-        index: TYPE_INPUT_INT = 0,
+        *args: InputAny,
+        index: InputInteger = 0,
         data_type: SOCKET_TYPES = "FLOAT",
     ):
         super().__init__()
         self.data_type = data_type
-        key_args: dict[str, TYPE_INPUT_ALL] = {"Index": index}
+        key_args: dict[str, InputAny] = {"Index": index}
         self.node.index_switch_items.clear()
         self._link_args(*args)
         self._establish_links(**key_args)
@@ -707,7 +706,7 @@ class IndexSwitch(NodeBuilder):
         # -1 is the last item (__extent__ socket) and -2 is the socket for the item we just added
         return self.node.inputs[-2]
 
-    def _link_args(self, *args: TYPE_INPUT_ALL):
+    def _link_args(self, *args: InputAny):
         for arg in args:
             if _is_default_value(arg):
                 socket = self._create_socket()
@@ -748,9 +747,9 @@ class _MenuSwitchBase(NodeBuilder):
         @classmethod
         def method(
             cls,
-            *args: TYPE_INPUT_ALL,
-            menu: TYPE_INPUT_MENU = None,
-            **kwargs: TYPE_INPUT_ALL,
+            *args: InputAny,
+            menu: InputMenu = None,
+            **kwargs: InputAny,
         ) -> "MenuSwitch":
             """Create a MenuSwitch node with a pre-set data_type"""
             return cls(*args, menu=menu, data_type=data_type, **kwargs)
@@ -759,10 +758,10 @@ class _MenuSwitchBase(NodeBuilder):
 
     def __init__(
         self,
-        *args: TYPE_INPUT_ALL,
-        menu: TYPE_INPUT_MENU = None,
+        *args: InputAny,
+        menu: InputMenu = None,
         data_type: SOCKET_TYPES = "FLOAT",
-        **kwargs: TYPE_INPUT_ALL,
+        **kwargs: InputAny,
     ):
         super().__init__()
         self.data_type = data_type
@@ -773,7 +772,7 @@ class _MenuSwitchBase(NodeBuilder):
         if self.node.enum_items:
             self.node.inputs[0].default_value = self.node.enum_items[0].name
 
-    def _link_args(self, *args: TYPE_INPUT_ALL, **kwargs: TYPE_INPUT_ALL):
+    def _link_args(self, *args: InputAny, **kwargs: InputAny):
         for arg in args:
             if _is_default_value(arg):
                 socket = self._create_socket(f"Input_{len(self.node.enum_items)}")
@@ -869,8 +868,8 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         @classmethod
         def method(
             cls,
-            *args: LINKABLE,
-            geometry: TYPE_INPUT_GEOMETRY = None,
+            *args: InputLinkable,
+            geometry: InputGeometry = None,
             **kwargs,
         ) -> "CaptureAttribute":
             """Create a CaptureAttribute node with a pre-set domain"""
@@ -888,8 +887,8 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
 
     def __init__(
         self,
-        *args: LINKABLE,
-        geometry: TYPE_INPUT_GEOMETRY = None,
+        *args: InputLinkable,
+        geometry: InputGeometry = None,
         domain: _AttributeDomains = "POINT",
         **kwargs,
     ):
@@ -903,7 +902,7 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         item = self.node.capture_items.new(socket_type=type, name=name)
         return self.node.inputs[item.name]
 
-    def capture(self, value: LINKABLE) -> SocketLinker:
+    def capture(self, value: InputLinkable) -> SocketLinker:
         """Capture the value to store in the attribute
 
         Return the SocketLinker for the output socket
@@ -950,13 +949,13 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
 
     Inputs:
     -------
-    topology: LINKABLE
+    topology: InputLinkable
         The grid which contains the topology to evaluate the different fields on.
     data_type: _GridDataTypes = "FLOAT"
         The data type of the grid to evaluate on. Possible values are "FLOAT", "INT", "VECTOR", "BOOLEAN".
-    *args: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_BOOLEAN
+    *args: InputFloat | InputVector | InputInteger | InputBoolean
         The fields to evaluate on the grid.
-    **kwargs: dict[str, TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT | TYPE_INPUT_GEOMETRY]
+    **kwargs: dict[str, InputFloat | InputVector | InputInteger | InputGeometry]
         The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.
 
     """
@@ -969,10 +968,10 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
 
     def __init__(
         self,
-        *args: TYPE_INPUT_GRID,
-        topology: TYPE_INPUT_GRID = None,
+        *args: InputGrid,
+        topology: InputGrid = None,
         data_type: _GridDataTypes = "FLOAT",
-        **kwargs: TYPE_INPUT_GRID,
+        **kwargs: InputGrid,
     ):
         super().__init__()
         self.data_type = data_type
@@ -1006,23 +1005,19 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
         return [SocketLinker(x) for x in outputs.values()]
 
     @classmethod
-    def float(cls, *args: TYPE_INPUT_GRID, topology: TYPE_INPUT_GRID = None, **kwargs):
+    def float(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
         return cls(*args, data_type="FLOAT", topology=topology, **kwargs)
 
     @classmethod
-    def integer(
-        cls, *args: TYPE_INPUT_GRID, topology: TYPE_INPUT_GRID = None, **kwargs
-    ):
+    def integer(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
         return cls(*args, data_type="INT", topology=topology, **kwargs)
 
     @classmethod
-    def vector(cls, *args: TYPE_INPUT_GRID, topology: TYPE_INPUT_GRID = None, **kwargs):
+    def vector(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
         return cls(*args, data_type="VECTOR", topology=topology, **kwargs)
 
     @classmethod
-    def boolean(
-        cls, *args: TYPE_INPUT_GRID, topology: TYPE_INPUT_GRID = None, **kwargs
-    ):
+    def boolean(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
         return cls(*args, data_type="BOOLEAN", topology=topology, **kwargs)
 
     @property
@@ -1059,7 +1054,7 @@ class SDFGridBoolean(NodeBuilder):
     @classmethod
     def intersect(
         cls,
-        *args: LINKABLE,
+        *args: InputLinkable,
     ) -> "SDFGridBoolean":
         node = cls(operation="INTERSECT")
         for arg in args:
@@ -1071,7 +1066,7 @@ class SDFGridBoolean(NodeBuilder):
     @classmethod
     def union(
         cls,
-        *args: LINKABLE,
+        *args: InputLinkable,
     ) -> "SDFGridBoolean":
         node = cls(operation="UNION")
         for arg in args:
@@ -1083,8 +1078,8 @@ class SDFGridBoolean(NodeBuilder):
     @classmethod
     def difference(
         cls,
-        *args: LINKABLE,
-        grid_1: LINKABLE = None,
+        *args: InputLinkable,
+        grid_1: InputLinkable = None,
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
@@ -1131,19 +1126,19 @@ class AccumulateField(NodeBuilder):
         class AccumulateFieldDomainFactory:
             @staticmethod
             def float(
-                value: TYPE_INPUT_VALUE = None, index: TYPE_INPUT_INT = 0
+                value: InputFloat = None, index: InputInteger = 0
             ) -> "AccumulateField":
                 return AccumulateField(value, index, domain=domain, data_type="FLOAT")
 
             @staticmethod
             def integer(
-                value: TYPE_INPUT_INT = None, index: TYPE_INPUT_INT = 0
+                value: InputInteger = None, index: InputInteger = 0
             ) -> "AccumulateField":
                 return AccumulateField(value, index, domain=domain, data_type="INT")
 
             @staticmethod
             def vector(
-                value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0
+                value: InputVector = None, index: InputInteger = 0
             ) -> "AccumulateField":
                 return AccumulateField(
                     value, index, domain=domain, data_type="FLOAT_VECTOR"
@@ -1151,7 +1146,7 @@ class AccumulateField(NodeBuilder):
 
             @staticmethod
             def transform(
-                value: TYPE_INPUT_MATRIX = None, index: TYPE_INPUT_INT = 0
+                value: InputMatrix = None, index: InputInteger = 0
             ) -> "AccumulateField":
                 return AccumulateField(
                     value, index, domain=domain, data_type="TRANSFORM"
@@ -1169,11 +1164,8 @@ class AccumulateField(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE
-        | TYPE_INPUT_INT
-        | TYPE_INPUT_VECTOR
-        | TYPE_INPUT_MATRIX = 1.0,
-        group_index: TYPE_INPUT_INT = 0,
+        value: InputFloat | InputInteger | InputVector | InputMatrix = 1.0,
+        group_index: InputInteger = 0,
         *,
         data_type: _AccumulateFieldDataTypes = "FLOAT",
         domain: _AttributeDomains = "POINT",
@@ -1243,31 +1235,31 @@ class EvaluateAtIndex(NodeBuilder):
     def _domain_factory(domain: _AttributeDomains):
         class EvaluateAtIndexDomainFactory:
             @staticmethod
-            def float(value: TYPE_INPUT_VALUE = None, index: TYPE_INPUT_INT = 0):
+            def float(value: InputFloat = None, index: InputInteger = 0):
                 return EvaluateAtIndex(value, index, domain=domain, data_type="FLOAT")
 
             @staticmethod
-            def integer(value: TYPE_INPUT_INT = None, index: TYPE_INPUT_INT = 0):
+            def integer(value: InputInteger = None, index: InputInteger = 0):
                 return EvaluateAtIndex(value, index, domain=domain, data_type="INT")
 
             @staticmethod
-            def boolean(value: TYPE_INPUT_BOOLEAN = None, index: TYPE_INPUT_INT = 0):
+            def boolean(value: InputBoolean = None, index: InputInteger = 0):
                 return EvaluateAtIndex(value, index, domain=domain, data_type="BOOLEAN")
 
             @staticmethod
-            def vector(value: TYPE_INPUT_VECTOR = None, index: TYPE_INPUT_INT = 0):
+            def vector(value: InputVector = None, index: InputInteger = 0):
                 return EvaluateAtIndex(
                     value, index, domain=domain, data_type="FLOAT_VECTOR"
                 )
 
             @staticmethod
-            def rotation(value: TYPE_INPUT_ROTATION = None, index: TYPE_INPUT_INT = 0):
+            def rotation(value: InputRotation = None, index: InputInteger = 0):
                 return EvaluateAtIndex(
                     value, index, domain=domain, data_type="QUATERNION"
                 )
 
             @staticmethod
-            def transform(value: TYPE_INPUT_MATRIX = None, index: TYPE_INPUT_INT = 0):
+            def transform(value: InputMatrix = None, index: InputInteger = 0):
                 return EvaluateAtIndex(
                     value, index, domain=domain, data_type="FLOAT4X4"
                 )
@@ -1284,8 +1276,8 @@ class EvaluateAtIndex(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_DATA = None,
-        index: TYPE_INPUT_INT = 0,
+        value: InputFloat = None,
+        index: InputInteger = 0,
         *,
         domain: _AttributeDomains = "POINT",
         data_type: _EvaluateAtIndexDataTypes = "FLOAT",
@@ -1351,8 +1343,8 @@ class FieldAverage(NodeBuilder):
         class FieldAverageDomainFactory:
             @staticmethod
             def float(
-                value: TYPE_INPUT_VALUE = 1.0,
-                group_index: TYPE_INPUT_INT = 0,
+                value: InputFloat = 1.0,
+                group_index: InputInteger = 0,
             ) -> "FieldAverage":
                 """Create FieldAverage for the "FLOAT" data type"""
                 return FieldAverage(
@@ -1361,8 +1353,8 @@ class FieldAverage(NodeBuilder):
 
             @staticmethod
             def vector(
-                value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
-                group_index: TYPE_INPUT_INT = 0,
+                value: InputVector = (1.0, 1.0, 1.0),
+                group_index: InputInteger = 0,
             ) -> "FieldAverage":
                 """Create FieldAverage for the "FLOAT_VECTOR" data type"""
                 return FieldAverage(
@@ -1381,8 +1373,8 @@ class FieldAverage(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR = None,
-        group_index: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR = 0,
+        value: InputFloat | InputVector = None,
+        group_index: InputFloat | InputVector = 0,
         *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: _AttributeDomains = "POINT",
@@ -1446,8 +1438,8 @@ class FieldMinAndMax(NodeBuilder):
         class FieldMinMaxDomainFactory:
             @staticmethod
             def float(
-                value: TYPE_INPUT_VALUE = 1.0,
-                group_index: TYPE_INPUT_INT = 0,
+                value: InputFloat = 1.0,
+                group_index: InputInteger = 0,
             ) -> "FieldMinAndMax":
                 """Create FieldMinMax for the "FLOAT" data type"""
                 return FieldMinAndMax(
@@ -1456,8 +1448,8 @@ class FieldMinAndMax(NodeBuilder):
 
             @staticmethod
             def integer(
-                value: TYPE_INPUT_INT = 1,
-                group_index: TYPE_INPUT_INT = 0,
+                value: InputInteger = 1,
+                group_index: InputInteger = 0,
             ) -> "FieldMinAndMax":
                 """Create FieldMinMax for the "INT" data type"""
                 return FieldMinAndMax(
@@ -1466,8 +1458,8 @@ class FieldMinAndMax(NodeBuilder):
 
             @staticmethod
             def vector(
-                value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
-                group_index: TYPE_INPUT_INT = 0,
+                value: InputVector = (1.0, 1.0, 1.0),
+                group_index: InputInteger = 0,
             ) -> "FieldMinAndMax":
                 """Create FieldMinMax for the "FLOAT_VECTOR" data type"""
                 return FieldMinAndMax(
@@ -1486,8 +1478,8 @@ class FieldMinAndMax(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR | TYPE_INPUT_INT = 1.0,
-        group_index: TYPE_INPUT_INT = 0,
+        value: InputFloat | InputVector | InputInteger = 1.0,
+        group_index: InputInteger = 0,
         *,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
         domain: _AttributeDomains = "POINT",
@@ -1550,27 +1542,27 @@ class EvaluateOnDomain(NodeBuilder):
     def _domain_factory(domain: _AttributeDomains):
         class EvaluateOnDomainDomainFactory:
             @staticmethod
-            def float(value: TYPE_INPUT_VALUE = None):
+            def float(value: InputFloat = None):
                 return EvaluateOnDomain(value, domain=domain, data_type="FLOAT")
 
             @staticmethod
-            def integer(value: TYPE_INPUT_INT = None):
+            def integer(value: InputInteger = None):
                 return EvaluateOnDomain(value, domain=domain, data_type="INT")
 
             @staticmethod
-            def boolean(value: TYPE_INPUT_BOOLEAN = None):
+            def boolean(value: InputBoolean = None):
                 return EvaluateOnDomain(value, domain=domain, data_type="BOOLEAN")
 
             @staticmethod
-            def vector(value: TYPE_INPUT_VECTOR = None):
+            def vector(value: InputVector = None):
                 return EvaluateOnDomain(value, domain=domain, data_type="FLOAT_VECTOR")
 
             @staticmethod
-            def rotation(value: TYPE_INPUT_ROTATION = None):
+            def rotation(value: InputRotation = None):
                 return EvaluateOnDomain(value, domain=domain, data_type="QUATERNION")
 
             @staticmethod
-            def transform(value: TYPE_INPUT_MATRIX = None):
+            def transform(value: InputMatrix = None):
                 return EvaluateOnDomain(value, domain=domain, data_type="FLOAT4X4")
 
         return EvaluateOnDomainDomainFactory()
@@ -1585,7 +1577,7 @@ class EvaluateOnDomain(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_DATA = None,
+        value: InputLinkable = None,
         *,
         domain: _AttributeDomains = "POINT",
         data_type: _EvaluateAtIndexDataTypes = "FLOAT",
@@ -1644,8 +1636,8 @@ class FieldVariance(NodeBuilder):
         class FieldVarianceDomainFactory:
             @staticmethod
             def float(
-                value: TYPE_INPUT_VALUE = 1.0,
-                group_index: TYPE_INPUT_INT = 0,
+                value: InputFloat = 1.0,
+                group_index: InputInteger = 0,
             ) -> "FieldVariance":
                 """Create FieldVariance for the "FLOAT" data type"""
                 return FieldVariance(
@@ -1654,8 +1646,8 @@ class FieldVariance(NodeBuilder):
 
             @staticmethod
             def vector(
-                value: TYPE_INPUT_VECTOR = (1.0, 1.0, 1.0),
-                group_index: TYPE_INPUT_INT = 0,
+                value: InputVector = (1.0, 1.0, 1.0),
+                group_index: InputInteger = 0,
             ) -> "FieldVariance":
                 """Create FieldVariance for the "FLOAT_VECTOR" data type"""
                 return FieldVariance(
@@ -1674,8 +1666,8 @@ class FieldVariance(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE | TYPE_INPUT_VECTOR = None,
-        group_index: TYPE_INPUT_INT = None,
+        value: InputFloat | InputVector = None,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: _AttributeDomains = "POINT",
@@ -1764,26 +1756,26 @@ class Compare(NodeBuilder):
         class CompareOperationFactory:
             @staticmethod
             def float(
-                a: TYPE_INPUT_VALUE = 0.0,
-                b: TYPE_INPUT_VALUE = 0.0,
+                a: InputFloat = 0.0,
+                b: InputFloat = 0.0,
                 *,
-                epsilon: TYPE_INPUT_VALUE = 0.0001,
+                epsilon: InputFloat = 0.0001,
             ) -> "Compare":
                 return Compare.float(operation=operation, a=a, b=b, epsilon=epsilon)
 
             @staticmethod
-            def integer(a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "Compare":
+            def integer(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
                 return Compare.integer(operation=operation, a=a, b=b)
 
             @staticmethod
             def vector(
-                a: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-                b: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+                a: InputVector = (0.0, 0.0, 0.0),
+                b: InputVector = (0.0, 0.0, 0.0),
                 *,
                 mode: _CompareVectorModes = "ELEMENT",
-                c: TYPE_INPUT_VALUE = None,
-                angle: TYPE_INPUT_VALUE = None,
-                epsilon: TYPE_INPUT_VALUE = None,
+                c: InputFloat = None,
+                angle: InputFloat = None,
+                epsilon: InputFloat = None,
             ) -> "Compare":
                 return Compare.vector(
                     operation=operation,
@@ -1797,16 +1789,14 @@ class Compare(NodeBuilder):
 
             @staticmethod
             def color(
-                a: TYPE_INPUT_COLOR = None,
-                b: TYPE_INPUT_COLOR = None,
-                epsilon: TYPE_INPUT_VALUE = None,
+                a: InputColor = None,
+                b: InputColor = None,
+                epsilon: InputFloat = None,
             ) -> "Compare":
                 return Compare.color(operation=operation, a=a, b=b, epsilon=epsilon)
 
             @staticmethod
-            def string(
-                a: TYPE_INPUT_STRING = "", b: TYPE_INPUT_STRING = ""
-            ) -> "Compare":
+            def string(a: InputString = "", b: InputString = "") -> "Compare":
                 return Compare.string(operation=operation, a=a, b=b)
 
         return CompareOperationFactory()
@@ -1833,9 +1823,9 @@ class Compare(NodeBuilder):
             self.mode = kwargs.pop("mode")
         self._establish_links(**kwargs)
 
-    def switch(self, false: TYPE_INPUT_ALL, true: TYPE_INPUT_ALL) -> Switch:
+    def switch(self, false: InputAny, true: InputAny) -> Switch:
         def _infer_data_type(
-            a: TYPE_INPUT_ALL, b: TYPE_INPUT_ALL
+            a: InputAny, b: InputAny
         ) -> Literal[
             "FLOAT",
             "INT",
@@ -1904,11 +1894,11 @@ class Compare(NodeBuilder):
     @classmethod
     def float(
         cls,
-        a: TYPE_INPUT_VALUE = 0.0,
-        b: TYPE_INPUT_VALUE = 0.0,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
         operation: _CompareOperations = "LESS_THAN",
         *,
-        epsilon: TYPE_INPUT_VALUE = 0.0001,
+        epsilon: InputFloat = 0.0001,
     ):
         kwargs = {"operation": operation, "data_type": "FLOAT", "A": a, "B": b}
         if operation in ("EQUAL", "NOT_EQUAL"):
@@ -1918,8 +1908,8 @@ class Compare(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        a: TYPE_INPUT_INT = 0,
-        b: TYPE_INPUT_INT = 0,
+        a: InputInteger = 0,
+        b: InputInteger = 0,
         operation: _CompareOperations = "LESS_THAN",
     ) -> "Compare":
         return cls(operation=operation, data_type="INT", A_INT=a, B_INT=b)
@@ -1927,14 +1917,14 @@ class Compare(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        a: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
-        b: TYPE_INPUT_VECTOR = (0.0, 0.0, 0.0),
+        a: InputVector = (0.0, 0.0, 0.0),
+        b: InputVector = (0.0, 0.0, 0.0),
         operation: _CompareOperations = "LESS_THAN",
         *,
         mode: _CompareVectorModes = "ELEMENT",
-        c: TYPE_INPUT_VALUE = None,
-        angle: TYPE_INPUT_VALUE = None,
-        epsilon: TYPE_INPUT_VALUE = None,
+        c: InputFloat = None,
+        angle: InputFloat = None,
+        epsilon: InputFloat = None,
     ) -> "Compare":
         kwargs = {
             "operation": operation,
@@ -1959,11 +1949,11 @@ class Compare(NodeBuilder):
     @classmethod
     def color(
         cls,
-        a: TYPE_INPUT_COLOR = None,
-        b: TYPE_INPUT_COLOR = None,
+        a: InputColor = None,
+        b: InputColor = None,
         operation: _CompareOperations = "EQUAL",
         *,
-        epsilon: TYPE_INPUT_VALUE = None,
+        epsilon: InputFloat = None,
     ) -> "Compare":
         """Create Compare with operation 'Color'."""
         kwargs = {
@@ -2058,9 +2048,9 @@ class AttributeStatistic(NodeBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        attribute: LINKABLE = None,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        attribute: InputLinkable = None,
         *,
         data_type: Literal[
             "FLOAT",

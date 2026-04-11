@@ -7,10 +7,10 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_SHADER,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputColor,
+    InputShader,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -24,8 +24,8 @@ class AddShader(NodeBuilder):
 
     def __init__(
         self,
-        shader: TYPE_INPUT_SHADER = None,
-        shader_001: TYPE_INPUT_SHADER = None,
+        shader: InputShader = None,
+        shader_001: InputShader = None,
     ):
         super().__init__()
         key_args = {"Shader": shader, "Shader_001": shader_001}
@@ -59,9 +59,9 @@ class Background(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        strength: TYPE_INPUT_VALUE = 1.0,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        strength: InputFloat = 1.0,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Color": color, "Strength": strength, "Weight": weight}
@@ -99,10 +99,10 @@ class DiffuseBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        roughness: TYPE_INPUT_VALUE = 0.0,
-        normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        roughness: InputFloat = 0.0,
+        normal: InputVector = None,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -150,9 +150,9 @@ class Emission(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        strength: TYPE_INPUT_VALUE = 1.0,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        strength: InputFloat = 1.0,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Color": color, "Strength": strength, "Weight": weight}
@@ -190,13 +190,13 @@ class GlassBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        roughness: TYPE_INPUT_VALUE = 0.0,
-        ior: TYPE_INPUT_VALUE = 1.5,
-        normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
-        thin_film_thickness: TYPE_INPUT_VALUE = 0.0,
-        thin_film_ior: TYPE_INPUT_VALUE = 1.33,
+        color: InputColor = None,
+        roughness: InputFloat = 0.0,
+        ior: InputFloat = 1.5,
+        normal: InputVector = None,
+        weight: InputFloat = 0.0,
+        thin_film_thickness: InputFloat = 0.0,
+        thin_film_ior: InputFloat = 1.33,
         *,
         distribution: Literal["BECKMANN", "GGX", "MULTI_GGX"] = "MULTI_GGX",
     ):
@@ -272,13 +272,13 @@ class GlossyBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        roughness: TYPE_INPUT_VALUE = 0.5,
-        anisotropy: TYPE_INPUT_VALUE = 0.0,
-        rotation: TYPE_INPUT_VALUE = 0.0,
-        normal: TYPE_INPUT_VECTOR = None,
-        tangent: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        roughness: InputFloat = 0.5,
+        anisotropy: InputFloat = 0.0,
+        rotation: InputFloat = 0.0,
+        normal: InputVector = None,
+        tangent: InputVector = None,
+        weight: InputFloat = 0.0,
         *,
         distribution: Literal[
             "BECKMANN", "GGX", "ASHIKHMIN_SHIRLEY", "MULTI_GGX"
@@ -360,12 +360,12 @@ class HairBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        offset: TYPE_INPUT_VALUE = 0.0,
-        roughnessu: TYPE_INPUT_VALUE = 0.1,
-        roughnessv: TYPE_INPUT_VALUE = 1.0,
-        tangent: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        offset: InputFloat = 0.0,
+        roughnessu: InputFloat = 0.1,
+        roughnessv: InputFloat = 1.0,
+        tangent: InputVector = None,
+        weight: InputFloat = 0.0,
         *,
         component: Literal["Reflection", "Transmission"] = "Reflection",
     ):
@@ -434,7 +434,7 @@ class Holdout(NodeBuilder):
     _bl_idname = "ShaderNodeHoldout"
     node: bpy.types.ShaderNodeHoldout
 
-    def __init__(self, weight: TYPE_INPUT_VALUE = 0.0):
+    def __init__(self, weight: InputFloat = 0.0):
         super().__init__()
         key_args = {"Weight": weight}
 
@@ -461,18 +461,18 @@ class MetallicBSDF(NodeBuilder):
 
     def __init__(
         self,
-        base_color: TYPE_INPUT_COLOR = None,
-        edge_tint: TYPE_INPUT_COLOR = None,
-        ior: TYPE_INPUT_VECTOR = None,
-        extinction: TYPE_INPUT_VECTOR = None,
-        roughness: TYPE_INPUT_VALUE = 0.5,
-        anisotropy: TYPE_INPUT_VALUE = 0.0,
-        rotation: TYPE_INPUT_VALUE = 0.0,
-        normal: TYPE_INPUT_VECTOR = None,
-        tangent: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
-        thin_film_thickness: TYPE_INPUT_VALUE = 0.0,
-        thin_film_ior: TYPE_INPUT_VALUE = 1.33,
+        base_color: InputColor = None,
+        edge_tint: InputColor = None,
+        ior: InputVector = None,
+        extinction: InputVector = None,
+        roughness: InputFloat = 0.5,
+        anisotropy: InputFloat = 0.0,
+        rotation: InputFloat = 0.0,
+        normal: InputVector = None,
+        tangent: InputVector = None,
+        weight: InputFloat = 0.0,
+        thin_film_thickness: InputFloat = 0.0,
+        thin_film_ior: InputFloat = 1.33,
         *,
         distribution: Literal["BECKMANN", "GGX", "MULTI_GGX"] = "MULTI_GGX",
         fresnel_type: Literal["PHYSICAL_CONDUCTOR", "F82"] = "F82",
@@ -588,9 +588,9 @@ class MixShader(NodeBuilder):
 
     def __init__(
         self,
-        fac: TYPE_INPUT_VALUE = 0.5,
-        shader: TYPE_INPUT_SHADER = None,
-        shader_001: TYPE_INPUT_SHADER = None,
+        fac: InputFloat = 0.5,
+        shader: InputShader = None,
+        shader_001: InputShader = None,
     ):
         super().__init__()
         key_args = {"Fac": fac, "Shader": shader, "Shader_001": shader_001}
@@ -628,37 +628,37 @@ class PrincipledBSDF(NodeBuilder):
 
     def __init__(
         self,
-        base_color: TYPE_INPUT_COLOR = None,
-        metallic: TYPE_INPUT_VALUE = 0.0,
-        roughness: TYPE_INPUT_VALUE = 0.5,
-        ior: TYPE_INPUT_VALUE = 1.5,
-        alpha: TYPE_INPUT_VALUE = 1.0,
-        normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
-        diffuse_roughness: TYPE_INPUT_VALUE = 0.0,
-        subsurface_weight: TYPE_INPUT_VALUE = 0.0,
-        subsurface_radius: TYPE_INPUT_VECTOR = None,
-        subsurface_scale: TYPE_INPUT_VALUE = 0.05,
-        subsurface_ior: TYPE_INPUT_VALUE = 1.4,
-        subsurface_anisotropy: TYPE_INPUT_VALUE = 0.0,
-        specular_ior_level: TYPE_INPUT_VALUE = 0.5,
-        specular_tint: TYPE_INPUT_COLOR = None,
-        anisotropic: TYPE_INPUT_VALUE = 0.0,
-        anisotropic_rotation: TYPE_INPUT_VALUE = 0.0,
-        tangent: TYPE_INPUT_VECTOR = None,
-        transmission_weight: TYPE_INPUT_VALUE = 0.0,
-        coat_weight: TYPE_INPUT_VALUE = 0.0,
-        coat_roughness: TYPE_INPUT_VALUE = 0.03,
-        coat_ior: TYPE_INPUT_VALUE = 1.5,
-        coat_tint: TYPE_INPUT_COLOR = None,
-        coat_normal: TYPE_INPUT_VECTOR = None,
-        sheen_weight: TYPE_INPUT_VALUE = 0.0,
-        sheen_roughness: TYPE_INPUT_VALUE = 0.5,
-        sheen_tint: TYPE_INPUT_COLOR = None,
-        emission_color: TYPE_INPUT_COLOR = None,
-        emission_strength: TYPE_INPUT_VALUE = 0.0,
-        thin_film_thickness: TYPE_INPUT_VALUE = 0.0,
-        thin_film_ior: TYPE_INPUT_VALUE = 1.33,
+        base_color: InputColor = None,
+        metallic: InputFloat = 0.0,
+        roughness: InputFloat = 0.5,
+        ior: InputFloat = 1.5,
+        alpha: InputFloat = 1.0,
+        normal: InputVector = None,
+        weight: InputFloat = 0.0,
+        diffuse_roughness: InputFloat = 0.0,
+        subsurface_weight: InputFloat = 0.0,
+        subsurface_radius: InputVector = None,
+        subsurface_scale: InputFloat = 0.05,
+        subsurface_ior: InputFloat = 1.4,
+        subsurface_anisotropy: InputFloat = 0.0,
+        specular_ior_level: InputFloat = 0.5,
+        specular_tint: InputColor = None,
+        anisotropic: InputFloat = 0.0,
+        anisotropic_rotation: InputFloat = 0.0,
+        tangent: InputVector = None,
+        transmission_weight: InputFloat = 0.0,
+        coat_weight: InputFloat = 0.0,
+        coat_roughness: InputFloat = 0.03,
+        coat_ior: InputFloat = 1.5,
+        coat_tint: InputColor = None,
+        coat_normal: InputVector = None,
+        sheen_weight: InputFloat = 0.0,
+        sheen_roughness: InputFloat = 0.5,
+        sheen_tint: InputColor = None,
+        emission_color: InputColor = None,
+        emission_strength: InputFloat = 0.0,
+        thin_film_thickness: InputFloat = 0.0,
+        thin_film_ior: InputFloat = 1.33,
         *,
         distribution: Literal["GGX", "MULTI_GGX"] = "MULTI_GGX",
         subsurface_method: Literal[
@@ -892,24 +892,24 @@ class PrincipledHairBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        melanin: TYPE_INPUT_VALUE = 0.8,
-        melanin_redness: TYPE_INPUT_VALUE = 1.0,
-        tint: TYPE_INPUT_COLOR = None,
-        absorption_coefficient: TYPE_INPUT_VECTOR = None,
-        aspect_ratio: TYPE_INPUT_VALUE = 0.85,
-        roughness: TYPE_INPUT_VALUE = 0.3,
-        radial_roughness: TYPE_INPUT_VALUE = 0.3,
-        coat: TYPE_INPUT_VALUE = 0.0,
-        ior: TYPE_INPUT_VALUE = 1.55,
-        offset: TYPE_INPUT_VALUE = 0.0349,
-        random_color: TYPE_INPUT_VALUE = 0.0,
-        random_roughness: TYPE_INPUT_VALUE = 0.0,
-        random: TYPE_INPUT_VALUE = 0.0,
-        weight: TYPE_INPUT_VALUE = 0.0,
-        r_lobe: TYPE_INPUT_VALUE = 1.0,
-        tt_lobe: TYPE_INPUT_VALUE = 1.0,
-        trt_lobe: TYPE_INPUT_VALUE = 1.0,
+        color: InputColor = None,
+        melanin: InputFloat = 0.8,
+        melanin_redness: InputFloat = 1.0,
+        tint: InputColor = None,
+        absorption_coefficient: InputVector = None,
+        aspect_ratio: InputFloat = 0.85,
+        roughness: InputFloat = 0.3,
+        radial_roughness: InputFloat = 0.3,
+        coat: InputFloat = 0.0,
+        ior: InputFloat = 1.55,
+        offset: InputFloat = 0.0349,
+        random_color: InputFloat = 0.0,
+        random_roughness: InputFloat = 0.0,
+        random: InputFloat = 0.0,
+        weight: InputFloat = 0.0,
+        r_lobe: InputFloat = 1.0,
+        tt_lobe: InputFloat = 1.0,
+        trt_lobe: InputFloat = 1.0,
         *,
         model: Literal["CHIANG", "HUANG"] = "CHIANG",
         parametrization: Literal["ABSORPTION", "MELANIN", "COLOR"] = "COLOR",
@@ -1061,10 +1061,10 @@ class RayPortalBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        position: TYPE_INPUT_VECTOR = None,
-        direction: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        position: InputVector = None,
+        direction: InputVector = None,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -1112,11 +1112,11 @@ class RefractionBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        roughness: TYPE_INPUT_VALUE = 0.0,
-        ior: TYPE_INPUT_VALUE = 1.45,
-        normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        roughness: InputFloat = 0.0,
+        ior: InputFloat = 1.45,
+        normal: InputVector = None,
+        weight: InputFloat = 0.0,
         *,
         distribution: Literal["BECKMANN", "GGX"] = "BECKMANN",
     ):
@@ -1181,10 +1181,10 @@ class SheenBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        roughness: TYPE_INPUT_VALUE = 0.5,
-        normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        roughness: InputFloat = 0.5,
+        normal: InputVector = None,
+        weight: InputFloat = 0.0,
         *,
         distribution: Literal["ASHIKHMIN", "MICROFIBER"] = "MICROFIBER",
     ):
@@ -1242,16 +1242,16 @@ class SpecularBSDF(NodeBuilder):
 
     def __init__(
         self,
-        base_color: TYPE_INPUT_COLOR = None,
-        specular: TYPE_INPUT_COLOR = None,
-        roughness: TYPE_INPUT_VALUE = 0.2,
-        emissive_color: TYPE_INPUT_COLOR = None,
-        transparency: TYPE_INPUT_VALUE = 0.0,
-        normal: TYPE_INPUT_VECTOR = None,
-        clear_coat: TYPE_INPUT_VALUE = 0.0,
-        clear_coat_roughness: TYPE_INPUT_VALUE = 0.0,
-        clear_coat_normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        base_color: InputColor = None,
+        specular: InputColor = None,
+        roughness: InputFloat = 0.2,
+        emissive_color: InputColor = None,
+        transparency: InputFloat = 0.0,
+        normal: InputVector = None,
+        clear_coat: InputFloat = 0.0,
+        clear_coat_roughness: InputFloat = 0.0,
+        clear_coat_normal: InputVector = None,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -1336,14 +1336,14 @@ class SubsurfaceScattering(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        scale: TYPE_INPUT_VALUE = 0.05,
-        radius: TYPE_INPUT_VECTOR = None,
-        ior: TYPE_INPUT_VALUE = 1.4,
-        roughness: TYPE_INPUT_VALUE = 1.0,
-        anisotropy: TYPE_INPUT_VALUE = 0.0,
-        normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        scale: InputFloat = 0.05,
+        radius: InputVector = None,
+        ior: InputFloat = 1.4,
+        roughness: InputFloat = 1.0,
+        anisotropy: InputFloat = 0.0,
+        normal: InputVector = None,
+        weight: InputFloat = 0.0,
         *,
         falloff: Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"] = "RANDOM_WALK",
     ):
@@ -1425,11 +1425,11 @@ class ToonBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        size: TYPE_INPUT_VALUE = 0.5,
-        smooth: TYPE_INPUT_VALUE = 0.0,
-        normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        size: InputFloat = 0.5,
+        smooth: InputFloat = 0.0,
+        normal: InputVector = None,
+        weight: InputFloat = 0.0,
         *,
         component: Literal["DIFFUSE", "GLOSSY"] = "DIFFUSE",
     ):
@@ -1493,9 +1493,9 @@ class TranslucentBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        normal: TYPE_INPUT_VECTOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        normal: InputVector = None,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Color": color, "Normal": normal, "Weight": weight}
@@ -1533,8 +1533,8 @@ class TransparentBSDF(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Color": color, "Weight": weight}

@@ -7,10 +7,10 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_SHADER,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputColor,
+    InputShader,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -25,8 +25,8 @@ class AovOutput(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        value: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        value: InputFloat = 0.0,
         *,
         aov_name: str = "",
     ):
@@ -64,7 +64,7 @@ class LightOutput(NodeBuilder):
 
     def __init__(
         self,
-        surface: TYPE_INPUT_SHADER = None,
+        surface: InputShader = None,
         *,
         is_active_output: bool = False,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
@@ -107,10 +107,10 @@ class LineStyleOutput(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        color_fac: TYPE_INPUT_VALUE = 1.0,
-        alpha: TYPE_INPUT_VALUE = 1.0,
-        alpha_fac: TYPE_INPUT_VALUE = 1.0,
+        color: InputColor = None,
+        color_fac: InputFloat = 1.0,
+        alpha: InputFloat = 1.0,
+        alpha_fac: InputFloat = 1.0,
         *,
         is_active_output: bool = False,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
@@ -268,10 +268,10 @@ class MaterialOutput(NodeBuilder):
 
     def __init__(
         self,
-        surface: TYPE_INPUT_SHADER = None,
-        volume: TYPE_INPUT_SHADER = None,
-        displacement: TYPE_INPUT_VECTOR = None,
-        thickness: TYPE_INPUT_VALUE = 0.0,
+        surface: InputShader = None,
+        volume: InputShader = None,
+        displacement: InputVector = None,
+        thickness: InputFloat = 0.0,
         *,
         is_active_output: bool = False,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
@@ -334,8 +334,8 @@ class WorldOutput(NodeBuilder):
 
     def __init__(
         self,
-        surface: TYPE_INPUT_SHADER = None,
-        volume: TYPE_INPUT_SHADER = None,
+        surface: InputShader = None,
+        volume: InputShader = None,
         *,
         is_active_output: bool = False,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",

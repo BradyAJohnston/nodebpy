@@ -25,11 +25,11 @@ from bpy.types import (
 
 from .arrange import arrange_tree
 from .types import (
-    LINKABLE,
     SOCKET_COMPATIBILITY,
     SOCKET_TYPES,
-    TYPE_INPUT_ALL,
     FloatInterfaceSubtypes,
+    InputAny,
+    InputLinkable,
     IntegerInterfaceSubtypes,
     StringInterfaceSubtypes,
     VectorInterfaceSubtypes,
@@ -639,7 +639,9 @@ class NodeBuilder:
             socket = self.node.outputs[counter]
         return socket
 
-    def _source_socket(self, node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
+    def _source_socket(
+        self, node: InputLinkable | SocketLinker | NodeSocket
+    ) -> NodeSocket:
         assert node
         if isinstance(node, NodeSocket):
             return node
@@ -650,7 +652,9 @@ class NodeBuilder:
         else:
             raise TypeError(f"Unsupported type: {type(node)}")
 
-    def _target_socket(self, node: LINKABLE | SocketLinker | NodeSocket) -> NodeSocket:
+    def _target_socket(
+        self, node: InputLinkable | SocketLinker | NodeSocket
+    ) -> NodeSocket:
         assert node
         if isinstance(node, NodeSocket):
             return node
@@ -700,7 +704,7 @@ class NodeBuilder:
         )
 
     def _link(
-        self, source: LINKABLE | SocketLinker | NodeSocket, target: LINKABLE
+        self, source: InputLinkable | SocketLinker | NodeSocket, target: InputLinkable
     ) -> bpy.types.NodeLink:
         source_socket = self._source_socket(source)
         target_socket = self._target_socket(target)
@@ -708,8 +712,8 @@ class NodeBuilder:
 
     def _link_from(
         self,
-        source: LINKABLE,
-        input: LINKABLE | str,
+        source: InputLinkable,
+        input: InputLinkable | str,
     ):
         if isinstance(input, str):
             try:
@@ -730,7 +734,7 @@ class NodeBuilder:
         else:
             input.default_value = value
 
-    def _establish_links(self, **kwargs: TYPE_INPUT_ALL):
+    def _establish_links(self, **kwargs: InputAny):
         input_ids = [input.identifier for input in self.node.inputs]
         for name, value in kwargs.items():
             if value is None or (
@@ -1022,7 +1026,7 @@ class DynamicInputsMixin:
                     target.inputs[target_name].socket,
                 )
 
-    def _add_inputs(self, *args, **kwargs) -> dict[str, LINKABLE]:
+    def _add_inputs(self, *args, **kwargs) -> dict[str, InputLinkable]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
         new_sockets = {}
         items = {}

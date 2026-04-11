@@ -6,7 +6,7 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
-    TYPE_INPUT_VALUE,
+    InputFloat,
 )
 
 
@@ -18,7 +18,7 @@ class Normalize(NodeBuilder):
     _bl_idname = "CompositorNodeNormalize"
     node: bpy.types.CompositorNodeNormalize
 
-    def __init__(self, value: TYPE_INPUT_VALUE = 1.0):
+    def __init__(self, value: InputFloat = 1.0):
         super().__init__()
         key_args = {"Value": value}
 

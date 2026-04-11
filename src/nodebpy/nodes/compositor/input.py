@@ -7,10 +7,10 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_VALUE,
+    InputBoolean,
+    InputInteger,
+    InputMenu,
+    InputFloat,
 )
 
 
@@ -44,14 +44,14 @@ class Mask(NodeBuilder):
 
     def __init__(
         self,
-        size_source: TYPE_INPUT_MENU
+        size_source: InputMenu
         | Literal["Scene Size", "Fixed", "Fixed/Scene"] = "Scene Size",
-        size_x: TYPE_INPUT_INT = 256,
-        size_y: TYPE_INPUT_INT = 256,
-        feather: TYPE_INPUT_BOOLEAN = True,
-        motion_blur: TYPE_INPUT_BOOLEAN = False,
-        motion_blur_samples: TYPE_INPUT_INT = 16,
-        motion_blur_shutter: TYPE_INPUT_VALUE = 0.5,
+        size_x: InputInteger = 256,
+        size_y: InputInteger = 256,
+        feather: InputBoolean = True,
+        motion_blur: InputBoolean = False,
+        motion_blur_samples: InputInteger = 16,
+        motion_blur_shutter: InputFloat = 0.5,
     ):
         super().__init__()
         key_args = {
@@ -385,8 +385,8 @@ class TimeCurve(NodeBuilder):
 
     def __init__(
         self,
-        start_frame: TYPE_INPUT_INT = 1,
-        end_frame: TYPE_INPUT_INT = 250,
+        start_frame: InputInteger = 1,
+        end_frame: InputInteger = 250,
     ):
         super().__init__()
         key_args = {"Start Frame": start_frame, "End Frame": end_frame}
@@ -419,11 +419,11 @@ class TrackPosition(NodeBuilder):
 
     def __init__(
         self,
-        mode: TYPE_INPUT_MENU
+        mode: InputMenu
         | Literal[
             "Absolute", "Relative Start", "Relative Frame", "Absolute Frame"
         ] = "Absolute",
-        frame: TYPE_INPUT_INT = 0,
+        frame: InputInteger = 0,
         *,
         tracking_object: str = "",
         track_name: str = "",

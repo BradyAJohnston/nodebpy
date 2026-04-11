@@ -6,8 +6,8 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_VALUE,
+    InputColor,
+    InputFloat,
 )
 
 
@@ -21,8 +21,8 @@ class Gamma(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        gamma: TYPE_INPUT_VALUE = 1.0,
+        color: InputColor = None,
+        gamma: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {"Color": color, "Gamma": gamma}
@@ -55,8 +55,8 @@ class RGBCurves(NodeBuilder):
 
     def __init__(
         self,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        color: TYPE_INPUT_COLOR = None,
+        fac: InputFloat = 1.0,
+        color: InputColor = None,
     ):
         super().__init__()
         key_args = {"Fac": fac, "Color": color}
