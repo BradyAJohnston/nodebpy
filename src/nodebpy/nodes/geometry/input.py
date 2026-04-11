@@ -7,15 +7,15 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLLECTION,
-    TYPE_INPUT_IMAGE,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_OBJECT,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputCollection,
+    InputImage,
+    InputInteger,
+    InputMenu,
+    InputObject,
+    InputString,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -153,7 +153,7 @@ class CameraInfo(NodeBuilder):
     _bl_idname = "GeometryNodeCameraInfo"
     node: bpy.types.GeometryNodeCameraInfo
 
-    def __init__(self, camera: TYPE_INPUT_OBJECT = None):
+    def __init__(self, camera: InputObject = None):
         super().__init__()
         key_args = {"Camera": camera}
 
@@ -220,9 +220,9 @@ class CollectionInfo(NodeBuilder):
 
     def __init__(
         self,
-        collection: TYPE_INPUT_COLLECTION = None,
-        separate_children: TYPE_INPUT_BOOLEAN = False,
-        reset_children: TYPE_INPUT_BOOLEAN = False,
+        collection: InputCollection = None,
+        separate_children: InputBoolean = False,
+        reset_children: InputBoolean = False,
         *,
         transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
     ):
@@ -304,9 +304,9 @@ class CornersOfEdge(NodeBuilder):
 
     def __init__(
         self,
-        edge_index: TYPE_INPUT_INT = 0,
-        weights: TYPE_INPUT_VALUE = 0.0,
-        sort_index: TYPE_INPUT_INT = 0,
+        edge_index: InputInteger = 0,
+        weights: InputFloat = 0.0,
+        sort_index: InputInteger = 0,
     ):
         super().__init__()
         key_args = {
@@ -353,9 +353,9 @@ class CornersOfFace(NodeBuilder):
 
     def __init__(
         self,
-        face_index: TYPE_INPUT_INT = 0,
-        weights: TYPE_INPUT_VALUE = 0.0,
-        sort_index: TYPE_INPUT_INT = 0,
+        face_index: InputInteger = 0,
+        weights: InputFloat = 0.0,
+        sort_index: InputInteger = 0,
     ):
         super().__init__()
         key_args = {
@@ -402,9 +402,9 @@ class CornersOfVertex(NodeBuilder):
 
     def __init__(
         self,
-        vertex_index: TYPE_INPUT_INT = 0,
-        weights: TYPE_INPUT_VALUE = 0.0,
-        sort_index: TYPE_INPUT_INT = 0,
+        vertex_index: InputInteger = 0,
+        weights: InputFloat = 0.0,
+        sort_index: InputInteger = 0,
     ):
         super().__init__()
         key_args = {
@@ -449,7 +449,7 @@ class CurveHandlePositions(NodeBuilder):
     _bl_idname = "GeometryNodeInputCurveHandlePositions"
     node: bpy.types.GeometryNodeInputCurveHandlePositions
 
-    def __init__(self, relative: TYPE_INPUT_BOOLEAN = False):
+    def __init__(self, relative: InputBoolean = False):
         super().__init__()
         key_args = {"Relative": relative}
 
@@ -519,7 +519,7 @@ class CurveOfPoint(NodeBuilder):
     _bl_idname = "GeometryNodeCurveOfPoint"
     node: bpy.types.GeometryNodeCurveOfPoint
 
-    def __init__(self, point_index: TYPE_INPUT_INT = 0):
+    def __init__(self, point_index: InputInteger = 0):
         super().__init__()
         key_args = {"Point Index": point_index}
 
@@ -596,8 +596,8 @@ class EdgePathsToSelection(NodeBuilder):
 
     def __init__(
         self,
-        start_vertices: TYPE_INPUT_BOOLEAN = True,
-        next_vertex_index: TYPE_INPUT_INT = -1,
+        start_vertices: InputBoolean = True,
+        next_vertex_index: InputInteger = -1,
     ):
         super().__init__()
         key_args = {
@@ -666,7 +666,7 @@ class EdgesOfCorner(NodeBuilder):
     _bl_idname = "GeometryNodeEdgesOfCorner"
     node: bpy.types.GeometryNodeEdgesOfCorner
 
-    def __init__(self, corner_index: TYPE_INPUT_INT = 0):
+    def __init__(self, corner_index: InputInteger = 0):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 
@@ -698,9 +698,9 @@ class EdgesOfVertex(NodeBuilder):
 
     def __init__(
         self,
-        vertex_index: TYPE_INPUT_INT = 0,
-        weights: TYPE_INPUT_VALUE = 0.0,
-        sort_index: TYPE_INPUT_INT = 0,
+        vertex_index: InputInteger = 0,
+        weights: InputFloat = 0.0,
+        sort_index: InputInteger = 0,
     ):
         super().__init__()
         key_args = {
@@ -745,7 +745,7 @@ class EdgesToFaceGroups(NodeBuilder):
     _bl_idname = "GeometryNodeEdgesToFaceGroups"
     node: bpy.types.GeometryNodeEdgesToFaceGroups
 
-    def __init__(self, boundary_edges: TYPE_INPUT_BOOLEAN = True):
+    def __init__(self, boundary_edges: InputBoolean = True):
         super().__init__()
         key_args = {"Boundary Edges": boundary_edges}
 
@@ -772,8 +772,8 @@ class EndpointSelection(NodeBuilder):
 
     def __init__(
         self,
-        start_size: TYPE_INPUT_INT = 1,
-        end_size: TYPE_INPUT_INT = 1,
+        start_size: InputInteger = 1,
+        end_size: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Start Size": start_size, "End Size": end_size}
@@ -824,7 +824,7 @@ class FaceGroupBoundaries(NodeBuilder):
     _bl_idname = "GeometryNodeMeshFaceSetBoundaries"
     node: bpy.types.GeometryNodeMeshFaceSetBoundaries
 
-    def __init__(self, face_set: TYPE_INPUT_INT = 0):
+    def __init__(self, face_set: InputInteger = 0):
         super().__init__()
         key_args = {"Face Set": face_set}
 
@@ -899,7 +899,7 @@ class FaceOfCorner(NodeBuilder):
     _bl_idname = "GeometryNodeFaceOfCorner"
     node: bpy.types.GeometryNodeFaceOfCorner
 
-    def __init__(self, corner_index: TYPE_INPUT_INT = 0):
+    def __init__(self, corner_index: InputInteger = 0):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 
@@ -971,8 +971,8 @@ class ImageInfo(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_IMAGE = None,
-        frame: TYPE_INPUT_INT = 0,
+        image: InputImage = None,
+        frame: InputInteger = 0,
     ):
         super().__init__()
         key_args = {"Image": image, "Frame": frame}
@@ -1025,8 +1025,8 @@ class ImportCSV(NodeBuilder):
 
     def __init__(
         self,
-        path: TYPE_INPUT_STRING = "",
-        delimiter: TYPE_INPUT_STRING = ",",
+        path: InputString = "",
+        delimiter: InputString = ",",
     ):
         super().__init__()
         key_args = {"Path": path, "Delimiter": delimiter}
@@ -1057,7 +1057,7 @@ class ImportOBJ(NodeBuilder):
     _bl_idname = "GeometryNodeImportOBJ"
     node: bpy.types.GeometryNodeImportOBJ
 
-    def __init__(self, path: TYPE_INPUT_STRING = ""):
+    def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
@@ -1082,7 +1082,7 @@ class ImportPLY(NodeBuilder):
     _bl_idname = "GeometryNodeImportPLY"
     node: bpy.types.GeometryNodeImportPLY
 
-    def __init__(self, path: TYPE_INPUT_STRING = ""):
+    def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
@@ -1107,7 +1107,7 @@ class ImportSTL(NodeBuilder):
     _bl_idname = "GeometryNodeImportSTL"
     node: bpy.types.GeometryNodeImportSTL
 
-    def __init__(self, path: TYPE_INPUT_STRING = ""):
+    def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
@@ -1132,7 +1132,7 @@ class ImportText(NodeBuilder):
     _bl_idname = "GeometryNodeImportText"
     node: bpy.types.GeometryNodeImportText
 
-    def __init__(self, path: TYPE_INPUT_STRING = ""):
+    def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
@@ -1157,7 +1157,7 @@ class ImportVDB(NodeBuilder):
     _bl_idname = "GeometryNodeImportVDB"
     node: bpy.types.GeometryNodeImportVDB
 
-    def __init__(self, path: TYPE_INPUT_STRING = ""):
+    def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
@@ -1202,7 +1202,7 @@ class InstanceBounds(NodeBuilder):
     _bl_idname = "GeometryNodeInputInstanceBounds"
     node: bpy.types.GeometryNodeInputInstanceBounds
 
-    def __init__(self, use_radius: TYPE_INPUT_BOOLEAN = True):
+    def __init__(self, use_radius: InputBoolean = True):
         super().__init__()
         key_args = {"Use Radius": use_radius}
 
@@ -1340,7 +1340,7 @@ class IsFacePlanar(NodeBuilder):
     _bl_idname = "GeometryNodeInputMeshFaceIsPlanar"
     node: bpy.types.GeometryNodeInputMeshFaceIsPlanar
 
-    def __init__(self, threshold: TYPE_INPUT_VALUE = 0.01):
+    def __init__(self, threshold: InputFloat = 0.01):
         super().__init__()
         key_args = {"Threshold": threshold}
 
@@ -1507,7 +1507,7 @@ class NamedAttribute(NodeBuilder):
 
     def __init__(
         self,
-        name: TYPE_INPUT_STRING = "",
+        name: InputString = "",
         *,
         data_type: Literal[
             "FLOAT",
@@ -1525,37 +1525,37 @@ class NamedAttribute(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+    def float(cls, name: InputString = "") -> "NamedAttribute":
         """Create Named Attribute with operation 'Float'."""
         return cls(data_type="FLOAT", name=name)
 
     @classmethod
-    def integer(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+    def integer(cls, name: InputString = "") -> "NamedAttribute":
         """Create Named Attribute with operation 'Integer'."""
         return cls(data_type="INT", name=name)
 
     @classmethod
-    def boolean(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+    def boolean(cls, name: InputString = "") -> "NamedAttribute":
         """Create Named Attribute with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", name=name)
 
     @classmethod
-    def vector(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+    def vector(cls, name: InputString = "") -> "NamedAttribute":
         """Create Named Attribute with operation 'Vector'."""
         return cls(data_type="FLOAT_VECTOR", name=name)
 
     @classmethod
-    def color(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+    def color(cls, name: InputString = "") -> "NamedAttribute":
         """Create Named Attribute with operation 'Color'."""
         return cls(data_type="FLOAT_COLOR", name=name)
 
     @classmethod
-    def quaternion(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+    def quaternion(cls, name: InputString = "") -> "NamedAttribute":
         """Create Named Attribute with operation 'Quaternion'."""
         return cls(data_type="QUATERNION", name=name)
 
     @classmethod
-    def matrix(cls, name: TYPE_INPUT_STRING = "") -> "NamedAttribute":
+    def matrix(cls, name: InputString = "") -> "NamedAttribute":
         """Create Named Attribute with operation '4x4 Matrix'."""
         return cls(data_type="FLOAT4X4", name=name)
 
@@ -1612,7 +1612,7 @@ class NamedLayerSelection(NodeBuilder):
     _bl_idname = "GeometryNodeInputNamedLayerSelection"
     node: bpy.types.GeometryNodeInputNamedLayerSelection
 
-    def __init__(self, name: TYPE_INPUT_STRING = ""):
+    def __init__(self, name: InputString = ""):
         super().__init__()
         key_args = {"Name": name}
 
@@ -1672,8 +1672,8 @@ class ObjectInfo(NodeBuilder):
 
     def __init__(
         self,
-        object: TYPE_INPUT_OBJECT = None,
-        as_instance: TYPE_INPUT_BOOLEAN = False,
+        object: InputObject = None,
+        as_instance: InputBoolean = False,
         *,
         transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
     ):
@@ -1736,8 +1736,8 @@ class OffsetCornerInFace(NodeBuilder):
 
     def __init__(
         self,
-        corner_index: TYPE_INPUT_INT = 0,
-        offset: TYPE_INPUT_INT = 0,
+        corner_index: InputInteger = 0,
+        offset: InputInteger = 0,
     ):
         super().__init__()
         key_args = {"Corner Index": corner_index, "Offset": offset}
@@ -1770,8 +1770,8 @@ class OffsetPointInCurve(NodeBuilder):
 
     def __init__(
         self,
-        point_index: TYPE_INPUT_INT = 0,
-        offset: TYPE_INPUT_INT = 0,
+        point_index: InputInteger = 0,
+        offset: InputInteger = 0,
     ):
         super().__init__()
         key_args = {"Point Index": point_index, "Offset": offset}
@@ -1809,9 +1809,9 @@ class PointsOfCurve(NodeBuilder):
 
     def __init__(
         self,
-        curve_index: TYPE_INPUT_INT = 0,
-        weights: TYPE_INPUT_VALUE = 0.0,
-        sort_index: TYPE_INPUT_INT = 0,
+        curve_index: InputInteger = 0,
+        weights: InputFloat = 0.0,
+        sort_index: InputInteger = 0,
     ):
         super().__init__()
         key_args = {
@@ -1996,8 +1996,8 @@ class ShortestEdgePaths(NodeBuilder):
 
     def __init__(
         self,
-        end_vertex: TYPE_INPUT_BOOLEAN = False,
-        edge_cost: TYPE_INPUT_VALUE = 1.0,
+        end_vertex: InputBoolean = False,
+        edge_cost: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {"End Vertex": end_vertex, "Edge Cost": edge_cost}
@@ -2163,8 +2163,8 @@ class UVTangent(NodeBuilder):
 
     def __init__(
         self,
-        method: TYPE_INPUT_MENU | Literal["Exact", "Fast"] = "Exact",
-        uv: TYPE_INPUT_VECTOR = None,
+        method: InputMenu | Literal["Exact", "Fast"] = "Exact",
+        uv: InputVector = None,
     ):
         super().__init__()
         key_args = {"Method": method, "UV": uv}
@@ -2248,7 +2248,7 @@ class VertexOfCorner(NodeBuilder):
     _bl_idname = "GeometryNodeVertexOfCorner"
     node: bpy.types.GeometryNodeVertexOfCorner
 
-    def __init__(self, corner_index: TYPE_INPUT_INT = 0):
+    def __init__(self, corner_index: InputInteger = 0):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 

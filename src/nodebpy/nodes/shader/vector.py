@@ -7,9 +7,9 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputColor,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -23,11 +23,11 @@ class Bump(NodeBuilder):
 
     def __init__(
         self,
-        strength: TYPE_INPUT_VALUE = 1.0,
-        distance: TYPE_INPUT_VALUE = 0.001,
-        filter_width: TYPE_INPUT_VALUE = 0.1,
-        height: TYPE_INPUT_VALUE = 1.0,
-        normal: TYPE_INPUT_VECTOR = None,
+        strength: InputFloat = 1.0,
+        distance: InputFloat = 0.001,
+        filter_width: InputFloat = 0.1,
+        height: InputFloat = 1.0,
+        normal: InputVector = None,
         *,
         invert: bool = False,
     ):
@@ -91,10 +91,10 @@ class Displacement(NodeBuilder):
 
     def __init__(
         self,
-        height: TYPE_INPUT_VALUE = 0.0,
-        midlevel: TYPE_INPUT_VALUE = 0.5,
-        scale: TYPE_INPUT_VALUE = 0.01,
-        normal: TYPE_INPUT_VECTOR = None,
+        height: InputFloat = 0.0,
+        midlevel: InputFloat = 0.5,
+        scale: InputFloat = 0.01,
+        normal: InputVector = None,
         *,
         space: Literal["OBJECT", "WORLD"] = "OBJECT",
     ):
@@ -152,10 +152,10 @@ class Mapping(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        location: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_VECTOR = None,
-        scale: TYPE_INPUT_VECTOR = None,
+        vector: InputVector = None,
+        location: InputVector = None,
+        rotation: InputVector = None,
+        scale: InputVector = None,
         *,
         vector_type: Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"] = "POINT",
     ):
@@ -211,7 +211,7 @@ class Normal(NodeBuilder):
     _bl_idname = "ShaderNodeNormal"
     node: bpy.types.ShaderNodeNormal
 
-    def __init__(self, normal: TYPE_INPUT_VECTOR = None):
+    def __init__(self, normal: InputVector = None):
         super().__init__()
         key_args = {"Normal": normal}
 
@@ -243,8 +243,8 @@ class NormalMap(NodeBuilder):
 
     def __init__(
         self,
-        strength: TYPE_INPUT_VALUE = 1.0,
-        color: TYPE_INPUT_COLOR = None,
+        strength: InputFloat = 1.0,
+        color: InputColor = None,
         *,
         space: Literal[
             "TANGENT", "OBJECT", "WORLD", "BLENDER_OBJECT", "BLENDER_WORLD"
@@ -304,9 +304,9 @@ class VectorDisplacement(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_COLOR = None,
-        midlevel: TYPE_INPUT_VALUE = 0.0,
-        scale: TYPE_INPUT_VALUE = 0.01,
+        vector: InputColor = None,
+        midlevel: InputFloat = 0.0,
+        scale: InputFloat = 0.01,
         *,
         space: Literal["TANGENT", "OBJECT", "WORLD"] = "TANGENT",
     ):
@@ -354,7 +354,7 @@ class VectorTransform(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
+        vector: InputVector = None,
         *,
         vector_type: Literal["POINT", "VECTOR", "NORMAL"] = "VECTOR",
         convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",

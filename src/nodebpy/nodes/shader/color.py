@@ -6,8 +6,8 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_VALUE,
+    InputColor,
+    InputFloat,
 )
 
 
@@ -21,9 +21,9 @@ class Brightnesscontrast(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        bright: TYPE_INPUT_VALUE = 0.0,
-        contrast: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        bright: InputFloat = 0.0,
+        contrast: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Color": color, "Bright": bright, "Contrast": contrast}
@@ -61,11 +61,11 @@ class Huesaturationvalue(NodeBuilder):
 
     def __init__(
         self,
-        hue: TYPE_INPUT_VALUE = 0.5,
-        saturation: TYPE_INPUT_VALUE = 1.0,
-        value: TYPE_INPUT_VALUE = 1.0,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        color: TYPE_INPUT_COLOR = None,
+        hue: InputFloat = 0.5,
+        saturation: InputFloat = 1.0,
+        value: InputFloat = 1.0,
+        fac: InputFloat = 1.0,
+        color: InputColor = None,
     ):
         super().__init__()
         key_args = {
@@ -119,8 +119,8 @@ class InvertColor(NodeBuilder):
 
     def __init__(
         self,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        color: TYPE_INPUT_COLOR = None,
+        fac: InputFloat = 1.0,
+        color: InputColor = None,
     ):
         super().__init__()
         key_args = {"Fac": fac, "Color": color}
@@ -153,8 +153,8 @@ class LightFalloff(NodeBuilder):
 
     def __init__(
         self,
-        strength: TYPE_INPUT_VALUE = 100.0,
-        smooth: TYPE_INPUT_VALUE = 0.0,
+        strength: InputFloat = 100.0,
+        smooth: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Strength": strength, "Smooth": smooth}

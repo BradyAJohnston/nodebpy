@@ -6,10 +6,10 @@ title: Custom Node Groups
 from nodebpy import TreeBuilder, geometry as g, sockets as s
 from nodebpy import builder
 from nodebpy.types import (
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_VECTOR,
-    TYPE_INPUT_GEOMETRY,
+    InputFloat,
+    InputInteger,
+    InputVector,
+    InputGeometry,
 )
 ```
 
@@ -58,9 +58,9 @@ class Jitter(builder.NodeGroupBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = ...,
-        amount: TYPE_INPUT_VALUE = 0.2,
-        seed: TYPE_INPUT_INT = 0,
+        geometry: InputGeometry = ...,
+        amount: InputFloat = 0.2,
+        seed: InputInteger = 0,
     ):
         super().__init__(**{"Geometry": geometry, "Amount": amount, "Seed": seed})
 
@@ -116,9 +116,9 @@ class RadialArray(builder.NodeGroupBuilder):
 
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = ...,
-        count: TYPE_INPUT_INT = 6,
-        radius: TYPE_INPUT_VALUE = 2.0,
+        geometry: InputGeometry = ...,
+        count: InputInteger = 6,
+        radius: InputFloat = 2.0,
     ):
         super().__init__(geometry=geometry, count=count, radius=radius)
 

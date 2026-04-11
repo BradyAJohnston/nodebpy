@@ -7,12 +7,12 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputColor,
+    InputInteger,
+    InputMenu,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -26,13 +26,12 @@ class BoxMask(NodeBuilder):
 
     def __init__(
         self,
-        operation: TYPE_INPUT_MENU
-        | Literal["Add", "Subtract", "Multiply", "Not"] = "Add",
-        mask: TYPE_INPUT_VALUE = 0.0,
-        value: TYPE_INPUT_VALUE = 1.0,
-        position: TYPE_INPUT_VECTOR = None,
-        size: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_VALUE = 0.0,
+        operation: InputMenu | Literal["Add", "Subtract", "Multiply", "Not"] = "Add",
+        mask: InputFloat = 0.0,
+        value: InputFloat = 1.0,
+        position: InputVector = None,
+        size: InputVector = None,
+        rotation: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -92,19 +91,19 @@ class ChannelKey(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        minimum: TYPE_INPUT_VALUE = 0.0,
-        maximum: TYPE_INPUT_VALUE = 1.0,
-        color_space: TYPE_INPUT_MENU | Literal["RGB", "HSV", "YUV", "YCbCr"] = "RGB",
-        rgb_key_channel: TYPE_INPUT_MENU | Literal["R", "G", "B"] = "G",
-        hsv_key_channel: TYPE_INPUT_MENU | Literal["H", "S", "V"] = "H",
-        yuv_key_channel: TYPE_INPUT_MENU | Literal["Y", "U", "V"] = "V",
-        ycbcr_key_channel: TYPE_INPUT_MENU | Literal["Y", "Cb", "Cr"] = "Cr",
-        limit_method: TYPE_INPUT_MENU | Literal["Single", "Max"] = "Max",
-        rgb_limit_channel: TYPE_INPUT_MENU | Literal["R", "G", "B"] = "R",
-        hsv_limit_channel: TYPE_INPUT_MENU | Literal["H", "S", "V"] = "S",
-        yuv_limit_channel: TYPE_INPUT_MENU | Literal["Y", "U", "V"] = "U",
-        ycbcr_limit_channel: TYPE_INPUT_MENU | Literal["Y", "Cb", "Cr"] = "Cb",
+        image: InputColor = None,
+        minimum: InputFloat = 0.0,
+        maximum: InputFloat = 1.0,
+        color_space: InputMenu | Literal["RGB", "HSV", "YUV", "YCbCr"] = "RGB",
+        rgb_key_channel: InputMenu | Literal["R", "G", "B"] = "G",
+        hsv_key_channel: InputMenu | Literal["H", "S", "V"] = "H",
+        yuv_key_channel: InputMenu | Literal["Y", "U", "V"] = "V",
+        ycbcr_key_channel: InputMenu | Literal["Y", "Cb", "Cr"] = "Cr",
+        limit_method: InputMenu | Literal["Single", "Max"] = "Max",
+        rgb_limit_channel: InputMenu | Literal["R", "G", "B"] = "R",
+        hsv_limit_channel: InputMenu | Literal["H", "S", "V"] = "S",
+        yuv_limit_channel: InputMenu | Literal["Y", "U", "V"] = "U",
+        ycbcr_limit_channel: InputMenu | Literal["Y", "Cb", "Cr"] = "Cb",
     ):
         super().__init__()
         key_args = {
@@ -211,11 +210,11 @@ class ChromaKey(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        key_color: TYPE_INPUT_COLOR = None,
-        minimum: TYPE_INPUT_VALUE = 0.1745,
-        maximum: TYPE_INPUT_VALUE = 0.5236,
-        falloff: TYPE_INPUT_VALUE = 1.0,
+        image: InputColor = None,
+        key_color: InputColor = None,
+        minimum: InputFloat = 0.1745,
+        maximum: InputFloat = 0.5236,
+        falloff: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {
@@ -274,11 +273,11 @@ class ColorKey(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        key_color: TYPE_INPUT_COLOR = None,
-        hue: TYPE_INPUT_VALUE = 0.01,
-        saturation: TYPE_INPUT_VALUE = 0.1,
-        value: TYPE_INPUT_VALUE = 0.1,
+        image: InputColor = None,
+        key_color: InputColor = None,
+        hue: InputFloat = 0.01,
+        saturation: InputFloat = 0.1,
+        value: InputFloat = 0.1,
     ):
         super().__init__()
         key_args = {
@@ -337,14 +336,14 @@ class ColorSpill(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        spill_channel: TYPE_INPUT_MENU | Literal["R", "G", "B"] = "G",
-        limit_method: TYPE_INPUT_MENU | Literal["Single", "Average"] = "Single",
-        limit_channel: TYPE_INPUT_MENU | Literal["R", "G", "B"] = "R",
-        limit_strength: TYPE_INPUT_VALUE = 1.0,
-        use_spill_strength: TYPE_INPUT_BOOLEAN = False,
-        spill_strength: TYPE_INPUT_COLOR = None,
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
+        spill_channel: InputMenu | Literal["R", "G", "B"] = "G",
+        limit_method: InputMenu | Literal["Single", "Average"] = "Single",
+        limit_channel: InputMenu | Literal["R", "G", "B"] = "R",
+        limit_strength: InputFloat = 1.0,
+        use_spill_strength: InputBoolean = False,
+        spill_strength: InputColor = None,
     ):
         super().__init__()
         key_args = {
@@ -416,10 +415,10 @@ class DifferenceKey(NodeBuilder):
 
     def __init__(
         self,
-        image_1: TYPE_INPUT_COLOR = None,
-        image_2: TYPE_INPUT_COLOR = None,
-        tolerance: TYPE_INPUT_VALUE = 0.1,
-        falloff: TYPE_INPUT_VALUE = 0.1,
+        image_1: InputColor = None,
+        image_2: InputColor = None,
+        tolerance: InputFloat = 0.1,
+        falloff: InputFloat = 0.1,
     ):
         super().__init__()
         key_args = {
@@ -472,11 +471,11 @@ class DistanceKey(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        key_color: TYPE_INPUT_COLOR = None,
-        color_space: TYPE_INPUT_MENU | Literal["RGB", "YCC"] = "RGB",
-        tolerance: TYPE_INPUT_VALUE = 0.1,
-        falloff: TYPE_INPUT_VALUE = 0.1,
+        image: InputColor = None,
+        key_color: InputColor = None,
+        color_space: InputMenu | Literal["RGB", "YCC"] = "RGB",
+        tolerance: InputFloat = 0.1,
+        falloff: InputFloat = 0.1,
     ):
         super().__init__()
         key_args = {
@@ -535,10 +534,10 @@ class DoubleEdgeMask(NodeBuilder):
 
     def __init__(
         self,
-        outer_mask: TYPE_INPUT_VALUE = 0.8,
-        inner_mask: TYPE_INPUT_VALUE = 0.8,
-        image_edges: TYPE_INPUT_BOOLEAN = False,
-        only_inside_outer: TYPE_INPUT_BOOLEAN = False,
+        outer_mask: InputFloat = 0.8,
+        inner_mask: InputFloat = 0.8,
+        image_edges: InputBoolean = False,
+        only_inside_outer: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -586,13 +585,12 @@ class EllipseMask(NodeBuilder):
 
     def __init__(
         self,
-        operation: TYPE_INPUT_MENU
-        | Literal["Add", "Subtract", "Multiply", "Not"] = "Add",
-        mask: TYPE_INPUT_VALUE = 0.0,
-        value: TYPE_INPUT_VALUE = 1.0,
-        position: TYPE_INPUT_VECTOR = None,
-        size: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_VALUE = 0.0,
+        operation: InputMenu | Literal["Add", "Subtract", "Multiply", "Not"] = "Add",
+        mask: InputFloat = 0.0,
+        value: InputFloat = 1.0,
+        position: InputVector = None,
+        size: InputVector = None,
+        rotation: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -652,25 +650,25 @@ class Keying(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        key_color: TYPE_INPUT_COLOR = None,
-        preprocess_blur_size: TYPE_INPUT_INT = 0,
-        key_balance: TYPE_INPUT_VALUE = 0.5,
-        black_level: TYPE_INPUT_VALUE = 0.0,
-        white_level: TYPE_INPUT_VALUE = 1.0,
-        edge_search_size: TYPE_INPUT_INT = 3,
-        edge_tolerance: TYPE_INPUT_VALUE = 0.1,
-        garbage_matte: TYPE_INPUT_VALUE = 0.0,
-        core_matte: TYPE_INPUT_VALUE = 0.0,
-        postprocess_blur_size: TYPE_INPUT_INT = 0,
-        postprocess_dilate_size: TYPE_INPUT_INT = 0,
-        postprocess_feather_size: TYPE_INPUT_INT = 0,
-        feather_falloff: TYPE_INPUT_MENU
+        image: InputColor = None,
+        key_color: InputColor = None,
+        preprocess_blur_size: InputInteger = 0,
+        key_balance: InputFloat = 0.5,
+        black_level: InputFloat = 0.0,
+        white_level: InputFloat = 1.0,
+        edge_search_size: InputInteger = 3,
+        edge_tolerance: InputFloat = 0.1,
+        garbage_matte: InputFloat = 0.0,
+        core_matte: InputFloat = 0.0,
+        postprocess_blur_size: InputInteger = 0,
+        postprocess_dilate_size: InputInteger = 0,
+        postprocess_feather_size: InputInteger = 0,
+        feather_falloff: InputMenu
         | Literal[
             "Smooth", "Sphere", "Root", "Inverse Square", "Sharp", "Linear"
         ] = "Smooth",
-        despill_strength: TYPE_INPUT_VALUE = 1.0,
-        despill_balance: TYPE_INPUT_VALUE = 0.5,
+        despill_strength: InputFloat = 1.0,
+        despill_balance: InputFloat = 0.5,
     ):
         super().__init__()
         key_args = {
@@ -800,7 +798,7 @@ class KeyingScreen(NodeBuilder):
 
     def __init__(
         self,
-        smoothness: TYPE_INPUT_VALUE = 0.0,
+        smoothness: InputFloat = 0.0,
         *,
         tracking_object: str = "",
     ):
@@ -838,9 +836,9 @@ class LuminanceKey(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        minimum: TYPE_INPUT_VALUE = 0.0,
-        maximum: TYPE_INPUT_VALUE = 1.0,
+        image: InputColor = None,
+        minimum: InputFloat = 0.0,
+        maximum: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {"Image": image, "Minimum": minimum, "Maximum": maximum}

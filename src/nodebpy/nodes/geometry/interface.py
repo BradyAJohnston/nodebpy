@@ -7,22 +7,22 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_BUNDLE,
-    TYPE_INPUT_CLOSURE,
-    TYPE_INPUT_COLLECTION,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_GEOMETRY,
-    TYPE_INPUT_IMAGE,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MATERIAL,
-    TYPE_INPUT_MATRIX,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_OBJECT,
-    TYPE_INPUT_ROTATION,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputBundle,
+    InputClosure,
+    InputCollection,
+    InputColor,
+    InputGeometry,
+    InputImage,
+    InputInteger,
+    InputMaterial,
+    InputMatrix,
+    InputMenu,
+    InputObject,
+    InputRotation,
+    InputString,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -36,11 +36,11 @@ class DialGizmo(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE = 0.0,
-        position: TYPE_INPUT_VECTOR = None,
-        up: TYPE_INPUT_VECTOR = None,
-        screen_space: TYPE_INPUT_BOOLEAN = True,
-        radius: TYPE_INPUT_VALUE = 1.0,
+        value: InputFloat = 0.0,
+        position: InputVector = None,
+        up: InputVector = None,
+        screen_space: InputBoolean = True,
+        radius: InputFloat = 1.0,
         *,
         color_id: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"] = "PRIMARY",
     ):
@@ -104,8 +104,8 @@ class EnableOutput(NodeBuilder):
 
     def __init__(
         self,
-        enable: TYPE_INPUT_BOOLEAN = False,
-        value: TYPE_INPUT_VALUE = 0.0,
+        enable: InputBoolean = False,
+        value: InputFloat = 0.0,
         *,
         data_type: Literal[
             "FLOAT",
@@ -133,112 +133,112 @@ class EnableOutput(NodeBuilder):
 
     @classmethod
     def float(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_VALUE = 0.0
+        cls, enable: InputBoolean = False, value: InputFloat = 0.0
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Float'."""
         return cls(data_type="FLOAT", enable=enable, value=value)
 
     @classmethod
     def integer(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_INT = 0
+        cls, enable: InputBoolean = False, value: InputInteger = 0
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Integer'."""
         return cls(data_type="INT", enable=enable, value=value)
 
     @classmethod
     def boolean(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_BOOLEAN = False
+        cls, enable: InputBoolean = False, value: InputBoolean = False
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", enable=enable, value=value)
 
     @classmethod
     def vector(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_VECTOR = None
+        cls, enable: InputBoolean = False, value: InputVector = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Vector'."""
         return cls(data_type="VECTOR", enable=enable, value=value)
 
     @classmethod
     def color(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_COLOR = None
+        cls, enable: InputBoolean = False, value: InputColor = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Color'."""
         return cls(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
     def rotation(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_ROTATION = None
+        cls, enable: InputBoolean = False, value: InputRotation = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Rotation'."""
         return cls(data_type="ROTATION", enable=enable, value=value)
 
     @classmethod
     def matrix(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_MATRIX = None
+        cls, enable: InputBoolean = False, value: InputMatrix = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Matrix'."""
         return cls(data_type="MATRIX", enable=enable, value=value)
 
     @classmethod
     def string(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_STRING = ""
+        cls, enable: InputBoolean = False, value: InputString = ""
     ) -> "EnableOutput":
         """Create Enable Output with operation 'String'."""
         return cls(data_type="STRING", enable=enable, value=value)
 
     @classmethod
     def menu(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_MENU = None
+        cls, enable: InputBoolean = False, value: InputMenu = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Menu'."""
         return cls(data_type="MENU", enable=enable, value=value)
 
     @classmethod
     def object(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_OBJECT = None
+        cls, enable: InputBoolean = False, value: InputObject = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Object'."""
         return cls(data_type="OBJECT", enable=enable, value=value)
 
     @classmethod
     def image(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_IMAGE = None
+        cls, enable: InputBoolean = False, value: InputImage = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Image'."""
         return cls(data_type="IMAGE", enable=enable, value=value)
 
     @classmethod
     def geometry(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_GEOMETRY = None
+        cls, enable: InputBoolean = False, value: InputGeometry = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Geometry'."""
         return cls(data_type="GEOMETRY", enable=enable, value=value)
 
     @classmethod
     def collection(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_COLLECTION = None
+        cls, enable: InputBoolean = False, value: InputCollection = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Collection'."""
         return cls(data_type="COLLECTION", enable=enable, value=value)
 
     @classmethod
     def material(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_MATERIAL = None
+        cls, enable: InputBoolean = False, value: InputMaterial = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Material'."""
         return cls(data_type="MATERIAL", enable=enable, value=value)
 
     @classmethod
     def bundle(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_BUNDLE = None
+        cls, enable: InputBoolean = False, value: InputBundle = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Bundle'."""
         return cls(data_type="BUNDLE", enable=enable, value=value)
 
     @classmethod
     def closure(
-        cls, enable: TYPE_INPUT_BOOLEAN = False, value: TYPE_INPUT_CLOSURE = None
+        cls, enable: InputBoolean = False, value: InputClosure = None
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Closure'."""
         return cls(data_type="CLOSURE", enable=enable, value=value)
@@ -354,9 +354,9 @@ class LinearGizmo(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE = 0.0,
-        position: TYPE_INPUT_VECTOR = None,
-        direction: TYPE_INPUT_VECTOR = None,
+        value: InputFloat = 0.0,
+        position: InputVector = None,
+        direction: InputVector = None,
         *,
         color_id: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"] = "PRIMARY",
         draw_style: Literal["ARROW", "CROSS", "BOX"] = "ARROW",
@@ -414,9 +414,9 @@ class TransformGizmo(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_MATRIX = None,
-        position: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_ROTATION = None,
+        value: InputMatrix = None,
+        position: InputVector = None,
+        rotation: InputRotation = None,
         *,
         use_translation_x: bool = False,
         use_translation_y: bool = False,
@@ -544,8 +544,8 @@ class Warning(NodeBuilder):
 
     def __init__(
         self,
-        show: TYPE_INPUT_BOOLEAN = True,
-        message: TYPE_INPUT_STRING = "",
+        show: InputBoolean = True,
+        message: InputString = "",
         *,
         warning_type: Literal["ERROR", "WARNING", "INFO"] = "ERROR",
     ):
