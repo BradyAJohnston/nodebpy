@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker, ShaderSocketLinker
 
 from ...types import (
     InputColor,
@@ -122,10 +122,20 @@ class PrincipledVolume(NodeBuilder):
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "PrincipledVolume") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> ShaderSocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return PrincipledVolume.Outputs(self)
 
 
 class VolumeAbsorption(NodeBuilder):
@@ -162,10 +172,20 @@ class VolumeAbsorption(NodeBuilder):
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VolumeAbsorption") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> ShaderSocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return VolumeAbsorption.Outputs(self)
 
 
 class VolumeCoefficients(NodeBuilder):
@@ -252,10 +272,20 @@ class VolumeCoefficients(NodeBuilder):
         """Input socket: Emission Coefficients"""
         return self.inputs.get("Emission Coefficients")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VolumeCoefficients") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> ShaderSocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return VolumeCoefficients.Outputs(self)
 
     @property
     def phase(
@@ -287,25 +317,35 @@ class VolumeInfo(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VolumeInfo") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
+        @property
+        def density(self) -> SocketLinker:
+            """Output socket: Density"""
+            return self._node.outputs.get("Density")  # type: ignore[return-value]
+
+        @property
+        def flame(self) -> SocketLinker:
+            """Output socket: Flame"""
+            return self._node.outputs.get("Flame")  # type: ignore[return-value]
+
+        @property
+        def temperature(self) -> SocketLinker:
+            """Output socket: Temperature"""
+            return self._node.outputs.get("Temperature")  # type: ignore[return-value]
 
     @property
-    def o_density(self) -> SocketLinker:
-        """Output socket: Density"""
-        return self.outputs.get("Density")
-
-    @property
-    def o_flame(self) -> SocketLinker:
-        """Output socket: Flame"""
-        return self.outputs.get("Flame")
-
-    @property
-    def o_temperature(self) -> SocketLinker:
-        """Output socket: Temperature"""
-        return self.outputs.get("Temperature")
+    def o(self) -> "Outputs":
+        return VolumeInfo.Outputs(self)
 
 
 class VolumeScatter(NodeBuilder):
@@ -385,10 +425,20 @@ class VolumeScatter(NodeBuilder):
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VolumeScatter") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> ShaderSocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return VolumeScatter.Outputs(self)
 
     @property
     def phase(

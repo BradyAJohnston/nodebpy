@@ -61,10 +61,20 @@ class AntiAliasing(NodeBuilder):
         """Input socket: Corner Rounding"""
         return self.inputs.get("Corner Rounding")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "AntiAliasing") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return AntiAliasing.Outputs(self)
 
 
 class BilateralBlur(NodeBuilder):
@@ -112,10 +122,20 @@ class BilateralBlur(NodeBuilder):
         """Input socket: Threshold"""
         return self.inputs.get("Threshold")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "BilateralBlur") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return BilateralBlur.Outputs(self)
 
 
 class Blur(NodeBuilder):
@@ -180,10 +200,20 @@ class Blur(NodeBuilder):
         """Input socket: Separable"""
         return self.inputs.get("Separable")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Blur") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Blur.Outputs(self)
 
 
 class BokehBlur(NodeBuilder):
@@ -238,10 +268,20 @@ class BokehBlur(NodeBuilder):
         """Input socket: Extend Bounds"""
         return self.inputs.get("Extend Bounds")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "BokehBlur") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return BokehBlur.Outputs(self)
 
 
 class Convolve(NodeBuilder):
@@ -296,10 +336,20 @@ class Convolve(NodeBuilder):
         """Input socket: Normalize Kernel"""
         return self.inputs.get("Normalize Kernel")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Convolve") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Convolve.Outputs(self)
 
 
 class Defocus(NodeBuilder):
@@ -344,10 +394,20 @@ class Defocus(NodeBuilder):
         """Input socket: Z"""
         return self.inputs.get("Z")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Defocus") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Defocus.Outputs(self)
 
     @property
     def bokeh(
@@ -467,10 +527,20 @@ class Denoise(NodeBuilder):
         """Input socket: Quality"""
         return self.inputs.get("Quality")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Denoise") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Denoise.Outputs(self)
 
 
 class Despeckle(NodeBuilder):
@@ -518,10 +588,20 @@ class Despeckle(NodeBuilder):
         """Input socket: Neighbor Threshold"""
         return self.inputs.get("Neighbor Threshold")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Despeckle") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Despeckle.Outputs(self)
 
 
 class Dilateerode(NodeBuilder):
@@ -580,10 +660,20 @@ class Dilateerode(NodeBuilder):
         """Input socket: Falloff"""
         return self.inputs.get("Falloff")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Dilateerode") -> None:
+            self._node = node
+
+        @property
+        def mask(self) -> SocketLinker:
+            """Output socket: Mask"""
+            return self._node.outputs.get("Mask")  # type: ignore[return-value]
+
     @property
-    def o_mask(self) -> SocketLinker:
-        """Output socket: Mask"""
-        return self.outputs.get("Mask")
+    def o(self) -> "Outputs":
+        return Dilateerode.Outputs(self)
 
 
 class DirectionalBlur(NodeBuilder):
@@ -652,10 +742,20 @@ class DirectionalBlur(NodeBuilder):
         """Input socket: Direction"""
         return self.inputs.get("Translation Direction")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "DirectionalBlur") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return DirectionalBlur.Outputs(self)
 
 
 class Filter(NodeBuilder):
@@ -702,10 +802,20 @@ class Filter(NodeBuilder):
         """Input socket: Type"""
         return self.inputs.get("Type")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Filter") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Filter.Outputs(self)
 
 
 class Glare(NodeBuilder):
@@ -888,20 +998,30 @@ class Glare(NodeBuilder):
         """Input socket: Kernel"""
         return self.inputs.get("Color Kernel")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Glare") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def glare(self) -> ColorSocketLinker:
+            """Output socket: Glare"""
+            return self._node.outputs.get("Glare")  # type: ignore[return-value]
+
+        @property
+        def highlights(self) -> ColorSocketLinker:
+            """Output socket: Highlights"""
+            return self._node.outputs.get("Highlights")  # type: ignore[return-value]
 
     @property
-    def o_glare(self) -> ColorSocketLinker:
-        """Output socket: Glare"""
-        return self.outputs.get("Glare")
-
-    @property
-    def o_highlights(self) -> ColorSocketLinker:
-        """Output socket: Highlights"""
-        return self.outputs.get("Highlights")
+    def o(self) -> "Outputs":
+        return Glare.Outputs(self)
 
 
 class Inpaint(NodeBuilder):
@@ -932,10 +1052,20 @@ class Inpaint(NodeBuilder):
         """Input socket: Size"""
         return self.inputs.get("Size")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Inpaint") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Inpaint.Outputs(self)
 
 
 class Kuwahara(NodeBuilder):
@@ -1004,10 +1134,20 @@ class Kuwahara(NodeBuilder):
         """Input socket: High Precision"""
         return self.inputs.get("High Precision")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Kuwahara") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Kuwahara.Outputs(self)
 
 
 class Pixelate(NodeBuilder):
@@ -1038,10 +1178,20 @@ class Pixelate(NodeBuilder):
         """Input socket: Size"""
         return self.inputs.get("Size")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Pixelate") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return Pixelate.Outputs(self)
 
 
 class VectorBlur(NodeBuilder):
@@ -1096,7 +1246,17 @@ class VectorBlur(NodeBuilder):
         """Input socket: Shutter"""
         return self.inputs.get("Shutter")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VectorBlur") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return VectorBlur.Outputs(self)

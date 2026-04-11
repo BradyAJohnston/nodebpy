@@ -48,25 +48,35 @@ class RadialTiling(NodeBuilder):
         """Input socket: Roundness"""
         return self.inputs.get("Roundness")
 
-    @property
-    def o_segment_coordinates(self) -> VectorSocketLinker:
-        """Output socket: Segment Coordinates"""
-        return self.outputs.get("Segment Coordinates")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "RadialTiling") -> None:
+            self._node = node
+
+        @property
+        def segment_coordinates(self) -> VectorSocketLinker:
+            """Output socket: Segment Coordinates"""
+            return self._node.outputs.get("Segment Coordinates")  # type: ignore[return-value]
+
+        @property
+        def segment_id(self) -> SocketLinker:
+            """Output socket: Segment ID"""
+            return self._node.outputs.get("Segment ID")  # type: ignore[return-value]
+
+        @property
+        def segment_width(self) -> SocketLinker:
+            """Output socket: Segment Width"""
+            return self._node.outputs.get("Segment Width")  # type: ignore[return-value]
+
+        @property
+        def segment_rotation(self) -> SocketLinker:
+            """Output socket: Segment Rotation"""
+            return self._node.outputs.get("Segment Rotation")  # type: ignore[return-value]
 
     @property
-    def o_segment_id(self) -> SocketLinker:
-        """Output socket: Segment ID"""
-        return self.outputs.get("Segment ID")
-
-    @property
-    def o_segment_width(self) -> SocketLinker:
-        """Output socket: Segment Width"""
-        return self.outputs.get("Segment Width")
-
-    @property
-    def o_segment_rotation(self) -> SocketLinker:
-        """Output socket: Segment Rotation"""
-        return self.outputs.get("Segment Rotation")
+    def o(self) -> "Outputs":
+        return RadialTiling.Outputs(self)
 
     @property
     def normalize(self) -> bool:
@@ -105,10 +115,20 @@ class VectorCurves(NodeBuilder):
         """Input socket: Vector"""
         return self.inputs.get("Vector")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VectorCurves") -> None:
+            self._node = node
+
+        @property
+        def vector(self) -> VectorSocketLinker:
+            """Output socket: Vector"""
+            return self._node.outputs.get("Vector")  # type: ignore[return-value]
+
     @property
-    def o_vector(self) -> VectorSocketLinker:
-        """Output socket: Vector"""
-        return self.outputs.get("Vector")
+    def o(self) -> "Outputs":
+        return VectorCurves.Outputs(self)
 
 
 class VectorMath(NodeBuilder):
@@ -398,15 +418,25 @@ class VectorMath(NodeBuilder):
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
-    @property
-    def o_vector(self) -> VectorSocketLinker:
-        """Output socket: Vector"""
-        return self.outputs.get("Vector")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VectorMath") -> None:
+            self._node = node
+
+        @property
+        def vector(self) -> VectorSocketLinker:
+            """Output socket: Vector"""
+            return self._node.outputs.get("Vector")  # type: ignore[return-value]
+
+        @property
+        def value(self) -> SocketLinker:
+            """Output socket: Value"""
+            return self._node.outputs.get("Value")  # type: ignore[return-value]
 
     @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self.outputs.get("Value")
+    def o(self) -> "Outputs":
+        return VectorMath.Outputs(self)
 
     @property
     def operation(
@@ -540,10 +570,20 @@ class VectorRotate(NodeBuilder):
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VectorRotate") -> None:
+            self._node = node
+
+        @property
+        def vector(self) -> VectorSocketLinker:
+            """Output socket: Vector"""
+            return self._node.outputs.get("Vector")  # type: ignore[return-value]
+
     @property
-    def o_vector(self) -> VectorSocketLinker:
-        """Output socket: Vector"""
-        return self.outputs.get("Vector")
+    def o(self) -> "Outputs":
+        return VectorRotate.Outputs(self)
 
     @property
     def rotation_type(

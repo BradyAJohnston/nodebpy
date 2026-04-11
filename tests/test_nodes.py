@@ -64,8 +64,8 @@ def test_socket_selection():
         g.Position() * 1.0 >> pos.i_position
 
     assert pos.i_offset.socket_name == "Offset"
-    assert vec.o_vector.socket.links[0].to_socket.node == pos.node
-    assert vec.o_vector.socket.links[0].to_socket == pos.i_offset.socket
+    assert vec.o.vector.socket.links[0].to_socket.node == pos.node
+    assert vec.o.vector.socket.links[0].to_socket == pos.i_offset.socket
     assert len(pos.i_offset.socket.links) == 1
 
 
@@ -140,12 +140,12 @@ def test_field_to_grid():
 
     with TreeBuilder() as tree:
         grid = g.VolumeCube(g.NoiseTexture()) >> g.GetNamedGrid(name="density")
-        ftg = g.FieldToGrid.vector(g.NoiseTexture().o_color, topology=grid)
+        ftg = g.FieldToGrid.vector(g.NoiseTexture().o.color, topology=grid)
 
     assert ftg.data_type == "VECTOR"
     assert len(ftg.node.grid_items) == 1
     assert ftg.i_topology.socket.links[0].from_node == grid.node
-    assert ftg.i_topology.socket.links[0].from_socket == grid.o_grid.socket
+    assert ftg.i_topology.socket.links[0].from_socket == grid.o.grid.socket
     assert ftg.inputs["Color"].socket.links[0].from_node.name == "Noise Texture.001"
 
 
@@ -183,8 +183,8 @@ def test_advect_grid(snapshot_tree):
             velocity=ftg, time_step=g.Value(0.1), integration_scheme="Midpoint"
         )
 
-    assert ftg.i_topology.socket.links[0].from_socket == grid.o_grid.socket
-    assert len(grid.o_volume.socket.links) == 0
+    assert ftg.i_topology.socket.links[0].from_socket == grid.o.grid.socket
+    assert len(grid.o.volume.socket.links) == 0
     assert ag.i_integration_scheme.socket.default_value == "Midpoint"
 
 
@@ -267,7 +267,7 @@ def test_simulation(snapshot_tree):
         _ = (
             input
             >> g.SetPosition(
-                offset=input.o_delta_time * g.Vector((0, 0, 0.1)) * pos_math
+                offset=input.o.delta_time * g.Vector((0, 0, 0.1)) * pos_math
             )
             >> output
         )
@@ -417,7 +417,7 @@ def test_accumulate_field():
             g.EvaluateAtIndex.point.rotation(aatr, g.Index() - int(1))
         )
         _ = cube >> g.SetPosition(
-            position=g.TransformPoint(g.Position(), tran.o_trailing),
+            position=g.TransformPoint(g.Position(), tran.o.trailing),
             offset=g.FieldAverage.edge.vector(g.Position()),
         )
 
@@ -441,8 +441,8 @@ def test_edge_other_point():
         # of the edge. We compare them and return the one that isn't the current input vertex index
         eov = g.EdgesOfVertex(v_index, sort_index=e_index)
         ev = g.EdgeVertices()
-        vert_1 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
-        vert_2 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
+        vert_1 = g.EvaluateAtIndex.edge.integer(ev.o.vertex_index_1, eov)
+        vert_2 = g.EvaluateAtIndex.edge.integer(ev.o.vertex_index_2, eov)
         other_vertex = g.Switch.integer(v_index == vert_1, vert_1, vert_2)
 
         with tree.outputs:
@@ -496,7 +496,7 @@ def test_foreachgeometryelement_zone():
         zone.output.capture_generated(pos)
         zone.output.capture_generated(transformed)
         _ = transformed >> zone.output
-        _ = g.JoinGeometry(zone.output.o_generation, cube) >> out
+        _ = g.JoinGeometry(zone.output.o.generation, cube) >> out
 
     input, output = zone
     with pytest.raises(IndexError):

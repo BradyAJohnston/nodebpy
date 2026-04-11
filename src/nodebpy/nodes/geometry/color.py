@@ -39,10 +39,20 @@ class Gamma(NodeBuilder):
         """Input socket: Gamma"""
         return self.inputs.get("Gamma")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Gamma") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return Gamma.Outputs(self)
 
 
 class RGBCurves(NodeBuilder):
@@ -73,7 +83,17 @@ class RGBCurves(NodeBuilder):
         """Input socket: Color"""
         return self.inputs.get("Color")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "RGBCurves") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return RGBCurves.Outputs(self)

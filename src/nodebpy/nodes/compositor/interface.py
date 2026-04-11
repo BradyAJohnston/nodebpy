@@ -98,10 +98,20 @@ class EnableOutput(NodeBuilder):
         """Input socket: Value"""
         return self.inputs.get("Value")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EnableOutput") -> None:
+            self._node = node
+
+        @property
+        def value(self) -> SocketLinker:
+            """Output socket: Value"""
+            return self._node.outputs.get("Value")  # type: ignore[return-value]
+
     @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self.outputs.get("Value")
+    def o(self) -> "Outputs":
+        return EnableOutput.Outputs(self)
 
     @property
     def data_type(

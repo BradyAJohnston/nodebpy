@@ -8,6 +8,7 @@ from ...builder import (
     NodeSocket,
     SocketError,
     SocketLinker,
+    TypedOutputs,
 )
 from ...types import (
     SOCKET_TYPES,
@@ -1177,6 +1178,26 @@ class AccumulateField(NodeBuilder):
         self.data_type = data_type
         self.domain = domain
         self._establish_links(**key_args)
+
+    class Outputs(TypedOutputs):
+        @property
+        def leading(self) -> SocketLinker:
+            """Output socket: Leading"""
+            return self.get("Leading")
+
+        @property
+        def trailing(self) -> SocketLinker:
+            """Output socket: Trailing"""
+            return self.get("Trailing")
+
+        @property
+        def total(self) -> SocketLinker:
+            """Output socket: Total"""
+            return self.get("Total")
+
+    @property
+    def o(self) -> "Outputs":
+        return AccumulateField.Outputs(self)
 
     @property
     def i_value(self) -> SocketLinker:

@@ -4,7 +4,14 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import (
+    NodeBuilder,
+    SocketLinker,
+    BooleanSocketLinker,
+    GeometrySocketLinker,
+    MatrixSocketLinker,
+    VectorSocketLinker,
+)
 
 from ...types import (
     InputBoolean,
@@ -161,10 +168,20 @@ class AdvectGrid(NodeBuilder):
         """Input socket: Limiter"""
         return self.inputs.get("Limiter")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "AdvectGrid") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return AdvectGrid.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
@@ -229,10 +246,20 @@ class DistributePointsInGrid(NodeBuilder):
         """Input socket: Threshold"""
         return self.inputs.get("Threshold")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "DistributePointsInGrid") -> None:
+            self._node = node
+
+        @property
+        def points(self) -> GeometrySocketLinker:
+            """Output socket: Points"""
+            return self._node.outputs.get("Points")  # type: ignore[return-value]
+
     @property
-    def o_points(self) -> SocketLinker:
-        """Output socket: Points"""
-        return self.outputs.get("Points")
+    def o(self) -> "Outputs":
+        return DistributePointsInGrid.Outputs(self)
 
     @property
     def mode(self) -> Literal["DENSITY_RANDOM", "DENSITY_GRID"]:
@@ -302,10 +329,20 @@ class DistributePointsInVolume(NodeBuilder):
         """Input socket: Threshold"""
         return self.inputs.get("Threshold")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "DistributePointsInVolume") -> None:
+            self._node = node
+
+        @property
+        def points(self) -> GeometrySocketLinker:
+            """Output socket: Points"""
+            return self._node.outputs.get("Points")  # type: ignore[return-value]
+
     @property
-    def o_points(self) -> SocketLinker:
-        """Output socket: Points"""
-        return self.outputs.get("Points")
+    def o(self) -> "Outputs":
+        return DistributePointsInVolume.Outputs(self)
 
 
 class GetNamedGrid(NodeBuilder):
@@ -384,15 +421,25 @@ class GetNamedGrid(NodeBuilder):
         """Input socket: Remove"""
         return self.inputs.get("Remove")
 
-    @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "GetNamedGrid") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> GeometrySocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
 
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return GetNamedGrid.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -422,10 +469,20 @@ class GridCurl(NodeBuilder):
         """Input socket: Grid"""
         return self.inputs.get("Grid")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "GridCurl") -> None:
+            self._node = node
+
+        @property
+        def curl(self) -> VectorSocketLinker:
+            """Output socket: Curl"""
+            return self._node.outputs.get("Curl")  # type: ignore[return-value]
+
     @property
-    def o_curl(self) -> VectorSocketLinker:
-        """Output socket: Curl"""
-        return self.outputs.get("Curl")
+    def o(self) -> "Outputs":
+        return GridCurl.Outputs(self)
 
 
 class GridDivergence(NodeBuilder):
@@ -447,10 +504,20 @@ class GridDivergence(NodeBuilder):
         """Input socket: Grid"""
         return self.inputs.get("Grid")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "GridDivergence") -> None:
+            self._node = node
+
+        @property
+        def divergence(self) -> SocketLinker:
+            """Output socket: Divergence"""
+            return self._node.outputs.get("Divergence")  # type: ignore[return-value]
+
     @property
-    def o_divergence(self) -> SocketLinker:
-        """Output socket: Divergence"""
-        return self.outputs.get("Divergence")
+    def o(self) -> "Outputs":
+        return GridDivergence.Outputs(self)
 
 
 class GridGradient(NodeBuilder):
@@ -472,10 +539,20 @@ class GridGradient(NodeBuilder):
         """Input socket: Grid"""
         return self.inputs.get("Grid")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "GridGradient") -> None:
+            self._node = node
+
+        @property
+        def gradient(self) -> VectorSocketLinker:
+            """Output socket: Gradient"""
+            return self._node.outputs.get("Gradient")  # type: ignore[return-value]
+
     @property
-    def o_gradient(self) -> VectorSocketLinker:
-        """Output socket: Gradient"""
-        return self.outputs.get("Gradient")
+    def o(self) -> "Outputs":
+        return GridGradient.Outputs(self)
 
 
 class GridInfo(NodeBuilder):
@@ -522,15 +599,25 @@ class GridInfo(NodeBuilder):
         """Input socket: Grid"""
         return self.inputs.get("Grid")
 
-    @property
-    def o_transform(self) -> SocketLinker:
-        """Output socket: Transform"""
-        return self.outputs.get("Transform")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "GridInfo") -> None:
+            self._node = node
+
+        @property
+        def transform(self) -> MatrixSocketLinker:
+            """Output socket: Transform"""
+            return self._node.outputs.get("Transform")  # type: ignore[return-value]
+
+        @property
+        def background_value(self) -> SocketLinker:
+            """Output socket: Background Value"""
+            return self._node.outputs.get("Background Value")  # type: ignore[return-value]
 
     @property
-    def o_background_value(self) -> SocketLinker:
-        """Output socket: Background Value"""
-        return self.outputs.get("Background Value")
+    def o(self) -> "Outputs":
+        return GridInfo.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -560,10 +647,20 @@ class GridLaplacian(NodeBuilder):
         """Input socket: Grid"""
         return self.inputs.get("Grid")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "GridLaplacian") -> None:
+            self._node = node
+
+        @property
+        def laplacian(self) -> SocketLinker:
+            """Output socket: Laplacian"""
+            return self._node.outputs.get("Laplacian")  # type: ignore[return-value]
+
     @property
-    def o_laplacian(self) -> SocketLinker:
-        """Output socket: Laplacian"""
-        return self.outputs.get("Laplacian")
+    def o(self) -> "Outputs":
+        return GridLaplacian.Outputs(self)
 
 
 class GridToMesh(NodeBuilder):
@@ -600,10 +697,20 @@ class GridToMesh(NodeBuilder):
         """Input socket: Adaptivity"""
         return self.inputs.get("Adaptivity")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "GridToMesh") -> None:
+            self._node = node
+
+        @property
+        def mesh(self) -> GeometrySocketLinker:
+            """Output socket: Mesh"""
+            return self._node.outputs.get("Mesh")  # type: ignore[return-value]
+
     @property
-    def o_mesh(self) -> SocketLinker:
-        """Output socket: Mesh"""
-        return self.outputs.get("Mesh")
+    def o(self) -> "Outputs":
+        return GridToMesh.Outputs(self)
 
 
 class MeshToDensityGrid(NodeBuilder):
@@ -651,10 +758,20 @@ class MeshToDensityGrid(NodeBuilder):
         """Input socket: Gradient Width"""
         return self.inputs.get("Gradient Width")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MeshToDensityGrid") -> None:
+            self._node = node
+
+        @property
+        def density_grid(self) -> SocketLinker:
+            """Output socket: Density Grid"""
+            return self._node.outputs.get("Density Grid")  # type: ignore[return-value]
+
     @property
-    def o_density_grid(self) -> SocketLinker:
-        """Output socket: Density Grid"""
-        return self.outputs.get("Density Grid")
+    def o(self) -> "Outputs":
+        return MeshToDensityGrid.Outputs(self)
 
 
 class MeshToSDFGrid(NodeBuilder):
@@ -691,10 +808,20 @@ class MeshToSDFGrid(NodeBuilder):
         """Input socket: Band Width"""
         return self.inputs.get("Band Width")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MeshToSDFGrid") -> None:
+            self._node = node
+
+        @property
+        def sdf_grid(self) -> SocketLinker:
+            """Output socket: SDF Grid"""
+            return self._node.outputs.get("SDF Grid")  # type: ignore[return-value]
+
     @property
-    def o_sdf_grid(self) -> SocketLinker:
-        """Output socket: SDF Grid"""
-        return self.outputs.get("SDF Grid")
+    def o(self) -> "Outputs":
+        return MeshToSDFGrid.Outputs(self)
 
 
 class MeshToVolume(NodeBuilder):
@@ -756,10 +883,20 @@ class MeshToVolume(NodeBuilder):
         """Input socket: Interior Band Width"""
         return self.inputs.get("Interior Band Width")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MeshToVolume") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> GeometrySocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return MeshToVolume.Outputs(self)
 
 
 class PointsToSDFGrid(NodeBuilder):
@@ -796,10 +933,20 @@ class PointsToSDFGrid(NodeBuilder):
         """Input socket: Voxel Size"""
         return self.inputs.get("Voxel Size")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "PointsToSDFGrid") -> None:
+            self._node = node
+
+        @property
+        def sdf_grid(self) -> SocketLinker:
+            """Output socket: SDF Grid"""
+            return self._node.outputs.get("SDF Grid")  # type: ignore[return-value]
+
     @property
-    def o_sdf_grid(self) -> SocketLinker:
-        """Output socket: SDF Grid"""
-        return self.outputs.get("SDF Grid")
+    def o(self) -> "Outputs":
+        return PointsToSDFGrid.Outputs(self)
 
 
 class PointsToVolume(NodeBuilder):
@@ -861,10 +1008,20 @@ class PointsToVolume(NodeBuilder):
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "PointsToVolume") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> GeometrySocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return PointsToVolume.Outputs(self)
 
 
 class PruneGrid(NodeBuilder):
@@ -942,10 +1099,20 @@ class PruneGrid(NodeBuilder):
         """Input socket: Threshold"""
         return self.inputs.get("Threshold")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "PruneGrid") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return PruneGrid.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -984,10 +1151,20 @@ class SDFGridFillet(NodeBuilder):
         """Input socket: Iterations"""
         return self.inputs.get("Iterations")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SDFGridFillet") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return SDFGridFillet.Outputs(self)
 
 
 class SDFGridLaplacian(NodeBuilder):
@@ -1018,10 +1195,20 @@ class SDFGridLaplacian(NodeBuilder):
         """Input socket: Iterations"""
         return self.inputs.get("Iterations")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SDFGridLaplacian") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return SDFGridLaplacian.Outputs(self)
 
 
 class SDFGridMean(NodeBuilder):
@@ -1058,10 +1245,20 @@ class SDFGridMean(NodeBuilder):
         """Input socket: Iterations"""
         return self.inputs.get("Iterations")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SDFGridMean") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return SDFGridMean.Outputs(self)
 
 
 class SDFGridMeanCurvature(NodeBuilder):
@@ -1092,10 +1289,20 @@ class SDFGridMeanCurvature(NodeBuilder):
         """Input socket: Iterations"""
         return self.inputs.get("Iterations")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SDFGridMeanCurvature") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return SDFGridMeanCurvature.Outputs(self)
 
 
 class SDFGridMedian(NodeBuilder):
@@ -1132,10 +1339,20 @@ class SDFGridMedian(NodeBuilder):
         """Input socket: Iterations"""
         return self.inputs.get("Iterations")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SDFGridMedian") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return SDFGridMedian.Outputs(self)
 
 
 class SDFGridOffset(NodeBuilder):
@@ -1166,10 +1383,20 @@ class SDFGridOffset(NodeBuilder):
         """Input socket: Distance"""
         return self.inputs.get("Distance")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SDFGridOffset") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return SDFGridOffset.Outputs(self)
 
 
 class SampleGrid(NodeBuilder):
@@ -1267,10 +1494,20 @@ class SampleGrid(NodeBuilder):
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SampleGrid") -> None:
+            self._node = node
+
+        @property
+        def value(self) -> SocketLinker:
+            """Output socket: Value"""
+            return self._node.outputs.get("Value")  # type: ignore[return-value]
+
     @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self.outputs.get("Value")
+    def o(self) -> "Outputs":
+        return SampleGrid.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -1367,10 +1604,20 @@ class SampleGridIndex(NodeBuilder):
         """Input socket: Z"""
         return self.inputs.get("Z")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SampleGridIndex") -> None:
+            self._node = node
+
+        @property
+        def value(self) -> SocketLinker:
+            """Output socket: Value"""
+            return self._node.outputs.get("Value")  # type: ignore[return-value]
+
     @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self.outputs.get("Value")
+    def o(self) -> "Outputs":
+        return SampleGridIndex.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -1439,10 +1686,20 @@ class SetGridBackground(NodeBuilder):
         """Input socket: Background"""
         return self.inputs.get("Background")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SetGridBackground") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return SetGridBackground.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -1511,15 +1768,25 @@ class SetGridTransform(NodeBuilder):
         """Input socket: Transform"""
         return self.inputs.get("Transform")
 
-    @property
-    def o_is_valid(self) -> SocketLinker:
-        """Output socket: Is Valid"""
-        return self.outputs.get("Is Valid")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SetGridTransform") -> None:
+            self._node = node
+
+        @property
+        def is_valid(self) -> BooleanSocketLinker:
+            """Output socket: Is Valid"""
+            return self._node.outputs.get("Is Valid")  # type: ignore[return-value]
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
 
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return SetGridTransform.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
@@ -1606,10 +1873,20 @@ class StoreNamedGrid(NodeBuilder):
         """Input socket: Grid"""
         return self.inputs.get("Grid")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "StoreNamedGrid") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> GeometrySocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return StoreNamedGrid.Outputs(self)
 
     @property
     def data_type(self) -> Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]:
@@ -1686,10 +1963,20 @@ class VolumeCube(NodeBuilder):
         """Input socket: Resolution Z"""
         return self.inputs.get("Resolution Z")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VolumeCube") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> GeometrySocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return VolumeCube.Outputs(self)
 
 
 class VolumeToMesh(NodeBuilder):
@@ -1751,10 +2038,20 @@ class VolumeToMesh(NodeBuilder):
         """Input socket: Adaptivity"""
         return self.inputs.get("Adaptivity")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VolumeToMesh") -> None:
+            self._node = node
+
+        @property
+        def mesh(self) -> GeometrySocketLinker:
+            """Output socket: Mesh"""
+            return self._node.outputs.get("Mesh")  # type: ignore[return-value]
+
     @property
-    def o_mesh(self) -> SocketLinker:
-        """Output socket: Mesh"""
-        return self.outputs.get("Mesh")
+    def o(self) -> "Outputs":
+        return VolumeToMesh.Outputs(self)
 
 
 class VoxelizeGrid(NodeBuilder):
@@ -1801,10 +2098,20 @@ class VoxelizeGrid(NodeBuilder):
         """Input socket: Grid"""
         return self.inputs.get("Grid")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VoxelizeGrid") -> None:
+            self._node = node
+
+        @property
+        def grid(self) -> SocketLinker:
+            """Output socket: Grid"""
+            return self._node.outputs.get("Grid")  # type: ignore[return-value]
+
     @property
-    def o_grid(self) -> SocketLinker:
-        """Output socket: Grid"""
-        return self.outputs.get("Grid")
+    def o(self) -> "Outputs":
+        return VoxelizeGrid.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:

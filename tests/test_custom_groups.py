@@ -56,7 +56,7 @@ def test_o_prefix_returns_socket_linker():
     """Accessing o_* on an instance returns a SocketLinker for that output socket."""
     with TreeBuilder():
         node = OtherVertex()
-        out = node.o_other_vertex
+        out = node.o.other_vertex
 
     assert isinstance(out, SocketLinker)
 
@@ -69,7 +69,7 @@ def test_wrong_attribute_access():
         with pytest.raises(AttributeError):
             node.wrong_attribute_name
         with pytest.raises(RuntimeError):
-            node.o_wrong_attribute_name
+            node.o.wrong_attribute_name
 
 
 # --- Group caching ---

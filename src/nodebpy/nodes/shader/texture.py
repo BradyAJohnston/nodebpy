@@ -38,10 +38,20 @@ class EnvironmentTexture(NodeBuilder):
         """Input socket: Vector"""
         return self.inputs.get("Vector")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EnvironmentTexture") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return EnvironmentTexture.Outputs(self)
 
     @property
     def projection(self) -> Literal["EQUIRECTANGULAR", "MIRROR_BALL"]:
@@ -92,10 +102,20 @@ class IesTexture(NodeBuilder):
         """Input socket: Strength"""
         return self.inputs.get("Strength")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "IesTexture") -> None:
+            self._node = node
+
+        @property
+        def fac(self) -> SocketLinker:
+            """Output socket: Factor"""
+            return self._node.outputs.get("Fac")  # type: ignore[return-value]
+
     @property
-    def o_fac(self) -> SocketLinker:
-        """Output socket: Factor"""
-        return self.outputs.get("Fac")
+    def o(self) -> "Outputs":
+        return IesTexture.Outputs(self)
 
     @property
     def filepath(self) -> str:
@@ -144,15 +164,25 @@ class ImageTexture(NodeBuilder):
         """Input socket: Vector"""
         return self.inputs.get("Vector")
 
-    @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ImageTexture") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
+        @property
+        def alpha(self) -> SocketLinker:
+            """Output socket: Alpha"""
+            return self._node.outputs.get("Alpha")  # type: ignore[return-value]
 
     @property
-    def o_alpha(self) -> SocketLinker:
-        """Output socket: Alpha"""
-        return self.outputs.get("Alpha")
+    def o(self) -> "Outputs":
+        return ImageTexture.Outputs(self)
 
     @property
     def projection(self) -> Literal["FLAT", "BOX", "SPHERE", "TUBE"]:
@@ -237,10 +267,20 @@ class SkyTexture(NodeBuilder):
         """Input socket: Vector"""
         return self.inputs.get("Vector")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SkyTexture") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return SkyTexture.Outputs(self)
 
     @property
     def sky_type(

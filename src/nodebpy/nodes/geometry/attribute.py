@@ -4,7 +4,12 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import (
+    NodeBuilder,
+    SocketLinker,
+    GeometrySocketLinker,
+    IntegerSocketLinker,
+)
 
 from ...types import (
     InputBoolean,
@@ -100,10 +105,20 @@ class BlurAttribute(NodeBuilder):
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "BlurAttribute") -> None:
+            self._node = node
+
+        @property
+        def value(self) -> SocketLinker:
+            """Output socket: Value"""
+            return self._node.outputs.get("Value")  # type: ignore[return-value]
+
     @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self.outputs.get("Value")
+    def o(self) -> "Outputs":
+        return BlurAttribute.Outputs(self)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]:
@@ -140,40 +155,50 @@ class DomainSize(NodeBuilder):
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
-    @property
-    def o_point_count(self) -> SocketLinker:
-        """Output socket: Point Count"""
-        return self.outputs.get("Point Count")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "DomainSize") -> None:
+            self._node = node
+
+        @property
+        def point_count(self) -> IntegerSocketLinker:
+            """Output socket: Point Count"""
+            return self._node.outputs.get("Point Count")  # type: ignore[return-value]
+
+        @property
+        def edge_count(self) -> IntegerSocketLinker:
+            """Output socket: Edge Count"""
+            return self._node.outputs.get("Edge Count")  # type: ignore[return-value]
+
+        @property
+        def face_count(self) -> IntegerSocketLinker:
+            """Output socket: Face Count"""
+            return self._node.outputs.get("Face Count")  # type: ignore[return-value]
+
+        @property
+        def face_corner_count(self) -> IntegerSocketLinker:
+            """Output socket: Face Corner Count"""
+            return self._node.outputs.get("Face Corner Count")  # type: ignore[return-value]
+
+        @property
+        def spline_count(self) -> IntegerSocketLinker:
+            """Output socket: Spline Count"""
+            return self._node.outputs.get("Spline Count")  # type: ignore[return-value]
+
+        @property
+        def instance_count(self) -> IntegerSocketLinker:
+            """Output socket: Instance Count"""
+            return self._node.outputs.get("Instance Count")  # type: ignore[return-value]
+
+        @property
+        def layer_count(self) -> IntegerSocketLinker:
+            """Output socket: Layer Count"""
+            return self._node.outputs.get("Layer Count")  # type: ignore[return-value]
 
     @property
-    def o_edge_count(self) -> SocketLinker:
-        """Output socket: Edge Count"""
-        return self.outputs.get("Edge Count")
-
-    @property
-    def o_face_count(self) -> SocketLinker:
-        """Output socket: Face Count"""
-        return self.outputs.get("Face Count")
-
-    @property
-    def o_face_corner_count(self) -> SocketLinker:
-        """Output socket: Face Corner Count"""
-        return self.outputs.get("Face Corner Count")
-
-    @property
-    def o_spline_count(self) -> SocketLinker:
-        """Output socket: Spline Count"""
-        return self.outputs.get("Spline Count")
-
-    @property
-    def o_instance_count(self) -> SocketLinker:
-        """Output socket: Instance Count"""
-        return self.outputs.get("Instance Count")
-
-    @property
-    def o_layer_count(self) -> SocketLinker:
-        """Output socket: Layer Count"""
-        return self.outputs.get("Layer Count")
+    def o(self) -> "Outputs":
+        return DomainSize.Outputs(self)
 
     @property
     def component(
@@ -222,10 +247,20 @@ class RemoveNamedAttribute(NodeBuilder):
         """Input socket: Name"""
         return self.inputs.get("Name")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "RemoveNamedAttribute") -> None:
+            self._node = node
+
+        @property
+        def geometry(self) -> GeometrySocketLinker:
+            """Output socket: Geometry"""
+            return self._node.outputs.get("Geometry")  # type: ignore[return-value]
+
     @property
-    def o_geometry(self) -> SocketLinker:
-        """Output socket: Geometry"""
-        return self.outputs.get("Geometry")
+    def o(self) -> "Outputs":
+        return RemoveNamedAttribute.Outputs(self)
 
 
 class StoreNamedAttribute(NodeBuilder):
@@ -579,10 +614,20 @@ class StoreNamedAttribute(NodeBuilder):
         """Input socket: Value"""
         return self.inputs.get("Value")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "StoreNamedAttribute") -> None:
+            self._node = node
+
+        @property
+        def geometry(self) -> GeometrySocketLinker:
+            """Output socket: Geometry"""
+            return self._node.outputs.get("Geometry")  # type: ignore[return-value]
+
     @property
-    def o_geometry(self) -> SocketLinker:
-        """Output socket: Geometry"""
-        return self.outputs.get("Geometry")
+    def o(self) -> "Outputs":
+        return StoreNamedAttribute.Outputs(self)
 
     @property
     def data_type(

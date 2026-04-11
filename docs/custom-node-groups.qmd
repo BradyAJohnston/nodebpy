@@ -220,6 +220,6 @@ Each custom group appears as a single, named node in the tree -- keeping the gra
 | Step | What you write | What it does |
 |:-----|:---------------|:-------------|
 | Declare `i_*` | `i_val = InputSpec(partial(s.SocketFloat, "Value"))` | Defines group input socket + `node.i_val` property |
-| Declare `o_*` | `o_result = OutputSpec(partial(s.SocketFloat, "Result"))` | Defines group output socket + `node.o_result` property |
+| Declare `o_*` | `o_result = OutputSpec(partial(s.SocketFloat, "Result"))` | Defines group output socket + `node.o.result` property |
 | Write `__init__` | `def __init__(self, value=None): super().__init__(value=value)` | Typed constructor for IDE autocomplete |
 | Write `_build_group` | `def _build_group(cls, tree, value: s.SocketFloat): ...` | Internal graph logic with typed inputs |

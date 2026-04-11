@@ -90,15 +90,25 @@ class CornerPin(NodeBuilder):
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CornerPin") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def plane(self) -> SocketLinker:
+            """Output socket: Plane"""
+            return self._node.outputs.get("Plane")  # type: ignore[return-value]
 
     @property
-    def o_plane(self) -> SocketLinker:
-        """Output socket: Plane"""
-        return self.outputs.get("Plane")
+    def o(self) -> "Outputs":
+        return CornerPin.Outputs(self)
 
 
 class Crop(NodeBuilder):
@@ -160,10 +170,20 @@ class Crop(NodeBuilder):
         """Input socket: Alpha Crop"""
         return self.inputs.get("Alpha Crop")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Crop") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Crop.Outputs(self)
 
 
 class Displace(NodeBuilder):
@@ -219,10 +239,20 @@ class Displace(NodeBuilder):
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Displace") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Displace.Outputs(self)
 
 
 class Flip(NodeBuilder):
@@ -259,10 +289,20 @@ class Flip(NodeBuilder):
         """Input socket: Flip Y"""
         return self.inputs.get("Flip Y")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Flip") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Flip.Outputs(self)
 
 
 class LensDistortion(NodeBuilder):
@@ -324,10 +364,20 @@ class LensDistortion(NodeBuilder):
         """Input socket: Fit"""
         return self.inputs.get("Fit")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "LensDistortion") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return LensDistortion.Outputs(self)
 
 
 class MapUV(NodeBuilder):
@@ -383,10 +433,20 @@ class MapUV(NodeBuilder):
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MapUV") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return MapUV.Outputs(self)
 
 
 class MovieDistortion(NodeBuilder):
@@ -417,10 +477,20 @@ class MovieDistortion(NodeBuilder):
         """Input socket: Type"""
         return self.inputs.get("Type")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MovieDistortion") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return MovieDistortion.Outputs(self)
 
 
 class PlaneTrackDeform(NodeBuilder):
@@ -472,15 +542,25 @@ class PlaneTrackDeform(NodeBuilder):
         """Input socket: Shutter"""
         return self.inputs.get("Motion Blur Shutter")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "PlaneTrackDeform") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def plane(self) -> SocketLinker:
+            """Output socket: Plane"""
+            return self._node.outputs.get("Plane")  # type: ignore[return-value]
 
     @property
-    def o_plane(self) -> SocketLinker:
-        """Output socket: Plane"""
-        return self.outputs.get("Plane")
+    def o(self) -> "Outputs":
+        return PlaneTrackDeform.Outputs(self)
 
     @property
     def tracking_object(self) -> str:
@@ -552,10 +632,20 @@ class Rotate(NodeBuilder):
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Rotate") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Rotate.Outputs(self)
 
 
 class Scale(NodeBuilder):
@@ -633,10 +723,20 @@ class Scale(NodeBuilder):
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Scale") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Scale.Outputs(self)
 
 
 class Stabilize2D(NodeBuilder):
@@ -692,10 +792,20 @@ class Stabilize2D(NodeBuilder):
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Stabilize2D") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Stabilize2D.Outputs(self)
 
 
 class Transform(NodeBuilder):
@@ -772,10 +882,20 @@ class Transform(NodeBuilder):
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Transform") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Transform.Outputs(self)
 
 
 class Translate(NodeBuilder):
@@ -838,7 +958,17 @@ class Translate(NodeBuilder):
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Translate") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Translate.Outputs(self)

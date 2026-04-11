@@ -4,7 +4,20 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
+from ...builder import (
+    NodeBuilder,
+    SocketLinker,
+    BooleanSocketLinker,
+    ColorSocketLinker,
+    GeometrySocketLinker,
+    ImageSocketLinker,
+    IntegerSocketLinker,
+    MatrixSocketLinker,
+    ObjectSocketLinker,
+    RotationSocketLinker,
+    StringSocketLinker,
+    VectorSocketLinker,
+)
 
 from ...types import (
     InputBoolean,
@@ -33,15 +46,25 @@ class Cursor3D(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_location(self) -> VectorSocketLinker:
-        """Output socket: Location"""
-        return self.outputs.get("Location")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Cursor3D") -> None:
+            self._node = node
+
+        @property
+        def location(self) -> VectorSocketLinker:
+            """Output socket: Location"""
+            return self._node.outputs.get("Location")  # type: ignore[return-value]
+
+        @property
+        def rotation(self) -> RotationSocketLinker:
+            """Output socket: Rotation"""
+            return self._node.outputs.get("Rotation")  # type: ignore[return-value]
 
     @property
-    def o_rotation(self) -> SocketLinker:
-        """Output socket: Rotation"""
-        return self.outputs.get("Rotation")
+    def o(self) -> "Outputs":
+        return Cursor3D.Outputs(self)
 
 
 class ActiveCamera(NodeBuilder):
@@ -58,10 +81,20 @@ class ActiveCamera(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ActiveCamera") -> None:
+            self._node = node
+
+        @property
+        def active_camera(self) -> ObjectSocketLinker:
+            """Output socket: Active Camera"""
+            return self._node.outputs.get("Active Camera")  # type: ignore[return-value]
+
     @property
-    def o_active_camera(self) -> SocketLinker:
-        """Output socket: Active Camera"""
-        return self.outputs.get("Active Camera")
+    def o(self) -> "Outputs":
+        return ActiveCamera.Outputs(self)
 
 
 class ActiveElement(NodeBuilder):
@@ -98,15 +131,25 @@ class ActiveElement(NodeBuilder):
         """Create Active Element with operation 'Layer'."""
         return cls(domain="LAYER")
 
-    @property
-    def o_index(self) -> SocketLinker:
-        """Output socket: Index"""
-        return self.outputs.get("Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ActiveElement") -> None:
+            self._node = node
+
+        @property
+        def index(self) -> IntegerSocketLinker:
+            """Output socket: Index"""
+            return self._node.outputs.get("Index")  # type: ignore[return-value]
+
+        @property
+        def exists(self) -> BooleanSocketLinker:
+            """Output socket: Exists"""
+            return self._node.outputs.get("Exists")  # type: ignore[return-value]
 
     @property
-    def o_exists(self) -> SocketLinker:
-        """Output socket: Exists"""
-        return self.outputs.get("Exists")
+    def o(self) -> "Outputs":
+        return ActiveElement.Outputs(self)
 
     @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "LAYER"]:
@@ -131,10 +174,20 @@ class Boolean(NodeBuilder):
         self.boolean = boolean
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Boolean") -> None:
+            self._node = node
+
+        @property
+        def boolean(self) -> BooleanSocketLinker:
+            """Output socket: Boolean"""
+            return self._node.outputs.get("Boolean")  # type: ignore[return-value]
+
     @property
-    def o_boolean(self) -> SocketLinker:
-        """Output socket: Boolean"""
-        return self.outputs.get("Boolean")
+    def o(self) -> "Outputs":
+        return Boolean.Outputs(self)
 
     @property
     def boolean(self) -> bool:
@@ -164,50 +217,60 @@ class CameraInfo(NodeBuilder):
         """Input socket: Camera"""
         return self.inputs.get("Camera")
 
-    @property
-    def o_projection_matrix(self) -> SocketLinker:
-        """Output socket: Projection Matrix"""
-        return self.outputs.get("Projection Matrix")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CameraInfo") -> None:
+            self._node = node
+
+        @property
+        def projection_matrix(self) -> MatrixSocketLinker:
+            """Output socket: Projection Matrix"""
+            return self._node.outputs.get("Projection Matrix")  # type: ignore[return-value]
+
+        @property
+        def focal_length(self) -> SocketLinker:
+            """Output socket: Focal Length"""
+            return self._node.outputs.get("Focal Length")  # type: ignore[return-value]
+
+        @property
+        def sensor(self) -> VectorSocketLinker:
+            """Output socket: Sensor"""
+            return self._node.outputs.get("Sensor")  # type: ignore[return-value]
+
+        @property
+        def shift(self) -> VectorSocketLinker:
+            """Output socket: Shift"""
+            return self._node.outputs.get("Shift")  # type: ignore[return-value]
+
+        @property
+        def clip_start(self) -> SocketLinker:
+            """Output socket: Clip Start"""
+            return self._node.outputs.get("Clip Start")  # type: ignore[return-value]
+
+        @property
+        def clip_end(self) -> SocketLinker:
+            """Output socket: Clip End"""
+            return self._node.outputs.get("Clip End")  # type: ignore[return-value]
+
+        @property
+        def focus_distance(self) -> SocketLinker:
+            """Output socket: Focus Distance"""
+            return self._node.outputs.get("Focus Distance")  # type: ignore[return-value]
+
+        @property
+        def is_orthographic(self) -> BooleanSocketLinker:
+            """Output socket: Is Orthographic"""
+            return self._node.outputs.get("Is Orthographic")  # type: ignore[return-value]
+
+        @property
+        def orthographic_scale(self) -> SocketLinker:
+            """Output socket: Orthographic Scale"""
+            return self._node.outputs.get("Orthographic Scale")  # type: ignore[return-value]
 
     @property
-    def o_focal_length(self) -> SocketLinker:
-        """Output socket: Focal Length"""
-        return self.outputs.get("Focal Length")
-
-    @property
-    def o_sensor(self) -> VectorSocketLinker:
-        """Output socket: Sensor"""
-        return self.outputs.get("Sensor")
-
-    @property
-    def o_shift(self) -> VectorSocketLinker:
-        """Output socket: Shift"""
-        return self.outputs.get("Shift")
-
-    @property
-    def o_clip_start(self) -> SocketLinker:
-        """Output socket: Clip Start"""
-        return self.outputs.get("Clip Start")
-
-    @property
-    def o_clip_end(self) -> SocketLinker:
-        """Output socket: Clip End"""
-        return self.outputs.get("Clip End")
-
-    @property
-    def o_focus_distance(self) -> SocketLinker:
-        """Output socket: Focus Distance"""
-        return self.outputs.get("Focus Distance")
-
-    @property
-    def o_is_orthographic(self) -> SocketLinker:
-        """Output socket: Is Orthographic"""
-        return self.outputs.get("Is Orthographic")
-
-    @property
-    def o_orthographic_scale(self) -> SocketLinker:
-        """Output socket: Orthographic Scale"""
-        return self.outputs.get("Orthographic Scale")
+    def o(self) -> "Outputs":
+        return CameraInfo.Outputs(self)
 
 
 class CollectionInfo(NodeBuilder):
@@ -250,10 +313,20 @@ class CollectionInfo(NodeBuilder):
         """Input socket: Reset Children"""
         return self.inputs.get("Reset Children")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CollectionInfo") -> None:
+            self._node = node
+
+        @property
+        def instances(self) -> GeometrySocketLinker:
+            """Output socket: Instances"""
+            return self._node.outputs.get("Instances")  # type: ignore[return-value]
+
     @property
-    def o_instances(self) -> SocketLinker:
-        """Output socket: Instances"""
-        return self.outputs.get("Instances")
+    def o(self) -> "Outputs":
+        return CollectionInfo.Outputs(self)
 
     @property
     def transform_space(self) -> Literal["ORIGINAL", "RELATIVE"]:
@@ -280,10 +353,20 @@ class Color(NodeBuilder):
         self.value = value
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Color") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return Color.Outputs(self)
 
     @property
     def value(self) -> tuple[float, float, float, float]:
@@ -332,15 +415,25 @@ class CornersOfEdge(NodeBuilder):
         """Input socket: Sort Index"""
         return self.inputs.get("Sort Index")
 
-    @property
-    def o_corner_index(self) -> SocketLinker:
-        """Output socket: Corner Index"""
-        return self.outputs.get("Corner Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CornersOfEdge") -> None:
+            self._node = node
+
+        @property
+        def corner_index(self) -> IntegerSocketLinker:
+            """Output socket: Corner Index"""
+            return self._node.outputs.get("Corner Index")  # type: ignore[return-value]
+
+        @property
+        def total(self) -> IntegerSocketLinker:
+            """Output socket: Total"""
+            return self._node.outputs.get("Total")  # type: ignore[return-value]
 
     @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self.outputs.get("Total")
+    def o(self) -> "Outputs":
+        return CornersOfEdge.Outputs(self)
 
 
 class CornersOfFace(NodeBuilder):
@@ -381,15 +474,25 @@ class CornersOfFace(NodeBuilder):
         """Input socket: Sort Index"""
         return self.inputs.get("Sort Index")
 
-    @property
-    def o_corner_index(self) -> SocketLinker:
-        """Output socket: Corner Index"""
-        return self.outputs.get("Corner Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CornersOfFace") -> None:
+            self._node = node
+
+        @property
+        def corner_index(self) -> IntegerSocketLinker:
+            """Output socket: Corner Index"""
+            return self._node.outputs.get("Corner Index")  # type: ignore[return-value]
+
+        @property
+        def total(self) -> IntegerSocketLinker:
+            """Output socket: Total"""
+            return self._node.outputs.get("Total")  # type: ignore[return-value]
 
     @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self.outputs.get("Total")
+    def o(self) -> "Outputs":
+        return CornersOfFace.Outputs(self)
 
 
 class CornersOfVertex(NodeBuilder):
@@ -430,15 +533,25 @@ class CornersOfVertex(NodeBuilder):
         """Input socket: Sort Index"""
         return self.inputs.get("Sort Index")
 
-    @property
-    def o_corner_index(self) -> SocketLinker:
-        """Output socket: Corner Index"""
-        return self.outputs.get("Corner Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CornersOfVertex") -> None:
+            self._node = node
+
+        @property
+        def corner_index(self) -> IntegerSocketLinker:
+            """Output socket: Corner Index"""
+            return self._node.outputs.get("Corner Index")  # type: ignore[return-value]
+
+        @property
+        def total(self) -> IntegerSocketLinker:
+            """Output socket: Total"""
+            return self._node.outputs.get("Total")  # type: ignore[return-value]
 
     @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self.outputs.get("Total")
+    def o(self) -> "Outputs":
+        return CornersOfVertex.Outputs(self)
 
 
 class CurveHandlePositions(NodeBuilder):
@@ -460,15 +573,25 @@ class CurveHandlePositions(NodeBuilder):
         """Input socket: Relative"""
         return self.inputs.get("Relative")
 
-    @property
-    def o_left(self) -> VectorSocketLinker:
-        """Output socket: Left"""
-        return self.outputs.get("Left")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CurveHandlePositions") -> None:
+            self._node = node
+
+        @property
+        def left(self) -> VectorSocketLinker:
+            """Output socket: Left"""
+            return self._node.outputs.get("Left")  # type: ignore[return-value]
+
+        @property
+        def right(self) -> VectorSocketLinker:
+            """Output socket: Right"""
+            return self._node.outputs.get("Right")  # type: ignore[return-value]
 
     @property
-    def o_right(self) -> VectorSocketLinker:
-        """Output socket: Right"""
-        return self.outputs.get("Right")
+    def o(self) -> "Outputs":
+        return CurveHandlePositions.Outputs(self)
 
 
 class CurveTangent(NodeBuilder):
@@ -485,10 +608,20 @@ class CurveTangent(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CurveTangent") -> None:
+            self._node = node
+
+        @property
+        def tangent(self) -> VectorSocketLinker:
+            """Output socket: Tangent"""
+            return self._node.outputs.get("Tangent")  # type: ignore[return-value]
+
     @property
-    def o_tangent(self) -> VectorSocketLinker:
-        """Output socket: Tangent"""
-        return self.outputs.get("Tangent")
+    def o(self) -> "Outputs":
+        return CurveTangent.Outputs(self)
 
 
 class CurveTilt(NodeBuilder):
@@ -505,10 +638,20 @@ class CurveTilt(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CurveTilt") -> None:
+            self._node = node
+
+        @property
+        def tilt(self) -> SocketLinker:
+            """Output socket: Tilt"""
+            return self._node.outputs.get("Tilt")  # type: ignore[return-value]
+
     @property
-    def o_tilt(self) -> SocketLinker:
-        """Output socket: Tilt"""
-        return self.outputs.get("Tilt")
+    def o(self) -> "Outputs":
+        return CurveTilt.Outputs(self)
 
 
 class CurveOfPoint(NodeBuilder):
@@ -530,15 +673,25 @@ class CurveOfPoint(NodeBuilder):
         """Input socket: Point Index"""
         return self.inputs.get("Point Index")
 
-    @property
-    def o_curve_index(self) -> SocketLinker:
-        """Output socket: Curve Index"""
-        return self.outputs.get("Curve Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "CurveOfPoint") -> None:
+            self._node = node
+
+        @property
+        def curve_index(self) -> IntegerSocketLinker:
+            """Output socket: Curve Index"""
+            return self._node.outputs.get("Curve Index")  # type: ignore[return-value]
+
+        @property
+        def index_in_curve(self) -> IntegerSocketLinker:
+            """Output socket: Index in Curve"""
+            return self._node.outputs.get("Index in Curve")  # type: ignore[return-value]
 
     @property
-    def o_index_in_curve(self) -> SocketLinker:
-        """Output socket: Index in Curve"""
-        return self.outputs.get("Index in Curve")
+    def o(self) -> "Outputs":
+        return CurveOfPoint.Outputs(self)
 
 
 class EdgeAngle(NodeBuilder):
@@ -555,15 +708,25 @@ class EdgeAngle(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_unsigned_angle(self) -> SocketLinker:
-        """Output socket: Unsigned Angle"""
-        return self.outputs.get("Unsigned Angle")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EdgeAngle") -> None:
+            self._node = node
+
+        @property
+        def unsigned_angle(self) -> SocketLinker:
+            """Output socket: Unsigned Angle"""
+            return self._node.outputs.get("Unsigned Angle")  # type: ignore[return-value]
+
+        @property
+        def signed_angle(self) -> SocketLinker:
+            """Output socket: Signed Angle"""
+            return self._node.outputs.get("Signed Angle")  # type: ignore[return-value]
 
     @property
-    def o_signed_angle(self) -> SocketLinker:
-        """Output socket: Signed Angle"""
-        return self.outputs.get("Signed Angle")
+    def o(self) -> "Outputs":
+        return EdgeAngle.Outputs(self)
 
 
 class EdgeNeighbors(NodeBuilder):
@@ -580,10 +743,20 @@ class EdgeNeighbors(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EdgeNeighbors") -> None:
+            self._node = node
+
+        @property
+        def face_count(self) -> IntegerSocketLinker:
+            """Output socket: Face Count"""
+            return self._node.outputs.get("Face Count")  # type: ignore[return-value]
+
     @property
-    def o_face_count(self) -> SocketLinker:
-        """Output socket: Face Count"""
-        return self.outputs.get("Face Count")
+    def o(self) -> "Outputs":
+        return EdgeNeighbors.Outputs(self)
 
 
 class EdgePathsToSelection(NodeBuilder):
@@ -617,10 +790,20 @@ class EdgePathsToSelection(NodeBuilder):
         """Input socket: Next Vertex Index"""
         return self.inputs.get("Next Vertex Index")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EdgePathsToSelection") -> None:
+            self._node = node
+
+        @property
+        def selection(self) -> BooleanSocketLinker:
+            """Output socket: Selection"""
+            return self._node.outputs.get("Selection")  # type: ignore[return-value]
+
     @property
-    def o_selection(self) -> SocketLinker:
-        """Output socket: Selection"""
-        return self.outputs.get("Selection")
+    def o(self) -> "Outputs":
+        return EdgePathsToSelection.Outputs(self)
 
 
 class EdgeVertices(NodeBuilder):
@@ -637,25 +820,35 @@ class EdgeVertices(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_vertex_index_1(self) -> SocketLinker:
-        """Output socket: Vertex Index 1"""
-        return self.outputs.get("Vertex Index 1")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EdgeVertices") -> None:
+            self._node = node
+
+        @property
+        def vertex_index_1(self) -> IntegerSocketLinker:
+            """Output socket: Vertex Index 1"""
+            return self._node.outputs.get("Vertex Index 1")  # type: ignore[return-value]
+
+        @property
+        def vertex_index_2(self) -> IntegerSocketLinker:
+            """Output socket: Vertex Index 2"""
+            return self._node.outputs.get("Vertex Index 2")  # type: ignore[return-value]
+
+        @property
+        def position_1(self) -> VectorSocketLinker:
+            """Output socket: Position 1"""
+            return self._node.outputs.get("Position 1")  # type: ignore[return-value]
+
+        @property
+        def position_2(self) -> VectorSocketLinker:
+            """Output socket: Position 2"""
+            return self._node.outputs.get("Position 2")  # type: ignore[return-value]
 
     @property
-    def o_vertex_index_2(self) -> SocketLinker:
-        """Output socket: Vertex Index 2"""
-        return self.outputs.get("Vertex Index 2")
-
-    @property
-    def o_position_1(self) -> VectorSocketLinker:
-        """Output socket: Position 1"""
-        return self.outputs.get("Position 1")
-
-    @property
-    def o_position_2(self) -> VectorSocketLinker:
-        """Output socket: Position 2"""
-        return self.outputs.get("Position 2")
+    def o(self) -> "Outputs":
+        return EdgeVertices.Outputs(self)
 
 
 class EdgesOfCorner(NodeBuilder):
@@ -677,15 +870,25 @@ class EdgesOfCorner(NodeBuilder):
         """Input socket: Corner Index"""
         return self.inputs.get("Corner Index")
 
-    @property
-    def o_next_edge_index(self) -> SocketLinker:
-        """Output socket: Next Edge Index"""
-        return self.outputs.get("Next Edge Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EdgesOfCorner") -> None:
+            self._node = node
+
+        @property
+        def next_edge_index(self) -> IntegerSocketLinker:
+            """Output socket: Next Edge Index"""
+            return self._node.outputs.get("Next Edge Index")  # type: ignore[return-value]
+
+        @property
+        def previous_edge_index(self) -> IntegerSocketLinker:
+            """Output socket: Previous Edge Index"""
+            return self._node.outputs.get("Previous Edge Index")  # type: ignore[return-value]
 
     @property
-    def o_previous_edge_index(self) -> SocketLinker:
-        """Output socket: Previous Edge Index"""
-        return self.outputs.get("Previous Edge Index")
+    def o(self) -> "Outputs":
+        return EdgesOfCorner.Outputs(self)
 
 
 class EdgesOfVertex(NodeBuilder):
@@ -726,15 +929,25 @@ class EdgesOfVertex(NodeBuilder):
         """Input socket: Sort Index"""
         return self.inputs.get("Sort Index")
 
-    @property
-    def o_edge_index(self) -> SocketLinker:
-        """Output socket: Edge Index"""
-        return self.outputs.get("Edge Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EdgesOfVertex") -> None:
+            self._node = node
+
+        @property
+        def edge_index(self) -> IntegerSocketLinker:
+            """Output socket: Edge Index"""
+            return self._node.outputs.get("Edge Index")  # type: ignore[return-value]
+
+        @property
+        def total(self) -> IntegerSocketLinker:
+            """Output socket: Total"""
+            return self._node.outputs.get("Total")  # type: ignore[return-value]
 
     @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self.outputs.get("Total")
+    def o(self) -> "Outputs":
+        return EdgesOfVertex.Outputs(self)
 
 
 class EdgesToFaceGroups(NodeBuilder):
@@ -756,10 +969,20 @@ class EdgesToFaceGroups(NodeBuilder):
         """Input socket: Boundary Edges"""
         return self.inputs.get("Boundary Edges")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EdgesToFaceGroups") -> None:
+            self._node = node
+
+        @property
+        def face_group_id(self) -> IntegerSocketLinker:
+            """Output socket: Face Group ID"""
+            return self._node.outputs.get("Face Group ID")  # type: ignore[return-value]
+
     @property
-    def o_face_group_id(self) -> SocketLinker:
-        """Output socket: Face Group ID"""
-        return self.outputs.get("Face Group ID")
+    def o(self) -> "Outputs":
+        return EdgesToFaceGroups.Outputs(self)
 
 
 class EndpointSelection(NodeBuilder):
@@ -790,10 +1013,20 @@ class EndpointSelection(NodeBuilder):
         """Input socket: End Size"""
         return self.inputs.get("End Size")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EndpointSelection") -> None:
+            self._node = node
+
+        @property
+        def selection(self) -> BooleanSocketLinker:
+            """Output socket: Selection"""
+            return self._node.outputs.get("Selection")  # type: ignore[return-value]
+
     @property
-    def o_selection(self) -> SocketLinker:
-        """Output socket: Selection"""
-        return self.outputs.get("Selection")
+    def o(self) -> "Outputs":
+        return EndpointSelection.Outputs(self)
 
 
 class FaceArea(NodeBuilder):
@@ -810,10 +1043,20 @@ class FaceArea(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "FaceArea") -> None:
+            self._node = node
+
+        @property
+        def area(self) -> SocketLinker:
+            """Output socket: Area"""
+            return self._node.outputs.get("Area")  # type: ignore[return-value]
+
     @property
-    def o_area(self) -> SocketLinker:
-        """Output socket: Area"""
-        return self.outputs.get("Area")
+    def o(self) -> "Outputs":
+        return FaceArea.Outputs(self)
 
 
 class FaceGroupBoundaries(NodeBuilder):
@@ -835,10 +1078,20 @@ class FaceGroupBoundaries(NodeBuilder):
         """Input socket: Face Group ID"""
         return self.inputs.get("Face Set")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "FaceGroupBoundaries") -> None:
+            self._node = node
+
+        @property
+        def boundary_edges(self) -> BooleanSocketLinker:
+            """Output socket: Boundary Edges"""
+            return self._node.outputs.get("Boundary Edges")  # type: ignore[return-value]
+
     @property
-    def o_boundary_edges(self) -> SocketLinker:
-        """Output socket: Boundary Edges"""
-        return self.outputs.get("Boundary Edges")
+    def o(self) -> "Outputs":
+        return FaceGroupBoundaries.Outputs(self)
 
 
 class FaceNeighbors(NodeBuilder):
@@ -855,15 +1108,25 @@ class FaceNeighbors(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_vertex_count(self) -> SocketLinker:
-        """Output socket: Vertex Count"""
-        return self.outputs.get("Vertex Count")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "FaceNeighbors") -> None:
+            self._node = node
+
+        @property
+        def vertex_count(self) -> IntegerSocketLinker:
+            """Output socket: Vertex Count"""
+            return self._node.outputs.get("Vertex Count")  # type: ignore[return-value]
+
+        @property
+        def face_count(self) -> IntegerSocketLinker:
+            """Output socket: Face Count"""
+            return self._node.outputs.get("Face Count")  # type: ignore[return-value]
 
     @property
-    def o_face_count(self) -> SocketLinker:
-        """Output socket: Face Count"""
-        return self.outputs.get("Face Count")
+    def o(self) -> "Outputs":
+        return FaceNeighbors.Outputs(self)
 
 
 class FaceSet(NodeBuilder):
@@ -880,15 +1143,25 @@ class FaceSet(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_face_set(self) -> SocketLinker:
-        """Output socket: Face Set"""
-        return self.outputs.get("Face Set")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "FaceSet") -> None:
+            self._node = node
+
+        @property
+        def face_set(self) -> IntegerSocketLinker:
+            """Output socket: Face Set"""
+            return self._node.outputs.get("Face Set")  # type: ignore[return-value]
+
+        @property
+        def exists(self) -> BooleanSocketLinker:
+            """Output socket: Exists"""
+            return self._node.outputs.get("Exists")  # type: ignore[return-value]
 
     @property
-    def o_exists(self) -> SocketLinker:
-        """Output socket: Exists"""
-        return self.outputs.get("Exists")
+    def o(self) -> "Outputs":
+        return FaceSet.Outputs(self)
 
 
 class FaceOfCorner(NodeBuilder):
@@ -910,15 +1183,25 @@ class FaceOfCorner(NodeBuilder):
         """Input socket: Corner Index"""
         return self.inputs.get("Corner Index")
 
-    @property
-    def o_face_index(self) -> SocketLinker:
-        """Output socket: Face Index"""
-        return self.outputs.get("Face Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "FaceOfCorner") -> None:
+            self._node = node
+
+        @property
+        def face_index(self) -> IntegerSocketLinker:
+            """Output socket: Face Index"""
+            return self._node.outputs.get("Face Index")  # type: ignore[return-value]
+
+        @property
+        def index_in_face(self) -> IntegerSocketLinker:
+            """Output socket: Index in Face"""
+            return self._node.outputs.get("Index in Face")  # type: ignore[return-value]
 
     @property
-    def o_index_in_face(self) -> SocketLinker:
-        """Output socket: Index in Face"""
-        return self.outputs.get("Index in Face")
+    def o(self) -> "Outputs":
+        return FaceOfCorner.Outputs(self)
 
 
 class ID(NodeBuilder):
@@ -935,10 +1218,20 @@ class ID(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ID") -> None:
+            self._node = node
+
+        @property
+        def id(self) -> IntegerSocketLinker:
+            """Output socket: ID"""
+            return self._node.outputs.get("ID")  # type: ignore[return-value]
+
     @property
-    def o_id(self) -> SocketLinker:
-        """Output socket: ID"""
-        return self.outputs.get("ID")
+    def o(self) -> "Outputs":
+        return ID.Outputs(self)
 
 
 class Image(NodeBuilder):
@@ -955,10 +1248,20 @@ class Image(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Image") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ImageSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> SocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return Image.Outputs(self)
 
 
 class ImageInfo(NodeBuilder):
@@ -989,30 +1292,40 @@ class ImageInfo(NodeBuilder):
         """Input socket: Frame"""
         return self.inputs.get("Frame")
 
-    @property
-    def o_width(self) -> SocketLinker:
-        """Output socket: Width"""
-        return self.outputs.get("Width")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ImageInfo") -> None:
+            self._node = node
+
+        @property
+        def width(self) -> IntegerSocketLinker:
+            """Output socket: Width"""
+            return self._node.outputs.get("Width")  # type: ignore[return-value]
+
+        @property
+        def height(self) -> IntegerSocketLinker:
+            """Output socket: Height"""
+            return self._node.outputs.get("Height")  # type: ignore[return-value]
+
+        @property
+        def has_alpha(self) -> BooleanSocketLinker:
+            """Output socket: Has Alpha"""
+            return self._node.outputs.get("Has Alpha")  # type: ignore[return-value]
+
+        @property
+        def frame_count(self) -> IntegerSocketLinker:
+            """Output socket: Frame Count"""
+            return self._node.outputs.get("Frame Count")  # type: ignore[return-value]
+
+        @property
+        def fps(self) -> SocketLinker:
+            """Output socket: FPS"""
+            return self._node.outputs.get("FPS")  # type: ignore[return-value]
 
     @property
-    def o_height(self) -> SocketLinker:
-        """Output socket: Height"""
-        return self.outputs.get("Height")
-
-    @property
-    def o_has_alpha(self) -> SocketLinker:
-        """Output socket: Has Alpha"""
-        return self.outputs.get("Has Alpha")
-
-    @property
-    def o_frame_count(self) -> SocketLinker:
-        """Output socket: Frame Count"""
-        return self.outputs.get("Frame Count")
-
-    @property
-    def o_fps(self) -> SocketLinker:
-        """Output socket: FPS"""
-        return self.outputs.get("FPS")
+    def o(self) -> "Outputs":
+        return ImageInfo.Outputs(self)
 
 
 class ImportCSV(NodeBuilder):
@@ -1043,10 +1356,20 @@ class ImportCSV(NodeBuilder):
         """Input socket: Delimiter"""
         return self.inputs.get("Delimiter")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ImportCSV") -> None:
+            self._node = node
+
+        @property
+        def point_cloud(self) -> GeometrySocketLinker:
+            """Output socket: Point Cloud"""
+            return self._node.outputs.get("Point Cloud")  # type: ignore[return-value]
+
     @property
-    def o_point_cloud(self) -> SocketLinker:
-        """Output socket: Point Cloud"""
-        return self.outputs.get("Point Cloud")
+    def o(self) -> "Outputs":
+        return ImportCSV.Outputs(self)
 
 
 class ImportOBJ(NodeBuilder):
@@ -1068,10 +1391,20 @@ class ImportOBJ(NodeBuilder):
         """Input socket: Path"""
         return self.inputs.get("Path")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ImportOBJ") -> None:
+            self._node = node
+
+        @property
+        def instances(self) -> GeometrySocketLinker:
+            """Output socket: Instances"""
+            return self._node.outputs.get("Instances")  # type: ignore[return-value]
+
     @property
-    def o_instances(self) -> SocketLinker:
-        """Output socket: Instances"""
-        return self.outputs.get("Instances")
+    def o(self) -> "Outputs":
+        return ImportOBJ.Outputs(self)
 
 
 class ImportPLY(NodeBuilder):
@@ -1093,10 +1426,20 @@ class ImportPLY(NodeBuilder):
         """Input socket: Path"""
         return self.inputs.get("Path")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ImportPLY") -> None:
+            self._node = node
+
+        @property
+        def mesh(self) -> GeometrySocketLinker:
+            """Output socket: Mesh"""
+            return self._node.outputs.get("Mesh")  # type: ignore[return-value]
+
     @property
-    def o_mesh(self) -> SocketLinker:
-        """Output socket: Mesh"""
-        return self.outputs.get("Mesh")
+    def o(self) -> "Outputs":
+        return ImportPLY.Outputs(self)
 
 
 class ImportSTL(NodeBuilder):
@@ -1118,10 +1461,20 @@ class ImportSTL(NodeBuilder):
         """Input socket: Path"""
         return self.inputs.get("Path")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ImportSTL") -> None:
+            self._node = node
+
+        @property
+        def mesh(self) -> GeometrySocketLinker:
+            """Output socket: Mesh"""
+            return self._node.outputs.get("Mesh")  # type: ignore[return-value]
+
     @property
-    def o_mesh(self) -> SocketLinker:
-        """Output socket: Mesh"""
-        return self.outputs.get("Mesh")
+    def o(self) -> "Outputs":
+        return ImportSTL.Outputs(self)
 
 
 class ImportText(NodeBuilder):
@@ -1143,10 +1496,20 @@ class ImportText(NodeBuilder):
         """Input socket: Path"""
         return self.inputs.get("Path")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ImportText") -> None:
+            self._node = node
+
+        @property
+        def string(self) -> StringSocketLinker:
+            """Output socket: String"""
+            return self._node.outputs.get("String")  # type: ignore[return-value]
+
     @property
-    def o_string(self) -> SocketLinker:
-        """Output socket: String"""
-        return self.outputs.get("String")
+    def o(self) -> "Outputs":
+        return ImportText.Outputs(self)
 
 
 class ImportVDB(NodeBuilder):
@@ -1168,10 +1531,20 @@ class ImportVDB(NodeBuilder):
         """Input socket: Path"""
         return self.inputs.get("Path")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ImportVDB") -> None:
+            self._node = node
+
+        @property
+        def volume(self) -> GeometrySocketLinker:
+            """Output socket: Volume"""
+            return self._node.outputs.get("Volume")  # type: ignore[return-value]
+
     @property
-    def o_volume(self) -> SocketLinker:
-        """Output socket: Volume"""
-        return self.outputs.get("Volume")
+    def o(self) -> "Outputs":
+        return ImportVDB.Outputs(self)
 
 
 class Index(NodeBuilder):
@@ -1188,10 +1561,20 @@ class Index(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Index") -> None:
+            self._node = node
+
+        @property
+        def index(self) -> IntegerSocketLinker:
+            """Output socket: Index"""
+            return self._node.outputs.get("Index")  # type: ignore[return-value]
+
     @property
-    def o_index(self) -> SocketLinker:
-        """Output socket: Index"""
-        return self.outputs.get("Index")
+    def o(self) -> "Outputs":
+        return Index.Outputs(self)
 
 
 class InstanceBounds(NodeBuilder):
@@ -1213,15 +1596,25 @@ class InstanceBounds(NodeBuilder):
         """Input socket: Use Radius"""
         return self.inputs.get("Use Radius")
 
-    @property
-    def o_min(self) -> VectorSocketLinker:
-        """Output socket: Min"""
-        return self.outputs.get("Min")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "InstanceBounds") -> None:
+            self._node = node
+
+        @property
+        def min(self) -> VectorSocketLinker:
+            """Output socket: Min"""
+            return self._node.outputs.get("Min")  # type: ignore[return-value]
+
+        @property
+        def max(self) -> VectorSocketLinker:
+            """Output socket: Max"""
+            return self._node.outputs.get("Max")  # type: ignore[return-value]
 
     @property
-    def o_max(self) -> VectorSocketLinker:
-        """Output socket: Max"""
-        return self.outputs.get("Max")
+    def o(self) -> "Outputs":
+        return InstanceBounds.Outputs(self)
 
 
 class InstanceRotation(NodeBuilder):
@@ -1238,10 +1631,20 @@ class InstanceRotation(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "InstanceRotation") -> None:
+            self._node = node
+
+        @property
+        def rotation(self) -> RotationSocketLinker:
+            """Output socket: Rotation"""
+            return self._node.outputs.get("Rotation")  # type: ignore[return-value]
+
     @property
-    def o_rotation(self) -> SocketLinker:
-        """Output socket: Rotation"""
-        return self.outputs.get("Rotation")
+    def o(self) -> "Outputs":
+        return InstanceRotation.Outputs(self)
 
 
 class InstanceScale(NodeBuilder):
@@ -1258,10 +1661,20 @@ class InstanceScale(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "InstanceScale") -> None:
+            self._node = node
+
+        @property
+        def scale(self) -> VectorSocketLinker:
+            """Output socket: Scale"""
+            return self._node.outputs.get("Scale")  # type: ignore[return-value]
+
     @property
-    def o_scale(self) -> VectorSocketLinker:
-        """Output socket: Scale"""
-        return self.outputs.get("Scale")
+    def o(self) -> "Outputs":
+        return InstanceScale.Outputs(self)
 
 
 class InstanceTransform(NodeBuilder):
@@ -1278,10 +1691,20 @@ class InstanceTransform(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "InstanceTransform") -> None:
+            self._node = node
+
+        @property
+        def transform(self) -> MatrixSocketLinker:
+            """Output socket: Transform"""
+            return self._node.outputs.get("Transform")  # type: ignore[return-value]
+
     @property
-    def o_transform(self) -> SocketLinker:
-        """Output socket: Transform"""
-        return self.outputs.get("Transform")
+    def o(self) -> "Outputs":
+        return InstanceTransform.Outputs(self)
 
 
 class Integer(NodeBuilder):
@@ -1298,10 +1721,20 @@ class Integer(NodeBuilder):
         self.integer = integer
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Integer") -> None:
+            self._node = node
+
+        @property
+        def integer(self) -> IntegerSocketLinker:
+            """Output socket: Integer"""
+            return self._node.outputs.get("Integer")  # type: ignore[return-value]
+
     @property
-    def o_integer(self) -> SocketLinker:
-        """Output socket: Integer"""
-        return self.outputs.get("Integer")
+    def o(self) -> "Outputs":
+        return Integer.Outputs(self)
 
     @property
     def integer(self) -> int:
@@ -1326,10 +1759,20 @@ class IsEdgeSmooth(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "IsEdgeSmooth") -> None:
+            self._node = node
+
+        @property
+        def smooth(self) -> BooleanSocketLinker:
+            """Output socket: Smooth"""
+            return self._node.outputs.get("Smooth")  # type: ignore[return-value]
+
     @property
-    def o_smooth(self) -> SocketLinker:
-        """Output socket: Smooth"""
-        return self.outputs.get("Smooth")
+    def o(self) -> "Outputs":
+        return IsEdgeSmooth.Outputs(self)
 
 
 class IsFacePlanar(NodeBuilder):
@@ -1351,10 +1794,20 @@ class IsFacePlanar(NodeBuilder):
         """Input socket: Threshold"""
         return self.inputs.get("Threshold")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "IsFacePlanar") -> None:
+            self._node = node
+
+        @property
+        def planar(self) -> BooleanSocketLinker:
+            """Output socket: Planar"""
+            return self._node.outputs.get("Planar")  # type: ignore[return-value]
+
     @property
-    def o_planar(self) -> SocketLinker:
-        """Output socket: Planar"""
-        return self.outputs.get("Planar")
+    def o(self) -> "Outputs":
+        return IsFacePlanar.Outputs(self)
 
 
 class IsFaceSmooth(NodeBuilder):
@@ -1371,10 +1824,20 @@ class IsFaceSmooth(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "IsFaceSmooth") -> None:
+            self._node = node
+
+        @property
+        def smooth(self) -> BooleanSocketLinker:
+            """Output socket: Smooth"""
+            return self._node.outputs.get("Smooth")  # type: ignore[return-value]
+
     @property
-    def o_smooth(self) -> SocketLinker:
-        """Output socket: Smooth"""
-        return self.outputs.get("Smooth")
+    def o(self) -> "Outputs":
+        return IsFaceSmooth.Outputs(self)
 
 
 class IsSplineCyclic(NodeBuilder):
@@ -1391,10 +1854,20 @@ class IsSplineCyclic(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "IsSplineCyclic") -> None:
+            self._node = node
+
+        @property
+        def cyclic(self) -> BooleanSocketLinker:
+            """Output socket: Cyclic"""
+            return self._node.outputs.get("Cyclic")  # type: ignore[return-value]
+
     @property
-    def o_cyclic(self) -> SocketLinker:
-        """Output socket: Cyclic"""
-        return self.outputs.get("Cyclic")
+    def o(self) -> "Outputs":
+        return IsSplineCyclic.Outputs(self)
 
 
 class IsViewport(NodeBuilder):
@@ -1411,10 +1884,20 @@ class IsViewport(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "IsViewport") -> None:
+            self._node = node
+
+        @property
+        def is_viewport(self) -> BooleanSocketLinker:
+            """Output socket: Is Viewport"""
+            return self._node.outputs.get("Is Viewport")  # type: ignore[return-value]
+
     @property
-    def o_is_viewport(self) -> SocketLinker:
-        """Output socket: Is Viewport"""
-        return self.outputs.get("Is Viewport")
+    def o(self) -> "Outputs":
+        return IsViewport.Outputs(self)
 
 
 class MaterialIndex(NodeBuilder):
@@ -1431,10 +1914,20 @@ class MaterialIndex(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MaterialIndex") -> None:
+            self._node = node
+
+        @property
+        def material_index(self) -> IntegerSocketLinker:
+            """Output socket: Material Index"""
+            return self._node.outputs.get("Material Index")  # type: ignore[return-value]
+
     @property
-    def o_material_index(self) -> SocketLinker:
-        """Output socket: Material Index"""
-        return self.outputs.get("Material Index")
+    def o(self) -> "Outputs":
+        return MaterialIndex.Outputs(self)
 
 
 class MeshIsland(NodeBuilder):
@@ -1451,15 +1944,25 @@ class MeshIsland(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_island_index(self) -> SocketLinker:
-        """Output socket: Island Index"""
-        return self.outputs.get("Island Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MeshIsland") -> None:
+            self._node = node
+
+        @property
+        def island_index(self) -> IntegerSocketLinker:
+            """Output socket: Island Index"""
+            return self._node.outputs.get("Island Index")  # type: ignore[return-value]
+
+        @property
+        def island_count(self) -> IntegerSocketLinker:
+            """Output socket: Island Count"""
+            return self._node.outputs.get("Island Count")  # type: ignore[return-value]
 
     @property
-    def o_island_count(self) -> SocketLinker:
-        """Output socket: Island Count"""
-        return self.outputs.get("Island Count")
+    def o(self) -> "Outputs":
+        return MeshIsland.Outputs(self)
 
 
 class MousePosition(NodeBuilder):
@@ -1476,25 +1979,35 @@ class MousePosition(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_mouse_x(self) -> SocketLinker:
-        """Output socket: Mouse X"""
-        return self.outputs.get("Mouse X")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MousePosition") -> None:
+            self._node = node
+
+        @property
+        def mouse_x(self) -> IntegerSocketLinker:
+            """Output socket: Mouse X"""
+            return self._node.outputs.get("Mouse X")  # type: ignore[return-value]
+
+        @property
+        def mouse_y(self) -> IntegerSocketLinker:
+            """Output socket: Mouse Y"""
+            return self._node.outputs.get("Mouse Y")  # type: ignore[return-value]
+
+        @property
+        def region_width(self) -> IntegerSocketLinker:
+            """Output socket: Region Width"""
+            return self._node.outputs.get("Region Width")  # type: ignore[return-value]
+
+        @property
+        def region_height(self) -> IntegerSocketLinker:
+            """Output socket: Region Height"""
+            return self._node.outputs.get("Region Height")  # type: ignore[return-value]
 
     @property
-    def o_mouse_y(self) -> SocketLinker:
-        """Output socket: Mouse Y"""
-        return self.outputs.get("Mouse Y")
-
-    @property
-    def o_region_width(self) -> SocketLinker:
-        """Output socket: Region Width"""
-        return self.outputs.get("Region Width")
-
-    @property
-    def o_region_height(self) -> SocketLinker:
-        """Output socket: Region Height"""
-        return self.outputs.get("Region Height")
+    def o(self) -> "Outputs":
+        return MousePosition.Outputs(self)
 
 
 class NamedAttribute(NodeBuilder):
@@ -1564,15 +2077,25 @@ class NamedAttribute(NodeBuilder):
         """Input socket: Name"""
         return self.inputs.get("Name")
 
-    @property
-    def o_attribute(self) -> SocketLinker:
-        """Output socket: Attribute"""
-        return self.outputs.get("Attribute")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "NamedAttribute") -> None:
+            self._node = node
+
+        @property
+        def attribute(self) -> SocketLinker:
+            """Output socket: Attribute"""
+            return self._node.outputs.get("Attribute")  # type: ignore[return-value]
+
+        @property
+        def exists(self) -> BooleanSocketLinker:
+            """Output socket: Exists"""
+            return self._node.outputs.get("Exists")  # type: ignore[return-value]
 
     @property
-    def o_exists(self) -> SocketLinker:
-        """Output socket: Exists"""
-        return self.outputs.get("Exists")
+    def o(self) -> "Outputs":
+        return NamedAttribute.Outputs(self)
 
     @property
     def data_type(
@@ -1623,10 +2146,20 @@ class NamedLayerSelection(NodeBuilder):
         """Input socket: Name"""
         return self.inputs.get("Name")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "NamedLayerSelection") -> None:
+            self._node = node
+
+        @property
+        def selection(self) -> BooleanSocketLinker:
+            """Output socket: Selection"""
+            return self._node.outputs.get("Selection")  # type: ignore[return-value]
+
     @property
-    def o_selection(self) -> SocketLinker:
-        """Output socket: Selection"""
-        return self.outputs.get("Selection")
+    def o(self) -> "Outputs":
+        return NamedLayerSelection.Outputs(self)
 
 
 class Normal(NodeBuilder):
@@ -1643,15 +2176,25 @@ class Normal(NodeBuilder):
         self.legacy_corner_normals = legacy_corner_normals
         self._establish_links(**key_args)
 
-    @property
-    def o_normal(self) -> VectorSocketLinker:
-        """Output socket: Normal"""
-        return self.outputs.get("Normal")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Normal") -> None:
+            self._node = node
+
+        @property
+        def normal(self) -> VectorSocketLinker:
+            """Output socket: Normal"""
+            return self._node.outputs.get("Normal")  # type: ignore[return-value]
+
+        @property
+        def true_normal(self) -> VectorSocketLinker:
+            """Output socket: True Normal"""
+            return self._node.outputs.get("True Normal")  # type: ignore[return-value]
 
     @property
-    def o_true_normal(self) -> VectorSocketLinker:
-        """Output socket: True Normal"""
-        return self.outputs.get("True Normal")
+    def o(self) -> "Outputs":
+        return Normal.Outputs(self)
 
     @property
     def legacy_corner_normals(self) -> bool:
@@ -1692,30 +2235,40 @@ class ObjectInfo(NodeBuilder):
         """Input socket: As Instance"""
         return self.inputs.get("As Instance")
 
-    @property
-    def o_transform(self) -> SocketLinker:
-        """Output socket: Transform"""
-        return self.outputs.get("Transform")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ObjectInfo") -> None:
+            self._node = node
+
+        @property
+        def transform(self) -> MatrixSocketLinker:
+            """Output socket: Transform"""
+            return self._node.outputs.get("Transform")  # type: ignore[return-value]
+
+        @property
+        def location(self) -> VectorSocketLinker:
+            """Output socket: Location"""
+            return self._node.outputs.get("Location")  # type: ignore[return-value]
+
+        @property
+        def rotation(self) -> RotationSocketLinker:
+            """Output socket: Rotation"""
+            return self._node.outputs.get("Rotation")  # type: ignore[return-value]
+
+        @property
+        def scale(self) -> VectorSocketLinker:
+            """Output socket: Scale"""
+            return self._node.outputs.get("Scale")  # type: ignore[return-value]
+
+        @property
+        def geometry(self) -> GeometrySocketLinker:
+            """Output socket: Geometry"""
+            return self._node.outputs.get("Geometry")  # type: ignore[return-value]
 
     @property
-    def o_location(self) -> VectorSocketLinker:
-        """Output socket: Location"""
-        return self.outputs.get("Location")
-
-    @property
-    def o_rotation(self) -> SocketLinker:
-        """Output socket: Rotation"""
-        return self.outputs.get("Rotation")
-
-    @property
-    def o_scale(self) -> VectorSocketLinker:
-        """Output socket: Scale"""
-        return self.outputs.get("Scale")
-
-    @property
-    def o_geometry(self) -> SocketLinker:
-        """Output socket: Geometry"""
-        return self.outputs.get("Geometry")
+    def o(self) -> "Outputs":
+        return ObjectInfo.Outputs(self)
 
     @property
     def transform_space(self) -> Literal["ORIGINAL", "RELATIVE"]:
@@ -1754,10 +2307,20 @@ class OffsetCornerInFace(NodeBuilder):
         """Input socket: Offset"""
         return self.inputs.get("Offset")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "OffsetCornerInFace") -> None:
+            self._node = node
+
+        @property
+        def corner_index(self) -> IntegerSocketLinker:
+            """Output socket: Corner Index"""
+            return self._node.outputs.get("Corner Index")  # type: ignore[return-value]
+
     @property
-    def o_corner_index(self) -> SocketLinker:
-        """Output socket: Corner Index"""
-        return self.outputs.get("Corner Index")
+    def o(self) -> "Outputs":
+        return OffsetCornerInFace.Outputs(self)
 
 
 class OffsetPointInCurve(NodeBuilder):
@@ -1788,15 +2351,25 @@ class OffsetPointInCurve(NodeBuilder):
         """Input socket: Offset"""
         return self.inputs.get("Offset")
 
-    @property
-    def o_is_valid_offset(self) -> SocketLinker:
-        """Output socket: Is Valid Offset"""
-        return self.outputs.get("Is Valid Offset")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "OffsetPointInCurve") -> None:
+            self._node = node
+
+        @property
+        def is_valid_offset(self) -> BooleanSocketLinker:
+            """Output socket: Is Valid Offset"""
+            return self._node.outputs.get("Is Valid Offset")  # type: ignore[return-value]
+
+        @property
+        def point_index(self) -> IntegerSocketLinker:
+            """Output socket: Point Index"""
+            return self._node.outputs.get("Point Index")  # type: ignore[return-value]
 
     @property
-    def o_point_index(self) -> SocketLinker:
-        """Output socket: Point Index"""
-        return self.outputs.get("Point Index")
+    def o(self) -> "Outputs":
+        return OffsetPointInCurve.Outputs(self)
 
 
 class PointsOfCurve(NodeBuilder):
@@ -1837,15 +2410,25 @@ class PointsOfCurve(NodeBuilder):
         """Input socket: Sort Index"""
         return self.inputs.get("Sort Index")
 
-    @property
-    def o_point_index(self) -> SocketLinker:
-        """Output socket: Point Index"""
-        return self.outputs.get("Point Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "PointsOfCurve") -> None:
+            self._node = node
+
+        @property
+        def point_index(self) -> IntegerSocketLinker:
+            """Output socket: Point Index"""
+            return self._node.outputs.get("Point Index")  # type: ignore[return-value]
+
+        @property
+        def total(self) -> IntegerSocketLinker:
+            """Output socket: Total"""
+            return self._node.outputs.get("Total")  # type: ignore[return-value]
 
     @property
-    def o_total(self) -> SocketLinker:
-        """Output socket: Total"""
-        return self.outputs.get("Total")
+    def o(self) -> "Outputs":
+        return PointsOfCurve.Outputs(self)
 
 
 class Position(NodeBuilder):
@@ -1862,10 +2445,20 @@ class Position(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Position") -> None:
+            self._node = node
+
+        @property
+        def position(self) -> VectorSocketLinker:
+            """Output socket: Position"""
+            return self._node.outputs.get("Position")  # type: ignore[return-value]
+
     @property
-    def o_position(self) -> VectorSocketLinker:
-        """Output socket: Position"""
-        return self.outputs.get("Position")
+    def o(self) -> "Outputs":
+        return Position.Outputs(self)
 
 
 class Radius(NodeBuilder):
@@ -1882,10 +2475,20 @@ class Radius(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Radius") -> None:
+            self._node = node
+
+        @property
+        def radius(self) -> SocketLinker:
+            """Output socket: Radius"""
+            return self._node.outputs.get("Radius")  # type: ignore[return-value]
+
     @property
-    def o_radius(self) -> SocketLinker:
-        """Output socket: Radius"""
-        return self.outputs.get("Radius")
+    def o(self) -> "Outputs":
+        return Radius.Outputs(self)
 
 
 class Rotation(NodeBuilder):
@@ -1902,10 +2505,20 @@ class Rotation(NodeBuilder):
         self.rotation_euler = rotation_euler
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Rotation") -> None:
+            self._node = node
+
+        @property
+        def rotation(self) -> RotationSocketLinker:
+            """Output socket: Rotation"""
+            return self._node.outputs.get("Rotation")  # type: ignore[return-value]
+
     @property
-    def o_rotation(self) -> SocketLinker:
-        """Output socket: Rotation"""
-        return self.outputs.get("Rotation")
+    def o(self) -> "Outputs":
+        return Rotation.Outputs(self)
 
     @property
     def rotation_euler(self) -> tuple[float, float, float]:
@@ -1930,15 +2543,25 @@ class SceneTime(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_seconds(self) -> SocketLinker:
-        """Output socket: Seconds"""
-        return self.outputs.get("Seconds")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SceneTime") -> None:
+            self._node = node
+
+        @property
+        def seconds(self) -> SocketLinker:
+            """Output socket: Seconds"""
+            return self._node.outputs.get("Seconds")  # type: ignore[return-value]
+
+        @property
+        def frame(self) -> SocketLinker:
+            """Output socket: Frame"""
+            return self._node.outputs.get("Frame")  # type: ignore[return-value]
 
     @property
-    def o_frame(self) -> SocketLinker:
-        """Output socket: Frame"""
-        return self.outputs.get("Frame")
+    def o(self) -> "Outputs":
+        return SceneTime.Outputs(self)
 
 
 class Selection(NodeBuilder):
@@ -1955,15 +2578,25 @@ class Selection(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_selection(self) -> SocketLinker:
-        """Output socket: Boolean"""
-        return self.outputs.get("Selection")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Selection") -> None:
+            self._node = node
+
+        @property
+        def selection(self) -> BooleanSocketLinker:
+            """Output socket: Boolean"""
+            return self._node.outputs.get("Selection")  # type: ignore[return-value]
+
+        @property
+        def float(self) -> SocketLinker:
+            """Output socket: Float"""
+            return self._node.outputs.get("Float")  # type: ignore[return-value]
 
     @property
-    def o_float(self) -> SocketLinker:
-        """Output socket: Float"""
-        return self.outputs.get("Float")
+    def o(self) -> "Outputs":
+        return Selection.Outputs(self)
 
 
 class SelfObject(NodeBuilder):
@@ -1980,10 +2613,20 @@ class SelfObject(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SelfObject") -> None:
+            self._node = node
+
+        @property
+        def self_object(self) -> ObjectSocketLinker:
+            """Output socket: Self Object"""
+            return self._node.outputs.get("Self Object")  # type: ignore[return-value]
+
     @property
-    def o_self_object(self) -> SocketLinker:
-        """Output socket: Self Object"""
-        return self.outputs.get("Self Object")
+    def o(self) -> "Outputs":
+        return SelfObject.Outputs(self)
 
 
 class ShortestEdgePaths(NodeBuilder):
@@ -2014,15 +2657,25 @@ class ShortestEdgePaths(NodeBuilder):
         """Input socket: Edge Cost"""
         return self.inputs.get("Edge Cost")
 
-    @property
-    def o_next_vertex_index(self) -> SocketLinker:
-        """Output socket: Next Vertex Index"""
-        return self.outputs.get("Next Vertex Index")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ShortestEdgePaths") -> None:
+            self._node = node
+
+        @property
+        def next_vertex_index(self) -> IntegerSocketLinker:
+            """Output socket: Next Vertex Index"""
+            return self._node.outputs.get("Next Vertex Index")  # type: ignore[return-value]
+
+        @property
+        def total_cost(self) -> SocketLinker:
+            """Output socket: Total Cost"""
+            return self._node.outputs.get("Total Cost")  # type: ignore[return-value]
 
     @property
-    def o_total_cost(self) -> SocketLinker:
-        """Output socket: Total Cost"""
-        return self.outputs.get("Total Cost")
+    def o(self) -> "Outputs":
+        return ShortestEdgePaths.Outputs(self)
 
 
 class SpecialCharacters(NodeBuilder):
@@ -2039,15 +2692,25 @@ class SpecialCharacters(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_line_break(self) -> SocketLinker:
-        """Output socket: Line Break"""
-        return self.outputs.get("Line Break")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SpecialCharacters") -> None:
+            self._node = node
+
+        @property
+        def line_break(self) -> StringSocketLinker:
+            """Output socket: Line Break"""
+            return self._node.outputs.get("Line Break")  # type: ignore[return-value]
+
+        @property
+        def tab(self) -> StringSocketLinker:
+            """Output socket: Tab"""
+            return self._node.outputs.get("Tab")  # type: ignore[return-value]
 
     @property
-    def o_tab(self) -> SocketLinker:
-        """Output socket: Tab"""
-        return self.outputs.get("Tab")
+    def o(self) -> "Outputs":
+        return SpecialCharacters.Outputs(self)
 
 
 class SplineLength(NodeBuilder):
@@ -2064,15 +2727,25 @@ class SplineLength(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_length(self) -> SocketLinker:
-        """Output socket: Length"""
-        return self.outputs.get("Length")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SplineLength") -> None:
+            self._node = node
+
+        @property
+        def length(self) -> SocketLinker:
+            """Output socket: Length"""
+            return self._node.outputs.get("Length")  # type: ignore[return-value]
+
+        @property
+        def point_count(self) -> IntegerSocketLinker:
+            """Output socket: Point Count"""
+            return self._node.outputs.get("Point Count")  # type: ignore[return-value]
 
     @property
-    def o_point_count(self) -> SocketLinker:
-        """Output socket: Point Count"""
-        return self.outputs.get("Point Count")
+    def o(self) -> "Outputs":
+        return SplineLength.Outputs(self)
 
 
 class SplineParameter(NodeBuilder):
@@ -2089,20 +2762,30 @@ class SplineParameter(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_factor(self) -> SocketLinker:
-        """Output socket: Factor"""
-        return self.outputs.get("Factor")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SplineParameter") -> None:
+            self._node = node
+
+        @property
+        def factor(self) -> SocketLinker:
+            """Output socket: Factor"""
+            return self._node.outputs.get("Factor")  # type: ignore[return-value]
+
+        @property
+        def length(self) -> SocketLinker:
+            """Output socket: Length"""
+            return self._node.outputs.get("Length")  # type: ignore[return-value]
+
+        @property
+        def index(self) -> IntegerSocketLinker:
+            """Output socket: Index"""
+            return self._node.outputs.get("Index")  # type: ignore[return-value]
 
     @property
-    def o_length(self) -> SocketLinker:
-        """Output socket: Length"""
-        return self.outputs.get("Length")
-
-    @property
-    def o_index(self) -> SocketLinker:
-        """Output socket: Index"""
-        return self.outputs.get("Index")
+    def o(self) -> "Outputs":
+        return SplineParameter.Outputs(self)
 
 
 class SplineResolution(NodeBuilder):
@@ -2119,10 +2802,20 @@ class SplineResolution(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SplineResolution") -> None:
+            self._node = node
+
+        @property
+        def resolution(self) -> IntegerSocketLinker:
+            """Output socket: Resolution"""
+            return self._node.outputs.get("Resolution")  # type: ignore[return-value]
+
     @property
-    def o_resolution(self) -> SocketLinker:
-        """Output socket: Resolution"""
-        return self.outputs.get("Resolution")
+    def o(self) -> "Outputs":
+        return SplineResolution.Outputs(self)
 
 
 class String(NodeBuilder):
@@ -2139,10 +2832,20 @@ class String(NodeBuilder):
         self.string = string
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "String") -> None:
+            self._node = node
+
+        @property
+        def string(self) -> StringSocketLinker:
+            """Output socket: String"""
+            return self._node.outputs.get("String")  # type: ignore[return-value]
+
     @property
-    def o_string(self) -> SocketLinker:
-        """Output socket: String"""
-        return self.outputs.get("String")
+    def o(self) -> "Outputs":
+        return String.Outputs(self)
 
     @property
     def string(self) -> str:
@@ -2181,10 +2884,20 @@ class UVTangent(NodeBuilder):
         """Input socket: UV"""
         return self.inputs.get("UV")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "UVTangent") -> None:
+            self._node = node
+
+        @property
+        def tangent(self) -> VectorSocketLinker:
+            """Output socket: Tangent"""
+            return self._node.outputs.get("Tangent")  # type: ignore[return-value]
+
     @property
-    def o_tangent(self) -> VectorSocketLinker:
-        """Output socket: Tangent"""
-        return self.outputs.get("Tangent")
+    def o(self) -> "Outputs":
+        return UVTangent.Outputs(self)
 
 
 class Vector(NodeBuilder):
@@ -2201,10 +2914,20 @@ class Vector(NodeBuilder):
         self.vector = vector
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Vector") -> None:
+            self._node = node
+
+        @property
+        def vector(self) -> VectorSocketLinker:
+            """Output socket: Vector"""
+            return self._node.outputs.get("Vector")  # type: ignore[return-value]
+
     @property
-    def o_vector(self) -> VectorSocketLinker:
-        """Output socket: Vector"""
-        return self.outputs.get("Vector")
+    def o(self) -> "Outputs":
+        return Vector.Outputs(self)
 
     @property
     def vector(self) -> tuple[float, float, float]:
@@ -2229,15 +2952,25 @@ class VertexNeighbors(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_vertex_count(self) -> SocketLinker:
-        """Output socket: Vertex Count"""
-        return self.outputs.get("Vertex Count")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VertexNeighbors") -> None:
+            self._node = node
+
+        @property
+        def vertex_count(self) -> IntegerSocketLinker:
+            """Output socket: Vertex Count"""
+            return self._node.outputs.get("Vertex Count")  # type: ignore[return-value]
+
+        @property
+        def face_count(self) -> IntegerSocketLinker:
+            """Output socket: Face Count"""
+            return self._node.outputs.get("Face Count")  # type: ignore[return-value]
 
     @property
-    def o_face_count(self) -> SocketLinker:
-        """Output socket: Face Count"""
-        return self.outputs.get("Face Count")
+    def o(self) -> "Outputs":
+        return VertexNeighbors.Outputs(self)
 
 
 class VertexOfCorner(NodeBuilder):
@@ -2259,10 +2992,20 @@ class VertexOfCorner(NodeBuilder):
         """Input socket: Corner Index"""
         return self.inputs.get("Corner Index")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VertexOfCorner") -> None:
+            self._node = node
+
+        @property
+        def vertex_index(self) -> IntegerSocketLinker:
+            """Output socket: Vertex Index"""
+            return self._node.outputs.get("Vertex Index")  # type: ignore[return-value]
+
     @property
-    def o_vertex_index(self) -> SocketLinker:
-        """Output socket: Vertex Index"""
-        return self.outputs.get("Vertex Index")
+    def o(self) -> "Outputs":
+        return VertexOfCorner.Outputs(self)
 
 
 class ViewportTransform(NodeBuilder):
@@ -2279,20 +3022,30 @@ class ViewportTransform(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_projection(self) -> SocketLinker:
-        """Output socket: Projection"""
-        return self.outputs.get("Projection")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ViewportTransform") -> None:
+            self._node = node
+
+        @property
+        def projection(self) -> MatrixSocketLinker:
+            """Output socket: Projection"""
+            return self._node.outputs.get("Projection")  # type: ignore[return-value]
+
+        @property
+        def view(self) -> MatrixSocketLinker:
+            """Output socket: View"""
+            return self._node.outputs.get("View")  # type: ignore[return-value]
+
+        @property
+        def is_orthographic(self) -> BooleanSocketLinker:
+            """Output socket: Is Orthographic"""
+            return self._node.outputs.get("Is Orthographic")  # type: ignore[return-value]
 
     @property
-    def o_view(self) -> SocketLinker:
-        """Output socket: View"""
-        return self.outputs.get("View")
-
-    @property
-    def o_is_orthographic(self) -> SocketLinker:
-        """Output socket: Is Orthographic"""
-        return self.outputs.get("Is Orthographic")
+    def o(self) -> "Outputs":
+        return ViewportTransform.Outputs(self)
 
 
 class VoxelIndex(NodeBuilder):
@@ -2309,37 +3062,47 @@ class VoxelIndex(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_x(self) -> SocketLinker:
-        """Output socket: X"""
-        return self.outputs.get("X")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "VoxelIndex") -> None:
+            self._node = node
+
+        @property
+        def x(self) -> IntegerSocketLinker:
+            """Output socket: X"""
+            return self._node.outputs.get("X")  # type: ignore[return-value]
+
+        @property
+        def y(self) -> IntegerSocketLinker:
+            """Output socket: Y"""
+            return self._node.outputs.get("Y")  # type: ignore[return-value]
+
+        @property
+        def z(self) -> IntegerSocketLinker:
+            """Output socket: Z"""
+            return self._node.outputs.get("Z")  # type: ignore[return-value]
+
+        @property
+        def is_tile(self) -> BooleanSocketLinker:
+            """Output socket: Is Tile"""
+            return self._node.outputs.get("Is Tile")  # type: ignore[return-value]
+
+        @property
+        def extent_x(self) -> IntegerSocketLinker:
+            """Output socket: Extent X"""
+            return self._node.outputs.get("Extent X")  # type: ignore[return-value]
+
+        @property
+        def extent_y(self) -> IntegerSocketLinker:
+            """Output socket: Extent Y"""
+            return self._node.outputs.get("Extent Y")  # type: ignore[return-value]
+
+        @property
+        def extent_z(self) -> IntegerSocketLinker:
+            """Output socket: Extent Z"""
+            return self._node.outputs.get("Extent Z")  # type: ignore[return-value]
 
     @property
-    def o_y(self) -> SocketLinker:
-        """Output socket: Y"""
-        return self.outputs.get("Y")
-
-    @property
-    def o_z(self) -> SocketLinker:
-        """Output socket: Z"""
-        return self.outputs.get("Z")
-
-    @property
-    def o_is_tile(self) -> SocketLinker:
-        """Output socket: Is Tile"""
-        return self.outputs.get("Is Tile")
-
-    @property
-    def o_extent_x(self) -> SocketLinker:
-        """Output socket: Extent X"""
-        return self.outputs.get("Extent X")
-
-    @property
-    def o_extent_y(self) -> SocketLinker:
-        """Output socket: Extent Y"""
-        return self.outputs.get("Extent Y")
-
-    @property
-    def o_extent_z(self) -> SocketLinker:
-        """Output socket: Extent Z"""
-        return self.outputs.get("Extent Z")
+    def o(self) -> "Outputs":
+        return VoxelIndex.Outputs(self)

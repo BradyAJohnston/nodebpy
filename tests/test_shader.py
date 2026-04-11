@@ -15,7 +15,7 @@ def test_simple_shader():
 
 def test_shader_math():
     with TreeBuilder.shader() as tree:
-        comp = s.Geometry().o_random_per_island >= 10.0
+        comp = s.Geometry().o.random_per_island >= 10.0
         prin = s.PrincipledBSDF(ior=comp)
         with tree.outputs:
             _ = prin >> sockets.SocketShader()

@@ -75,10 +75,20 @@ class BoxMask(NodeBuilder):
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "BoxMask") -> None:
+            self._node = node
+
+        @property
+        def mask(self) -> SocketLinker:
+            """Output socket: Mask"""
+            return self._node.outputs.get("Mask")  # type: ignore[return-value]
+
     @property
-    def o_mask(self) -> SocketLinker:
-        """Output socket: Mask"""
-        return self.outputs.get("Mask")
+    def o(self) -> "Outputs":
+        return BoxMask.Outputs(self)
 
 
 class ChannelKey(NodeBuilder):
@@ -189,15 +199,25 @@ class ChannelKey(NodeBuilder):
         """Input socket: YCbCr Limit Channel"""
         return self.inputs.get("YCbCr Limit Channel")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ChannelKey") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def matte(self) -> SocketLinker:
+            """Output socket: Matte"""
+            return self._node.outputs.get("Matte")  # type: ignore[return-value]
 
     @property
-    def o_matte(self) -> SocketLinker:
-        """Output socket: Matte"""
-        return self.outputs.get("Matte")
+    def o(self) -> "Outputs":
+        return ChannelKey.Outputs(self)
 
 
 class ChromaKey(NodeBuilder):
@@ -252,15 +272,25 @@ class ChromaKey(NodeBuilder):
         """Input socket: Falloff"""
         return self.inputs.get("Falloff")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ChromaKey") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def matte(self) -> SocketLinker:
+            """Output socket: Matte"""
+            return self._node.outputs.get("Matte")  # type: ignore[return-value]
 
     @property
-    def o_matte(self) -> SocketLinker:
-        """Output socket: Matte"""
-        return self.outputs.get("Matte")
+    def o(self) -> "Outputs":
+        return ChromaKey.Outputs(self)
 
 
 class ColorKey(NodeBuilder):
@@ -315,15 +345,25 @@ class ColorKey(NodeBuilder):
         """Input socket: Value"""
         return self.inputs.get("Value")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ColorKey") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def matte(self) -> SocketLinker:
+            """Output socket: Matte"""
+            return self._node.outputs.get("Matte")  # type: ignore[return-value]
 
     @property
-    def o_matte(self) -> SocketLinker:
-        """Output socket: Matte"""
-        return self.outputs.get("Matte")
+    def o(self) -> "Outputs":
+        return ColorKey.Outputs(self)
 
 
 class ColorSpill(NodeBuilder):
@@ -399,10 +439,20 @@ class ColorSpill(NodeBuilder):
         """Input socket: Strength"""
         return self.inputs.get("Spill Strength")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "ColorSpill") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
     @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    def o(self) -> "Outputs":
+        return ColorSpill.Outputs(self)
 
 
 class DifferenceKey(NodeBuilder):
@@ -450,15 +500,25 @@ class DifferenceKey(NodeBuilder):
         """Input socket: Falloff"""
         return self.inputs.get("Falloff")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "DifferenceKey") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def matte(self) -> SocketLinker:
+            """Output socket: Matte"""
+            return self._node.outputs.get("Matte")  # type: ignore[return-value]
 
     @property
-    def o_matte(self) -> SocketLinker:
-        """Output socket: Matte"""
-        return self.outputs.get("Matte")
+    def o(self) -> "Outputs":
+        return DifferenceKey.Outputs(self)
 
 
 class DistanceKey(NodeBuilder):
@@ -513,15 +573,25 @@ class DistanceKey(NodeBuilder):
         """Input socket: Falloff"""
         return self.inputs.get("Falloff")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "DistanceKey") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def matte(self) -> SocketLinker:
+            """Output socket: Matte"""
+            return self._node.outputs.get("Matte")  # type: ignore[return-value]
 
     @property
-    def o_matte(self) -> SocketLinker:
-        """Output socket: Matte"""
-        return self.outputs.get("Matte")
+    def o(self) -> "Outputs":
+        return DistanceKey.Outputs(self)
 
 
 class DoubleEdgeMask(NodeBuilder):
@@ -569,10 +639,20 @@ class DoubleEdgeMask(NodeBuilder):
         """Input socket: Only Inside Outer"""
         return self.inputs.get("Only Inside Outer")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "DoubleEdgeMask") -> None:
+            self._node = node
+
+        @property
+        def mask(self) -> SocketLinker:
+            """Output socket: Mask"""
+            return self._node.outputs.get("Mask")  # type: ignore[return-value]
+
     @property
-    def o_mask(self) -> SocketLinker:
-        """Output socket: Mask"""
-        return self.outputs.get("Mask")
+    def o(self) -> "Outputs":
+        return DoubleEdgeMask.Outputs(self)
 
 
 class EllipseMask(NodeBuilder):
@@ -634,10 +714,20 @@ class EllipseMask(NodeBuilder):
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "EllipseMask") -> None:
+            self._node = node
+
+        @property
+        def mask(self) -> SocketLinker:
+            """Output socket: Mask"""
+            return self._node.outputs.get("Mask")  # type: ignore[return-value]
+
     @property
-    def o_mask(self) -> SocketLinker:
-        """Output socket: Mask"""
-        return self.outputs.get("Mask")
+    def o(self) -> "Outputs":
+        return EllipseMask.Outputs(self)
 
 
 class Keying(NodeBuilder):
@@ -772,20 +862,30 @@ class Keying(NodeBuilder):
         """Input socket: Balance"""
         return self.inputs.get("Despill Balance")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Keying") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def matte(self) -> SocketLinker:
+            """Output socket: Matte"""
+            return self._node.outputs.get("Matte")  # type: ignore[return-value]
+
+        @property
+        def edges(self) -> SocketLinker:
+            """Output socket: Edges"""
+            return self._node.outputs.get("Edges")  # type: ignore[return-value]
 
     @property
-    def o_matte(self) -> SocketLinker:
-        """Output socket: Matte"""
-        return self.outputs.get("Matte")
-
-    @property
-    def o_edges(self) -> SocketLinker:
-        """Output socket: Edges"""
-        return self.outputs.get("Edges")
+    def o(self) -> "Outputs":
+        return Keying.Outputs(self)
 
 
 class KeyingScreen(NodeBuilder):
@@ -812,10 +912,20 @@ class KeyingScreen(NodeBuilder):
         """Input socket: Smoothness"""
         return self.inputs.get("Smoothness")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "KeyingScreen") -> None:
+            self._node = node
+
+        @property
+        def screen(self) -> ColorSocketLinker:
+            """Output socket: Screen"""
+            return self._node.outputs.get("Screen")  # type: ignore[return-value]
+
     @property
-    def o_screen(self) -> ColorSocketLinker:
-        """Output socket: Screen"""
-        return self.outputs.get("Screen")
+    def o(self) -> "Outputs":
+        return KeyingScreen.Outputs(self)
 
     @property
     def tracking_object(self) -> str:
@@ -860,12 +970,22 @@ class LuminanceKey(NodeBuilder):
         """Input socket: Maximum"""
         return self.inputs.get("Maximum")
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "LuminanceKey") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def matte(self) -> SocketLinker:
+            """Output socket: Matte"""
+            return self._node.outputs.get("Matte")  # type: ignore[return-value]
 
     @property
-    def o_matte(self) -> SocketLinker:
-        """Output socket: Matte"""
-        return self.outputs.get("Matte")
+    def o(self) -> "Outputs":
+        return LuminanceKey.Outputs(self)

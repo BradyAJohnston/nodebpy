@@ -3,7 +3,13 @@ from typing import Iterable
 
 import bpy
 
-from nodebpy.builder import DynamicInputsMixin, NodeBuilder, SocketLinker
+from nodebpy.builder import (
+    DynamicInputsMixin,
+    IntegerSocketLinker,
+    NodeBuilder,
+    SocketLinker,
+    TypedOutputs,
+)
 
 from ...types import (
     InputBoolean,
@@ -112,10 +118,15 @@ class SimulationInput(BaseSimulationZone, BaseZoneInput):
     _bl_idname = "GeometryNodeSimulationInput"
     node: bpy.types.GeometryNodeSimulationInput
 
+    class Outputs(TypedOutputs):
+        @property
+        def delta_time(self) -> SocketLinker:
+            """Output socket: Delta Time"""
+            return self.get("Delta Time")
+
     @property
-    def o_delta_time(self) -> SocketLinker:
-        """Output socket: Delta Time"""
-        return self.outputs.get("Delta Time")
+    def o(self) -> "Outputs":
+        return SimulationInput.Outputs(self)
 
 
 class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
@@ -142,7 +153,7 @@ class SimulationZone:
             self.input._link_from(source, name)
 
     def delta_time(self) -> SocketLinker:
-        return self.input.o_delta_time
+        return self.input.o.delta_time
 
     def __getitem__(self, index: int):
         match index:
@@ -189,10 +200,15 @@ class RepeatInput(BaseRepeatZone, BaseZoneInput):
         key_args = {"Iterations": iterations}
         self._establish_links(**key_args)
 
+    class Outputs(TypedOutputs):
+        @property
+        def iteration(self) -> IntegerSocketLinker:
+            """Output socket: Iteration"""
+            return self.get("Iteration")  # type: ignore[return-value]
+
     @property
-    def o_iteration(self) -> SocketLinker:
-        """Output socket: Iteration"""
-        return self.outputs.get("Iteration")
+    def o(self) -> "Outputs":
+        return RepeatInput.Outputs(self)
 
 
 class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
@@ -221,7 +237,7 @@ class RepeatZone:
     @property
     def i(self) -> SocketLinker:
         """Input socket: Skip simluation frame"""
-        return self.input.o_iteration
+        return self.input.o.iteration
 
     def __iter__(self):
         """Support for loop: for i, input, output in RepeatZone(...)"""
@@ -252,7 +268,7 @@ class ForEachGeometryElementZone:
 
     @property
     def index(self) -> SocketLinker:
-        return self.input.o_index
+        return self.input.o.index
 
     def __getitem__(self, index: int):
         match index:
@@ -316,10 +332,15 @@ class ForEachGeometryElementInput(BaseZoneInput):
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
+    class Outputs(TypedOutputs):
+        @property
+        def index(self) -> IntegerSocketLinker:
+            """Output socket: Index"""
+            return self.get("Index")  # type: ignore[return-value]
+
     @property
-    def o_index(self) -> SocketLinker:
-        """Output socket: Index"""
-        return self.outputs.get("Index")
+    def o(self) -> "Outputs":
+        return ForEachGeometryElementInput.Outputs(self)
 
 
 class ForEachGeometryElementOutput(BaseZoneOutput):
@@ -394,6 +415,21 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         """Add a socket to the zone"""
         _ = self.items_generated.new(type, name)
         return self._latest("generation", self.node.inputs)
+
+    class Outputs(TypedOutputs):
+        @property
+        def geometry(self) -> SocketLinker:
+            """Output socket: Geometry"""
+            return self.get("Geometry")
+
+        @property
+        def generation(self) -> SocketLinker:
+            """Output socket: Generation"""
+            return self.get("Generation_0")
+
+    @property
+    def o(self) -> "Outputs":
+        return ForEachGeometryElementOutput.Outputs(self)
 
     @property
     def i_geometry(self) -> SocketLinker:

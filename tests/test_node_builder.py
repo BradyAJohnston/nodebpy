@@ -26,7 +26,15 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
-from nodebpy.builder import ColorSocketLinker, NodeBuilder, SocketAccessor, SocketError
+from nodebpy.builder import (
+    ColorSocketLinker,
+    MatrixSocketLinker,
+    NodeBuilder,
+    RotationSocketLinker,
+    SocketAccessor,
+    SocketError,
+    VectorSocketLinker,
+)
 
 
 class TestTreeBuilder:
@@ -268,14 +276,9 @@ class TestGeneratedNodes:
             bbox = g.BoundingBox()
 
             # Test output property accessors
-            assert hasattr(bbox, "o_bounding_box")
-            assert hasattr(bbox, "o_min")
-            assert hasattr(bbox, "o_max")
-
-            # They should return sockets
-            assert bbox.o_bounding_box is not None
-            assert bbox.o_min is not None
-            assert bbox.o_max is not None
+            assert bbox.o.bounding_box is not None
+            assert bbox.o.min is not None
+            assert bbox.o.max is not None
 
 
 class TestComplexWorkflow:
@@ -727,7 +730,7 @@ def test_iter_outputs():
 
 def test_vector_socket_linker():
     with TreeBuilder("SeparateXYZ_z"):
-        pos = g.Position().o_position
+        pos = g.Position().o.position
 
         result = g.SetPosition(position=pos.x * g.Position())
         pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
@@ -739,7 +742,7 @@ def test_vector_socket_linker():
 
 def test_color_socket_linker():
     with TreeBuilder("ColorChannels"):
-        color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
+        color = g.Color((1.0, 0.5, 0.25, 1.0)).o.color
 
         assert isinstance(color, ColorSocketLinker)
 
@@ -761,7 +764,7 @@ def test_color_socket_linker():
 
 def test_color_socket_linker_in_shader_tree():
     with TreeBuilder.shader():
-        color = s.CombineColor(red=1.0, green=0.5, blue=0.25).o_color
+        color = s.CombineColor(red=1.0, green=0.5, blue=0.25).o.color
 
         assert isinstance(color, ColorSocketLinker)
 
@@ -775,7 +778,7 @@ def test_color_socket_linker_in_shader_tree():
 
 def test_color_socket_linker_channel_into_math():
     with TreeBuilder("ColorMath"):
-        color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
+        color = g.Color((1.0, 0.5, 0.25, 1.0)).o.color
 
         # Use a color channel in a math expression
         result = color.r * 2.0 + color.g
@@ -783,6 +786,92 @@ def test_color_socket_linker_channel_into_math():
     assert result.node is not None
     assert result.node.bl_idname == "ShaderNodeMath"
     assert result.node.operation == "ADD"
+
+
+def test_rotation_socket_linker():
+    with TreeBuilder("RotationToQuat"):
+        rot = g.AlignRotationToVector(vector=(0, 0, 1)).o.rotation
+
+        assert isinstance(rot, RotationSocketLinker)
+
+        w = rot.w
+        x = rot.x
+        y = rot.y
+        z = rot.z
+
+        assert w.type == "VALUE"
+        assert x.type == "VALUE"
+        assert y.type == "VALUE"
+        assert z.type == "VALUE"
+
+        # All components share the same RotationToQuaternion node
+        assert w.node == x.node == y.node == z.node
+        assert w.node.bl_idname == "FunctionNodeRotationToQuaternion"
+
+
+def test_rotation_socket_linker_reuses_node():
+    with TreeBuilder("RotationReuseQuat"):
+        rot = g.AlignRotationToVector(vector=(1, 0, 0)).o.rotation
+
+        # Access two components — should reuse the same node
+        _ = rot.w
+        _ = rot.x
+
+    quat_nodes = [
+        n
+        for n in rot.node.id_data.nodes
+        if n.bl_idname == "FunctionNodeRotationToQuaternion"
+    ]
+    assert len(quat_nodes) == 1
+
+
+def test_matrix_socket_linker():
+    with TreeBuilder("MatrixSeparateTransform"):
+        mat = g.CombineTransform(
+            translation=(1, 2, 3), scale=(1, 1, 1)
+        ).o.transform
+
+        assert isinstance(mat, MatrixSocketLinker)
+
+        translation = mat.translation
+        rotation = mat.rotation
+        scale = mat.scale
+
+        assert isinstance(translation, VectorSocketLinker)
+        assert isinstance(rotation, RotationSocketLinker)
+        assert isinstance(scale, VectorSocketLinker)
+
+        # All outputs come from the same SeparateTransform node
+        assert translation.node == rotation.node == scale.node
+        assert translation.node.bl_idname == "FunctionNodeSeparateTransform"
+
+
+def test_matrix_socket_linker_reuses_node():
+    with TreeBuilder("MatrixReuseTransform"):
+        mat = g.CombineTransform(translation=(0, 0, 0), scale=(2, 2, 2)).o.transform
+
+        _ = mat.translation
+        _ = mat.scale
+
+    sep_nodes = [
+        n
+        for n in mat.node.id_data.nodes
+        if n.bl_idname == "FunctionNodeSeparateTransform"
+    ]
+    assert len(sep_nodes) == 1
+
+
+def test_matrix_translation_into_math():
+    with TreeBuilder("MatrixTranslationMath"):
+        mat = g.CombineTransform(
+            translation=(1, 2, 3), scale=(1, 1, 1)
+        ).o.transform
+
+        # Translation is a vector — can use .x shorthand on it
+        x_offset = mat.translation.x
+
+    assert x_offset.type == "VALUE"
+    assert x_offset.node.bl_idname == "ShaderNodeSeparateXYZ"
 
 
 class TestSocketAccessor:
@@ -802,7 +891,7 @@ class TestSocketAccessor:
 
         with TreeBuilder("IterTest"):
             pos = g.Position()
-            _assert_equal(dict(**pos.outputs), {"Position": pos.o_position})
+            _assert_equal(dict(**pos.outputs), {"Position": pos.o.position})
 
             setpos = g.SetPosition()
             _assert_equal(
@@ -919,9 +1008,9 @@ class TestIntegerSocketLinker:
         with TreeBuilder("IntPlusIntSocket"):
             a = g.Integer(1)
             b = g.Integer(2)
-            # b.o_integer is an IntegerSocketLinker; adding it to another integer
+            # b.o.integer is an IntegerSocketLinker; adding it to another integer
             # socket linker should use IntegerMath.add, not Math.add
-            result = a.o_integer + b.o_integer
+            result = a.o.integer + b.o.integer
 
         assert isinstance(result, g.IntegerMath)
         assert result.node.operation == "ADD"
@@ -936,7 +1025,7 @@ class TestIntegerSocketLinker:
             a = g.Integer(1)
             b = g.Integer(2)
             # Use the NodeBuilder directly (not its output socket linker)
-            result = a.o_integer + b
+            result = a.o.integer + b
 
         assert isinstance(result, g.IntegerMath)
         assert result.node.operation == "ADD"
@@ -949,7 +1038,7 @@ class TestIntegerSocketLinker:
         """
         with TreeBuilder("IntFloorDivFloat"):
             n = g.Integer(10)
-            result = n.o_integer // 2.5
+            result = n.o.integer // 2.5
 
         # Should be the Math.floor wrapping a Math.divide — not IntegerMath
         assert isinstance(result, g.Math)

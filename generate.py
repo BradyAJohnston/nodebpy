@@ -13,6 +13,7 @@ Run this script from within Blender to generate node classes:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import ClassVar
 from pathlib import Path
 from typing import Any, Literal
 
@@ -203,33 +204,61 @@ class SocketInfo:
                 return item
         raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
+    _LINKER_TYPE_MAP: ClassVar[dict[str, str]] = {
+        "NodeSocketFloat": "SocketLinker",
+        "NodeSocketInt": "IntegerSocketLinker",
+        "NodeSocketBool": "BooleanSocketLinker",
+        "NodeSocketVector": "VectorSocketLinker",
+        "NodeSocketColor": "ColorSocketLinker",
+        "NodeSocketRotation": "RotationSocketLinker",
+        "NodeSocketMatrix": "MatrixSocketLinker",
+        "NodeSocketString": "StringSocketLinker",
+        "NodeSocketMenu": "MenuSocketLinker",
+        "NodeSocketGeometry": "GeometrySocketLinker",
+        "NodeSocketObject": "ObjectSocketLinker",
+        "NodeSocketMaterial": "MaterialSocketLinker",
+        "NodeSocketImage": "ImageSocketLinker",
+        "NodeSocketCollection": "CollectionSocketLinker",
+        "NodeSocketBundle": "BundleSocketLinker",
+        "NodeSocketClosure": "ClosureSocketLinker",
+        "NodeSocketShader": "ShaderSocketLinker",
+        "NodeSocketVirtual": "SocketLinker",
+    }
+
+    @property
+    def linker_type(self) -> str:
+        """Return the SocketLinker subclass name for this output socket."""
+        for key, cls in self._LINKER_TYPE_MAP.items():
+            if key in self.bl_socket_type:
+                return cls
+        return "SocketLinker"
+
     def format_property(self) -> str:
-        """Generate the property string for this socket."""
-        prop_name = "{}_{}".format(
-            "o" if self.is_output else "i", normalize_name(self.identifier)
-        )
-        description = "{} socket: {}".format(
-            "Output" if self.is_output else "Input", self.name
-        )
+        """Generate the input property string for this socket."""
+        prop_name = "i_{}".format(normalize_name(self.identifier))
+        description = "Input socket: {}".format(self.name)
         if self.description != "":
             description += f"\n        {self.description}\n        "
 
-        if self.is_output and "NodeSocketVector" in self.bl_socket_type:
-            return_type = "VectorSocketLinker"
-        elif self.is_output and "NodeSocketColor" in self.bl_socket_type:
-            return_type = "ColorSocketLinker"
-        else:
-            return_type = "SocketLinker"
-
-        return_value = "self.{}s.get('{}')".format(
-            "output" if self.is_output else "input",
-            self.identifier,
-        )
+        return_value = "self.inputs.get('{}')".format(self.identifier)
 
         return f'''    @property
-    def {prop_name}(self) -> {return_type}:
+    def {prop_name}(self) -> SocketLinker:
         """{description}"""
         return {return_value}
+'''
+
+    def format_output_property(self, class_name: str) -> str:
+        """Generate a property for use inside the Outputs inner class."""
+        prop_name = normalize_name(self.identifier)
+        description = "Output socket: {}".format(self.name)
+        if self.description != "":
+            description += f"\n            {self.description}\n            "
+
+        return f'''        @property
+        def {prop_name}(self) -> {self.linker_type}:
+            """{description}"""
+            return self.get('{self.identifier}')  # type: ignore[return-value]
 '''
 
 
@@ -857,7 +886,20 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     # Generate input properties
     input_properties = [socket.format_property() for socket in node_info.inputs]
-    output_properties = [socket.format_property() for socket in node_info.outputs]
+
+    # Generate typed Outputs inner class + .o property
+    outputs_body = "\n".join(
+        socket.format_output_property(class_name) for socket in node_info.outputs
+    )
+    if node_info.outputs:
+        outputs_class = f'''    class Outputs(TypedOutputs):
+{outputs_body}
+    @property
+    def o(self) -> "Outputs":
+        return {class_name}.Outputs(self)
+'''
+    else:
+        outputs_class = ""
 
     property_accessors = [
         prop.format_property_accessors() for prop in node_info.properties
@@ -879,8 +921,8 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         body_parts.append(enum_methods)
     if input_properties:
         body_parts.append(chr(10).join(input_properties))
-    if output_properties:
-        body_parts.append(chr(10).join(output_properties))
+    if outputs_class:
+        body_parts.append(outputs_class)
     if property_accessors:
         body_parts.append(chr(10).join(property_accessors))
     body = chr(10).join(body_parts)
@@ -923,21 +965,18 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     used_type_hints: set[str] = set()
     has_sockets = False
     has_linkable = False
-    has_vector_outputs = False
-    has_color_outputs = False
+    used_linker_types: set[str] = set()
 
     def _check_socket(socket):
-        nonlocal has_sockets, has_linkable, has_vector_outputs, has_color_outputs
+        nonlocal has_sockets, has_linkable
         has_sockets = True
         hint = socket.type_mapped
         if hint == "InputLinkable":
             has_linkable = True
         else:
             used_type_hints.add(hint)
-        if socket.is_output and "NodeSocketVector" in socket.bl_socket_type:
-            has_vector_outputs = True
-        if socket.is_output and "NodeSocketColor" in socket.bl_socket_type:
-            has_color_outputs = True
+        if socket.is_output:
+            used_linker_types.add(socket.linker_type)
 
     for node in nodes:
         for socket in node.inputs + node.outputs:
@@ -952,14 +991,38 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     lines.append("from typing import Literal")
     lines.append("import bpy")
 
-    # Builder imports
+    # Builder imports — SocketLinker always included if there are any sockets;
+    # plus every specific subclass used by output sockets in this module.
+    all_linker_types = [
+        "SocketLinker",
+        "BooleanSocketLinker",
+        "BundleSocketLinker",
+        "ClosureSocketLinker",
+        "CollectionSocketLinker",
+        "ColorSocketLinker",
+        "GeometrySocketLinker",
+        "ImageSocketLinker",
+        "IntegerSocketLinker",
+        "MaterialSocketLinker",
+        "MatrixSocketLinker",
+        "MenuSocketLinker",
+        "ObjectSocketLinker",
+        "RotationSocketLinker",
+        "ShaderSocketLinker",
+        "StringSocketLinker",
+        "VectorSocketLinker",
+    ]
     builder_imports = ["NodeBuilder"]
     if has_sockets:
-        builder_imports.append("SocketLinker")
-    if has_vector_outputs:
-        builder_imports.append("VectorSocketLinker")
-    if has_color_outputs:
-        builder_imports.append("ColorSocketLinker")
+        # SocketLinker is always needed for input property return types.
+        # SocketLinker for input properties; TypedOutputs for Outputs base class;
+        # additional subclasses only when used by output sockets in this module.
+        builder_imports += ["SocketLinker", "TypedOutputs"]
+        builder_imports += [
+            t
+            for t in all_linker_types
+            if t != "SocketLinker" and t in used_linker_types
+        ]
     lines.append(f"from ...builder import {', '.join(builder_imports)}")
 
     # Types imports — use canonical order matching the type_map

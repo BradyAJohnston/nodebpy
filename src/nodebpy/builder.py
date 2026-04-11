@@ -784,6 +784,12 @@ class NodeBuilder:
     def inputs(self) -> SocketAccessor:
         return SocketAccessor(self.node.inputs, "input", self.node)
 
+    @property
+    def o(self) -> "TypedOutputs":
+        """Typed output accessor. Generated node subclasses override this with
+        a node-specific Outputs class that exposes named, typed properties."""
+        return TypedOutputs(self)
+
     def __rshift__(self, other: "NodeBuilder | SocketLinker") -> "NodeBuilder":
         """Chain nodes using >> operator. Links output to input.
 
@@ -1047,6 +1053,27 @@ class DynamicInputsMixin:
         return new_sockets
 
 
+class TypedOutputs(SocketAccessor):
+    """SocketAccessor subclass returned by NodeBuilder.o.
+
+    Subclasses add typed @property accessors per output socket while
+    retaining all SocketAccessor behaviour (get(), [], iteration).
+    """
+
+    def __init__(self, node: "NodeBuilder") -> None:
+        super().__init__(node.node.outputs, "output", node.node)
+
+    def get(self, key: str | int) -> "SocketLinker":
+        """Override to bypass potential property name conflicts in subclasses."""
+        return _get_socket_linker(self._sockets[SocketAccessor.index(self, key)])
+
+    def __getattr__(self, name: str) -> "SocketLinker":
+        raise RuntimeError(
+            f"Output '{name}' not found on {self._node.bl_idname}. "
+            f"Use .get() for dynamic socket access."
+        )
+
+
 class SocketLinker(NodeBuilder):
     def __init__(self, socket: NodeSocket):
         assert socket.node is not None
@@ -1147,7 +1174,7 @@ class VectorSocketLinker(SocketLinker):
             if link.to_node.bl_idname == "ShaderNodeSeparateXYZ":
                 return SocketLinker(link.to_node.outputs[value])
 
-        return getattr(SeparateXYZ(self), f"o_{value.lower()}")
+        return getattr(SeparateXYZ(self).o, value.lower())
 
     @property
     def x(self) -> SocketLinker:
@@ -1301,8 +1328,6 @@ _SEPARATE_COLOR_IDNAMES = (
 
 
 class ColorSocketLinker(SocketLinker):
-    """Provides .r/.g/.b/.a accessors for color output sockets."""
-
     def _get_separate_color_cls(self):
         tree_type = self._tree.tree.bl_idname
         if tree_type == "ShaderNodeTree":
@@ -1319,7 +1344,7 @@ class ColorSocketLinker(SocketLinker):
                 return SocketLinker(link.to_node.outputs[channel])
 
         SeparateColor = self._get_separate_color_cls()
-        return getattr(SeparateColor(self), f"o_{channel.lower()}")
+        return getattr(SeparateColor(self).o, channel.lower())
 
     @property
     def r(self) -> SocketLinker:
@@ -1339,6 +1364,137 @@ class ColorSocketLinker(SocketLinker):
 
 
 _SOCKET_LINKER_REGISTRY["NodeSocketColor"] = ColorSocketLinker
+
+
+class BooleanSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketBool"] = BooleanSocketLinker
+
+
+class RotationSocketLinker(SocketLinker):
+    def _quaternion_component(self, component: str) -> SocketLinker:
+        from .nodes.geometry.converter import RotationToQuaternion
+
+        for link in self.socket.links:
+            if link.to_node.bl_idname == "FunctionNodeRotationToQuaternion":
+                return _get_socket_linker(link.to_node.outputs[component])
+        return getattr(RotationToQuaternion(self).o, component.lower())
+
+    @property
+    def w(self) -> SocketLinker:
+        return self._quaternion_component("W")
+
+    @property
+    def x(self) -> SocketLinker:
+        return self._quaternion_component("X")
+
+    @property
+    def y(self) -> SocketLinker:
+        return self._quaternion_component("Y")
+
+    @property
+    def z(self) -> SocketLinker:
+        return self._quaternion_component("Z")
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketRotation"] = RotationSocketLinker
+
+
+class MatrixSocketLinker(SocketLinker):
+    def _separate_transform(self, output: str) -> SocketLinker:
+        from .nodes.geometry.converter import SeparateTransform
+
+        for link in self.socket.links:
+            if link.to_node.bl_idname == "FunctionNodeSeparateTransform":
+                return _get_socket_linker(link.to_node.outputs[output])
+        return getattr(SeparateTransform(self).o, output.lower())
+
+    @property
+    def translation(self) -> VectorSocketLinker:
+        return self._separate_transform("Translation")  # type: ignore[return-value]
+
+    @property
+    def rotation(self) -> RotationSocketLinker:
+        return self._separate_transform("Rotation")  # type: ignore[return-value]
+
+    @property
+    def scale(self) -> VectorSocketLinker:
+        return self._separate_transform("Scale")  # type: ignore[return-value]
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketMatrix"] = MatrixSocketLinker
+
+
+class StringSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketString"] = StringSocketLinker
+
+
+class MenuSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketMenu"] = MenuSocketLinker
+
+
+class GeometrySocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketGeometry"] = GeometrySocketLinker
+
+
+class ObjectSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketObject"] = ObjectSocketLinker
+
+
+class MaterialSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketMaterial"] = MaterialSocketLinker
+
+
+class ImageSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketImage"] = ImageSocketLinker
+
+
+class CollectionSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketCollection"] = CollectionSocketLinker
+
+
+class BundleSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketBundle"] = BundleSocketLinker
+
+
+class ClosureSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketClosure"] = ClosureSocketLinker
+
+
+class ShaderSocketLinker(SocketLinker):
+    pass
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketShader"] = ShaderSocketLinker
 
 
 class SocketBase(SocketLinker):
@@ -1929,7 +2085,7 @@ class NodeGroupBuilder(NodeBuilder, ABC):
         """Allow ``i_*`` / ``o_*`` attribute access to resolve to input/output sockets.
 
         ``node.i_vertex_index`` is equivalent to ``node.inputs["vertex_index"]``.
-        ``node.o_other_vertex`` is equivalent to ``node.outputs["other_vertex"]``.
+        ``node.o.other_vertex`` is equivalent to ``node.outputs["other_vertex"]``.
         The suffix is denormalized (snake_case → Title Case) via :func:`denormalize_name`.
         """
         if name.startswith("i_"):

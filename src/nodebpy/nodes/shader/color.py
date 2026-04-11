@@ -45,10 +45,20 @@ class Brightnesscontrast(NodeBuilder):
         """Input socket: Contrast"""
         return self.inputs.get("Contrast")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Brightnesscontrast") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return Brightnesscontrast.Outputs(self)
 
 
 class Huesaturationvalue(NodeBuilder):
@@ -103,10 +113,20 @@ class Huesaturationvalue(NodeBuilder):
         """Input socket: Color"""
         return self.inputs.get("Color")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Huesaturationvalue") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return Huesaturationvalue.Outputs(self)
 
 
 class InvertColor(NodeBuilder):
@@ -137,10 +157,20 @@ class InvertColor(NodeBuilder):
         """Input socket: Color"""
         return self.inputs.get("Color")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "InvertColor") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return InvertColor.Outputs(self)
 
 
 class LightFalloff(NodeBuilder):
@@ -171,17 +201,27 @@ class LightFalloff(NodeBuilder):
         """Input socket: Smooth"""
         return self.inputs.get("Smooth")
 
-    @property
-    def o_quadratic(self) -> SocketLinker:
-        """Output socket: Quadratic"""
-        return self.outputs.get("Quadratic")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "LightFalloff") -> None:
+            self._node = node
+
+        @property
+        def quadratic(self) -> SocketLinker:
+            """Output socket: Quadratic"""
+            return self._node.outputs.get("Quadratic")  # type: ignore[return-value]
+
+        @property
+        def linear(self) -> SocketLinker:
+            """Output socket: Linear"""
+            return self._node.outputs.get("Linear")  # type: ignore[return-value]
+
+        @property
+        def constant(self) -> SocketLinker:
+            """Output socket: Constant"""
+            return self._node.outputs.get("Constant")  # type: ignore[return-value]
 
     @property
-    def o_linear(self) -> SocketLinker:
-        """Output socket: Linear"""
-        return self.outputs.get("Linear")
-
-    @property
-    def o_constant(self) -> SocketLinker:
-        """Output socket: Constant"""
-        return self.outputs.get("Constant")
+    def o(self) -> "Outputs":
+        return LightFalloff.Outputs(self)

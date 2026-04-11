@@ -28,7 +28,7 @@ def import_channel():
         sng = g.StoreNamedGrid.float(
             gng,
             name=channel_name,
-            grid=(gng.o_grid - min_value) / (max_value - min_value),
+            grid=(gng.o.grid - min_value) / (max_value - min_value),
         )
         with tree.outputs:
             _ = sng >> s.SocketGeometry("Volume")

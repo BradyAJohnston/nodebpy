@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
+from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker, VectorSocketLinker
 
 from ...types import (
     InputBoolean,
@@ -28,10 +28,20 @@ class Color(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Color") -> None:
+            self._node = node
+
+        @property
+        def color(self) -> ColorSocketLinker:
+            """Output socket: Color"""
+            return self._node.outputs.get("Color")  # type: ignore[return-value]
+
     @property
-    def o_color(self) -> ColorSocketLinker:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
+    def o(self) -> "Outputs":
+        return Color.Outputs(self)
 
 
 class Mask(NodeBuilder):
@@ -101,10 +111,20 @@ class Mask(NodeBuilder):
         """Input socket: Shutter"""
         return self.inputs.get("Motion Blur Shutter")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Mask") -> None:
+            self._node = node
+
+        @property
+        def mask(self) -> SocketLinker:
+            """Output socket: Mask"""
+            return self._node.outputs.get("Mask")  # type: ignore[return-value]
+
     @property
-    def o_mask(self) -> SocketLinker:
-        """Output socket: Mask"""
-        return self.outputs.get("Mask")
+    def o(self) -> "Outputs":
+        return Mask.Outputs(self)
 
 
 class MovieClip(NodeBuilder):
@@ -121,35 +141,45 @@ class MovieClip(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "MovieClip") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def alpha(self) -> SocketLinker:
+            """Output socket: Alpha"""
+            return self._node.outputs.get("Alpha")  # type: ignore[return-value]
+
+        @property
+        def offset_x(self) -> SocketLinker:
+            """Output socket: Offset X"""
+            return self._node.outputs.get("Offset X")  # type: ignore[return-value]
+
+        @property
+        def offset_y(self) -> SocketLinker:
+            """Output socket: Offset Y"""
+            return self._node.outputs.get("Offset Y")  # type: ignore[return-value]
+
+        @property
+        def scale(self) -> SocketLinker:
+            """Output socket: Scale"""
+            return self._node.outputs.get("Scale")  # type: ignore[return-value]
+
+        @property
+        def angle(self) -> SocketLinker:
+            """Output socket: Angle"""
+            return self._node.outputs.get("Angle")  # type: ignore[return-value]
 
     @property
-    def o_alpha(self) -> SocketLinker:
-        """Output socket: Alpha"""
-        return self.outputs.get("Alpha")
-
-    @property
-    def o_offset_x(self) -> SocketLinker:
-        """Output socket: Offset X"""
-        return self.outputs.get("Offset X")
-
-    @property
-    def o_offset_y(self) -> SocketLinker:
-        """Output socket: Offset Y"""
-        return self.outputs.get("Offset Y")
-
-    @property
-    def o_scale(self) -> SocketLinker:
-        """Output socket: Scale"""
-        return self.outputs.get("Scale")
-
-    @property
-    def o_angle(self) -> SocketLinker:
-        """Output socket: Angle"""
-        return self.outputs.get("Angle")
+    def o(self) -> "Outputs":
+        return MovieClip.Outputs(self)
 
 
 class Normal(NodeBuilder):
@@ -166,10 +196,20 @@ class Normal(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "Normal") -> None:
+            self._node = node
+
+        @property
+        def normal(self) -> VectorSocketLinker:
+            """Output socket: Normal"""
+            return self._node.outputs.get("Normal")  # type: ignore[return-value]
+
     @property
-    def o_normal(self) -> VectorSocketLinker:
-        """Output socket: Normal"""
-        return self.outputs.get("Normal")
+    def o(self) -> "Outputs":
+        return Normal.Outputs(self)
 
 
 class RenderLayers(NodeBuilder):
@@ -186,160 +226,170 @@ class RenderLayers(NodeBuilder):
         self.layer = layer
         self._establish_links(**key_args)
 
-    @property
-    def o_image(self) -> ColorSocketLinker:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "RenderLayers") -> None:
+            self._node = node
+
+        @property
+        def image(self) -> ColorSocketLinker:
+            """Output socket: Image"""
+            return self._node.outputs.get("Image")  # type: ignore[return-value]
+
+        @property
+        def alpha(self) -> SocketLinker:
+            """Output socket: Alpha"""
+            return self._node.outputs.get("Alpha")  # type: ignore[return-value]
+
+        @property
+        def depth(self) -> SocketLinker:
+            """Output socket: Depth"""
+            return self._node.outputs.get("Depth")  # type: ignore[return-value]
+
+        @property
+        def normal(self) -> VectorSocketLinker:
+            """Output socket: Normal"""
+            return self._node.outputs.get("Normal")  # type: ignore[return-value]
+
+        @property
+        def uv(self) -> VectorSocketLinker:
+            """Output socket: UV"""
+            return self._node.outputs.get("UV")  # type: ignore[return-value]
+
+        @property
+        def vector(self) -> VectorSocketLinker:
+            """Output socket: Vector"""
+            return self._node.outputs.get("Vector")  # type: ignore[return-value]
+
+        @property
+        def position(self) -> VectorSocketLinker:
+            """Output socket: Position"""
+            return self._node.outputs.get("Position")  # type: ignore[return-value]
+
+        @property
+        def deprecated(self) -> ColorSocketLinker:
+            """Output socket: Deprecated"""
+            return self._node.outputs.get("Deprecated")  # type: ignore[return-value]
+
+        @property
+        def deprecated_001(self) -> ColorSocketLinker:
+            """Output socket: Deprecated"""
+            return self._node.outputs.get("Deprecated_001")  # type: ignore[return-value]
+
+        @property
+        def shadow(self) -> ColorSocketLinker:
+            """Output socket: Shadow"""
+            return self._node.outputs.get("Shadow")  # type: ignore[return-value]
+
+        @property
+        def ambient_occlusion(self) -> ColorSocketLinker:
+            """Output socket: Ambient Occlusion"""
+            return self._node.outputs.get("Ambient Occlusion")  # type: ignore[return-value]
+
+        @property
+        def deprecated_002(self) -> ColorSocketLinker:
+            """Output socket: Deprecated"""
+            return self._node.outputs.get("Deprecated_002")  # type: ignore[return-value]
+
+        @property
+        def deprecated_003(self) -> ColorSocketLinker:
+            """Output socket: Deprecated"""
+            return self._node.outputs.get("Deprecated_003")  # type: ignore[return-value]
+
+        @property
+        def deprecated_004(self) -> ColorSocketLinker:
+            """Output socket: Deprecated"""
+            return self._node.outputs.get("Deprecated_004")  # type: ignore[return-value]
+
+        @property
+        def object_index(self) -> SocketLinker:
+            """Output socket: Object Index"""
+            return self._node.outputs.get("Object Index")  # type: ignore[return-value]
+
+        @property
+        def material_index(self) -> SocketLinker:
+            """Output socket: Material Index"""
+            return self._node.outputs.get("Material Index")  # type: ignore[return-value]
+
+        @property
+        def mist(self) -> SocketLinker:
+            """Output socket: Mist"""
+            return self._node.outputs.get("Mist")  # type: ignore[return-value]
+
+        @property
+        def emission(self) -> ColorSocketLinker:
+            """Output socket: Emission"""
+            return self._node.outputs.get("Emission")  # type: ignore[return-value]
+
+        @property
+        def environment(self) -> ColorSocketLinker:
+            """Output socket: Environment"""
+            return self._node.outputs.get("Environment")  # type: ignore[return-value]
+
+        @property
+        def diffuse_direct(self) -> ColorSocketLinker:
+            """Output socket: Diffuse Direct"""
+            return self._node.outputs.get("Diffuse Direct")  # type: ignore[return-value]
+
+        @property
+        def diffuse_indirect(self) -> ColorSocketLinker:
+            """Output socket: Diffuse Indirect"""
+            return self._node.outputs.get("Diffuse Indirect")  # type: ignore[return-value]
+
+        @property
+        def diffuse_color(self) -> ColorSocketLinker:
+            """Output socket: Diffuse Color"""
+            return self._node.outputs.get("Diffuse Color")  # type: ignore[return-value]
+
+        @property
+        def glossy_direct(self) -> ColorSocketLinker:
+            """Output socket: Glossy Direct"""
+            return self._node.outputs.get("Glossy Direct")  # type: ignore[return-value]
+
+        @property
+        def glossy_indirect(self) -> ColorSocketLinker:
+            """Output socket: Glossy Indirect"""
+            return self._node.outputs.get("Glossy Indirect")  # type: ignore[return-value]
+
+        @property
+        def glossy_color(self) -> ColorSocketLinker:
+            """Output socket: Glossy Color"""
+            return self._node.outputs.get("Glossy Color")  # type: ignore[return-value]
+
+        @property
+        def transmission_direct(self) -> ColorSocketLinker:
+            """Output socket: Transmission Direct"""
+            return self._node.outputs.get("Transmission Direct")  # type: ignore[return-value]
+
+        @property
+        def transmission_indirect(self) -> ColorSocketLinker:
+            """Output socket: Transmission Indirect"""
+            return self._node.outputs.get("Transmission Indirect")  # type: ignore[return-value]
+
+        @property
+        def transmission_color(self) -> ColorSocketLinker:
+            """Output socket: Transmission Color"""
+            return self._node.outputs.get("Transmission Color")  # type: ignore[return-value]
+
+        @property
+        def subsurface_direct(self) -> ColorSocketLinker:
+            """Output socket: Subsurface Direct"""
+            return self._node.outputs.get("Subsurface Direct")  # type: ignore[return-value]
+
+        @property
+        def subsurface_indirect(self) -> ColorSocketLinker:
+            """Output socket: Subsurface Indirect"""
+            return self._node.outputs.get("Subsurface Indirect")  # type: ignore[return-value]
+
+        @property
+        def subsurface_color(self) -> ColorSocketLinker:
+            """Output socket: Subsurface Color"""
+            return self._node.outputs.get("Subsurface Color")  # type: ignore[return-value]
 
     @property
-    def o_alpha(self) -> SocketLinker:
-        """Output socket: Alpha"""
-        return self.outputs.get("Alpha")
-
-    @property
-    def o_depth(self) -> SocketLinker:
-        """Output socket: Depth"""
-        return self.outputs.get("Depth")
-
-    @property
-    def o_normal(self) -> VectorSocketLinker:
-        """Output socket: Normal"""
-        return self.outputs.get("Normal")
-
-    @property
-    def o_uv(self) -> VectorSocketLinker:
-        """Output socket: UV"""
-        return self.outputs.get("UV")
-
-    @property
-    def o_vector(self) -> VectorSocketLinker:
-        """Output socket: Vector"""
-        return self.outputs.get("Vector")
-
-    @property
-    def o_position(self) -> VectorSocketLinker:
-        """Output socket: Position"""
-        return self.outputs.get("Position")
-
-    @property
-    def o_deprecated(self) -> ColorSocketLinker:
-        """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated")
-
-    @property
-    def o_deprecated_001(self) -> ColorSocketLinker:
-        """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated_001")
-
-    @property
-    def o_shadow(self) -> ColorSocketLinker:
-        """Output socket: Shadow"""
-        return self.outputs.get("Shadow")
-
-    @property
-    def o_ambient_occlusion(self) -> ColorSocketLinker:
-        """Output socket: Ambient Occlusion"""
-        return self.outputs.get("Ambient Occlusion")
-
-    @property
-    def o_deprecated_002(self) -> ColorSocketLinker:
-        """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated_002")
-
-    @property
-    def o_deprecated_003(self) -> ColorSocketLinker:
-        """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated_003")
-
-    @property
-    def o_deprecated_004(self) -> ColorSocketLinker:
-        """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated_004")
-
-    @property
-    def o_object_index(self) -> SocketLinker:
-        """Output socket: Object Index"""
-        return self.outputs.get("Object Index")
-
-    @property
-    def o_material_index(self) -> SocketLinker:
-        """Output socket: Material Index"""
-        return self.outputs.get("Material Index")
-
-    @property
-    def o_mist(self) -> SocketLinker:
-        """Output socket: Mist"""
-        return self.outputs.get("Mist")
-
-    @property
-    def o_emission(self) -> ColorSocketLinker:
-        """Output socket: Emission"""
-        return self.outputs.get("Emission")
-
-    @property
-    def o_environment(self) -> ColorSocketLinker:
-        """Output socket: Environment"""
-        return self.outputs.get("Environment")
-
-    @property
-    def o_diffuse_direct(self) -> ColorSocketLinker:
-        """Output socket: Diffuse Direct"""
-        return self.outputs.get("Diffuse Direct")
-
-    @property
-    def o_diffuse_indirect(self) -> ColorSocketLinker:
-        """Output socket: Diffuse Indirect"""
-        return self.outputs.get("Diffuse Indirect")
-
-    @property
-    def o_diffuse_color(self) -> ColorSocketLinker:
-        """Output socket: Diffuse Color"""
-        return self.outputs.get("Diffuse Color")
-
-    @property
-    def o_glossy_direct(self) -> ColorSocketLinker:
-        """Output socket: Glossy Direct"""
-        return self.outputs.get("Glossy Direct")
-
-    @property
-    def o_glossy_indirect(self) -> ColorSocketLinker:
-        """Output socket: Glossy Indirect"""
-        return self.outputs.get("Glossy Indirect")
-
-    @property
-    def o_glossy_color(self) -> ColorSocketLinker:
-        """Output socket: Glossy Color"""
-        return self.outputs.get("Glossy Color")
-
-    @property
-    def o_transmission_direct(self) -> ColorSocketLinker:
-        """Output socket: Transmission Direct"""
-        return self.outputs.get("Transmission Direct")
-
-    @property
-    def o_transmission_indirect(self) -> ColorSocketLinker:
-        """Output socket: Transmission Indirect"""
-        return self.outputs.get("Transmission Indirect")
-
-    @property
-    def o_transmission_color(self) -> ColorSocketLinker:
-        """Output socket: Transmission Color"""
-        return self.outputs.get("Transmission Color")
-
-    @property
-    def o_subsurface_direct(self) -> ColorSocketLinker:
-        """Output socket: Subsurface Direct"""
-        return self.outputs.get("Subsurface Direct")
-
-    @property
-    def o_subsurface_indirect(self) -> ColorSocketLinker:
-        """Output socket: Subsurface Indirect"""
-        return self.outputs.get("Subsurface Indirect")
-
-    @property
-    def o_subsurface_color(self) -> ColorSocketLinker:
-        """Output socket: Subsurface Color"""
-        return self.outputs.get("Subsurface Color")
+    def o(self) -> "Outputs":
+        return RenderLayers.Outputs(self)
 
     @property
     def layer(self) -> str:
@@ -364,15 +414,25 @@ class SceneTime(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_seconds(self) -> SocketLinker:
-        """Output socket: Seconds"""
-        return self.outputs.get("Seconds")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "SceneTime") -> None:
+            self._node = node
+
+        @property
+        def seconds(self) -> SocketLinker:
+            """Output socket: Seconds"""
+            return self._node.outputs.get("Seconds")  # type: ignore[return-value]
+
+        @property
+        def frame(self) -> SocketLinker:
+            """Output socket: Frame"""
+            return self._node.outputs.get("Frame")  # type: ignore[return-value]
 
     @property
-    def o_frame(self) -> SocketLinker:
-        """Output socket: Frame"""
-        return self.outputs.get("Frame")
+    def o(self) -> "Outputs":
+        return SceneTime.Outputs(self)
 
 
 class TimeCurve(NodeBuilder):
@@ -403,10 +463,20 @@ class TimeCurve(NodeBuilder):
         """Input socket: End Frame"""
         return self.inputs.get("End Frame")
 
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "TimeCurve") -> None:
+            self._node = node
+
+        @property
+        def fac(self) -> SocketLinker:
+            """Output socket: Factor"""
+            return self._node.outputs.get("Fac")  # type: ignore[return-value]
+
     @property
-    def o_fac(self) -> SocketLinker:
-        """Output socket: Factor"""
-        return self.outputs.get("Fac")
+    def o(self) -> "Outputs":
+        return TimeCurve.Outputs(self)
 
 
 class TrackPosition(NodeBuilder):
@@ -444,20 +514,30 @@ class TrackPosition(NodeBuilder):
         """Input socket: Frame"""
         return self.inputs.get("Frame")
 
-    @property
-    def o_x(self) -> SocketLinker:
-        """Output socket: X"""
-        return self.outputs.get("X")
+    class Outputs:
+        __slots__ = ("_node",)
+
+        def __init__(self, node: "TrackPosition") -> None:
+            self._node = node
+
+        @property
+        def x(self) -> SocketLinker:
+            """Output socket: X"""
+            return self._node.outputs.get("X")  # type: ignore[return-value]
+
+        @property
+        def y(self) -> SocketLinker:
+            """Output socket: Y"""
+            return self._node.outputs.get("Y")  # type: ignore[return-value]
+
+        @property
+        def speed(self) -> VectorSocketLinker:
+            """Output socket: Speed"""
+            return self._node.outputs.get("Speed")  # type: ignore[return-value]
 
     @property
-    def o_y(self) -> SocketLinker:
-        """Output socket: Y"""
-        return self.outputs.get("Y")
-
-    @property
-    def o_speed(self) -> VectorSocketLinker:
-        """Output socket: Speed"""
-        return self.outputs.get("Speed")
+    def o(self) -> "Outputs":
+        return TrackPosition.Outputs(self)
 
     @property
     def tracking_object(self) -> str:
