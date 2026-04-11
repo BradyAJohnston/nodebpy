@@ -7,10 +7,10 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_VALUE,
+    InputBoolean,
+    InputColor,
+    InputMenu,
+    InputFloat,
 )
 
 
@@ -24,12 +24,11 @@ class AlphaOver(NodeBuilder):
 
     def __init__(
         self,
-        background: TYPE_INPUT_COLOR = None,
-        foreground: TYPE_INPUT_COLOR = None,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        type: TYPE_INPUT_MENU
-        | Literal["Over", "Disjoint Over", "Conjoint Over"] = "Over",
-        straight_alpha: TYPE_INPUT_BOOLEAN = False,
+        background: InputColor = None,
+        foreground: InputColor = None,
+        fac: InputFloat = 1.0,
+        type: InputMenu | Literal["Over", "Disjoint Over", "Conjoint Over"] = "Over",
+        straight_alpha: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -83,9 +82,9 @@ class Brightnesscontrast(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        bright: TYPE_INPUT_VALUE = 0.0,
-        contrast: TYPE_INPUT_VALUE = 0.0,
+        image: InputColor = None,
+        bright: InputFloat = 0.0,
+        contrast: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Image": image, "Bright": bright, "Contrast": contrast}
@@ -123,28 +122,28 @@ class ColorBalance(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        type: TYPE_INPUT_MENU
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
+        type: InputMenu
         | Literal[
             "Lift/Gamma/Gain", "Offset/Power/Slope (ASC-CDL)", "White Point"
         ] = "Lift/Gamma/Gain",
-        base_lift: TYPE_INPUT_VALUE = 0.0,
-        color_lift: TYPE_INPUT_COLOR = None,
-        base_gamma: TYPE_INPUT_VALUE = 1.0,
-        color_gamma: TYPE_INPUT_COLOR = None,
-        base_gain: TYPE_INPUT_VALUE = 1.0,
-        color_gain: TYPE_INPUT_COLOR = None,
-        base_offset: TYPE_INPUT_VALUE = 0.0,
-        color_offset: TYPE_INPUT_COLOR = None,
-        base_power: TYPE_INPUT_VALUE = 1.0,
-        color_power: TYPE_INPUT_COLOR = None,
-        base_slope: TYPE_INPUT_VALUE = 1.0,
-        color_slope: TYPE_INPUT_COLOR = None,
-        input_temperature: TYPE_INPUT_VALUE = 6500.0,
-        input_tint: TYPE_INPUT_VALUE = 10.0,
-        output_temperature: TYPE_INPUT_VALUE = 6500.0,
-        output_tint: TYPE_INPUT_VALUE = 10.0,
+        base_lift: InputFloat = 0.0,
+        color_lift: InputColor = None,
+        base_gamma: InputFloat = 1.0,
+        color_gamma: InputColor = None,
+        base_gain: InputFloat = 1.0,
+        color_gain: InputColor = None,
+        base_offset: InputFloat = 0.0,
+        color_offset: InputColor = None,
+        base_power: InputFloat = 1.0,
+        color_power: InputColor = None,
+        base_slope: InputFloat = 1.0,
+        color_slope: InputColor = None,
+        input_temperature: InputFloat = 6500.0,
+        input_tint: InputFloat = 10.0,
+        output_temperature: InputFloat = 6500.0,
+        output_tint: InputFloat = 10.0,
         *,
         input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
         output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
@@ -302,33 +301,33 @@ class ColorCorrection(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        mask: TYPE_INPUT_VALUE = 1.0,
-        master_saturation: TYPE_INPUT_VALUE = 1.0,
-        master_contrast: TYPE_INPUT_VALUE = 1.0,
-        master_gamma: TYPE_INPUT_VALUE = 1.0,
-        master_gain: TYPE_INPUT_VALUE = 1.0,
-        master_offset: TYPE_INPUT_VALUE = 0.0,
-        highlights_saturation: TYPE_INPUT_VALUE = 1.0,
-        highlights_contrast: TYPE_INPUT_VALUE = 1.0,
-        highlights_gamma: TYPE_INPUT_VALUE = 1.0,
-        highlights_gain: TYPE_INPUT_VALUE = 1.0,
-        highlights_offset: TYPE_INPUT_VALUE = 0.0,
-        midtones_saturation: TYPE_INPUT_VALUE = 1.0,
-        midtones_contrast: TYPE_INPUT_VALUE = 1.0,
-        midtones_gamma: TYPE_INPUT_VALUE = 1.0,
-        midtones_gain: TYPE_INPUT_VALUE = 1.0,
-        midtones_offset: TYPE_INPUT_VALUE = 0.0,
-        shadows_saturation: TYPE_INPUT_VALUE = 1.0,
-        shadows_contrast: TYPE_INPUT_VALUE = 1.0,
-        shadows_gamma: TYPE_INPUT_VALUE = 1.0,
-        shadows_gain: TYPE_INPUT_VALUE = 1.0,
-        shadows_offset: TYPE_INPUT_VALUE = 0.0,
-        midtones_start: TYPE_INPUT_VALUE = 0.2,
-        midtones_end: TYPE_INPUT_VALUE = 0.7,
-        apply_on_red: TYPE_INPUT_BOOLEAN = True,
-        apply_on_green: TYPE_INPUT_BOOLEAN = True,
-        apply_on_blue: TYPE_INPUT_BOOLEAN = True,
+        image: InputColor = None,
+        mask: InputFloat = 1.0,
+        master_saturation: InputFloat = 1.0,
+        master_contrast: InputFloat = 1.0,
+        master_gamma: InputFloat = 1.0,
+        master_gain: InputFloat = 1.0,
+        master_offset: InputFloat = 0.0,
+        highlights_saturation: InputFloat = 1.0,
+        highlights_contrast: InputFloat = 1.0,
+        highlights_gamma: InputFloat = 1.0,
+        highlights_gain: InputFloat = 1.0,
+        highlights_offset: InputFloat = 0.0,
+        midtones_saturation: InputFloat = 1.0,
+        midtones_contrast: InputFloat = 1.0,
+        midtones_gamma: InputFloat = 1.0,
+        midtones_gain: InputFloat = 1.0,
+        midtones_offset: InputFloat = 0.0,
+        shadows_saturation: InputFloat = 1.0,
+        shadows_contrast: InputFloat = 1.0,
+        shadows_gamma: InputFloat = 1.0,
+        shadows_gain: InputFloat = 1.0,
+        shadows_offset: InputFloat = 0.0,
+        midtones_start: InputFloat = 0.2,
+        midtones_end: InputFloat = 0.7,
+        apply_on_red: InputBoolean = True,
+        apply_on_green: InputBoolean = True,
+        apply_on_blue: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -514,12 +513,12 @@ class DepthCombine(NodeBuilder):
 
     def __init__(
         self,
-        a: TYPE_INPUT_COLOR = None,
-        depth_a: TYPE_INPUT_VALUE = 1.0,
-        b: TYPE_INPUT_COLOR = None,
-        depth_b: TYPE_INPUT_VALUE = 1.0,
-        use_alpha: TYPE_INPUT_BOOLEAN = False,
-        anti_alias: TYPE_INPUT_BOOLEAN = True,
+        a: InputColor = None,
+        depth_a: InputFloat = 1.0,
+        b: InputColor = None,
+        depth_b: InputFloat = 1.0,
+        use_alpha: InputBoolean = False,
+        anti_alias: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -584,8 +583,8 @@ class Exposure(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        exposure: TYPE_INPUT_VALUE = 0.0,
+        image: InputColor = None,
+        exposure: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Image": image, "Exposure": exposure}
@@ -618,8 +617,8 @@ class HueCorrect(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        fac: TYPE_INPUT_VALUE = 1.0,
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {"Image": image, "Fac": fac}
@@ -652,11 +651,11 @@ class Huesaturationvalue(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        hue: TYPE_INPUT_VALUE = 0.5,
-        saturation: TYPE_INPUT_VALUE = 1.0,
-        value: TYPE_INPUT_VALUE = 1.0,
-        fac: TYPE_INPUT_VALUE = 1.0,
+        image: InputColor = None,
+        hue: InputFloat = 0.5,
+        saturation: InputFloat = 1.0,
+        value: InputFloat = 1.0,
+        fac: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {
@@ -710,10 +709,10 @@ class InvertColor(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        invert_color: TYPE_INPUT_BOOLEAN = True,
-        invert_alpha: TYPE_INPUT_BOOLEAN = False,
+        color: InputColor = None,
+        fac: InputFloat = 1.0,
+        invert_color: InputBoolean = True,
+        invert_alpha: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -761,8 +760,8 @@ class Posterize(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        steps: TYPE_INPUT_VALUE = 8.0,
+        image: InputColor = None,
+        steps: InputFloat = 8.0,
     ):
         super().__init__()
         key_args = {"Image": image, "Steps": steps}
@@ -795,10 +794,10 @@ class RGBCurves(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        black_level: TYPE_INPUT_COLOR = None,
-        white_level: TYPE_INPUT_COLOR = None,
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
+        black_level: InputColor = None,
+        white_level: InputColor = None,
     ):
         super().__init__()
         key_args = {
@@ -846,16 +845,16 @@ class Tonemap(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        type: TYPE_INPUT_MENU
+        image: InputColor = None,
+        type: InputMenu
         | Literal["R/D Photoreceptor", "Rh Simple"] = "R/D Photoreceptor",
-        key: TYPE_INPUT_VALUE = 0.18,
-        balance: TYPE_INPUT_VALUE = 1.0,
-        gamma: TYPE_INPUT_VALUE = 1.0,
-        intensity: TYPE_INPUT_VALUE = 0.0,
-        contrast: TYPE_INPUT_VALUE = 0.0,
-        light_adaptation: TYPE_INPUT_VALUE = 0.0,
-        chromatic_adaptation: TYPE_INPUT_VALUE = 0.0,
+        key: InputFloat = 0.18,
+        balance: InputFloat = 1.0,
+        gamma: InputFloat = 1.0,
+        intensity: InputFloat = 0.0,
+        contrast: InputFloat = 0.0,
+        light_adaptation: InputFloat = 0.0,
+        chromatic_adaptation: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {

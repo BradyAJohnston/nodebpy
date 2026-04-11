@@ -7,12 +7,12 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_CLOSURE,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_ROTATION,
-    TYPE_INPUT_SHADER,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputClosure,
+    InputColor,
+    InputRotation,
+    InputShader,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -26,9 +26,9 @@ class CombineColor(NodeBuilder):
 
     def __init__(
         self,
-        red: TYPE_INPUT_VALUE = 0.0,
-        green: TYPE_INPUT_VALUE = 0.0,
-        blue: TYPE_INPUT_VALUE = 0.0,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
         *,
         mode: Literal["RGB", "HSV", "HSL"] = "RGB",
     ):
@@ -76,7 +76,7 @@ class EvaluateClosure(NodeBuilder):
 
     def __init__(
         self,
-        closure: TYPE_INPUT_CLOSURE = None,
+        closure: InputClosure = None,
         *,
         active_input_index: int = 0,
         active_output_index: int = 0,
@@ -129,16 +129,16 @@ class Mix(NodeBuilder):
 
     def __init__(
         self,
-        factor_float: TYPE_INPUT_VALUE = 0.5,
-        factor_vector: TYPE_INPUT_VECTOR = None,
-        a_float: TYPE_INPUT_VALUE = 0.0,
-        b_float: TYPE_INPUT_VALUE = 0.0,
-        a_vector: TYPE_INPUT_VECTOR = None,
-        b_vector: TYPE_INPUT_VECTOR = None,
-        a_color: TYPE_INPUT_COLOR = None,
-        b_color: TYPE_INPUT_COLOR = None,
-        a_rotation: TYPE_INPUT_ROTATION = None,
-        b_rotation: TYPE_INPUT_ROTATION = None,
+        factor_float: InputFloat = 0.5,
+        factor_vector: InputVector = None,
+        a_float: InputFloat = 0.0,
+        b_float: InputFloat = 0.0,
+        a_vector: InputVector = None,
+        b_vector: InputVector = None,
+        a_color: InputColor = None,
+        b_color: InputColor = None,
+        a_rotation: InputRotation = None,
+        b_rotation: InputRotation = None,
         *,
         data_type: Literal["FLOAT", "VECTOR", "RGBA"] = "FLOAT",
         factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
@@ -188,20 +188,14 @@ class Mix(NodeBuilder):
 
     @classmethod
     def float(
-        cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a: TYPE_INPUT_VALUE = 0.0,
-        b: TYPE_INPUT_VALUE = 0.0,
+        cls, factor: InputFloat = 0.5, a: InputFloat = 0.0, b: InputFloat = 0.0
     ) -> "Mix":
         """Create Mix with operation 'Float'."""
         return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
 
     @classmethod
     def vector(
-        cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a: TYPE_INPUT_VECTOR = None,
-        b: TYPE_INPUT_VECTOR = None,
+        cls, factor: InputFloat = 0.5, a: InputVector = None, b: InputVector = None
     ) -> "Mix":
         """Create Mix with operation 'Vector'."""
         return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
@@ -209,9 +203,9 @@ class Mix(NodeBuilder):
     @classmethod
     def color(
         cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a_color: TYPE_INPUT_COLOR = None,
-        b_color: TYPE_INPUT_COLOR = None,
+        factor: InputFloat = 0.5,
+        a_color: InputColor = None,
+        b_color: InputColor = None,
     ) -> "Mix":
         """Create Mix with operation 'Color'."""
         return cls(
@@ -382,7 +376,7 @@ class RGBToBw(NodeBuilder):
     _bl_idname = "ShaderNodeRGBToBW"
     node: bpy.types.ShaderNodeRGBToBW
 
-    def __init__(self, color: TYPE_INPUT_COLOR = None):
+    def __init__(self, color: InputColor = None):
         super().__init__()
         key_args = {"Color": color}
 
@@ -409,7 +403,7 @@ class SeparateColor(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
+        color: InputColor = None,
         *,
         mode: Literal["RGB", "HSV", "HSL"] = "RGB",
     ):
@@ -456,7 +450,7 @@ class ShaderToRGB(NodeBuilder):
     _bl_idname = "ShaderNodeShaderToRGB"
     node: bpy.types.ShaderNodeShaderToRGB
 
-    def __init__(self, shader: TYPE_INPUT_SHADER = None):
+    def __init__(self, shader: InputShader = None):
         super().__init__()
         key_args = {"Shader": shader}
 
@@ -486,7 +480,7 @@ class Wavelength(NodeBuilder):
     _bl_idname = "ShaderNodeWavelength"
     node: bpy.types.ShaderNodeWavelength
 
-    def __init__(self, wavelength: TYPE_INPUT_VALUE = 500.0):
+    def __init__(self, wavelength: InputFloat = 500.0):
         super().__init__()
         key_args = {"Wavelength": wavelength}
 

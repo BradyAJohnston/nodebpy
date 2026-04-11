@@ -7,14 +7,14 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_GEOMETRY,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MATRIX,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputGeometry,
+    InputInteger,
+    InputMatrix,
+    InputMenu,
+    InputString,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -28,10 +28,10 @@ class AdvectGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        velocity: TYPE_INPUT_VECTOR = None,
-        time_step: TYPE_INPUT_VALUE = 1.0,
-        integration_scheme: TYPE_INPUT_MENU
+        grid: InputFloat = 0.0,
+        velocity: InputVector = None,
+        time_step: InputFloat = 1.0,
+        integration_scheme: InputMenu
         | Literal[
             "Semi-Lagrangian",
             "Midpoint",
@@ -40,7 +40,7 @@ class AdvectGrid(NodeBuilder):
             "MacCormack",
             "BFECC",
         ] = "Runge-Kutta 3",
-        limiter: TYPE_INPUT_MENU | Literal["None", "Clamp", "Revert"] = "Clamp",
+        limiter: InputMenu | Literal["None", "Clamp", "Revert"] = "Clamp",
         *,
         data_type: Literal["FLOAT", "INT", "VECTOR"] = "FLOAT",
     ):
@@ -58,10 +58,10 @@ class AdvectGrid(NodeBuilder):
     @classmethod
     def float(
         cls,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        velocity: TYPE_INPUT_VECTOR = None,
-        time_step: TYPE_INPUT_VALUE = 1.0,
-        integration_scheme: TYPE_INPUT_MENU
+        grid: InputFloat = 0.0,
+        velocity: InputVector = None,
+        time_step: InputFloat = 1.0,
+        integration_scheme: InputMenu
         | Literal[
             "Semi-Lagrangian",
             "Midpoint",
@@ -70,7 +70,7 @@ class AdvectGrid(NodeBuilder):
             "MacCormack",
             "BFECC",
         ] = "Runge-Kutta 3",
-        limiter: TYPE_INPUT_MENU | Literal["None", "Clamp", "Revert"] = "Clamp",
+        limiter: InputMenu | Literal["None", "Clamp", "Revert"] = "Clamp",
     ) -> "AdvectGrid":
         """Create Advect Grid with operation 'Float'."""
         return cls(
@@ -85,10 +85,10 @@ class AdvectGrid(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        grid: TYPE_INPUT_INT = 0,
-        velocity: TYPE_INPUT_VECTOR = None,
-        time_step: TYPE_INPUT_VALUE = 1.0,
-        integration_scheme: TYPE_INPUT_MENU
+        grid: InputInteger = 0,
+        velocity: InputVector = None,
+        time_step: InputFloat = 1.0,
+        integration_scheme: InputMenu
         | Literal[
             "Semi-Lagrangian",
             "Midpoint",
@@ -97,7 +97,7 @@ class AdvectGrid(NodeBuilder):
             "MacCormack",
             "BFECC",
         ] = "Runge-Kutta 3",
-        limiter: TYPE_INPUT_MENU | Literal["None", "Clamp", "Revert"] = "Clamp",
+        limiter: InputMenu | Literal["None", "Clamp", "Revert"] = "Clamp",
     ) -> "AdvectGrid":
         """Create Advect Grid with operation 'Integer'."""
         return cls(
@@ -112,10 +112,10 @@ class AdvectGrid(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        grid: TYPE_INPUT_VECTOR = None,
-        velocity: TYPE_INPUT_VECTOR = None,
-        time_step: TYPE_INPUT_VALUE = 1.0,
-        integration_scheme: TYPE_INPUT_MENU
+        grid: InputVector = None,
+        velocity: InputVector = None,
+        time_step: InputFloat = 1.0,
+        integration_scheme: InputMenu
         | Literal[
             "Semi-Lagrangian",
             "Midpoint",
@@ -124,7 +124,7 @@ class AdvectGrid(NodeBuilder):
             "MacCormack",
             "BFECC",
         ] = "Runge-Kutta 3",
-        limiter: TYPE_INPUT_MENU | Literal["None", "Clamp", "Revert"] = "Clamp",
+        limiter: InputMenu | Literal["None", "Clamp", "Revert"] = "Clamp",
     ) -> "AdvectGrid":
         """Create Advect Grid with operation 'Vector'."""
         return cls(
@@ -185,11 +185,11 @@ class DistributePointsInGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        density: TYPE_INPUT_VALUE = 1.0,
-        seed: TYPE_INPUT_INT = 0,
-        spacing: TYPE_INPUT_VECTOR = None,
-        threshold: TYPE_INPUT_VALUE = 0.1,
+        grid: InputFloat = 0.0,
+        density: InputFloat = 1.0,
+        seed: InputInteger = 0,
+        spacing: InputVector = None,
+        threshold: InputFloat = 0.1,
         *,
         mode: Literal["DENSITY_RANDOM", "DENSITY_GRID"] = "DENSITY_RANDOM",
     ):
@@ -253,12 +253,12 @@ class DistributePointsInVolume(NodeBuilder):
 
     def __init__(
         self,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        mode: TYPE_INPUT_MENU | Literal["Random", "Grid"] = "Random",
-        density: TYPE_INPUT_VALUE = 1.0,
-        seed: TYPE_INPUT_INT = 0,
-        spacing: TYPE_INPUT_VECTOR = None,
-        threshold: TYPE_INPUT_VALUE = 0.1,
+        volume: InputGeometry = None,
+        mode: InputMenu | Literal["Random", "Grid"] = "Random",
+        density: InputFloat = 1.0,
+        seed: InputInteger = 0,
+        spacing: InputVector = None,
+        threshold: InputFloat = 0.1,
     ):
         super().__init__()
         key_args = {
@@ -318,9 +318,9 @@ class GetNamedGrid(NodeBuilder):
 
     def __init__(
         self,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        remove: TYPE_INPUT_BOOLEAN = True,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        remove: InputBoolean = True,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -332,9 +332,9 @@ class GetNamedGrid(NodeBuilder):
     @classmethod
     def float(
         cls,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        remove: TYPE_INPUT_BOOLEAN = True,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        remove: InputBoolean = True,
     ) -> "GetNamedGrid":
         """Create Get Named Grid with operation 'Float'."""
         return cls(data_type="FLOAT", volume=volume, name=name, remove=remove)
@@ -342,9 +342,9 @@ class GetNamedGrid(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        remove: TYPE_INPUT_BOOLEAN = True,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        remove: InputBoolean = True,
     ) -> "GetNamedGrid":
         """Create Get Named Grid with operation 'Integer'."""
         return cls(data_type="INT", volume=volume, name=name, remove=remove)
@@ -352,9 +352,9 @@ class GetNamedGrid(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        remove: TYPE_INPUT_BOOLEAN = True,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        remove: InputBoolean = True,
     ) -> "GetNamedGrid":
         """Create Get Named Grid with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", volume=volume, name=name, remove=remove)
@@ -362,9 +362,9 @@ class GetNamedGrid(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        remove: TYPE_INPUT_BOOLEAN = True,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        remove: InputBoolean = True,
     ) -> "GetNamedGrid":
         """Create Get Named Grid with operation 'Vector'."""
         return cls(data_type="VECTOR", volume=volume, name=name, remove=remove)
@@ -411,7 +411,7 @@ class GridCurl(NodeBuilder):
     _bl_idname = "GeometryNodeGridCurl"
     node: bpy.types.GeometryNodeGridCurl
 
-    def __init__(self, grid: TYPE_INPUT_VECTOR = None):
+    def __init__(self, grid: InputVector = None):
         super().__init__()
         key_args = {"Grid": grid}
 
@@ -436,7 +436,7 @@ class GridDivergence(NodeBuilder):
     _bl_idname = "GeometryNodeGridDivergence"
     node: bpy.types.GeometryNodeGridDivergence
 
-    def __init__(self, grid: TYPE_INPUT_VECTOR = None):
+    def __init__(self, grid: InputVector = None):
         super().__init__()
         key_args = {"Grid": grid}
 
@@ -461,7 +461,7 @@ class GridGradient(NodeBuilder):
     _bl_idname = "GeometryNodeGridGradient"
     node: bpy.types.GeometryNodeGridGradient
 
-    def __init__(self, grid: TYPE_INPUT_VALUE = 0.0):
+    def __init__(self, grid: InputFloat = 0.0):
         super().__init__()
         key_args = {"Grid": grid}
 
@@ -488,7 +488,7 @@ class GridInfo(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
+        grid: InputFloat = 0.0,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -498,22 +498,22 @@ class GridInfo(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, grid: TYPE_INPUT_VALUE = 0.0) -> "GridInfo":
+    def float(cls, grid: InputFloat = 0.0) -> "GridInfo":
         """Create Grid Info with operation 'Float'."""
         return cls(data_type="FLOAT", grid=grid)
 
     @classmethod
-    def integer(cls, grid: TYPE_INPUT_INT = 0) -> "GridInfo":
+    def integer(cls, grid: InputInteger = 0) -> "GridInfo":
         """Create Grid Info with operation 'Integer'."""
         return cls(data_type="INT", grid=grid)
 
     @classmethod
-    def boolean(cls, grid: TYPE_INPUT_BOOLEAN = False) -> "GridInfo":
+    def boolean(cls, grid: InputBoolean = False) -> "GridInfo":
         """Create Grid Info with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", grid=grid)
 
     @classmethod
-    def vector(cls, grid: TYPE_INPUT_VECTOR = None) -> "GridInfo":
+    def vector(cls, grid: InputVector = None) -> "GridInfo":
         """Create Grid Info with operation 'Vector'."""
         return cls(data_type="VECTOR", grid=grid)
 
@@ -549,7 +549,7 @@ class GridLaplacian(NodeBuilder):
     _bl_idname = "GeometryNodeGridLaplacian"
     node: bpy.types.GeometryNodeGridLaplacian
 
-    def __init__(self, grid: TYPE_INPUT_VALUE = 0.0):
+    def __init__(self, grid: InputFloat = 0.0):
         super().__init__()
         key_args = {"Grid": grid}
 
@@ -576,9 +576,9 @@ class GridToMesh(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        threshold: TYPE_INPUT_VALUE = 0.1,
-        adaptivity: TYPE_INPUT_VALUE = 0.0,
+        grid: InputFloat = 0.0,
+        threshold: InputFloat = 0.1,
+        adaptivity: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Grid": grid, "Threshold": threshold, "Adaptivity": adaptivity}
@@ -616,10 +616,10 @@ class MeshToDensityGrid(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        density: TYPE_INPUT_VALUE = 1.0,
-        voxel_size: TYPE_INPUT_VALUE = 0.3,
-        gradient_width: TYPE_INPUT_VALUE = 0.2,
+        mesh: InputGeometry = None,
+        density: InputFloat = 1.0,
+        voxel_size: InputFloat = 0.3,
+        gradient_width: InputFloat = 0.2,
     ):
         super().__init__()
         key_args = {
@@ -667,9 +667,9 @@ class MeshToSDFGrid(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        voxel_size: TYPE_INPUT_VALUE = 0.3,
-        band_width: TYPE_INPUT_INT = 3,
+        mesh: InputGeometry = None,
+        voxel_size: InputFloat = 0.3,
+        band_width: InputInteger = 3,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Voxel Size": voxel_size, "Band Width": band_width}
@@ -707,12 +707,12 @@ class MeshToVolume(NodeBuilder):
 
     def __init__(
         self,
-        mesh: TYPE_INPUT_GEOMETRY = None,
-        density: TYPE_INPUT_VALUE = 1.0,
-        resolution_mode: TYPE_INPUT_MENU | Literal["Amount", "Size"] = "Amount",
-        voxel_size: TYPE_INPUT_VALUE = 0.3,
-        voxel_amount: TYPE_INPUT_VALUE = 64.0,
-        interior_band_width: TYPE_INPUT_VALUE = 0.2,
+        mesh: InputGeometry = None,
+        density: InputFloat = 1.0,
+        resolution_mode: InputMenu | Literal["Amount", "Size"] = "Amount",
+        voxel_size: InputFloat = 0.3,
+        voxel_amount: InputFloat = 64.0,
+        interior_band_width: InputFloat = 0.2,
     ):
         super().__init__()
         key_args = {
@@ -772,9 +772,9 @@ class PointsToSDFGrid(NodeBuilder):
 
     def __init__(
         self,
-        points: TYPE_INPUT_GEOMETRY = None,
-        radius: TYPE_INPUT_VALUE = 0.5,
-        voxel_size: TYPE_INPUT_VALUE = 0.3,
+        points: InputGeometry = None,
+        radius: InputFloat = 0.5,
+        voxel_size: InputFloat = 0.3,
     ):
         super().__init__()
         key_args = {"Points": points, "Radius": radius, "Voxel Size": voxel_size}
@@ -812,12 +812,12 @@ class PointsToVolume(NodeBuilder):
 
     def __init__(
         self,
-        points: TYPE_INPUT_GEOMETRY = None,
-        density: TYPE_INPUT_VALUE = 1.0,
-        resolution_mode: TYPE_INPUT_MENU | Literal["Amount", "Size"] = "Amount",
-        voxel_size: TYPE_INPUT_VALUE = 0.3,
-        voxel_amount: TYPE_INPUT_VALUE = 64.0,
-        radius: TYPE_INPUT_VALUE = 0.5,
+        points: InputGeometry = None,
+        density: InputFloat = 1.0,
+        resolution_mode: InputMenu | Literal["Amount", "Size"] = "Amount",
+        voxel_size: InputFloat = 0.3,
+        voxel_amount: InputFloat = 64.0,
+        radius: InputFloat = 0.5,
     ):
         super().__init__()
         key_args = {
@@ -877,9 +877,9 @@ class PruneGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
-        threshold: TYPE_INPUT_VALUE = 0.01,
+        grid: InputFloat = 0.0,
+        mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
+        threshold: InputFloat = 0.01,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -891,9 +891,9 @@ class PruneGrid(NodeBuilder):
     @classmethod
     def float(
         cls,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
-        threshold: TYPE_INPUT_VALUE = 0.01,
+        grid: InputFloat = 0.0,
+        mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
+        threshold: InputFloat = 0.01,
     ) -> "PruneGrid":
         """Create Prune Grid with operation 'Float'."""
         return cls(data_type="FLOAT", grid=grid, mode=mode, threshold=threshold)
@@ -901,9 +901,9 @@ class PruneGrid(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        grid: TYPE_INPUT_INT = 0,
-        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
-        threshold: TYPE_INPUT_INT = 0,
+        grid: InputInteger = 0,
+        mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
+        threshold: InputInteger = 0,
     ) -> "PruneGrid":
         """Create Prune Grid with operation 'Integer'."""
         return cls(data_type="INT", grid=grid, mode=mode, threshold=threshold)
@@ -911,8 +911,8 @@ class PruneGrid(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        grid: TYPE_INPUT_BOOLEAN = False,
-        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
+        grid: InputBoolean = False,
+        mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
     ) -> "PruneGrid":
         """Create Prune Grid with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", grid=grid, mode=mode)
@@ -920,9 +920,9 @@ class PruneGrid(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        grid: TYPE_INPUT_VECTOR = None,
-        mode: TYPE_INPUT_MENU | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
-        threshold: TYPE_INPUT_VECTOR = None,
+        grid: InputVector = None,
+        mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
+        threshold: InputVector = None,
     ) -> "PruneGrid":
         """Create Prune Grid with operation 'Vector'."""
         return cls(data_type="VECTOR", grid=grid, mode=mode, threshold=threshold)
@@ -966,8 +966,8 @@ class SDFGridFillet(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        iterations: TYPE_INPUT_INT = 1,
+        grid: InputFloat = 0.0,
+        iterations: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Grid": grid, "Iterations": iterations}
@@ -1000,8 +1000,8 @@ class SDFGridLaplacian(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        iterations: TYPE_INPUT_INT = 1,
+        grid: InputFloat = 0.0,
+        iterations: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Grid": grid, "Iterations": iterations}
@@ -1034,9 +1034,9 @@ class SDFGridMean(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        width: TYPE_INPUT_INT = 1,
-        iterations: TYPE_INPUT_INT = 1,
+        grid: InputFloat = 0.0,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Grid": grid, "Width": width, "Iterations": iterations}
@@ -1074,8 +1074,8 @@ class SDFGridMeanCurvature(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        iterations: TYPE_INPUT_INT = 1,
+        grid: InputFloat = 0.0,
+        iterations: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Grid": grid, "Iterations": iterations}
@@ -1108,9 +1108,9 @@ class SDFGridMedian(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        width: TYPE_INPUT_INT = 1,
-        iterations: TYPE_INPUT_INT = 1,
+        grid: InputFloat = 0.0,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Grid": grid, "Width": width, "Iterations": iterations}
@@ -1148,8 +1148,8 @@ class SDFGridOffset(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        distance: TYPE_INPUT_VALUE = 0.1,
+        grid: InputFloat = 0.0,
+        distance: InputFloat = 0.1,
     ):
         super().__init__()
         key_args = {"Grid": grid, "Distance": distance}
@@ -1182,9 +1182,9 @@ class SampleGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
+        grid: InputFloat = 0.0,
+        position: InputVector = None,
+        interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
@@ -1197,9 +1197,9 @@ class SampleGrid(NodeBuilder):
     @classmethod
     def float(
         cls,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
+        grid: InputFloat = 0.0,
+        position: InputVector = None,
+        interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid":
         """Create Sample Grid with operation 'Float'."""
@@ -1210,9 +1210,9 @@ class SampleGrid(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        grid: TYPE_INPUT_INT = 0,
-        position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
+        grid: InputInteger = 0,
+        position: InputVector = None,
+        interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid":
         """Create Sample Grid with operation 'Integer'."""
@@ -1223,9 +1223,9 @@ class SampleGrid(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        grid: TYPE_INPUT_BOOLEAN = False,
-        position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
+        grid: InputBoolean = False,
+        position: InputVector = None,
+        interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid":
         """Create Sample Grid with operation 'Boolean'."""
@@ -1239,9 +1239,9 @@ class SampleGrid(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        grid: TYPE_INPUT_VECTOR = None,
-        position: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
+        grid: InputVector = None,
+        position: InputVector = None,
+        interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid":
         """Create Sample Grid with operation 'Vector'."""
@@ -1291,10 +1291,10 @@ class SampleGridIndex(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        x: TYPE_INPUT_INT = 0,
-        y: TYPE_INPUT_INT = 0,
-        z: TYPE_INPUT_INT = 0,
+        grid: InputFloat = 0.0,
+        x: InputInteger = 0,
+        y: InputInteger = 0,
+        z: InputInteger = 0,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1306,10 +1306,10 @@ class SampleGridIndex(NodeBuilder):
     @classmethod
     def float(
         cls,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        x: TYPE_INPUT_INT = 0,
-        y: TYPE_INPUT_INT = 0,
-        z: TYPE_INPUT_INT = 0,
+        grid: InputFloat = 0.0,
+        x: InputInteger = 0,
+        y: InputInteger = 0,
+        z: InputInteger = 0,
     ) -> "SampleGridIndex":
         """Create Sample Grid Index with operation 'Float'."""
         return cls(data_type="FLOAT", grid=grid, x=x, y=y, z=z)
@@ -1317,10 +1317,10 @@ class SampleGridIndex(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        grid: TYPE_INPUT_INT = 0,
-        x: TYPE_INPUT_INT = 0,
-        y: TYPE_INPUT_INT = 0,
-        z: TYPE_INPUT_INT = 0,
+        grid: InputInteger = 0,
+        x: InputInteger = 0,
+        y: InputInteger = 0,
+        z: InputInteger = 0,
     ) -> "SampleGridIndex":
         """Create Sample Grid Index with operation 'Integer'."""
         return cls(data_type="INT", grid=grid, x=x, y=y, z=z)
@@ -1328,10 +1328,10 @@ class SampleGridIndex(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        grid: TYPE_INPUT_BOOLEAN = False,
-        x: TYPE_INPUT_INT = 0,
-        y: TYPE_INPUT_INT = 0,
-        z: TYPE_INPUT_INT = 0,
+        grid: InputBoolean = False,
+        x: InputInteger = 0,
+        y: InputInteger = 0,
+        z: InputInteger = 0,
     ) -> "SampleGridIndex":
         """Create Sample Grid Index with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", grid=grid, x=x, y=y, z=z)
@@ -1339,10 +1339,10 @@ class SampleGridIndex(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        grid: TYPE_INPUT_VECTOR = None,
-        x: TYPE_INPUT_INT = 0,
-        y: TYPE_INPUT_INT = 0,
-        z: TYPE_INPUT_INT = 0,
+        grid: InputVector = None,
+        x: InputInteger = 0,
+        y: InputInteger = 0,
+        z: InputInteger = 0,
     ) -> "SampleGridIndex":
         """Create Sample Grid Index with operation 'Vector'."""
         return cls(data_type="VECTOR", grid=grid, x=x, y=y, z=z)
@@ -1391,8 +1391,8 @@ class SetGridBackground(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        background: TYPE_INPUT_VALUE = 0.0,
+        grid: InputFloat = 0.0,
+        background: InputFloat = 0.0,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1403,28 +1403,28 @@ class SetGridBackground(NodeBuilder):
 
     @classmethod
     def float(
-        cls, grid: TYPE_INPUT_VALUE = 0.0, background: TYPE_INPUT_VALUE = 0.0
+        cls, grid: InputFloat = 0.0, background: InputFloat = 0.0
     ) -> "SetGridBackground":
         """Create Set Grid Background with operation 'Float'."""
         return cls(data_type="FLOAT", grid=grid, background=background)
 
     @classmethod
     def integer(
-        cls, grid: TYPE_INPUT_INT = 0, background: TYPE_INPUT_INT = 0
+        cls, grid: InputInteger = 0, background: InputInteger = 0
     ) -> "SetGridBackground":
         """Create Set Grid Background with operation 'Integer'."""
         return cls(data_type="INT", grid=grid, background=background)
 
     @classmethod
     def boolean(
-        cls, grid: TYPE_INPUT_BOOLEAN = False, background: TYPE_INPUT_BOOLEAN = False
+        cls, grid: InputBoolean = False, background: InputBoolean = False
     ) -> "SetGridBackground":
         """Create Set Grid Background with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", grid=grid, background=background)
 
     @classmethod
     def vector(
-        cls, grid: TYPE_INPUT_VECTOR = None, background: TYPE_INPUT_VECTOR = None
+        cls, grid: InputVector = None, background: InputVector = None
     ) -> "SetGridBackground":
         """Create Set Grid Background with operation 'Vector'."""
         return cls(data_type="VECTOR", grid=grid, background=background)
@@ -1463,8 +1463,8 @@ class SetGridTransform(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
-        transform: TYPE_INPUT_MATRIX = None,
+        grid: InputFloat = 0.0,
+        transform: InputMatrix = None,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1475,28 +1475,28 @@ class SetGridTransform(NodeBuilder):
 
     @classmethod
     def float(
-        cls, grid: TYPE_INPUT_VALUE = 0.0, transform: TYPE_INPUT_MATRIX = None
+        cls, grid: InputFloat = 0.0, transform: InputMatrix = None
     ) -> "SetGridTransform":
         """Create Set Grid Transform with operation 'Float'."""
         return cls(data_type="FLOAT", grid=grid, transform=transform)
 
     @classmethod
     def integer(
-        cls, grid: TYPE_INPUT_INT = 0, transform: TYPE_INPUT_MATRIX = None
+        cls, grid: InputInteger = 0, transform: InputMatrix = None
     ) -> "SetGridTransform":
         """Create Set Grid Transform with operation 'Integer'."""
         return cls(data_type="INT", grid=grid, transform=transform)
 
     @classmethod
     def boolean(
-        cls, grid: TYPE_INPUT_BOOLEAN = False, transform: TYPE_INPUT_MATRIX = None
+        cls, grid: InputBoolean = False, transform: InputMatrix = None
     ) -> "SetGridTransform":
         """Create Set Grid Transform with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", grid=grid, transform=transform)
 
     @classmethod
     def vector(
-        cls, grid: TYPE_INPUT_VECTOR = None, transform: TYPE_INPUT_MATRIX = None
+        cls, grid: InputVector = None, transform: InputMatrix = None
     ) -> "SetGridTransform":
         """Create Set Grid Transform with operation 'Vector'."""
         return cls(data_type="VECTOR", grid=grid, transform=transform)
@@ -1540,9 +1540,9 @@ class StoreNamedGrid(NodeBuilder):
 
     def __init__(
         self,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        grid: TYPE_INPUT_VALUE = 0.0,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        grid: InputFloat = 0.0,
         *,
         data_type: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"] = "FLOAT",
     ):
@@ -1554,9 +1554,9 @@ class StoreNamedGrid(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        grid: TYPE_INPUT_BOOLEAN = False,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        grid: InputBoolean = False,
     ) -> "StoreNamedGrid":
         """Create Store Named Grid with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", volume=volume, name=name, grid=grid)
@@ -1564,9 +1564,9 @@ class StoreNamedGrid(NodeBuilder):
     @classmethod
     def float(
         cls,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        grid: TYPE_INPUT_VALUE = 0.0,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        grid: InputFloat = 0.0,
     ) -> "StoreNamedGrid":
         """Create Store Named Grid with operation 'Float'."""
         return cls(data_type="FLOAT", volume=volume, name=name, grid=grid)
@@ -1574,9 +1574,9 @@ class StoreNamedGrid(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        grid: TYPE_INPUT_INT = 0,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        grid: InputInteger = 0,
     ) -> "StoreNamedGrid":
         """Create Store Named Grid with operation 'Integer'."""
         return cls(data_type="INT", volume=volume, name=name, grid=grid)
@@ -1584,9 +1584,9 @@ class StoreNamedGrid(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        name: TYPE_INPUT_STRING = "",
-        grid: TYPE_INPUT_VECTOR = None,
+        volume: InputGeometry = None,
+        name: InputString = "",
+        grid: InputVector = None,
     ) -> "StoreNamedGrid":
         """Create Store Named Grid with operation 'Vector'."""
         return cls(data_type="VECTOR_FLOAT", volume=volume, name=name, grid=grid)
@@ -1630,13 +1630,13 @@ class VolumeCube(NodeBuilder):
 
     def __init__(
         self,
-        density: TYPE_INPUT_VALUE = 1.0,
-        background: TYPE_INPUT_VALUE = 0.0,
-        min: TYPE_INPUT_VECTOR = None,
-        max: TYPE_INPUT_VECTOR = None,
-        resolution_x: TYPE_INPUT_INT = 32,
-        resolution_y: TYPE_INPUT_INT = 32,
-        resolution_z: TYPE_INPUT_INT = 32,
+        density: InputFloat = 1.0,
+        background: InputFloat = 0.0,
+        min: InputVector = None,
+        max: InputVector = None,
+        resolution_x: InputInteger = 32,
+        resolution_y: InputInteger = 32,
+        resolution_z: InputInteger = 32,
     ):
         super().__init__()
         key_args = {
@@ -1702,12 +1702,12 @@ class VolumeToMesh(NodeBuilder):
 
     def __init__(
         self,
-        volume: TYPE_INPUT_GEOMETRY = None,
-        resolution_mode: TYPE_INPUT_MENU | Literal["Grid", "Amount", "Size"] = "Grid",
-        voxel_size: TYPE_INPUT_VALUE = 0.3,
-        voxel_amount: TYPE_INPUT_VALUE = 64.0,
-        threshold: TYPE_INPUT_VALUE = 0.1,
-        adaptivity: TYPE_INPUT_VALUE = 0.0,
+        volume: InputGeometry = None,
+        resolution_mode: InputMenu | Literal["Grid", "Amount", "Size"] = "Grid",
+        voxel_size: InputFloat = 0.3,
+        voxel_amount: InputFloat = 64.0,
+        threshold: InputFloat = 0.1,
+        adaptivity: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -1767,7 +1767,7 @@ class VoxelizeGrid(NodeBuilder):
 
     def __init__(
         self,
-        grid: TYPE_INPUT_VALUE = 0.0,
+        grid: InputFloat = 0.0,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1777,22 +1777,22 @@ class VoxelizeGrid(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, grid: TYPE_INPUT_VALUE = 0.0) -> "VoxelizeGrid":
+    def float(cls, grid: InputFloat = 0.0) -> "VoxelizeGrid":
         """Create Voxelize Grid with operation 'Float'."""
         return cls(data_type="FLOAT", grid=grid)
 
     @classmethod
-    def integer(cls, grid: TYPE_INPUT_INT = 0) -> "VoxelizeGrid":
+    def integer(cls, grid: InputInteger = 0) -> "VoxelizeGrid":
         """Create Voxelize Grid with operation 'Integer'."""
         return cls(data_type="INT", grid=grid)
 
     @classmethod
-    def boolean(cls, grid: TYPE_INPUT_BOOLEAN = False) -> "VoxelizeGrid":
+    def boolean(cls, grid: InputBoolean = False) -> "VoxelizeGrid":
         """Create Voxelize Grid with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", grid=grid)
 
     @classmethod
-    def vector(cls, grid: TYPE_INPUT_VECTOR = None) -> "VoxelizeGrid":
+    def vector(cls, grid: InputVector = None) -> "VoxelizeGrid":
         """Create Voxelize Grid with operation 'Vector'."""
         return cls(data_type="VECTOR", grid=grid)
 

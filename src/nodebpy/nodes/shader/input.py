@@ -7,9 +7,9 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputColor,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -24,9 +24,9 @@ class AmbientOcclusion(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        distance: TYPE_INPUT_VALUE = 1.0,
-        normal: TYPE_INPUT_VECTOR = None,
+        color: InputColor = None,
+        distance: InputFloat = 1.0,
+        normal: InputVector = None,
         *,
         samples: int = 0,
         inside: bool = False,
@@ -162,8 +162,8 @@ class Bevel(NodeBuilder):
 
     def __init__(
         self,
-        radius: TYPE_INPUT_VALUE = 0.05,
-        normal: TYPE_INPUT_VECTOR = None,
+        radius: InputFloat = 0.05,
+        normal: InputVector = None,
         *,
         samples: int = 0,
     ):
@@ -335,8 +335,8 @@ class Fresnel(NodeBuilder):
 
     def __init__(
         self,
-        ior: TYPE_INPUT_VALUE = 1.5,
-        normal: TYPE_INPUT_VECTOR = None,
+        ior: InputFloat = 1.5,
+        normal: InputVector = None,
     ):
         super().__init__()
         key_args = {"IOR": ior, "Normal": normal}
@@ -430,8 +430,8 @@ class LayerWeight(NodeBuilder):
 
     def __init__(
         self,
-        blend: TYPE_INPUT_VALUE = 0.5,
-        normal: TYPE_INPUT_VECTOR = None,
+        blend: InputFloat = 0.5,
+        normal: InputVector = None,
     ):
         super().__init__()
         key_args = {"Blend": blend, "Normal": normal}
@@ -870,7 +870,7 @@ class Wireframe(NodeBuilder):
 
     def __init__(
         self,
-        size: TYPE_INPUT_VALUE = 0.01,
+        size: InputFloat = 0.01,
         *,
         use_pixel_size: bool = False,
     ):

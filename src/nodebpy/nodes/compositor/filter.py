@@ -7,12 +7,12 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputColor,
+    InputInteger,
+    InputMenu,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -26,10 +26,10 @@ class AntiAliasing(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        threshold: TYPE_INPUT_VALUE = 0.2,
-        contrast_limit: TYPE_INPUT_VALUE = 2.0,
-        corner_rounding: TYPE_INPUT_VALUE = 0.25,
+        image: InputColor = None,
+        threshold: InputFloat = 0.2,
+        contrast_limit: InputFloat = 2.0,
+        corner_rounding: InputFloat = 0.25,
     ):
         super().__init__()
         key_args = {
@@ -77,10 +77,10 @@ class BilateralBlur(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        determinator: TYPE_INPUT_COLOR = None,
-        size: TYPE_INPUT_INT = 0,
-        threshold: TYPE_INPUT_VALUE = 0.1,
+        image: InputColor = None,
+        determinator: InputColor = None,
+        size: InputInteger = 0,
+        threshold: InputFloat = 0.1,
     ):
         super().__init__()
         key_args = {
@@ -128,9 +128,9 @@ class Blur(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        size: TYPE_INPUT_VECTOR = None,
-        type: TYPE_INPUT_MENU
+        image: InputColor = None,
+        size: InputVector = None,
+        type: InputMenu
         | Literal[
             "Flat",
             "Tent",
@@ -141,8 +141,8 @@ class Blur(NodeBuilder):
             "Catrom",
             "Mitch",
         ] = "Gaussian",
-        extend_bounds: TYPE_INPUT_BOOLEAN = False,
-        separable: TYPE_INPUT_BOOLEAN = True,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -196,11 +196,11 @@ class BokehBlur(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        bokeh: TYPE_INPUT_COLOR = None,
-        size: TYPE_INPUT_VALUE = 0.0,
-        mask: TYPE_INPUT_VALUE = 1.0,
-        extend_bounds: TYPE_INPUT_BOOLEAN = False,
+        image: InputColor = None,
+        bokeh: InputColor = None,
+        size: InputFloat = 0.0,
+        mask: InputFloat = 1.0,
+        extend_bounds: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -254,11 +254,11 @@ class Convolve(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        kernel_data_type: TYPE_INPUT_MENU | Literal["Float", "Color"] = "Float",
-        float_kernel: TYPE_INPUT_VALUE = 0.0,
-        color_kernel: TYPE_INPUT_COLOR = None,
-        normalize_kernel: TYPE_INPUT_BOOLEAN = True,
+        image: InputColor = None,
+        kernel_data_type: InputMenu | Literal["Float", "Color"] = "Float",
+        float_kernel: InputFloat = 0.0,
+        color_kernel: InputColor = None,
+        normalize_kernel: InputBoolean = True,
     ):
         super().__init__()
         key_args = {
@@ -312,8 +312,8 @@ class Defocus(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        z: TYPE_INPUT_VALUE = 1.0,
+        image: InputColor = None,
+        z: InputFloat = 1.0,
         *,
         bokeh: Literal[
             "OCTAGON", "HEPTAGON", "HEXAGON", "PENTAGON", "SQUARE", "TRIANGLE", "CIRCLE"
@@ -417,12 +417,12 @@ class Denoise(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        albedo: TYPE_INPUT_COLOR = None,
-        normal: TYPE_INPUT_VECTOR = None,
-        hdr: TYPE_INPUT_BOOLEAN = True,
-        prefilter: TYPE_INPUT_MENU | Literal["None", "Fast", "Accurate"] = "Accurate",
-        quality: TYPE_INPUT_MENU
+        image: InputColor = None,
+        albedo: InputColor = None,
+        normal: InputVector = None,
+        hdr: InputBoolean = True,
+        prefilter: InputMenu | Literal["None", "Fast", "Accurate"] = "Accurate",
+        quality: InputMenu
         | Literal["Follow Scene", "High", "Balanced", "Fast"] = "Follow Scene",
     ):
         super().__init__()
@@ -483,10 +483,10 @@ class Despeckle(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        color_threshold: TYPE_INPUT_VALUE = 0.5,
-        neighbor_threshold: TYPE_INPUT_VALUE = 0.5,
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
+        color_threshold: InputFloat = 0.5,
+        neighbor_threshold: InputFloat = 0.5,
     ):
         super().__init__()
         key_args = {
@@ -534,12 +534,12 @@ class Dilateerode(NodeBuilder):
 
     def __init__(
         self,
-        mask: TYPE_INPUT_VALUE = 0.0,
-        size: TYPE_INPUT_INT = 0,
-        type: TYPE_INPUT_MENU
+        mask: InputFloat = 0.0,
+        size: InputInteger = 0,
+        type: InputMenu
         | Literal["Steps", "Threshold", "Distance", "Feather"] = "Steps",
-        falloff_size: TYPE_INPUT_VALUE = 0.0,
-        falloff: TYPE_INPUT_MENU
+        falloff_size: InputFloat = 0.0,
+        falloff: InputMenu
         | Literal[
             "Smooth", "Sphere", "Root", "Inverse Square", "Sharp", "Linear"
         ] = "Smooth",
@@ -596,13 +596,13 @@ class DirectionalBlur(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        samples: TYPE_INPUT_INT = 1,
-        center: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_VALUE = 0.0,
-        scale: TYPE_INPUT_VALUE = 1.0,
-        translation_amount: TYPE_INPUT_VALUE = 0.0,
-        translation_direction: TYPE_INPUT_VALUE = 0.0,
+        image: InputColor = None,
+        samples: InputInteger = 1,
+        center: InputVector = None,
+        rotation: InputFloat = 0.0,
+        scale: InputFloat = 1.0,
+        translation_amount: InputFloat = 0.0,
+        translation_direction: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -668,9 +668,9 @@ class Filter(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        fac: TYPE_INPUT_VALUE = 1.0,
-        type: TYPE_INPUT_MENU
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
+        type: InputMenu
         | Literal[
             "Soften",
             "Box Sharpen",
@@ -718,8 +718,8 @@ class Glare(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        type: TYPE_INPUT_MENU
+        image: InputColor = None,
+        type: InputMenu
         | Literal[
             "Bloom",
             "Ghosts",
@@ -729,26 +729,26 @@ class Glare(NodeBuilder):
             "Sun Beams",
             "Kernel",
         ] = "Streaks",
-        quality: TYPE_INPUT_MENU | Literal["High", "Medium", "Low"] = "Medium",
-        highlights_threshold: TYPE_INPUT_VALUE = 1.0,
-        highlights_smoothness: TYPE_INPUT_VALUE = 0.1,
-        clamp_highlights: TYPE_INPUT_BOOLEAN = False,
-        maximum_highlights: TYPE_INPUT_VALUE = 10.0,
-        strength: TYPE_INPUT_VALUE = 1.0,
-        saturation: TYPE_INPUT_VALUE = 1.0,
-        tint: TYPE_INPUT_COLOR = None,
-        size: TYPE_INPUT_VALUE = 0.5,
-        streaks: TYPE_INPUT_INT = 4,
-        streaks_angle: TYPE_INPUT_VALUE = 0.0,
-        iterations: TYPE_INPUT_INT = 3,
-        fade: TYPE_INPUT_VALUE = 0.9,
-        color_modulation: TYPE_INPUT_VALUE = 0.25,
-        diagonal_star: TYPE_INPUT_BOOLEAN = True,
-        sun_position: TYPE_INPUT_VECTOR = None,
-        jitter: TYPE_INPUT_VALUE = 0.0,
-        kernel_data_type: TYPE_INPUT_MENU | Literal["Float", "Color"] = "Float",
-        float_kernel: TYPE_INPUT_VALUE = 0.0,
-        color_kernel: TYPE_INPUT_COLOR = None,
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        highlights_threshold: InputFloat = 1.0,
+        highlights_smoothness: InputFloat = 0.1,
+        clamp_highlights: InputBoolean = False,
+        maximum_highlights: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        size: InputFloat = 0.5,
+        streaks: InputInteger = 4,
+        streaks_angle: InputFloat = 0.0,
+        iterations: InputInteger = 3,
+        fade: InputFloat = 0.9,
+        color_modulation: InputFloat = 0.25,
+        diagonal_star: InputBoolean = True,
+        sun_position: InputVector = None,
+        jitter: InputFloat = 0.0,
+        kernel_data_type: InputMenu | Literal["Float", "Color"] = "Float",
+        float_kernel: InputFloat = 0.0,
+        color_kernel: InputColor = None,
     ):
         super().__init__()
         key_args = {
@@ -914,8 +914,8 @@ class Inpaint(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        size: TYPE_INPUT_INT = 0,
+        image: InputColor = None,
+        size: InputInteger = 0,
     ):
         super().__init__()
         key_args = {"Image": image, "Size": size}
@@ -948,13 +948,13 @@ class Kuwahara(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        size: TYPE_INPUT_VALUE = 6.0,
-        type: TYPE_INPUT_MENU | Literal["Classic", "Anisotropic"] = "Anisotropic",
-        uniformity: TYPE_INPUT_INT = 4,
-        sharpness: TYPE_INPUT_VALUE = 1.0,
-        eccentricity: TYPE_INPUT_VALUE = 1.0,
-        high_precision: TYPE_INPUT_BOOLEAN = False,
+        image: InputColor = None,
+        size: InputFloat = 6.0,
+        type: InputMenu | Literal["Classic", "Anisotropic"] = "Anisotropic",
+        uniformity: InputInteger = 4,
+        sharpness: InputFloat = 1.0,
+        eccentricity: InputFloat = 1.0,
+        high_precision: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -1020,8 +1020,8 @@ class Pixelate(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        size: TYPE_INPUT_INT = 1,
+        color: InputColor = None,
+        size: InputInteger = 1,
     ):
         super().__init__()
         key_args = {"Color": color, "Size": size}
@@ -1054,11 +1054,11 @@ class VectorBlur(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        speed: TYPE_INPUT_VECTOR = None,
-        z: TYPE_INPUT_VALUE = 0.0,
-        samples: TYPE_INPUT_INT = 32,
-        shutter: TYPE_INPUT_VALUE = 0.5,
+        image: InputColor = None,
+        speed: InputVector = None,
+        z: InputFloat = 0.0,
+        samples: InputInteger = 32,
+        shutter: InputFloat = 0.5,
     ):
         super().__init__()
         key_args = {

@@ -7,11 +7,11 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_IMAGE,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputColor,
+    InputImage,
+    InputInteger,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -25,16 +25,16 @@ class BrickTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        color1: TYPE_INPUT_COLOR = None,
-        color2: TYPE_INPUT_COLOR = None,
-        mortar: TYPE_INPUT_COLOR = None,
-        scale: TYPE_INPUT_VALUE = 5.0,
-        mortar_size: TYPE_INPUT_VALUE = 0.02,
-        mortar_smooth: TYPE_INPUT_VALUE = 0.1,
-        bias: TYPE_INPUT_VALUE = 0.0,
-        brick_width: TYPE_INPUT_VALUE = 0.5,
-        row_height: TYPE_INPUT_VALUE = 0.25,
+        vector: InputVector = None,
+        color1: InputColor = None,
+        color2: InputColor = None,
+        mortar: InputColor = None,
+        scale: InputFloat = 5.0,
+        mortar_size: InputFloat = 0.02,
+        mortar_smooth: InputFloat = 0.1,
+        bias: InputFloat = 0.0,
+        brick_width: InputFloat = 0.5,
+        row_height: InputFloat = 0.25,
         *,
         offset_frequency: int = 2,
         squash_frequency: int = 2,
@@ -163,10 +163,10 @@ class CheckerTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        color1: TYPE_INPUT_COLOR = None,
-        color2: TYPE_INPUT_COLOR = None,
-        scale: TYPE_INPUT_VALUE = 5.0,
+        vector: InputVector = None,
+        color1: InputColor = None,
+        color2: InputColor = None,
+        scale: InputFloat = 5.0,
     ):
         super().__init__()
         key_args = {
@@ -219,12 +219,12 @@ class GaborTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        scale: TYPE_INPUT_VALUE = 5.0,
-        frequency: TYPE_INPUT_VALUE = 2.0,
-        anisotropy: TYPE_INPUT_VALUE = 1.0,
-        orientation_2d: TYPE_INPUT_VALUE = 0.7854,
-        orientation_3d: TYPE_INPUT_VECTOR = None,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        frequency: InputFloat = 2.0,
+        anisotropy: InputFloat = 1.0,
+        orientation_2d: InputFloat = 0.7854,
+        orientation_3d: InputVector = None,
         *,
         gabor_type: Literal["2D", "3D"] = "2D",
     ):
@@ -304,7 +304,7 @@ class GradientTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
+        vector: InputVector = None,
         *,
         gradient_type: Literal[
             "LINEAR",
@@ -376,9 +376,9 @@ class ImageTexture(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_IMAGE = None,
-        vector: TYPE_INPUT_VECTOR = None,
-        frame: TYPE_INPUT_INT = 0,
+        image: InputImage = None,
+        vector: InputVector = None,
+        frame: InputInteger = 0,
         *,
         interpolation: Literal["Linear", "Closest", "Cubic"] = "Linear",
         extension: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"] = "REPEAT",
@@ -441,9 +441,9 @@ class MagicTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        scale: TYPE_INPUT_VALUE = 5.0,
-        distortion: TYPE_INPUT_VALUE = 1.0,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        distortion: InputFloat = 1.0,
         *,
         turbulence_depth: int = 0,
     ):
@@ -496,15 +496,15 @@ class NoiseTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        w: TYPE_INPUT_VALUE = 0.0,
-        scale: TYPE_INPUT_VALUE = 5.0,
-        detail: TYPE_INPUT_VALUE = 2.0,
-        roughness: TYPE_INPUT_VALUE = 0.5,
-        lacunarity: TYPE_INPUT_VALUE = 2.0,
-        offset: TYPE_INPUT_VALUE = 0.0,
-        gain: TYPE_INPUT_VALUE = 1.0,
-        distortion: TYPE_INPUT_VALUE = 0.0,
+        vector: InputVector = None,
+        w: InputFloat = 0.0,
+        scale: InputFloat = 5.0,
+        detail: InputFloat = 2.0,
+        roughness: InputFloat = 0.5,
+        lacunarity: InputFloat = 2.0,
+        offset: InputFloat = 0.0,
+        gain: InputFloat = 1.0,
+        distortion: InputFloat = 0.0,
         *,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
         noise_type: Literal[
@@ -640,15 +640,15 @@ class VoronoiTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        w: TYPE_INPUT_VALUE = 0.0,
-        scale: TYPE_INPUT_VALUE = 5.0,
-        detail: TYPE_INPUT_VALUE = 0.0,
-        roughness: TYPE_INPUT_VALUE = 0.5,
-        lacunarity: TYPE_INPUT_VALUE = 2.0,
-        smoothness: TYPE_INPUT_VALUE = 1.0,
-        exponent: TYPE_INPUT_VALUE = 0.5,
-        randomness: TYPE_INPUT_VALUE = 1.0,
+        vector: InputVector = None,
+        w: InputFloat = 0.0,
+        scale: InputFloat = 5.0,
+        detail: InputFloat = 0.0,
+        roughness: InputFloat = 0.5,
+        lacunarity: InputFloat = 2.0,
+        smoothness: InputFloat = 1.0,
+        exponent: InputFloat = 0.5,
+        randomness: InputFloat = 1.0,
         *,
         voronoi_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
         distance: Literal[
@@ -797,13 +797,13 @@ class WaveTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        scale: TYPE_INPUT_VALUE = 5.0,
-        distortion: TYPE_INPUT_VALUE = 0.0,
-        detail: TYPE_INPUT_VALUE = 2.0,
-        detail_scale: TYPE_INPUT_VALUE = 1.0,
-        detail_roughness: TYPE_INPUT_VALUE = 0.5,
-        phase_offset: TYPE_INPUT_VALUE = 0.0,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        distortion: InputFloat = 0.0,
+        detail: InputFloat = 2.0,
+        detail_scale: InputFloat = 1.0,
+        detail_roughness: InputFloat = 0.5,
+        phase_offset: InputFloat = 0.0,
         *,
         wave_type: Literal["BANDS", "RINGS"] = "BANDS",
         bands_direction: Literal["X", "Y", "Z", "DIAGONAL"] = "X",
@@ -914,8 +914,8 @@ class WhiteNoiseTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        w: TYPE_INPUT_VALUE = 0.0,
+        vector: InputVector = None,
+        w: InputFloat = 0.0,
         *,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
     ):

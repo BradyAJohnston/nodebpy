@@ -7,8 +7,8 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -22,7 +22,7 @@ class EnvironmentTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
+        vector: InputVector = None,
         *,
         projection: Literal["EQUIRECTANGULAR", "MIRROR_BALL"] = "EQUIRECTANGULAR",
         interpolation: Literal["Linear", "Closest", "Cubic", "Smart"] = "Linear",
@@ -70,8 +70,8 @@ class IesTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        strength: TYPE_INPUT_VALUE = 1.0,
+        vector: InputVector = None,
+        strength: InputFloat = 1.0,
         *,
         filepath: str = "",
         mode: Literal["INTERNAL", "EXTERNAL"] = "INTERNAL",
@@ -124,7 +124,7 @@ class ImageTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
+        vector: InputVector = None,
         *,
         projection: Literal["FLAT", "BOX", "SPHERE", "TUBE"] = "FLAT",
         interpolation: Literal["Linear", "Closest", "Cubic", "Smart"] = "Linear",
@@ -197,7 +197,7 @@ class SkyTexture(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
+        vector: InputVector = None,
         *,
         sky_type: Literal[
             "SINGLE_SCATTERING", "MULTIPLE_SCATTERING", "PREETHAM", "HOSEK_WILKIE"

@@ -7,12 +7,12 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputColor,
+    InputInteger,
+    InputMenu,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -26,15 +26,15 @@ class CornerPin(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        upper_left: TYPE_INPUT_VECTOR = None,
-        upper_right: TYPE_INPUT_VECTOR = None,
-        lower_left: TYPE_INPUT_VECTOR = None,
-        lower_right: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
+        image: InputColor = None,
+        upper_left: InputVector = None,
+        upper_right: InputVector = None,
+        lower_left: InputVector = None,
+        lower_right: InputVector = None,
+        interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
-        extension_x: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
-        extension_y: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
     ):
         super().__init__()
         key_args = {
@@ -111,12 +111,12 @@ class Crop(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        x: TYPE_INPUT_INT = 0,
-        y: TYPE_INPUT_INT = 0,
-        width: TYPE_INPUT_INT = 1920,
-        height: TYPE_INPUT_INT = 1080,
-        alpha_crop: TYPE_INPUT_BOOLEAN = False,
+        image: InputColor = None,
+        x: InputInteger = 0,
+        y: InputInteger = 0,
+        width: InputInteger = 1920,
+        height: InputInteger = 1080,
+        alpha_crop: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -176,12 +176,12 @@ class Displace(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        displacement: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
+        image: InputColor = None,
+        displacement: InputVector = None,
+        interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
-        extension_x: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
-        extension_y: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
     ):
         super().__init__()
         key_args = {
@@ -235,9 +235,9 @@ class Flip(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        flip_x: TYPE_INPUT_BOOLEAN = False,
-        flip_y: TYPE_INPUT_BOOLEAN = False,
+        image: InputColor = None,
+        flip_x: InputBoolean = False,
+        flip_y: InputBoolean = False,
     ):
         super().__init__()
         key_args = {"Image": image, "Flip X": flip_x, "Flip Y": flip_y}
@@ -275,12 +275,12 @@ class LensDistortion(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        type: TYPE_INPUT_MENU | Literal["Radial", "Horizontal"] = "Radial",
-        distortion: TYPE_INPUT_VALUE = 0.0,
-        dispersion: TYPE_INPUT_VALUE = 0.0,
-        jitter: TYPE_INPUT_BOOLEAN = False,
-        fit: TYPE_INPUT_BOOLEAN = False,
+        image: InputColor = None,
+        type: InputMenu | Literal["Radial", "Horizontal"] = "Radial",
+        distortion: InputFloat = 0.0,
+        dispersion: InputFloat = 0.0,
+        jitter: InputBoolean = False,
+        fit: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -340,12 +340,12 @@ class MapUV(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        uv: TYPE_INPUT_VECTOR = None,
-        interpolation: TYPE_INPUT_MENU
+        image: InputColor = None,
+        uv: InputVector = None,
+        interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
-        extension_x: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
-        extension_y: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
     ):
         super().__init__()
         key_args = {
@@ -399,8 +399,8 @@ class MovieDistortion(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        type: TYPE_INPUT_MENU | Literal["Undistort", "Distort"] = "Undistort",
+        image: InputColor = None,
+        type: InputMenu | Literal["Undistort", "Distort"] = "Undistort",
     ):
         super().__init__()
         key_args = {"Image": image, "Type": type}
@@ -433,10 +433,10 @@ class PlaneTrackDeform(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        motion_blur: TYPE_INPUT_BOOLEAN = False,
-        motion_blur_samples: TYPE_INPUT_INT = 16,
-        motion_blur_shutter: TYPE_INPUT_VALUE = 0.5,
+        image: InputColor = None,
+        motion_blur: InputBoolean = False,
+        motion_blur_samples: InputInteger = 16,
+        motion_blur_shutter: InputFloat = 0.5,
         *,
         tracking_object: str = "",
         plane_track_name: str = "",
@@ -509,12 +509,12 @@ class Rotate(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        angle: TYPE_INPUT_VALUE = 0.0,
-        interpolation: TYPE_INPUT_MENU
+        image: InputColor = None,
+        angle: InputFloat = 0.0,
+        interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
-        extension_x: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
-        extension_y: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
     ):
         super().__init__()
         key_args = {
@@ -568,16 +568,16 @@ class Scale(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        type: TYPE_INPUT_MENU
+        image: InputColor = None,
+        type: InputMenu
         | Literal["Relative", "Absolute", "Scene Size", "Render Size"] = "Relative",
-        x: TYPE_INPUT_VALUE = 1.0,
-        y: TYPE_INPUT_VALUE = 1.0,
-        frame_type: TYPE_INPUT_MENU | Literal["Stretch", "Fit", "Crop"] = "Stretch",
-        interpolation: TYPE_INPUT_MENU
+        x: InputFloat = 1.0,
+        y: InputFloat = 1.0,
+        frame_type: InputMenu | Literal["Stretch", "Fit", "Crop"] = "Stretch",
+        interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
-        extension_x: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
-        extension_y: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
     ):
         super().__init__()
         key_args = {
@@ -649,12 +649,12 @@ class Stabilize2D(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        invert: TYPE_INPUT_BOOLEAN = False,
-        interpolation: TYPE_INPUT_MENU
+        image: InputColor = None,
+        invert: InputBoolean = False,
+        interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
-        extension_x: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
-        extension_y: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
     ):
         super().__init__()
         key_args = {
@@ -708,15 +708,15 @@ class Transform(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        x: TYPE_INPUT_VALUE = 0.0,
-        y: TYPE_INPUT_VALUE = 0.0,
-        angle: TYPE_INPUT_VALUE = 0.0,
-        scale: TYPE_INPUT_VALUE = 1.0,
-        interpolation: TYPE_INPUT_MENU
+        image: InputColor = None,
+        x: InputFloat = 0.0,
+        y: InputFloat = 0.0,
+        angle: InputFloat = 0.0,
+        scale: InputFloat = 1.0,
+        interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
-        extension_x: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
-        extension_y: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
     ):
         super().__init__()
         key_args = {
@@ -788,13 +788,13 @@ class Translate(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
-        x: TYPE_INPUT_VALUE = 0.0,
-        y: TYPE_INPUT_VALUE = 0.0,
-        interpolation: TYPE_INPUT_MENU
+        image: InputColor = None,
+        x: InputFloat = 0.0,
+        y: InputFloat = 0.0,
+        interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
-        extension_x: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
-        extension_y: TYPE_INPUT_MENU | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
     ):
         super().__init__()
         key_args = {

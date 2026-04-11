@@ -7,22 +7,22 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_BUNDLE,
-    TYPE_INPUT_CLOSURE,
-    TYPE_INPUT_COLLECTION,
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_GEOMETRY,
-    TYPE_INPUT_IMAGE,
-    TYPE_INPUT_INT,
-    TYPE_INPUT_MATERIAL,
-    TYPE_INPUT_MATRIX,
-    TYPE_INPUT_MENU,
-    TYPE_INPUT_OBJECT,
-    TYPE_INPUT_ROTATION,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputBoolean,
+    InputBundle,
+    InputClosure,
+    InputCollection,
+    InputColor,
+    InputGeometry,
+    InputImage,
+    InputInteger,
+    InputMaterial,
+    InputMatrix,
+    InputMenu,
+    InputObject,
+    InputRotation,
+    InputString,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -36,9 +36,9 @@ class AlignRotationToVector(NodeBuilder):
 
     def __init__(
         self,
-        rotation: TYPE_INPUT_ROTATION = None,
-        factor: TYPE_INPUT_VALUE = 1.0,
-        vector: TYPE_INPUT_VECTOR = None,
+        rotation: InputRotation = None,
+        factor: InputFloat = 1.0,
+        vector: InputVector = None,
         *,
         axis: Literal["X", "Y", "Z"] = "Z",
         pivot_axis: Literal["AUTO", "X", "Y", "Z"] = "AUTO",
@@ -96,8 +96,8 @@ class AxesToRotation(NodeBuilder):
 
     def __init__(
         self,
-        primary_axis: TYPE_INPUT_VECTOR = None,
-        secondary_axis: TYPE_INPUT_VECTOR = None,
+        primary_axis: InputVector = None,
+        secondary_axis: InputVector = None,
         *,
         primary: Literal["X", "Y", "Z"] = "Z",
         secondary: Literal["X", "Y", "Z"] = "X",
@@ -150,8 +150,8 @@ class AxisAngleToRotation(NodeBuilder):
 
     def __init__(
         self,
-        axis: TYPE_INPUT_VECTOR = None,
-        angle: TYPE_INPUT_VALUE = 0.0,
+        axis: InputVector = None,
+        angle: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Axis": axis, "Angle": angle}
@@ -184,9 +184,9 @@ class BitMath(NodeBuilder):
 
     def __init__(
         self,
-        a: TYPE_INPUT_INT = 0,
-        b: TYPE_INPUT_INT = 0,
-        shift: TYPE_INPUT_INT = 0,
+        a: InputInteger = 0,
+        b: InputInteger = 0,
+        shift: InputInteger = 0,
         *,
         operation: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"] = "AND",
     ):
@@ -196,32 +196,32 @@ class BitMath(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def l_and(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def l_and(cls, a: InputInteger = 0, b: InputInteger = 0) -> "BitMath":
         """Create Bit Math with operation 'And'."""
         return cls(operation="AND", a=a, b=b)
 
     @classmethod
-    def l_or(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def l_or(cls, a: InputInteger = 0, b: InputInteger = 0) -> "BitMath":
         """Create Bit Math with operation 'Or'."""
         return cls(operation="OR", a=a, b=b)
 
     @classmethod
-    def exclusive_or(cls, a: TYPE_INPUT_INT = 0, b: TYPE_INPUT_INT = 0) -> "BitMath":
+    def exclusive_or(cls, a: InputInteger = 0, b: InputInteger = 0) -> "BitMath":
         """Create Bit Math with operation 'Exclusive Or'."""
         return cls(operation="XOR", a=a, b=b)
 
     @classmethod
-    def l_not(cls, a: TYPE_INPUT_INT = 0) -> "BitMath":
+    def l_not(cls, a: InputInteger = 0) -> "BitMath":
         """Create Bit Math with operation 'Not'."""
         return cls(operation="NOT", a=a)
 
     @classmethod
-    def shift(cls, a: TYPE_INPUT_INT = 0, shift: TYPE_INPUT_INT = 0) -> "BitMath":
+    def shift(cls, a: InputInteger = 0, shift: InputInteger = 0) -> "BitMath":
         """Create Bit Math with operation 'Shift'."""
         return cls(operation="SHIFT", a=a, shift=shift)
 
     @classmethod
-    def rotate(cls, a: TYPE_INPUT_INT = 0, shift: TYPE_INPUT_INT = 0) -> "BitMath":
+    def rotate(cls, a: InputInteger = 0, shift: InputInteger = 0) -> "BitMath":
         """Create Bit Math with operation 'Rotate'."""
         return cls(operation="ROTATE", a=a, shift=shift)
 
@@ -262,7 +262,7 @@ class Blackbody(NodeBuilder):
     _bl_idname = "ShaderNodeBlackbody"
     node: bpy.types.ShaderNodeBlackbody
 
-    def __init__(self, temperature: TYPE_INPUT_VALUE = 6500.0):
+    def __init__(self, temperature: InputFloat = 6500.0):
         super().__init__()
         key_args = {"Temperature": temperature}
 
@@ -289,8 +289,8 @@ class BooleanMath(NodeBuilder):
 
     def __init__(
         self,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        boolean: InputBoolean = False,
+        boolean_001: InputBoolean = False,
         *,
         operation: Literal[
             "AND", "OR", "NOT", "NAND", "NOR", "XNOR", "XOR", "IMPLY", "NIMPLY"
@@ -303,77 +303,61 @@ class BooleanMath(NodeBuilder):
 
     @classmethod
     def l_and(
-        cls,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        cls, boolean: InputBoolean = False, boolean_001: InputBoolean = False
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'And'."""
         return cls(operation="AND", boolean=boolean, boolean_001=boolean_001)
 
     @classmethod
     def l_or(
-        cls,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        cls, boolean: InputBoolean = False, boolean_001: InputBoolean = False
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'Or'."""
         return cls(operation="OR", boolean=boolean, boolean_001=boolean_001)
 
     @classmethod
-    def l_not(cls, boolean: TYPE_INPUT_BOOLEAN = False) -> "BooleanMath":
+    def l_not(cls, boolean: InputBoolean = False) -> "BooleanMath":
         """Create Boolean Math with operation 'Not'."""
         return cls(operation="NOT", boolean=boolean)
 
     @classmethod
     def not_and(
-        cls,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        cls, boolean: InputBoolean = False, boolean_001: InputBoolean = False
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'Not And'."""
         return cls(operation="NAND", boolean=boolean, boolean_001=boolean_001)
 
     @classmethod
     def nor(
-        cls,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        cls, boolean: InputBoolean = False, boolean_001: InputBoolean = False
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'Nor'."""
         return cls(operation="NOR", boolean=boolean, boolean_001=boolean_001)
 
     @classmethod
     def equal(
-        cls,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        cls, boolean: InputBoolean = False, boolean_001: InputBoolean = False
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'Equal'."""
         return cls(operation="XNOR", boolean=boolean, boolean_001=boolean_001)
 
     @classmethod
     def not_equal(
-        cls,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        cls, boolean: InputBoolean = False, boolean_001: InputBoolean = False
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'Not Equal'."""
         return cls(operation="XOR", boolean=boolean, boolean_001=boolean_001)
 
     @classmethod
     def imply(
-        cls,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        cls, boolean: InputBoolean = False, boolean_001: InputBoolean = False
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'Imply'."""
         return cls(operation="IMPLY", boolean=boolean, boolean_001=boolean_001)
 
     @classmethod
     def subtract(
-        cls,
-        boolean: TYPE_INPUT_BOOLEAN = False,
-        boolean_001: TYPE_INPUT_BOOLEAN = False,
+        cls, boolean: InputBoolean = False, boolean_001: InputBoolean = False
     ) -> "BooleanMath":
         """Create Boolean Math with operation 'Subtract'."""
         return cls(operation="NIMPLY", boolean=boolean, boolean_001=boolean_001)
@@ -419,9 +403,9 @@ class Clamp(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE = 1.0,
-        min: TYPE_INPUT_VALUE = 0.0,
-        max: TYPE_INPUT_VALUE = 1.0,
+        value: InputFloat = 1.0,
+        min: InputFloat = 0.0,
+        max: InputFloat = 1.0,
         *,
         clamp_type: Literal["MINMAX", "RANGE"] = "MINMAX",
     ):
@@ -467,7 +451,7 @@ class ColorRamp(NodeBuilder):
     _bl_idname = "ShaderNodeValToRGB"
     node: bpy.types.ShaderNodeValToRGB
 
-    def __init__(self, fac: TYPE_INPUT_VALUE = 0.5):
+    def __init__(self, fac: InputFloat = 0.5):
         super().__init__()
         key_args = {"Fac": fac}
 
@@ -527,10 +511,10 @@ class CombineColor(NodeBuilder):
 
     def __init__(
         self,
-        red: TYPE_INPUT_VALUE = 0.0,
-        green: TYPE_INPUT_VALUE = 0.0,
-        blue: TYPE_INPUT_VALUE = 0.0,
-        alpha: TYPE_INPUT_VALUE = 1.0,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
         *,
         mode: Literal["RGB", "HSV", "HSL"] = "RGB",
     ):
@@ -583,22 +567,22 @@ class CombineMatrix(NodeBuilder):
 
     def __init__(
         self,
-        column_1_row_1: TYPE_INPUT_VALUE = 1.0,
-        column_1_row_2: TYPE_INPUT_VALUE = 0.0,
-        column_1_row_3: TYPE_INPUT_VALUE = 0.0,
-        column_1_row_4: TYPE_INPUT_VALUE = 0.0,
-        column_2_row_1: TYPE_INPUT_VALUE = 0.0,
-        column_2_row_2: TYPE_INPUT_VALUE = 1.0,
-        column_2_row_3: TYPE_INPUT_VALUE = 0.0,
-        column_2_row_4: TYPE_INPUT_VALUE = 0.0,
-        column_3_row_1: TYPE_INPUT_VALUE = 0.0,
-        column_3_row_2: TYPE_INPUT_VALUE = 0.0,
-        column_3_row_3: TYPE_INPUT_VALUE = 1.0,
-        column_3_row_4: TYPE_INPUT_VALUE = 0.0,
-        column_4_row_1: TYPE_INPUT_VALUE = 0.0,
-        column_4_row_2: TYPE_INPUT_VALUE = 0.0,
-        column_4_row_3: TYPE_INPUT_VALUE = 0.0,
-        column_4_row_4: TYPE_INPUT_VALUE = 1.0,
+        column_1_row_1: InputFloat = 1.0,
+        column_1_row_2: InputFloat = 0.0,
+        column_1_row_3: InputFloat = 0.0,
+        column_1_row_4: InputFloat = 0.0,
+        column_2_row_1: InputFloat = 0.0,
+        column_2_row_2: InputFloat = 1.0,
+        column_2_row_3: InputFloat = 0.0,
+        column_2_row_4: InputFloat = 0.0,
+        column_3_row_1: InputFloat = 0.0,
+        column_3_row_2: InputFloat = 0.0,
+        column_3_row_3: InputFloat = 1.0,
+        column_3_row_4: InputFloat = 0.0,
+        column_4_row_1: InputFloat = 0.0,
+        column_4_row_2: InputFloat = 0.0,
+        column_4_row_3: InputFloat = 0.0,
+        column_4_row_4: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {
@@ -718,9 +702,9 @@ class CombineTransform(NodeBuilder):
 
     def __init__(
         self,
-        translation: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_ROTATION = None,
-        scale: TYPE_INPUT_VECTOR = None,
+        translation: InputVector = None,
+        rotation: InputRotation = None,
+        scale: InputVector = None,
     ):
         super().__init__()
         key_args = {"Translation": translation, "Rotation": rotation, "Scale": scale}
@@ -758,9 +742,9 @@ class CombineXYZ(NodeBuilder):
 
     def __init__(
         self,
-        x: TYPE_INPUT_VALUE = 0.0,
-        y: TYPE_INPUT_VALUE = 0.0,
-        z: TYPE_INPUT_VALUE = 0.0,
+        x: InputFloat = 0.0,
+        y: InputFloat = 0.0,
+        z: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"X": x, "Y": y, "Z": z}
@@ -796,7 +780,7 @@ class EulerToRotation(NodeBuilder):
     _bl_idname = "FunctionNodeEulerToRotation"
     node: bpy.types.FunctionNodeEulerToRotation
 
-    def __init__(self, euler: TYPE_INPUT_VECTOR = None):
+    def __init__(self, euler: InputVector = None):
         super().__init__()
         key_args = {"Euler": euler}
 
@@ -823,8 +807,8 @@ class FindInString(NodeBuilder):
 
     def __init__(
         self,
-        string: TYPE_INPUT_STRING = "",
-        search: TYPE_INPUT_STRING = "",
+        string: InputString = "",
+        search: InputString = "",
     ):
         super().__init__()
         key_args = {"String": string, "Search": search}
@@ -862,8 +846,8 @@ class FloatCurve(NodeBuilder):
 
     def __init__(
         self,
-        factor: TYPE_INPUT_VALUE = 1.0,
-        value: TYPE_INPUT_VALUE = 1.0,
+        factor: InputFloat = 1.0,
+        value: InputFloat = 1.0,
     ):
         super().__init__()
         key_args = {"Factor": factor, "Value": value}
@@ -896,7 +880,7 @@ class FloatToInteger(NodeBuilder):
 
     def __init__(
         self,
-        float: TYPE_INPUT_VALUE = 0.0,
+        float: InputFloat = 0.0,
         *,
         rounding_mode: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"] = "ROUND",
     ):
@@ -934,8 +918,8 @@ class HashValue(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_INT = 0,
-        seed: TYPE_INPUT_INT = 0,
+        value: InputInteger = 0,
+        seed: InputInteger = 0,
         *,
         data_type: Literal[
             "FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"
@@ -947,51 +931,39 @@ class HashValue(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(
-        cls, value: TYPE_INPUT_VALUE = 0.0, seed: TYPE_INPUT_INT = 0
-    ) -> "HashValue":
+    def float(cls, value: InputFloat = 0.0, seed: InputInteger = 0) -> "HashValue":
         """Create Hash Value with operation 'Float'."""
         return cls(data_type="FLOAT", value=value, seed=seed)
 
     @classmethod
-    def integer(
-        cls, value: TYPE_INPUT_INT = 0, seed: TYPE_INPUT_INT = 0
-    ) -> "HashValue":
+    def integer(cls, value: InputInteger = 0, seed: InputInteger = 0) -> "HashValue":
         """Create Hash Value with operation 'Integer'."""
         return cls(data_type="INT", value=value, seed=seed)
 
     @classmethod
-    def vector(
-        cls, value: TYPE_INPUT_VECTOR = None, seed: TYPE_INPUT_INT = 0
-    ) -> "HashValue":
+    def vector(cls, value: InputVector = None, seed: InputInteger = 0) -> "HashValue":
         """Create Hash Value with operation 'Vector'."""
         return cls(data_type="VECTOR", value=value, seed=seed)
 
     @classmethod
-    def color(
-        cls, value: TYPE_INPUT_COLOR = None, seed: TYPE_INPUT_INT = 0
-    ) -> "HashValue":
+    def color(cls, value: InputColor = None, seed: InputInteger = 0) -> "HashValue":
         """Create Hash Value with operation 'Color'."""
         return cls(data_type="RGBA", value=value, seed=seed)
 
     @classmethod
     def rotation(
-        cls, value: TYPE_INPUT_ROTATION = None, seed: TYPE_INPUT_INT = 0
+        cls, value: InputRotation = None, seed: InputInteger = 0
     ) -> "HashValue":
         """Create Hash Value with operation 'Rotation'."""
         return cls(data_type="ROTATION", value=value, seed=seed)
 
     @classmethod
-    def matrix(
-        cls, value: TYPE_INPUT_MATRIX = None, seed: TYPE_INPUT_INT = 0
-    ) -> "HashValue":
+    def matrix(cls, value: InputMatrix = None, seed: InputInteger = 0) -> "HashValue":
         """Create Hash Value with operation 'Matrix'."""
         return cls(data_type="MATRIX", value=value, seed=seed)
 
     @classmethod
-    def string(
-        cls, value: TYPE_INPUT_STRING = "", seed: TYPE_INPUT_INT = 0
-    ) -> "HashValue":
+    def string(cls, value: InputString = "", seed: InputInteger = 0) -> "HashValue":
         """Create Hash Value with operation 'String'."""
         return cls(data_type="STRING", value=value, seed=seed)
 
@@ -1036,8 +1008,8 @@ class IndexOfNearest(NodeBuilder):
 
     def __init__(
         self,
-        position: TYPE_INPUT_VECTOR = None,
-        group_id: TYPE_INPUT_INT = 0,
+        position: InputVector = None,
+        group_id: InputInteger = 0,
     ):
         super().__init__()
         key_args = {"Position": position, "Group ID": group_id}
@@ -1075,9 +1047,9 @@ class IntegerMath(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_INT = 0,
-        value_001: TYPE_INPUT_INT = 0,
-        value_002: TYPE_INPUT_INT = 0,
+        value: InputInteger = 0,
+        value_001: InputInteger = 0,
+        value_002: InputInteger = 0,
         *,
         operation: Literal[
             "ADD",
@@ -1106,29 +1078,27 @@ class IntegerMath(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def add(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
-    ) -> "IntegerMath":
+    def add(cls, value: InputInteger = 0, value_001: InputInteger = 0) -> "IntegerMath":
         """Create Integer Math with operation 'Add'."""
         return cls(operation="ADD", value=value, value_001=value_001)
 
     @classmethod
     def subtract(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Subtract'."""
         return cls(operation="SUBTRACT", value=value, value_001=value_001)
 
     @classmethod
     def multiply(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Multiply'."""
         return cls(operation="MULTIPLY", value=value, value_001=value_001)
 
     @classmethod
     def divide(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Divide'."""
         return cls(operation="DIVIDE", value=value, value_001=value_001)
@@ -1136,9 +1106,9 @@ class IntegerMath(NodeBuilder):
     @classmethod
     def multiply_add(
         cls,
-        value: TYPE_INPUT_INT = 0,
-        value_001: TYPE_INPUT_INT = 0,
-        value_002: TYPE_INPUT_INT = 0,
+        value: InputInteger = 0,
+        value_001: InputInteger = 0,
+        value_002: InputInteger = 0,
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Multiply Add'."""
         return cls(
@@ -1149,86 +1119,86 @@ class IntegerMath(NodeBuilder):
         )
 
     @classmethod
-    def absolute(cls, value: TYPE_INPUT_INT = 0) -> "IntegerMath":
+    def absolute(cls, value: InputInteger = 0) -> "IntegerMath":
         """Create Integer Math with operation 'Absolute'."""
         return cls(operation="ABSOLUTE", value=value)
 
     @classmethod
-    def negate(cls, value: TYPE_INPUT_INT = 0) -> "IntegerMath":
+    def negate(cls, value: InputInteger = 0) -> "IntegerMath":
         """Create Integer Math with operation 'Negate'."""
         return cls(operation="NEGATE", value=value)
 
     @classmethod
     def power(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Power'."""
         return cls(operation="POWER", value=value, value_001=value_001)
 
     @classmethod
     def minimum(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Minimum'."""
         return cls(operation="MINIMUM", value=value, value_001=value_001)
 
     @classmethod
     def maximum(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Maximum'."""
         return cls(operation="MAXIMUM", value=value, value_001=value_001)
 
     @classmethod
-    def sign(cls, value: TYPE_INPUT_INT = 0) -> "IntegerMath":
+    def sign(cls, value: InputInteger = 0) -> "IntegerMath":
         """Create Integer Math with operation 'Sign'."""
         return cls(operation="SIGN", value=value)
 
     @classmethod
     def divide_round(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Divide Round'."""
         return cls(operation="DIVIDE_ROUND", value=value, value_001=value_001)
 
     @classmethod
     def divide_floor(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Divide Floor'."""
         return cls(operation="DIVIDE_FLOOR", value=value, value_001=value_001)
 
     @classmethod
     def divide_ceiling(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Divide Ceiling'."""
         return cls(operation="DIVIDE_CEIL", value=value, value_001=value_001)
 
     @classmethod
     def floored_modulo(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Floored Modulo'."""
         return cls(operation="FLOORED_MODULO", value=value, value_001=value_001)
 
     @classmethod
     def modulo(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Modulo'."""
         return cls(operation="MODULO", value=value, value_001=value_001)
 
     @classmethod
     def greatest_common_divisor(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Greatest Common Divisor'."""
         return cls(operation="GCD", value=value, value_001=value_001)
 
     @classmethod
     def least_common_multiple(
-        cls, value: TYPE_INPUT_INT = 0, value_001: TYPE_INPUT_INT = 0
+        cls, value: InputInteger = 0, value_001: InputInteger = 0
     ) -> "IntegerMath":
         """Create Integer Math with operation 'Least Common Multiple'."""
         return cls(operation="LCM", value=value, value_001=value_001)
@@ -1313,7 +1283,7 @@ class InvertMatrix(NodeBuilder):
     _bl_idname = "FunctionNodeInvertMatrix"
     node: bpy.types.FunctionNodeInvertMatrix
 
-    def __init__(self, matrix: TYPE_INPUT_MATRIX = None):
+    def __init__(self, matrix: InputMatrix = None):
         super().__init__()
         key_args = {"Matrix": matrix}
 
@@ -1343,7 +1313,7 @@ class InvertRotation(NodeBuilder):
     _bl_idname = "FunctionNodeInvertRotation"
     node: bpy.types.FunctionNodeInvertRotation
 
-    def __init__(self, rotation: TYPE_INPUT_ROTATION = None):
+    def __init__(self, rotation: InputRotation = None):
         super().__init__()
         key_args = {"Rotation": rotation}
 
@@ -1368,7 +1338,7 @@ class JoinBundle(NodeBuilder):
     _bl_idname = "NodeJoinBundle"
     node: bpy.types.Node
 
-    def __init__(self, bundle: TYPE_INPUT_BUNDLE = None):
+    def __init__(self, bundle: InputBundle = None):
         super().__init__()
         key_args = {"Bundle": bundle}
 
@@ -1395,18 +1365,18 @@ class MapRange(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE = 1.0,
-        from_min: TYPE_INPUT_VALUE = 0.0,
-        from_max: TYPE_INPUT_VALUE = 1.0,
-        to_min: TYPE_INPUT_VALUE = 0.0,
-        to_max: TYPE_INPUT_VALUE = 1.0,
-        steps: TYPE_INPUT_VALUE = 4.0,
-        vector: TYPE_INPUT_VECTOR = None,
-        from_min_float3: TYPE_INPUT_VECTOR = None,
-        from_max_float3: TYPE_INPUT_VECTOR = None,
-        to_min_float3: TYPE_INPUT_VECTOR = None,
-        to_max_float3: TYPE_INPUT_VECTOR = None,
-        steps_float3: TYPE_INPUT_VECTOR = None,
+        value: InputFloat = 1.0,
+        from_min: InputFloat = 0.0,
+        from_max: InputFloat = 1.0,
+        to_min: InputFloat = 0.0,
+        to_max: InputFloat = 1.0,
+        steps: InputFloat = 4.0,
+        vector: InputVector = None,
+        from_min_float3: InputVector = None,
+        from_max_float3: InputVector = None,
+        to_min_float3: InputVector = None,
+        to_max_float3: InputVector = None,
+        steps_float3: InputVector = None,
         *,
         clamp: bool = False,
         interpolation_type: Literal[
@@ -1437,11 +1407,11 @@ class MapRange(NodeBuilder):
     @classmethod
     def float(
         cls,
-        value: TYPE_INPUT_VALUE = 1.0,
-        from_min: TYPE_INPUT_VALUE = 0.0,
-        from_max: TYPE_INPUT_VALUE = 1.0,
-        to_min: TYPE_INPUT_VALUE = 0.0,
-        to_max: TYPE_INPUT_VALUE = 1.0,
+        value: InputFloat = 1.0,
+        from_min: InputFloat = 0.0,
+        from_max: InputFloat = 1.0,
+        to_min: InputFloat = 0.0,
+        to_max: InputFloat = 1.0,
     ) -> "MapRange":
         """Create Map Range with operation 'Float'."""
         return cls(
@@ -1456,11 +1426,11 @@ class MapRange(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        vector: TYPE_INPUT_VECTOR = None,
-        from_min3: TYPE_INPUT_VECTOR = None,
-        from_max3: TYPE_INPUT_VECTOR = None,
-        to_min3: TYPE_INPUT_VECTOR = None,
-        to_max3: TYPE_INPUT_VECTOR = None,
+        vector: InputVector = None,
+        from_min3: InputVector = None,
+        from_max3: InputVector = None,
+        to_min3: InputVector = None,
+        to_max3: InputVector = None,
     ) -> "MapRange":
         """Create Map Range with operation 'Vector'."""
         return cls(
@@ -1581,10 +1551,10 @@ class MatchString(NodeBuilder):
 
     def __init__(
         self,
-        string: TYPE_INPUT_STRING = "",
-        operation: TYPE_INPUT_MENU
+        string: InputString = "",
+        operation: InputMenu
         | Literal["Starts With", "Ends With", "Contains"] = "Starts With",
-        key: TYPE_INPUT_STRING = "",
+        key: InputString = "",
     ):
         super().__init__()
         key_args = {"String": string, "Operation": operation, "Key": key}
@@ -1622,9 +1592,9 @@ class Math(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        value_002: InputFloat = 0.5,
         *,
         operation: Literal[
             "ADD",
@@ -1678,39 +1648,31 @@ class Math(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def add(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def add(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Add'."""
         return cls(operation="ADD", value=value, value_001=value_001)
 
     @classmethod
-    def subtract(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def subtract(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Subtract'."""
         return cls(operation="SUBTRACT", value=value, value_001=value_001)
 
     @classmethod
-    def multiply(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def multiply(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Multiply'."""
         return cls(operation="MULTIPLY", value=value, value_001=value_001)
 
     @classmethod
-    def divide(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def divide(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Divide'."""
         return cls(operation="DIVIDE", value=value, value_001=value_001)
 
     @classmethod
     def multiply_add(
         cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        value_002: InputFloat = 0.5,
     ) -> "Math":
         """Create Math with operation 'Multiply Add'."""
         return cls(
@@ -1721,78 +1683,68 @@ class Math(NodeBuilder):
         )
 
     @classmethod
-    def power(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def power(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Power'."""
         return cls(operation="POWER", value=value, value_001=value_001)
 
     @classmethod
-    def logarithm(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def logarithm(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Logarithm'."""
         return cls(operation="LOGARITHM", value=value, value_001=value_001)
 
     @classmethod
-    def square_root(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def square_root(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Square Root'."""
         return cls(operation="SQRT", value=value)
 
     @classmethod
-    def inverse_square_root(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def inverse_square_root(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Inverse Square Root'."""
         return cls(operation="INVERSE_SQRT", value=value)
 
     @classmethod
-    def absolute(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def absolute(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Absolute'."""
         return cls(operation="ABSOLUTE", value=value)
 
     @classmethod
-    def exponent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def exponent(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Exponent'."""
         return cls(operation="EXPONENT", value=value)
 
     @classmethod
-    def minimum(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def minimum(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Minimum'."""
         return cls(operation="MINIMUM", value=value, value_001=value_001)
 
     @classmethod
-    def maximum(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def maximum(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Maximum'."""
         return cls(operation="MAXIMUM", value=value, value_001=value_001)
 
     @classmethod
-    def less_than(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def less_than(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Less Than'."""
         return cls(operation="LESS_THAN", value=value, value_001=value_001)
 
     @classmethod
     def greater_than(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5
     ) -> "Math":
         """Create Math with operation 'Greater Than'."""
         return cls(operation="GREATER_THAN", value=value, value_001=value_001)
 
     @classmethod
-    def sign(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def sign(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Sign'."""
         return cls(operation="SIGN", value=value)
 
     @classmethod
     def compare(
         cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        value_002: InputFloat = 0.5,
     ) -> "Math":
         """Create Math with operation 'Compare'."""
         return cls(
@@ -1802,9 +1754,9 @@ class Math(NodeBuilder):
     @classmethod
     def smooth_minimum(
         cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        value_002: InputFloat = 0.5,
     ) -> "Math":
         """Create Math with operation 'Smooth Minimum'."""
         return cls(
@@ -1817,9 +1769,9 @@ class Math(NodeBuilder):
     @classmethod
     def smooth_maximum(
         cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        value_002: InputFloat = 0.5,
     ) -> "Math":
         """Create Math with operation 'Smooth Maximum'."""
         return cls(
@@ -1830,40 +1782,40 @@ class Math(NodeBuilder):
         )
 
     @classmethod
-    def round(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def round(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Round'."""
         return cls(operation="ROUND", value=value)
 
     @classmethod
-    def floor(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def floor(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Floor'."""
         return cls(operation="FLOOR", value=value)
 
     @classmethod
-    def ceil(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def ceil(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Ceil'."""
         return cls(operation="CEIL", value=value)
 
     @classmethod
-    def truncate(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def truncate(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Truncate'."""
         return cls(operation="TRUNC", value=value)
 
     @classmethod
-    def fraction(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def fraction(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Fraction'."""
         return cls(operation="FRACT", value=value)
 
     @classmethod
     def truncated_modulo(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5
     ) -> "Math":
         """Create Math with operation 'Truncated Modulo'."""
         return cls(operation="MODULO", value=value, value_001=value_001)
 
     @classmethod
     def floored_modulo(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
+        cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5
     ) -> "Math":
         """Create Math with operation 'Floored Modulo'."""
         return cls(operation="FLOORED_MODULO", value=value, value_001=value_001)
@@ -1871,9 +1823,9 @@ class Math(NodeBuilder):
     @classmethod
     def wrap(
         cls,
-        value: TYPE_INPUT_VALUE = 0.5,
-        value_001: TYPE_INPUT_VALUE = 0.5,
-        value_002: TYPE_INPUT_VALUE = 0.5,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        value_002: InputFloat = 0.5,
     ) -> "Math":
         """Create Math with operation 'Wrap'."""
         return cls(
@@ -1881,78 +1833,72 @@ class Math(NodeBuilder):
         )
 
     @classmethod
-    def snap(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def snap(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Snap'."""
         return cls(operation="SNAP", value=value, value_001=value_001)
 
     @classmethod
-    def ping_pong(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def ping_pong(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Ping-Pong'."""
         return cls(operation="PINGPONG", value=value, value_001=value_001)
 
     @classmethod
-    def sine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def sine(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Sine'."""
         return cls(operation="SINE", value=value)
 
     @classmethod
-    def cosine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def cosine(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Cosine'."""
         return cls(operation="COSINE", value=value)
 
     @classmethod
-    def tangent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def tangent(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Tangent'."""
         return cls(operation="TANGENT", value=value)
 
     @classmethod
-    def arcsine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def arcsine(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Arcsine'."""
         return cls(operation="ARCSINE", value=value)
 
     @classmethod
-    def arccosine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def arccosine(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Arccosine'."""
         return cls(operation="ARCCOSINE", value=value)
 
     @classmethod
-    def arctangent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def arctangent(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Arctangent'."""
         return cls(operation="ARCTANGENT", value=value)
 
     @classmethod
-    def arctan2(
-        cls, value: TYPE_INPUT_VALUE = 0.5, value_001: TYPE_INPUT_VALUE = 0.5
-    ) -> "Math":
+    def arctan2(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Arctan2'."""
         return cls(operation="ARCTAN2", value=value, value_001=value_001)
 
     @classmethod
-    def hyperbolic_sine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def hyperbolic_sine(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Hyperbolic Sine'."""
         return cls(operation="SINH", value=value)
 
     @classmethod
-    def hyperbolic_cosine(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def hyperbolic_cosine(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Hyperbolic Cosine'."""
         return cls(operation="COSH", value=value)
 
     @classmethod
-    def hyperbolic_tangent(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def hyperbolic_tangent(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'Hyperbolic Tangent'."""
         return cls(operation="TANH", value=value)
 
     @classmethod
-    def to_radians(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def to_radians(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'To Radians'."""
         return cls(operation="RADIANS", value=value)
 
     @classmethod
-    def to_degrees(cls, value: TYPE_INPUT_VALUE = 0.5) -> "Math":
+    def to_degrees(cls, value: InputFloat = 0.5) -> "Math":
         """Create Math with operation 'To Degrees'."""
         return cls(operation="DEGREES", value=value)
 
@@ -2090,7 +2036,7 @@ class MatrixDeterminant(NodeBuilder):
     _bl_idname = "FunctionNodeMatrixDeterminant"
     node: bpy.types.FunctionNodeMatrixDeterminant
 
-    def __init__(self, matrix: TYPE_INPUT_MATRIX = None):
+    def __init__(self, matrix: InputMatrix = None):
         super().__init__()
         key_args = {"Matrix": matrix}
 
@@ -2117,16 +2063,16 @@ class Mix(NodeBuilder):
 
     def __init__(
         self,
-        factor_float: TYPE_INPUT_VALUE = 0.5,
-        factor_vector: TYPE_INPUT_VECTOR = None,
-        a_float: TYPE_INPUT_VALUE = 0.0,
-        b_float: TYPE_INPUT_VALUE = 0.0,
-        a_vector: TYPE_INPUT_VECTOR = None,
-        b_vector: TYPE_INPUT_VECTOR = None,
-        a_color: TYPE_INPUT_COLOR = None,
-        b_color: TYPE_INPUT_COLOR = None,
-        a_rotation: TYPE_INPUT_ROTATION = None,
-        b_rotation: TYPE_INPUT_ROTATION = None,
+        factor_float: InputFloat = 0.5,
+        factor_vector: InputVector = None,
+        a_float: InputFloat = 0.0,
+        b_float: InputFloat = 0.0,
+        a_vector: InputVector = None,
+        b_vector: InputVector = None,
+        a_color: InputColor = None,
+        b_color: InputColor = None,
+        a_rotation: InputRotation = None,
+        b_rotation: InputRotation = None,
         *,
         data_type: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"] = "FLOAT",
         factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
@@ -2176,20 +2122,14 @@ class Mix(NodeBuilder):
 
     @classmethod
     def float(
-        cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a: TYPE_INPUT_VALUE = 0.0,
-        b: TYPE_INPUT_VALUE = 0.0,
+        cls, factor: InputFloat = 0.5, a: InputFloat = 0.0, b: InputFloat = 0.0
     ) -> "Mix":
         """Create Mix with operation 'Float'."""
         return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
 
     @classmethod
     def vector(
-        cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a: TYPE_INPUT_VECTOR = None,
-        b: TYPE_INPUT_VECTOR = None,
+        cls, factor: InputFloat = 0.5, a: InputVector = None, b: InputVector = None
     ) -> "Mix":
         """Create Mix with operation 'Vector'."""
         return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
@@ -2197,9 +2137,9 @@ class Mix(NodeBuilder):
     @classmethod
     def color(
         cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a_color: TYPE_INPUT_COLOR = None,
-        b_color: TYPE_INPUT_COLOR = None,
+        factor: InputFloat = 0.5,
+        a_color: InputColor = None,
+        b_color: InputColor = None,
     ) -> "Mix":
         """Create Mix with operation 'Color'."""
         return cls(
@@ -2209,9 +2149,9 @@ class Mix(NodeBuilder):
     @classmethod
     def rotation(
         cls,
-        factor: TYPE_INPUT_VALUE = 0.5,
-        a_rotation: TYPE_INPUT_ROTATION = None,
-        b_rotation: TYPE_INPUT_ROTATION = None,
+        factor: InputFloat = 0.5,
+        a_rotation: InputRotation = None,
+        b_rotation: InputRotation = None,
     ) -> "Mix":
         """Create Mix with operation 'Rotation'."""
         return cls(
@@ -2387,8 +2327,8 @@ class MultiplyMatrices(NodeBuilder):
 
     def __init__(
         self,
-        matrix: TYPE_INPUT_MATRIX = None,
-        matrix_001: TYPE_INPUT_MATRIX = None,
+        matrix: InputMatrix = None,
+        matrix_001: InputMatrix = None,
     ):
         super().__init__()
         key_args = {"Matrix": matrix, "Matrix_001": matrix_001}
@@ -2421,11 +2361,11 @@ class PackUVIslands(NodeBuilder):
 
     def __init__(
         self,
-        uv: TYPE_INPUT_VECTOR = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        margin: TYPE_INPUT_VALUE = 0.001,
-        rotate: TYPE_INPUT_BOOLEAN = True,
-        method: TYPE_INPUT_MENU
+        uv: InputVector = None,
+        selection: InputBoolean = True,
+        margin: InputFloat = 0.001,
+        rotate: InputBoolean = True,
+        method: InputMenu
         | Literal["Bounding Box", "Convex Hull", "Exact Shape"] = "Bounding Box",
     ):
         super().__init__()
@@ -2480,8 +2420,8 @@ class ProjectPoint(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        transform: TYPE_INPUT_MATRIX = None,
+        vector: InputVector = None,
+        transform: InputMatrix = None,
     ):
         super().__init__()
         key_args = {"Vector": vector, "Transform": transform}
@@ -2514,10 +2454,10 @@ class QuaternionToRotation(NodeBuilder):
 
     def __init__(
         self,
-        w: TYPE_INPUT_VALUE = 1.0,
-        x: TYPE_INPUT_VALUE = 0.0,
-        y: TYPE_INPUT_VALUE = 0.0,
-        z: TYPE_INPUT_VALUE = 0.0,
+        w: InputFloat = 1.0,
+        x: InputFloat = 0.0,
+        y: InputFloat = 0.0,
+        z: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"W": w, "X": x, "Y": y, "Z": z}
@@ -2560,15 +2500,15 @@ class RandomValue(NodeBuilder):
 
     def __init__(
         self,
-        min: TYPE_INPUT_VECTOR = None,
-        max: TYPE_INPUT_VECTOR = None,
-        min_001: TYPE_INPUT_VALUE = 0.0,
-        max_001: TYPE_INPUT_VALUE = 1.0,
-        min_002: TYPE_INPUT_INT = 0,
-        max_002: TYPE_INPUT_INT = 100,
-        probability: TYPE_INPUT_VALUE = 0.5,
-        id: TYPE_INPUT_INT = 0,
-        seed: TYPE_INPUT_INT = 0,
+        min: InputVector = None,
+        max: InputVector = None,
+        min_001: InputFloat = 0.0,
+        max_001: InputFloat = 1.0,
+        min_002: InputInteger = 0,
+        max_002: InputInteger = 100,
+        probability: InputFloat = 0.5,
+        id: InputInteger = 0,
+        seed: InputInteger = 0,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"] = "FLOAT",
     ):
@@ -2590,10 +2530,10 @@ class RandomValue(NodeBuilder):
     @classmethod
     def float(
         cls,
-        min: TYPE_INPUT_VALUE = 0.0,
-        max: TYPE_INPUT_VALUE = 1.0,
-        id: TYPE_INPUT_INT = 0,
-        seed: TYPE_INPUT_INT = 0,
+        min: InputFloat = 0.0,
+        max: InputFloat = 1.0,
+        id: InputInteger = 0,
+        seed: InputInteger = 0,
     ) -> "RandomValue":
         """Create Random Value with operation 'Float'."""
         return cls(data_type="FLOAT", min_001=min, max_001=max, id=id, seed=seed)
@@ -2601,20 +2541,17 @@ class RandomValue(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        min: TYPE_INPUT_INT = 0,
-        max: TYPE_INPUT_INT = 100,
-        id: TYPE_INPUT_INT = 0,
-        seed: TYPE_INPUT_INT = 0,
+        min: InputInteger = 0,
+        max: InputInteger = 100,
+        id: InputInteger = 0,
+        seed: InputInteger = 0,
     ) -> "RandomValue":
         """Create Random Value with operation 'Integer'."""
         return cls(data_type="INT", min_002=min, max_002=max, id=id, seed=seed)
 
     @classmethod
     def boolean(
-        cls,
-        probability: TYPE_INPUT_VALUE = 0.5,
-        id: TYPE_INPUT_INT = 0,
-        seed: TYPE_INPUT_INT = 0,
+        cls, probability: InputFloat = 0.5, id: InputInteger = 0, seed: InputInteger = 0
     ) -> "RandomValue":
         """Create Random Value with operation 'Boolean'."""
         return cls(data_type="BOOLEAN", probability=probability, id=id, seed=seed)
@@ -2622,10 +2559,10 @@ class RandomValue(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        min: TYPE_INPUT_VECTOR = None,
-        max: TYPE_INPUT_VECTOR = None,
-        id: TYPE_INPUT_INT = 0,
-        seed: TYPE_INPUT_INT = 0,
+        min: InputVector = None,
+        max: InputVector = None,
+        id: InputInteger = 0,
+        seed: InputInteger = 0,
     ) -> "RandomValue":
         """Create Random Value with operation 'Vector'."""
         return cls(data_type="FLOAT_VECTOR", min=min, max=max, id=id, seed=seed)
@@ -2714,9 +2651,9 @@ class ReplaceString(NodeBuilder):
 
     def __init__(
         self,
-        string: TYPE_INPUT_STRING = "",
-        find: TYPE_INPUT_STRING = "",
-        replace: TYPE_INPUT_STRING = "",
+        string: InputString = "",
+        find: InputString = "",
+        replace: InputString = "",
     ):
         super().__init__()
         key_args = {"String": string, "Find": find, "Replace": replace}
@@ -2754,10 +2691,10 @@ class RotateEuler(NodeBuilder):
 
     def __init__(
         self,
-        rotation: TYPE_INPUT_VECTOR = None,
-        rotate_by: TYPE_INPUT_VECTOR = None,
-        axis: TYPE_INPUT_VECTOR = None,
-        angle: TYPE_INPUT_VALUE = 0.0,
+        rotation: InputVector = None,
+        rotate_by: InputVector = None,
+        axis: InputVector = None,
+        angle: InputFloat = 0.0,
         *,
         rotation_type: Literal["AXIS_ANGLE", "EULER"] = "EULER",
         space: Literal["OBJECT", "LOCAL"] = "OBJECT",
@@ -2825,8 +2762,8 @@ class RotateRotation(NodeBuilder):
 
     def __init__(
         self,
-        rotation: TYPE_INPUT_ROTATION = None,
-        rotate_by: TYPE_INPUT_ROTATION = None,
+        rotation: InputRotation = None,
+        rotate_by: InputRotation = None,
         *,
         rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
     ):
@@ -2869,8 +2806,8 @@ class RotateVector(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        rotation: TYPE_INPUT_ROTATION = None,
+        vector: InputVector = None,
+        rotation: InputRotation = None,
     ):
         super().__init__()
         key_args = {"Vector": vector, "Rotation": rotation}
@@ -2901,7 +2838,7 @@ class RotationToAxisAngle(NodeBuilder):
     _bl_idname = "FunctionNodeRotationToAxisAngle"
     node: bpy.types.FunctionNodeRotationToAxisAngle
 
-    def __init__(self, rotation: TYPE_INPUT_ROTATION = None):
+    def __init__(self, rotation: InputRotation = None):
         super().__init__()
         key_args = {"Rotation": rotation}
 
@@ -2931,7 +2868,7 @@ class RotationToEuler(NodeBuilder):
     _bl_idname = "FunctionNodeRotationToEuler"
     node: bpy.types.FunctionNodeRotationToEuler
 
-    def __init__(self, rotation: TYPE_INPUT_ROTATION = None):
+    def __init__(self, rotation: InputRotation = None):
         super().__init__()
         key_args = {"Rotation": rotation}
 
@@ -2956,7 +2893,7 @@ class RotationToQuaternion(NodeBuilder):
     _bl_idname = "FunctionNodeRotationToQuaternion"
     node: bpy.types.FunctionNodeRotationToQuaternion
 
-    def __init__(self, rotation: TYPE_INPUT_ROTATION = None):
+    def __init__(self, rotation: InputRotation = None):
         super().__init__()
         key_args = {"Rotation": rotation}
 
@@ -2998,7 +2935,7 @@ class SeparateBundle(NodeBuilder):
 
     def __init__(
         self,
-        bundle: TYPE_INPUT_BUNDLE = None,
+        bundle: InputBundle = None,
         *,
         define_signature: bool = False,
     ):
@@ -3031,7 +2968,7 @@ class SeparateColor(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
+        color: InputColor = None,
         *,
         mode: Literal["RGB", "HSV", "HSL"] = "RGB",
     ):
@@ -3082,7 +3019,7 @@ class SeparateMatrix(NodeBuilder):
     _bl_idname = "FunctionNodeSeparateMatrix"
     node: bpy.types.FunctionNodeSeparateMatrix
 
-    def __init__(self, matrix: TYPE_INPUT_MATRIX = None):
+    def __init__(self, matrix: InputMatrix = None):
         super().__init__()
         key_args = {"Matrix": matrix}
 
@@ -3182,7 +3119,7 @@ class SeparateTransform(NodeBuilder):
     _bl_idname = "FunctionNodeSeparateTransform"
     node: bpy.types.FunctionNodeSeparateTransform
 
-    def __init__(self, transform: TYPE_INPUT_MATRIX = None):
+    def __init__(self, transform: InputMatrix = None):
         super().__init__()
         key_args = {"Transform": transform}
 
@@ -3217,7 +3154,7 @@ class SeparateXYZ(NodeBuilder):
     _bl_idname = "ShaderNodeSeparateXYZ"
     node: bpy.types.ShaderNodeSeparateXYZ
 
-    def __init__(self, vector: TYPE_INPUT_VECTOR = None):
+    def __init__(self, vector: InputVector = None):
         super().__init__()
         key_args = {"Vector": vector}
 
@@ -3254,9 +3191,9 @@ class SliceString(NodeBuilder):
 
     def __init__(
         self,
-        string: TYPE_INPUT_STRING = "",
-        position: TYPE_INPUT_INT = 0,
-        length: TYPE_INPUT_INT = 10,
+        string: InputString = "",
+        position: InputInteger = 0,
+        length: InputInteger = 10,
     ):
         super().__init__()
         key_args = {"String": string, "Position": position, "Length": length}
@@ -3292,7 +3229,7 @@ class StringLength(NodeBuilder):
     _bl_idname = "FunctionNodeStringLength"
     node: bpy.types.FunctionNodeStringLength
 
-    def __init__(self, string: TYPE_INPUT_STRING = ""):
+    def __init__(self, string: InputString = ""):
         super().__init__()
         key_args = {"String": string}
 
@@ -3319,7 +3256,7 @@ class StringToValue(NodeBuilder):
 
     def __init__(
         self,
-        string: TYPE_INPUT_STRING = "",
+        string: InputString = "",
         *,
         data_type: Literal["FLOAT", "INT"] = "FLOAT",
     ):
@@ -3329,12 +3266,12 @@ class StringToValue(NodeBuilder):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, string: TYPE_INPUT_STRING = "") -> "StringToValue":
+    def float(cls, string: InputString = "") -> "StringToValue":
         """Create String to Value with operation 'Float'."""
         return cls(data_type="FLOAT", string=string)
 
     @classmethod
-    def integer(cls, string: TYPE_INPUT_STRING = "") -> "StringToValue":
+    def integer(cls, string: InputString = "") -> "StringToValue":
         """Create String to Value with operation 'Integer'."""
         return cls(data_type="INT", string=string)
 
@@ -3372,9 +3309,9 @@ class Switch(NodeBuilder):
 
     def __init__(
         self,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_GEOMETRY = None,
-        true: TYPE_INPUT_GEOMETRY = None,
+        switch: InputBoolean = False,
+        false: InputGeometry = None,
+        true: InputGeometry = None,
         *,
         input_type: Literal[
             "FLOAT",
@@ -3403,9 +3340,9 @@ class Switch(NodeBuilder):
     @classmethod
     def float(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_VALUE = 0.0,
-        true: TYPE_INPUT_VALUE = 0.0,
+        switch: InputBoolean = False,
+        false: InputFloat = 0.0,
+        true: InputFloat = 0.0,
     ) -> "Switch":
         """Create Switch with operation 'Float'."""
         return cls(input_type="FLOAT", switch=switch, false=false, true=true)
@@ -3413,9 +3350,9 @@ class Switch(NodeBuilder):
     @classmethod
     def integer(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_INT = 0,
-        true: TYPE_INPUT_INT = 0,
+        switch: InputBoolean = False,
+        false: InputInteger = 0,
+        true: InputInteger = 0,
     ) -> "Switch":
         """Create Switch with operation 'Integer'."""
         return cls(input_type="INT", switch=switch, false=false, true=true)
@@ -3423,9 +3360,9 @@ class Switch(NodeBuilder):
     @classmethod
     def boolean(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_BOOLEAN = False,
-        true: TYPE_INPUT_BOOLEAN = False,
+        switch: InputBoolean = False,
+        false: InputBoolean = False,
+        true: InputBoolean = False,
     ) -> "Switch":
         """Create Switch with operation 'Boolean'."""
         return cls(input_type="BOOLEAN", switch=switch, false=false, true=true)
@@ -3433,9 +3370,9 @@ class Switch(NodeBuilder):
     @classmethod
     def vector(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_VECTOR = None,
-        true: TYPE_INPUT_VECTOR = None,
+        switch: InputBoolean = False,
+        false: InputVector = None,
+        true: InputVector = None,
     ) -> "Switch":
         """Create Switch with operation 'Vector'."""
         return cls(input_type="VECTOR", switch=switch, false=false, true=true)
@@ -3443,9 +3380,9 @@ class Switch(NodeBuilder):
     @classmethod
     def color(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_COLOR = None,
-        true: TYPE_INPUT_COLOR = None,
+        switch: InputBoolean = False,
+        false: InputColor = None,
+        true: InputColor = None,
     ) -> "Switch":
         """Create Switch with operation 'Color'."""
         return cls(input_type="RGBA", switch=switch, false=false, true=true)
@@ -3453,9 +3390,9 @@ class Switch(NodeBuilder):
     @classmethod
     def rotation(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_ROTATION = None,
-        true: TYPE_INPUT_ROTATION = None,
+        switch: InputBoolean = False,
+        false: InputRotation = None,
+        true: InputRotation = None,
     ) -> "Switch":
         """Create Switch with operation 'Rotation'."""
         return cls(input_type="ROTATION", switch=switch, false=false, true=true)
@@ -3463,9 +3400,9 @@ class Switch(NodeBuilder):
     @classmethod
     def matrix(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_MATRIX = None,
-        true: TYPE_INPUT_MATRIX = None,
+        switch: InputBoolean = False,
+        false: InputMatrix = None,
+        true: InputMatrix = None,
     ) -> "Switch":
         """Create Switch with operation 'Matrix'."""
         return cls(input_type="MATRIX", switch=switch, false=false, true=true)
@@ -3473,9 +3410,9 @@ class Switch(NodeBuilder):
     @classmethod
     def string(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_STRING = "",
-        true: TYPE_INPUT_STRING = "",
+        switch: InputBoolean = False,
+        false: InputString = "",
+        true: InputString = "",
     ) -> "Switch":
         """Create Switch with operation 'String'."""
         return cls(input_type="STRING", switch=switch, false=false, true=true)
@@ -3483,9 +3420,9 @@ class Switch(NodeBuilder):
     @classmethod
     def menu(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_MENU = None,
-        true: TYPE_INPUT_MENU = None,
+        switch: InputBoolean = False,
+        false: InputMenu = None,
+        true: InputMenu = None,
     ) -> "Switch":
         """Create Switch with operation 'Menu'."""
         return cls(input_type="MENU", switch=switch, false=false, true=true)
@@ -3493,9 +3430,9 @@ class Switch(NodeBuilder):
     @classmethod
     def object(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_OBJECT = None,
-        true: TYPE_INPUT_OBJECT = None,
+        switch: InputBoolean = False,
+        false: InputObject = None,
+        true: InputObject = None,
     ) -> "Switch":
         """Create Switch with operation 'Object'."""
         return cls(input_type="OBJECT", switch=switch, false=false, true=true)
@@ -3503,9 +3440,9 @@ class Switch(NodeBuilder):
     @classmethod
     def image(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_IMAGE = None,
-        true: TYPE_INPUT_IMAGE = None,
+        switch: InputBoolean = False,
+        false: InputImage = None,
+        true: InputImage = None,
     ) -> "Switch":
         """Create Switch with operation 'Image'."""
         return cls(input_type="IMAGE", switch=switch, false=false, true=true)
@@ -3513,9 +3450,9 @@ class Switch(NodeBuilder):
     @classmethod
     def geometry(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_GEOMETRY = None,
-        true: TYPE_INPUT_GEOMETRY = None,
+        switch: InputBoolean = False,
+        false: InputGeometry = None,
+        true: InputGeometry = None,
     ) -> "Switch":
         """Create Switch with operation 'Geometry'."""
         return cls(input_type="GEOMETRY", switch=switch, false=false, true=true)
@@ -3523,9 +3460,9 @@ class Switch(NodeBuilder):
     @classmethod
     def collection(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_COLLECTION = None,
-        true: TYPE_INPUT_COLLECTION = None,
+        switch: InputBoolean = False,
+        false: InputCollection = None,
+        true: InputCollection = None,
     ) -> "Switch":
         """Create Switch with operation 'Collection'."""
         return cls(input_type="COLLECTION", switch=switch, false=false, true=true)
@@ -3533,9 +3470,9 @@ class Switch(NodeBuilder):
     @classmethod
     def material(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_MATERIAL = None,
-        true: TYPE_INPUT_MATERIAL = None,
+        switch: InputBoolean = False,
+        false: InputMaterial = None,
+        true: InputMaterial = None,
     ) -> "Switch":
         """Create Switch with operation 'Material'."""
         return cls(input_type="MATERIAL", switch=switch, false=false, true=true)
@@ -3543,9 +3480,9 @@ class Switch(NodeBuilder):
     @classmethod
     def bundle(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_BUNDLE = None,
-        true: TYPE_INPUT_BUNDLE = None,
+        switch: InputBoolean = False,
+        false: InputBundle = None,
+        true: InputBundle = None,
     ) -> "Switch":
         """Create Switch with operation 'Bundle'."""
         return cls(input_type="BUNDLE", switch=switch, false=false, true=true)
@@ -3553,9 +3490,9 @@ class Switch(NodeBuilder):
     @classmethod
     def closure(
         cls,
-        switch: TYPE_INPUT_BOOLEAN = False,
-        false: TYPE_INPUT_CLOSURE = None,
-        true: TYPE_INPUT_CLOSURE = None,
+        switch: InputBoolean = False,
+        false: InputClosure = None,
+        true: InputClosure = None,
     ) -> "Switch":
         """Create Switch with operation 'Closure'."""
         return cls(input_type="CLOSURE", switch=switch, false=false, true=true)
@@ -3638,8 +3575,8 @@ class TransformDirection(NodeBuilder):
 
     def __init__(
         self,
-        direction: TYPE_INPUT_VECTOR = None,
-        transform: TYPE_INPUT_MATRIX = None,
+        direction: InputVector = None,
+        transform: InputMatrix = None,
     ):
         super().__init__()
         key_args = {"Direction": direction, "Transform": transform}
@@ -3672,8 +3609,8 @@ class TransformPoint(NodeBuilder):
 
     def __init__(
         self,
-        vector: TYPE_INPUT_VECTOR = None,
-        transform: TYPE_INPUT_MATRIX = None,
+        vector: InputVector = None,
+        transform: InputMatrix = None,
     ):
         super().__init__()
         key_args = {"Vector": vector, "Transform": transform}
@@ -3704,7 +3641,7 @@ class TransposeMatrix(NodeBuilder):
     _bl_idname = "FunctionNodeTransposeMatrix"
     node: bpy.types.FunctionNodeTransposeMatrix
 
-    def __init__(self, matrix: TYPE_INPUT_MATRIX = None):
+    def __init__(self, matrix: InputMatrix = None):
         super().__init__()
         key_args = {"Matrix": matrix}
 
@@ -3731,11 +3668,11 @@ class UVUnwrap(NodeBuilder):
 
     def __init__(
         self,
-        selection: TYPE_INPUT_BOOLEAN = True,
-        seam: TYPE_INPUT_BOOLEAN = False,
-        margin: TYPE_INPUT_VALUE = 0.001,
-        fill_holes: TYPE_INPUT_BOOLEAN = True,
-        method: TYPE_INPUT_MENU | Literal["Angle Based", "Conformal"] = "Angle Based",
+        selection: InputBoolean = True,
+        seam: InputBoolean = False,
+        margin: InputFloat = 0.001,
+        fill_holes: InputBoolean = True,
+        method: InputMenu | Literal["Angle Based", "Conformal"] = "Angle Based",
     ):
         super().__init__()
         key_args = {
@@ -3789,8 +3726,8 @@ class ValueToString(NodeBuilder):
 
     def __init__(
         self,
-        value: TYPE_INPUT_VALUE = 0.0,
-        decimals: TYPE_INPUT_INT = 0,
+        value: InputFloat = 0.0,
+        decimals: InputInteger = 0,
         *,
         data_type: Literal["FLOAT", "INT"] = "FLOAT",
     ):
@@ -3801,13 +3738,13 @@ class ValueToString(NodeBuilder):
 
     @classmethod
     def float(
-        cls, value: TYPE_INPUT_VALUE = 0.0, decimals: TYPE_INPUT_INT = 0
+        cls, value: InputFloat = 0.0, decimals: InputInteger = 0
     ) -> "ValueToString":
         """Create Value to String with operation 'Float'."""
         return cls(data_type="FLOAT", value=value, decimals=decimals)
 
     @classmethod
-    def integer(cls, value: TYPE_INPUT_INT = 0) -> "ValueToString":
+    def integer(cls, value: InputInteger = 0) -> "ValueToString":
         """Create Value to String with operation 'Integer'."""
         return cls(data_type="INT", value=value)
 

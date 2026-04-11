@@ -6,7 +6,7 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
+    InputColor,
 )
 
 
@@ -76,7 +76,7 @@ class Viewer(NodeBuilder):
 
     def __init__(
         self,
-        image: TYPE_INPUT_COLOR = None,
+        image: InputColor = None,
         *,
         ui_shortcut: int = 0,
     ):

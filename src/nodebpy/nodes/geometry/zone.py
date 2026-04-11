@@ -6,10 +6,10 @@ import bpy
 from nodebpy.builder import DynamicInputsMixin, NodeBuilder, SocketLinker
 
 from ...types import (
-    LINKABLE,
-    TYPE_INPUT_BOOLEAN,
-    TYPE_INPUT_GEOMETRY,
-    TYPE_INPUT_INT,
+    InputBoolean,
+    InputGeometry,
+    InputInteger,
+    InputLinkable,
     _AttributeDomains,
     _BakeDataTypes,
 )
@@ -36,7 +36,7 @@ class BaseZone(DynamicInputsMixin, NodeBuilder, ABC):
         pass
 
     def capture(
-        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
+        self, value: InputLinkable, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
         """Capture something as an input to the simulation"""
         item_dict = self._add_inputs(value)
@@ -131,7 +131,7 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
 
 
 class SimulationZone:
-    def __init__(self, *args: LINKABLE, **kwargs: LINKABLE):
+    def __init__(self, *args: InputLinkable, **kwargs: InputLinkable):
         self.input = SimulationInput()
         self.output = SimulationOutput()
         self.input.node.pair_with_output(self.output.node)
@@ -184,7 +184,7 @@ class RepeatInput(BaseRepeatZone, BaseZoneInput):
     _bl_idname = "GeometryNodeRepeatInput"
     node: bpy.types.GeometryNodeRepeatInput
 
-    def __init__(self, iterations: TYPE_INPUT_INT = 1):
+    def __init__(self, iterations: InputInteger = 1):
         super().__init__()
         key_args = {"Iterations": iterations}
         self._establish_links(**key_args)
@@ -206,7 +206,10 @@ class RepeatZone:
     """Wrapper that supports both direct unpacking and iteration"""
 
     def __init__(
-        self, iterations: TYPE_INPUT_INT = 1, *args: LINKABLE, **kwargs: LINKABLE
+        self,
+        iterations: InputInteger = 1,
+        *args: InputLinkable,
+        **kwargs: InputLinkable,
     ):
         self.input = RepeatInput(iterations)
         self.output = RepeatOutput()
@@ -236,8 +239,8 @@ class RepeatZone:
 class ForEachGeometryElementZone:
     def __init__(
         self,
-        geometry: TYPE_INPUT_GEOMETRY = None,
-        selection: TYPE_INPUT_BOOLEAN = True,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
         *,
         domain: _AttributeDomains = "POINT",
     ):
@@ -279,15 +282,13 @@ class ForEachGeometryElementInput(BaseZoneInput):
     _bl_idname = "GeometryNodeForeachGeometryElementInput"
     node: bpy.types.GeometryNodeForeachGeometryElementInput
 
-    def __init__(
-        self, geometry: TYPE_INPUT_GEOMETRY = None, selection: TYPE_INPUT_BOOLEAN = True
-    ):
+    def __init__(self, geometry: InputGeometry = None, selection: InputBoolean = True):
         super().__init__()
         key_args = {"Geometry": geometry, "Selection": selection}
         self._establish_links(**key_args)
 
     def capture(
-        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
+        self, value: InputLinkable, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
         """Capture something as an input to the simulation"""
         item_dict = self._add_inputs(value)
@@ -366,19 +367,19 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         return sockets[idx]
 
     def capture(
-        self, value: LINKABLE, domain: _AttributeDomains = "POINT"
+        self, value: InputLinkable, domain: _AttributeDomains = "POINT"
     ) -> SocketLinker:
         """Capture something as an input to the simulation"""
         item_dict = self._add_inputs(value)
         self._establish_links(**item_dict)
         return SocketLinker(self._latest("main", self.node.outputs))
 
-    def capture_generated(self, value: LINKABLE) -> SocketLinker:
-        self._socket_data_types = self._socket_data_types + ["GEOMETRY"]
+    def capture_generated(self, value: InputLinkable) -> SocketLinker:
+        self._socket_data_types = tuple(list(self._socket_data_types) + ["GEOMETRY"])
         self._add_socket = self._add_socket_generated
         item_dict = self._add_inputs(value)
         self._establish_links(**item_dict)
-        self._socket_data_types = list(
+        self._socket_data_types = tuple(
             [x for x in self._socket_data_types if x != "GEOMETRY"]
         )
         self._add_socket = self._add_socket_main

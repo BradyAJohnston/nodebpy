@@ -7,10 +7,10 @@ import bpy
 from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
 
 from ...types import (
-    TYPE_INPUT_COLOR,
-    TYPE_INPUT_STRING,
-    TYPE_INPUT_VALUE,
-    TYPE_INPUT_VECTOR,
+    InputColor,
+    InputString,
+    InputFloat,
+    InputVector,
 )
 
 
@@ -24,19 +24,19 @@ class PrincipledVolume(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        color_attribute: TYPE_INPUT_STRING = "",
-        density: TYPE_INPUT_VALUE = 1.0,
-        density_attribute: TYPE_INPUT_STRING = "density",
-        anisotropy: TYPE_INPUT_VALUE = 0.0,
-        absorption_color: TYPE_INPUT_COLOR = None,
-        emission_strength: TYPE_INPUT_VALUE = 0.0,
-        emission_color: TYPE_INPUT_COLOR = None,
-        blackbody_intensity: TYPE_INPUT_VALUE = 0.0,
-        blackbody_tint: TYPE_INPUT_COLOR = None,
-        temperature: TYPE_INPUT_VALUE = 1000.0,
-        temperature_attribute: TYPE_INPUT_STRING = "temperature",
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        color_attribute: InputString = "",
+        density: InputFloat = 1.0,
+        density_attribute: InputString = "density",
+        anisotropy: InputFloat = 0.0,
+        absorption_color: InputColor = None,
+        emission_strength: InputFloat = 0.0,
+        emission_color: InputColor = None,
+        blackbody_intensity: InputFloat = 0.0,
+        blackbody_tint: InputColor = None,
+        temperature: InputFloat = 1000.0,
+        temperature_attribute: InputString = "temperature",
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {
@@ -138,9 +138,9 @@ class VolumeAbsorption(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        density: TYPE_INPUT_VALUE = 1.0,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        density: InputFloat = 1.0,
+        weight: InputFloat = 0.0,
     ):
         super().__init__()
         key_args = {"Color": color, "Density": density, "Weight": weight}
@@ -178,15 +178,15 @@ class VolumeCoefficients(NodeBuilder):
 
     def __init__(
         self,
-        weight: TYPE_INPUT_VALUE = 0.0,
-        absorption_coefficients: TYPE_INPUT_VECTOR = None,
-        scatter_coefficients: TYPE_INPUT_VECTOR = None,
-        anisotropy: TYPE_INPUT_VALUE = 0.0,
-        ior: TYPE_INPUT_VALUE = 1.33,
-        backscatter: TYPE_INPUT_VALUE = 0.1,
-        alpha: TYPE_INPUT_VALUE = 0.5,
-        diameter: TYPE_INPUT_VALUE = 20.0,
-        emission_coefficients: TYPE_INPUT_VECTOR = None,
+        weight: InputFloat = 0.0,
+        absorption_coefficients: InputVector = None,
+        scatter_coefficients: InputVector = None,
+        anisotropy: InputFloat = 0.0,
+        ior: InputFloat = 1.33,
+        backscatter: InputFloat = 0.1,
+        alpha: InputFloat = 0.5,
+        diameter: InputFloat = 20.0,
+        emission_coefficients: InputVector = None,
         *,
         phase: Literal[
             "HENYEY_GREENSTEIN", "FOURNIER_FORAND", "DRAINE", "RAYLEIGH", "MIE"
@@ -318,14 +318,14 @@ class VolumeScatter(NodeBuilder):
 
     def __init__(
         self,
-        color: TYPE_INPUT_COLOR = None,
-        density: TYPE_INPUT_VALUE = 1.0,
-        anisotropy: TYPE_INPUT_VALUE = 0.0,
-        ior: TYPE_INPUT_VALUE = 1.33,
-        backscatter: TYPE_INPUT_VALUE = 0.1,
-        alpha: TYPE_INPUT_VALUE = 0.5,
-        diameter: TYPE_INPUT_VALUE = 20.0,
-        weight: TYPE_INPUT_VALUE = 0.0,
+        color: InputColor = None,
+        density: InputFloat = 1.0,
+        anisotropy: InputFloat = 0.0,
+        ior: InputFloat = 1.33,
+        backscatter: InputFloat = 0.1,
+        alpha: InputFloat = 0.5,
+        diameter: InputFloat = 20.0,
+        weight: InputFloat = 0.0,
         *,
         phase: Literal[
             "HENYEY_GREENSTEIN", "FOURNIER_FORAND", "DRAINE", "RAYLEIGH", "MIE"
