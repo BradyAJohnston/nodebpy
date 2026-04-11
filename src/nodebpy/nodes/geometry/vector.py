@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import (
+    NodeBuilder,
+    SocketLinker,
+    TypedInputs,
+    TypedOutputs,
+    VectorSocketLinker,
+)
 
 from ...types import (
     InputFloat,
@@ -33,46 +39,46 @@ class RadialTiling(NodeBuilder):
         self.normalize = normalize
         self._establish_links(**key_args)
 
-    @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector")
+    class Inputs(TypedInputs):
+        @property
+        def vector(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")
+
+        @property
+        def sides(self) -> SocketLinker:
+            """Input socket: Sides"""
+            return self.get("Sides")
+
+        @property
+        def roundness(self) -> SocketLinker:
+            """Input socket: Roundness"""
+            return self.get("Roundness")
 
     @property
-    def i_sides(self) -> SocketLinker:
-        """Input socket: Sides"""
-        return self.inputs.get("Sides")
+    def i(self) -> "Inputs":
+        return RadialTiling.Inputs(self)
 
-    @property
-    def i_roundness(self) -> SocketLinker:
-        """Input socket: Roundness"""
-        return self.inputs.get("Roundness")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "RadialTiling") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def segment_coordinates(self) -> VectorSocketLinker:
             """Output socket: Segment Coordinates"""
-            return self._node.outputs.get("Segment Coordinates")  # type: ignore[return-value]
+            return self.get("Segment Coordinates")  # type: ignore[return-value]
 
         @property
         def segment_id(self) -> SocketLinker:
             """Output socket: Segment ID"""
-            return self._node.outputs.get("Segment ID")  # type: ignore[return-value]
+            return self.get("Segment ID")  # type: ignore[return-value]
 
         @property
         def segment_width(self) -> SocketLinker:
             """Output socket: Segment Width"""
-            return self._node.outputs.get("Segment Width")  # type: ignore[return-value]
+            return self.get("Segment Width")  # type: ignore[return-value]
 
         @property
         def segment_rotation(self) -> SocketLinker:
             """Output socket: Segment Rotation"""
-            return self._node.outputs.get("Segment Rotation")  # type: ignore[return-value]
+            return self.get("Segment Rotation")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -105,26 +111,26 @@ class VectorCurves(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_fac(self) -> SocketLinker:
-        """Input socket: Factor"""
-        return self.inputs.get("Fac")
+    class Inputs(TypedInputs):
+        @property
+        def fac(self) -> SocketLinker:
+            """Input socket: Factor"""
+            return self.get("Fac")
+
+        @property
+        def vector(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")
 
     @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector")
+    def i(self) -> "Inputs":
+        return VectorCurves.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "VectorCurves") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def vector(self) -> VectorSocketLinker:
             """Output socket: Vector"""
-            return self._node.outputs.get("Vector")  # type: ignore[return-value]
+            return self.get("Vector")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -398,41 +404,41 @@ class VectorMath(NodeBuilder):
         """Create Vector Math with operation 'Tangent'."""
         return cls(operation="TANGENT", vector=vector)
 
-    @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector")
+    class Inputs(TypedInputs):
+        @property
+        def vector(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")
+
+        @property
+        def vector_001(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector_001")
+
+        @property
+        def vector_002(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector_002")
+
+        @property
+        def scale(self) -> SocketLinker:
+            """Input socket: Scale"""
+            return self.get("Scale")
 
     @property
-    def i_vector_001(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector_001")
+    def i(self) -> "Inputs":
+        return VectorMath.Inputs(self)
 
-    @property
-    def i_vector_002(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector_002")
-
-    @property
-    def i_scale(self) -> SocketLinker:
-        """Input socket: Scale"""
-        return self.inputs.get("Scale")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "VectorMath") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def vector(self) -> VectorSocketLinker:
             """Output socket: Vector"""
-            return self._node.outputs.get("Vector")  # type: ignore[return-value]
+            return self.get("Vector")  # type: ignore[return-value]
 
         @property
         def value(self) -> SocketLinker:
             """Output socket: Value"""
-            return self._node.outputs.get("Value")  # type: ignore[return-value]
+            return self.get("Value")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -545,41 +551,41 @@ class VectorRotate(NodeBuilder):
         self.invert = invert
         self._establish_links(**key_args)
 
-    @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector")
+    class Inputs(TypedInputs):
+        @property
+        def vector(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")
+
+        @property
+        def center(self) -> SocketLinker:
+            """Input socket: Center"""
+            return self.get("Center")
+
+        @property
+        def axis(self) -> SocketLinker:
+            """Input socket: Axis"""
+            return self.get("Axis")
+
+        @property
+        def angle(self) -> SocketLinker:
+            """Input socket: Angle"""
+            return self.get("Angle")
+
+        @property
+        def rotation(self) -> SocketLinker:
+            """Input socket: Rotation"""
+            return self.get("Rotation")
 
     @property
-    def i_center(self) -> SocketLinker:
-        """Input socket: Center"""
-        return self.inputs.get("Center")
+    def i(self) -> "Inputs":
+        return VectorRotate.Inputs(self)
 
-    @property
-    def i_axis(self) -> SocketLinker:
-        """Input socket: Axis"""
-        return self.inputs.get("Axis")
-
-    @property
-    def i_angle(self) -> SocketLinker:
-        """Input socket: Angle"""
-        return self.inputs.get("Angle")
-
-    @property
-    def i_rotation(self) -> SocketLinker:
-        """Input socket: Rotation"""
-        return self.inputs.get("Rotation")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "VectorRotate") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def vector(self) -> VectorSocketLinker:
             """Output socket: Vector"""
-            return self._node.outputs.get("Vector")  # type: ignore[return-value]
+            return self.get("Vector")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":

@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, TypedInputs, TypedOutputs
 
 from ...types import (
     InputBoolean,
@@ -88,26 +88,26 @@ class EnableOutput(NodeBuilder):
         """Create Enable Output with operation 'Menu'."""
         return cls(data_type="MENU", enable=enable, value=value)
 
-    @property
-    def i_enable(self) -> SocketLinker:
-        """Input socket: Enable"""
-        return self.inputs.get("Enable")
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self.inputs.get("Value")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "EnableOutput") -> None:
-            self._node = node
+    class Inputs(TypedInputs):
+        @property
+        def enable(self) -> SocketLinker:
+            """Input socket: Enable"""
+            return self.get("Enable")
 
         @property
         def value(self) -> SocketLinker:
+            """Input socket: Value"""
+            return self.get("Value")
+
+    @property
+    def i(self) -> "Inputs":
+        return EnableOutput.Inputs(self)
+
+    class Outputs(TypedOutputs):
+        @property
+        def value(self) -> SocketLinker:
             """Output socket: Value"""
-            return self._node.outputs.get("Value")  # type: ignore[return-value]
+            return self.get("Value")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":

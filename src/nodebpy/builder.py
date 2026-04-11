@@ -790,6 +790,13 @@ class NodeBuilder:
         a node-specific Outputs class that exposes named, typed properties."""
         return TypedOutputs(self)
 
+    @property
+    def i(self) -> "TypedInputs":
+        """Typed input accessor. Provides dynamic attribute access to input sockets
+        by normalized name (e.g. node.i.vertex_index → 'Vertex Index' socket).
+        Generated node subclasses override this with a node-specific Inputs class."""
+        return TypedInputs(self)
+
     def __rshift__(self, other: "NodeBuilder | SocketLinker") -> "NodeBuilder":
         """Chain nodes using >> operator. Links output to input.
 
@@ -1068,10 +1075,39 @@ class TypedOutputs(SocketAccessor):
         return _get_socket_linker(self._sockets[SocketAccessor.index(self, key)])
 
     def __getattr__(self, name: str) -> "SocketLinker":
+        if name.startswith("_"):
+            raise AttributeError(name)
         raise RuntimeError(
             f"Output '{name}' not found on {self._node.bl_idname}. "
             f"Use .get() for dynamic socket access."
         )
+
+
+class TypedInputs(SocketAccessor):
+    """SocketAccessor subclass returned by NodeBuilder.i.
+
+    Provides dynamic attribute access to input sockets by normalized name.
+    Subclasses can add typed @property accessors per input socket while
+    retaining all SocketAccessor behaviour (get(), [], iteration).
+    """
+
+    def __init__(self, node: "NodeBuilder") -> None:
+        super().__init__(node.node.inputs, "input", node.node)
+
+    def get(self, key: str | int) -> "SocketLinker":
+        """Override to bypass potential property name conflicts in subclasses."""
+        return _get_socket_linker(self._sockets[SocketAccessor.index(self, key)])
+
+    def __getattr__(self, name: str) -> "SocketLinker":
+        if name.startswith("_"):
+            raise AttributeError(name)
+        try:
+            return self.get(name)
+        except RuntimeError:
+            raise RuntimeError(
+                f"Input '{name}' not found on {self._node.bl_idname}. "
+                f"Use .get() for dynamic socket access."
+            )
 
 
 class SocketLinker(NodeBuilder):

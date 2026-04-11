@@ -3,7 +3,11 @@
 
 import bpy
 
-from ...builder import NodeBuilder, ClosureSocketLinker
+from ...builder import (
+    NodeBuilder,
+    TypedOutputs,
+    ClosureSocketLinker,
+)
 
 
 
@@ -43,16 +47,11 @@ class ClosureOutput(NodeBuilder):
         self.define_signature = define_signature
         self._establish_links(**key_args)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "ClosureOutput") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def closure(self) -> ClosureSocketLinker:
             """Output socket: Closure"""
-            return self._node.outputs.get("Closure")  # type: ignore[return-value]
+            return self.get("Closure")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":

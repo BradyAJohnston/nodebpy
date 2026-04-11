@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, TypedInputs
 
 from ...types import (
     InputColor,
@@ -85,10 +85,15 @@ class Viewer(NodeBuilder):
         self.ui_shortcut = ui_shortcut
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def image(self) -> SocketLinker:
+            """Input socket: Image"""
+            return self.get("Image")
+
     @property
-    def i_image(self) -> SocketLinker:
-        """Input socket: Image"""
-        return self.inputs.get("Image")
+    def i(self) -> "Inputs":
+        return Viewer.Inputs(self)
 
     @property
     def ui_shortcut(self) -> int:

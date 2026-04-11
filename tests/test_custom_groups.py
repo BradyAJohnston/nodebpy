@@ -42,11 +42,11 @@ def test_custom_group_with_offset():
 # --- Instance access returns SocketLinker (Blender) ---
 
 
-def test_i_prefix_returns_socket_linker():
-    """Accessing i_* on an instance returns a SocketLinker for that input socket."""
+def test_i_returns_socket_linker():
+    """Accessing .i.* on an instance returns a SocketLinker for that input socket."""
     with TreeBuilder():
         node = OtherVertex()
-        linker = node.i_vertex_index
+        linker = node.i.vertex_index
 
     assert isinstance(linker, SocketLinker)
     assert linker.socket_name == "Vertex Index"

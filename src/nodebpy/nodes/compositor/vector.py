@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, TypedInputs, TypedOutputs
 
 from ...types import (
     InputFloat,
@@ -24,21 +24,21 @@ class Normalize(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def value(self) -> SocketLinker:
+            """Input socket: Value"""
+            return self.get("Value")
+
     @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self.inputs.get("Value")
+    def i(self) -> "Inputs":
+        return Normalize.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "Normalize") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def value(self) -> SocketLinker:
             """Output socket: Value"""
-            return self._node.outputs.get("Value")  # type: ignore[return-value]
+            return self.get("Value")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":

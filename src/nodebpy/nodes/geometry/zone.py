@@ -8,6 +8,7 @@ from nodebpy.builder import (
     IntegerSocketLinker,
     NodeBuilder,
     SocketLinker,
+    TypedInputs,
     TypedOutputs,
 )
 
@@ -135,10 +136,15 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
     _bl_idname = "GeometryNodeSimulationOutput"
     node: bpy.types.GeometryNodeSimulationOutput
 
+    class Inputs(TypedInputs):
+        @property
+        def skip(self) -> SocketLinker:
+            """Input socket: Skip simulation frame"""
+            return self.get("Skip")
+
     @property
-    def i_skip(self) -> SocketLinker:
-        """Input socket: Skip simluation frame"""
-        return self.inputs.get("Skip")
+    def i(self) -> "Inputs":
+        return SimulationOutput.Inputs(self)
 
 
 class SimulationZone:

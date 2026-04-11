@@ -233,19 +233,17 @@ class SocketInfo:
                 return cls
         return "SocketLinker"
 
-    def format_property(self) -> str:
-        """Generate the input property string for this socket."""
-        prop_name = "i_{}".format(normalize_name(self.identifier))
+    def format_input_property(self) -> str:
+        """Generate a property for use inside the Inputs inner class."""
+        prop_name = normalize_name(self.identifier)
         description = "Input socket: {}".format(self.name)
         if self.description != "":
-            description += f"\n        {self.description}\n        "
+            description += f"\n            {self.description}\n            "
 
-        return_value = "self.inputs.get('{}')".format(self.identifier)
-
-        return f'''    @property
-    def {prop_name}(self) -> SocketLinker:
-        """{description}"""
-        return {return_value}
+        return f'''        @property
+        def {prop_name}(self) -> SocketLinker:
+            """{description}"""
+            return self.get('{self.identifier}')
 '''
 
     def format_output_property(self, class_name: str) -> str:
@@ -884,20 +882,31 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     # if property_calls:
     property_setting = "\n".join(property_calls)
 
-    # Generate input properties
-    input_properties = [socket.format_property() for socket in node_info.inputs]
+    # Generate typed Inputs inner class + .i property
+    inputs_body = "\n".join(
+        socket.format_input_property() for socket in node_info.inputs
+    )
+    if node_info.inputs:
+        inputs_class = f"""    class Inputs(TypedInputs):
+{inputs_body}
+    @property
+    def i(self) -> "Inputs":
+        return {class_name}.Inputs(self)
+"""
+    else:
+        inputs_class = ""
 
     # Generate typed Outputs inner class + .o property
     outputs_body = "\n".join(
         socket.format_output_property(class_name) for socket in node_info.outputs
     )
     if node_info.outputs:
-        outputs_class = f'''    class Outputs(TypedOutputs):
+        outputs_class = f"""    class Outputs(TypedOutputs):
 {outputs_body}
     @property
     def o(self) -> "Outputs":
         return {class_name}.Outputs(self)
-'''
+"""
     else:
         outputs_class = ""
 
@@ -919,8 +928,8 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     body_parts = []
     if enum_methods:
         body_parts.append(enum_methods)
-    if input_properties:
-        body_parts.append(chr(10).join(input_properties))
+    if inputs_class:
+        body_parts.append(inputs_class)
     if outputs_class:
         body_parts.append(outputs_class)
     if property_accessors:
@@ -1017,7 +1026,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         # SocketLinker is always needed for input property return types.
         # SocketLinker for input properties; TypedOutputs for Outputs base class;
         # additional subclasses only when used by output sockets in this module.
-        builder_imports += ["SocketLinker", "TypedOutputs"]
+        builder_imports += ["SocketLinker", "TypedInputs", "TypedOutputs"]
         builder_imports += [
             t
             for t in all_linker_types

@@ -7,6 +7,8 @@ import bpy
 from ...builder import (
     NodeBuilder,
     SocketLinker,
+    TypedInputs,
+    TypedOutputs,
     ColorSocketLinker,
     RotationSocketLinker,
     VectorSocketLinker,
@@ -43,31 +45,31 @@ class CombineColor(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
-    @property
-    def i_red(self) -> SocketLinker:
-        """Input socket: Red"""
-        return self.inputs.get("Red")
+    class Inputs(TypedInputs):
+        @property
+        def red(self) -> SocketLinker:
+            """Input socket: Red"""
+            return self.get("Red")
+
+        @property
+        def green(self) -> SocketLinker:
+            """Input socket: Green"""
+            return self.get("Green")
+
+        @property
+        def blue(self) -> SocketLinker:
+            """Input socket: Blue"""
+            return self.get("Blue")
 
     @property
-    def i_green(self) -> SocketLinker:
-        """Input socket: Green"""
-        return self.inputs.get("Green")
+    def i(self) -> "Inputs":
+        return CombineColor.Inputs(self)
 
-    @property
-    def i_blue(self) -> SocketLinker:
-        """Input socket: Blue"""
-        return self.inputs.get("Blue")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "CombineColor") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def color(self) -> ColorSocketLinker:
             """Output socket: Color"""
-            return self._node.outputs.get("Color")  # type: ignore[return-value]
+            return self.get("Color")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -105,10 +107,15 @@ class EvaluateClosure(NodeBuilder):
         self.define_signature = define_signature
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def closure(self) -> SocketLinker:
+            """Input socket: Closure"""
+            return self.get("Closure")
+
     @property
-    def i_closure(self) -> SocketLinker:
-        """Input socket: Closure"""
-        return self.inputs.get("Closure")
+    def i(self) -> "Inputs":
+        return EvaluateClosure.Inputs(self)
 
     @property
     def active_input_index(self) -> int:
@@ -228,81 +235,81 @@ class Mix(NodeBuilder):
             data_type="RGBA", factor_float=factor, a_color=a_color, b_color=b_color
         )
 
-    @property
-    def i_factor_float(self) -> SocketLinker:
-        """Input socket: Factor"""
-        return self.inputs.get("Factor_Float")
+    class Inputs(TypedInputs):
+        @property
+        def factor_float(self) -> SocketLinker:
+            """Input socket: Factor"""
+            return self.get("Factor_Float")
+
+        @property
+        def factor_vector(self) -> SocketLinker:
+            """Input socket: Factor"""
+            return self.get("Factor_Vector")
+
+        @property
+        def a_float(self) -> SocketLinker:
+            """Input socket: A"""
+            return self.get("A_Float")
+
+        @property
+        def b_float(self) -> SocketLinker:
+            """Input socket: B"""
+            return self.get("B_Float")
+
+        @property
+        def a_vector(self) -> SocketLinker:
+            """Input socket: A"""
+            return self.get("A_Vector")
+
+        @property
+        def b_vector(self) -> SocketLinker:
+            """Input socket: B"""
+            return self.get("B_Vector")
+
+        @property
+        def a_color(self) -> SocketLinker:
+            """Input socket: A"""
+            return self.get("A_Color")
+
+        @property
+        def b_color(self) -> SocketLinker:
+            """Input socket: B"""
+            return self.get("B_Color")
+
+        @property
+        def a_rotation(self) -> SocketLinker:
+            """Input socket: A"""
+            return self.get("A_Rotation")
+
+        @property
+        def b_rotation(self) -> SocketLinker:
+            """Input socket: B"""
+            return self.get("B_Rotation")
 
     @property
-    def i_factor_vector(self) -> SocketLinker:
-        """Input socket: Factor"""
-        return self.inputs.get("Factor_Vector")
+    def i(self) -> "Inputs":
+        return Mix.Inputs(self)
 
-    @property
-    def i_a_float(self) -> SocketLinker:
-        """Input socket: A"""
-        return self.inputs.get("A_Float")
-
-    @property
-    def i_b_float(self) -> SocketLinker:
-        """Input socket: B"""
-        return self.inputs.get("B_Float")
-
-    @property
-    def i_a_vector(self) -> SocketLinker:
-        """Input socket: A"""
-        return self.inputs.get("A_Vector")
-
-    @property
-    def i_b_vector(self) -> SocketLinker:
-        """Input socket: B"""
-        return self.inputs.get("B_Vector")
-
-    @property
-    def i_a_color(self) -> SocketLinker:
-        """Input socket: A"""
-        return self.inputs.get("A_Color")
-
-    @property
-    def i_b_color(self) -> SocketLinker:
-        """Input socket: B"""
-        return self.inputs.get("B_Color")
-
-    @property
-    def i_a_rotation(self) -> SocketLinker:
-        """Input socket: A"""
-        return self.inputs.get("A_Rotation")
-
-    @property
-    def i_b_rotation(self) -> SocketLinker:
-        """Input socket: B"""
-        return self.inputs.get("B_Rotation")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "Mix") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def result_float(self) -> SocketLinker:
             """Output socket: Result"""
-            return self._node.outputs.get("Result_Float")  # type: ignore[return-value]
+            return self.get("Result_Float")  # type: ignore[return-value]
 
         @property
         def result_vector(self) -> VectorSocketLinker:
             """Output socket: Result"""
-            return self._node.outputs.get("Result_Vector")  # type: ignore[return-value]
+            return self.get("Result_Vector")  # type: ignore[return-value]
 
         @property
         def result_color(self) -> ColorSocketLinker:
             """Output socket: Result"""
-            return self._node.outputs.get("Result_Color")  # type: ignore[return-value]
+            return self.get("Result_Color")  # type: ignore[return-value]
 
         @property
         def result_rotation(self) -> RotationSocketLinker:
             """Output socket: Result"""
-            return self._node.outputs.get("Result_Rotation")  # type: ignore[return-value]
+            return self.get("Result_Rotation")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -408,21 +415,21 @@ class RGBToBw(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def color(self) -> SocketLinker:
+            """Input socket: Color"""
+            return self.get("Color")
+
     @property
-    def i_color(self) -> SocketLinker:
-        """Input socket: Color"""
-        return self.inputs.get("Color")
+    def i(self) -> "Inputs":
+        return RGBToBw.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "RGBToBw") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def val(self) -> SocketLinker:
             """Output socket: Val"""
-            return self._node.outputs.get("Val")  # type: ignore[return-value]
+            return self.get("Val")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -448,31 +455,31 @@ class SeparateColor(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def color(self) -> SocketLinker:
+            """Input socket: Color"""
+            return self.get("Color")
+
     @property
-    def i_color(self) -> SocketLinker:
-        """Input socket: Color"""
-        return self.inputs.get("Color")
+    def i(self) -> "Inputs":
+        return SeparateColor.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "SeparateColor") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def red(self) -> SocketLinker:
             """Output socket: Red"""
-            return self._node.outputs.get("Red")  # type: ignore[return-value]
+            return self.get("Red")  # type: ignore[return-value]
 
         @property
         def green(self) -> SocketLinker:
             """Output socket: Green"""
-            return self._node.outputs.get("Green")  # type: ignore[return-value]
+            return self.get("Green")  # type: ignore[return-value]
 
         @property
         def blue(self) -> SocketLinker:
             """Output socket: Blue"""
-            return self._node.outputs.get("Blue")  # type: ignore[return-value]
+            return self.get("Blue")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -502,26 +509,26 @@ class ShaderToRGB(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def shader(self) -> SocketLinker:
+            """Input socket: Shader"""
+            return self.get("Shader")
+
     @property
-    def i_shader(self) -> SocketLinker:
-        """Input socket: Shader"""
-        return self.inputs.get("Shader")
+    def i(self) -> "Inputs":
+        return ShaderToRGB.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "ShaderToRGB") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def color(self) -> ColorSocketLinker:
             """Output socket: Color"""
-            return self._node.outputs.get("Color")  # type: ignore[return-value]
+            return self.get("Color")  # type: ignore[return-value]
 
         @property
         def alpha(self) -> SocketLinker:
             """Output socket: Alpha"""
-            return self._node.outputs.get("Alpha")  # type: ignore[return-value]
+            return self.get("Alpha")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -542,21 +549,21 @@ class Wavelength(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def wavelength(self) -> SocketLinker:
+            """Input socket: Wavelength"""
+            return self.get("Wavelength")
+
     @property
-    def i_wavelength(self) -> SocketLinker:
-        """Input socket: Wavelength"""
-        return self.inputs.get("Wavelength")
+    def i(self) -> "Inputs":
+        return Wavelength.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "Wavelength") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def color(self) -> ColorSocketLinker:
             """Output socket: Color"""
-            return self._node.outputs.get("Color")  # type: ignore[return-value]
+            return self.get("Color")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":

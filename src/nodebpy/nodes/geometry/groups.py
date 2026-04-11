@@ -3,6 +3,7 @@ from ...builder import (
     NodeGroupBuilder,
     SocketInt,
     SocketVector,
+    TypedInputs,
     TypedOutputs,
     VectorSocketLinker,
 )
@@ -19,8 +20,20 @@ class OtherVertex(NodeGroupBuilder):
     _name = "Other Vertex"
     _color_tag = "INPUT"
 
-    i_vertex_index: IntegerSocketLinker
-    i_edge_number: IntegerSocketLinker
+    class Inputs(TypedInputs):
+        @property
+        def vertex_index(self) -> IntegerSocketLinker:
+            """Input socket: Vertex Index"""
+            return self.get("Vertex Index")  # type: ignore[return-value]
+
+        @property
+        def edge_number(self) -> IntegerSocketLinker:
+            """Input socket: Edge Number"""
+            return self.get("Edge Number")  # type: ignore[return-value]
+
+    @property
+    def i(self) -> "Inputs":
+        return OtherVertex.Inputs(self)
 
     class Outputs(TypedOutputs):
         @property
@@ -62,9 +75,25 @@ class OffsetVector(NodeGroupBuilder):
     _name = "Offset Vector"
     _color_tag = "INPUT"
 
-    i_index: IntegerSocketLinker
-    i_vector: VectorSocketLinker
-    i_offset: IntegerSocketLinker
+    class Inputs(TypedInputs):
+        @property
+        def index(self) -> IntegerSocketLinker:
+            """Input socket: Index"""
+            return self.get("Index")  # type: ignore[return-value]
+
+        @property
+        def vector(self) -> VectorSocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")  # type: ignore[return-value]
+
+        @property
+        def offset(self) -> IntegerSocketLinker:
+            """Input socket: Offset"""
+            return self.get("Offset")  # type: ignore[return-value]
+
+    @property
+    def i(self) -> "Inputs":
+        return OffsetVector.Inputs(self)
 
     class Outputs(TypedOutputs):
         @property

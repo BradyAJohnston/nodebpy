@@ -7,6 +7,8 @@ import bpy
 from ...builder import (
     NodeBuilder,
     SocketLinker,
+    TypedInputs,
+    TypedOutputs,
     BooleanSocketLinker,
     GeometrySocketLinker,
 )
@@ -60,41 +62,41 @@ class DialGizmo(NodeBuilder):
         self.color_id = color_id
         self._establish_links(**key_args)
 
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self.inputs.get("Value")
+    class Inputs(TypedInputs):
+        @property
+        def value(self) -> SocketLinker:
+            """Input socket: Value"""
+            return self.get("Value")
+
+        @property
+        def position(self) -> SocketLinker:
+            """Input socket: Position"""
+            return self.get("Position")
+
+        @property
+        def up(self) -> SocketLinker:
+            """Input socket: Up"""
+            return self.get("Up")
+
+        @property
+        def screen_space(self) -> SocketLinker:
+            """Input socket: Screen Space"""
+            return self.get("Screen Space")
+
+        @property
+        def radius(self) -> SocketLinker:
+            """Input socket: Radius"""
+            return self.get("Radius")
 
     @property
-    def i_position(self) -> SocketLinker:
-        """Input socket: Position"""
-        return self.inputs.get("Position")
+    def i(self) -> "Inputs":
+        return DialGizmo.Inputs(self)
 
-    @property
-    def i_up(self) -> SocketLinker:
-        """Input socket: Up"""
-        return self.inputs.get("Up")
-
-    @property
-    def i_screen_space(self) -> SocketLinker:
-        """Input socket: Screen Space"""
-        return self.inputs.get("Screen Space")
-
-    @property
-    def i_radius(self) -> SocketLinker:
-        """Input socket: Radius"""
-        return self.inputs.get("Radius")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "DialGizmo") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def transform(self) -> GeometrySocketLinker:
             """Output socket: Transform"""
-            return self._node.outputs.get("Transform")  # type: ignore[return-value]
+            return self.get("Transform")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -258,26 +260,26 @@ class EnableOutput(NodeBuilder):
         """Create Enable Output with operation 'Closure'."""
         return cls(data_type="CLOSURE", enable=enable, value=value)
 
-    @property
-    def i_enable(self) -> SocketLinker:
-        """Input socket: Enable"""
-        return self.inputs.get("Enable")
-
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self.inputs.get("Value")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "EnableOutput") -> None:
-            self._node = node
+    class Inputs(TypedInputs):
+        @property
+        def enable(self) -> SocketLinker:
+            """Input socket: Enable"""
+            return self.get("Enable")
 
         @property
         def value(self) -> SocketLinker:
+            """Input socket: Value"""
+            return self.get("Value")
+
+    @property
+    def i(self) -> "Inputs":
+        return EnableOutput.Inputs(self)
+
+    class Outputs(TypedOutputs):
+        @property
+        def value(self) -> SocketLinker:
             """Output socket: Value"""
-            return self._node.outputs.get("Value")  # type: ignore[return-value]
+            return self.get("Value")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -392,31 +394,31 @@ class LinearGizmo(NodeBuilder):
         self.draw_style = draw_style
         self._establish_links(**key_args)
 
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self.inputs.get("Value")
+    class Inputs(TypedInputs):
+        @property
+        def value(self) -> SocketLinker:
+            """Input socket: Value"""
+            return self.get("Value")
+
+        @property
+        def position(self) -> SocketLinker:
+            """Input socket: Position"""
+            return self.get("Position")
+
+        @property
+        def direction(self) -> SocketLinker:
+            """Input socket: Direction"""
+            return self.get("Direction")
 
     @property
-    def i_position(self) -> SocketLinker:
-        """Input socket: Position"""
-        return self.inputs.get("Position")
+    def i(self) -> "Inputs":
+        return LinearGizmo.Inputs(self)
 
-    @property
-    def i_direction(self) -> SocketLinker:
-        """Input socket: Direction"""
-        return self.inputs.get("Direction")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "LinearGizmo") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def transform(self) -> GeometrySocketLinker:
             """Output socket: Transform"""
-            return self._node.outputs.get("Transform")  # type: ignore[return-value]
+            return self.get("Transform")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -476,31 +478,31 @@ class TransformGizmo(NodeBuilder):
         self.use_scale_z = use_scale_z
         self._establish_links(**key_args)
 
-    @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self.inputs.get("Value")
+    class Inputs(TypedInputs):
+        @property
+        def value(self) -> SocketLinker:
+            """Input socket: Value"""
+            return self.get("Value")
+
+        @property
+        def position(self) -> SocketLinker:
+            """Input socket: Position"""
+            return self.get("Position")
+
+        @property
+        def rotation(self) -> SocketLinker:
+            """Input socket: Rotation"""
+            return self.get("Rotation")
 
     @property
-    def i_position(self) -> SocketLinker:
-        """Input socket: Position"""
-        return self.inputs.get("Position")
+    def i(self) -> "Inputs":
+        return TransformGizmo.Inputs(self)
 
-    @property
-    def i_rotation(self) -> SocketLinker:
-        """Input socket: Rotation"""
-        return self.inputs.get("Rotation")
-
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "TransformGizmo") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def transform(self) -> GeometrySocketLinker:
             """Output socket: Transform"""
-            return self._node.outputs.get("Transform")  # type: ignore[return-value]
+            return self.get("Transform")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -599,26 +601,26 @@ class Warning(NodeBuilder):
         self.warning_type = warning_type
         self._establish_links(**key_args)
 
-    @property
-    def i_show(self) -> SocketLinker:
-        """Input socket: Show"""
-        return self.inputs.get("Show")
+    class Inputs(TypedInputs):
+        @property
+        def show(self) -> SocketLinker:
+            """Input socket: Show"""
+            return self.get("Show")
+
+        @property
+        def message(self) -> SocketLinker:
+            """Input socket: Message"""
+            return self.get("Message")
 
     @property
-    def i_message(self) -> SocketLinker:
-        """Input socket: Message"""
-        return self.inputs.get("Message")
+    def i(self) -> "Inputs":
+        return Warning.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "Warning") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def show(self) -> BooleanSocketLinker:
             """Output socket: Show"""
-            return self._node.outputs.get("Show")  # type: ignore[return-value]
+            return self.get("Show")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":

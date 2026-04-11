@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
+from ...builder import (
+    NodeBuilder,
+    SocketLinker,
+    TypedInputs,
+    TypedOutputs,
+    ColorSocketLinker,
+)
 
 from ...types import (
     InputFloat,
@@ -33,21 +39,21 @@ class EnvironmentTexture(NodeBuilder):
         self.interpolation = interpolation
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def vector(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")
+
     @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector")
+    def i(self) -> "Inputs":
+        return EnvironmentTexture.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "EnvironmentTexture") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def color(self) -> ColorSocketLinker:
             """Output socket: Color"""
-            return self._node.outputs.get("Color")  # type: ignore[return-value]
+            return self.get("Color")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -92,26 +98,26 @@ class IesTexture(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
-    @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector")
+    class Inputs(TypedInputs):
+        @property
+        def vector(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")
+
+        @property
+        def strength(self) -> SocketLinker:
+            """Input socket: Strength"""
+            return self.get("Strength")
 
     @property
-    def i_strength(self) -> SocketLinker:
-        """Input socket: Strength"""
-        return self.inputs.get("Strength")
+    def i(self) -> "Inputs":
+        return IesTexture.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "IesTexture") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def fac(self) -> SocketLinker:
             """Output socket: Factor"""
-            return self._node.outputs.get("Fac")  # type: ignore[return-value]
+            return self.get("Fac")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -159,26 +165,26 @@ class ImageTexture(NodeBuilder):
         self.extension = extension
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def vector(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")
+
     @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector")
+    def i(self) -> "Inputs":
+        return ImageTexture.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "ImageTexture") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def color(self) -> ColorSocketLinker:
             """Output socket: Color"""
-            return self._node.outputs.get("Color")  # type: ignore[return-value]
+            return self.get("Color")  # type: ignore[return-value]
 
         @property
         def alpha(self) -> SocketLinker:
             """Output socket: Alpha"""
-            return self._node.outputs.get("Alpha")  # type: ignore[return-value]
+            return self.get("Alpha")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":
@@ -262,21 +268,21 @@ class SkyTexture(NodeBuilder):
         self.ground_albedo = ground_albedo
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def vector(self) -> SocketLinker:
+            """Input socket: Vector"""
+            return self.get("Vector")
+
     @property
-    def i_vector(self) -> SocketLinker:
-        """Input socket: Vector"""
-        return self.inputs.get("Vector")
+    def i(self) -> "Inputs":
+        return SkyTexture.Inputs(self)
 
-    class Outputs:
-        __slots__ = ("_node",)
-
-        def __init__(self, node: "SkyTexture") -> None:
-            self._node = node
-
+    class Outputs(TypedOutputs):
         @property
         def color(self) -> ColorSocketLinker:
             """Output socket: Color"""
-            return self._node.outputs.get("Color")  # type: ignore[return-value]
+            return self.get("Color")  # type: ignore[return-value]
 
     @property
     def o(self) -> "Outputs":

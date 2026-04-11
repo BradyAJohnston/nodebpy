@@ -593,7 +593,7 @@ for _mod, _tree_type in [
 def test_add_all_nodes(module, tree_type, class_names):
     def _test_node_property_access(node: NodeBuilder):
         assert node.node is not None
-        for output in [getattr(node, o) for o in dir(node) if o.startswith("o_")]:
+        for output in node.o.values():
             if NodeSocketVector.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
@@ -650,13 +650,11 @@ def test_add_all_nodes(module, tree_type, class_names):
                 assert result.node is not None
                 assert result.node.bl_idname == g.TransformPoint._bl_idname
                 assert result.node.inputs[0].links[0].from_node == output.node
-        for prop in dir(node):
-            if not prop.startswith("i_"):
-                continue
+        for input in node.i.values():
             try:
-                input = getattr(node, prop)
+                _ = input.socket
             except RuntimeError as e:
-                print(f"Failed to get input {prop} due to error: {e}")
+                print(f"Failed to get input socket due to error: {e}")
                 continue
             if any(
                 x.bl_rna.identifier in input.socket.bl_idname
@@ -733,7 +731,7 @@ def test_vector_socket_linker():
         pos = g.Position().o.position
 
         result = g.SetPosition(position=pos.x * g.Position())
-        pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
+        pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i.offset
 
     assert result.node
     assert result.node.inputs["Position"].links[0].from_node.operation == "SCALE"
@@ -827,9 +825,7 @@ def test_rotation_socket_linker_reuses_node():
 
 def test_matrix_socket_linker():
     with TreeBuilder("MatrixSeparateTransform"):
-        mat = g.CombineTransform(
-            translation=(1, 2, 3), scale=(1, 1, 1)
-        ).o.transform
+        mat = g.CombineTransform(translation=(1, 2, 3), scale=(1, 1, 1)).o.transform
 
         assert isinstance(mat, MatrixSocketLinker)
 
@@ -863,9 +859,7 @@ def test_matrix_socket_linker_reuses_node():
 
 def test_matrix_translation_into_math():
     with TreeBuilder("MatrixTranslationMath"):
-        mat = g.CombineTransform(
-            translation=(1, 2, 3), scale=(1, 1, 1)
-        ).o.transform
+        mat = g.CombineTransform(translation=(1, 2, 3), scale=(1, 1, 1)).o.transform
 
         # Translation is a vector — can use .x shorthand on it
         x_offset = mat.translation.x
@@ -897,10 +891,10 @@ class TestSocketAccessor:
             _assert_equal(
                 dict(**setpos.inputs),
                 {
-                    "Geometry": setpos.i_geometry,
-                    "Selection": setpos.i_selection,
-                    "Position": setpos.i_position,
-                    "Offset": setpos.i_offset,
+                    "Geometry": setpos.i.geometry,
+                    "Selection": setpos.i.selection,
+                    "Position": setpos.i.position,
+                    "Offset": setpos.i.offset,
                 },
             )
 

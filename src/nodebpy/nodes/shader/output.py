@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import NodeBuilder, SocketLinker, TypedInputs
 
 from ...types import (
     InputColor,
@@ -35,15 +35,20 @@ class AovOutput(NodeBuilder):
         self.aov_name = aov_name
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> SocketLinker:
-        """Input socket: Color"""
-        return self.inputs.get("Color")
+    class Inputs(TypedInputs):
+        @property
+        def color(self) -> SocketLinker:
+            """Input socket: Color"""
+            return self.get("Color")
+
+        @property
+        def value(self) -> SocketLinker:
+            """Input socket: Value"""
+            return self.get("Value")
 
     @property
-    def i_value(self) -> SocketLinker:
-        """Input socket: Value"""
-        return self.inputs.get("Value")
+    def i(self) -> "Inputs":
+        return AovOutput.Inputs(self)
 
     @property
     def aov_name(self) -> str:
@@ -75,10 +80,15 @@ class LightOutput(NodeBuilder):
         self.target = target
         self._establish_links(**key_args)
 
+    class Inputs(TypedInputs):
+        @property
+        def surface(self) -> SocketLinker:
+            """Input socket: Surface"""
+            return self.get("Surface")
+
     @property
-    def i_surface(self) -> SocketLinker:
-        """Input socket: Surface"""
-        return self.inputs.get("Surface")
+    def i(self) -> "Inputs":
+        return LightOutput.Inputs(self)
 
     @property
     def is_active_output(self) -> bool:
@@ -152,25 +162,30 @@ class LineStyleOutput(NodeBuilder):
         self.use_clamp = use_clamp
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> SocketLinker:
-        """Input socket: Color"""
-        return self.inputs.get("Color")
+    class Inputs(TypedInputs):
+        @property
+        def color(self) -> SocketLinker:
+            """Input socket: Color"""
+            return self.get("Color")
+
+        @property
+        def color_fac(self) -> SocketLinker:
+            """Input socket: Color Fac"""
+            return self.get("Color Fac")
+
+        @property
+        def alpha(self) -> SocketLinker:
+            """Input socket: Alpha"""
+            return self.get("Alpha")
+
+        @property
+        def alpha_fac(self) -> SocketLinker:
+            """Input socket: Alpha Fac"""
+            return self.get("Alpha Fac")
 
     @property
-    def i_color_fac(self) -> SocketLinker:
-        """Input socket: Color Fac"""
-        return self.inputs.get("Color Fac")
-
-    @property
-    def i_alpha(self) -> SocketLinker:
-        """Input socket: Alpha"""
-        return self.inputs.get("Alpha")
-
-    @property
-    def i_alpha_fac(self) -> SocketLinker:
-        """Input socket: Alpha Fac"""
-        return self.inputs.get("Alpha Fac")
+    def i(self) -> "Inputs":
+        return LineStyleOutput.Inputs(self)
 
     @property
     def is_active_output(self) -> bool:
@@ -287,25 +302,30 @@ class MaterialOutput(NodeBuilder):
         self.target = target
         self._establish_links(**key_args)
 
-    @property
-    def i_surface(self) -> SocketLinker:
-        """Input socket: Surface"""
-        return self.inputs.get("Surface")
+    class Inputs(TypedInputs):
+        @property
+        def surface(self) -> SocketLinker:
+            """Input socket: Surface"""
+            return self.get("Surface")
+
+        @property
+        def volume(self) -> SocketLinker:
+            """Input socket: Volume"""
+            return self.get("Volume")
+
+        @property
+        def displacement(self) -> SocketLinker:
+            """Input socket: Displacement"""
+            return self.get("Displacement")
+
+        @property
+        def thickness(self) -> SocketLinker:
+            """Input socket: Thickness"""
+            return self.get("Thickness")
 
     @property
-    def i_volume(self) -> SocketLinker:
-        """Input socket: Volume"""
-        return self.inputs.get("Volume")
-
-    @property
-    def i_displacement(self) -> SocketLinker:
-        """Input socket: Displacement"""
-        return self.inputs.get("Displacement")
-
-    @property
-    def i_thickness(self) -> SocketLinker:
-        """Input socket: Thickness"""
-        return self.inputs.get("Thickness")
+    def i(self) -> "Inputs":
+        return MaterialOutput.Inputs(self)
 
     @property
     def is_active_output(self) -> bool:
@@ -346,15 +366,20 @@ class WorldOutput(NodeBuilder):
         self.target = target
         self._establish_links(**key_args)
 
-    @property
-    def i_surface(self) -> SocketLinker:
-        """Input socket: Surface"""
-        return self.inputs.get("Surface")
+    class Inputs(TypedInputs):
+        @property
+        def surface(self) -> SocketLinker:
+            """Input socket: Surface"""
+            return self.get("Surface")
+
+        @property
+        def volume(self) -> SocketLinker:
+            """Input socket: Volume"""
+            return self.get("Volume")
 
     @property
-    def i_volume(self) -> SocketLinker:
-        """Input socket: Volume"""
-        return self.inputs.get("Volume")
+    def i(self) -> "Inputs":
+        return WorldOutput.Inputs(self)
 
     @property
     def is_active_output(self) -> bool:

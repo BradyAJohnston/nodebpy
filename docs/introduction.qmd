@@ -33,7 +33,7 @@ with TreeBuilder("AnotherTree") as tree:
     pos = g.SetPosition()
 
     g.Position() * 0.5 >> pos.i_position
-    g.Vector() >> pos.i_offset
+    g.Vector() >> pos.i.offset
 ```
 
 ## Using Arguments to Class
