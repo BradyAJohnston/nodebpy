@@ -26,7 +26,9 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy import sockets as socket
-from nodebpy.builder import ColorSocketLinker, NodeBuilder, SocketAccessor, SocketError
+from nodebpy.builder import BaseNode as NodeBuilder
+from nodebpy.builder import ColorSocket as ColorSocketLinker
+from nodebpy.builder import SocketAccessor, SocketError
 
 
 class TestTreeBuilder:

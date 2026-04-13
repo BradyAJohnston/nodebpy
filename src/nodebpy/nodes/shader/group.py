@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import NodeBuilder
+from ...builder import BaseNode as NodeBuilder
 
 
 class Group(NodeBuilder):

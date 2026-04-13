@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
 
 from ...types import (
     InputColor,
@@ -58,72 +58,72 @@ class PrincipledVolume(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def i_color_attribute(self) -> SocketLinker:
+    def i_color_attribute(self) -> Socket:
         """Input socket: Color Attribute"""
         return self.inputs.get("Color Attribute")
 
     @property
-    def i_density(self) -> SocketLinker:
+    def i_density(self) -> Socket:
         """Input socket: Density"""
         return self.inputs.get("Density")
 
     @property
-    def i_density_attribute(self) -> SocketLinker:
+    def i_density_attribute(self) -> Socket:
         """Input socket: Density Attribute"""
         return self.inputs.get("Density Attribute")
 
     @property
-    def i_anisotropy(self) -> SocketLinker:
+    def i_anisotropy(self) -> Socket:
         """Input socket: Anisotropy"""
         return self.inputs.get("Anisotropy")
 
     @property
-    def i_absorption_color(self) -> SocketLinker:
+    def i_absorption_color(self) -> Socket:
         """Input socket: Absorption Color"""
         return self.inputs.get("Absorption Color")
 
     @property
-    def i_emission_strength(self) -> SocketLinker:
+    def i_emission_strength(self) -> Socket:
         """Input socket: Emission Strength"""
         return self.inputs.get("Emission Strength")
 
     @property
-    def i_emission_color(self) -> SocketLinker:
+    def i_emission_color(self) -> Socket:
         """Input socket: Emission Color"""
         return self.inputs.get("Emission Color")
 
     @property
-    def i_blackbody_intensity(self) -> SocketLinker:
+    def i_blackbody_intensity(self) -> Socket:
         """Input socket: Blackbody Intensity"""
         return self.inputs.get("Blackbody Intensity")
 
     @property
-    def i_blackbody_tint(self) -> SocketLinker:
+    def i_blackbody_tint(self) -> Socket:
         """Input socket: Blackbody Tint"""
         return self.inputs.get("Blackbody Tint")
 
     @property
-    def i_temperature(self) -> SocketLinker:
+    def i_temperature(self) -> Socket:
         """Input socket: Temperature"""
         return self.inputs.get("Temperature")
 
     @property
-    def i_temperature_attribute(self) -> SocketLinker:
+    def i_temperature_attribute(self) -> Socket:
         """Input socket: Temperature Attribute"""
         return self.inputs.get("Temperature Attribute")
 
     @property
-    def i_weight(self) -> SocketLinker:
+    def i_weight(self) -> Socket:
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
     @property
-    def o_volume(self) -> SocketLinker:
+    def o_volume(self) -> Socket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -148,22 +148,22 @@ class VolumeAbsorption(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def i_density(self) -> SocketLinker:
+    def i_density(self) -> Socket:
         """Input socket: Density"""
         return self.inputs.get("Density")
 
     @property
-    def i_weight(self) -> SocketLinker:
+    def i_weight(self) -> Socket:
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
     @property
-    def o_volume(self) -> SocketLinker:
+    def o_volume(self) -> Socket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -208,52 +208,52 @@ class VolumeCoefficients(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_weight(self) -> SocketLinker:
+    def i_weight(self) -> Socket:
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
     @property
-    def i_absorption_coefficients(self) -> SocketLinker:
+    def i_absorption_coefficients(self) -> Socket:
         """Input socket: Absorption Coefficients"""
         return self.inputs.get("Absorption Coefficients")
 
     @property
-    def i_scatter_coefficients(self) -> SocketLinker:
+    def i_scatter_coefficients(self) -> Socket:
         """Input socket: Scatter Coefficients"""
         return self.inputs.get("Scatter Coefficients")
 
     @property
-    def i_anisotropy(self) -> SocketLinker:
+    def i_anisotropy(self) -> Socket:
         """Input socket: Anisotropy"""
         return self.inputs.get("Anisotropy")
 
     @property
-    def i_ior(self) -> SocketLinker:
+    def i_ior(self) -> Socket:
         """Input socket: IOR"""
         return self.inputs.get("IOR")
 
     @property
-    def i_backscatter(self) -> SocketLinker:
+    def i_backscatter(self) -> Socket:
         """Input socket: Backscatter"""
         return self.inputs.get("Backscatter")
 
     @property
-    def i_alpha(self) -> SocketLinker:
+    def i_alpha(self) -> Socket:
         """Input socket: Alpha"""
         return self.inputs.get("Alpha")
 
     @property
-    def i_diameter(self) -> SocketLinker:
+    def i_diameter(self) -> Socket:
         """Input socket: Diameter"""
         return self.inputs.get("Diameter")
 
     @property
-    def i_emission_coefficients(self) -> SocketLinker:
+    def i_emission_coefficients(self) -> Socket:
         """Input socket: Emission Coefficients"""
         return self.inputs.get("Emission Coefficients")
 
     @property
-    def o_volume(self) -> SocketLinker:
+    def o_volume(self) -> Socket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -288,22 +288,22 @@ class VolumeInfo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_color(self) -> ColorSocketLinker:
+    def o_color(self) -> ColorSocket:
         """Output socket: Color"""
         return self.outputs.get("Color")
 
     @property
-    def o_density(self) -> SocketLinker:
+    def o_density(self) -> Socket:
         """Output socket: Density"""
         return self.outputs.get("Density")
 
     @property
-    def o_flame(self) -> SocketLinker:
+    def o_flame(self) -> Socket:
         """Output socket: Flame"""
         return self.outputs.get("Flame")
 
     @property
-    def o_temperature(self) -> SocketLinker:
+    def o_temperature(self) -> Socket:
         """Output socket: Temperature"""
         return self.outputs.get("Temperature")
 
@@ -346,47 +346,47 @@ class VolumeScatter(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def i_density(self) -> SocketLinker:
+    def i_density(self) -> Socket:
         """Input socket: Density"""
         return self.inputs.get("Density")
 
     @property
-    def i_anisotropy(self) -> SocketLinker:
+    def i_anisotropy(self) -> Socket:
         """Input socket: Anisotropy"""
         return self.inputs.get("Anisotropy")
 
     @property
-    def i_ior(self) -> SocketLinker:
+    def i_ior(self) -> Socket:
         """Input socket: IOR"""
         return self.inputs.get("IOR")
 
     @property
-    def i_backscatter(self) -> SocketLinker:
+    def i_backscatter(self) -> Socket:
         """Input socket: Backscatter"""
         return self.inputs.get("Backscatter")
 
     @property
-    def i_alpha(self) -> SocketLinker:
+    def i_alpha(self) -> Socket:
         """Input socket: Alpha"""
         return self.inputs.get("Alpha")
 
     @property
-    def i_diameter(self) -> SocketLinker:
+    def i_diameter(self) -> Socket:
         """Input socket: Diameter"""
         return self.inputs.get("Diameter")
 
     @property
-    def i_weight(self) -> SocketLinker:
+    def i_weight(self) -> Socket:
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
     @property
-    def o_volume(self) -> SocketLinker:
+    def o_volume(self) -> Socket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 

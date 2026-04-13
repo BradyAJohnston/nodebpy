@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import BaseNode as NodeBuilder, Socket
 
 from ...types import (
     InputBoolean,
@@ -89,17 +89,17 @@ class EnableOutput(NodeBuilder):
         return cls(data_type="MENU", enable=enable, value=value)
 
     @property
-    def i_enable(self) -> SocketLinker:
+    def i_enable(self) -> Socket:
         """Input socket: Enable"""
         return self.inputs.get("Enable")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def o_value(self) -> SocketLinker:
+    def o_value(self) -> Socket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 

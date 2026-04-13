@@ -215,11 +215,11 @@ class SocketInfo:
             description += f"\n        {self.description}\n        "
 
         if self.is_output and "NodeSocketVector" in self.bl_socket_type:
-            return_type = "VectorSocketLinker"
+            return_type = "VectorSocket"
         elif self.is_output and "NodeSocketColor" in self.bl_socket_type:
-            return_type = "ColorSocketLinker"
+            return_type = "ColorSocket"
         else:
-            return_type = "SocketLinker"
+            return_type = "Socket"
 
         return_value = "self.{}s.get('{}')".format(
             "output" if self.is_output else "input",
@@ -953,13 +953,13 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     lines.append("import bpy")
 
     # Builder imports
-    builder_imports = ["NodeBuilder"]
+    builder_imports = ["BaseNode as NodeBuilder"]
     if has_sockets:
-        builder_imports.append("SocketLinker")
+        builder_imports.append("Socket")
     if has_vector_outputs:
-        builder_imports.append("VectorSocketLinker")
+        builder_imports.append("VectorSocket")
     if has_color_outputs:
-        builder_imports.append("ColorSocketLinker")
+        builder_imports.append("ColorSocket")
     lines.append(f"from ...builder import {', '.join(builder_imports)}")
 
     # Types imports — use canonical order matching the type_map

@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder
+from ...builder import BaseNode as NodeBuilder
 
 
 class Script(NodeBuilder):

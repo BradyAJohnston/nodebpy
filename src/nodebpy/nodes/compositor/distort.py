@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
 
 from ...types import (
     InputBoolean,
@@ -51,52 +51,52 @@ class CornerPin(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_upper_left(self) -> SocketLinker:
+    def i_upper_left(self) -> Socket:
         """Input socket: Upper Left"""
         return self.inputs.get("Upper Left")
 
     @property
-    def i_upper_right(self) -> SocketLinker:
+    def i_upper_right(self) -> Socket:
         """Input socket: Upper Right"""
         return self.inputs.get("Upper Right")
 
     @property
-    def i_lower_left(self) -> SocketLinker:
+    def i_lower_left(self) -> Socket:
         """Input socket: Lower Left"""
         return self.inputs.get("Lower Left")
 
     @property
-    def i_lower_right(self) -> SocketLinker:
+    def i_lower_right(self) -> Socket:
         """Input socket: Lower Right"""
         return self.inputs.get("Lower Right")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_extension_x(self) -> SocketLinker:
+    def i_extension_x(self) -> Socket:
         """Input socket: Extension X"""
         return self.inputs.get("Extension X")
 
     @property
-    def i_extension_y(self) -> SocketLinker:
+    def i_extension_y(self) -> Socket:
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_plane(self) -> SocketLinker:
+    def o_plane(self) -> Socket:
         """Output socket: Plane"""
         return self.outputs.get("Plane")
 
@@ -131,37 +131,37 @@ class Crop(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_x(self) -> SocketLinker:
+    def i_x(self) -> Socket:
         """Input socket: X"""
         return self.inputs.get("X")
 
     @property
-    def i_y(self) -> SocketLinker:
+    def i_y(self) -> Socket:
         """Input socket: Y"""
         return self.inputs.get("Y")
 
     @property
-    def i_width(self) -> SocketLinker:
+    def i_width(self) -> Socket:
         """Input socket: Width"""
         return self.inputs.get("Width")
 
     @property
-    def i_height(self) -> SocketLinker:
+    def i_height(self) -> Socket:
         """Input socket: Height"""
         return self.inputs.get("Height")
 
     @property
-    def i_alpha_crop(self) -> SocketLinker:
+    def i_alpha_crop(self) -> Socket:
         """Input socket: Alpha Crop"""
         return self.inputs.get("Alpha Crop")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -195,32 +195,32 @@ class Displace(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_displacement(self) -> SocketLinker:
+    def i_displacement(self) -> Socket:
         """Input socket: Displacement"""
         return self.inputs.get("Displacement")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_extension_x(self) -> SocketLinker:
+    def i_extension_x(self) -> Socket:
         """Input socket: Extension X"""
         return self.inputs.get("Extension X")
 
     @property
-    def i_extension_y(self) -> SocketLinker:
+    def i_extension_y(self) -> Socket:
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -245,22 +245,22 @@ class Flip(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_flip_x(self) -> SocketLinker:
+    def i_flip_x(self) -> Socket:
         """Input socket: Flip X"""
         return self.inputs.get("Flip X")
 
     @property
-    def i_flip_y(self) -> SocketLinker:
+    def i_flip_y(self) -> Socket:
         """Input socket: Flip Y"""
         return self.inputs.get("Flip Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -295,37 +295,37 @@ class LensDistortion(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_type(self) -> SocketLinker:
+    def i_type(self) -> Socket:
         """Input socket: Type"""
         return self.inputs.get("Type")
 
     @property
-    def i_distortion(self) -> SocketLinker:
+    def i_distortion(self) -> Socket:
         """Input socket: Distortion"""
         return self.inputs.get("Distortion")
 
     @property
-    def i_dispersion(self) -> SocketLinker:
+    def i_dispersion(self) -> Socket:
         """Input socket: Dispersion"""
         return self.inputs.get("Dispersion")
 
     @property
-    def i_jitter(self) -> SocketLinker:
+    def i_jitter(self) -> Socket:
         """Input socket: Jitter"""
         return self.inputs.get("Jitter")
 
     @property
-    def i_fit(self) -> SocketLinker:
+    def i_fit(self) -> Socket:
         """Input socket: Fit"""
         return self.inputs.get("Fit")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -359,32 +359,32 @@ class MapUV(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_uv(self) -> SocketLinker:
+    def i_uv(self) -> Socket:
         """Input socket: UV"""
         return self.inputs.get("UV")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_extension_x(self) -> SocketLinker:
+    def i_extension_x(self) -> Socket:
         """Input socket: Extension X"""
         return self.inputs.get("Extension X")
 
     @property
-    def i_extension_y(self) -> SocketLinker:
+    def i_extension_y(self) -> Socket:
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -408,17 +408,17 @@ class MovieDistortion(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_type(self) -> SocketLinker:
+    def i_type(self) -> Socket:
         """Input socket: Type"""
         return self.inputs.get("Type")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -453,32 +453,32 @@ class PlaneTrackDeform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_motion_blur(self) -> SocketLinker:
+    def i_motion_blur(self) -> Socket:
         """Input socket: Motion Blur"""
         return self.inputs.get("Motion Blur")
 
     @property
-    def i_motion_blur_samples(self) -> SocketLinker:
+    def i_motion_blur_samples(self) -> Socket:
         """Input socket: Samples"""
         return self.inputs.get("Motion Blur Samples")
 
     @property
-    def i_motion_blur_shutter(self) -> SocketLinker:
+    def i_motion_blur_shutter(self) -> Socket:
         """Input socket: Shutter"""
         return self.inputs.get("Motion Blur Shutter")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_plane(self) -> SocketLinker:
+    def o_plane(self) -> Socket:
         """Output socket: Plane"""
         return self.outputs.get("Plane")
 
@@ -528,32 +528,32 @@ class Rotate(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_angle(self) -> SocketLinker:
+    def i_angle(self) -> Socket:
         """Input socket: Angle"""
         return self.inputs.get("Angle")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_extension_x(self) -> SocketLinker:
+    def i_extension_x(self) -> Socket:
         """Input socket: Extension X"""
         return self.inputs.get("Extension X")
 
     @property
-    def i_extension_y(self) -> SocketLinker:
+    def i_extension_y(self) -> Socket:
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -594,47 +594,47 @@ class Scale(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_type(self) -> SocketLinker:
+    def i_type(self) -> Socket:
         """Input socket: Type"""
         return self.inputs.get("Type")
 
     @property
-    def i_x(self) -> SocketLinker:
+    def i_x(self) -> Socket:
         """Input socket: X"""
         return self.inputs.get("X")
 
     @property
-    def i_y(self) -> SocketLinker:
+    def i_y(self) -> Socket:
         """Input socket: Y"""
         return self.inputs.get("Y")
 
     @property
-    def i_frame_type(self) -> SocketLinker:
+    def i_frame_type(self) -> Socket:
         """Input socket: Frame Type"""
         return self.inputs.get("Frame Type")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_extension_x(self) -> SocketLinker:
+    def i_extension_x(self) -> Socket:
         """Input socket: Extension X"""
         return self.inputs.get("Extension X")
 
     @property
-    def i_extension_y(self) -> SocketLinker:
+    def i_extension_y(self) -> Socket:
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -668,32 +668,32 @@ class Stabilize2D(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_invert(self) -> SocketLinker:
+    def i_invert(self) -> Socket:
         """Input socket: Invert"""
         return self.inputs.get("Invert")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_extension_x(self) -> SocketLinker:
+    def i_extension_x(self) -> Socket:
         """Input socket: Extension X"""
         return self.inputs.get("Extension X")
 
     @property
-    def i_extension_y(self) -> SocketLinker:
+    def i_extension_y(self) -> Socket:
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -733,47 +733,47 @@ class Transform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_x(self) -> SocketLinker:
+    def i_x(self) -> Socket:
         """Input socket: X"""
         return self.inputs.get("X")
 
     @property
-    def i_y(self) -> SocketLinker:
+    def i_y(self) -> Socket:
         """Input socket: Y"""
         return self.inputs.get("Y")
 
     @property
-    def i_angle(self) -> SocketLinker:
+    def i_angle(self) -> Socket:
         """Input socket: Angle"""
         return self.inputs.get("Angle")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_extension_x(self) -> SocketLinker:
+    def i_extension_x(self) -> Socket:
         """Input socket: Extension X"""
         return self.inputs.get("Extension X")
 
     @property
-    def i_extension_y(self) -> SocketLinker:
+    def i_extension_y(self) -> Socket:
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -809,36 +809,36 @@ class Translate(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_x(self) -> SocketLinker:
+    def i_x(self) -> Socket:
         """Input socket: X"""
         return self.inputs.get("X")
 
     @property
-    def i_y(self) -> SocketLinker:
+    def i_y(self) -> Socket:
         """Input socket: Y"""
         return self.inputs.get("Y")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_extension_x(self) -> SocketLinker:
+    def i_extension_x(self) -> Socket:
         """Input socket: Extension X"""
         return self.inputs.get("Extension X")
 
     @property
-    def i_extension_y(self) -> SocketLinker:
+    def i_extension_y(self) -> Socket:
         """Input socket: Extension Y"""
         return self.inputs.get("Extension Y")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")

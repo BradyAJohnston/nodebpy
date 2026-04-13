@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
 
 from ...types import (
     InputBoolean,
@@ -46,37 +46,37 @@ class BoxMask(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_operation(self) -> SocketLinker:
+    def i_operation(self) -> Socket:
         """Input socket: Operation"""
         return self.inputs.get("Operation")
 
     @property
-    def i_mask(self) -> SocketLinker:
+    def i_mask(self) -> Socket:
         """Input socket: Mask"""
         return self.inputs.get("Mask")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_size(self) -> SocketLinker:
+    def i_size(self) -> Socket:
         """Input socket: Size"""
         return self.inputs.get("Size")
 
     @property
-    def i_rotation(self) -> SocketLinker:
+    def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
     @property
-    def o_mask(self) -> SocketLinker:
+    def o_mask(self) -> Socket:
         """Output socket: Mask"""
         return self.outputs.get("Mask")
 
@@ -125,77 +125,77 @@ class ChannelKey(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_minimum(self) -> SocketLinker:
+    def i_minimum(self) -> Socket:
         """Input socket: Minimum"""
         return self.inputs.get("Minimum")
 
     @property
-    def i_maximum(self) -> SocketLinker:
+    def i_maximum(self) -> Socket:
         """Input socket: Maximum"""
         return self.inputs.get("Maximum")
 
     @property
-    def i_color_space(self) -> SocketLinker:
+    def i_color_space(self) -> Socket:
         """Input socket: Color Space"""
         return self.inputs.get("Color Space")
 
     @property
-    def i_rgb_key_channel(self) -> SocketLinker:
+    def i_rgb_key_channel(self) -> Socket:
         """Input socket: RGB Key Channel"""
         return self.inputs.get("RGB Key Channel")
 
     @property
-    def i_hsv_key_channel(self) -> SocketLinker:
+    def i_hsv_key_channel(self) -> Socket:
         """Input socket: HSV Key Channel"""
         return self.inputs.get("HSV Key Channel")
 
     @property
-    def i_yuv_key_channel(self) -> SocketLinker:
+    def i_yuv_key_channel(self) -> Socket:
         """Input socket: YUV Key Channel"""
         return self.inputs.get("YUV Key Channel")
 
     @property
-    def i_ycbcr_key_channel(self) -> SocketLinker:
+    def i_ycbcr_key_channel(self) -> Socket:
         """Input socket: YCbCr Key Channel"""
         return self.inputs.get("YCbCr Key Channel")
 
     @property
-    def i_limit_method(self) -> SocketLinker:
+    def i_limit_method(self) -> Socket:
         """Input socket: Limit Method"""
         return self.inputs.get("Limit Method")
 
     @property
-    def i_rgb_limit_channel(self) -> SocketLinker:
+    def i_rgb_limit_channel(self) -> Socket:
         """Input socket: RGB Limit Channel"""
         return self.inputs.get("RGB Limit Channel")
 
     @property
-    def i_hsv_limit_channel(self) -> SocketLinker:
+    def i_hsv_limit_channel(self) -> Socket:
         """Input socket: HSV Limit Channel"""
         return self.inputs.get("HSV Limit Channel")
 
     @property
-    def i_yuv_limit_channel(self) -> SocketLinker:
+    def i_yuv_limit_channel(self) -> Socket:
         """Input socket: YUV Limit Channel"""
         return self.inputs.get("YUV Limit Channel")
 
     @property
-    def i_ycbcr_limit_channel(self) -> SocketLinker:
+    def i_ycbcr_limit_channel(self) -> Socket:
         """Input socket: YCbCr Limit Channel"""
         return self.inputs.get("YCbCr Limit Channel")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> SocketLinker:
+    def o_matte(self) -> Socket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -228,37 +228,37 @@ class ChromaKey(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_key_color(self) -> SocketLinker:
+    def i_key_color(self) -> Socket:
         """Input socket: Key Color"""
         return self.inputs.get("Key Color")
 
     @property
-    def i_minimum(self) -> SocketLinker:
+    def i_minimum(self) -> Socket:
         """Input socket: Minimum"""
         return self.inputs.get("Minimum")
 
     @property
-    def i_maximum(self) -> SocketLinker:
+    def i_maximum(self) -> Socket:
         """Input socket: Maximum"""
         return self.inputs.get("Maximum")
 
     @property
-    def i_falloff(self) -> SocketLinker:
+    def i_falloff(self) -> Socket:
         """Input socket: Falloff"""
         return self.inputs.get("Falloff")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> SocketLinker:
+    def o_matte(self) -> Socket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -291,37 +291,37 @@ class ColorKey(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_key_color(self) -> SocketLinker:
+    def i_key_color(self) -> Socket:
         """Input socket: Key Color"""
         return self.inputs.get("Key Color")
 
     @property
-    def i_hue(self) -> SocketLinker:
+    def i_hue(self) -> Socket:
         """Input socket: Hue"""
         return self.inputs.get("Hue")
 
     @property
-    def i_saturation(self) -> SocketLinker:
+    def i_saturation(self) -> Socket:
         """Input socket: Saturation"""
         return self.inputs.get("Saturation")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> SocketLinker:
+    def o_matte(self) -> Socket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -360,47 +360,47 @@ class ColorSpill(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_fac(self) -> SocketLinker:
+    def i_fac(self) -> Socket:
         """Input socket: Factor"""
         return self.inputs.get("Fac")
 
     @property
-    def i_spill_channel(self) -> SocketLinker:
+    def i_spill_channel(self) -> Socket:
         """Input socket: Spill Channel"""
         return self.inputs.get("Spill Channel")
 
     @property
-    def i_limit_method(self) -> SocketLinker:
+    def i_limit_method(self) -> Socket:
         """Input socket: Limit Method"""
         return self.inputs.get("Limit Method")
 
     @property
-    def i_limit_channel(self) -> SocketLinker:
+    def i_limit_channel(self) -> Socket:
         """Input socket: Limit Channel"""
         return self.inputs.get("Limit Channel")
 
     @property
-    def i_limit_strength(self) -> SocketLinker:
+    def i_limit_strength(self) -> Socket:
         """Input socket: Limit Strength"""
         return self.inputs.get("Limit Strength")
 
     @property
-    def i_use_spill_strength(self) -> SocketLinker:
+    def i_use_spill_strength(self) -> Socket:
         """Input socket: Use Spill Strength"""
         return self.inputs.get("Use Spill Strength")
 
     @property
-    def i_spill_strength(self) -> SocketLinker:
+    def i_spill_strength(self) -> Socket:
         """Input socket: Strength"""
         return self.inputs.get("Spill Strength")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
@@ -431,32 +431,32 @@ class DifferenceKey(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image_1(self) -> SocketLinker:
+    def i_image_1(self) -> Socket:
         """Input socket: Image 1"""
         return self.inputs.get("Image 1")
 
     @property
-    def i_image_2(self) -> SocketLinker:
+    def i_image_2(self) -> Socket:
         """Input socket: Image 2"""
         return self.inputs.get("Image 2")
 
     @property
-    def i_tolerance(self) -> SocketLinker:
+    def i_tolerance(self) -> Socket:
         """Input socket: Tolerance"""
         return self.inputs.get("Tolerance")
 
     @property
-    def i_falloff(self) -> SocketLinker:
+    def i_falloff(self) -> Socket:
         """Input socket: Falloff"""
         return self.inputs.get("Falloff")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> SocketLinker:
+    def o_matte(self) -> Socket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -489,37 +489,37 @@ class DistanceKey(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_key_color(self) -> SocketLinker:
+    def i_key_color(self) -> Socket:
         """Input socket: Key Color"""
         return self.inputs.get("Key Color")
 
     @property
-    def i_color_space(self) -> SocketLinker:
+    def i_color_space(self) -> Socket:
         """Input socket: Color Space"""
         return self.inputs.get("Color Space")
 
     @property
-    def i_tolerance(self) -> SocketLinker:
+    def i_tolerance(self) -> Socket:
         """Input socket: Tolerance"""
         return self.inputs.get("Tolerance")
 
     @property
-    def i_falloff(self) -> SocketLinker:
+    def i_falloff(self) -> Socket:
         """Input socket: Falloff"""
         return self.inputs.get("Falloff")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> SocketLinker:
+    def o_matte(self) -> Socket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -550,27 +550,27 @@ class DoubleEdgeMask(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_outer_mask(self) -> SocketLinker:
+    def i_outer_mask(self) -> Socket:
         """Input socket: Outer Mask"""
         return self.inputs.get("Outer Mask")
 
     @property
-    def i_inner_mask(self) -> SocketLinker:
+    def i_inner_mask(self) -> Socket:
         """Input socket: Inner Mask"""
         return self.inputs.get("Inner Mask")
 
     @property
-    def i_image_edges(self) -> SocketLinker:
+    def i_image_edges(self) -> Socket:
         """Input socket: Image Edges"""
         return self.inputs.get("Image Edges")
 
     @property
-    def i_only_inside_outer(self) -> SocketLinker:
+    def i_only_inside_outer(self) -> Socket:
         """Input socket: Only Inside Outer"""
         return self.inputs.get("Only Inside Outer")
 
     @property
-    def o_mask(self) -> SocketLinker:
+    def o_mask(self) -> Socket:
         """Output socket: Mask"""
         return self.outputs.get("Mask")
 
@@ -605,37 +605,37 @@ class EllipseMask(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_operation(self) -> SocketLinker:
+    def i_operation(self) -> Socket:
         """Input socket: Operation"""
         return self.inputs.get("Operation")
 
     @property
-    def i_mask(self) -> SocketLinker:
+    def i_mask(self) -> Socket:
         """Input socket: Mask"""
         return self.inputs.get("Mask")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_size(self) -> SocketLinker:
+    def i_size(self) -> Socket:
         """Input socket: Size"""
         return self.inputs.get("Size")
 
     @property
-    def i_rotation(self) -> SocketLinker:
+    def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
     @property
-    def o_mask(self) -> SocketLinker:
+    def o_mask(self) -> Socket:
         """Output socket: Mask"""
         return self.outputs.get("Mask")
 
@@ -693,97 +693,97 @@ class Keying(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_key_color(self) -> SocketLinker:
+    def i_key_color(self) -> Socket:
         """Input socket: Key Color"""
         return self.inputs.get("Key Color")
 
     @property
-    def i_preprocess_blur_size(self) -> SocketLinker:
+    def i_preprocess_blur_size(self) -> Socket:
         """Input socket: Blur Size"""
         return self.inputs.get("Preprocess Blur Size")
 
     @property
-    def i_key_balance(self) -> SocketLinker:
+    def i_key_balance(self) -> Socket:
         """Input socket: Balance"""
         return self.inputs.get("Key Balance")
 
     @property
-    def i_black_level(self) -> SocketLinker:
+    def i_black_level(self) -> Socket:
         """Input socket: Black Level"""
         return self.inputs.get("Black Level")
 
     @property
-    def i_white_level(self) -> SocketLinker:
+    def i_white_level(self) -> Socket:
         """Input socket: White Level"""
         return self.inputs.get("White Level")
 
     @property
-    def i_edge_search_size(self) -> SocketLinker:
+    def i_edge_search_size(self) -> Socket:
         """Input socket: Size"""
         return self.inputs.get("Edge Search Size")
 
     @property
-    def i_edge_tolerance(self) -> SocketLinker:
+    def i_edge_tolerance(self) -> Socket:
         """Input socket: Tolerance"""
         return self.inputs.get("Edge Tolerance")
 
     @property
-    def i_garbage_matte(self) -> SocketLinker:
+    def i_garbage_matte(self) -> Socket:
         """Input socket: Garbage Matte"""
         return self.inputs.get("Garbage Matte")
 
     @property
-    def i_core_matte(self) -> SocketLinker:
+    def i_core_matte(self) -> Socket:
         """Input socket: Core Matte"""
         return self.inputs.get("Core Matte")
 
     @property
-    def i_postprocess_blur_size(self) -> SocketLinker:
+    def i_postprocess_blur_size(self) -> Socket:
         """Input socket: Blur Size"""
         return self.inputs.get("Postprocess Blur Size")
 
     @property
-    def i_postprocess_dilate_size(self) -> SocketLinker:
+    def i_postprocess_dilate_size(self) -> Socket:
         """Input socket: Dilate Size"""
         return self.inputs.get("Postprocess Dilate Size")
 
     @property
-    def i_postprocess_feather_size(self) -> SocketLinker:
+    def i_postprocess_feather_size(self) -> Socket:
         """Input socket: Feather Size"""
         return self.inputs.get("Postprocess Feather Size")
 
     @property
-    def i_feather_falloff(self) -> SocketLinker:
+    def i_feather_falloff(self) -> Socket:
         """Input socket: Feather Falloff"""
         return self.inputs.get("Feather Falloff")
 
     @property
-    def i_despill_strength(self) -> SocketLinker:
+    def i_despill_strength(self) -> Socket:
         """Input socket: Strength"""
         return self.inputs.get("Despill Strength")
 
     @property
-    def i_despill_balance(self) -> SocketLinker:
+    def i_despill_balance(self) -> Socket:
         """Input socket: Balance"""
         return self.inputs.get("Despill Balance")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> SocketLinker:
+    def o_matte(self) -> Socket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
     @property
-    def o_edges(self) -> SocketLinker:
+    def o_edges(self) -> Socket:
         """Output socket: Edges"""
         return self.outputs.get("Edges")
 
@@ -808,12 +808,12 @@ class KeyingScreen(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_smoothness(self) -> SocketLinker:
+    def i_smoothness(self) -> Socket:
         """Input socket: Smoothness"""
         return self.inputs.get("Smoothness")
 
     @property
-    def o_screen(self) -> ColorSocketLinker:
+    def o_screen(self) -> ColorSocket:
         """Output socket: Screen"""
         return self.outputs.get("Screen")
 
@@ -846,26 +846,26 @@ class LuminanceKey(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 
     @property
-    def i_minimum(self) -> SocketLinker:
+    def i_minimum(self) -> Socket:
         """Input socket: Minimum"""
         return self.inputs.get("Minimum")
 
     @property
-    def i_maximum(self) -> SocketLinker:
+    def i_maximum(self) -> Socket:
         """Input socket: Maximum"""
         return self.inputs.get("Maximum")
 
     @property
-    def o_image(self) -> ColorSocketLinker:
+    def o_image(self) -> ColorSocket:
         """Output socket: Image"""
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> SocketLinker:
+    def o_matte(self) -> Socket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")

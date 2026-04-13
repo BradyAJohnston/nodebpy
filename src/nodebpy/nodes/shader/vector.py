@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket
 
 from ...types import (
     InputColor,
@@ -43,32 +43,32 @@ class Bump(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_strength(self) -> SocketLinker:
+    def i_strength(self) -> Socket:
         """Input socket: Strength"""
         return self.inputs.get("Strength")
 
     @property
-    def i_distance(self) -> SocketLinker:
+    def i_distance(self) -> Socket:
         """Input socket: Distance"""
         return self.inputs.get("Distance")
 
     @property
-    def i_filter_width(self) -> SocketLinker:
+    def i_filter_width(self) -> Socket:
         """Input socket: Filter Width"""
         return self.inputs.get("Filter Width")
 
     @property
-    def i_height(self) -> SocketLinker:
+    def i_height(self) -> Socket:
         """Input socket: Height"""
         return self.inputs.get("Height")
 
     @property
-    def i_normal(self) -> SocketLinker:
+    def i_normal(self) -> Socket:
         """Input socket: Normal"""
         return self.inputs.get("Normal")
 
     @property
-    def o_normal(self) -> VectorSocketLinker:
+    def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
         return self.outputs.get("Normal")
 
@@ -109,27 +109,27 @@ class Displacement(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_height(self) -> SocketLinker:
+    def i_height(self) -> Socket:
         """Input socket: Height"""
         return self.inputs.get("Height")
 
     @property
-    def i_midlevel(self) -> SocketLinker:
+    def i_midlevel(self) -> Socket:
         """Input socket: Midlevel"""
         return self.inputs.get("Midlevel")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def i_normal(self) -> SocketLinker:
+    def i_normal(self) -> Socket:
         """Input socket: Normal"""
         return self.inputs.get("Normal")
 
     @property
-    def o_displacement(self) -> VectorSocketLinker:
+    def o_displacement(self) -> VectorSocket:
         """Output socket: Displacement"""
         return self.outputs.get("Displacement")
 
@@ -170,27 +170,27 @@ class Mapping(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> Socket:
         """Input socket: Vector"""
         return self.inputs.get("Vector")
 
     @property
-    def i_location(self) -> SocketLinker:
+    def i_location(self) -> Socket:
         """Input socket: Location"""
         return self.inputs.get("Location")
 
     @property
-    def i_rotation(self) -> SocketLinker:
+    def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def o_vector(self) -> VectorSocketLinker:
+    def o_vector(self) -> VectorSocket:
         """Output socket: Vector"""
         return self.outputs.get("Vector")
 
@@ -218,17 +218,17 @@ class Normal(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_normal(self) -> SocketLinker:
+    def i_normal(self) -> Socket:
         """Input socket: Normal"""
         return self.inputs.get("Normal")
 
     @property
-    def o_normal(self) -> VectorSocketLinker:
+    def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
         return self.outputs.get("Normal")
 
     @property
-    def o_dot(self) -> SocketLinker:
+    def o_dot(self) -> Socket:
         """Output socket: Dot"""
         return self.outputs.get("Dot")
 
@@ -258,17 +258,17 @@ class NormalMap(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_strength(self) -> SocketLinker:
+    def i_strength(self) -> Socket:
         """Input socket: Strength"""
         return self.inputs.get("Strength")
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def o_normal(self) -> VectorSocketLinker:
+    def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
         return self.outputs.get("Normal")
 
@@ -316,22 +316,22 @@ class VectorDisplacement(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> Socket:
         """Input socket: Vector"""
         return self.inputs.get("Vector")
 
     @property
-    def i_midlevel(self) -> SocketLinker:
+    def i_midlevel(self) -> Socket:
         """Input socket: Midlevel"""
         return self.inputs.get("Midlevel")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def o_displacement(self) -> VectorSocketLinker:
+    def o_displacement(self) -> VectorSocket:
         """Output socket: Displacement"""
         return self.outputs.get("Displacement")
 
@@ -368,12 +368,12 @@ class VectorTransform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> SocketLinker:
+    def i_vector(self) -> Socket:
         """Input socket: Vector"""
         return self.inputs.get("Vector")
 
     @property
-    def o_vector(self) -> VectorSocketLinker:
+    def o_vector(self) -> VectorSocket:
         """Output socket: Vector"""
         return self.outputs.get("Vector")
 
