@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
 
 from ...types import (
     InputBoolean,
@@ -96,7 +96,7 @@ class CornerPin(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_plane(self) -> Socket:
+    def o_plane(self) -> FloatSocket:
         """Output socket: Plane"""
         return self.outputs.get("Plane")
 
@@ -478,7 +478,7 @@ class PlaneTrackDeform(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_plane(self) -> Socket:
+    def o_plane(self) -> FloatSocket:
         """Output socket: Plane"""
         return self.outputs.get("Plane")
 

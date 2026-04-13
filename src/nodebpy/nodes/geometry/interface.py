@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    BooleanSocket,
+    FloatSocket,
+    GeometrySocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -81,7 +87,7 @@ class DialGizmo(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_transform(self) -> Socket:
+    def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
         return self.outputs.get("Transform")
 
@@ -254,7 +260,7 @@ class EnableOutput(NodeBuilder):
         return self.inputs.get("Value")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -383,7 +389,7 @@ class LinearGizmo(NodeBuilder):
         return self.inputs.get("Direction")
 
     @property
-    def o_transform(self) -> Socket:
+    def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
         return self.outputs.get("Transform")
 
@@ -457,7 +463,7 @@ class TransformGizmo(NodeBuilder):
         return self.inputs.get("Rotation")
 
     @property
-    def o_transform(self) -> Socket:
+    def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
         return self.outputs.get("Transform")
 
@@ -565,7 +571,7 @@ class Warning(NodeBuilder):
         return self.inputs.get("Message")
 
     @property
-    def o_show(self) -> Socket:
+    def o_show(self) -> BooleanSocket:
         """Output socket: Show"""
         return self.outputs.get("Show")
 

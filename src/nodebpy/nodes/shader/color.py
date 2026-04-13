@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
 
 from ...types import (
     InputColor,
@@ -172,16 +172,16 @@ class LightFalloff(NodeBuilder):
         return self.inputs.get("Smooth")
 
     @property
-    def o_quadratic(self) -> Socket:
+    def o_quadratic(self) -> FloatSocket:
         """Output socket: Quadratic"""
         return self.outputs.get("Quadratic")
 
     @property
-    def o_linear(self) -> Socket:
+    def o_linear(self) -> FloatSocket:
         """Output socket: Linear"""
         return self.outputs.get("Linear")
 
     @property
-    def o_constant(self) -> Socket:
+    def o_constant(self) -> FloatSocket:
         """Output socket: Constant"""
         return self.outputs.get("Constant")

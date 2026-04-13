@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket
+from ...builder import BaseNode as NodeBuilder, ClosureSocket
 
 
 
@@ -44,7 +44,7 @@ class ClosureOutput(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_closure(self) -> Socket:
+    def o_closure(self) -> ClosureSocket:
         """Output socket: Closure"""
         return self.outputs.get("Closure")
 

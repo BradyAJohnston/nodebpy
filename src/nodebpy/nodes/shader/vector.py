@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket
+from ...builder import BaseNode as NodeBuilder, Socket, FloatSocket, VectorSocket
 
 from ...types import (
     InputColor,
@@ -228,7 +228,7 @@ class Normal(NodeBuilder):
         return self.outputs.get("Normal")
 
     @property
-    def o_dot(self) -> Socket:
+    def o_dot(self) -> FloatSocket:
         """Output socket: Dot"""
         return self.outputs.get("Dot")
 

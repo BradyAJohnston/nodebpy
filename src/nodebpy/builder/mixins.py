@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from bpy.types import NodeSocket
+from bpy.types import NodeLink, NodeSocket
 
 from ._registry import _get_socket_linker
-from ._utils import SocketError, _SocketLike, _resolve_promotion
+from ._utils import SocketError, _resolve_promotion, _SocketLike
 
 if TYPE_CHECKING:
+    from ..types import InputLinkable
     from .node import BaseNode
     from .socket import Socket
-    from ..types import InputLinkable
 
 
 class OperatorMixin:
@@ -254,8 +254,7 @@ class LinkingMixin:
 
     def _link(
         self, source: "InputLinkable | Socket | NodeSocket", target: "InputLinkable"
-    ) -> "bpy.types.NodeLink":
-
+    ) -> NodeLink:
         source_socket = self._source_socket(source)
         target_socket = self._target_socket(target)
         return self.tree.link(source_socket, target_socket)  # type: ignore[attr-defined]

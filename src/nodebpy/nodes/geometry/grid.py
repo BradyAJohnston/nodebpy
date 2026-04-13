@@ -4,7 +4,15 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    BooleanSocket,
+    FloatSocket,
+    GeometrySocket,
+    MatrixSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -162,7 +170,7 @@ class AdvectGrid(NodeBuilder):
         return self.inputs.get("Limiter")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -230,7 +238,7 @@ class DistributePointsInGrid(NodeBuilder):
         return self.inputs.get("Threshold")
 
     @property
-    def o_points(self) -> Socket:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -303,7 +311,7 @@ class DistributePointsInVolume(NodeBuilder):
         return self.inputs.get("Threshold")
 
     @property
-    def o_points(self) -> Socket:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -385,12 +393,12 @@ class GetNamedGrid(NodeBuilder):
         return self.inputs.get("Remove")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> GeometrySocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -448,7 +456,7 @@ class GridDivergence(NodeBuilder):
         return self.inputs.get("Grid")
 
     @property
-    def o_divergence(self) -> Socket:
+    def o_divergence(self) -> FloatSocket:
         """Output socket: Divergence"""
         return self.outputs.get("Divergence")
 
@@ -523,12 +531,12 @@ class GridInfo(NodeBuilder):
         return self.inputs.get("Grid")
 
     @property
-    def o_transform(self) -> Socket:
+    def o_transform(self) -> MatrixSocket:
         """Output socket: Transform"""
         return self.outputs.get("Transform")
 
     @property
-    def o_background_value(self) -> Socket:
+    def o_background_value(self) -> FloatSocket:
         """Output socket: Background Value"""
         return self.outputs.get("Background Value")
 
@@ -561,7 +569,7 @@ class GridLaplacian(NodeBuilder):
         return self.inputs.get("Grid")
 
     @property
-    def o_laplacian(self) -> Socket:
+    def o_laplacian(self) -> FloatSocket:
         """Output socket: Laplacian"""
         return self.outputs.get("Laplacian")
 
@@ -601,7 +609,7 @@ class GridToMesh(NodeBuilder):
         return self.inputs.get("Adaptivity")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -652,7 +660,7 @@ class MeshToDensityGrid(NodeBuilder):
         return self.inputs.get("Gradient Width")
 
     @property
-    def o_density_grid(self) -> Socket:
+    def o_density_grid(self) -> FloatSocket:
         """Output socket: Density Grid"""
         return self.outputs.get("Density Grid")
 
@@ -692,7 +700,7 @@ class MeshToSDFGrid(NodeBuilder):
         return self.inputs.get("Band Width")
 
     @property
-    def o_sdf_grid(self) -> Socket:
+    def o_sdf_grid(self) -> FloatSocket:
         """Output socket: SDF Grid"""
         return self.outputs.get("SDF Grid")
 
@@ -757,7 +765,7 @@ class MeshToVolume(NodeBuilder):
         return self.inputs.get("Interior Band Width")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> GeometrySocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -797,7 +805,7 @@ class PointsToSDFGrid(NodeBuilder):
         return self.inputs.get("Voxel Size")
 
     @property
-    def o_sdf_grid(self) -> Socket:
+    def o_sdf_grid(self) -> FloatSocket:
         """Output socket: SDF Grid"""
         return self.outputs.get("SDF Grid")
 
@@ -862,7 +870,7 @@ class PointsToVolume(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> GeometrySocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -943,7 +951,7 @@ class PruneGrid(NodeBuilder):
         return self.inputs.get("Threshold")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -985,7 +993,7 @@ class SDFGridFillet(NodeBuilder):
         return self.inputs.get("Iterations")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -1019,7 +1027,7 @@ class SDFGridLaplacian(NodeBuilder):
         return self.inputs.get("Iterations")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -1059,7 +1067,7 @@ class SDFGridMean(NodeBuilder):
         return self.inputs.get("Iterations")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -1093,7 +1101,7 @@ class SDFGridMeanCurvature(NodeBuilder):
         return self.inputs.get("Iterations")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -1133,7 +1141,7 @@ class SDFGridMedian(NodeBuilder):
         return self.inputs.get("Iterations")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -1167,7 +1175,7 @@ class SDFGridOffset(NodeBuilder):
         return self.inputs.get("Distance")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -1268,7 +1276,7 @@ class SampleGrid(NodeBuilder):
         return self.inputs.get("Interpolation")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -1368,7 +1376,7 @@ class SampleGridIndex(NodeBuilder):
         return self.inputs.get("Z")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -1440,7 +1448,7 @@ class SetGridBackground(NodeBuilder):
         return self.inputs.get("Background")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -1512,12 +1520,12 @@ class SetGridTransform(NodeBuilder):
         return self.inputs.get("Transform")
 
     @property
-    def o_is_valid(self) -> Socket:
+    def o_is_valid(self) -> BooleanSocket:
         """Output socket: Is Valid"""
         return self.outputs.get("Is Valid")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 
@@ -1607,7 +1615,7 @@ class StoreNamedGrid(NodeBuilder):
         return self.inputs.get("Grid")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> GeometrySocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -1687,7 +1695,7 @@ class VolumeCube(NodeBuilder):
         return self.inputs.get("Resolution Z")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> GeometrySocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -1752,7 +1760,7 @@ class VolumeToMesh(NodeBuilder):
         return self.inputs.get("Adaptivity")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -1802,7 +1810,7 @@ class VoxelizeGrid(NodeBuilder):
         return self.inputs.get("Grid")
 
     @property
-    def o_grid(self) -> Socket:
+    def o_grid(self) -> FloatSocket:
         """Output socket: Grid"""
         return self.outputs.get("Grid")
 

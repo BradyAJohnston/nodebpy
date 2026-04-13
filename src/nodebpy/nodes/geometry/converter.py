@@ -4,7 +4,20 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket, ColorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    BooleanSocket,
+    BundleSocket,
+    ColorSocket,
+    FloatSocket,
+    GeometrySocket,
+    IntegerSocket,
+    MatrixSocket,
+    RotationSocket,
+    StringSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -65,7 +78,7 @@ class AlignRotationToVector(NodeBuilder):
         return self.inputs.get("Vector")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -119,7 +132,7 @@ class AxesToRotation(NodeBuilder):
         return self.inputs.get("Secondary Axis")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -169,7 +182,7 @@ class AxisAngleToRotation(NodeBuilder):
         return self.inputs.get("Angle")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -241,7 +254,7 @@ class BitMath(NodeBuilder):
         return self.inputs.get("Shift")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> IntegerSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -373,7 +386,7 @@ class BooleanMath(NodeBuilder):
         return self.inputs.get("Boolean_001")
 
     @property
-    def o_boolean(self) -> Socket:
+    def o_boolean(self) -> BooleanSocket:
         """Output socket: Boolean"""
         return self.outputs.get("Boolean")
 
@@ -430,7 +443,7 @@ class Clamp(NodeBuilder):
         return self.inputs.get("Max")
 
     @property
-    def o_result(self) -> Socket:
+    def o_result(self) -> FloatSocket:
         """Output socket: Result"""
         return self.outputs.get("Result")
 
@@ -468,7 +481,7 @@ class ColorRamp(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
@@ -488,7 +501,7 @@ class CombineBundle(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_bundle(self) -> Socket:
+    def o_bundle(self) -> BundleSocket:
         """Output socket: Bundle"""
         return self.outputs.get("Bundle")
 
@@ -687,7 +700,7 @@ class CombineMatrix(NodeBuilder):
         return self.inputs.get("Column 4 Row 4")
 
     @property
-    def o_matrix(self) -> Socket:
+    def o_matrix(self) -> MatrixSocket:
         """Output socket: Matrix"""
         return self.outputs.get("Matrix")
 
@@ -727,7 +740,7 @@ class CombineTransform(NodeBuilder):
         return self.inputs.get("Scale")
 
     @property
-    def o_transform(self) -> Socket:
+    def o_transform(self) -> MatrixSocket:
         """Output socket: Transform"""
         return self.outputs.get("Transform")
 
@@ -792,7 +805,7 @@ class EulerToRotation(NodeBuilder):
         return self.inputs.get("Euler")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -826,12 +839,12 @@ class FindInString(NodeBuilder):
         return self.inputs.get("Search")
 
     @property
-    def o_first_found(self) -> Socket:
+    def o_first_found(self) -> IntegerSocket:
         """Output socket: First Found"""
         return self.outputs.get("First Found")
 
     @property
-    def o_count(self) -> Socket:
+    def o_count(self) -> IntegerSocket:
         """Output socket: Count"""
         return self.outputs.get("Count")
 
@@ -865,7 +878,7 @@ class FloatCurve(NodeBuilder):
         return self.inputs.get("Value")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -895,7 +908,7 @@ class FloatToInteger(NodeBuilder):
         return self.inputs.get("Float")
 
     @property
-    def o_integer(self) -> Socket:
+    def o_integer(self) -> IntegerSocket:
         """Output socket: Integer"""
         return self.outputs.get("Integer")
 
@@ -978,7 +991,7 @@ class HashValue(NodeBuilder):
         return self.inputs.get("Seed")
 
     @property
-    def o_hash(self) -> Socket:
+    def o_hash(self) -> IntegerSocket:
         """Output socket: Hash"""
         return self.outputs.get("Hash")
 
@@ -1027,12 +1040,12 @@ class IndexOfNearest(NodeBuilder):
         return self.inputs.get("Group ID")
 
     @property
-    def o_index(self) -> Socket:
+    def o_index(self) -> IntegerSocket:
         """Output socket: Index"""
         return self.outputs.get("Index")
 
     @property
-    def o_has_neighbor(self) -> Socket:
+    def o_has_neighbor(self) -> BooleanSocket:
         """Output socket: Has Neighbor"""
         return self.outputs.get("Has Neighbor")
 
@@ -1219,7 +1232,7 @@ class IntegerMath(NodeBuilder):
         return self.inputs.get("Value_002")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> IntegerSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -1295,12 +1308,12 @@ class InvertMatrix(NodeBuilder):
         return self.inputs.get("Matrix")
 
     @property
-    def o_matrix(self) -> Socket:
+    def o_matrix(self) -> MatrixSocket:
         """Output socket: Matrix"""
         return self.outputs.get("Matrix")
 
     @property
-    def o_invertible(self) -> Socket:
+    def o_invertible(self) -> BooleanSocket:
         """Output socket: Invertible"""
         return self.outputs.get("Invertible")
 
@@ -1325,7 +1338,7 @@ class InvertRotation(NodeBuilder):
         return self.inputs.get("Rotation")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -1350,7 +1363,7 @@ class JoinBundle(NodeBuilder):
         return self.inputs.get("Bundle")
 
     @property
-    def o_bundle(self) -> Socket:
+    def o_bundle(self) -> BundleSocket:
         """Output socket: Bundle"""
         return self.outputs.get("Bundle")
 
@@ -1503,7 +1516,7 @@ class MapRange(NodeBuilder):
         return self.inputs.get("Steps_FLOAT3")
 
     @property
-    def o_result(self) -> Socket:
+    def o_result(self) -> FloatSocket:
         """Output socket: Result"""
         return self.outputs.get("Result")
 
@@ -1577,7 +1590,7 @@ class MatchString(NodeBuilder):
         return self.inputs.get("Key")
 
     @property
-    def o_result(self) -> Socket:
+    def o_result(self) -> BooleanSocket:
         """Output socket: Result"""
         return self.outputs.get("Result")
 
@@ -1918,7 +1931,7 @@ class Math(NodeBuilder):
         return self.inputs.get("Value_002")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -2048,7 +2061,7 @@ class MatrixDeterminant(NodeBuilder):
         return self.inputs.get("Matrix")
 
     @property
-    def o_determinant(self) -> Socket:
+    def o_determinant(self) -> FloatSocket:
         """Output socket: Determinant"""
         return self.outputs.get("Determinant")
 
@@ -2212,7 +2225,7 @@ class Mix(NodeBuilder):
         return self.inputs.get("B_Rotation")
 
     @property
-    def o_result_float(self) -> Socket:
+    def o_result_float(self) -> FloatSocket:
         """Output socket: Result"""
         return self.outputs.get("Result_Float")
 
@@ -2227,7 +2240,7 @@ class Mix(NodeBuilder):
         return self.outputs.get("Result_Color")
 
     @property
-    def o_result_rotation(self) -> Socket:
+    def o_result_rotation(self) -> RotationSocket:
         """Output socket: Result"""
         return self.outputs.get("Result_Rotation")
 
@@ -2346,7 +2359,7 @@ class MultiplyMatrices(NodeBuilder):
         return self.inputs.get("Matrix_001")
 
     @property
-    def o_matrix(self) -> Socket:
+    def o_matrix(self) -> MatrixSocket:
         """Output socket: Matrix"""
         return self.outputs.get("Matrix")
 
@@ -2485,7 +2498,7 @@ class QuaternionToRotation(NodeBuilder):
         return self.inputs.get("Z")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -2618,17 +2631,17 @@ class RandomValue(NodeBuilder):
         return self.outputs.get("Value")
 
     @property
-    def o_value_001(self) -> Socket:
+    def o_value_001(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value_001")
 
     @property
-    def o_value_002(self) -> Socket:
+    def o_value_002(self) -> IntegerSocket:
         """Output socket: Value"""
         return self.outputs.get("Value_002")
 
     @property
-    def o_value_003(self) -> Socket:
+    def o_value_003(self) -> BooleanSocket:
         """Output socket: Value"""
         return self.outputs.get("Value_003")
 
@@ -2676,7 +2689,7 @@ class ReplaceString(NodeBuilder):
         return self.inputs.get("Replace")
 
     @property
-    def o_string(self) -> Socket:
+    def o_string(self) -> StringSocket:
         """Output socket: String"""
         return self.outputs.get("String")
 
@@ -2783,7 +2796,7 @@ class RotateRotation(NodeBuilder):
         return self.inputs.get("Rotate By")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -2855,7 +2868,7 @@ class RotationToAxisAngle(NodeBuilder):
         return self.outputs.get("Axis")
 
     @property
-    def o_angle(self) -> Socket:
+    def o_angle(self) -> FloatSocket:
         """Output socket: Angle"""
         return self.outputs.get("Angle")
 
@@ -2905,22 +2918,22 @@ class RotationToQuaternion(NodeBuilder):
         return self.inputs.get("Rotation")
 
     @property
-    def o_w(self) -> Socket:
+    def o_w(self) -> FloatSocket:
         """Output socket: W"""
         return self.outputs.get("W")
 
     @property
-    def o_x(self) -> Socket:
+    def o_x(self) -> FloatSocket:
         """Output socket: X"""
         return self.outputs.get("X")
 
     @property
-    def o_y(self) -> Socket:
+    def o_y(self) -> FloatSocket:
         """Output socket: Y"""
         return self.outputs.get("Y")
 
     @property
-    def o_z(self) -> Socket:
+    def o_z(self) -> FloatSocket:
         """Output socket: Z"""
         return self.outputs.get("Z")
 
@@ -2983,22 +2996,22 @@ class SeparateColor(NodeBuilder):
         return self.inputs.get("Color")
 
     @property
-    def o_red(self) -> Socket:
+    def o_red(self) -> FloatSocket:
         """Output socket: Red"""
         return self.outputs.get("Red")
 
     @property
-    def o_green(self) -> Socket:
+    def o_green(self) -> FloatSocket:
         """Output socket: Green"""
         return self.outputs.get("Green")
 
     @property
-    def o_blue(self) -> Socket:
+    def o_blue(self) -> FloatSocket:
         """Output socket: Blue"""
         return self.outputs.get("Blue")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
@@ -3031,82 +3044,82 @@ class SeparateMatrix(NodeBuilder):
         return self.inputs.get("Matrix")
 
     @property
-    def o_column_1_row_1(self) -> Socket:
+    def o_column_1_row_1(self) -> FloatSocket:
         """Output socket: Column 1 Row 1"""
         return self.outputs.get("Column 1 Row 1")
 
     @property
-    def o_column_1_row_2(self) -> Socket:
+    def o_column_1_row_2(self) -> FloatSocket:
         """Output socket: Column 1 Row 2"""
         return self.outputs.get("Column 1 Row 2")
 
     @property
-    def o_column_1_row_3(self) -> Socket:
+    def o_column_1_row_3(self) -> FloatSocket:
         """Output socket: Column 1 Row 3"""
         return self.outputs.get("Column 1 Row 3")
 
     @property
-    def o_column_1_row_4(self) -> Socket:
+    def o_column_1_row_4(self) -> FloatSocket:
         """Output socket: Column 1 Row 4"""
         return self.outputs.get("Column 1 Row 4")
 
     @property
-    def o_column_2_row_1(self) -> Socket:
+    def o_column_2_row_1(self) -> FloatSocket:
         """Output socket: Column 2 Row 1"""
         return self.outputs.get("Column 2 Row 1")
 
     @property
-    def o_column_2_row_2(self) -> Socket:
+    def o_column_2_row_2(self) -> FloatSocket:
         """Output socket: Column 2 Row 2"""
         return self.outputs.get("Column 2 Row 2")
 
     @property
-    def o_column_2_row_3(self) -> Socket:
+    def o_column_2_row_3(self) -> FloatSocket:
         """Output socket: Column 2 Row 3"""
         return self.outputs.get("Column 2 Row 3")
 
     @property
-    def o_column_2_row_4(self) -> Socket:
+    def o_column_2_row_4(self) -> FloatSocket:
         """Output socket: Column 2 Row 4"""
         return self.outputs.get("Column 2 Row 4")
 
     @property
-    def o_column_3_row_1(self) -> Socket:
+    def o_column_3_row_1(self) -> FloatSocket:
         """Output socket: Column 3 Row 1"""
         return self.outputs.get("Column 3 Row 1")
 
     @property
-    def o_column_3_row_2(self) -> Socket:
+    def o_column_3_row_2(self) -> FloatSocket:
         """Output socket: Column 3 Row 2"""
         return self.outputs.get("Column 3 Row 2")
 
     @property
-    def o_column_3_row_3(self) -> Socket:
+    def o_column_3_row_3(self) -> FloatSocket:
         """Output socket: Column 3 Row 3"""
         return self.outputs.get("Column 3 Row 3")
 
     @property
-    def o_column_3_row_4(self) -> Socket:
+    def o_column_3_row_4(self) -> FloatSocket:
         """Output socket: Column 3 Row 4"""
         return self.outputs.get("Column 3 Row 4")
 
     @property
-    def o_column_4_row_1(self) -> Socket:
+    def o_column_4_row_1(self) -> FloatSocket:
         """Output socket: Column 4 Row 1"""
         return self.outputs.get("Column 4 Row 1")
 
     @property
-    def o_column_4_row_2(self) -> Socket:
+    def o_column_4_row_2(self) -> FloatSocket:
         """Output socket: Column 4 Row 2"""
         return self.outputs.get("Column 4 Row 2")
 
     @property
-    def o_column_4_row_3(self) -> Socket:
+    def o_column_4_row_3(self) -> FloatSocket:
         """Output socket: Column 4 Row 3"""
         return self.outputs.get("Column 4 Row 3")
 
     @property
-    def o_column_4_row_4(self) -> Socket:
+    def o_column_4_row_4(self) -> FloatSocket:
         """Output socket: Column 4 Row 4"""
         return self.outputs.get("Column 4 Row 4")
 
@@ -3136,7 +3149,7 @@ class SeparateTransform(NodeBuilder):
         return self.outputs.get("Translation")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -3166,17 +3179,17 @@ class SeparateXYZ(NodeBuilder):
         return self.inputs.get("Vector")
 
     @property
-    def o_x(self) -> Socket:
+    def o_x(self) -> FloatSocket:
         """Output socket: X"""
         return self.outputs.get("X")
 
     @property
-    def o_y(self) -> Socket:
+    def o_y(self) -> FloatSocket:
         """Output socket: Y"""
         return self.outputs.get("Y")
 
     @property
-    def o_z(self) -> Socket:
+    def o_z(self) -> FloatSocket:
         """Output socket: Z"""
         return self.outputs.get("Z")
 
@@ -3216,7 +3229,7 @@ class SliceString(NodeBuilder):
         return self.inputs.get("Length")
 
     @property
-    def o_string(self) -> Socket:
+    def o_string(self) -> StringSocket:
         """Output socket: String"""
         return self.outputs.get("String")
 
@@ -3241,7 +3254,7 @@ class StringLength(NodeBuilder):
         return self.inputs.get("String")
 
     @property
-    def o_length(self) -> Socket:
+    def o_length(self) -> IntegerSocket:
         """Output socket: Length"""
         return self.outputs.get("Length")
 
@@ -3281,12 +3294,12 @@ class StringToValue(NodeBuilder):
         return self.inputs.get("String")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
     @property
-    def o_length(self) -> Socket:
+    def o_length(self) -> IntegerSocket:
         """Output socket: Length"""
         return self.outputs.get("Length")
 
@@ -3513,7 +3526,7 @@ class Switch(NodeBuilder):
         return self.inputs.get("True")
 
     @property
-    def o_output(self) -> Socket:
+    def o_output(self) -> GeometrySocket:
         """Output socket: Output"""
         return self.outputs.get("Output")
 
@@ -3653,7 +3666,7 @@ class TransposeMatrix(NodeBuilder):
         return self.inputs.get("Matrix")
 
     @property
-    def o_matrix(self) -> Socket:
+    def o_matrix(self) -> MatrixSocket:
         """Output socket: Matrix"""
         return self.outputs.get("Matrix")
 
@@ -3759,7 +3772,7 @@ class ValueToString(NodeBuilder):
         return self.inputs.get("Decimals")
 
     @property
-    def o_string(self) -> Socket:
+    def o_string(self) -> StringSocket:
         """Output socket: String"""
         return self.outputs.get("String")
 

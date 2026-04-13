@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket, ColorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputColor,
@@ -116,7 +122,7 @@ class BrickTexture(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -204,7 +210,7 @@ class CheckerTexture(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -271,17 +277,17 @@ class GaborTexture(NodeBuilder):
         return self.inputs.get("Orientation 3D")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
     @property
-    def o_phase(self) -> Socket:
+    def o_phase(self) -> FloatSocket:
         """Output socket: Phase"""
         return self.outputs.get("Phase")
 
     @property
-    def o_intensity(self) -> Socket:
+    def o_intensity(self) -> FloatSocket:
         """Output socket: Intensity"""
         return self.outputs.get("Intensity")
 
@@ -332,7 +338,7 @@ class GradientTexture(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -410,7 +416,7 @@ class ImageTexture(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
@@ -473,7 +479,7 @@ class MagicTexture(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -579,7 +585,7 @@ class NoiseTexture(NodeBuilder):
         return self.inputs.get("Distortion")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -723,7 +729,7 @@ class VoronoiTexture(NodeBuilder):
         return self.inputs.get("Randomness")
 
     @property
-    def o_distance(self) -> Socket:
+    def o_distance(self) -> FloatSocket:
         """Output socket: Distance"""
         return self.outputs.get("Distance")
 
@@ -738,12 +744,12 @@ class VoronoiTexture(NodeBuilder):
         return self.outputs.get("Position")
 
     @property
-    def o_w(self) -> Socket:
+    def o_w(self) -> FloatSocket:
         """Output socket: W"""
         return self.outputs.get("W")
 
     @property
-    def o_radius(self) -> Socket:
+    def o_radius(self) -> FloatSocket:
         """Output socket: Radius"""
         return self.outputs.get("Radius")
 
@@ -867,7 +873,7 @@ class WaveTexture(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -935,7 +941,7 @@ class WhiteNoiseTexture(NodeBuilder):
         return self.inputs.get("W")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 

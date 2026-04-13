@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
 
 from ...types import (
     InputFloat,
@@ -93,7 +93,7 @@ class IesTexture(NodeBuilder):
         return self.inputs.get("Strength")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -150,7 +150,7 @@ class ImageTexture(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 

@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
 
 from ...types import (
     InputBoolean,
@@ -76,7 +76,7 @@ class BoxMask(NodeBuilder):
         return self.inputs.get("Rotation")
 
     @property
-    def o_mask(self) -> Socket:
+    def o_mask(self) -> FloatSocket:
         """Output socket: Mask"""
         return self.outputs.get("Mask")
 
@@ -195,7 +195,7 @@ class ChannelKey(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> Socket:
+    def o_matte(self) -> FloatSocket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -258,7 +258,7 @@ class ChromaKey(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> Socket:
+    def o_matte(self) -> FloatSocket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -321,7 +321,7 @@ class ColorKey(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> Socket:
+    def o_matte(self) -> FloatSocket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -456,7 +456,7 @@ class DifferenceKey(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> Socket:
+    def o_matte(self) -> FloatSocket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -519,7 +519,7 @@ class DistanceKey(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> Socket:
+    def o_matte(self) -> FloatSocket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
@@ -570,7 +570,7 @@ class DoubleEdgeMask(NodeBuilder):
         return self.inputs.get("Only Inside Outer")
 
     @property
-    def o_mask(self) -> Socket:
+    def o_mask(self) -> FloatSocket:
         """Output socket: Mask"""
         return self.outputs.get("Mask")
 
@@ -635,7 +635,7 @@ class EllipseMask(NodeBuilder):
         return self.inputs.get("Rotation")
 
     @property
-    def o_mask(self) -> Socket:
+    def o_mask(self) -> FloatSocket:
         """Output socket: Mask"""
         return self.outputs.get("Mask")
 
@@ -778,12 +778,12 @@ class Keying(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> Socket:
+    def o_matte(self) -> FloatSocket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")
 
     @property
-    def o_edges(self) -> Socket:
+    def o_edges(self) -> FloatSocket:
         """Output socket: Edges"""
         return self.outputs.get("Edges")
 
@@ -866,6 +866,6 @@ class LuminanceKey(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_matte(self) -> Socket:
+    def o_matte(self) -> FloatSocket:
         """Output socket: Matte"""
         return self.outputs.get("Matte")

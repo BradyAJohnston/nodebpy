@@ -4,7 +4,14 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket, ColorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+    RotationSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputClosure,
@@ -263,7 +270,7 @@ class Mix(NodeBuilder):
         return self.inputs.get("B_Rotation")
 
     @property
-    def o_result_float(self) -> Socket:
+    def o_result_float(self) -> FloatSocket:
         """Output socket: Result"""
         return self.outputs.get("Result_Float")
 
@@ -278,7 +285,7 @@ class Mix(NodeBuilder):
         return self.outputs.get("Result_Color")
 
     @property
-    def o_result_rotation(self) -> Socket:
+    def o_result_rotation(self) -> RotationSocket:
         """Output socket: Result"""
         return self.outputs.get("Result_Rotation")
 
@@ -388,7 +395,7 @@ class RGBToBw(NodeBuilder):
         return self.inputs.get("Color")
 
     @property
-    def o_val(self) -> Socket:
+    def o_val(self) -> FloatSocket:
         """Output socket: Val"""
         return self.outputs.get("Val")
 
@@ -418,17 +425,17 @@ class SeparateColor(NodeBuilder):
         return self.inputs.get("Color")
 
     @property
-    def o_red(self) -> Socket:
+    def o_red(self) -> FloatSocket:
         """Output socket: Red"""
         return self.outputs.get("Red")
 
     @property
-    def o_green(self) -> Socket:
+    def o_green(self) -> FloatSocket:
         """Output socket: Green"""
         return self.outputs.get("Green")
 
     @property
-    def o_blue(self) -> Socket:
+    def o_blue(self) -> FloatSocket:
         """Output socket: Blue"""
         return self.outputs.get("Blue")
 
@@ -467,7 +474,7 @@ class ShaderToRGB(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 

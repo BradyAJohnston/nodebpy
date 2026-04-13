@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
 
 from ...types import (
     InputBoolean,
@@ -568,7 +568,7 @@ class DepthCombine(NodeBuilder):
         return self.outputs.get("Result")
 
     @property
-    def o_depth(self) -> Socket:
+    def o_depth(self) -> FloatSocket:
         """Output socket: Depth"""
         return self.outputs.get("Depth")
 

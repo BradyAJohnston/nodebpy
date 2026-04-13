@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket, ColorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputColor,
@@ -60,7 +66,7 @@ class AmbientOcclusion(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_ao(self) -> Socket:
+    def o_ao(self) -> FloatSocket:
         """Output socket: AO"""
         return self.outputs.get("AO")
 
@@ -121,12 +127,12 @@ class Attribute(NodeBuilder):
         return self.outputs.get("Vector")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
@@ -216,12 +222,12 @@ class CameraData(NodeBuilder):
         return self.outputs.get("View Vector")
 
     @property
-    def o_view_z_depth(self) -> Socket:
+    def o_view_z_depth(self) -> FloatSocket:
         """Output socket: View Z Depth"""
         return self.outputs.get("View Z Depth")
 
     @property
-    def o_view_distance(self) -> Socket:
+    def o_view_distance(self) -> FloatSocket:
         """Output socket: View Distance"""
         return self.outputs.get("View Distance")
 
@@ -266,7 +272,7 @@ class ColorAttribute(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
@@ -294,22 +300,22 @@ class CurvesInfo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_is_strand(self) -> Socket:
+    def o_is_strand(self) -> FloatSocket:
         """Output socket: Is Strand"""
         return self.outputs.get("Is Strand")
 
     @property
-    def o_intercept(self) -> Socket:
+    def o_intercept(self) -> FloatSocket:
         """Output socket: Intercept"""
         return self.outputs.get("Intercept")
 
     @property
-    def o_length(self) -> Socket:
+    def o_length(self) -> FloatSocket:
         """Output socket: Length"""
         return self.outputs.get("Length")
 
     @property
-    def o_thickness(self) -> Socket:
+    def o_thickness(self) -> FloatSocket:
         """Output socket: Thickness"""
         return self.outputs.get("Thickness")
 
@@ -319,7 +325,7 @@ class CurvesInfo(NodeBuilder):
         return self.outputs.get("Tangent Normal")
 
     @property
-    def o_random(self) -> Socket:
+    def o_random(self) -> FloatSocket:
         """Output socket: Random"""
         return self.outputs.get("Random")
 
@@ -354,7 +360,7 @@ class Fresnel(NodeBuilder):
         return self.inputs.get("Normal")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -404,17 +410,17 @@ class Geometry(NodeBuilder):
         return self.outputs.get("Parametric")
 
     @property
-    def o_backfacing(self) -> Socket:
+    def o_backfacing(self) -> FloatSocket:
         """Output socket: Backfacing"""
         return self.outputs.get("Backfacing")
 
     @property
-    def o_pointiness(self) -> Socket:
+    def o_pointiness(self) -> FloatSocket:
         """Output socket: Pointiness"""
         return self.outputs.get("Pointiness")
 
     @property
-    def o_random_per_island(self) -> Socket:
+    def o_random_per_island(self) -> FloatSocket:
         """Output socket: Random Per Island"""
         return self.outputs.get("Random Per Island")
 
@@ -449,12 +455,12 @@ class LayerWeight(NodeBuilder):
         return self.inputs.get("Normal")
 
     @property
-    def o_fresnel(self) -> Socket:
+    def o_fresnel(self) -> FloatSocket:
         """Output socket: Fresnel"""
         return self.outputs.get("Fresnel")
 
     @property
-    def o_facing(self) -> Socket:
+    def o_facing(self) -> FloatSocket:
         """Output socket: Facing"""
         return self.outputs.get("Facing")
 
@@ -475,77 +481,77 @@ class LightPath(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_is_camera_ray(self) -> Socket:
+    def o_is_camera_ray(self) -> FloatSocket:
         """Output socket: Is Camera Ray"""
         return self.outputs.get("Is Camera Ray")
 
     @property
-    def o_is_shadow_ray(self) -> Socket:
+    def o_is_shadow_ray(self) -> FloatSocket:
         """Output socket: Is Shadow Ray"""
         return self.outputs.get("Is Shadow Ray")
 
     @property
-    def o_is_diffuse_ray(self) -> Socket:
+    def o_is_diffuse_ray(self) -> FloatSocket:
         """Output socket: Is Diffuse Ray"""
         return self.outputs.get("Is Diffuse Ray")
 
     @property
-    def o_is_glossy_ray(self) -> Socket:
+    def o_is_glossy_ray(self) -> FloatSocket:
         """Output socket: Is Glossy Ray"""
         return self.outputs.get("Is Glossy Ray")
 
     @property
-    def o_is_singular_ray(self) -> Socket:
+    def o_is_singular_ray(self) -> FloatSocket:
         """Output socket: Is Singular Ray"""
         return self.outputs.get("Is Singular Ray")
 
     @property
-    def o_is_reflection_ray(self) -> Socket:
+    def o_is_reflection_ray(self) -> FloatSocket:
         """Output socket: Is Reflection Ray"""
         return self.outputs.get("Is Reflection Ray")
 
     @property
-    def o_is_transmission_ray(self) -> Socket:
+    def o_is_transmission_ray(self) -> FloatSocket:
         """Output socket: Is Transmission Ray"""
         return self.outputs.get("Is Transmission Ray")
 
     @property
-    def o_is_volume_scatter_ray(self) -> Socket:
+    def o_is_volume_scatter_ray(self) -> FloatSocket:
         """Output socket: Is Volume Scatter Ray"""
         return self.outputs.get("Is Volume Scatter Ray")
 
     @property
-    def o_ray_length(self) -> Socket:
+    def o_ray_length(self) -> FloatSocket:
         """Output socket: Ray Length"""
         return self.outputs.get("Ray Length")
 
     @property
-    def o_ray_depth(self) -> Socket:
+    def o_ray_depth(self) -> FloatSocket:
         """Output socket: Ray Depth"""
         return self.outputs.get("Ray Depth")
 
     @property
-    def o_diffuse_depth(self) -> Socket:
+    def o_diffuse_depth(self) -> FloatSocket:
         """Output socket: Diffuse Depth"""
         return self.outputs.get("Diffuse Depth")
 
     @property
-    def o_glossy_depth(self) -> Socket:
+    def o_glossy_depth(self) -> FloatSocket:
         """Output socket: Glossy Depth"""
         return self.outputs.get("Glossy Depth")
 
     @property
-    def o_transparent_depth(self) -> Socket:
+    def o_transparent_depth(self) -> FloatSocket:
         """Output socket: Transparent Depth"""
         return self.outputs.get("Transparent Depth")
 
     @property
-    def o_transmission_depth(self) -> Socket:
+    def o_transmission_depth(self) -> FloatSocket:
         """Output socket: Transmission Depth"""
         return self.outputs.get("Transmission Depth")
 
     @property
-    def o_portal_depth(self) -> Socket:
+    def o_portal_depth(self) -> FloatSocket:
         """Output socket: Portal Depth"""
         return self.outputs.get("Portal Depth")
 
@@ -575,22 +581,22 @@ class ObjectInfo(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
     @property
-    def o_object_index(self) -> Socket:
+    def o_object_index(self) -> FloatSocket:
         """Output socket: Object Index"""
         return self.outputs.get("Object Index")
 
     @property
-    def o_material_index(self) -> Socket:
+    def o_material_index(self) -> FloatSocket:
         """Output socket: Material Index"""
         return self.outputs.get("Material Index")
 
     @property
-    def o_random(self) -> Socket:
+    def o_random(self) -> FloatSocket:
         """Output socket: Random"""
         return self.outputs.get("Random")
 
@@ -610,22 +616,22 @@ class ParticleInfo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_index(self) -> Socket:
+    def o_index(self) -> FloatSocket:
         """Output socket: Index"""
         return self.outputs.get("Index")
 
     @property
-    def o_random(self) -> Socket:
+    def o_random(self) -> FloatSocket:
         """Output socket: Random"""
         return self.outputs.get("Random")
 
     @property
-    def o_age(self) -> Socket:
+    def o_age(self) -> FloatSocket:
         """Output socket: Age"""
         return self.outputs.get("Age")
 
     @property
-    def o_lifetime(self) -> Socket:
+    def o_lifetime(self) -> FloatSocket:
         """Output socket: Lifetime"""
         return self.outputs.get("Lifetime")
 
@@ -635,7 +641,7 @@ class ParticleInfo(NodeBuilder):
         return self.outputs.get("Location")
 
     @property
-    def o_size(self) -> Socket:
+    def o_size(self) -> FloatSocket:
         """Output socket: Size"""
         return self.outputs.get("Size")
 
@@ -670,12 +676,12 @@ class PointInfo(NodeBuilder):
         return self.outputs.get("Position")
 
     @property
-    def o_radius(self) -> Socket:
+    def o_radius(self) -> FloatSocket:
         """Output socket: Radius"""
         return self.outputs.get("Radius")
 
     @property
-    def o_random(self) -> Socket:
+    def o_random(self) -> FloatSocket:
         """Output socket: Random"""
         return self.outputs.get("Random")
 
@@ -885,7 +891,7 @@ class Wireframe(NodeBuilder):
         return self.inputs.get("Size")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 

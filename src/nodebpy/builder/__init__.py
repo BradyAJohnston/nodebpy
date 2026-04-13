@@ -28,12 +28,29 @@ from .interface import (
 from .mixins import LinkingMixin, OperatorMixin
 from .node import BaseNode, DynamicInputsMixin, NodeGroupBuilder
 from .socket import (
+    BooleanSocket,
+    BundleSocket,
+    ClosureSocket,
+    CollectionSocket,
     ColorSocket,
+    FloatSocket,
+    GeometrySocket,
+    ImageSocket,
     IntegerSocket,
+    MaterialSocket,
+    MatrixSocket,
+    MenuSocket,
+    ObjectSocket,
+    RotationSocket,
+    ShaderSocket,
     Socket,
+    StringSocket,
     VectorSocket,
+    _BooleanMixin,
     _ColorMixin,
     _IntegerMixin,
+    _MatrixMixin,
+    _RotationMixin,
     _VectorMixin,
 )
 from .tree import (
@@ -63,13 +80,30 @@ __all__ = [
     # Node groups
     "NodeGroupBuilder",
     # Type-specific socket classes (runtime)
+    "FloatSocket",
     "VectorSocket",
     "ColorSocket",
     "IntegerSocket",
+    "BooleanSocket",
+    "RotationSocket",
+    "MatrixSocket",
+    "StringSocket",
+    "MenuSocket",
+    "GeometrySocket",
+    "ObjectSocket",
+    "MaterialSocket",
+    "ImageSocket",
+    "CollectionSocket",
+    "BundleSocket",
+    "ClosureSocket",
+    "ShaderSocket",
     # Type-specific behaviour mixins
     "_VectorMixin",
     "_ColorMixin",
     "_IntegerMixin",
+    "_BooleanMixin",
+    "_RotationMixin",
+    "_MatrixMixin",
     # Interface socket base
     "InterfaceSocket",
     # Interface socket types

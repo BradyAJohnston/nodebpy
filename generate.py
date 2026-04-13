@@ -26,6 +26,31 @@ from mathutils import Euler, Vector
 
 TREE_TYPES = ("GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree")
 
+# Maps NodeSocket bl_idname substrings to the Python socket class used as a
+# return type on output property accessors in generated node files.
+# Order matters — more specific keys (e.g. "NodeSocketFloatFactor") would need
+# to come before "NodeSocketFloat", but in practice all subtypes share the same
+# class so substring matching on the canonical key is sufficient.
+_OUTPUT_SOCKET_CLASSES: dict[str, str] = {
+    "NodeSocketFloat": "FloatSocket",
+    "NodeSocketVector": "VectorSocket",
+    "NodeSocketColor": "ColorSocket",
+    "NodeSocketInt": "IntegerSocket",
+    "NodeSocketBool": "BooleanSocket",
+    "NodeSocketRotation": "RotationSocket",
+    "NodeSocketMatrix": "MatrixSocket",
+    "NodeSocketString": "StringSocket",
+    "NodeSocketMenu": "MenuSocket",
+    "NodeSocketGeometry": "GeometrySocket",
+    "NodeSocketObject": "ObjectSocket",
+    "NodeSocketMaterial": "MaterialSocket",
+    "NodeSocketImage": "ImageSocket",
+    "NodeSocketCollection": "CollectionSocket",
+    "NodeSocketBundle": "BundleSocket",
+    "NodeSocketClosure": "ClosureSocket",
+    "NodeSocketShader": "ShaderSocket",
+}
+
 
 @dataclass
 class TreeTypeConfig:
@@ -214,12 +239,12 @@ class SocketInfo:
         if self.description != "":
             description += f"\n        {self.description}\n        "
 
-        if self.is_output and "NodeSocketVector" in self.bl_socket_type:
-            return_type = "VectorSocket"
-        elif self.is_output and "NodeSocketColor" in self.bl_socket_type:
-            return_type = "ColorSocket"
-        else:
-            return_type = "Socket"
+        return_type = "Socket"
+        if self.is_output:
+            for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                if key in self.bl_socket_type:
+                    return_type = cls
+                    break
 
         return_value = "self.{}s.get('{}')".format(
             "output" if self.is_output else "input",
@@ -921,23 +946,23 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     """Generate the header for generated files, importing only what's needed."""
     # Collect all type hints used across all nodes in this module
     used_type_hints: set[str] = set()
+    used_output_socket_classes: set[str] = set()
     has_sockets = False
     has_linkable = False
-    has_vector_outputs = False
-    has_color_outputs = False
 
     def _check_socket(socket):
-        nonlocal has_sockets, has_linkable, has_vector_outputs, has_color_outputs
+        nonlocal has_sockets, has_linkable
         has_sockets = True
         hint = socket.type_mapped
         if hint == "InputLinkable":
             has_linkable = True
         else:
             used_type_hints.add(hint)
-        if socket.is_output and "NodeSocketVector" in socket.bl_socket_type:
-            has_vector_outputs = True
-        if socket.is_output and "NodeSocketColor" in socket.bl_socket_type:
-            has_color_outputs = True
+        if socket.is_output:
+            for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                if key in socket.bl_socket_type:
+                    used_output_socket_classes.add(cls)
+                    break
 
     for node in nodes:
         for socket in node.inputs + node.outputs:
@@ -956,10 +981,10 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     builder_imports = ["BaseNode as NodeBuilder"]
     if has_sockets:
         builder_imports.append("Socket")
-    if has_vector_outputs:
-        builder_imports.append("VectorSocket")
-    if has_color_outputs:
-        builder_imports.append("ColorSocket")
+    # Add only the specific output socket classes actually used in this file
+    for cls in sorted(used_output_socket_classes):
+        if cls != "Socket":
+            builder_imports.append(cls)
     lines.append(f"from ...builder import {', '.join(builder_imports)}")
 
     # Types imports — use canonical order matching the type_map

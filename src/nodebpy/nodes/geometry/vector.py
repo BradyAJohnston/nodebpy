@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket
+from ...builder import BaseNode as NodeBuilder, Socket, FloatSocket, VectorSocket
 
 from ...types import (
     InputFloat,
@@ -54,17 +54,17 @@ class RadialTiling(NodeBuilder):
         return self.outputs.get("Segment Coordinates")
 
     @property
-    def o_segment_id(self) -> Socket:
+    def o_segment_id(self) -> FloatSocket:
         """Output socket: Segment ID"""
         return self.outputs.get("Segment ID")
 
     @property
-    def o_segment_width(self) -> Socket:
+    def o_segment_width(self) -> FloatSocket:
         """Output socket: Segment Width"""
         return self.outputs.get("Segment Width")
 
     @property
-    def o_segment_rotation(self) -> Socket:
+    def o_segment_rotation(self) -> FloatSocket:
         """Output socket: Segment Rotation"""
         return self.outputs.get("Segment Rotation")
 
@@ -404,7 +404,7 @@ class VectorMath(NodeBuilder):
         return self.outputs.get("Vector")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 

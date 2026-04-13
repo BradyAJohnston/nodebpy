@@ -12,7 +12,15 @@ from ..types import (
     _AttributeDomains,
     _SocketShapeStructureType,
 )
-from .socket import Socket, _ColorMixin, _IntegerMixin, _VectorMixin
+from .socket import (
+    Socket,
+    _BooleanMixin,
+    _ColorMixin,
+    _IntegerMixin,
+    _MatrixMixin,
+    _RotationMixin,
+    _VectorMixin,
+)
 from .tree import SocketContext
 
 
@@ -142,7 +150,7 @@ class SocketInt(_IntegerMixin, InterfaceSocket):
         )
 
 
-class SocketBoolean(InterfaceSocket):
+class SocketBoolean(_BooleanMixin, InterfaceSocket):
     """Boolean socket - true/false value."""
 
     _bl_socket_type: str = "NodeSocketBool"
@@ -255,7 +263,7 @@ class SocketColor(_ColorMixin, InterfaceSocket):
         )
 
 
-class SocketRotation(InterfaceSocket):
+class SocketRotation(_RotationMixin, InterfaceSocket):
     """Rotation socket - rotation value (Euler or Quaternion)."""
 
     _bl_socket_type: str = "NodeSocketRotation"
@@ -286,7 +294,7 @@ class SocketRotation(InterfaceSocket):
         )
 
 
-class SocketMatrix(InterfaceSocket):
+class SocketMatrix(_MatrixMixin, InterfaceSocket):
     """Matrix socket - 4x4 transformation matrix."""
 
     _bl_socket_type: str = "NodeSocketMatrix"

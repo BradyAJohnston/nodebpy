@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
 
 from ...types import (
     InputBoolean,
@@ -581,7 +581,7 @@ class Dilateerode(NodeBuilder):
         return self.inputs.get("Falloff")
 
     @property
-    def o_mask(self) -> Socket:
+    def o_mask(self) -> FloatSocket:
         """Output socket: Mask"""
         return self.outputs.get("Mask")
 

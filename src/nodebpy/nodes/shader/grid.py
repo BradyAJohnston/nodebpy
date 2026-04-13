@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+    ShaderSocket,
+)
 
 from ...types import (
     InputColor,
@@ -123,7 +129,7 @@ class PrincipledVolume(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> ShaderSocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -163,7 +169,7 @@ class VolumeAbsorption(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> ShaderSocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -253,7 +259,7 @@ class VolumeCoefficients(NodeBuilder):
         return self.inputs.get("Emission Coefficients")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> ShaderSocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
@@ -293,17 +299,17 @@ class VolumeInfo(NodeBuilder):
         return self.outputs.get("Color")
 
     @property
-    def o_density(self) -> Socket:
+    def o_density(self) -> FloatSocket:
         """Output socket: Density"""
         return self.outputs.get("Density")
 
     @property
-    def o_flame(self) -> Socket:
+    def o_flame(self) -> FloatSocket:
         """Output socket: Flame"""
         return self.outputs.get("Flame")
 
     @property
-    def o_temperature(self) -> Socket:
+    def o_temperature(self) -> FloatSocket:
         """Output socket: Temperature"""
         return self.outputs.get("Temperature")
 
@@ -386,7 +392,7 @@ class VolumeScatter(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> ShaderSocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 

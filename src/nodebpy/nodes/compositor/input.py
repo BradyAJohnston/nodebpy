@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket, ColorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -102,7 +108,7 @@ class Mask(NodeBuilder):
         return self.inputs.get("Motion Blur Shutter")
 
     @property
-    def o_mask(self) -> Socket:
+    def o_mask(self) -> FloatSocket:
         """Output socket: Mask"""
         return self.outputs.get("Mask")
 
@@ -127,27 +133,27 @@ class MovieClip(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
     @property
-    def o_offset_x(self) -> Socket:
+    def o_offset_x(self) -> FloatSocket:
         """Output socket: Offset X"""
         return self.outputs.get("Offset X")
 
     @property
-    def o_offset_y(self) -> Socket:
+    def o_offset_y(self) -> FloatSocket:
         """Output socket: Offset Y"""
         return self.outputs.get("Offset Y")
 
     @property
-    def o_scale(self) -> Socket:
+    def o_scale(self) -> FloatSocket:
         """Output socket: Scale"""
         return self.outputs.get("Scale")
 
     @property
-    def o_angle(self) -> Socket:
+    def o_angle(self) -> FloatSocket:
         """Output socket: Angle"""
         return self.outputs.get("Angle")
 
@@ -192,12 +198,12 @@ class RenderLayers(NodeBuilder):
         return self.outputs.get("Image")
 
     @property
-    def o_alpha(self) -> Socket:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
     @property
-    def o_depth(self) -> Socket:
+    def o_depth(self) -> FloatSocket:
         """Output socket: Depth"""
         return self.outputs.get("Depth")
 
@@ -257,17 +263,17 @@ class RenderLayers(NodeBuilder):
         return self.outputs.get("Deprecated_004")
 
     @property
-    def o_object_index(self) -> Socket:
+    def o_object_index(self) -> FloatSocket:
         """Output socket: Object Index"""
         return self.outputs.get("Object Index")
 
     @property
-    def o_material_index(self) -> Socket:
+    def o_material_index(self) -> FloatSocket:
         """Output socket: Material Index"""
         return self.outputs.get("Material Index")
 
     @property
-    def o_mist(self) -> Socket:
+    def o_mist(self) -> FloatSocket:
         """Output socket: Mist"""
         return self.outputs.get("Mist")
 
@@ -365,12 +371,12 @@ class SceneTime(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def o_seconds(self) -> Socket:
+    def o_seconds(self) -> FloatSocket:
         """Output socket: Seconds"""
         return self.outputs.get("Seconds")
 
     @property
-    def o_frame(self) -> Socket:
+    def o_frame(self) -> FloatSocket:
         """Output socket: Frame"""
         return self.outputs.get("Frame")
 
@@ -404,7 +410,7 @@ class TimeCurve(NodeBuilder):
         return self.inputs.get("End Frame")
 
     @property
-    def o_fac(self) -> Socket:
+    def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
         return self.outputs.get("Fac")
 
@@ -445,12 +451,12 @@ class TrackPosition(NodeBuilder):
         return self.inputs.get("Frame")
 
     @property
-    def o_x(self) -> Socket:
+    def o_x(self) -> FloatSocket:
         """Output socket: X"""
         return self.outputs.get("X")
 
     @property
-    def o_y(self) -> Socket:
+    def o_y(self) -> FloatSocket:
         """Output socket: Y"""
         return self.outputs.get("Y")
 

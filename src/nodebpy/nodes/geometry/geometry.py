@@ -4,7 +4,17 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, VectorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    BooleanSocket,
+    FloatSocket,
+    GeometrySocket,
+    IntegerSocket,
+    RotationSocket,
+    StringSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -111,7 +121,7 @@ class Arc(NodeBuilder):
         return self.inputs.get("Invert Arc")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -126,7 +136,7 @@ class Arc(NodeBuilder):
         return self.outputs.get("Normal")
 
     @property
-    def o_radius(self) -> Socket:
+    def o_radius(self) -> FloatSocket:
         """Output socket: Radius"""
         return self.outputs.get("Radius")
 
@@ -168,7 +178,7 @@ class BoundingBox(NodeBuilder):
         return self.inputs.get("Use Radius")
 
     @property
-    def o_bounding_box(self) -> Socket:
+    def o_bounding_box(self) -> GeometrySocket:
         """Output socket: Bounding Box"""
         return self.outputs.get("Bounding Box")
 
@@ -238,7 +248,7 @@ class BezierSegment(NodeBuilder):
         return self.inputs.get("End")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -313,22 +323,22 @@ class Cone(NodeBuilder):
         return self.inputs.get("Depth")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_top(self) -> Socket:
+    def o_top(self) -> BooleanSocket:
         """Output socket: Top"""
         return self.outputs.get("Top")
 
     @property
-    def o_bottom(self) -> Socket:
+    def o_bottom(self) -> BooleanSocket:
         """Output socket: Bottom"""
         return self.outputs.get("Bottom")
 
     @property
-    def o_side(self) -> Socket:
+    def o_side(self) -> BooleanSocket:
         """Output socket: Side"""
         return self.outputs.get("Side")
 
@@ -366,7 +376,7 @@ class ConvexHull(NodeBuilder):
         return self.inputs.get("Geometry")
 
     @property
-    def o_convex_hull(self) -> Socket:
+    def o_convex_hull(self) -> GeometrySocket:
         """Output socket: Convex Hull"""
         return self.outputs.get("Convex Hull")
 
@@ -417,7 +427,7 @@ class Cube(NodeBuilder):
         return self.inputs.get("Vertices Z")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -482,7 +492,7 @@ class CurveCircle(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -520,7 +530,7 @@ class CurveLength(NodeBuilder):
         return self.inputs.get("Curve")
 
     @property
-    def o_length(self) -> Socket:
+    def o_length(self) -> FloatSocket:
         """Output socket: Length"""
         return self.outputs.get("Length")
 
@@ -573,7 +583,7 @@ class CurveLine(NodeBuilder):
         return self.inputs.get("Length")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -632,7 +642,7 @@ class CurveToMesh(NodeBuilder):
         return self.inputs.get("Fill Caps")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -674,7 +684,7 @@ class CurveToPoints(NodeBuilder):
         return self.inputs.get("Length")
 
     @property
-    def o_points(self) -> Socket:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -689,7 +699,7 @@ class CurveToPoints(NodeBuilder):
         return self.outputs.get("Normal")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -741,7 +751,7 @@ class CurvesToGreasePencil(NodeBuilder):
         return self.inputs.get("Instances as Layers")
 
     @property
-    def o_grease_pencil(self) -> Socket:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -801,22 +811,22 @@ class Cylinder(NodeBuilder):
         return self.inputs.get("Depth")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_top(self) -> Socket:
+    def o_top(self) -> BooleanSocket:
         """Output socket: Top"""
         return self.outputs.get("Top")
 
     @property
-    def o_side(self) -> Socket:
+    def o_side(self) -> BooleanSocket:
         """Output socket: Side"""
         return self.outputs.get("Side")
 
     @property
-    def o_bottom(self) -> Socket:
+    def o_bottom(self) -> BooleanSocket:
         """Output socket: Bottom"""
         return self.outputs.get("Bottom")
 
@@ -854,7 +864,7 @@ class DeformCurvesOnSurface(NodeBuilder):
         return self.inputs.get("Curves")
 
     @property
-    def o_curves(self) -> Socket:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
@@ -936,7 +946,7 @@ class DeleteGeometry(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -1030,7 +1040,7 @@ class DistributePointsOnFaces(NodeBuilder):
         return self.inputs.get("Seed")
 
     @property
-    def o_points(self) -> Socket:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -1040,7 +1050,7 @@ class DistributePointsOnFaces(NodeBuilder):
         return self.outputs.get("Normal")
 
     @property
-    def o_rotation(self) -> Socket:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -1090,7 +1100,7 @@ class DualMesh(NodeBuilder):
         return self.inputs.get("Keep Boundaries")
 
     @property
-    def o_dual_mesh(self) -> Socket:
+    def o_dual_mesh(self) -> GeometrySocket:
         """Output socket: Dual Mesh"""
         return self.outputs.get("Dual Mesh")
 
@@ -1202,12 +1212,12 @@ class DuplicateElements(NodeBuilder):
         return self.inputs.get("Amount")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
     @property
-    def o_duplicate_index(self) -> Socket:
+    def o_duplicate_index(self) -> IntegerSocket:
         """Output socket: Duplicate Index"""
         return self.outputs.get("Duplicate Index")
 
@@ -1261,7 +1271,7 @@ class EdgePathsToCurves(NodeBuilder):
         return self.inputs.get("Next Vertex Index")
 
     @property
-    def o_curves(self) -> Socket:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
@@ -1321,17 +1331,17 @@ class ExtrudeMesh(NodeBuilder):
         return self.inputs.get("Individual")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_top(self) -> Socket:
+    def o_top(self) -> BooleanSocket:
         """Output socket: Top"""
         return self.outputs.get("Top")
 
     @property
-    def o_side(self) -> Socket:
+    def o_side(self) -> BooleanSocket:
         """Output socket: Side"""
         return self.outputs.get("Side")
 
@@ -1379,7 +1389,7 @@ class FillCurve(NodeBuilder):
         return self.inputs.get("Mode")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -1437,7 +1447,7 @@ class FilletCurve(NodeBuilder):
         return self.inputs.get("Count")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -1471,7 +1481,7 @@ class FlipFaces(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -1529,12 +1539,12 @@ class GeometryProximity(NodeBuilder):
         return self.outputs.get("Position")
 
     @property
-    def o_distance(self) -> Socket:
+    def o_distance(self) -> FloatSocket:
         """Output socket: Distance"""
         return self.outputs.get("Distance")
 
     @property
-    def o_is_valid(self) -> Socket:
+    def o_is_valid(self) -> BooleanSocket:
         """Output socket: Is Valid"""
         return self.outputs.get("Is Valid")
 
@@ -1586,7 +1596,7 @@ class GreasePencilToCurves(NodeBuilder):
         return self.inputs.get("Layers as Instances")
 
     @property
-    def o_curves(self) -> Socket:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
@@ -1637,7 +1647,7 @@ class Grid(NodeBuilder):
         return self.inputs.get("Vertices Y")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -1676,7 +1686,7 @@ class IcoSphere(NodeBuilder):
         return self.inputs.get("Subdivisions")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -1753,7 +1763,7 @@ class InstanceOnPoints(NodeBuilder):
         return self.inputs.get("Scale")
 
     @property
-    def o_instances(self) -> Socket:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -1805,7 +1815,7 @@ class InstancesToPoints(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_points(self) -> Socket:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -1877,17 +1887,17 @@ class InterpolateCurves(NodeBuilder):
         return self.inputs.get("Max Neighbors")
 
     @property
-    def o_curves(self) -> Socket:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
     @property
-    def o_closest_index(self) -> Socket:
+    def o_closest_index(self) -> IntegerSocket:
         """Output socket: Closest Index"""
         return self.outputs.get("Closest Index")
 
     @property
-    def o_closest_weight(self) -> Socket:
+    def o_closest_weight(self) -> FloatSocket:
         """Output socket: Closest Weight"""
         return self.outputs.get("Closest Weight")
 
@@ -1912,7 +1922,7 @@ class MaterialSelection(NodeBuilder):
         return self.inputs.get("Material")
 
     @property
-    def o_selection(self) -> Socket:
+    def o_selection(self) -> BooleanSocket:
         """Output socket: Selection"""
         return self.outputs.get("Selection")
 
@@ -1958,7 +1968,7 @@ class MergeLayers(NodeBuilder):
         return self.inputs.get("Group ID")
 
     @property
-    def o_grease_pencil(self) -> Socket:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -2017,7 +2027,7 @@ class MergeByDistance(NodeBuilder):
         return self.inputs.get("Distance")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -2089,12 +2099,12 @@ class MeshBoolean(NodeBuilder):
         return self.inputs.get("Hole Tolerant")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_intersecting_edges(self) -> Socket:
+    def o_intersecting_edges(self) -> BooleanSocket:
         """Output socket: Intersecting Edges"""
         return self.outputs.get("Intersecting Edges")
 
@@ -2146,7 +2156,7 @@ class MeshCircle(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -2209,7 +2219,7 @@ class MeshLine(NodeBuilder):
         return self.inputs.get("Offset")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -2261,7 +2271,7 @@ class MeshToCurve(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -2322,7 +2332,7 @@ class MeshToPoints(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_points(self) -> Socket:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -2370,7 +2380,7 @@ class Points(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Geometry")
 
@@ -2414,7 +2424,7 @@ class PointsToCurves(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_curves(self) -> Socket:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
@@ -2448,7 +2458,7 @@ class PointsToVertices(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -2499,7 +2509,7 @@ class QuadraticBezier(NodeBuilder):
         return self.inputs.get("End")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -2603,7 +2613,7 @@ class Quadrilateral(NodeBuilder):
         return self.inputs.get("Point 4")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -2838,7 +2848,7 @@ class Raycast(NodeBuilder):
         return self.inputs.get("Ray Length")
 
     @property
-    def o_is_hit(self) -> Socket:
+    def o_is_hit(self) -> BooleanSocket:
         """Output socket: Is Hit"""
         return self.outputs.get("Is Hit")
 
@@ -2853,12 +2863,12 @@ class Raycast(NodeBuilder):
         return self.outputs.get("Hit Normal")
 
     @property
-    def o_hit_distance(self) -> Socket:
+    def o_hit_distance(self) -> FloatSocket:
         """Output socket: Hit Distance"""
         return self.outputs.get("Hit Distance")
 
     @property
-    def o_attribute(self) -> Socket:
+    def o_attribute(self) -> FloatSocket:
         """Output socket: Attribute"""
         return self.outputs.get("Attribute")
 
@@ -2938,7 +2948,7 @@ class RealizeInstances(NodeBuilder):
         return self.inputs.get("Depth")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -2978,7 +2988,7 @@ class ReplaceMaterial(NodeBuilder):
         return self.inputs.get("New")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -3038,7 +3048,7 @@ class ResampleCurve(NodeBuilder):
         return self.inputs.get("Length")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -3080,7 +3090,7 @@ class ReverseCurve(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -3138,7 +3148,7 @@ class RotateInstances(NodeBuilder):
         return self.inputs.get("Local Space")
 
     @property
-    def o_instances(self) -> Socket:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -3329,7 +3339,7 @@ class SampleCurve(NodeBuilder):
         return self.inputs.get("Curve Index")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -3587,7 +3597,7 @@ class SampleIndex(NodeBuilder):
         return self.inputs.get("Index")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -3701,7 +3711,7 @@ class SampleNearest(NodeBuilder):
         return self.inputs.get("Sample Position")
 
     @property
-    def o_index(self) -> Socket:
+    def o_index(self) -> IntegerSocket:
         """Output socket: Index"""
         return self.outputs.get("Index")
 
@@ -3910,12 +3920,12 @@ class SampleNearestSurface(NodeBuilder):
         return self.inputs.get("Sample Group ID")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
     @property
-    def o_is_valid(self) -> Socket:
+    def o_is_valid(self) -> BooleanSocket:
         """Output socket: Is Valid"""
         return self.outputs.get("Is Valid")
 
@@ -4124,12 +4134,12 @@ class SampleUVSurface(NodeBuilder):
         return self.inputs.get("Sample UV")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
     @property
-    def o_is_valid(self) -> Socket:
+    def o_is_valid(self) -> BooleanSocket:
         """Output socket: Is Valid"""
         return self.outputs.get("Is Valid")
 
@@ -4263,7 +4273,7 @@ class ScaleElements(NodeBuilder):
         return self.inputs.get("Axis")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -4329,7 +4339,7 @@ class ScaleInstances(NodeBuilder):
         return self.inputs.get("Local Space")
 
     @property
-    def o_instances(self) -> Socket:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -4354,32 +4364,32 @@ class SeparateComponents(NodeBuilder):
         return self.inputs.get("Geometry")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
     @property
-    def o_grease_pencil(self) -> Socket:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
     @property
-    def o_point_cloud(self) -> Socket:
+    def o_point_cloud(self) -> GeometrySocket:
         """Output socket: Point Cloud"""
         return self.outputs.get("Point Cloud")
 
     @property
-    def o_volume(self) -> Socket:
+    def o_volume(self) -> GeometrySocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
     @property
-    def o_instances(self) -> Socket:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -4459,12 +4469,12 @@ class SeparateGeometry(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_selection(self) -> Socket:
+    def o_selection(self) -> GeometrySocket:
         """Output socket: Selection"""
         return self.outputs.get("Selection")
 
     @property
-    def o_inverted(self) -> Socket:
+    def o_inverted(self) -> GeometrySocket:
         """Output socket: Inverted"""
         return self.outputs.get("Inverted")
 
@@ -4525,7 +4535,7 @@ class SetCurveNormal(NodeBuilder):
         return self.inputs.get("Normal")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -4565,7 +4575,7 @@ class SetCurveRadius(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -4605,7 +4615,7 @@ class SetCurveTilt(NodeBuilder):
         return self.inputs.get("Tilt")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -4645,7 +4655,7 @@ class SetFaceSet(NodeBuilder):
         return self.inputs.get("Face Set")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -4679,7 +4689,7 @@ class SetGeometryName(NodeBuilder):
         return self.inputs.get("Name")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -4732,7 +4742,7 @@ class SetGreasePencilColor(NodeBuilder):
         return self.inputs.get("Opacity")
 
     @property
-    def o_grease_pencil(self) -> Socket:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -4770,7 +4780,7 @@ class SetGreasePencilDepth(NodeBuilder):
         return self.inputs.get("Grease Pencil")
 
     @property
-    def o_grease_pencil(self) -> Socket:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -4822,7 +4832,7 @@ class SetGreasePencilSoftness(NodeBuilder):
         return self.inputs.get("Softness")
 
     @property
-    def o_grease_pencil(self) -> Socket:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -4875,7 +4885,7 @@ class SetHandlePositions(NodeBuilder):
         return self.inputs.get("Offset")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -4923,7 +4933,7 @@ class SetID(NodeBuilder):
         return self.inputs.get("ID")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -4967,7 +4977,7 @@ class SetInstanceTransform(NodeBuilder):
         return self.inputs.get("Transform")
 
     @property
-    def o_instances(self) -> Socket:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -5007,7 +5017,7 @@ class SetMaterial(NodeBuilder):
         return self.inputs.get("Material")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5051,7 +5061,7 @@ class SetMaterialIndex(NodeBuilder):
         return self.inputs.get("Material Index")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5157,7 +5167,7 @@ class SetMeshNormal(NodeBuilder):
         return self.inputs.get("Face Sharpness")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -5213,7 +5223,7 @@ class SetPointRadius(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_points(self) -> Socket:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -5264,7 +5274,7 @@ class SetPosition(NodeBuilder):
         return self.inputs.get("Offset")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5330,7 +5340,7 @@ class SetSelection(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5422,7 +5432,7 @@ class SetShadeSmooth(NodeBuilder):
         return self.inputs.get("Shade Smooth")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Geometry")
 
@@ -5470,7 +5480,7 @@ class SetSplineCyclic(NodeBuilder):
         return self.inputs.get("Cyclic")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Geometry")
 
@@ -5514,7 +5524,7 @@ class SetSplineResolution(NodeBuilder):
         return self.inputs.get("Resolution")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Geometry")
 
@@ -5550,7 +5560,7 @@ class SetSplineType(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -5696,7 +5706,7 @@ class SortElements(NodeBuilder):
         return self.inputs.get("Sort Weight")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5769,7 +5779,7 @@ class Spiral(NodeBuilder):
         return self.inputs.get("Reverse")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -5803,7 +5813,7 @@ class SplitEdges(NodeBuilder):
         return self.inputs.get("Selection")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -5919,12 +5929,12 @@ class SplitToInstances(NodeBuilder):
         return self.inputs.get("Group ID")
 
     @property
-    def o_instances(self) -> Socket:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
     @property
-    def o_group_id(self) -> Socket:
+    def o_group_id(self) -> IntegerSocket:
         """Output socket: Group ID"""
         return self.outputs.get("Group ID")
 
@@ -5985,12 +5995,12 @@ class Star(NodeBuilder):
         return self.inputs.get("Twist")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
     @property
-    def o_outer_points(self) -> Socket:
+    def o_outer_points(self) -> BooleanSocket:
         """Output socket: Outer Points"""
         return self.outputs.get("Outer Points")
 
@@ -6080,17 +6090,17 @@ class StringToCurves(NodeBuilder):
         return self.inputs.get("Text Box Height")
 
     @property
-    def o_curve_instances(self) -> Socket:
+    def o_curve_instances(self) -> GeometrySocket:
         """Output socket: Curve Instances"""
         return self.outputs.get("Curve Instances")
 
     @property
-    def o_remainder(self) -> Socket:
+    def o_remainder(self) -> StringSocket:
         """Output socket: Remainder"""
         return self.outputs.get("Remainder")
 
     @property
-    def o_line(self) -> Socket:
+    def o_line(self) -> IntegerSocket:
         """Output socket: Line"""
         return self.outputs.get("Line")
 
@@ -6187,7 +6197,7 @@ class SubdivideCurve(NodeBuilder):
         return self.inputs.get("Cuts")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -6221,7 +6231,7 @@ class SubdivideMesh(NodeBuilder):
         return self.inputs.get("Level")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -6301,7 +6311,7 @@ class SubdivisionSurface(NodeBuilder):
         return self.inputs.get("Boundary Smooth")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -6366,7 +6376,7 @@ class TransformGeometry(NodeBuilder):
         return self.inputs.get("Transform")
 
     @property
-    def o_geometry(self) -> Socket:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -6417,7 +6427,7 @@ class TranslateInstances(NodeBuilder):
         return self.inputs.get("Local Space")
 
     @property
-    def o_instances(self) -> Socket:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -6475,7 +6485,7 @@ class Triangulate(NodeBuilder):
         return self.inputs.get("N-gon Method")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -6542,7 +6552,7 @@ class TrimCurve(NodeBuilder):
         return self.inputs.get("End_001")
 
     @property
-    def o_curve(self) -> Socket:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -6590,7 +6600,7 @@ class UVSphere(NodeBuilder):
         return self.inputs.get("Radius")
 
     @property
-    def o_mesh(self) -> Socket:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 

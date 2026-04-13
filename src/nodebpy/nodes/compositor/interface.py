@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket
+from ...builder import BaseNode as NodeBuilder, Socket, FloatSocket
 
 from ...types import (
     InputBoolean,
@@ -99,7 +99,7 @@ class EnableOutput(NodeBuilder):
         return self.inputs.get("Value")
 
     @property
-    def o_value(self) -> Socket:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 

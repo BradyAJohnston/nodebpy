@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket
+from ...builder import BaseNode as NodeBuilder, Socket, ShaderSocket
 
 from ...types import (
     InputColor,
@@ -43,7 +43,7 @@ class AddShader(NodeBuilder):
         return self.inputs.get("Shader_001")
 
     @property
-    def o_shader(self) -> Socket:
+    def o_shader(self) -> ShaderSocket:
         """Output socket: Shader"""
         return self.outputs.get("Shader")
 
@@ -84,7 +84,7 @@ class Background(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_background(self) -> Socket:
+    def o_background(self) -> ShaderSocket:
         """Output socket: Background"""
         return self.outputs.get("Background")
 
@@ -135,7 +135,7 @@ class DiffuseBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -175,7 +175,7 @@ class Emission(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_emission(self) -> Socket:
+    def o_emission(self) -> ShaderSocket:
         """Output socket: Emission"""
         return self.outputs.get("Emission")
 
@@ -249,7 +249,7 @@ class GlassBSDF(NodeBuilder):
         return self.inputs.get("Thin Film IOR")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -333,7 +333,7 @@ class GlossyBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -412,7 +412,7 @@ class HairBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -446,7 +446,7 @@ class Holdout(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_holdout(self) -> Socket:
+    def o_holdout(self) -> ShaderSocket:
         """Output socket: Holdout"""
         return self.outputs.get("Holdout")
 
@@ -557,7 +557,7 @@ class MetallicBSDF(NodeBuilder):
         return self.inputs.get("Thin Film IOR")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -613,7 +613,7 @@ class MixShader(NodeBuilder):
         return self.inputs.get("Shader_001")
 
     @property
-    def o_shader(self) -> Socket:
+    def o_shader(self) -> ShaderSocket:
         """Output socket: Shader"""
         return self.outputs.get("Shader")
 
@@ -859,7 +859,7 @@ class PrincipledBSDF(NodeBuilder):
         return self.inputs.get("Thin Film IOR")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -1030,7 +1030,7 @@ class PrincipledHairBSDF(NodeBuilder):
         return self.inputs.get("TRT lobe")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -1097,7 +1097,7 @@ class RayPortalBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -1157,7 +1157,7 @@ class RefractionBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -1219,7 +1219,7 @@ class SheenBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -1320,7 +1320,7 @@ class SpecularBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -1402,7 +1402,7 @@ class SubsurfaceScattering(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bssrdf(self) -> Socket:
+    def o_bssrdf(self) -> ShaderSocket:
         """Output socket: BSSRDF"""
         return self.outputs.get("BSSRDF")
 
@@ -1470,7 +1470,7 @@ class ToonBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -1518,7 +1518,7 @@ class TranslucentBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")
 
@@ -1552,6 +1552,6 @@ class TransparentBSDF(NodeBuilder):
         return self.inputs.get("Weight")
 
     @property
-    def o_bsdf(self) -> Socket:
+    def o_bsdf(self) -> ShaderSocket:
         """Output socket: BSDF"""
         return self.outputs.get("BSDF")

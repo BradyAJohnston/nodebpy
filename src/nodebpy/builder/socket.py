@@ -6,7 +6,7 @@ import bpy
 from bpy.types import GeometryNodeTree, NodeSocket
 
 from ..types import SOCKET_TYPES
-from ._registry import _SOCKET_LINKER_REGISTRY
+from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
 from ._utils import _NodeLike, _SocketLike
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
@@ -180,7 +180,9 @@ class _VectorMixin:
                 "INT",
             ):
                 return VectorMath.scale(self.socket, other)
-            elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(other, "type", None) in (
+            elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(
+                other, "type", None
+            ) in (
                 "VALUE",
                 "FLOAT",
                 "INT",
@@ -332,11 +334,94 @@ class _IntegerMixin:
 
 
 # ---------------------------------------------------------------------------
+# Type-specific behaviour mixins (continued)
+# ---------------------------------------------------------------------------
+
+
+class _BooleanMixin:
+    """Boolean-specific operator overrides — routes directly through BooleanMath."""
+
+    socket: NodeSocket
+
+    def __or__(self, other: Any) -> "BaseNode":
+        from ..nodes.geometry.converter import BooleanMath
+
+        return BooleanMath.l_or(self.socket, other)
+
+    def __and__(self, other: Any) -> "BaseNode":
+        from ..nodes.geometry.converter import BooleanMath
+
+        return BooleanMath.l_and(self.socket, other)
+
+
+class _RotationMixin:
+    """Rotation-specific properties (.w, .x, .y, .z) via RotationToQuaternion."""
+
+    socket: NodeSocket
+    _tree: TreeBuilder
+
+    def _quaternion_component(self, component: str) -> Socket:
+        from ..nodes.geometry.converter import RotationToQuaternion
+
+        for link in self.socket.links:
+            if link.to_node.bl_idname == "FunctionNodeRotationToQuaternion":
+                return _get_socket_linker(link.to_node.outputs[component])
+        return RotationToQuaternion(self).outputs.get(component)
+
+    @property
+    def w(self) -> Socket:
+        return self._quaternion_component("W")
+
+    @property
+    def x(self) -> Socket:
+        return self._quaternion_component("X")
+
+    @property
+    def y(self) -> Socket:
+        return self._quaternion_component("Y")
+
+    @property
+    def z(self) -> Socket:
+        return self._quaternion_component("Z")
+
+
+class _MatrixMixin:
+    """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
+
+    socket: NodeSocket
+    _tree: TreeBuilder
+
+    def _separate_transform(self, output: str) -> Socket:
+        from ..nodes.geometry.converter import SeparateTransform
+
+        for link in self.socket.links:
+            if link.to_node.bl_idname == "FunctionNodeSeparateTransform":
+                return _get_socket_linker(link.to_node.outputs[output])
+        return SeparateTransform(self).outputs.get(output)
+
+    @property
+    def translation(self) -> "VectorSocket":
+        return self._separate_transform("Translation")  # type: ignore[return-value]
+
+    @property
+    def rotation(self) -> "RotationSocket":
+        return self._separate_transform("Rotation")  # type: ignore[return-value]
+
+    @property
+    def scale(self) -> "VectorSocket":
+        return self._separate_transform("Scale")  # type: ignore[return-value]
+
+
+# ---------------------------------------------------------------------------
 # Registry-target socket classes
 # Used by _get_socket_linker() for runtime socket wrapping.
-# The corresponding SocketVector / SocketColor / SocketInt in interface.py
+# The corresponding SocketVector / SocketColor / etc. in interface.py
 # inherit the same mixins and gain identical behaviour for interface sockets.
 # ---------------------------------------------------------------------------
+
+
+class FloatSocket(Socket):
+    """Runtime float socket wrapper."""
 
 
 class VectorSocket(_VectorMixin, Socket):
@@ -351,6 +436,72 @@ class IntegerSocket(_IntegerMixin, Socket):
     """Runtime integer socket wrapper."""
 
 
+class BooleanSocket(_BooleanMixin, Socket):
+    """Runtime boolean socket wrapper."""
+
+
+class RotationSocket(_RotationMixin, Socket):
+    """Runtime rotation socket wrapper."""
+
+
+class MatrixSocket(_MatrixMixin, Socket):
+    """Runtime matrix socket wrapper."""
+
+
+class StringSocket(Socket):
+    """Runtime string socket wrapper."""
+
+
+class MenuSocket(Socket):
+    """Runtime menu socket wrapper."""
+
+
+class GeometrySocket(Socket):
+    """Runtime geometry socket wrapper."""
+
+
+class ObjectSocket(Socket):
+    """Runtime object socket wrapper."""
+
+
+class MaterialSocket(Socket):
+    """Runtime material socket wrapper."""
+
+
+class ImageSocket(Socket):
+    """Runtime image socket wrapper."""
+
+
+class CollectionSocket(Socket):
+    """Runtime collection socket wrapper."""
+
+
+class BundleSocket(Socket):
+    """Runtime bundle socket wrapper."""
+
+
+class ClosureSocket(Socket):
+    """Runtime closure socket wrapper."""
+
+
+class ShaderSocket(Socket):
+    """Runtime shader socket wrapper."""
+
+
+_SOCKET_LINKER_REGISTRY["NodeSocketFloat"] = FloatSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketVector"] = VectorSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketColor"] = ColorSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketInt"] = IntegerSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketBool"] = BooleanSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketRotation"] = RotationSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketMatrix"] = MatrixSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketString"] = StringSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketMenu"] = MenuSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketGeometry"] = GeometrySocket
+_SOCKET_LINKER_REGISTRY["NodeSocketObject"] = ObjectSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketMaterial"] = MaterialSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketImage"] = ImageSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketCollection"] = CollectionSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketBundle"] = BundleSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketClosure"] = ClosureSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketShader"] = ShaderSocket
