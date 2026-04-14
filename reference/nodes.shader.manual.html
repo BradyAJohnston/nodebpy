@@ -480,7 +480,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
+  <li><a href="#nodebpy.nodes.shader.manual.Attribute" id="toc-nodebpy.nodes.shader.manual.Attribute" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.manual.Attribute">Attribute</a></li>
   <li><a href="#nodebpy.nodes.shader.manual.MenuSwitch" id="toc-nodebpy.nodes.shader.manual.MenuSwitch" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.manual.MenuSwitch">MenuSwitch</a></li>
+  </ul></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
+  <ul class="collapse">
+  <li><a href="#nodebpy.nodes.shader.manual.material" id="toc-nodebpy.nodes.shader.manual.material" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.manual.material">material</a></li>
+  <li><a href="#nodebpy.nodes.shader.manual.tree" id="toc-nodebpy.nodes.shader.manual.tree" class="nav-link" data-scroll-target="#nodebpy.nodes.shader.manual.tree">tree</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -506,17 +512,116 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute">Attribute</a></td>
+<td>Retrieve attributes attached to objects or geometry</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.manual.MenuSwitch">MenuSwitch</a></td>
 <td>Node builder for the Menu Switch node (Shader tree)</td>
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.shader.manual.MenuSwitch" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.MenuSwitch">MenuSwitch</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>MenuSwitch(<span class="op">*</span>args, menu<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Node builder for the Menu Switch node (Shader tree)</p>
+<section id="nodebpy.nodes.shader.manual.Attribute" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.Attribute">Attribute</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Attribute(attribute_type<span class="op">=</span><span class="st">'GEOMETRY'</span>, attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve attributes attached to objects or geometry</p>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.attribute_name">attribute_name</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.attribute_type">attribute_type</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.node">node</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.o_alpha"><code>o_alpha</code></a></td>
+<td>Output socket: Alpha</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.o_color"><code>o_color</code></a></td>
+<td>Output socket: Color</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.o_fac"><code>o_fac</code></a></td>
+<td>Output socket: Factor</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.o_vector"><code>o_vector</code></a></td>
+<td>Output socket: Vector</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.geometry">geometry</a></td>
+<td>Create Attribute with operation ‘Geometry’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.instancer">instancer</a></td>
+<td>Create Attribute with operation ‘Instancer’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.object">object</a></td>
+<td>Create Attribute with operation ‘Object’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.manual.Attribute.view_layer">view_layer</a></td>
+<td>Create Attribute with operation ‘View Layer’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.manual.Attribute.geometry" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.Attribute.geometry">geometry</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>geometry(attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Attribute with operation ‘Geometry’.</p>
+</section>
+<section id="nodebpy.nodes.shader.manual.Attribute.instancer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.Attribute.instancer">instancer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>instancer(attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Attribute with operation ‘Instancer’.</p>
+</section>
+<section id="nodebpy.nodes.shader.manual.Attribute.object" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.Attribute.object">object</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Attribute with operation ‘Object’.</p>
+</section>
+<section id="nodebpy.nodes.shader.manual.Attribute.view_layer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.Attribute.view_layer">view_layer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>view_layer(attribute_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Attribute with operation ‘View Layer’.</p>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.shader.manual.MenuSwitch" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.MenuSwitch">MenuSwitch</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>MenuSwitch(<span class="op">*</span>args, menu<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Node builder for the Menu Switch node (Shader tree)</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -599,9 +704,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-
-
 </section>
+</section>
+</section>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.manual.material">material</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.manual.tree">tree</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.manual.material" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.material">material</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>material(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'New Material'</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.shader.manual.tree" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.manual.tree">tree</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tree(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'Shader Nodes'</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
 </section>
 </section>
 </section>
