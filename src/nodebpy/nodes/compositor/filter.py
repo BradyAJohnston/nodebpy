@@ -155,6 +155,142 @@ class Blur(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    @classmethod
+    def flat(
+        cls,
+        image: InputColor = None,
+        size: InputVector = None,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
+    ) -> "Blur":
+        """Create Blur node with type 'Flat'."""
+        return cls(
+            image=image,
+            size=size,
+            extend_bounds=extend_bounds,
+            separable=separable,
+            type="Flat",
+        )
+
+    @classmethod
+    def tent(
+        cls,
+        image: InputColor = None,
+        size: InputVector = None,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
+    ) -> "Blur":
+        """Create Blur node with type 'Tent'."""
+        return cls(
+            image=image,
+            size=size,
+            extend_bounds=extend_bounds,
+            separable=separable,
+            type="Tent",
+        )
+
+    @classmethod
+    def quadratic(
+        cls,
+        image: InputColor = None,
+        size: InputVector = None,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
+    ) -> "Blur":
+        """Create Blur node with type 'Quadratic'."""
+        return cls(
+            image=image,
+            size=size,
+            extend_bounds=extend_bounds,
+            separable=separable,
+            type="Quadratic",
+        )
+
+    @classmethod
+    def cubic(
+        cls,
+        image: InputColor = None,
+        size: InputVector = None,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
+    ) -> "Blur":
+        """Create Blur node with type 'Cubic'."""
+        return cls(
+            image=image,
+            size=size,
+            extend_bounds=extend_bounds,
+            separable=separable,
+            type="Cubic",
+        )
+
+    @classmethod
+    def gaussian(
+        cls,
+        image: InputColor = None,
+        size: InputVector = None,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
+    ) -> "Blur":
+        """Create Blur node with type 'Gaussian'."""
+        return cls(
+            image=image,
+            size=size,
+            extend_bounds=extend_bounds,
+            separable=separable,
+            type="Gaussian",
+        )
+
+    @classmethod
+    def fast_gaussian(
+        cls,
+        image: InputColor = None,
+        size: InputVector = None,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
+    ) -> "Blur":
+        """Create Blur node with type 'Fast Gaussian'."""
+        return cls(
+            image=image,
+            size=size,
+            extend_bounds=extend_bounds,
+            separable=separable,
+            type="Fast Gaussian",
+        )
+
+    @classmethod
+    def catrom(
+        cls,
+        image: InputColor = None,
+        size: InputVector = None,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
+    ) -> "Blur":
+        """Create Blur node with type 'Catrom'."""
+        return cls(
+            image=image,
+            size=size,
+            extend_bounds=extend_bounds,
+            separable=separable,
+            type="Catrom",
+        )
+
+    @classmethod
+    def mitch(
+        cls,
+        image: InputColor = None,
+        size: InputVector = None,
+        extend_bounds: InputBoolean = False,
+        separable: InputBoolean = True,
+    ) -> "Blur":
+        """Create Blur node with type 'Mitch'."""
+        return cls(
+            image=image,
+            size=size,
+            extend_bounds=extend_bounds,
+            separable=separable,
+            type="Mitch",
+        )
+
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
@@ -555,6 +691,39 @@ class Dilateerode(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    @classmethod
+    def steps(cls, mask: InputFloat = 0.0, size: InputInteger = 0) -> "Dilateerode":
+        """Create Dilate/Erode node with type 'Steps'."""
+        return cls(mask=mask, size=size, type="Steps")
+
+    @classmethod
+    def threshold(
+        cls,
+        mask: InputFloat = 0.0,
+        size: InputInteger = 0,
+        falloff_size: InputFloat = 0.0,
+    ) -> "Dilateerode":
+        """Create Dilate/Erode node with type 'Threshold'."""
+        return cls(mask=mask, size=size, falloff_size=falloff_size, type="Threshold")
+
+    @classmethod
+    def distance(cls, mask: InputFloat = 0.0, size: InputInteger = 0) -> "Dilateerode":
+        """Create Dilate/Erode node with type 'Distance'."""
+        return cls(mask=mask, size=size, type="Distance")
+
+    @classmethod
+    def feather(
+        cls,
+        mask: InputFloat = 0.0,
+        size: InputInteger = 0,
+        falloff: InputMenu
+        | Literal[
+            "Smooth", "Sphere", "Root", "Inverse Square", "Sharp", "Linear"
+        ] = "Smooth",
+    ) -> "Dilateerode":
+        """Create Dilate/Erode node with type 'Feather'."""
+        return cls(mask=mask, size=size, falloff=falloff, type="Feather")
+
     @property
     def i_mask(self) -> Socket:
         """Input socket: Mask"""
@@ -687,6 +856,48 @@ class Filter(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    @classmethod
+    def soften(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
+        """Create Filter node with type 'Soften'."""
+        return cls(image=image, fac=fac, type="Soften")
+
+    @classmethod
+    def box_sharpen(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
+        """Create Filter node with type 'Box Sharpen'."""
+        return cls(image=image, fac=fac, type="Box Sharpen")
+
+    @classmethod
+    def diamond_sharpen(
+        cls, image: InputColor = None, fac: InputFloat = 1.0
+    ) -> "Filter":
+        """Create Filter node with type 'Diamond Sharpen'."""
+        return cls(image=image, fac=fac, type="Diamond Sharpen")
+
+    @classmethod
+    def laplace(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
+        """Create Filter node with type 'Laplace'."""
+        return cls(image=image, fac=fac, type="Laplace")
+
+    @classmethod
+    def sobel(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
+        """Create Filter node with type 'Sobel'."""
+        return cls(image=image, fac=fac, type="Sobel")
+
+    @classmethod
+    def prewitt(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
+        """Create Filter node with type 'Prewitt'."""
+        return cls(image=image, fac=fac, type="Prewitt")
+
+    @classmethod
+    def kirsch(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
+        """Create Filter node with type 'Kirsch'."""
+        return cls(image=image, fac=fac, type="Kirsch")
+
+    @classmethod
+    def shadow(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
+        """Create Filter node with type 'Shadow'."""
+        return cls(image=image, fac=fac, type="Shadow")
+
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
@@ -777,6 +988,229 @@ class Glare(NodeBuilder):
         }
 
         self._establish_links(**key_args)
+
+    @classmethod
+    def bloom(
+        cls,
+        image: InputColor = None,
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        highlights_threshold: InputFloat = 1.0,
+        highlights_smoothness: InputFloat = 0.1,
+        clamp_highlights: InputBoolean = False,
+        max: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        size: InputFloat = 0.5,
+    ) -> "Glare":
+        """Create Glare node with type 'Bloom'."""
+        return cls(
+            image=image,
+            quality=quality,
+            highlights_threshold=highlights_threshold,
+            highlights_smoothness=highlights_smoothness,
+            clamp_highlights=clamp_highlights,
+            maximum_highlights=max,
+            strength=strength,
+            saturation=saturation,
+            tint=tint,
+            size=size,
+            type="Bloom",
+        )
+
+    @classmethod
+    def ghosts(
+        cls,
+        image: InputColor = None,
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        highlights_threshold: InputFloat = 1.0,
+        highlights_smoothness: InputFloat = 0.1,
+        clamp_highlights: InputBoolean = False,
+        max: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        iterations: InputInteger = 3,
+        color_modulation: InputFloat = 0.25,
+    ) -> "Glare":
+        """Create Glare node with type 'Ghosts'."""
+        return cls(
+            image=image,
+            quality=quality,
+            highlights_threshold=highlights_threshold,
+            highlights_smoothness=highlights_smoothness,
+            clamp_highlights=clamp_highlights,
+            maximum_highlights=max,
+            strength=strength,
+            saturation=saturation,
+            tint=tint,
+            iterations=iterations,
+            color_modulation=color_modulation,
+            type="Ghosts",
+        )
+
+    @classmethod
+    def streaks(
+        cls,
+        image: InputColor = None,
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        highlights_threshold: InputFloat = 1.0,
+        highlights_smoothness: InputFloat = 0.1,
+        clamp_highlights: InputBoolean = False,
+        max: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        streaks: InputInteger = 4,
+        streaks_angle: InputFloat = 0.0,
+        iterations: InputInteger = 3,
+        fade: InputFloat = 0.9,
+        color_modulation: InputFloat = 0.25,
+    ) -> "Glare":
+        """Create Glare node with type 'Streaks'."""
+        return cls(
+            image=image,
+            quality=quality,
+            highlights_threshold=highlights_threshold,
+            highlights_smoothness=highlights_smoothness,
+            clamp_highlights=clamp_highlights,
+            maximum_highlights=max,
+            strength=strength,
+            saturation=saturation,
+            tint=tint,
+            streaks=streaks,
+            streaks_angle=streaks_angle,
+            iterations=iterations,
+            fade=fade,
+            color_modulation=color_modulation,
+            type="Streaks",
+        )
+
+    @classmethod
+    def fog_glow(
+        cls,
+        image: InputColor = None,
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        highlights_threshold: InputFloat = 1.0,
+        highlights_smoothness: InputFloat = 0.1,
+        clamp_highlights: InputBoolean = False,
+        max: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        size: InputFloat = 0.5,
+    ) -> "Glare":
+        """Create Glare node with type 'Fog Glow'."""
+        return cls(
+            image=image,
+            quality=quality,
+            highlights_threshold=highlights_threshold,
+            highlights_smoothness=highlights_smoothness,
+            clamp_highlights=clamp_highlights,
+            maximum_highlights=max,
+            strength=strength,
+            saturation=saturation,
+            tint=tint,
+            size=size,
+            type="Fog Glow",
+        )
+
+    @classmethod
+    def simple_star(
+        cls,
+        image: InputColor = None,
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        highlights_threshold: InputFloat = 1.0,
+        highlights_smoothness: InputFloat = 0.1,
+        clamp_highlights: InputBoolean = False,
+        max: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        iterations: InputInteger = 3,
+        fade: InputFloat = 0.9,
+        diagonal_star: InputBoolean = True,
+    ) -> "Glare":
+        """Create Glare node with type 'Simple Star'."""
+        return cls(
+            image=image,
+            quality=quality,
+            highlights_threshold=highlights_threshold,
+            highlights_smoothness=highlights_smoothness,
+            clamp_highlights=clamp_highlights,
+            maximum_highlights=max,
+            strength=strength,
+            saturation=saturation,
+            tint=tint,
+            iterations=iterations,
+            fade=fade,
+            diagonal_star=diagonal_star,
+            type="Simple Star",
+        )
+
+    @classmethod
+    def sun_beams(
+        cls,
+        image: InputColor = None,
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        highlights_threshold: InputFloat = 1.0,
+        highlights_smoothness: InputFloat = 0.1,
+        clamp_highlights: InputBoolean = False,
+        max: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        size: InputFloat = 0.5,
+        sun_position: InputVector = None,
+        jitter: InputFloat = 0.0,
+    ) -> "Glare":
+        """Create Glare node with type 'Sun Beams'."""
+        return cls(
+            image=image,
+            quality=quality,
+            highlights_threshold=highlights_threshold,
+            highlights_smoothness=highlights_smoothness,
+            clamp_highlights=clamp_highlights,
+            maximum_highlights=max,
+            strength=strength,
+            saturation=saturation,
+            tint=tint,
+            size=size,
+            sun_position=sun_position,
+            jitter=jitter,
+            type="Sun Beams",
+        )
+
+    @classmethod
+    def kernel(
+        cls,
+        image: InputColor = None,
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        highlights_threshold: InputFloat = 1.0,
+        highlights_smoothness: InputFloat = 0.1,
+        clamp_highlights: InputBoolean = False,
+        max: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        kernel_data_type: InputMenu | Literal["Float", "Color"] = "Float",
+        float_kernel: InputFloat = 0.0,
+    ) -> "Glare":
+        """Create Glare node with type 'Kernel'."""
+        return cls(
+            image=image,
+            quality=quality,
+            highlights_threshold=highlights_threshold,
+            highlights_smoothness=highlights_smoothness,
+            clamp_highlights=clamp_highlights,
+            maximum_highlights=max,
+            strength=strength,
+            saturation=saturation,
+            tint=tint,
+            kernel_data_type=kernel_data_type,
+            float_kernel=float_kernel,
+            type="Kernel",
+        )
 
     @property
     def i_image(self) -> Socket:
@@ -968,6 +1402,37 @@ class Kuwahara(NodeBuilder):
         }
 
         self._establish_links(**key_args)
+
+    @classmethod
+    def classic(
+        cls,
+        image: InputColor = None,
+        size: InputFloat = 6.0,
+        high_precision: InputBoolean = False,
+    ) -> "Kuwahara":
+        """Create Kuwahara node with type 'Classic'."""
+        return cls(
+            image=image, size=size, high_precision=high_precision, type="Classic"
+        )
+
+    @classmethod
+    def anisotropic(
+        cls,
+        image: InputColor = None,
+        size: InputFloat = 6.0,
+        uniformity: InputInteger = 4,
+        sharpness: InputFloat = 1.0,
+        eccentricity: InputFloat = 1.0,
+    ) -> "Kuwahara":
+        """Create Kuwahara node with type 'Anisotropic'."""
+        return cls(
+            image=image,
+            size=size,
+            uniformity=uniformity,
+            sharpness=sharpness,
+            eccentricity=eccentricity,
+            type="Anisotropic",
+        )
 
     @property
     def i_image(self) -> Socket:

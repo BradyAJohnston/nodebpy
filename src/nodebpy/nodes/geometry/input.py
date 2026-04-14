@@ -1540,37 +1540,37 @@ class NamedAttribute(NodeBuilder):
 
     @classmethod
     def float(cls, name: InputString = "") -> "NamedAttribute":
-        """Create Named Attribute with operation 'Float'."""
+        """Create Named Attribute with operation 'Float'. Floating-point value"""
         return cls(data_type="FLOAT", name=name)
 
     @classmethod
     def integer(cls, name: InputString = "") -> "NamedAttribute":
-        """Create Named Attribute with operation 'Integer'."""
+        """Create Named Attribute with operation 'Integer'. 32-bit integer"""
         return cls(data_type="INT", name=name)
 
     @classmethod
     def boolean(cls, name: InputString = "") -> "NamedAttribute":
-        """Create Named Attribute with operation 'Boolean'."""
+        """Create Named Attribute with operation 'Boolean'. True or false"""
         return cls(data_type="BOOLEAN", name=name)
 
     @classmethod
     def vector(cls, name: InputString = "") -> "NamedAttribute":
-        """Create Named Attribute with operation 'Vector'."""
+        """Create Named Attribute with operation 'Vector'. 3D vector with floating-point values"""
         return cls(data_type="FLOAT_VECTOR", name=name)
 
     @classmethod
     def color(cls, name: InputString = "") -> "NamedAttribute":
-        """Create Named Attribute with operation 'Color'."""
+        """Create Named Attribute with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return cls(data_type="FLOAT_COLOR", name=name)
 
     @classmethod
     def quaternion(cls, name: InputString = "") -> "NamedAttribute":
-        """Create Named Attribute with operation 'Quaternion'."""
+        """Create Named Attribute with operation 'Quaternion'. Floating point quaternion rotation"""
         return cls(data_type="QUATERNION", name=name)
 
     @classmethod
-    def matrix(cls, name: InputString = "") -> "NamedAttribute":
-        """Create Named Attribute with operation '4x4 Matrix'."""
+    def input_4x4_matrix(cls, name: InputString = "") -> "NamedAttribute":
+        """Create Named Attribute with operation '4x4 Matrix'. Floating point matrix"""
         return cls(data_type="FLOAT4X4", name=name)
 
     @property

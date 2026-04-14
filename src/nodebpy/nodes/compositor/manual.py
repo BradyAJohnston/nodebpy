@@ -1,4 +1,19 @@
+from typing import Literal
+
+from ...builder import TreeBuilder
 from ..geometry.manual import _MenuSwitchBase
+
+
+def tree(
+    name: str = "Compositor Nodes",
+    *,
+    collapse: bool = False,
+    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+    fake_user: bool = False,
+) -> TreeBuilder:
+    return TreeBuilder.compositor(
+        name, collapse=collapse, arrange=arrange, fake_user=fake_user
+    )
 
 
 class MenuSwitch(_MenuSwitchBase):

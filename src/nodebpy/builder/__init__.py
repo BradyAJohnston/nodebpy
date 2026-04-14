@@ -4,6 +4,7 @@ Public names are re-exported here. Old names (NodeBuilder, SocketLinker,
 SocketBase) are kept as aliases for backward compatibility.
 """
 
+from ._utils import SocketError, denormalize_name, normalize_name
 from .accessor import SocketAccessor
 from .interface import (
     InterfaceSocket,
@@ -55,12 +56,12 @@ from .socket import (
 )
 from .tree import (
     InputInterfaceContext,
+    MaterialBuilder,
     OutputInterfaceContext,
     PanelContext,
     SocketContext,
     TreeBuilder,
 )
-from ._utils import SocketError, denormalize_name, normalize_name
 
 # Backward-compatible aliases for hand-written code that uses the old names.
 NodeBuilder = BaseNode
@@ -70,6 +71,7 @@ SocketBase = InterfaceSocket
 __all__ = [
     # Core
     "TreeBuilder",
+    "MaterialBuilder",
     "BaseNode",
     "Socket",
     "SocketAccessor",

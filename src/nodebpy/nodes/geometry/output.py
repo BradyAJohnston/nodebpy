@@ -35,37 +35,37 @@ class Viewer(NodeBuilder):
 
     @classmethod
     def point(cls) -> "Viewer":
-        """Create Viewer with operation 'Point'."""
+        """Create Viewer with operation 'Point'. Attribute on point"""
         return cls(domain="POINT")
 
     @classmethod
     def edge(cls) -> "Viewer":
-        """Create Viewer with operation 'Edge'."""
+        """Create Viewer with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE")
 
     @classmethod
     def face(cls) -> "Viewer":
-        """Create Viewer with operation 'Face'."""
+        """Create Viewer with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE")
 
     @classmethod
     def face_corner(cls) -> "Viewer":
-        """Create Viewer with operation 'Face Corner'."""
+        """Create Viewer with operation 'Face Corner'. Attribute on mesh face corner"""
         return cls(domain="CORNER")
 
     @classmethod
     def spline(cls) -> "Viewer":
-        """Create Viewer with operation 'Spline'."""
+        """Create Viewer with operation 'Spline'. Attribute on spline"""
         return cls(domain="CURVE")
 
     @classmethod
     def instance(cls) -> "Viewer":
-        """Create Viewer with operation 'Instance'."""
+        """Create Viewer with operation 'Instance'. Attribute on instance"""
         return cls(domain="INSTANCE")
 
     @classmethod
     def layer(cls) -> "Viewer":
-        """Create Viewer with operation 'Layer'."""
+        """Create Viewer with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(domain="LAYER")
 
     @property

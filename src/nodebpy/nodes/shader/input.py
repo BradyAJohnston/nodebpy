@@ -95,68 +95,6 @@ class AmbientOcclusion(NodeBuilder):
         self.node.only_local = value
 
 
-class Attribute(NodeBuilder):
-    """
-    Retrieve attributes attached to objects or geometry
-    """
-
-    _bl_idname = "ShaderNodeAttribute"
-    node: bpy.types.ShaderNodeAttribute
-
-    def __init__(
-        self,
-        attribute_type: Literal[
-            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"
-        ] = "GEOMETRY",
-        attribute_name: str = "",
-    ):
-        super().__init__()
-        key_args = {}
-        self.attribute_type = attribute_type
-        self.attribute_name = attribute_name
-        self._establish_links(**key_args)
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs.get("Color")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs.get("Vector")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs.get("Fac")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs.get("Alpha")
-
-    @property
-    def attribute_type(
-        self,
-    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]:
-        return self.node.attribute_type
-
-    @attribute_type.setter
-    def attribute_type(
-        self, value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]
-    ):
-        self.node.attribute_type = value
-
-    @property
-    def attribute_name(self) -> str:
-        return self.node.attribute_name
-
-    @attribute_name.setter
-    def attribute_name(self, value: str):
-        self.node.attribute_name = value
-
-
 class Bevel(NodeBuilder):
     """
         Generates normals with round corners.

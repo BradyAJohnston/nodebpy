@@ -5,6 +5,9 @@ from .manual import (
     RepeatInput,
     RepeatOutput,
     RepeatZone,
+    Attribute,
+    tree,
+    material,
 )
 from ..geometry.color import (
     Gamma,
@@ -83,7 +86,6 @@ from .shader import (
 )
 from .input import (
     AmbientOcclusion,
-    Attribute,
     Bevel,
     CameraData,
     Color,
@@ -252,4 +254,6 @@ __all__ = (
     "WhiteNoiseTexture",
     "Wireframe",
     "WorldOutput",
+    "material",
+    "tree",
 )
