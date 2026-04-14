@@ -69,7 +69,7 @@ class Jitter(builder.NodeGroupBuilder):
         with tree.inputs:
             geometry = s.SocketGeometry("Geometry")
             amount = s.SocketFloat("Amount", 0.2)
-            seed = s.SocketInt("Seed")
+            seed = s.SocketInteger("Seed")
 
         offset = g.RandomValue.vector(min=-1, seed=seed) * amount
         result = geometry >> g.SetPosition(offset=offset)
@@ -126,7 +126,7 @@ class RadialArray(builder.NodeGroupBuilder):
     def _build_group(cls, tree):
         with tree.inputs:
             geometry = s.SocketGeometry()
-            count = s.SocketInt("Count", 6)
+            count = s.SocketInteger("Count", 6)
             radius = s.SocketFloat("Radius", 2.0)
 
         # Create points arranged in a circle
@@ -178,7 +178,7 @@ Custom groups compose naturally -- they chain with `>>`, accept each other's out
 ```{python}
 with TreeBuilder("JitteredFlower") as tree:
     with tree.inputs:
-        petals = s.SocketInt("Petals", 20, min_value=3, max_value=24)
+        petals = s.SocketInteger("Petals", 20, min_value=3, max_value=24)
         radius = s.SocketFloat("Radius", 0.5, min_value=0.1)
         jitter = s.SocketFloat("Jitter", 0.1)
 

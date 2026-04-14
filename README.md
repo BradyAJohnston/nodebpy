@@ -65,7 +65,7 @@ from nodebpy import TreeBuilder, geometry as g, sockets as s
 
 with TreeBuilder("AnotherTree", collapse=True) as tree:
     with tree.inputs:
-        count = s.SocketInt("Count", 10)
+        count = s.SocketInteger("Count", 10)
     with tree.outputs:
         instances = s.SocketGeometry("Instances")
 
