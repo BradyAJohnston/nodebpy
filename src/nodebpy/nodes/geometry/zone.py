@@ -3,7 +3,9 @@ from typing import Iterable
 
 import bpy
 
-from nodebpy.builder import DynamicInputsMixin, NodeBuilder, SocketLinker
+from nodebpy.builder import BaseNode as NodeBuilder
+from nodebpy.builder import DynamicInputsMixin
+from nodebpy.builder import Socket as SocketLinker
 
 from ...types import (
     InputBoolean,

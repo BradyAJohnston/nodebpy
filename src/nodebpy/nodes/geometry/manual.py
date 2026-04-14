@@ -2,12 +2,13 @@ from typing import Any, Literal
 
 import bpy
 
+from bpy.types import NodeSocket
+
 from ...builder import (
+    BaseNode as NodeBuilder,
     DynamicInputsMixin,
-    NodeBuilder,
-    NodeSocket,
+    Socket as SocketLinker,
     SocketError,
-    SocketLinker,
 )
 from ...types import (
     SOCKET_TYPES,

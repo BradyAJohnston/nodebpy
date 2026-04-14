@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import BaseNode as NodeBuilder, Socket
 
 from ...types import (
     InputColor,
@@ -86,7 +86,7 @@ class Viewer(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> SocketLinker:
+    def i_image(self) -> Socket:
         """Input socket: Image"""
         return self.inputs.get("Image")
 

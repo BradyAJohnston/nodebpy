@@ -1,0 +1,161 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Literal
+
+import bpy
+from bpy.types import NodeSocket
+
+from ._registry import _get_socket_linker
+from ._utils import SocketError, _allow_innactive_sockets, denormalize_name
+
+if TYPE_CHECKING:
+    from .socket import Socket
+
+
+class SocketAccessor:
+    """Unified accessor for a node's input or output socket collection.
+
+    Supports identifier/name lookup, dict-style ``[]`` access, availability
+    filtering, and type-compatible matching — replacing the former pairs of
+    ``_input_idx``/``_output_idx``, ``_input``/``_output``,
+    ``_available_inputs``/``_available_outputs``, and ``_best_output_socket``.
+    """
+
+    def __init__(
+        self,
+        sockets: Any,
+        direction: Literal["input", "output"],
+        node: bpy.types.Node,
+    ):
+        self._sockets = sockets
+        self._direction = direction
+        self._node = node
+
+    def index(self, key: str | int) -> int:
+        """Find socket index by identifier, falling back to name.
+
+        Tries identifier match first. If no identifier matches, falls back to
+        name lookup — but raises if the name is duplicated (ambiguous).
+        Integer keys are returned directly.
+        """
+        if isinstance(key, int):
+            return key
+        ids = [s.identifier for s in self._sockets]
+        if key in ids:
+            return ids.index(key)
+        names = [s.name for s in self._sockets]
+        for key in (key, denormalize_name(key)):
+            if key in names:
+                if names.count(key) > 1:
+                    raise RuntimeError(
+                        f"{self._direction.title()} name '{key}' is ambiguous on "
+                        f"{self._node.bl_idname} (appears {names.count(key)} times). "
+                        f"Use the socket identifier instead."
+                    )
+                return names.index(key)
+        raise RuntimeError(
+            f"{self._direction.title()} '{key}' not found on "
+            f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"
+        )
+
+    def get(self, key: str | int) -> "Socket":
+        """Get a Socket for a socket by identifier, name, or index."""
+        return _get_socket_linker(self._sockets[self.index(key)])
+
+    def __getitem__(self, key: str | int) -> "Socket":
+        """Access by identifier, name, or integer index."""
+        return self.get(key)
+
+    @property
+    def _ignore_visibility(self) -> bool:
+        """Whether to ignore socket visibility when selecting available sockets.
+
+        Only affects ``available`` / ``best_match`` (the auto-linking heuristics).
+        ``values()`` / ``items()`` always respect node-level visibility so that
+        iteration over a node's sockets stays predictable regardless of context.
+        Returns False when called outside a tree context (e.g. from a bare
+        Socket that was created outside a ``with tree:`` block).
+        """
+        from .tree import TreeBuilder
+
+        if not TreeBuilder._tree_contexts:
+            return False
+        return TreeBuilder._tree_contexts[-1].ignore_visibility
+
+    def _visible_sockets(self) -> list[NodeSocket]:
+        """Sockets that should appear in iteration (values/items/keys).
+
+        Uses the per-node allowlist (``_allow_innactive_sockets``) rather than
+        the tree-level ``ignore_visibility`` flag — enumeration should always
+        reflect what is meaningfully present on the node, not the linking context.
+        """
+        if self._direction == "input":
+            return [
+                s
+                for s in self._sockets
+                if _allow_innactive_sockets(self._node)
+                or (not s.is_inactive and s.is_icon_visible)
+            ]
+        return [s for s in self._sockets if s.is_icon_visible]
+
+    @property
+    def available(self) -> list[NodeSocket]:
+        """Sockets eligible for automatic linking.
+
+        Respects ``ignore_visibility`` on the active ``TreeBuilder`` context, so
+        nodes with normally-hidden sockets can still be auto-linked when that flag
+        is set (e.g. during ``test_add_all_nodes``).
+        """
+        if self._direction == "input":
+            return [
+                s
+                for s in self._sockets
+                if (
+                    self._ignore_visibility or (not s.is_inactive and s.is_icon_visible)
+                )
+                and (not s.links or s.is_multi_input)
+            ]
+        return [
+            s for s in self._sockets if self._ignore_visibility or s.is_icon_visible
+        ]
+
+    def best_match(self, socket_type: str) -> NodeSocket:
+        """Find the best compatible socket for the given type."""
+        from ..types import SOCKET_COMPATIBILITY
+
+        compatible = SOCKET_COMPATIBILITY.get(socket_type, ())
+        possible = [s for s in self.available if s.type in compatible]
+        if possible:
+            possible.sort(key=lambda x: compatible.index(x.type))
+            return possible[0]
+        raise SocketError(
+            f"No compatible {self._direction} socket found for type "
+            f"{socket_type} on {self._node.name}"
+        )
+
+    def values(self) -> "list[Socket]":
+        """All visible sockets as Sockets.
+
+        Uses node-level visibility rules regardless of ``ignore_visibility`` —
+        see ``_visible_sockets`` for rationale.
+        """
+        return [_get_socket_linker(s) for s in self._visible_sockets()]
+
+    def items(self) -> "list[tuple[str, Socket]]":
+        """All visible sockets as (name, Socket) pairs.
+
+        Uses node-level visibility rules regardless of ``ignore_visibility`` —
+        see ``_visible_sockets`` for rationale.
+        """
+        return [(s.name, _get_socket_linker(s)) for s in self._visible_sockets()]
+
+    def keys(self) -> list[str]:
+        """All visible socket names."""
+        return [name for name, _ in self.items()]
+
+    def __len__(self) -> int:
+        return len(self.items())
+
+    def __iter__(self):
+        """Iterate over socket names (enables ``**node.outputs`` unpacking)."""
+        return iter(self.keys())

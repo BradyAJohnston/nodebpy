@@ -4,7 +4,14 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker, ColorSocketLinker
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+    RotationSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputClosure,
@@ -38,22 +45,22 @@ class CombineColor(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_red(self) -> SocketLinker:
+    def i_red(self) -> Socket:
         """Input socket: Red"""
         return self.inputs.get("Red")
 
     @property
-    def i_green(self) -> SocketLinker:
+    def i_green(self) -> Socket:
         """Input socket: Green"""
         return self.inputs.get("Green")
 
     @property
-    def i_blue(self) -> SocketLinker:
+    def i_blue(self) -> Socket:
         """Input socket: Blue"""
         return self.inputs.get("Blue")
 
     @property
-    def o_color(self) -> ColorSocketLinker:
+    def o_color(self) -> ColorSocket:
         """Output socket: Color"""
         return self.outputs.get("Color")
 
@@ -90,7 +97,7 @@ class EvaluateClosure(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_closure(self) -> SocketLinker:
+    def i_closure(self) -> Socket:
         """Input socket: Closure"""
         return self.inputs.get("Closure")
 
@@ -213,72 +220,72 @@ class Mix(NodeBuilder):
         )
 
     @property
-    def i_factor_float(self) -> SocketLinker:
+    def i_factor_float(self) -> Socket:
         """Input socket: Factor"""
         return self.inputs.get("Factor_Float")
 
     @property
-    def i_factor_vector(self) -> SocketLinker:
+    def i_factor_vector(self) -> Socket:
         """Input socket: Factor"""
         return self.inputs.get("Factor_Vector")
 
     @property
-    def i_a_float(self) -> SocketLinker:
+    def i_a_float(self) -> Socket:
         """Input socket: A"""
         return self.inputs.get("A_Float")
 
     @property
-    def i_b_float(self) -> SocketLinker:
+    def i_b_float(self) -> Socket:
         """Input socket: B"""
         return self.inputs.get("B_Float")
 
     @property
-    def i_a_vector(self) -> SocketLinker:
+    def i_a_vector(self) -> Socket:
         """Input socket: A"""
         return self.inputs.get("A_Vector")
 
     @property
-    def i_b_vector(self) -> SocketLinker:
+    def i_b_vector(self) -> Socket:
         """Input socket: B"""
         return self.inputs.get("B_Vector")
 
     @property
-    def i_a_color(self) -> SocketLinker:
+    def i_a_color(self) -> Socket:
         """Input socket: A"""
         return self.inputs.get("A_Color")
 
     @property
-    def i_b_color(self) -> SocketLinker:
+    def i_b_color(self) -> Socket:
         """Input socket: B"""
         return self.inputs.get("B_Color")
 
     @property
-    def i_a_rotation(self) -> SocketLinker:
+    def i_a_rotation(self) -> Socket:
         """Input socket: A"""
         return self.inputs.get("A_Rotation")
 
     @property
-    def i_b_rotation(self) -> SocketLinker:
+    def i_b_rotation(self) -> Socket:
         """Input socket: B"""
         return self.inputs.get("B_Rotation")
 
     @property
-    def o_result_float(self) -> SocketLinker:
+    def o_result_float(self) -> FloatSocket:
         """Output socket: Result"""
         return self.outputs.get("Result_Float")
 
     @property
-    def o_result_vector(self) -> VectorSocketLinker:
+    def o_result_vector(self) -> VectorSocket:
         """Output socket: Result"""
         return self.outputs.get("Result_Vector")
 
     @property
-    def o_result_color(self) -> ColorSocketLinker:
+    def o_result_color(self) -> ColorSocket:
         """Output socket: Result"""
         return self.outputs.get("Result_Color")
 
     @property
-    def o_result_rotation(self) -> SocketLinker:
+    def o_result_rotation(self) -> RotationSocket:
         """Output socket: Result"""
         return self.outputs.get("Result_Rotation")
 
@@ -383,12 +390,12 @@ class RGBToBw(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def o_val(self) -> SocketLinker:
+    def o_val(self) -> FloatSocket:
         """Output socket: Val"""
         return self.outputs.get("Val")
 
@@ -413,22 +420,22 @@ class SeparateColor(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def o_red(self) -> SocketLinker:
+    def o_red(self) -> FloatSocket:
         """Output socket: Red"""
         return self.outputs.get("Red")
 
     @property
-    def o_green(self) -> SocketLinker:
+    def o_green(self) -> FloatSocket:
         """Output socket: Green"""
         return self.outputs.get("Green")
 
     @property
-    def o_blue(self) -> SocketLinker:
+    def o_blue(self) -> FloatSocket:
         """Output socket: Blue"""
         return self.outputs.get("Blue")
 
@@ -457,17 +464,17 @@ class ShaderToRGB(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_shader(self) -> SocketLinker:
+    def i_shader(self) -> Socket:
         """Input socket: Shader"""
         return self.inputs.get("Shader")
 
     @property
-    def o_color(self) -> ColorSocketLinker:
+    def o_color(self) -> ColorSocket:
         """Output socket: Color"""
         return self.outputs.get("Color")
 
     @property
-    def o_alpha(self) -> SocketLinker:
+    def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
         return self.outputs.get("Alpha")
 
@@ -487,11 +494,11 @@ class Wavelength(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_wavelength(self) -> SocketLinker:
+    def i_wavelength(self) -> Socket:
         """Input socket: Wavelength"""
         return self.inputs.get("Wavelength")
 
     @property
-    def o_color(self) -> ColorSocketLinker:
+    def o_color(self) -> ColorSocket:
         """Output socket: Color"""
         return self.outputs.get("Color")

@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    BooleanSocket,
+    FloatSocket,
+    GeometrySocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -56,32 +62,32 @@ class DialGizmo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_up(self) -> SocketLinker:
+    def i_up(self) -> Socket:
         """Input socket: Up"""
         return self.inputs.get("Up")
 
     @property
-    def i_screen_space(self) -> SocketLinker:
+    def i_screen_space(self) -> Socket:
         """Input socket: Screen Space"""
         return self.inputs.get("Screen Space")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_transform(self) -> SocketLinker:
+    def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
         return self.outputs.get("Transform")
 
@@ -244,17 +250,17 @@ class EnableOutput(NodeBuilder):
         return cls(data_type="CLOSURE", enable=enable, value=value)
 
     @property
-    def i_enable(self) -> SocketLinker:
+    def i_enable(self) -> Socket:
         """Input socket: Enable"""
         return self.inputs.get("Enable")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def o_value(self) -> SocketLinker:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -368,22 +374,22 @@ class LinearGizmo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_direction(self) -> SocketLinker:
+    def i_direction(self) -> Socket:
         """Input socket: Direction"""
         return self.inputs.get("Direction")
 
     @property
-    def o_transform(self) -> SocketLinker:
+    def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
         return self.outputs.get("Transform")
 
@@ -442,22 +448,22 @@ class TransformGizmo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_rotation(self) -> SocketLinker:
+    def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
     @property
-    def o_transform(self) -> SocketLinker:
+    def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
         return self.outputs.get("Transform")
 
@@ -555,17 +561,17 @@ class Warning(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_show(self) -> SocketLinker:
+    def i_show(self) -> Socket:
         """Input socket: Show"""
         return self.inputs.get("Show")
 
     @property
-    def i_message(self) -> SocketLinker:
+    def i_message(self) -> Socket:
         """Input socket: Message"""
         return self.inputs.get("Message")
 
     @property
-    def o_show(self) -> SocketLinker:
+    def o_show(self) -> BooleanSocket:
         """Output socket: Show"""
         return self.outputs.get("Show")
 
