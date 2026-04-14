@@ -14,11 +14,38 @@ from bpy.types import (
 )
 
 from ..arrange import arrange_tree
-from ..types import SOCKET_COMPATIBILITY
+from ..types import (
+    SOCKET_COMPATIBILITY,
+    FloatInterfaceSubtypes,
+    IntegerInterfaceSubtypes,
+    StringInterfaceSubtypes,
+    VectorInterfaceSubtypes,
+    _AttributeDomains,
+    _SocketShapeStructureType,
+)
 from ._utils import SocketError, _allow_innactive_sockets
 
 if TYPE_CHECKING:
-    from .interface import InterfaceSocket
+    from .interface import (
+        InterfaceSocket,
+        SocketBoolean,
+        SocketBundle,
+        SocketClosure,
+        SocketCollection,
+        SocketColor,
+        SocketFloat,
+        SocketGeometry,
+        SocketImage,
+        SocketInt,
+        SocketMaterial,
+        SocketMatrix,
+        SocketMenu,
+        SocketObject,
+        SocketRotation,
+        SocketShader,
+        SocketString,
+        SocketVector,
+    )
 
 
 class PanelContext:
@@ -70,6 +97,480 @@ class SocketContext:
     def panel(self, name: str, *, default_closed: bool = False) -> PanelContext:
         """Create a panel context for grouping sockets."""
         return PanelContext(self, name, default_closed=default_closed)
+
+    # ------------------------------------------------------------------
+    # Socket factory methods
+    # ------------------------------------------------------------------
+
+    def _make_socket(self, socket_cls: type, /, *args: Any, **kwargs: Any):
+        """Temporarily activate this context, instantiate socket_cls, restore."""
+        prev = SocketContext._active_context
+        SocketContext._active_context = self
+        try:
+            return socket_cls(*args, **kwargs)
+        finally:
+            SocketContext._active_context = prev
+
+    def socket_float(
+        self,
+        name: str = "Value",
+        default_value: float = 0.0,
+        description: str = "",
+        *,
+        min_value: float | None = None,
+        max_value: float | None = None,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        subtype: FloatInterfaceSubtypes = "NONE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ) -> "SocketFloat":
+        """Add a Float socket to this input/output interface."""
+        from .interface import SocketFloat
+
+        return self._make_socket(
+            SocketFloat,
+            name,
+            default_value,
+            description,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+    def socket_int(
+        self,
+        name: str = "Integer",
+        default_value: int = 0,
+        description: str = "",
+        *,
+        min_value: int = -2147483648,
+        max_value: int = 2147483647,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        default_input: Literal["INDEX", "VALUE", "ID_OR_INDEX"] = "VALUE",
+        subtype: IntegerInterfaceSubtypes = "NONE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ) -> "SocketInt":
+        """Add an Integer socket to this input/output interface."""
+        from .interface import SocketInt
+
+        return self._make_socket(
+            SocketInt,
+            name,
+            default_value,
+            description,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+    def socket_boolean(
+        self,
+        name: str = "Boolean",
+        default_value: bool = False,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        layer_selection_field: bool = False,
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+        is_panel_toggle: bool = False,
+    ) -> "SocketBoolean":
+        """Add a Boolean socket to this input/output interface."""
+        from .interface import SocketBoolean
+
+        return self._make_socket(
+            SocketBoolean,
+            name,
+            default_value,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            layer_selection_field=layer_selection_field,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+            is_panel_toggle=is_panel_toggle,
+        )
+
+    def socket_vector(
+        self,
+        name: str = "Vector",
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        description: str = "",
+        *,
+        dimensions: int = 3,
+        min_value: float | None = None,
+        max_value: float | None = None,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        subtype: VectorInterfaceSubtypes = "NONE",
+        default_attribute: str | None = None,
+        default_input: Literal[
+            "VALUE", "NORMAL", "POSITION", "HANDLE_LEFT", "HANDLE_RIGHT"
+        ] = "VALUE",
+        attribute_domain: _AttributeDomains = "POINT",
+    ) -> "SocketVector":
+        """Add a Vector socket to this input/output interface."""
+        from .interface import SocketVector
+
+        return self._make_socket(
+            SocketVector,
+            name,
+            default_value,
+            description,
+            dimensions=dimensions,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            subtype=subtype,
+            default_attribute=default_attribute,
+            default_input=default_input,
+            attribute_domain=attribute_domain,
+        )
+
+    def socket_color(
+        self,
+        name: str = "Color",
+        default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ) -> "SocketColor":
+        """Add a Color socket to this input/output interface."""
+        from .interface import SocketColor
+
+        return self._make_socket(
+            SocketColor,
+            name,
+            default_value,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+    def socket_rotation(
+        self,
+        name: str = "Rotation",
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ) -> "SocketRotation":
+        """Add a Rotation socket to this input/output interface."""
+        from .interface import SocketRotation
+
+        return self._make_socket(
+            SocketRotation,
+            name,
+            default_value,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+    def socket_matrix(
+        self,
+        name: str = "Matrix",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        default_input: Literal["VALUE", "INSTANCE_TRANSFORM"] = "VALUE",
+        attribute_domain: _AttributeDomains = "POINT",
+        default_attribute: str | None = None,
+    ) -> "SocketMatrix":
+        """Add a Matrix socket to this input/output interface."""
+        from .interface import SocketMatrix
+
+        return self._make_socket(
+            SocketMatrix,
+            name,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
+
+    def socket_string(
+        self,
+        name: str = "String",
+        default_value: str = "",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        subtype: StringInterfaceSubtypes = "NONE",
+    ) -> "SocketString":
+        """Add a String socket to this input/output interface."""
+        from .interface import SocketString
+
+        return self._make_socket(
+            SocketString,
+            name,
+            default_value,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            subtype=subtype,
+        )
+
+    def socket_menu(
+        self,
+        name: str = "Menu",
+        default_value: str | None = None,
+        description: str = "",
+        *,
+        expanded: bool = False,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> "SocketMenu":
+        """Add a Menu socket to this input/output interface."""
+        from .interface import SocketMenu
+
+        return self._make_socket(
+            SocketMenu,
+            name,
+            default_value,
+            description,
+            expanded=expanded,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+        )
+
+    def socket_object(
+        self,
+        name: str = "Object",
+        default_value: bpy.types.Object | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> "SocketObject":
+        """Add an Object socket to this input/output interface."""
+        from .interface import SocketObject
+
+        return self._make_socket(
+            SocketObject,
+            name,
+            default_value,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+    def socket_geometry(
+        self,
+        name: str = "Geometry",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> "SocketGeometry":
+        """Add a Geometry socket to this input/output interface."""
+        from .interface import SocketGeometry
+
+        return self._make_socket(
+            SocketGeometry,
+            name,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+    def socket_collection(
+        self,
+        name: str = "Collection",
+        default_value: bpy.types.Collection | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> "SocketCollection":
+        """Add a Collection socket to this input/output interface."""
+        from .interface import SocketCollection
+
+        return self._make_socket(
+            SocketCollection,
+            name,
+            default_value,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+    def socket_image(
+        self,
+        name: str = "Image",
+        default_value: bpy.types.Image | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> "SocketImage":
+        """Add an Image socket to this input/output interface."""
+        from .interface import SocketImage
+
+        return self._make_socket(
+            SocketImage,
+            name,
+            default_value,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+    def socket_material(
+        self,
+        name: str = "Material",
+        default_value: bpy.types.Material | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> "SocketMaterial":
+        """Add a Material socket to this input/output interface."""
+        from .interface import SocketMaterial
+
+        return self._make_socket(
+            SocketMaterial,
+            name,
+            default_value,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+    def socket_bundle(
+        self,
+        name: str = "Bundle",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> "SocketBundle":
+        """Add a Bundle socket to this input/output interface."""
+        from .interface import SocketBundle
+
+        return self._make_socket(
+            SocketBundle,
+            name,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+    def socket_closure(
+        self,
+        name: str = "Closure",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> "SocketClosure":
+        """Add a Closure socket to this input/output interface."""
+        from .interface import SocketClosure
+
+        return self._make_socket(
+            SocketClosure,
+            name,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+
+    def socket_shader(
+        self,
+        name: str = "Shader",
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> "SocketShader":
+        """Add a Shader socket to this input/output interface."""
+        from .interface import SocketShader
+
+        return self._make_socket(
+            SocketShader,
+            name,
+            description,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
 
     def _create_socket(
         self, socket_def: "InterfaceSocket", name: str
