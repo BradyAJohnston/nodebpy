@@ -658,56 +658,6 @@ class DirectionalBlur(NodeBuilder):
         return self.outputs.get("Image")
 
 
-class Filter(NodeBuilder):
-    """
-    Apply common image enhancement filters
-    """
-
-    _bl_idname = "CompositorNodeFilter"
-    node: bpy.types.CompositorNodeFilter
-
-    def __init__(
-        self,
-        image: InputColor = None,
-        fac: InputFloat = 1.0,
-        type: InputMenu
-        | Literal[
-            "Soften",
-            "Box Sharpen",
-            "Diamond Sharpen",
-            "Laplace",
-            "Sobel",
-            "Prewitt",
-            "Kirsch",
-            "Shadow",
-        ] = "Soften",
-    ):
-        super().__init__()
-        key_args = {"Image": image, "Fac": fac, "Type": type}
-
-        self._establish_links(**key_args)
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs.get("Image")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs.get("Fac")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs.get("Type")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs.get("Image")
-
-
 class Glare(NodeBuilder):
     """
     Add lens flares, fog and glows around bright parts of the image

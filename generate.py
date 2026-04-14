@@ -162,6 +162,7 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
     ],
     manually_defined=(
         "MenuSwitch",
+        "Filter",
         "tree",
     ),
     class_name_prefix_strips=[
@@ -487,6 +488,7 @@ class NodeInfo:
                 "data_type",
                 "input_type",
                 "attribute_type",
+                "type",
             ]:
                 continue
 

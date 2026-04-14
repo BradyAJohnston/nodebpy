@@ -2,6 +2,7 @@
 
 from .manual import (
     MenuSwitch,
+    Filter,
     tree,
 )
 from ..geometry.color import (
@@ -65,7 +66,6 @@ from .filter import (
     Despeckle,
     Dilateerode,
     DirectionalBlur,
-    Filter,
     Glare,
     Inpaint,
     Kuwahara,
