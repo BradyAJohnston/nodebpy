@@ -45,7 +45,7 @@ def test_capture_attribute():
 
 
 def test_join_geometry():
-    with TreeBuilder("TestJoinGeometry") as tree:
+    with g.tree() as tree:
         items = [g.Cube(), g.UVSphere(), g.Cone(), g.Cylinder(), g.Grid()]
         join = g.JoinGeometry(*items)
 
@@ -56,7 +56,7 @@ def test_join_geometry():
 
 
 def test_socket_selection():
-    with TreeBuilder("AnotherTree"):
+    with g.tree("AnotherTree"):
         pos = g.SetPosition()
         vec = g.Vector()
 

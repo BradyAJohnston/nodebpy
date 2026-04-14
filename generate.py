@@ -117,6 +117,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "FieldVariance",
         "Compare",
         "AttributeStatistic",
+        "tree",
     ),
     class_name_prefix_strips=[
         "GeometryNode",
@@ -134,7 +135,13 @@ SHADER_CONFIG = TreeTypeConfig(
         "Frame",
         "Reroute",
     ],
-    manually_defined=("MenuSwitch", "RepeatInput", "RepeatOutput", "RepeatZone"),
+    manually_defined=(
+        "MenuSwitch",
+        "RepeatInput",
+        "RepeatOutput",
+        "RepeatZone",
+        "tree",
+    ),
     class_name_prefix_strips=[
         "ShaderNode",
         "Node",
@@ -151,7 +158,10 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "Cryptomatte",
         "Image",
     ],
-    manually_defined=("MenuSwitch",),
+    manually_defined=(
+        "MenuSwitch",
+        "tree",
+    ),
     class_name_prefix_strips=[
         "CompositorNode",
         "Node",
