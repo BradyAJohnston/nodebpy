@@ -230,9 +230,11 @@ class TreeBuilder:
     def _apply_input_defaults(self) -> None:
         for key, value in self._menu_defaults.items():
             for item in self.tree.interface.items_tree:  # type: ignore
-                if item.identifier == key:  # type: ignore
-                    item.default_value = value  # type: ignore
-                    break
+                if not hasattr(item, "identifier"):
+                    continue
+                if item.identifier == key:
+                    if hasattr(item, "default_value"):
+                        item.default_value = value
 
     def __len__(self) -> int:
         return len(self.nodes)

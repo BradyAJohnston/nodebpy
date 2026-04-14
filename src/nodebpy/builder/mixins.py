@@ -287,7 +287,6 @@ class LinkingMixin:
         if isinstance(other, _SocketLike):
             source = self._default_output_socket  # type: ignore[attr-defined]
             target = other.socket  # type: ignore[attr-defined]
-            other._from_socket = source
         elif getattr(other, "_placeholder_inputs", None):
             name = other._placeholder_inputs.pop(0)
             try:

@@ -22,8 +22,6 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     node: bpy.types.Node
     _bl_idname: str
     _tree: TreeBuilder
-    _link_target: str | None = None
-    _from_socket: NodeSocket | None = None
     _default_input_id: str | None = None
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
@@ -41,22 +39,12 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             )
 
         self._tree = tree
-        self._link_target = None
         self._placeholder_inputs = []
-        if self.__class__.name is not None:
-            self.node = self._tree.add(self.__class__._bl_idname)
-        else:
-            raise ValueError(
-                f"Class {self.__class__.__name__} must define a 'name' attribute"
-            )
+        self.node = self._tree.add(self.__class__._bl_idname)
 
     @property
     def tree(self) -> TreeBuilder:
         return self._tree
-
-    @tree.setter
-    def tree(self, value: TreeBuilder):
-        self._tree = value
 
     @property
     def type(self) -> SOCKET_TYPES:
@@ -111,8 +99,6 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
             if value is ...:
                 self._placeholder_inputs.append(name)
-                if self._from_socket is not None:
-                    self._link_from(self._from_socket, name)
                 continue
 
             elif isinstance(value, _SocketLike):
@@ -142,14 +128,6 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     def inputs(self) -> SocketAccessor:
         return SocketAccessor(self.node.inputs, "input", self.node)
 
-    def _get_input_socket_by_name(self, node: "BaseNode", name: str) -> NodeSocket:
-        """Get input socket by name, trying direct access first, then title case."""
-        try:
-            return node.node.inputs[name]
-        except KeyError:
-            title_name = name.replace("_", " ").title()
-            return node.node.inputs[title_name]
-
 
 class DynamicInputsMixin:
     _socket_data_types: tuple[str, ...]
@@ -178,28 +156,15 @@ class DynamicInputsMixin:
         try:
             return super()._find_best_socket_pair(source, target)  # type: ignore
         except SocketError:
-            if target.node == self.node:
-                target_name, source_socket = list(target._add_inputs(source).items())[0]
-                return (source_socket, target.inputs[target_name].socket)
-            else:
-                target_name, source_socket = list(
-                    source._add_inputs(*target.node.inputs).items()
-                )[0]
-                return (
-                    source.outputs[target_name].socket,
-                    target.inputs[target_name].socket,
-                )
+            target_name, source_socket = list(target._add_inputs(source).items())[0]
+            return (source_socket, target.inputs[target_name].socket)
 
     def _add_inputs(self, *args, **kwargs) -> dict[str, InputLinkable]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
         new_sockets = {}
         items = {}
         for arg in args:
-            if isinstance(arg, bpy.types.NodeSocket):
-                name = arg.name
-                items[name] = arg
-            else:
-                items[arg._default_output_socket.name] = arg
+            items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
             socket_source, type = self._match_compatible_data(source.outputs.available)
