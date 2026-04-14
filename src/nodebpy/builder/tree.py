@@ -326,3 +326,25 @@ class TreeBuilder:
         node = self.tree.nodes.new(name)
         node.hide = self.collapse
         return node
+
+
+class MaterialBuilder(TreeBuilder):
+    def __init__(
+        self,
+        name: str = "New Material",
+        *,
+        collapse: bool = False,
+        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+        fake_user: bool = False,
+        ignore_visibility: bool = False,
+    ):
+        self.material = bpy.data.materials.new(name)
+        self.material.use_fake_user = fake_user
+        assert self.material.node_tree
+        super().__init__(
+            self.material.node_tree,
+            collapse=collapse,
+            arrange=arrange,
+            fake_user=fake_user,
+            ignore_visibility=ignore_visibility,
+        )

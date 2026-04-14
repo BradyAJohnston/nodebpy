@@ -140,7 +140,9 @@ SHADER_CONFIG = TreeTypeConfig(
         "RepeatInput",
         "RepeatOutput",
         "RepeatZone",
+        "Attribute",
         "tree",
+        "material",
     ),
     class_name_prefix_strips=[
         "ShaderNode",
@@ -484,6 +486,7 @@ class NodeInfo:
                 "domain",
                 "data_type",
                 "input_type",
+                "attribute_type",
             ]:
                 continue
 
