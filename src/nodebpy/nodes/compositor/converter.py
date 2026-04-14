@@ -43,6 +43,16 @@ class AlphaConvert(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    @classmethod
+    def to_premultiplied(cls, image: InputColor = None) -> "AlphaConvert":
+        """Create Alpha Convert node with type 'To Premultiplied'."""
+        return cls(image=image, type="To Premultiplied")
+
+    @classmethod
+    def to_straight(cls, image: InputColor = None) -> "AlphaConvert":
+        """Create Alpha Convert node with type 'To Straight'."""
+        return cls(image=image, type="To Straight")
+
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
@@ -760,14 +770,14 @@ class RelativeToPixel(NodeBuilder):
     def float(
         cls, float_value: InputFloat = 0.0, image: InputColor = None
     ) -> "RelativeToPixel":
-        """Create Relative To Pixel with operation 'Float'."""
+        """Create Relative To Pixel with operation 'Float'. Float value"""
         return cls(data_type="FLOAT", float_value=float_value, image=image)
 
     @classmethod
     def vector(
         cls, vector_value: InputVector = None, image: InputColor = None
     ) -> "RelativeToPixel":
-        """Create Relative To Pixel with operation 'Vector'."""
+        """Create Relative To Pixel with operation 'Vector'. Vector value"""
         return cls(data_type="VECTOR", vector_value=vector_value, image=image)
 
     @property
@@ -898,6 +908,20 @@ class SetAlpha(NodeBuilder):
         key_args = {"Image": image, "Alpha": alpha, "Type": type}
 
         self._establish_links(**key_args)
+
+    @classmethod
+    def apply_mask(
+        cls, image: InputColor = None, alpha: InputFloat = 1.0
+    ) -> "SetAlpha":
+        """Create Set Alpha node with type 'Apply Mask'."""
+        return cls(image=image, alpha=alpha, type="Apply Mask")
+
+    @classmethod
+    def replace_alpha(
+        cls, image: InputColor = None, alpha: InputFloat = 1.0
+    ) -> "SetAlpha":
+        """Create Set Alpha node with type 'Replace Alpha'."""
+        return cls(image=image, alpha=alpha, type="Replace Alpha")
 
     @property
     def i_image(self) -> Socket:

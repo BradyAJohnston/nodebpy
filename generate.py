@@ -162,7 +162,6 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
     ],
     manually_defined=(
         "MenuSwitch",
-        "Filter",
         "tree",
     ),
     class_name_prefix_strips=[
@@ -374,6 +373,9 @@ class NodeInfo:
     properties: list[PropertyInfo]
     domain_sockets: dict[str, list[SocketInfo]]
     tree_types: list[str] = field(default_factory=list)
+    # Per-value socket snapshots for any input socket named "Type" that is a MENU.
+    # Keyed by the socket identifier; each entry mirrors EnumInfo used for properties.
+    type_socket_enums: list[EnumInfo] = field(default_factory=list)
 
     @property
     def node_docs_url(self) -> str | None:
@@ -495,11 +497,8 @@ class NodeInfo:
             # assert operation_enum.enum_items
             for enum in prop.enum_items:
                 # Handle special cases for better naming
-                method_name = (
-                    enum.name.lower()
-                    .replace(" ", "_")
-                    .replace("-", "_")
-                    .replace("4x4_matrix", "matrix")
+                method_name = normalize_name(
+                    enum.name.replace("4x4_matrix", "matrix")
                     .replace("8_bit_integer", "int8")
                     .replace("2d_vector", "vector2")
                 )
@@ -558,12 +557,83 @@ class NodeInfo:
                 else:
                     call_params_str = operation_param
 
+                docstring = f"Create {self.name} with operation '{enum.name}'."
+                if enum.description:
+                    docstring += f" {enum.description}"
+
                 method = f'''
     @classmethod
     def {method_name}(
         {params_str}
     ) -> "{cls_name}":
-        """Create {self.name} with operation '{enum.name}'."""
+        """{docstring}"""
+        return cls({call_params_str})'''
+
+                methods.append(method)
+
+        # Generate classmethods for input sockets named "type" that are MENU sockets.
+        # Uses per-value socket snapshots collected during introspection so that methods
+        # only expose the sockets that are actually visible for that type value.
+        type_param_name = "type"
+        if self.type_socket_enums:
+            for enum in self.type_socket_enums:
+                item_value = enum.identifier
+                method_name = normalize_name(item_value)
+                if method_name == "and":
+                    method_name = "l_and"
+                elif method_name == "or":
+                    method_name = "l_or"
+                elif method_name == "not":
+                    method_name = "l_not"
+
+                input_params = ["cls"]
+                call_params = []
+
+                all_identifiers = [s.identifier for s in enum.sockets]
+                sockets_use_same_name = (
+                    all(ident == all_identifiers[0] for ident in all_identifiers)
+                    if all_identifiers
+                    else False
+                )
+
+                for socket in enum.sockets:
+                    socket_name = get_socket_param_name(socket, sockets_use_same_name)
+                    if socket_name.startswith("min"):
+                        param_name = "min"
+                    elif socket_name.startswith("max"):
+                        param_name = "max"
+                    else:
+                        param_name = socket_name
+                    param_name = param_name.replace("_float", "").replace("_vector", "")
+
+                    if (
+                        param_name
+                        and param_name != ""
+                        and param_name != type_param_name
+                    ):
+                        input_params.append(
+                            f"{param_name}: {socket.type_hint} = {format_python_value(socket.default_value)}"
+                        )
+                        call_params.append(f"{socket_name}={param_name}")
+
+                params_str = ",\n        ".join(input_params)
+                call_params_str = ", ".join(call_params)
+                type_call_param = f'{type_param_name}="{item_value}"'
+                if call_params_str:
+                    call_params_str = f"{call_params_str}, {type_call_param}"
+                else:
+                    call_params_str = type_call_param
+
+                docstring = f"Create {self.name} node with type '{item_value}'."
+                if enum.description:
+                    docstring += f" {enum.description}"
+
+                method = f'''
+    @classmethod
+    def {method_name}(
+        {params_str}
+    ) -> "{cls_name}":
+        """{docstring}"""
         return cls({call_params_str})'''
 
                 methods.append(method)
@@ -794,6 +864,46 @@ def introspect_node(node_type: type, tree_type: str) -> NodeInfo | None:
         outputs = collect_socket_info(node.outputs, hidden=True, is_output=True)
         properties = collect_property_info(node, node_type)
 
+        # Collect per-value socket snapshots for any input socket named "Type"
+        # that is a MENU.  Mirrors what collect_property_info does for enum properties.
+        type_socket_enums: list[EnumInfo] = []
+        for live_socket in node.inputs:
+            if normalize_name(live_socket.identifier) != "type":
+                continue
+            if live_socket.type != "MENU":
+                continue
+            menu_items = _collect_socket_menu_items(live_socket)
+            if not menu_items:
+                continue
+            # Build identifier → description map from the socket's RNA enum items.
+            rna_descriptions: dict[str, str] = {}
+            try:
+                enum_prop = live_socket.bl_rna.properties.get("default_value")
+                if enum_prop and hasattr(enum_prop, "enum_items"):
+                    for rna_item in enum_prop.enum_items:
+                        rna_descriptions[rna_item.identifier] = rna_item.description
+            except Exception:
+                pass
+
+            saved = live_socket.default_value
+            for raw_item in menu_items:
+                item_value = raw_item.strip("'\"")
+                try:
+                    live_socket.default_value = item_value
+                    type_socket_enums.append(
+                        EnumInfo(
+                            identifier=item_value,
+                            name=item_value,
+                            description=rna_descriptions.get(item_value, ""),
+                            sockets=collect_socket_info(node.inputs),
+                        )
+                    )
+                except Exception:
+                    pass
+                finally:
+                    live_socket.default_value = saved
+            break  # only handle the first "Type" socket
+
         # Clean up
         bpy.data.node_groups.remove(temp_tree)
 
@@ -806,6 +916,7 @@ def introspect_node(node_type: type, tree_type: str) -> NodeInfo | None:
             outputs=outputs,
             properties=properties,
             domain_sockets={},
+            type_socket_enums=type_socket_enums,
         )
 
     except RuntimeError as e:

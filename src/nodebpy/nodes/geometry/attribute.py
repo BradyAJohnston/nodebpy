@@ -54,7 +54,7 @@ class BlurAttribute(NodeBuilder):
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
     ) -> "BlurAttribute":
-        """Create Blur Attribute with operation 'Float'."""
+        """Create Blur Attribute with operation 'Float'. Floating-point value"""
         return cls(data_type="FLOAT", value=value, iterations=iterations, weight=weight)
 
     @classmethod
@@ -64,7 +64,7 @@ class BlurAttribute(NodeBuilder):
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
     ) -> "BlurAttribute":
-        """Create Blur Attribute with operation 'Integer'."""
+        """Create Blur Attribute with operation 'Integer'. 32-bit integer"""
         return cls(data_type="INT", value=value, iterations=iterations, weight=weight)
 
     @classmethod
@@ -74,7 +74,7 @@ class BlurAttribute(NodeBuilder):
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
     ) -> "BlurAttribute":
-        """Create Blur Attribute with operation 'Vector'."""
+        """Create Blur Attribute with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
             data_type="FLOAT_VECTOR", value=value, iterations=iterations, weight=weight
         )
@@ -86,7 +86,7 @@ class BlurAttribute(NodeBuilder):
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
     ) -> "BlurAttribute":
-        """Create Blur Attribute with operation 'Color'."""
+        """Create Blur Attribute with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return cls(
             data_type="FLOAT_COLOR", value=value, iterations=iterations, weight=weight
         )
@@ -284,7 +284,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputFloat = 0.0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Float'."""
+        """Create Store Named Attribute with operation 'Float'. Floating-point value"""
         return cls(
             data_type="FLOAT",
             geometry=geometry,
@@ -301,7 +301,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputInteger = 0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Integer'."""
+        """Create Store Named Attribute with operation 'Integer'. 32-bit integer"""
         return cls(
             data_type="INT",
             geometry=geometry,
@@ -318,7 +318,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputBoolean = False,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Boolean'."""
+        """Create Store Named Attribute with operation 'Boolean'. True or false"""
         return cls(
             data_type="BOOLEAN",
             geometry=geometry,
@@ -335,7 +335,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputVector = None,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Vector'."""
+        """Create Store Named Attribute with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
             data_type="FLOAT_VECTOR",
             geometry=geometry,
@@ -352,7 +352,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputColor = None,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Color'."""
+        """Create Store Named Attribute with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return cls(
             data_type="FLOAT_COLOR",
             geometry=geometry,
@@ -369,7 +369,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputRotation = None,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Quaternion'."""
+        """Create Store Named Attribute with operation 'Quaternion'. Floating point quaternion rotation"""
         return cls(
             data_type="QUATERNION",
             geometry=geometry,
@@ -379,14 +379,14 @@ class StoreNamedAttribute(NodeBuilder):
         )
 
     @classmethod
-    def matrix(
+    def input_4x4_matrix(
         cls,
         geometry: InputGeometry = None,
         selection: InputBoolean = True,
         name: InputString = "",
         value: InputMatrix = None,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation '4x4 Matrix'."""
+        """Create Store Named Attribute with operation '4x4 Matrix'. Floating point matrix"""
         return cls(
             data_type="FLOAT4X4",
             geometry=geometry,
@@ -396,14 +396,14 @@ class StoreNamedAttribute(NodeBuilder):
         )
 
     @classmethod
-    def int8(
+    def input_8_bit_integer(
         cls,
         geometry: InputGeometry = None,
         selection: InputBoolean = True,
         name: InputString = "",
         value: InputInteger = 0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation '8-Bit Integer'."""
+        """Create Store Named Attribute with operation '8-Bit Integer'. Smaller integer with a range from -128 to 127"""
         return cls(
             data_type="INT8",
             geometry=geometry,
@@ -413,14 +413,14 @@ class StoreNamedAttribute(NodeBuilder):
         )
 
     @classmethod
-    def vector2(
+    def input_2d_vector(
         cls,
         geometry: InputGeometry = None,
         selection: InputBoolean = True,
         name: InputString = "",
         value: InputVector = None,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation '2D Vector'."""
+        """Create Store Named Attribute with operation '2D Vector'. 2D vector with floating-point values"""
         return cls(
             data_type="FLOAT2",
             geometry=geometry,
@@ -437,7 +437,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputColor = None,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Byte Color'."""
+        """Create Store Named Attribute with operation 'Byte Color'. RGBA color with 8-bit positive integer values"""
         return cls(
             data_type="BYTE_COLOR",
             geometry=geometry,
@@ -454,7 +454,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputFloat = 0.0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Point'."""
+        """Create Store Named Attribute with operation 'Point'. Attribute on point"""
         return cls(
             domain="POINT",
             geometry=geometry,
@@ -471,7 +471,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputFloat = 0.0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Edge'."""
+        """Create Store Named Attribute with operation 'Edge'. Attribute on mesh edge"""
         return cls(
             domain="EDGE",
             geometry=geometry,
@@ -488,7 +488,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputFloat = 0.0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Face'."""
+        """Create Store Named Attribute with operation 'Face'. Attribute on mesh faces"""
         return cls(
             domain="FACE",
             geometry=geometry,
@@ -505,7 +505,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputFloat = 0.0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Face Corner'."""
+        """Create Store Named Attribute with operation 'Face Corner'. Attribute on mesh face corner"""
         return cls(
             domain="CORNER",
             geometry=geometry,
@@ -522,7 +522,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputFloat = 0.0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Spline'."""
+        """Create Store Named Attribute with operation 'Spline'. Attribute on spline"""
         return cls(
             domain="CURVE",
             geometry=geometry,
@@ -539,7 +539,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputFloat = 0.0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Instance'."""
+        """Create Store Named Attribute with operation 'Instance'. Attribute on instance"""
         return cls(
             domain="INSTANCE",
             geometry=geometry,
@@ -556,7 +556,7 @@ class StoreNamedAttribute(NodeBuilder):
         name: InputString = "",
         value: InputFloat = 0.0,
     ) -> "StoreNamedAttribute":
-        """Create Store Named Attribute with operation 'Layer'."""
+        """Create Store Named Attribute with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(
             domain="LAYER",
             geometry=geometry,

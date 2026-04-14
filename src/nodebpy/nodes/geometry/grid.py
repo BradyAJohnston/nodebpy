@@ -1566,7 +1566,7 @@ class StoreNamedGrid(NodeBuilder):
         name: InputString = "",
         grid: InputBoolean = False,
     ) -> "StoreNamedGrid":
-        """Create Store Named Grid with operation 'Boolean'."""
+        """Create Store Named Grid with operation 'Boolean'. Boolean"""
         return cls(data_type="BOOLEAN", volume=volume, name=name, grid=grid)
 
     @classmethod
@@ -1576,7 +1576,7 @@ class StoreNamedGrid(NodeBuilder):
         name: InputString = "",
         grid: InputFloat = 0.0,
     ) -> "StoreNamedGrid":
-        """Create Store Named Grid with operation 'Float'."""
+        """Create Store Named Grid with operation 'Float'. Single precision float"""
         return cls(data_type="FLOAT", volume=volume, name=name, grid=grid)
 
     @classmethod
@@ -1586,7 +1586,7 @@ class StoreNamedGrid(NodeBuilder):
         name: InputString = "",
         grid: InputInteger = 0,
     ) -> "StoreNamedGrid":
-        """Create Store Named Grid with operation 'Integer'."""
+        """Create Store Named Grid with operation 'Integer'. 32-bit integer"""
         return cls(data_type="INT", volume=volume, name=name, grid=grid)
 
     @classmethod
@@ -1596,7 +1596,7 @@ class StoreNamedGrid(NodeBuilder):
         name: InputString = "",
         grid: InputVector = None,
     ) -> "StoreNamedGrid":
-        """Create Store Named Grid with operation 'Vector'."""
+        """Create Store Named Grid with operation 'Vector'. 3D float vector"""
         return cls(data_type="VECTOR_FLOAT", volume=volume, name=name, grid=grid)
 
     @property
