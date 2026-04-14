@@ -1,20 +1,20 @@
 import bpy
 import pytest
 
-from nodebpy import TreeBuilder, sockets
 from nodebpy import shader as s
+from nodebpy import sockets
 from nodebpy.builder import SocketError
 
 
 def test_simple_shader():
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         prin = s.PrincipledBSDF()
         with tree.outputs:
             _ = prin >> sockets.SocketShader()
 
 
 def test_shader_math():
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         comp = s.Geometry().o_random_per_island >= 10.0
         prin = s.PrincipledBSDF(ior=comp)
         with tree.outputs:
@@ -31,7 +31,7 @@ def test_shader_math():
 
 
 def test_shader_menu_switch():
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         menu = s.MenuSwitch.shader(*[s.PrincipledBSDF() for _ in range(10)])
         with tree.outputs:
             _ = menu >> sockets.SocketShader()
@@ -39,7 +39,7 @@ def test_shader_menu_switch():
     assert len(menu.node.enum_items) == 10
     assert menu.node.outputs[0].links
 
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         menu = s.MenuSwitch.float(
             **{f"Input_{i}": float(value) for i, value in enumerate(range(10))}
         )
@@ -51,7 +51,7 @@ def test_shader_menu_switch():
         assert f"Input_{i}" == input.name
         assert float(i) == input.socket.default_value
 
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         menu = s.MenuSwitch.float(
             **{f"Input_{i}": s.Value(value) for i, value in enumerate(range(10))}
         )
