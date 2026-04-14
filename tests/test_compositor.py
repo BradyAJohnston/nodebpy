@@ -4,7 +4,7 @@ from nodebpy import sockets as s
 
 
 def test_initial_compositor():
-    with TreeBuilder.compositor("comp", fake_user=True) as t:
+    with c.tree("comp", fake_user=True) as t:
         with t.inputs:
             image = s.SocketColor("Image")
             depth = s.SocketFloat("Depth")
@@ -24,10 +24,10 @@ def test_initial_compositor():
         with t.outputs:
             output_color = s.SocketColor("Image")
 
-        ao_factor = (ao >> c.InvertColor()) ** 0.94 >> c.Kuwahara(..., size=4.0)
+        ao_factor = c.InvertColor(ao) ** 0.94 >> c.Kuwahara(..., size=4.0)
         active_image = c.Mix.color(ao_factor, image)
-        depth_line = c.Filter(depth, type="Sobel") > (outline_depth / 100)
-        normal_line = c.Filter(normal, type="Sobel") > 1.5
+        depth_line = c.Filter.sobel(depth) > (outline_depth / 100)
+        normal_line = c.Filter.sobel(normal) > 1.5
         outline_comp = (
             (depth_line + normal_line)
             >> c.AntiAliasing()

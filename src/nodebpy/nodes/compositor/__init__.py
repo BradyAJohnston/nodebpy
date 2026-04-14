@@ -2,6 +2,7 @@
 
 from .manual import (
     MenuSwitch,
+    tree,
 )
 from ..geometry.color import (
     Gamma,
@@ -246,4 +247,5 @@ __all__ = (
     "VoronoiTexture",
     "WaveTexture",
     "WhiteNoiseTexture",
+    "tree",
 )

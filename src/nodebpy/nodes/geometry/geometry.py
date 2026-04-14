@@ -897,42 +897,42 @@ class DeleteGeometry(NodeBuilder):
     def point(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Point'."""
+        """Create Delete Geometry with operation 'Point'. Attribute on point"""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Edge'."""
+        """Create Delete Geometry with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Face'."""
+        """Create Delete Geometry with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Spline'."""
+        """Create Delete Geometry with operation 'Spline'. Attribute on spline"""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def instance(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Instance'."""
+        """Create Delete Geometry with operation 'Instance'. Attribute on instance"""
         return cls(domain="INSTANCE", geometry=geometry, selection=selection)
 
     @classmethod
     def layer(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Layer'."""
+        """Create Delete Geometry with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
@@ -2063,19 +2063,19 @@ class MeshBoolean(NodeBuilder):
 
     @classmethod
     def intersect(cls, mesh_2: InputGeometry = None) -> "MeshBoolean":
-        """Create Mesh Boolean with operation 'Intersect'."""
+        """Create Mesh Boolean with operation 'Intersect'. Keep the part of the mesh that is common between all operands"""
         return cls(operation="INTERSECT", mesh_2=mesh_2)
 
     @classmethod
     def union(cls, mesh_2: InputGeometry = None) -> "MeshBoolean":
-        """Create Mesh Boolean with operation 'Union'."""
+        """Create Mesh Boolean with operation 'Union'. Combine meshes in an additive way"""
         return cls(operation="UNION", mesh_2=mesh_2)
 
     @classmethod
     def difference(
         cls, mesh_1: InputGeometry = None, mesh_2: InputGeometry = None
     ) -> "MeshBoolean":
-        """Create Mesh Boolean with operation 'Difference'."""
+        """Create Mesh Boolean with operation 'Difference'. Combine meshes in a subtractive way"""
         return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
 
     @property
@@ -2680,7 +2680,7 @@ class Raycast(NodeBuilder):
         ray_direction: InputVector = None,
         ray_length: InputFloat = 100.0,
     ) -> "Raycast":
-        """Create Raycast with operation 'Float'."""
+        """Create Raycast with operation 'Float'. Floating-point value"""
         return cls(
             data_type="FLOAT",
             target_geometry=target_geometry,
@@ -2701,7 +2701,7 @@ class Raycast(NodeBuilder):
         ray_direction: InputVector = None,
         ray_length: InputFloat = 100.0,
     ) -> "Raycast":
-        """Create Raycast with operation 'Integer'."""
+        """Create Raycast with operation 'Integer'. 32-bit integer"""
         return cls(
             data_type="INT",
             target_geometry=target_geometry,
@@ -2722,7 +2722,7 @@ class Raycast(NodeBuilder):
         ray_direction: InputVector = None,
         ray_length: InputFloat = 100.0,
     ) -> "Raycast":
-        """Create Raycast with operation 'Boolean'."""
+        """Create Raycast with operation 'Boolean'. True or false"""
         return cls(
             data_type="BOOLEAN",
             target_geometry=target_geometry,
@@ -2743,7 +2743,7 @@ class Raycast(NodeBuilder):
         ray_direction: InputVector = None,
         ray_length: InputFloat = 100.0,
     ) -> "Raycast":
-        """Create Raycast with operation 'Vector'."""
+        """Create Raycast with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
             data_type="FLOAT_VECTOR",
             target_geometry=target_geometry,
@@ -2764,7 +2764,7 @@ class Raycast(NodeBuilder):
         ray_direction: InputVector = None,
         ray_length: InputFloat = 100.0,
     ) -> "Raycast":
-        """Create Raycast with operation 'Color'."""
+        """Create Raycast with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return cls(
             data_type="FLOAT_COLOR",
             target_geometry=target_geometry,
@@ -2785,7 +2785,7 @@ class Raycast(NodeBuilder):
         ray_direction: InputVector = None,
         ray_length: InputFloat = 100.0,
     ) -> "Raycast":
-        """Create Raycast with operation 'Quaternion'."""
+        """Create Raycast with operation 'Quaternion'. Floating point quaternion rotation"""
         return cls(
             data_type="QUATERNION",
             target_geometry=target_geometry,
@@ -2797,7 +2797,7 @@ class Raycast(NodeBuilder):
         )
 
     @classmethod
-    def matrix(
+    def input_4x4_matrix(
         cls,
         target_geometry: InputGeometry = None,
         attribute: InputMatrix = None,
@@ -2806,7 +2806,7 @@ class Raycast(NodeBuilder):
         ray_direction: InputVector = None,
         ray_length: InputFloat = 100.0,
     ) -> "Raycast":
-        """Create Raycast with operation '4x4 Matrix'."""
+        """Create Raycast with operation '4x4 Matrix'. Floating point matrix"""
         return cls(
             data_type="FLOAT4X4",
             target_geometry=target_geometry,
@@ -3202,7 +3202,7 @@ class SampleCurve(NodeBuilder):
         factor: InputFloat = 0.0,
         curve_index: InputInteger = 0,
     ) -> "SampleCurve":
-        """Create Sample Curve with operation 'Float'."""
+        """Create Sample Curve with operation 'Float'. Floating-point value"""
         return cls(
             data_type="FLOAT",
             curves=curves,
@@ -3219,7 +3219,7 @@ class SampleCurve(NodeBuilder):
         factor: InputFloat = 0.0,
         curve_index: InputInteger = 0,
     ) -> "SampleCurve":
-        """Create Sample Curve with operation 'Integer'."""
+        """Create Sample Curve with operation 'Integer'. 32-bit integer"""
         return cls(
             data_type="INT",
             curves=curves,
@@ -3236,7 +3236,7 @@ class SampleCurve(NodeBuilder):
         factor: InputFloat = 0.0,
         curve_index: InputInteger = 0,
     ) -> "SampleCurve":
-        """Create Sample Curve with operation 'Boolean'."""
+        """Create Sample Curve with operation 'Boolean'. True or false"""
         return cls(
             data_type="BOOLEAN",
             curves=curves,
@@ -3253,7 +3253,7 @@ class SampleCurve(NodeBuilder):
         factor: InputFloat = 0.0,
         curve_index: InputInteger = 0,
     ) -> "SampleCurve":
-        """Create Sample Curve with operation 'Vector'."""
+        """Create Sample Curve with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
             data_type="FLOAT_VECTOR",
             curves=curves,
@@ -3270,7 +3270,7 @@ class SampleCurve(NodeBuilder):
         factor: InputFloat = 0.0,
         curve_index: InputInteger = 0,
     ) -> "SampleCurve":
-        """Create Sample Curve with operation 'Color'."""
+        """Create Sample Curve with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return cls(
             data_type="FLOAT_COLOR",
             curves=curves,
@@ -3287,7 +3287,7 @@ class SampleCurve(NodeBuilder):
         factor: InputFloat = 0.0,
         curve_index: InputInteger = 0,
     ) -> "SampleCurve":
-        """Create Sample Curve with operation 'Quaternion'."""
+        """Create Sample Curve with operation 'Quaternion'. Floating point quaternion rotation"""
         return cls(
             data_type="QUATERNION",
             curves=curves,
@@ -3297,14 +3297,14 @@ class SampleCurve(NodeBuilder):
         )
 
     @classmethod
-    def matrix(
+    def input_4x4_matrix(
         cls,
         curves: InputGeometry = None,
         value: InputMatrix = None,
         factor: InputFloat = 0.0,
         curve_index: InputInteger = 0,
     ) -> "SampleCurve":
-        """Create Sample Curve with operation '4x4 Matrix'."""
+        """Create Sample Curve with operation '4x4 Matrix'. Floating point matrix"""
         return cls(
             data_type="FLOAT4X4",
             curves=curves,
@@ -3446,7 +3446,7 @@ class SampleIndex(NodeBuilder):
         value: InputFloat = 0.0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Float'."""
+        """Create Sample Index with operation 'Float'. Floating-point value"""
         return cls(data_type="FLOAT", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3456,7 +3456,7 @@ class SampleIndex(NodeBuilder):
         value: InputInteger = 0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Integer'."""
+        """Create Sample Index with operation 'Integer'. 32-bit integer"""
         return cls(data_type="INT", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3466,7 +3466,7 @@ class SampleIndex(NodeBuilder):
         value: InputBoolean = False,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Boolean'."""
+        """Create Sample Index with operation 'Boolean'. True or false"""
         return cls(data_type="BOOLEAN", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3476,7 +3476,7 @@ class SampleIndex(NodeBuilder):
         value: InputVector = None,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Vector'."""
+        """Create Sample Index with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
             data_type="FLOAT_VECTOR", geometry=geometry, value=value, index=index
         )
@@ -3488,7 +3488,7 @@ class SampleIndex(NodeBuilder):
         value: InputColor = None,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Color'."""
+        """Create Sample Index with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return cls(data_type="FLOAT_COLOR", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3498,17 +3498,17 @@ class SampleIndex(NodeBuilder):
         value: InputRotation = None,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Quaternion'."""
+        """Create Sample Index with operation 'Quaternion'. Floating point quaternion rotation"""
         return cls(data_type="QUATERNION", geometry=geometry, value=value, index=index)
 
     @classmethod
-    def matrix(
+    def input_4x4_matrix(
         cls,
         geometry: InputGeometry = None,
         value: InputMatrix = None,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation '4x4 Matrix'."""
+        """Create Sample Index with operation '4x4 Matrix'. Floating point matrix"""
         return cls(data_type="FLOAT4X4", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3518,7 +3518,7 @@ class SampleIndex(NodeBuilder):
         value: InputFloat = 0.0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Point'."""
+        """Create Sample Index with operation 'Point'. Attribute on point"""
         return cls(domain="POINT", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3528,7 +3528,7 @@ class SampleIndex(NodeBuilder):
         value: InputFloat = 0.0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Edge'."""
+        """Create Sample Index with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3538,7 +3538,7 @@ class SampleIndex(NodeBuilder):
         value: InputFloat = 0.0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Face'."""
+        """Create Sample Index with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3548,7 +3548,7 @@ class SampleIndex(NodeBuilder):
         value: InputFloat = 0.0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Face Corner'."""
+        """Create Sample Index with operation 'Face Corner'. Attribute on mesh face corner"""
         return cls(domain="CORNER", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3558,7 +3558,7 @@ class SampleIndex(NodeBuilder):
         value: InputFloat = 0.0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Spline'."""
+        """Create Sample Index with operation 'Spline'. Attribute on spline"""
         return cls(domain="CURVE", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3568,7 +3568,7 @@ class SampleIndex(NodeBuilder):
         value: InputFloat = 0.0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Instance'."""
+        """Create Sample Index with operation 'Instance'. Attribute on instance"""
         return cls(domain="INSTANCE", geometry=geometry, value=value, index=index)
 
     @classmethod
@@ -3578,7 +3578,7 @@ class SampleIndex(NodeBuilder):
         value: InputFloat = 0.0,
         index: InputInteger = 0,
     ) -> "SampleIndex":
-        """Create Sample Index with operation 'Layer'."""
+        """Create Sample Index with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(domain="LAYER", geometry=geometry, value=value, index=index)
 
     @property
@@ -3676,28 +3676,28 @@ class SampleNearest(NodeBuilder):
     def point(
         cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Point'."""
+        """Create Sample Nearest with operation 'Point'. Attribute on point"""
         return cls(domain="POINT", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def edge(
         cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Edge'."""
+        """Create Sample Nearest with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def face(
         cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Face'."""
+        """Create Sample Nearest with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def face_corner(
         cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Face Corner'."""
+        """Create Sample Nearest with operation 'Face Corner'. Attribute on mesh face corner"""
         return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
 
     @property
@@ -3770,7 +3770,7 @@ class SampleNearestSurface(NodeBuilder):
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
-        """Create Sample Nearest Surface with operation 'Float'."""
+        """Create Sample Nearest Surface with operation 'Float'. Floating-point value"""
         return cls(
             data_type="FLOAT",
             mesh=mesh,
@@ -3789,7 +3789,7 @@ class SampleNearestSurface(NodeBuilder):
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
-        """Create Sample Nearest Surface with operation 'Integer'."""
+        """Create Sample Nearest Surface with operation 'Integer'. 32-bit integer"""
         return cls(
             data_type="INT",
             mesh=mesh,
@@ -3808,7 +3808,7 @@ class SampleNearestSurface(NodeBuilder):
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
-        """Create Sample Nearest Surface with operation 'Boolean'."""
+        """Create Sample Nearest Surface with operation 'Boolean'. True or false"""
         return cls(
             data_type="BOOLEAN",
             mesh=mesh,
@@ -3827,7 +3827,7 @@ class SampleNearestSurface(NodeBuilder):
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
-        """Create Sample Nearest Surface with operation 'Vector'."""
+        """Create Sample Nearest Surface with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
             data_type="FLOAT_VECTOR",
             mesh=mesh,
@@ -3846,7 +3846,7 @@ class SampleNearestSurface(NodeBuilder):
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
-        """Create Sample Nearest Surface with operation 'Color'."""
+        """Create Sample Nearest Surface with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return cls(
             data_type="FLOAT_COLOR",
             mesh=mesh,
@@ -3865,7 +3865,7 @@ class SampleNearestSurface(NodeBuilder):
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
-        """Create Sample Nearest Surface with operation 'Quaternion'."""
+        """Create Sample Nearest Surface with operation 'Quaternion'. Floating point quaternion rotation"""
         return cls(
             data_type="QUATERNION",
             mesh=mesh,
@@ -3876,7 +3876,7 @@ class SampleNearestSurface(NodeBuilder):
         )
 
     @classmethod
-    def matrix(
+    def input_4x4_matrix(
         cls,
         mesh: InputGeometry = None,
         value: InputMatrix = None,
@@ -3884,7 +3884,7 @@ class SampleNearestSurface(NodeBuilder):
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
     ) -> "SampleNearestSurface":
-        """Create Sample Nearest Surface with operation '4x4 Matrix'."""
+        """Create Sample Nearest Surface with operation '4x4 Matrix'. Floating point matrix"""
         return cls(
             data_type="FLOAT4X4",
             mesh=mesh,
@@ -4002,7 +4002,7 @@ class SampleUVSurface(NodeBuilder):
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
-        """Create Sample UV Surface with operation 'Float'."""
+        """Create Sample UV Surface with operation 'Float'. Floating-point value"""
         return cls(
             data_type="FLOAT",
             mesh=mesh,
@@ -4019,7 +4019,7 @@ class SampleUVSurface(NodeBuilder):
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
-        """Create Sample UV Surface with operation 'Integer'."""
+        """Create Sample UV Surface with operation 'Integer'. 32-bit integer"""
         return cls(
             data_type="INT",
             mesh=mesh,
@@ -4036,7 +4036,7 @@ class SampleUVSurface(NodeBuilder):
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
-        """Create Sample UV Surface with operation 'Boolean'."""
+        """Create Sample UV Surface with operation 'Boolean'. True or false"""
         return cls(
             data_type="BOOLEAN",
             mesh=mesh,
@@ -4053,7 +4053,7 @@ class SampleUVSurface(NodeBuilder):
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
-        """Create Sample UV Surface with operation 'Vector'."""
+        """Create Sample UV Surface with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
             data_type="FLOAT_VECTOR",
             mesh=mesh,
@@ -4070,7 +4070,7 @@ class SampleUVSurface(NodeBuilder):
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
-        """Create Sample UV Surface with operation 'Color'."""
+        """Create Sample UV Surface with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return cls(
             data_type="FLOAT_COLOR",
             mesh=mesh,
@@ -4087,7 +4087,7 @@ class SampleUVSurface(NodeBuilder):
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
-        """Create Sample UV Surface with operation 'Quaternion'."""
+        """Create Sample UV Surface with operation 'Quaternion'. Floating point quaternion rotation"""
         return cls(
             data_type="QUATERNION",
             mesh=mesh,
@@ -4097,14 +4097,14 @@ class SampleUVSurface(NodeBuilder):
         )
 
     @classmethod
-    def matrix(
+    def input_4x4_matrix(
         cls,
         mesh: InputGeometry = None,
         value: InputMatrix = None,
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
     ) -> "SampleUVSurface":
-        """Create Sample UV Surface with operation '4x4 Matrix'."""
+        """Create Sample UV Surface with operation '4x4 Matrix'. Floating point matrix"""
         return cls(
             data_type="FLOAT4X4",
             mesh=mesh,
@@ -4213,7 +4213,7 @@ class ScaleElements(NodeBuilder):
         center: InputVector = None,
         scale_mode: InputMenu | Literal["Uniform", "Single Axis"] = "Uniform",
     ) -> "ScaleElements":
-        """Create Scale Elements with operation 'Face'."""
+        """Create Scale Elements with operation 'Face'. Scale individual faces or neighboring face islands"""
         return cls(
             domain="FACE",
             geometry=geometry,
@@ -4232,7 +4232,7 @@ class ScaleElements(NodeBuilder):
         center: InputVector = None,
         scale_mode: InputMenu | Literal["Uniform", "Single Axis"] = "Uniform",
     ) -> "ScaleElements":
-        """Create Scale Elements with operation 'Edge'."""
+        """Create Scale Elements with operation 'Edge'. Scale individual edges or neighboring edge islands"""
         return cls(
             domain="EDGE",
             geometry=geometry,
@@ -4420,42 +4420,42 @@ class SeparateGeometry(NodeBuilder):
     def point(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Point'."""
+        """Create Separate Geometry with operation 'Point'. Attribute on point"""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Edge'."""
+        """Create Separate Geometry with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Face'."""
+        """Create Separate Geometry with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Spline'."""
+        """Create Separate Geometry with operation 'Spline'. Attribute on spline"""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def instance(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Instance'."""
+        """Create Separate Geometry with operation 'Instance'. Attribute on instance"""
         return cls(domain="INSTANCE", geometry=geometry, selection=selection)
 
     @classmethod
     def layer(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Layer'."""
+        """Create Separate Geometry with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
@@ -5103,7 +5103,7 @@ class SetMeshNormal(NodeBuilder):
         edge_sharpness: InputBoolean = False,
         face_sharpness: InputBoolean = False,
     ) -> "SetMeshNormal":
-        """Create Set Mesh Normal with operation 'Point'."""
+        """Create Set Mesh Normal with operation 'Point'. Attribute on point"""
         return cls(
             domain="POINT",
             mesh=mesh,
@@ -5120,7 +5120,7 @@ class SetMeshNormal(NodeBuilder):
         edge_sharpness: InputBoolean = False,
         face_sharpness: InputBoolean = False,
     ) -> "SetMeshNormal":
-        """Create Set Mesh Normal with operation 'Face'."""
+        """Create Set Mesh Normal with operation 'Face'. Attribute on mesh faces"""
         return cls(
             domain="FACE",
             mesh=mesh,
@@ -5137,7 +5137,7 @@ class SetMeshNormal(NodeBuilder):
         edge_sharpness: InputBoolean = False,
         face_sharpness: InputBoolean = False,
     ) -> "SetMeshNormal":
-        """Create Set Mesh Normal with operation 'Face Corner'."""
+        """Create Set Mesh Normal with operation 'Face Corner'. Attribute on mesh face corner"""
         return cls(
             domain="CORNER",
             mesh=mesh,
@@ -5305,28 +5305,28 @@ class SetSelection(NodeBuilder):
     def point(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSelection":
-        """Create Set Selection with operation 'Point'."""
+        """Create Set Selection with operation 'Point'. Attribute on point"""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSelection":
-        """Create Set Selection with operation 'Edge'."""
+        """Create Set Selection with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSelection":
-        """Create Set Selection with operation 'Face'."""
+        """Create Set Selection with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSelection":
-        """Create Set Selection with operation 'Spline'."""
+        """Create Set Selection with operation 'Spline'. Attribute on spline"""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @property
@@ -5393,7 +5393,7 @@ class SetShadeSmooth(NodeBuilder):
         selection: InputBoolean = True,
         shade_smooth: InputBoolean = True,
     ) -> "SetShadeSmooth":
-        """Create Set Shade Smooth with operation 'Edge'."""
+        """Create Set Shade Smooth with operation 'Edge'. Attribute on mesh edge"""
         return cls(
             domain="EDGE",
             geometry=geometry,
@@ -5408,7 +5408,7 @@ class SetShadeSmooth(NodeBuilder):
         selection: InputBoolean = True,
         shade_smooth: InputBoolean = True,
     ) -> "SetShadeSmooth":
-        """Create Set Shade Smooth with operation 'Face'."""
+        """Create Set Shade Smooth with operation 'Face'. Attribute on mesh faces"""
         return cls(
             domain="FACE",
             geometry=geometry,
@@ -5608,7 +5608,7 @@ class SortElements(NodeBuilder):
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Point'."""
+        """Create Sort Elements with operation 'Point'. Attribute on point"""
         return cls(
             domain="POINT",
             geometry=geometry,
@@ -5625,7 +5625,7 @@ class SortElements(NodeBuilder):
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Edge'."""
+        """Create Sort Elements with operation 'Edge'. Attribute on mesh edge"""
         return cls(
             domain="EDGE",
             geometry=geometry,
@@ -5642,7 +5642,7 @@ class SortElements(NodeBuilder):
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Face'."""
+        """Create Sort Elements with operation 'Face'. Attribute on mesh faces"""
         return cls(
             domain="FACE",
             geometry=geometry,
@@ -5659,7 +5659,7 @@ class SortElements(NodeBuilder):
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Spline'."""
+        """Create Sort Elements with operation 'Spline'. Attribute on spline"""
         return cls(
             domain="CURVE",
             geometry=geometry,
@@ -5676,7 +5676,7 @@ class SortElements(NodeBuilder):
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Instance'."""
+        """Create Sort Elements with operation 'Instance'. Attribute on instance"""
         return cls(
             domain="INSTANCE",
             geometry=geometry,
@@ -5848,7 +5848,7 @@ class SplitToInstances(NodeBuilder):
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Point'."""
+        """Create Split to Instances with operation 'Point'. Attribute on point"""
         return cls(
             domain="POINT", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -5860,7 +5860,7 @@ class SplitToInstances(NodeBuilder):
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Edge'."""
+        """Create Split to Instances with operation 'Edge'. Attribute on mesh edge"""
         return cls(
             domain="EDGE", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -5872,7 +5872,7 @@ class SplitToInstances(NodeBuilder):
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Face'."""
+        """Create Split to Instances with operation 'Face'. Attribute on mesh faces"""
         return cls(
             domain="FACE", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -5884,7 +5884,7 @@ class SplitToInstances(NodeBuilder):
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Spline'."""
+        """Create Split to Instances with operation 'Spline'. Attribute on spline"""
         return cls(
             domain="CURVE", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -5896,7 +5896,7 @@ class SplitToInstances(NodeBuilder):
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Instance'."""
+        """Create Split to Instances with operation 'Instance'. Attribute on instance"""
         return cls(
             domain="INSTANCE", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -5908,7 +5908,7 @@ class SplitToInstances(NodeBuilder):
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Layer'."""
+        """Create Split to Instances with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(
             domain="LAYER", geometry=geometry, selection=selection, group_id=group_id
         )

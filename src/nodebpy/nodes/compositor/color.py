@@ -41,6 +41,57 @@ class AlphaOver(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    @classmethod
+    def over(
+        cls,
+        background: InputColor = None,
+        foreground: InputColor = None,
+        fac: InputFloat = 1.0,
+        straight_alpha: InputBoolean = False,
+    ) -> "AlphaOver":
+        """Create Alpha Over node with type 'Over'."""
+        return cls(
+            background=background,
+            foreground=foreground,
+            fac=fac,
+            straight_alpha=straight_alpha,
+            type="Over",
+        )
+
+    @classmethod
+    def disjoint_over(
+        cls,
+        background: InputColor = None,
+        foreground: InputColor = None,
+        fac: InputFloat = 1.0,
+        straight_alpha: InputBoolean = False,
+    ) -> "AlphaOver":
+        """Create Alpha Over node with type 'Disjoint Over'."""
+        return cls(
+            background=background,
+            foreground=foreground,
+            fac=fac,
+            straight_alpha=straight_alpha,
+            type="Disjoint Over",
+        )
+
+    @classmethod
+    def conjoint_over(
+        cls,
+        background: InputColor = None,
+        foreground: InputColor = None,
+        fac: InputFloat = 1.0,
+        straight_alpha: InputBoolean = False,
+    ) -> "AlphaOver":
+        """Create Alpha Over node with type 'Conjoint Over'."""
+        return cls(
+            background=background,
+            foreground=foreground,
+            fac=fac,
+            straight_alpha=straight_alpha,
+            type="Conjoint Over",
+        )
+
     @property
     def i_background(self) -> Socket:
         """Input socket: Background"""
@@ -173,6 +224,77 @@ class ColorBalance(NodeBuilder):
         self.input_whitepoint = input_whitepoint
         self.output_whitepoint = output_whitepoint
         self._establish_links(**key_args)
+
+    @classmethod
+    def lift_gamma_gain(
+        cls,
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
+        base_lift: InputFloat = 0.0,
+        color_lift: InputColor = None,
+        base_gamma: InputFloat = 1.0,
+        color_gamma: InputColor = None,
+        base_gain: InputFloat = 1.0,
+        color_gain: InputColor = None,
+    ) -> "ColorBalance":
+        """Create Color Balance node with type 'Lift/Gamma/Gain'."""
+        return cls(
+            image=image,
+            fac=fac,
+            base_lift=base_lift,
+            color_lift=color_lift,
+            base_gamma=base_gamma,
+            color_gamma=color_gamma,
+            base_gain=base_gain,
+            color_gain=color_gain,
+            type="Lift/Gamma/Gain",
+        )
+
+    @classmethod
+    def offset_power_slope_asc_cdl(
+        cls,
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
+        base_offset: InputFloat = 0.0,
+        color_offset: InputColor = None,
+        base_power: InputFloat = 1.0,
+        color_power: InputColor = None,
+        base_slope: InputFloat = 1.0,
+        color_slope: InputColor = None,
+    ) -> "ColorBalance":
+        """Create Color Balance node with type 'Offset/Power/Slope (ASC-CDL)'."""
+        return cls(
+            image=image,
+            fac=fac,
+            base_offset=base_offset,
+            color_offset=color_offset,
+            base_power=base_power,
+            color_power=color_power,
+            base_slope=base_slope,
+            color_slope=color_slope,
+            type="Offset/Power/Slope (ASC-CDL)",
+        )
+
+    @classmethod
+    def white_point(
+        cls,
+        image: InputColor = None,
+        fac: InputFloat = 1.0,
+        input_temperature: InputFloat = 6500.0,
+        input_tint: InputFloat = 10.0,
+        output_temperature: InputFloat = 6500.0,
+        output_tint: InputFloat = 10.0,
+    ) -> "ColorBalance":
+        """Create Color Balance node with type 'White Point'."""
+        return cls(
+            image=image,
+            fac=fac,
+            input_temperature=input_temperature,
+            input_tint=input_tint,
+            output_temperature=output_temperature,
+            output_tint=output_tint,
+            type="White Point",
+        )
 
     @property
     def i_image(self) -> Socket:
@@ -870,6 +992,36 @@ class Tonemap(NodeBuilder):
         }
 
         self._establish_links(**key_args)
+
+    @classmethod
+    def r_d_photoreceptor(
+        cls,
+        image: InputColor = None,
+        intensity: InputFloat = 0.0,
+        contrast: InputFloat = 0.0,
+        light_adaptation: InputFloat = 0.0,
+        chromatic_adaptation: InputFloat = 0.0,
+    ) -> "Tonemap":
+        """Create Tonemap node with type 'R/D Photoreceptor'."""
+        return cls(
+            image=image,
+            intensity=intensity,
+            contrast=contrast,
+            light_adaptation=light_adaptation,
+            chromatic_adaptation=chromatic_adaptation,
+            type="R/D Photoreceptor",
+        )
+
+    @classmethod
+    def rh_simple(
+        cls,
+        image: InputColor = None,
+        key: InputFloat = 0.18,
+        balance: InputFloat = 1.0,
+        gamma: InputFloat = 1.0,
+    ) -> "Tonemap":
+        """Create Tonemap node with type 'Rh Simple'."""
+        return cls(image=image, key=key, balance=balance, gamma=gamma, type="Rh Simple")
 
     @property
     def i_image(self) -> Socket:

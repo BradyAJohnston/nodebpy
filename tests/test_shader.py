@@ -1,20 +1,20 @@
 import bpy
 import pytest
 
-from nodebpy import TreeBuilder, sockets
 from nodebpy import shader as s
+from nodebpy import sockets
 from nodebpy.builder import SocketError
 
 
 def test_simple_shader():
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         prin = s.PrincipledBSDF()
         with tree.outputs:
             _ = prin >> sockets.SocketShader()
 
 
 def test_shader_math():
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         comp = s.Geometry().o_random_per_island >= 10.0
         prin = s.PrincipledBSDF(ior=comp)
         with tree.outputs:
@@ -31,7 +31,7 @@ def test_shader_math():
 
 
 def test_shader_menu_switch():
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         menu = s.MenuSwitch.shader(*[s.PrincipledBSDF() for _ in range(10)])
         with tree.outputs:
             _ = menu >> sockets.SocketShader()
@@ -39,7 +39,7 @@ def test_shader_menu_switch():
     assert len(menu.node.enum_items) == 10
     assert menu.node.outputs[0].links
 
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         menu = s.MenuSwitch.float(
             **{f"Input_{i}": float(value) for i, value in enumerate(range(10))}
         )
@@ -51,7 +51,7 @@ def test_shader_menu_switch():
         assert f"Input_{i}" == input.name
         assert float(i) == input.socket.default_value
 
-    with TreeBuilder.shader() as tree:
+    with s.tree() as tree:
         menu = s.MenuSwitch.float(
             **{f"Input_{i}": s.Value(value) for i, value in enumerate(range(10))}
         )
@@ -68,7 +68,7 @@ def test_shader_menu_switch():
 
 
 def test_color_shader():
-    with TreeBuilder.shader():
+    with s.tree():
         mix_shader = s.MixShader(1.0, s.Color())
         assert (
             mix_shader.node.inputs["Shader"].links[0].from_node.bl_idname
@@ -78,14 +78,12 @@ def test_color_shader():
             _ = s.Mix.color(0.5, mix_shader)
 
 
-def material_node_cartoon() -> bpy.types.Material:
-    mat = bpy.data.materials.new(name="Cartoon")
-    with TreeBuilder.shader(mat.node_tree) as tree:
-        tree.nodes.clear()
-        output = s.MaterialOutput(surface=s.Attribute("GEOMETRY", "Color"))
-        aov = s.AovOutput(
-            value=s.Attribute("GEOMETRY", "sec_struct"), aov_name="sec_struct"
-        )
+def test_material_node_cartoon():
+    with s.material("Cartoon", fake_user=True) as mat:
+        mat.nodes.clear()
+        output = s.MaterialOutput(surface=s.Attribute.geometry("Color").o_color)
+        attr = s.Attribute.geometry("sec_struct")
+        aov = s.AovOutput(value=attr, aov_name="sec_struct")
 
     assert (
         output.node.inputs["Surface"].links[0].from_node.bl_idname
@@ -94,3 +92,7 @@ def material_node_cartoon() -> bpy.types.Material:
     assert (
         aov.node.inputs["Value"].links[0].from_node.bl_idname == s.Attribute._bl_idname
     )
+    assert "Cartoon" in bpy.data.materials
+    assert "Cartoon" not in bpy.data.node_groups
+    assert attr.attribute_name == "sec_struct"
+    assert attr.attribute_type == "GEOMETRY"

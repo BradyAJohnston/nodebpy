@@ -294,6 +294,32 @@ class LensDistortion(NodeBuilder):
 
         self._establish_links(**key_args)
 
+    @classmethod
+    def radial(
+        cls,
+        image: InputColor = None,
+        distortion: InputFloat = 0.0,
+        dispersion: InputFloat = 0.0,
+        jitter: InputBoolean = False,
+        fit: InputBoolean = False,
+    ) -> "LensDistortion":
+        """Create Lens Distortion node with type 'Radial'."""
+        return cls(
+            image=image,
+            distortion=distortion,
+            dispersion=dispersion,
+            jitter=jitter,
+            fit=fit,
+            type="Radial",
+        )
+
+    @classmethod
+    def horizontal(
+        cls, image: InputColor = None, dispersion: InputFloat = 0.0
+    ) -> "LensDistortion":
+        """Create Lens Distortion node with type 'Horizontal'."""
+        return cls(image=image, dispersion=dispersion, type="Horizontal")
+
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
@@ -406,6 +432,16 @@ class MovieDistortion(NodeBuilder):
         key_args = {"Image": image, "Type": type}
 
         self._establish_links(**key_args)
+
+    @classmethod
+    def undistort(cls, image: InputColor = None) -> "MovieDistortion":
+        """Create Movie Distortion node with type 'Undistort'."""
+        return cls(image=image, type="Undistort")
+
+    @classmethod
+    def distort(cls, image: InputColor = None) -> "MovieDistortion":
+        """Create Movie Distortion node with type 'Distort'."""
+        return cls(image=image, type="Distort")
 
     @property
     def i_image(self) -> Socket:
@@ -592,6 +628,88 @@ class Scale(NodeBuilder):
         }
 
         self._establish_links(**key_args)
+
+    @classmethod
+    def relative(
+        cls,
+        image: InputColor = None,
+        x: InputFloat = 1.0,
+        y: InputFloat = 1.0,
+        interpolation: InputMenu
+        | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+    ) -> "Scale":
+        """Create Scale node with type 'Relative'."""
+        return cls(
+            image=image,
+            x=x,
+            y=y,
+            interpolation=interpolation,
+            extension_x=extension_x,
+            extension_y=extension_y,
+            type="Relative",
+        )
+
+    @classmethod
+    def absolute(
+        cls,
+        image: InputColor = None,
+        x: InputFloat = 1.0,
+        y: InputFloat = 1.0,
+        interpolation: InputMenu
+        | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+    ) -> "Scale":
+        """Create Scale node with type 'Absolute'."""
+        return cls(
+            image=image,
+            x=x,
+            y=y,
+            interpolation=interpolation,
+            extension_x=extension_x,
+            extension_y=extension_y,
+            type="Absolute",
+        )
+
+    @classmethod
+    def scene_size(
+        cls,
+        image: InputColor = None,
+        interpolation: InputMenu
+        | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+    ) -> "Scale":
+        """Create Scale node with type 'Scene Size'."""
+        return cls(
+            image=image,
+            interpolation=interpolation,
+            extension_x=extension_x,
+            extension_y=extension_y,
+            type="Scene Size",
+        )
+
+    @classmethod
+    def render_size(
+        cls,
+        image: InputColor = None,
+        frame_type: InputMenu | Literal["Stretch", "Fit", "Crop"] = "Stretch",
+        interpolation: InputMenu
+        | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
+        extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+        extension_y: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
+    ) -> "Scale":
+        """Create Scale node with type 'Render Size'."""
+        return cls(
+            image=image,
+            frame_type=frame_type,
+            interpolation=interpolation,
+            extension_x=extension_x,
+            extension_y=extension_y,
+            type="Render Size",
+        )
 
     @property
     def i_image(self) -> Socket:

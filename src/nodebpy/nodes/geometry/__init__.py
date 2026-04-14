@@ -34,6 +34,7 @@ from .manual import (
     FieldVariance,
     Compare,
     AttributeStatistic,
+    tree,
 )
 from .converter import (
     AlignRotationToVector,
@@ -654,4 +655,5 @@ __all__ = (
     "Warning",
     "WaveTexture",
     "WhiteNoiseTexture",
+    "tree",
 )

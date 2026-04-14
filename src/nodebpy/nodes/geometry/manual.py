@@ -1,14 +1,18 @@
 from typing import Any, Literal
 
 import bpy
-
 from bpy.types import NodeSocket
 
 from ...builder import (
     BaseNode as NodeBuilder,
+)
+from ...builder import (
     DynamicInputsMixin,
-    Socket as SocketLinker,
     SocketError,
+    TreeBuilder,
+)
+from ...builder import (
+    Socket as SocketLinker,
 )
 from ...types import (
     SOCKET_TYPES,
@@ -82,6 +86,15 @@ __all__ = (
     "Compare",
     "AttributeStatistic",
 )
+
+
+def tree(
+    name: str = "Geometry Node Group",
+    *,
+    collapse: bool = False,
+    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+) -> TreeBuilder:
+    return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
 
 
 class Bake(NodeBuilder, DynamicInputsMixin):
