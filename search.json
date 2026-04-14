@@ -161,18 +161,7 @@
     "href": "reference/builder.NodeBuilder.html",
     "title": "builder.NodeBuilder",
     "section": "",
-    "text": "NodeBuilder()\nBase class for all geometry node wrappers.\n\n\n\n\n\nName\nDescription\n\n\n\n\ninputs\n\n\n\nname\n\n\n\nnode\n\n\n\noutputs\n\n\n\ntree\n\n\n\ntype",
-    "crumbs": [
-      "Internals",
-      "builder.NodeBuilder"
-    ]
-  },
-  {
-    "objectID": "reference/builder.NodeBuilder.html#attributes",
-    "href": "reference/builder.NodeBuilder.html#attributes",
-    "title": "builder.NodeBuilder",
-    "section": "",
-    "text": "Name\nDescription\n\n\n\n\ninputs\n\n\n\nname\n\n\n\nnode\n\n\n\noutputs\n\n\n\ntree\n\n\n\ntype",
+    "text": "builder.NodeBuilder\nNodeBuilder",
     "crumbs": [
       "Internals",
       "builder.NodeBuilder"
@@ -339,7 +328,7 @@
     "href": "reference/index.html",
     "title": "Function reference",
     "section": "",
-    "text": "Nodes use in Geometry Nodes trees.\n\n\n\nnodes.geometry.input\n\n\n\nnodes.geometry.attribute\n\n\n\nnodes.geometry.color\n\n\n\nnodes.geometry.converter\n\n\n\nnodes.geometry.texture\n\n\n\nnodes.geometry.grid\n\n\n\nnodes.geometry.groups\n\n\n\nnodes.geometry.geometry\n\n\n\nnodes.geometry.attribute\n\n\n\nnodes.geometry.vector\n\n\n\nnodes.geometry.manual\n\n\n\n\n\n\n\n\n\nnodes.geometry.zone\n\n\n\n\n\n\n\n\nNodes use in Material / Shader node trees\n\n\n\nnodes.shader.color\n\n\n\nnodes.shader.converter\n\n\n\nnodes.shader.grid\n\n\n\nnodes.shader.group\n\n\n\nnodes.shader.input\n\n\n\nnodes.shader.interface\n\n\n\nnodes.shader.manual\n\n\n\nnodes.shader.output\n\n\n\nnodes.shader.script\n\n\n\nnodes.shader.shader\n\n\n\nnodes.shader.texture\n\n\n\nnodes.shader.vector\n\n\n\n\n\n\n\nNodes for use in the compositor\n\n\n\nnodes.compositor.color\n\n\n\nnodes.compositor.converter\n\n\n\nnodes.compositor.distort\n\n\n\nnodes.compositor.filter\n\n\n\nnodes.compositor.group\n\n\n\nnodes.compositor.input\n\n\n\nnodes.compositor.interface\n\n\n\nnodes.compositor.manual\n\n\n\nnodes.compositor.matte\n\n\n\nnodes.compositor.output\n\n\n\nnodes.compositor.vector\n\n\n\n\n\n\n\nInternal nodes used by nodebpy\n\n\n\nTreeBuilder\nBuilder for creating Blender node trees with a clean Python API.\n\n\nbuilder.NodeBuilder\nBase class for all geometry node wrappers.",
+    "text": "Nodes use in Geometry Nodes trees.\n\n\n\nnodes.geometry.input\n\n\n\nnodes.geometry.attribute\n\n\n\nnodes.geometry.color\n\n\n\nnodes.geometry.converter\n\n\n\nnodes.geometry.texture\n\n\n\nnodes.geometry.grid\n\n\n\nnodes.geometry.groups\n\n\n\nnodes.geometry.geometry\n\n\n\nnodes.geometry.attribute\n\n\n\nnodes.geometry.vector\n\n\n\nnodes.geometry.manual\n\n\n\n\n\n\n\n\n\nnodes.geometry.zone\n\n\n\n\n\n\n\n\nNodes use in Material / Shader node trees\n\n\n\nnodes.shader.color\n\n\n\nnodes.shader.converter\n\n\n\nnodes.shader.grid\n\n\n\nnodes.shader.group\n\n\n\nnodes.shader.input\n\n\n\nnodes.shader.interface\n\n\n\nnodes.shader.manual\n\n\n\nnodes.shader.output\n\n\n\nnodes.shader.script\n\n\n\nnodes.shader.shader\n\n\n\nnodes.shader.texture\n\n\n\nnodes.shader.vector\n\n\n\n\n\n\n\nNodes for use in the compositor\n\n\n\nnodes.compositor.color\n\n\n\nnodes.compositor.converter\n\n\n\nnodes.compositor.distort\n\n\n\nnodes.compositor.filter\n\n\n\nnodes.compositor.group\n\n\n\nnodes.compositor.input\n\n\n\nnodes.compositor.interface\n\n\n\nnodes.compositor.manual\n\n\n\nnodes.compositor.matte\n\n\n\nnodes.compositor.output\n\n\n\nnodes.compositor.vector\n\n\n\n\n\n\n\nInternal nodes used by nodebpy\n\n\n\nTreeBuilder\nBuilder for creating Blender node trees with a clean Python API.\n\n\nbuilder.NodeBuilder",
     "crumbs": [
       "Function reference"
     ]
@@ -379,7 +368,7 @@
     "href": "reference/index.html#internals",
     "title": "Function reference",
     "section": "",
-    "text": "Internal nodes used by nodebpy\n\n\n\nTreeBuilder\nBuilder for creating Blender node trees with a clean Python API.\n\n\nbuilder.NodeBuilder\nBase class for all geometry node wrappers.",
+    "text": "Internal nodes used by nodebpy\n\n\n\nTreeBuilder\nBuilder for creating Blender node trees with a clean Python API.\n\n\nbuilder.NodeBuilder",
     "crumbs": [
       "Function reference"
     ]
