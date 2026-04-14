@@ -3,7 +3,7 @@ title: Writing Node Trees
 ---
 
 ```{python}
-from nodebpy import TreeBuilder, geometry as g, sockets as s
+from nodebpy import geometry as g
 ```
 
 ## Adding Nodes
@@ -14,7 +14,7 @@ While inside of this context, whenever you call a node class (`g.SetPosition()`)
 This first example creates a new tree and adds two new nodes, linking the `Set Position` node into the `Transform Geometry` node. The output and input sockets for each are inferred based on simple heuristics around socket type and order.
 
 ```{python}
-with TreeBuilder("NewTree") as tree:
+with g.tree("NewTree") as tree:
     g.SetPosition() >> g.TransformGeometry()
 
 tree
@@ -29,21 +29,24 @@ These two approaches are equivalent:
 ## Individual Socket Access
 
 ```{python}
-with TreeBuilder("AnotherTree") as tree:
+with g.tree("AnotherTree") as tree:
     pos = g.SetPosition()
 
     g.Position() * 0.5 >> pos.i_position
     g.Vector() >> pos.i_offset
+
+tree
 ```
 
 ## Using Arguments to Class
 
 ```{python}
-with TreeBuilder("AnotherAnotherTree") as tree:
+with g.tree("AnotherAnotherTree") as tree:
     g.SetPosition(
         offset = g.Vector(),
         position = g.Position() * 0.5
     )
+tree
 ```
 
 :::
@@ -60,12 +63,9 @@ The socket interface nodes define what values / sockets are available as inputs 
 We define them in a similar way to the socekts themselves, using context with the `tree.inputs` and `tree.outputs` and adding sockets with the `s.SocketGeometry()`.
 
 ```{python}
-with TreeBuilder("NewTree") as tree:
-    with tree.inputs:
-        geom_inputs = [s.SocketGeometry(f"Geometry_{i}") for i in range(5)]
-
-    with tree.outputs:
-        g.JoinGeometry(*geom_inputs) >> s.SocketGeometry("The Output Socket")
+with g.tree("NewTree") as tree:
+    geom_inputs = [tree.inputs.socket_geometry(f"Geometry_{i}") for i in range(5)]
+    g.JoinGeometry(*geom_inputs) >> tree.outputs.socket_geometry("The Output Socket")
 
 tree
 
@@ -73,29 +73,20 @@ tree
 
 
 ```{python}
-with TreeBuilder() as tree:
-    with tree.inputs:
-        count = s.SocketInt("Count", 10)
-
-    with tree.outputs:
-        output = s.SocketGeometry()
-
+with g.tree() as tree:
     (
-        count
+        tree.inputs.socket_int("Count", 10)
         >> g.Points(position=g.RandomValue.vector(min=(-0.1,-0.1,-0.2)))
-        >> output
+        >> tree.outputs.socket_geometry()
     )
 
 tree
 ```
 
 ```{python}
-with TreeBuilder() as tree:
-    with tree.inputs:
-        count = s.SocketInt("Count", 10)
-
-    with tree.outputs:
-        output = s.SocketGeometry()
+with g.tree() as tree:
+    count = tree.inputs.socket_int("Count", 10)
+    output = tree.outputs.socket_geometry()
 
     (
         count
@@ -116,7 +107,7 @@ Both input and output nodes can automatically detect and capture links when you 
 
 
 ```{python}
-with TreeBuilder(arrange=None) as tree:
+with g.tree(arrange=None) as tree:
     zone = g.RepeatZone(10)
     join = g.JoinGeometry()
     # a geometry socket is added to the zone when we try to connect from the Join Geometry
@@ -131,7 +122,7 @@ tree
 
 
 ```{python}
-with TreeBuilder(arrange=None) as tree:
+with g.tree(arrange=None) as tree:
     # this initializes the zone with two socket inputs for each of the values
     zone = g.SimulationZone(g.Value(), g.Vector())
 

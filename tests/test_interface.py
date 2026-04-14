@@ -1,12 +1,10 @@
 import bpy
 import pytest
 
-from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder.interface import InterfaceSocket
-
 
 # ---------------------------------------------------------------------------
 # Geometry tree — existing test
@@ -145,7 +143,9 @@ def test_socket_float_subtype_and_limits():
 
 def test_socket_int_limits():
     with g.tree(arrange=None) as tree:
-        i = tree.inputs.socket_int("Count", default_value=10, min_value=1, max_value=100)
+        i = tree.inputs.socket_int(
+            "Count", default_value=10, min_value=1, max_value=100
+        )
 
     assert i.interface_socket.default_value == 10
     assert i.interface_socket.min_value == 1
@@ -253,10 +253,13 @@ def test_geometry_float_socket_in_expression():
         scale = tree.inputs.socket_float("Scale", default_value=2.0)
         out = tree.outputs.socket_geometry()
 
-        g.SetPosition(
-            geo,
-            position=g.Position() * scale,
-        ) >> out
+        (
+            g.SetPosition(
+                geo,
+                position=g.Position() * scale,
+            )
+            >> out
+        )
 
     assert scale.interface_socket.default_value == pytest.approx(2.0)
 
@@ -337,8 +340,12 @@ def test_multiple_panels_with_method_api():
 def test_shader_interface_basic():
     with s.tree(arrange=None) as tree:
         base_color = tree.inputs.socket_color("Color", (0.8, 0.2, 0.2, 1.0))
-        metallic = tree.inputs.socket_float("Metallic", 0.0, min_value=0.0, max_value=1.0)
-        roughness = tree.inputs.socket_float("Roughness", 0.5, min_value=0.0, max_value=1.0)
+        metallic = tree.inputs.socket_float(
+            "Metallic", 0.0, min_value=0.0, max_value=1.0
+        )
+        roughness = tree.inputs.socket_float(
+            "Roughness", 0.5, min_value=0.0, max_value=1.0
+        )
         shader_out = tree.outputs.socket_shader("Shader")
 
         prin = s.PrincipledBSDF(
@@ -399,7 +406,9 @@ def test_shader_float_output():
 def test_compositor_color_and_float_sockets():
     with c.tree(arrange=None) as tree:
         image = tree.inputs.socket_color("Image")
-        fac = tree.inputs.socket_float("Factor", default_value=1.0, min_value=0.0, max_value=1.0)
+        fac = tree.inputs.socket_float(
+            "Factor", default_value=1.0, min_value=0.0, max_value=1.0
+        )
         out = tree.outputs.socket_color("Image")
 
         c.Mix.color(fac, image, c.Blur(image)) >> out
