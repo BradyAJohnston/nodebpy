@@ -31,7 +31,8 @@ from bpy.types import (
 from mathutils import Euler
 
 if typing.TYPE_CHECKING:
-    from .builder import NodeBuilder, SocketLinker
+    from .builder import BaseNode as NodeBuilder
+    from .builder import Socket as SocketLinker
 
 
 def _is_default_value(value: InputAny):

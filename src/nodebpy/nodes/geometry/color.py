@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, ColorSocketLinker
+from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
 
 from ...types import (
     InputColor,
@@ -30,17 +30,17 @@ class Gamma(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def i_gamma(self) -> SocketLinker:
+    def i_gamma(self) -> Socket:
         """Input socket: Gamma"""
         return self.inputs.get("Gamma")
 
     @property
-    def o_color(self) -> ColorSocketLinker:
+    def o_color(self) -> ColorSocket:
         """Output socket: Color"""
         return self.outputs.get("Color")
 
@@ -64,16 +64,16 @@ class RGBCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_fac(self) -> SocketLinker:
+    def i_fac(self) -> Socket:
         """Input socket: Factor"""
         return self.inputs.get("Fac")
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def o_color(self) -> ColorSocketLinker:
+    def o_color(self) -> ColorSocket:
         """Output socket: Color"""
         return self.outputs.get("Color")

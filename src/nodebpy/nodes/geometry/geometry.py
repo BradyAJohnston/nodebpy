@@ -4,7 +4,17 @@ from typing import Literal
 
 import bpy
 
-from ...builder import NodeBuilder, SocketLinker, VectorSocketLinker
+from ...builder import (
+    BaseNode as NodeBuilder,
+    Socket,
+    BooleanSocket,
+    FloatSocket,
+    GeometrySocket,
+    IntegerSocket,
+    RotationSocket,
+    StringSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -61,72 +71,72 @@ class Arc(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> SocketLinker:
+    def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
         return self.inputs.get("Resolution")
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> Socket:
         """Input socket: Start"""
         return self.inputs.get("Start")
 
     @property
-    def i_middle(self) -> SocketLinker:
+    def i_middle(self) -> Socket:
         """Input socket: Middle"""
         return self.inputs.get("Middle")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> Socket:
         """Input socket: End"""
         return self.inputs.get("End")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def i_start_angle(self) -> SocketLinker:
+    def i_start_angle(self) -> Socket:
         """Input socket: Start Angle"""
         return self.inputs.get("Start Angle")
 
     @property
-    def i_sweep_angle(self) -> SocketLinker:
+    def i_sweep_angle(self) -> Socket:
         """Input socket: Sweep Angle"""
         return self.inputs.get("Sweep Angle")
 
     @property
-    def i_offset_angle(self) -> SocketLinker:
+    def i_offset_angle(self) -> Socket:
         """Input socket: Offset Angle"""
         return self.inputs.get("Offset Angle")
 
     @property
-    def i_connect_center(self) -> SocketLinker:
+    def i_connect_center(self) -> Socket:
         """Input socket: Connect Center"""
         return self.inputs.get("Connect Center")
 
     @property
-    def i_invert_arc(self) -> SocketLinker:
+    def i_invert_arc(self) -> Socket:
         """Input socket: Invert Arc"""
         return self.inputs.get("Invert Arc")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
     @property
-    def o_center(self) -> VectorSocketLinker:
+    def o_center(self) -> VectorSocket:
         """Output socket: Center"""
         return self.outputs.get("Center")
 
     @property
-    def o_normal(self) -> VectorSocketLinker:
+    def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
         return self.outputs.get("Normal")
 
     @property
-    def o_radius(self) -> SocketLinker:
+    def o_radius(self) -> FloatSocket:
         """Output socket: Radius"""
         return self.outputs.get("Radius")
 
@@ -158,27 +168,27 @@ class BoundingBox(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_use_radius(self) -> SocketLinker:
+    def i_use_radius(self) -> Socket:
         """Input socket: Use Radius"""
         return self.inputs.get("Use Radius")
 
     @property
-    def o_bounding_box(self) -> SocketLinker:
+    def o_bounding_box(self) -> GeometrySocket:
         """Output socket: Bounding Box"""
         return self.outputs.get("Bounding Box")
 
     @property
-    def o_min(self) -> VectorSocketLinker:
+    def o_min(self) -> VectorSocket:
         """Output socket: Min"""
         return self.outputs.get("Min")
 
     @property
-    def o_max(self) -> VectorSocketLinker:
+    def o_max(self) -> VectorSocket:
         """Output socket: Max"""
         return self.outputs.get("Max")
 
@@ -213,32 +223,32 @@ class BezierSegment(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> SocketLinker:
+    def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
         return self.inputs.get("Resolution")
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> Socket:
         """Input socket: Start"""
         return self.inputs.get("Start")
 
     @property
-    def i_start_handle(self) -> SocketLinker:
+    def i_start_handle(self) -> Socket:
         """Input socket: Start Handle"""
         return self.inputs.get("Start Handle")
 
     @property
-    def i_end_handle(self) -> SocketLinker:
+    def i_end_handle(self) -> Socket:
         """Input socket: End Handle"""
         return self.inputs.get("End Handle")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> Socket:
         """Input socket: End"""
         return self.inputs.get("End")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -283,57 +293,57 @@ class Cone(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vertices(self) -> SocketLinker:
+    def i_vertices(self) -> Socket:
         """Input socket: Vertices"""
         return self.inputs.get("Vertices")
 
     @property
-    def i_side_segments(self) -> SocketLinker:
+    def i_side_segments(self) -> Socket:
         """Input socket: Side Segments"""
         return self.inputs.get("Side Segments")
 
     @property
-    def i_fill_segments(self) -> SocketLinker:
+    def i_fill_segments(self) -> Socket:
         """Input socket: Fill Segments"""
         return self.inputs.get("Fill Segments")
 
     @property
-    def i_radius_top(self) -> SocketLinker:
+    def i_radius_top(self) -> Socket:
         """Input socket: Radius Top"""
         return self.inputs.get("Radius Top")
 
     @property
-    def i_radius_bottom(self) -> SocketLinker:
+    def i_radius_bottom(self) -> Socket:
         """Input socket: Radius Bottom"""
         return self.inputs.get("Radius Bottom")
 
     @property
-    def i_depth(self) -> SocketLinker:
+    def i_depth(self) -> Socket:
         """Input socket: Depth"""
         return self.inputs.get("Depth")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_top(self) -> SocketLinker:
+    def o_top(self) -> BooleanSocket:
         """Output socket: Top"""
         return self.outputs.get("Top")
 
     @property
-    def o_bottom(self) -> SocketLinker:
+    def o_bottom(self) -> BooleanSocket:
         """Output socket: Bottom"""
         return self.outputs.get("Bottom")
 
     @property
-    def o_side(self) -> SocketLinker:
+    def o_side(self) -> BooleanSocket:
         """Output socket: Side"""
         return self.outputs.get("Side")
 
     @property
-    def o_uv_map(self) -> VectorSocketLinker:
+    def o_uv_map(self) -> VectorSocket:
         """Output socket: UV Map"""
         return self.outputs.get("UV Map")
 
@@ -361,12 +371,12 @@ class ConvexHull(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def o_convex_hull(self) -> SocketLinker:
+    def o_convex_hull(self) -> GeometrySocket:
         """Output socket: Convex Hull"""
         return self.outputs.get("Convex Hull")
 
@@ -397,32 +407,32 @@ class Cube(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_size(self) -> SocketLinker:
+    def i_size(self) -> Socket:
         """Input socket: Size"""
         return self.inputs.get("Size")
 
     @property
-    def i_vertices_x(self) -> SocketLinker:
+    def i_vertices_x(self) -> Socket:
         """Input socket: Vertices X"""
         return self.inputs.get("Vertices X")
 
     @property
-    def i_vertices_y(self) -> SocketLinker:
+    def i_vertices_y(self) -> Socket:
         """Input socket: Vertices Y"""
         return self.inputs.get("Vertices Y")
 
     @property
-    def i_vertices_z(self) -> SocketLinker:
+    def i_vertices_z(self) -> Socket:
         """Input socket: Vertices Z"""
         return self.inputs.get("Vertices Z")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_uv_map(self) -> VectorSocketLinker:
+    def o_uv_map(self) -> VectorSocket:
         """Output socket: UV Map"""
         return self.outputs.get("UV Map")
 
@@ -457,37 +467,37 @@ class CurveCircle(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> SocketLinker:
+    def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
         return self.inputs.get("Resolution")
 
     @property
-    def i_point_1(self) -> SocketLinker:
+    def i_point_1(self) -> Socket:
         """Input socket: Point 1"""
         return self.inputs.get("Point 1")
 
     @property
-    def i_point_2(self) -> SocketLinker:
+    def i_point_2(self) -> Socket:
         """Input socket: Point 2"""
         return self.inputs.get("Point 2")
 
     @property
-    def i_point_3(self) -> SocketLinker:
+    def i_point_3(self) -> Socket:
         """Input socket: Point 3"""
         return self.inputs.get("Point 3")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
     @property
-    def o_center(self) -> VectorSocketLinker:
+    def o_center(self) -> VectorSocket:
         """Output socket: Center"""
         return self.outputs.get("Center")
 
@@ -515,12 +525,12 @@ class CurveLength(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def o_length(self) -> SocketLinker:
+    def o_length(self) -> FloatSocket:
         """Output socket: Length"""
         return self.outputs.get("Length")
 
@@ -553,27 +563,27 @@ class CurveLine(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> Socket:
         """Input socket: Start"""
         return self.inputs.get("Start")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> Socket:
         """Input socket: End"""
         return self.inputs.get("End")
 
     @property
-    def i_direction(self) -> SocketLinker:
+    def i_direction(self) -> Socket:
         """Input socket: Direction"""
         return self.inputs.get("Direction")
 
     @property
-    def i_length(self) -> SocketLinker:
+    def i_length(self) -> Socket:
         """Input socket: Length"""
         return self.inputs.get("Length")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -612,27 +622,27 @@ class CurveToMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_profile_curve(self) -> SocketLinker:
+    def i_profile_curve(self) -> Socket:
         """Input socket: Profile Curve"""
         return self.inputs.get("Profile Curve")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def i_fill_caps(self) -> SocketLinker:
+    def i_fill_caps(self) -> Socket:
         """Input socket: Fill Caps"""
         return self.inputs.get("Fill Caps")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -659,37 +669,37 @@ class CurveToPoints(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_count(self) -> SocketLinker:
+    def i_count(self) -> Socket:
         """Input socket: Count"""
         return self.inputs.get("Count")
 
     @property
-    def i_length(self) -> SocketLinker:
+    def i_length(self) -> Socket:
         """Input socket: Length"""
         return self.inputs.get("Length")
 
     @property
-    def o_points(self) -> SocketLinker:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
     @property
-    def o_tangent(self) -> VectorSocketLinker:
+    def o_tangent(self) -> VectorSocket:
         """Output socket: Tangent"""
         return self.outputs.get("Tangent")
 
     @property
-    def o_normal(self) -> VectorSocketLinker:
+    def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
         return self.outputs.get("Normal")
 
     @property
-    def o_rotation(self) -> SocketLinker:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -726,22 +736,22 @@ class CurvesToGreasePencil(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curves(self) -> SocketLinker:
+    def i_curves(self) -> Socket:
         """Input socket: Curves"""
         return self.inputs.get("Curves")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_instances_as_layers(self) -> SocketLinker:
+    def i_instances_as_layers(self) -> Socket:
         """Input socket: Instances as Layers"""
         return self.inputs.get("Instances as Layers")
 
     @property
-    def o_grease_pencil(self) -> SocketLinker:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -776,52 +786,52 @@ class Cylinder(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vertices(self) -> SocketLinker:
+    def i_vertices(self) -> Socket:
         """Input socket: Vertices"""
         return self.inputs.get("Vertices")
 
     @property
-    def i_side_segments(self) -> SocketLinker:
+    def i_side_segments(self) -> Socket:
         """Input socket: Side Segments"""
         return self.inputs.get("Side Segments")
 
     @property
-    def i_fill_segments(self) -> SocketLinker:
+    def i_fill_segments(self) -> Socket:
         """Input socket: Fill Segments"""
         return self.inputs.get("Fill Segments")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def i_depth(self) -> SocketLinker:
+    def i_depth(self) -> Socket:
         """Input socket: Depth"""
         return self.inputs.get("Depth")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_top(self) -> SocketLinker:
+    def o_top(self) -> BooleanSocket:
         """Output socket: Top"""
         return self.outputs.get("Top")
 
     @property
-    def o_side(self) -> SocketLinker:
+    def o_side(self) -> BooleanSocket:
         """Output socket: Side"""
         return self.outputs.get("Side")
 
     @property
-    def o_bottom(self) -> SocketLinker:
+    def o_bottom(self) -> BooleanSocket:
         """Output socket: Bottom"""
         return self.outputs.get("Bottom")
 
     @property
-    def o_uv_map(self) -> VectorSocketLinker:
+    def o_uv_map(self) -> VectorSocket:
         """Output socket: UV Map"""
         return self.outputs.get("UV Map")
 
@@ -849,12 +859,12 @@ class DeformCurvesOnSurface(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curves(self) -> SocketLinker:
+    def i_curves(self) -> Socket:
         """Input socket: Curves"""
         return self.inputs.get("Curves")
 
     @property
-    def o_curves(self) -> SocketLinker:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
@@ -926,17 +936,17 @@ class DeleteGeometry(NodeBuilder):
         return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -995,52 +1005,52 @@ class DistributePointsOnFaces(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_distance_min(self) -> SocketLinker:
+    def i_distance_min(self) -> Socket:
         """Input socket: Distance Min"""
         return self.inputs.get("Distance Min")
 
     @property
-    def i_density_max(self) -> SocketLinker:
+    def i_density_max(self) -> Socket:
         """Input socket: Density Max"""
         return self.inputs.get("Density Max")
 
     @property
-    def i_density(self) -> SocketLinker:
+    def i_density(self) -> Socket:
         """Input socket: Density"""
         return self.inputs.get("Density")
 
     @property
-    def i_density_factor(self) -> SocketLinker:
+    def i_density_factor(self) -> Socket:
         """Input socket: Density Factor"""
         return self.inputs.get("Density Factor")
 
     @property
-    def i_seed(self) -> SocketLinker:
+    def i_seed(self) -> Socket:
         """Input socket: Seed"""
         return self.inputs.get("Seed")
 
     @property
-    def o_points(self) -> SocketLinker:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
     @property
-    def o_normal(self) -> VectorSocketLinker:
+    def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
         return self.outputs.get("Normal")
 
     @property
-    def o_rotation(self) -> SocketLinker:
+    def o_rotation(self) -> RotationSocket:
         """Output socket: Rotation"""
         return self.outputs.get("Rotation")
 
@@ -1080,17 +1090,17 @@ class DualMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_keep_boundaries(self) -> SocketLinker:
+    def i_keep_boundaries(self) -> Socket:
         """Input socket: Keep Boundaries"""
         return self.inputs.get("Keep Boundaries")
 
     @property
-    def o_dual_mesh(self) -> SocketLinker:
+    def o_dual_mesh(self) -> GeometrySocket:
         """Output socket: Dual Mesh"""
         return self.outputs.get("Dual Mesh")
 
@@ -1187,27 +1197,27 @@ class DuplicateElements(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_amount(self) -> SocketLinker:
+    def i_amount(self) -> Socket:
         """Input socket: Amount"""
         return self.inputs.get("Amount")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
     @property
-    def o_duplicate_index(self) -> SocketLinker:
+    def o_duplicate_index(self) -> IntegerSocket:
         """Output socket: Duplicate Index"""
         return self.outputs.get("Duplicate Index")
 
@@ -1246,22 +1256,22 @@ class EdgePathsToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_start_vertices(self) -> SocketLinker:
+    def i_start_vertices(self) -> Socket:
         """Input socket: Start Vertices"""
         return self.inputs.get("Start Vertices")
 
     @property
-    def i_next_vertex_index(self) -> SocketLinker:
+    def i_next_vertex_index(self) -> Socket:
         """Input socket: Next Vertex Index"""
         return self.inputs.get("Next Vertex Index")
 
     @property
-    def o_curves(self) -> SocketLinker:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
@@ -1296,42 +1306,42 @@ class ExtrudeMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> Socket:
         """Input socket: Offset"""
         return self.inputs.get("Offset")
 
     @property
-    def i_offset_scale(self) -> SocketLinker:
+    def i_offset_scale(self) -> Socket:
         """Input socket: Offset Scale"""
         return self.inputs.get("Offset Scale")
 
     @property
-    def i_individual(self) -> SocketLinker:
+    def i_individual(self) -> Socket:
         """Input socket: Individual"""
         return self.inputs.get("Individual")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_top(self) -> SocketLinker:
+    def o_top(self) -> BooleanSocket:
         """Output socket: Top"""
         return self.outputs.get("Top")
 
     @property
-    def o_side(self) -> SocketLinker:
+    def o_side(self) -> BooleanSocket:
         """Output socket: Side"""
         return self.outputs.get("Side")
 
@@ -1364,22 +1374,22 @@ class FillCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_group_id(self) -> SocketLinker:
+    def i_group_id(self) -> Socket:
         """Input socket: Group ID"""
         return self.inputs.get("Group ID")
 
     @property
-    def i_mode(self) -> SocketLinker:
+    def i_mode(self) -> Socket:
         """Input socket: Mode"""
         return self.inputs.get("Mode")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -1412,32 +1422,32 @@ class FilletCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def i_limit_radius(self) -> SocketLinker:
+    def i_limit_radius(self) -> Socket:
         """Input socket: Limit Radius"""
         return self.inputs.get("Limit Radius")
 
     @property
-    def i_mode(self) -> SocketLinker:
+    def i_mode(self) -> Socket:
         """Input socket: Mode"""
         return self.inputs.get("Mode")
 
     @property
-    def i_count(self) -> SocketLinker:
+    def i_count(self) -> Socket:
         """Input socket: Count"""
         return self.inputs.get("Count")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -1461,17 +1471,17 @@ class FlipFaces(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -1504,37 +1514,37 @@ class GeometryProximity(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_target(self) -> SocketLinker:
+    def i_target(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Target")
 
     @property
-    def i_group_id(self) -> SocketLinker:
+    def i_group_id(self) -> Socket:
         """Input socket: Group ID"""
         return self.inputs.get("Group ID")
 
     @property
-    def i_source_position(self) -> SocketLinker:
+    def i_source_position(self) -> Socket:
         """Input socket: Sample Position"""
         return self.inputs.get("Source Position")
 
     @property
-    def i_sample_group_id(self) -> SocketLinker:
+    def i_sample_group_id(self) -> Socket:
         """Input socket: Sample Group ID"""
         return self.inputs.get("Sample Group ID")
 
     @property
-    def o_position(self) -> VectorSocketLinker:
+    def o_position(self) -> VectorSocket:
         """Output socket: Position"""
         return self.outputs.get("Position")
 
     @property
-    def o_distance(self) -> SocketLinker:
+    def o_distance(self) -> FloatSocket:
         """Output socket: Distance"""
         return self.outputs.get("Distance")
 
     @property
-    def o_is_valid(self) -> SocketLinker:
+    def o_is_valid(self) -> BooleanSocket:
         """Output socket: Is Valid"""
         return self.outputs.get("Is Valid")
 
@@ -1571,22 +1581,22 @@ class GreasePencilToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grease_pencil(self) -> SocketLinker:
+    def i_grease_pencil(self) -> Socket:
         """Input socket: Grease Pencil"""
         return self.inputs.get("Grease Pencil")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_layers_as_instances(self) -> SocketLinker:
+    def i_layers_as_instances(self) -> Socket:
         """Input socket: Layers as Instances"""
         return self.inputs.get("Layers as Instances")
 
     @property
-    def o_curves(self) -> SocketLinker:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
@@ -1617,32 +1627,32 @@ class Grid(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_size_x(self) -> SocketLinker:
+    def i_size_x(self) -> Socket:
         """Input socket: Size X"""
         return self.inputs.get("Size X")
 
     @property
-    def i_size_y(self) -> SocketLinker:
+    def i_size_y(self) -> Socket:
         """Input socket: Size Y"""
         return self.inputs.get("Size Y")
 
     @property
-    def i_vertices_x(self) -> SocketLinker:
+    def i_vertices_x(self) -> Socket:
         """Input socket: Vertices X"""
         return self.inputs.get("Vertices X")
 
     @property
-    def i_vertices_y(self) -> SocketLinker:
+    def i_vertices_y(self) -> Socket:
         """Input socket: Vertices Y"""
         return self.inputs.get("Vertices Y")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_uv_map(self) -> VectorSocketLinker:
+    def o_uv_map(self) -> VectorSocket:
         """Output socket: UV Map"""
         return self.outputs.get("UV Map")
 
@@ -1666,22 +1676,22 @@ class IcoSphere(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def i_subdivisions(self) -> SocketLinker:
+    def i_subdivisions(self) -> Socket:
         """Input socket: Subdivisions"""
         return self.inputs.get("Subdivisions")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_uv_map(self) -> VectorSocketLinker:
+    def o_uv_map(self) -> VectorSocket:
         """Output socket: UV Map"""
         return self.outputs.get("UV Map")
 
@@ -1718,42 +1728,42 @@ class InstanceOnPoints(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_points(self) -> SocketLinker:
+    def i_points(self) -> Socket:
         """Input socket: Points"""
         return self.inputs.get("Points")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_instance(self) -> SocketLinker:
+    def i_instance(self) -> Socket:
         """Input socket: Instance"""
         return self.inputs.get("Instance")
 
     @property
-    def i_pick_instance(self) -> SocketLinker:
+    def i_pick_instance(self) -> Socket:
         """Input socket: Pick Instance"""
         return self.inputs.get("Pick Instance")
 
     @property
-    def i_instance_index(self) -> SocketLinker:
+    def i_instance_index(self) -> Socket:
         """Input socket: Instance Index"""
         return self.inputs.get("Instance Index")
 
     @property
-    def i_rotation(self) -> SocketLinker:
+    def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def o_instances(self) -> SocketLinker:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -1785,27 +1795,27 @@ class InstancesToPoints(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_instances(self) -> SocketLinker:
+    def i_instances(self) -> Socket:
         """Input socket: Instances"""
         return self.inputs.get("Instances")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_points(self) -> SocketLinker:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -1842,52 +1852,52 @@ class InterpolateCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_guide_curves(self) -> SocketLinker:
+    def i_guide_curves(self) -> Socket:
         """Input socket: Guide Curves"""
         return self.inputs.get("Guide Curves")
 
     @property
-    def i_guide_up(self) -> SocketLinker:
+    def i_guide_up(self) -> Socket:
         """Input socket: Guide Up"""
         return self.inputs.get("Guide Up")
 
     @property
-    def i_guide_group_id(self) -> SocketLinker:
+    def i_guide_group_id(self) -> Socket:
         """Input socket: Guide Group ID"""
         return self.inputs.get("Guide Group ID")
 
     @property
-    def i_points(self) -> SocketLinker:
+    def i_points(self) -> Socket:
         """Input socket: Points"""
         return self.inputs.get("Points")
 
     @property
-    def i_point_up(self) -> SocketLinker:
+    def i_point_up(self) -> Socket:
         """Input socket: Point Up"""
         return self.inputs.get("Point Up")
 
     @property
-    def i_point_group_id(self) -> SocketLinker:
+    def i_point_group_id(self) -> Socket:
         """Input socket: Point Group ID"""
         return self.inputs.get("Point Group ID")
 
     @property
-    def i_max_neighbors(self) -> SocketLinker:
+    def i_max_neighbors(self) -> Socket:
         """Input socket: Max Neighbors"""
         return self.inputs.get("Max Neighbors")
 
     @property
-    def o_curves(self) -> SocketLinker:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
     @property
-    def o_closest_index(self) -> SocketLinker:
+    def o_closest_index(self) -> IntegerSocket:
         """Output socket: Closest Index"""
         return self.outputs.get("Closest Index")
 
     @property
-    def o_closest_weight(self) -> SocketLinker:
+    def o_closest_weight(self) -> FloatSocket:
         """Output socket: Closest Weight"""
         return self.outputs.get("Closest Weight")
 
@@ -1907,12 +1917,12 @@ class MaterialSelection(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_material(self) -> SocketLinker:
+    def i_material(self) -> Socket:
         """Input socket: Material"""
         return self.inputs.get("Material")
 
     @property
-    def o_selection(self) -> SocketLinker:
+    def o_selection(self) -> BooleanSocket:
         """Output socket: Selection"""
         return self.outputs.get("Selection")
 
@@ -1943,22 +1953,22 @@ class MergeLayers(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grease_pencil(self) -> SocketLinker:
+    def i_grease_pencil(self) -> Socket:
         """Input socket: Grease Pencil"""
         return self.inputs.get("Grease Pencil")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_group_id(self) -> SocketLinker:
+    def i_group_id(self) -> Socket:
         """Input socket: Group ID"""
         return self.inputs.get("Group ID")
 
     @property
-    def o_grease_pencil(self) -> SocketLinker:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -1997,27 +2007,27 @@ class MergeByDistance(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_mode(self) -> SocketLinker:
+    def i_mode(self) -> Socket:
         """Input socket: Mode"""
         return self.inputs.get("Mode")
 
     @property
-    def i_distance(self) -> SocketLinker:
+    def i_distance(self) -> Socket:
         """Input socket: Distance"""
         return self.inputs.get("Distance")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -2069,32 +2079,32 @@ class MeshBoolean(NodeBuilder):
         return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
 
     @property
-    def i_mesh_1(self) -> SocketLinker:
+    def i_mesh_1(self) -> Socket:
         """Input socket: Mesh 1"""
         return self.inputs.get("Mesh 1")
 
     @property
-    def i_mesh_2(self) -> SocketLinker:
+    def i_mesh_2(self) -> Socket:
         """Input socket: Mesh 2"""
         return self.inputs.get("Mesh 2")
 
     @property
-    def i_self_intersection(self) -> SocketLinker:
+    def i_self_intersection(self) -> Socket:
         """Input socket: Self Intersection"""
         return self.inputs.get("Self Intersection")
 
     @property
-    def i_hole_tolerant(self) -> SocketLinker:
+    def i_hole_tolerant(self) -> Socket:
         """Input socket: Hole Tolerant"""
         return self.inputs.get("Hole Tolerant")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_intersecting_edges(self) -> SocketLinker:
+    def o_intersecting_edges(self) -> BooleanSocket:
         """Output socket: Intersecting Edges"""
         return self.outputs.get("Intersecting Edges")
 
@@ -2136,17 +2146,17 @@ class MeshCircle(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vertices(self) -> SocketLinker:
+    def i_vertices(self) -> Socket:
         """Input socket: Vertices"""
         return self.inputs.get("Vertices")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -2189,27 +2199,27 @@ class MeshLine(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_count(self) -> SocketLinker:
+    def i_count(self) -> Socket:
         """Input socket: Count"""
         return self.inputs.get("Count")
 
     @property
-    def i_resolution(self) -> SocketLinker:
+    def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
         return self.inputs.get("Resolution")
 
     @property
-    def i_start_location(self) -> SocketLinker:
+    def i_start_location(self) -> Socket:
         """Input socket: Start Location"""
         return self.inputs.get("Start Location")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> Socket:
         """Input socket: Offset"""
         return self.inputs.get("Offset")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -2251,17 +2261,17 @@ class MeshToCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -2302,27 +2312,27 @@ class MeshToPoints(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_points(self) -> SocketLinker:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -2355,22 +2365,22 @@ class Points(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_count(self) -> SocketLinker:
+    def i_count(self) -> Socket:
         """Input socket: Count"""
         return self.inputs.get("Count")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Geometry")
 
@@ -2399,22 +2409,22 @@ class PointsToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_points(self) -> SocketLinker:
+    def i_points(self) -> Socket:
         """Input socket: Points"""
         return self.inputs.get("Points")
 
     @property
-    def i_curve_group_id(self) -> SocketLinker:
+    def i_curve_group_id(self) -> Socket:
         """Input socket: Curve Group ID"""
         return self.inputs.get("Curve Group ID")
 
     @property
-    def i_weight(self) -> SocketLinker:
+    def i_weight(self) -> Socket:
         """Input socket: Weight"""
         return self.inputs.get("Weight")
 
     @property
-    def o_curves(self) -> SocketLinker:
+    def o_curves(self) -> GeometrySocket:
         """Output socket: Curves"""
         return self.outputs.get("Curves")
 
@@ -2438,17 +2448,17 @@ class PointsToVertices(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_points(self) -> SocketLinker:
+    def i_points(self) -> Socket:
         """Input socket: Points"""
         return self.inputs.get("Points")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -2479,27 +2489,27 @@ class QuadraticBezier(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> SocketLinker:
+    def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
         return self.inputs.get("Resolution")
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> Socket:
         """Input socket: Start"""
         return self.inputs.get("Start")
 
     @property
-    def i_middle(self) -> SocketLinker:
+    def i_middle(self) -> Socket:
         """Input socket: Middle"""
         return self.inputs.get("Middle")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> Socket:
         """Input socket: End"""
         return self.inputs.get("End")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -2548,62 +2558,62 @@ class Quadrilateral(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_width(self) -> SocketLinker:
+    def i_width(self) -> Socket:
         """Input socket: Width"""
         return self.inputs.get("Width")
 
     @property
-    def i_height(self) -> SocketLinker:
+    def i_height(self) -> Socket:
         """Input socket: Height"""
         return self.inputs.get("Height")
 
     @property
-    def i_bottom_width(self) -> SocketLinker:
+    def i_bottom_width(self) -> Socket:
         """Input socket: Bottom Width"""
         return self.inputs.get("Bottom Width")
 
     @property
-    def i_top_width(self) -> SocketLinker:
+    def i_top_width(self) -> Socket:
         """Input socket: Top Width"""
         return self.inputs.get("Top Width")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> Socket:
         """Input socket: Offset"""
         return self.inputs.get("Offset")
 
     @property
-    def i_bottom_height(self) -> SocketLinker:
+    def i_bottom_height(self) -> Socket:
         """Input socket: Bottom Height"""
         return self.inputs.get("Bottom Height")
 
     @property
-    def i_top_height(self) -> SocketLinker:
+    def i_top_height(self) -> Socket:
         """Input socket: Top Height"""
         return self.inputs.get("Top Height")
 
     @property
-    def i_point_1(self) -> SocketLinker:
+    def i_point_1(self) -> Socket:
         """Input socket: Point 1"""
         return self.inputs.get("Point 1")
 
     @property
-    def i_point_2(self) -> SocketLinker:
+    def i_point_2(self) -> Socket:
         """Input socket: Point 2"""
         return self.inputs.get("Point 2")
 
     @property
-    def i_point_3(self) -> SocketLinker:
+    def i_point_3(self) -> Socket:
         """Input socket: Point 3"""
         return self.inputs.get("Point 3")
 
     @property
-    def i_point_4(self) -> SocketLinker:
+    def i_point_4(self) -> Socket:
         """Input socket: Point 4"""
         return self.inputs.get("Point 4")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -2808,57 +2818,57 @@ class Raycast(NodeBuilder):
         )
 
     @property
-    def i_target_geometry(self) -> SocketLinker:
+    def i_target_geometry(self) -> Socket:
         """Input socket: Target Geometry"""
         return self.inputs.get("Target Geometry")
 
     @property
-    def i_attribute(self) -> SocketLinker:
+    def i_attribute(self) -> Socket:
         """Input socket: Attribute"""
         return self.inputs.get("Attribute")
 
     @property
-    def i_interpolation(self) -> SocketLinker:
+    def i_interpolation(self) -> Socket:
         """Input socket: Interpolation"""
         return self.inputs.get("Interpolation")
 
     @property
-    def i_source_position(self) -> SocketLinker:
+    def i_source_position(self) -> Socket:
         """Input socket: Source Position"""
         return self.inputs.get("Source Position")
 
     @property
-    def i_ray_direction(self) -> SocketLinker:
+    def i_ray_direction(self) -> Socket:
         """Input socket: Ray Direction"""
         return self.inputs.get("Ray Direction")
 
     @property
-    def i_ray_length(self) -> SocketLinker:
+    def i_ray_length(self) -> Socket:
         """Input socket: Ray Length"""
         return self.inputs.get("Ray Length")
 
     @property
-    def o_is_hit(self) -> SocketLinker:
+    def o_is_hit(self) -> BooleanSocket:
         """Output socket: Is Hit"""
         return self.outputs.get("Is Hit")
 
     @property
-    def o_hit_position(self) -> VectorSocketLinker:
+    def o_hit_position(self) -> VectorSocket:
         """Output socket: Hit Position"""
         return self.outputs.get("Hit Position")
 
     @property
-    def o_hit_normal(self) -> VectorSocketLinker:
+    def o_hit_normal(self) -> VectorSocket:
         """Output socket: Hit Normal"""
         return self.outputs.get("Hit Normal")
 
     @property
-    def o_hit_distance(self) -> SocketLinker:
+    def o_hit_distance(self) -> FloatSocket:
         """Output socket: Hit Distance"""
         return self.outputs.get("Hit Distance")
 
     @property
-    def o_attribute(self) -> SocketLinker:
+    def o_attribute(self) -> FloatSocket:
         """Output socket: Attribute"""
         return self.outputs.get("Attribute")
 
@@ -2918,27 +2928,27 @@ class RealizeInstances(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_realize_all(self) -> SocketLinker:
+    def i_realize_all(self) -> Socket:
         """Input socket: Realize All"""
         return self.inputs.get("Realize All")
 
     @property
-    def i_depth(self) -> SocketLinker:
+    def i_depth(self) -> Socket:
         """Input socket: Depth"""
         return self.inputs.get("Depth")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -2963,22 +2973,22 @@ class ReplaceMaterial(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_old(self) -> SocketLinker:
+    def i_old(self) -> Socket:
         """Input socket: Old"""
         return self.inputs.get("Old")
 
     @property
-    def i_new(self) -> SocketLinker:
+    def i_new(self) -> Socket:
         """Input socket: New"""
         return self.inputs.get("New")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -3013,32 +3023,32 @@ class ResampleCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_mode(self) -> SocketLinker:
+    def i_mode(self) -> Socket:
         """Input socket: Mode"""
         return self.inputs.get("Mode")
 
     @property
-    def i_count(self) -> SocketLinker:
+    def i_count(self) -> Socket:
         """Input socket: Count"""
         return self.inputs.get("Count")
 
     @property
-    def i_length(self) -> SocketLinker:
+    def i_length(self) -> Socket:
         """Input socket: Length"""
         return self.inputs.get("Length")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -3070,17 +3080,17 @@ class ReverseCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -3113,32 +3123,32 @@ class RotateInstances(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_instances(self) -> SocketLinker:
+    def i_instances(self) -> Socket:
         """Input socket: Instances"""
         return self.inputs.get("Instances")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_rotation(self) -> SocketLinker:
+    def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
     @property
-    def i_pivot_point(self) -> SocketLinker:
+    def i_pivot_point(self) -> Socket:
         """Input socket: Pivot Point"""
         return self.inputs.get("Pivot Point")
 
     @property
-    def i_local_space(self) -> SocketLinker:
+    def i_local_space(self) -> Socket:
         """Input socket: Local Space"""
         return self.inputs.get("Local Space")
 
     @property
-    def o_instances(self) -> SocketLinker:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -3304,47 +3314,47 @@ class SampleCurve(NodeBuilder):
         )
 
     @property
-    def i_curves(self) -> SocketLinker:
+    def i_curves(self) -> Socket:
         """Input socket: Curves"""
         return self.inputs.get("Curves")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_factor(self) -> SocketLinker:
+    def i_factor(self) -> Socket:
         """Input socket: Factor"""
         return self.inputs.get("Factor")
 
     @property
-    def i_length(self) -> SocketLinker:
+    def i_length(self) -> Socket:
         """Input socket: Length"""
         return self.inputs.get("Length")
 
     @property
-    def i_curve_index(self) -> SocketLinker:
+    def i_curve_index(self) -> Socket:
         """Input socket: Curve Index"""
         return self.inputs.get("Curve Index")
 
     @property
-    def o_value(self) -> SocketLinker:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
     @property
-    def o_position(self) -> VectorSocketLinker:
+    def o_position(self) -> VectorSocket:
         """Output socket: Position"""
         return self.outputs.get("Position")
 
     @property
-    def o_tangent(self) -> VectorSocketLinker:
+    def o_tangent(self) -> VectorSocket:
         """Output socket: Tangent"""
         return self.outputs.get("Tangent")
 
     @property
-    def o_normal(self) -> VectorSocketLinker:
+    def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
         return self.outputs.get("Normal")
 
@@ -3572,22 +3582,22 @@ class SampleIndex(NodeBuilder):
         return cls(domain="LAYER", geometry=geometry, value=value, index=index)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_index(self) -> SocketLinker:
+    def i_index(self) -> Socket:
         """Input socket: Index"""
         return self.inputs.get("Index")
 
     @property
-    def o_value(self) -> SocketLinker:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
@@ -3691,17 +3701,17 @@ class SampleNearest(NodeBuilder):
         return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_sample_position(self) -> SocketLinker:
+    def i_sample_position(self) -> Socket:
         """Input socket: Sample Position"""
         return self.inputs.get("Sample Position")
 
     @property
-    def o_index(self) -> SocketLinker:
+    def o_index(self) -> IntegerSocket:
         """Output socket: Index"""
         return self.outputs.get("Index")
 
@@ -3885,37 +3895,37 @@ class SampleNearestSurface(NodeBuilder):
         )
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_group_id(self) -> SocketLinker:
+    def i_group_id(self) -> Socket:
         """Input socket: Group ID"""
         return self.inputs.get("Group ID")
 
     @property
-    def i_sample_position(self) -> SocketLinker:
+    def i_sample_position(self) -> Socket:
         """Input socket: Sample Position"""
         return self.inputs.get("Sample Position")
 
     @property
-    def i_sample_group_id(self) -> SocketLinker:
+    def i_sample_group_id(self) -> Socket:
         """Input socket: Sample Group ID"""
         return self.inputs.get("Sample Group ID")
 
     @property
-    def o_value(self) -> SocketLinker:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
     @property
-    def o_is_valid(self) -> SocketLinker:
+    def o_is_valid(self) -> BooleanSocket:
         """Output socket: Is Valid"""
         return self.outputs.get("Is Valid")
 
@@ -4104,32 +4114,32 @@ class SampleUVSurface(NodeBuilder):
         )
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_value(self) -> SocketLinker:
+    def i_value(self) -> Socket:
         """Input socket: Value"""
         return self.inputs.get("Value")
 
     @property
-    def i_source_uv_map(self) -> SocketLinker:
+    def i_source_uv_map(self) -> Socket:
         """Input socket: UV Map"""
         return self.inputs.get("Source UV Map")
 
     @property
-    def i_sample_uv(self) -> SocketLinker:
+    def i_sample_uv(self) -> Socket:
         """Input socket: Sample UV"""
         return self.inputs.get("Sample UV")
 
     @property
-    def o_value(self) -> SocketLinker:
+    def o_value(self) -> FloatSocket:
         """Output socket: Value"""
         return self.outputs.get("Value")
 
     @property
-    def o_is_valid(self) -> SocketLinker:
+    def o_is_valid(self) -> BooleanSocket:
         """Output socket: Is Valid"""
         return self.outputs.get("Is Valid")
 
@@ -4233,37 +4243,37 @@ class ScaleElements(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def i_center(self) -> SocketLinker:
+    def i_center(self) -> Socket:
         """Input socket: Center"""
         return self.inputs.get("Center")
 
     @property
-    def i_scale_mode(self) -> SocketLinker:
+    def i_scale_mode(self) -> Socket:
         """Input socket: Scale Mode"""
         return self.inputs.get("Scale Mode")
 
     @property
-    def i_axis(self) -> SocketLinker:
+    def i_axis(self) -> Socket:
         """Input socket: Axis"""
         return self.inputs.get("Axis")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -4304,32 +4314,32 @@ class ScaleInstances(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_instances(self) -> SocketLinker:
+    def i_instances(self) -> Socket:
         """Input socket: Instances"""
         return self.inputs.get("Instances")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def i_center(self) -> SocketLinker:
+    def i_center(self) -> Socket:
         """Input socket: Center"""
         return self.inputs.get("Center")
 
     @property
-    def i_local_space(self) -> SocketLinker:
+    def i_local_space(self) -> Socket:
         """Input socket: Local Space"""
         return self.inputs.get("Local Space")
 
     @property
-    def o_instances(self) -> SocketLinker:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -4349,37 +4359,37 @@ class SeparateComponents(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
     @property
-    def o_grease_pencil(self) -> SocketLinker:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
     @property
-    def o_point_cloud(self) -> SocketLinker:
+    def o_point_cloud(self) -> GeometrySocket:
         """Output socket: Point Cloud"""
         return self.outputs.get("Point Cloud")
 
     @property
-    def o_volume(self) -> SocketLinker:
+    def o_volume(self) -> GeometrySocket:
         """Output socket: Volume"""
         return self.outputs.get("Volume")
 
     @property
-    def o_instances(self) -> SocketLinker:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -4449,22 +4459,22 @@ class SeparateGeometry(NodeBuilder):
         return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_selection(self) -> SocketLinker:
+    def o_selection(self) -> GeometrySocket:
         """Output socket: Selection"""
         return self.outputs.get("Selection")
 
     @property
-    def o_inverted(self) -> SocketLinker:
+    def o_inverted(self) -> GeometrySocket:
         """Output socket: Inverted"""
         return self.outputs.get("Inverted")
 
@@ -4505,27 +4515,27 @@ class SetCurveNormal(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_mode(self) -> SocketLinker:
+    def i_mode(self) -> Socket:
         """Input socket: Mode"""
         return self.inputs.get("Mode")
 
     @property
-    def i_normal(self) -> SocketLinker:
+    def i_normal(self) -> Socket:
         """Input socket: Normal"""
         return self.inputs.get("Normal")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -4550,22 +4560,22 @@ class SetCurveRadius(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -4590,22 +4600,22 @@ class SetCurveTilt(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_tilt(self) -> SocketLinker:
+    def i_tilt(self) -> Socket:
         """Input socket: Tilt"""
         return self.inputs.get("Tilt")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -4630,22 +4640,22 @@ class SetFaceSet(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_face_set(self) -> SocketLinker:
+    def i_face_set(self) -> Socket:
         """Input socket: Face Set"""
         return self.inputs.get("Face Set")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -4669,17 +4679,17 @@ class SetGeometryName(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_name(self) -> SocketLinker:
+    def i_name(self) -> Socket:
         """Input socket: Name"""
         return self.inputs.get("Name")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -4712,27 +4722,27 @@ class SetGreasePencilColor(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grease_pencil(self) -> SocketLinker:
+    def i_grease_pencil(self) -> Socket:
         """Input socket: Grease Pencil"""
         return self.inputs.get("Grease Pencil")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_color(self) -> SocketLinker:
+    def i_color(self) -> Socket:
         """Input socket: Color"""
         return self.inputs.get("Color")
 
     @property
-    def i_opacity(self) -> SocketLinker:
+    def i_opacity(self) -> Socket:
         """Input socket: Opacity"""
         return self.inputs.get("Opacity")
 
     @property
-    def o_grease_pencil(self) -> SocketLinker:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -4765,12 +4775,12 @@ class SetGreasePencilDepth(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grease_pencil(self) -> SocketLinker:
+    def i_grease_pencil(self) -> Socket:
         """Input socket: Grease Pencil"""
         return self.inputs.get("Grease Pencil")
 
     @property
-    def o_grease_pencil(self) -> SocketLinker:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -4807,22 +4817,22 @@ class SetGreasePencilSoftness(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grease_pencil(self) -> SocketLinker:
+    def i_grease_pencil(self) -> Socket:
         """Input socket: Grease Pencil"""
         return self.inputs.get("Grease Pencil")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_softness(self) -> SocketLinker:
+    def i_softness(self) -> Socket:
         """Input socket: Softness"""
         return self.inputs.get("Softness")
 
     @property
-    def o_grease_pencil(self) -> SocketLinker:
+    def o_grease_pencil(self) -> GeometrySocket:
         """Output socket: Grease Pencil"""
         return self.outputs.get("Grease Pencil")
 
@@ -4855,27 +4865,27 @@ class SetHandlePositions(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> Socket:
         """Input socket: Offset"""
         return self.inputs.get("Offset")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -4908,22 +4918,22 @@ class SetID(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_id(self) -> SocketLinker:
+    def i_id(self) -> Socket:
         """Input socket: ID"""
         return self.inputs.get("ID")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -4952,22 +4962,22 @@ class SetInstanceTransform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_instances(self) -> SocketLinker:
+    def i_instances(self) -> Socket:
         """Input socket: Instances"""
         return self.inputs.get("Instances")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_transform(self) -> SocketLinker:
+    def i_transform(self) -> Socket:
         """Input socket: Transform"""
         return self.inputs.get("Transform")
 
     @property
-    def o_instances(self) -> SocketLinker:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -4992,22 +5002,22 @@ class SetMaterial(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_material(self) -> SocketLinker:
+    def i_material(self) -> Socket:
         """Input socket: Material"""
         return self.inputs.get("Material")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5036,22 +5046,22 @@ class SetMaterialIndex(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_material_index(self) -> SocketLinker:
+    def i_material_index(self) -> Socket:
         """Input socket: Material Index"""
         return self.inputs.get("Material Index")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5137,27 +5147,27 @@ class SetMeshNormal(NodeBuilder):
         )
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_remove_custom(self) -> SocketLinker:
+    def i_remove_custom(self) -> Socket:
         """Input socket: Remove Custom"""
         return self.inputs.get("Remove Custom")
 
     @property
-    def i_edge_sharpness(self) -> SocketLinker:
+    def i_edge_sharpness(self) -> Socket:
         """Input socket: Edge Sharpness"""
         return self.inputs.get("Edge Sharpness")
 
     @property
-    def i_face_sharpness(self) -> SocketLinker:
+    def i_face_sharpness(self) -> Socket:
         """Input socket: Face Sharpness"""
         return self.inputs.get("Face Sharpness")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -5198,22 +5208,22 @@ class SetPointRadius(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_points(self) -> SocketLinker:
+    def i_points(self) -> Socket:
         """Input socket: Points"""
         return self.inputs.get("Points")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_points(self) -> SocketLinker:
+    def o_points(self) -> GeometrySocket:
         """Output socket: Points"""
         return self.outputs.get("Points")
 
@@ -5244,27 +5254,27 @@ class SetPosition(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_position(self) -> SocketLinker:
+    def i_position(self) -> Socket:
         """Input socket: Position"""
         return self.inputs.get("Position")
 
     @property
-    def i_offset(self) -> SocketLinker:
+    def i_offset(self) -> Socket:
         """Input socket: Offset"""
         return self.inputs.get("Offset")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5320,17 +5330,17 @@ class SetSelection(NodeBuilder):
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5407,22 +5417,22 @@ class SetShadeSmooth(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_shade_smooth(self) -> SocketLinker:
+    def i_shade_smooth(self) -> Socket:
         """Input socket: Shade Smooth"""
         return self.inputs.get("Shade Smooth")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Geometry")
 
@@ -5455,22 +5465,22 @@ class SetSplineCyclic(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_cyclic(self) -> SocketLinker:
+    def i_cyclic(self) -> Socket:
         """Input socket: Cyclic"""
         return self.inputs.get("Cyclic")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Geometry")
 
@@ -5499,22 +5509,22 @@ class SetSplineResolution(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_resolution(self) -> SocketLinker:
+    def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
         return self.inputs.get("Resolution")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Geometry")
 
@@ -5540,17 +5550,17 @@ class SetSplineType(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -5676,27 +5686,27 @@ class SortElements(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_group_id(self) -> SocketLinker:
+    def i_group_id(self) -> Socket:
         """Input socket: Group ID"""
         return self.inputs.get("Group ID")
 
     @property
-    def i_sort_weight(self) -> SocketLinker:
+    def i_sort_weight(self) -> Socket:
         """Input socket: Sort Weight"""
         return self.inputs.get("Sort Weight")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -5739,37 +5749,37 @@ class Spiral(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_resolution(self) -> SocketLinker:
+    def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
         return self.inputs.get("Resolution")
 
     @property
-    def i_rotations(self) -> SocketLinker:
+    def i_rotations(self) -> Socket:
         """Input socket: Rotations"""
         return self.inputs.get("Rotations")
 
     @property
-    def i_start_radius(self) -> SocketLinker:
+    def i_start_radius(self) -> Socket:
         """Input socket: Start Radius"""
         return self.inputs.get("Start Radius")
 
     @property
-    def i_end_radius(self) -> SocketLinker:
+    def i_end_radius(self) -> Socket:
         """Input socket: End Radius"""
         return self.inputs.get("End Radius")
 
     @property
-    def i_height(self) -> SocketLinker:
+    def i_height(self) -> Socket:
         """Input socket: Height"""
         return self.inputs.get("Height")
 
     @property
-    def i_reverse(self) -> SocketLinker:
+    def i_reverse(self) -> Socket:
         """Input socket: Reverse"""
         return self.inputs.get("Reverse")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -5793,17 +5803,17 @@ class SplitEdges(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -5904,27 +5914,27 @@ class SplitToInstances(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_group_id(self) -> SocketLinker:
+    def i_group_id(self) -> Socket:
         """Input socket: Group ID"""
         return self.inputs.get("Group ID")
 
     @property
-    def o_instances(self) -> SocketLinker:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
     @property
-    def o_group_id(self) -> SocketLinker:
+    def o_group_id(self) -> IntegerSocket:
         """Output socket: Group ID"""
         return self.outputs.get("Group ID")
 
@@ -5965,32 +5975,32 @@ class Star(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_points(self) -> SocketLinker:
+    def i_points(self) -> Socket:
         """Input socket: Points"""
         return self.inputs.get("Points")
 
     @property
-    def i_inner_radius(self) -> SocketLinker:
+    def i_inner_radius(self) -> Socket:
         """Input socket: Inner Radius"""
         return self.inputs.get("Inner Radius")
 
     @property
-    def i_outer_radius(self) -> SocketLinker:
+    def i_outer_radius(self) -> Socket:
         """Input socket: Outer Radius"""
         return self.inputs.get("Outer Radius")
 
     @property
-    def i_twist(self) -> SocketLinker:
+    def i_twist(self) -> Socket:
         """Input socket: Twist"""
         return self.inputs.get("Twist")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
     @property
-    def o_outer_points(self) -> SocketLinker:
+    def o_outer_points(self) -> BooleanSocket:
         """Output socket: Outer Points"""
         return self.outputs.get("Outer Points")
 
@@ -6045,57 +6055,57 @@ class StringToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_string(self) -> SocketLinker:
+    def i_string(self) -> Socket:
         """Input socket: String"""
         return self.inputs.get("String")
 
     @property
-    def i_size(self) -> SocketLinker:
+    def i_size(self) -> Socket:
         """Input socket: Size"""
         return self.inputs.get("Size")
 
     @property
-    def i_character_spacing(self) -> SocketLinker:
+    def i_character_spacing(self) -> Socket:
         """Input socket: Character Spacing"""
         return self.inputs.get("Character Spacing")
 
     @property
-    def i_word_spacing(self) -> SocketLinker:
+    def i_word_spacing(self) -> Socket:
         """Input socket: Word Spacing"""
         return self.inputs.get("Word Spacing")
 
     @property
-    def i_line_spacing(self) -> SocketLinker:
+    def i_line_spacing(self) -> Socket:
         """Input socket: Line Spacing"""
         return self.inputs.get("Line Spacing")
 
     @property
-    def i_text_box_width(self) -> SocketLinker:
+    def i_text_box_width(self) -> Socket:
         """Input socket: Text Box Width"""
         return self.inputs.get("Text Box Width")
 
     @property
-    def i_text_box_height(self) -> SocketLinker:
+    def i_text_box_height(self) -> Socket:
         """Input socket: Text Box Height"""
         return self.inputs.get("Text Box Height")
 
     @property
-    def o_curve_instances(self) -> SocketLinker:
+    def o_curve_instances(self) -> GeometrySocket:
         """Output socket: Curve Instances"""
         return self.outputs.get("Curve Instances")
 
     @property
-    def o_remainder(self) -> SocketLinker:
+    def o_remainder(self) -> StringSocket:
         """Output socket: Remainder"""
         return self.outputs.get("Remainder")
 
     @property
-    def o_line(self) -> SocketLinker:
+    def o_line(self) -> IntegerSocket:
         """Output socket: Line"""
         return self.outputs.get("Line")
 
     @property
-    def o_pivot_point(self) -> VectorSocketLinker:
+    def o_pivot_point(self) -> VectorSocket:
         """Output socket: Pivot Point"""
         return self.outputs.get("Pivot Point")
 
@@ -6177,17 +6187,17 @@ class SubdivideCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_cuts(self) -> SocketLinker:
+    def i_cuts(self) -> Socket:
         """Input socket: Cuts"""
         return self.inputs.get("Cuts")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -6211,17 +6221,17 @@ class SubdivideMesh(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_level(self) -> SocketLinker:
+    def i_level(self) -> Socket:
         """Input socket: Level"""
         return self.inputs.get("Level")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -6266,42 +6276,42 @@ class SubdivisionSurface(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_level(self) -> SocketLinker:
+    def i_level(self) -> Socket:
         """Input socket: Level"""
         return self.inputs.get("Level")
 
     @property
-    def i_edge_crease(self) -> SocketLinker:
+    def i_edge_crease(self) -> Socket:
         """Input socket: Edge Crease"""
         return self.inputs.get("Edge Crease")
 
     @property
-    def i_vertex_crease(self) -> SocketLinker:
+    def i_vertex_crease(self) -> Socket:
         """Input socket: Vertex Crease"""
         return self.inputs.get("Vertex Crease")
 
     @property
-    def i_limit_surface(self) -> SocketLinker:
+    def i_limit_surface(self) -> Socket:
         """Input socket: Limit Surface"""
         return self.inputs.get("Limit Surface")
 
     @property
-    def i_uv_smooth(self) -> SocketLinker:
+    def i_uv_smooth(self) -> Socket:
         """Input socket: UV Smooth"""
         return self.inputs.get("UV Smooth")
 
     @property
-    def i_boundary_smooth(self) -> SocketLinker:
+    def i_boundary_smooth(self) -> Socket:
         """Input socket: Boundary Smooth"""
         return self.inputs.get("Boundary Smooth")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -6336,37 +6346,37 @@ class TransformGeometry(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_geometry(self) -> SocketLinker:
+    def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
         return self.inputs.get("Geometry")
 
     @property
-    def i_mode(self) -> SocketLinker:
+    def i_mode(self) -> Socket:
         """Input socket: Mode"""
         return self.inputs.get("Mode")
 
     @property
-    def i_translation(self) -> SocketLinker:
+    def i_translation(self) -> Socket:
         """Input socket: Translation"""
         return self.inputs.get("Translation")
 
     @property
-    def i_rotation(self) -> SocketLinker:
+    def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
         return self.inputs.get("Rotation")
 
     @property
-    def i_scale(self) -> SocketLinker:
+    def i_scale(self) -> Socket:
         """Input socket: Scale"""
         return self.inputs.get("Scale")
 
     @property
-    def i_transform(self) -> SocketLinker:
+    def i_transform(self) -> Socket:
         """Input socket: Transform"""
         return self.inputs.get("Transform")
 
     @property
-    def o_geometry(self) -> SocketLinker:
+    def o_geometry(self) -> GeometrySocket:
         """Output socket: Geometry"""
         return self.outputs.get("Geometry")
 
@@ -6397,27 +6407,27 @@ class TranslateInstances(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_instances(self) -> SocketLinker:
+    def i_instances(self) -> Socket:
         """Input socket: Instances"""
         return self.inputs.get("Instances")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_translation(self) -> SocketLinker:
+    def i_translation(self) -> Socket:
         """Input socket: Translation"""
         return self.inputs.get("Translation")
 
     @property
-    def i_local_space(self) -> SocketLinker:
+    def i_local_space(self) -> Socket:
         """Input socket: Local Space"""
         return self.inputs.get("Local Space")
 
     @property
-    def o_instances(self) -> SocketLinker:
+    def o_instances(self) -> GeometrySocket:
         """Output socket: Instances"""
         return self.outputs.get("Instances")
 
@@ -6455,27 +6465,27 @@ class Triangulate(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> SocketLinker:
+    def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
         return self.inputs.get("Mesh")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_quad_method(self) -> SocketLinker:
+    def i_quad_method(self) -> Socket:
         """Input socket: Quad Method"""
         return self.inputs.get("Quad Method")
 
     @property
-    def i_n_gon_method(self) -> SocketLinker:
+    def i_n_gon_method(self) -> Socket:
         """Input socket: N-gon Method"""
         return self.inputs.get("N-gon Method")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
@@ -6512,37 +6522,37 @@ class TrimCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> SocketLinker:
+    def i_curve(self) -> Socket:
         """Input socket: Curve"""
         return self.inputs.get("Curve")
 
     @property
-    def i_selection(self) -> SocketLinker:
+    def i_selection(self) -> Socket:
         """Input socket: Selection"""
         return self.inputs.get("Selection")
 
     @property
-    def i_start(self) -> SocketLinker:
+    def i_start(self) -> Socket:
         """Input socket: Start"""
         return self.inputs.get("Start")
 
     @property
-    def i_end(self) -> SocketLinker:
+    def i_end(self) -> Socket:
         """Input socket: End"""
         return self.inputs.get("End")
 
     @property
-    def i_start_001(self) -> SocketLinker:
+    def i_start_001(self) -> Socket:
         """Input socket: Start"""
         return self.inputs.get("Start_001")
 
     @property
-    def i_end_001(self) -> SocketLinker:
+    def i_end_001(self) -> Socket:
         """Input socket: End"""
         return self.inputs.get("End_001")
 
     @property
-    def o_curve(self) -> SocketLinker:
+    def o_curve(self) -> GeometrySocket:
         """Output socket: Curve"""
         return self.outputs.get("Curve")
 
@@ -6575,26 +6585,26 @@ class UVSphere(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_segments(self) -> SocketLinker:
+    def i_segments(self) -> Socket:
         """Input socket: Segments"""
         return self.inputs.get("Segments")
 
     @property
-    def i_rings(self) -> SocketLinker:
+    def i_rings(self) -> Socket:
         """Input socket: Rings"""
         return self.inputs.get("Rings")
 
     @property
-    def i_radius(self) -> SocketLinker:
+    def i_radius(self) -> Socket:
         """Input socket: Radius"""
         return self.inputs.get("Radius")
 
     @property
-    def o_mesh(self) -> SocketLinker:
+    def o_mesh(self) -> GeometrySocket:
         """Output socket: Mesh"""
         return self.outputs.get("Mesh")
 
     @property
-    def o_uv_map(self) -> VectorSocketLinker:
+    def o_uv_map(self) -> VectorSocket:
         """Output socket: UV Map"""
         return self.outputs.get("UV Map")
