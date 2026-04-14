@@ -68,7 +68,7 @@ def test_shader_menu_switch():
 
 
 def test_color_shader():
-    with TreeBuilder.shader():
+    with s.tree():
         mix_shader = s.MixShader(1.0, s.Color())
         assert (
             mix_shader.node.inputs["Shader"].links[0].from_node.bl_idname
@@ -81,10 +81,9 @@ def test_color_shader():
 def test_material_node_cartoon():
     with s.material("Cartoon", fake_user=True) as mat:
         mat.nodes.clear()
-        output = s.MaterialOutput(surface=s.Attribute("GEOMETRY", "Color"))
-        aov = s.AovOutput(
-            value=s.Attribute.geometry("sec_struct"), aov_name="sec_struct"
-        )
+        output = s.MaterialOutput(surface=s.Attribute.geometry("Color").o_color)
+        attr = s.Attribute.geometry("sec_struct")
+        aov = s.AovOutput(value=attr, aov_name="sec_struct")
 
     assert (
         output.node.inputs["Surface"].links[0].from_node.bl_idname
@@ -95,3 +94,5 @@ def test_material_node_cartoon():
     )
     assert "Cartoon" in bpy.data.materials
     assert "Cartoon" not in bpy.data.node_groups
+    assert attr.attribute_name == "sec_struct"
+    assert attr.attribute_type == "GEOMETRY"
