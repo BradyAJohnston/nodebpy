@@ -434,8 +434,8 @@ def test_accumulate_field():
 def test_edge_other_point():
     with TreeBuilder() as tree:
         with tree.inputs:
-            v_index = s.SocketInt("Vertex Index", default_input="INDEX")
-            e_index = s.SocketInt("Edge Number")
+            v_index = s.SocketInteger("Vertex Index", default_input="INDEX")
+            e_index = s.SocketInteger("Edge Number")
 
         # with the index from the selected edge from the input, we get the two different vertices
         # of the edge. We compare them and return the one that isn't the current input vertex index
@@ -446,7 +446,7 @@ def test_edge_other_point():
         other_vertex = g.Switch.integer(v_index == vert_1, vert_1, vert_2)
 
         with tree.outputs:
-            _ = other_vertex >> s.SocketInt("Other Vertex")
+            _ = other_vertex >> s.SocketInteger("Other Vertex")
 
     other_vertex.node.inputs[0].links[0].from_node == vert_1.node
     other_vertex.node.inputs[1].links[0].from_node == vert_2.node

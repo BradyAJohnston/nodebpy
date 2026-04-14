@@ -16,7 +16,7 @@ from .interface import (
     SocketFloat,
     SocketGeometry,
     SocketImage,
-    SocketInt,
+    SocketInteger,
     SocketMaterial,
     SocketMatrix,
     SocketMenu,
@@ -110,7 +110,7 @@ __all__ = [
     "InterfaceSocket",
     # Interface socket types
     "SocketFloat",
-    "SocketInt",
+    "SocketInteger",
     "SocketBoolean",
     "SocketVector",
     "SocketColor",

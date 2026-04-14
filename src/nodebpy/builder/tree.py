@@ -36,7 +36,7 @@ if TYPE_CHECKING:
         SocketFloat,
         SocketGeometry,
         SocketImage,
-        SocketInt,
+        SocketInteger,
         SocketMaterial,
         SocketMatrix,
         SocketMenu,
@@ -146,7 +146,7 @@ class SocketContext:
             default_attribute=default_attribute,
         )
 
-    def socket_int(
+    def socket_integer(
         self,
         name: str = "Integer",
         default_value: int = 0,
@@ -162,12 +162,12 @@ class SocketContext:
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "SocketInt":
+    ) -> "SocketInteger":
         """Add an Integer socket to this input/output interface."""
-        from .interface import SocketInt
+        from .interface import SocketInteger
 
         return self._make_socket(
-            SocketInt,
+            SocketInteger,
             name,
             default_value,
             description,

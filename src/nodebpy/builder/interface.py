@@ -111,7 +111,7 @@ class SocketFloat(InterfaceSocket):
         )
 
 
-class SocketInt(_IntegerMixin, InterfaceSocket):
+class SocketInteger(_IntegerMixin, InterfaceSocket):
     """Integer socket"""
 
     _bl_socket_type: str = "NodeSocketInt"

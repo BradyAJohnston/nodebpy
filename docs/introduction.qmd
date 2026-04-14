@@ -34,8 +34,6 @@ with g.tree("AnotherTree") as tree:
 
     g.Position() * 0.5 >> pos.i_position
     g.Vector() >> pos.i_offset
-
-tree
 ```
 
 ## Using Arguments to Class
@@ -46,7 +44,6 @@ with g.tree("AnotherAnotherTree") as tree:
         offset = g.Vector(),
         position = g.Position() * 0.5
     )
-tree
 ```
 
 :::
@@ -75,7 +72,7 @@ tree
 ```{python}
 with g.tree() as tree:
     (
-        tree.inputs.socket_int("Count", 10)
+        tree.inputs.socket_integer("Count", 10)
         >> g.Points(position=g.RandomValue.vector(min=(-0.1,-0.1,-0.2)))
         >> tree.outputs.socket_geometry()
     )
@@ -85,7 +82,7 @@ tree
 
 ```{python}
 with g.tree() as tree:
-    count = tree.inputs.socket_int("Count", 10)
+    count = tree.inputs.socket_integer("Count", 10)
     output = tree.outputs.socket_geometry()
 
     (

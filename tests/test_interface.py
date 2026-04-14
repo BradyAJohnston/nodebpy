@@ -43,7 +43,7 @@ def test_geometry_scalar_sockets():
     """Float, Int, and Boolean sockets are created with correct names and defaults."""
     with g.tree(arrange=None) as tree:
         f = tree.inputs.socket_float("Value", default_value=2.5)
-        i = tree.inputs.socket_int("Count", default_value=4)
+        i = tree.inputs.socket_integer("Count", default_value=4)
         b = tree.inputs.socket_boolean("Enabled", default_value=True)
 
     assert isinstance(f, InterfaceSocket)
@@ -141,9 +141,9 @@ def test_socket_float_subtype_and_limits():
     assert f.interface_socket.subtype == "FACTOR"
 
 
-def test_socket_int_limits():
+def test_socket_integer_limits():
     with g.tree(arrange=None) as tree:
-        i = tree.inputs.socket_int(
+        i = tree.inputs.socket_integer(
             "Count", default_value=10, min_value=1, max_value=100
         )
 
@@ -173,7 +173,7 @@ def test_socket_vector_default_input():
 def test_socket_hide_value():
     with g.tree(arrange=None) as tree:
         f = tree.inputs.socket_float("Hidden", hide_value=True)
-        i = tree.inputs.socket_int("Visible")
+        i = tree.inputs.socket_integer("Visible")
 
     assert f.interface_socket.hide_value is True
     assert i.interface_socket.hide_value is False
@@ -186,9 +186,11 @@ def test_socket_menu_expanded():
     assert menu.interface_socket.menu_expanded is True
 
 
-def test_socket_int_percentage_subtype():
+def test_socket_integer_percentage_subtype():
     with g.tree(arrange=None) as tree:
-        pct = tree.inputs.socket_int("Progress", default_value=50, subtype="PERCENTAGE")
+        pct = tree.inputs.socket_integer(
+            "Progress", default_value=50, subtype="PERCENTAGE"
+        )
 
     assert pct.interface_socket.subtype == "PERCENTAGE"
 
@@ -288,7 +290,7 @@ def test_panel_with_socket_methods():
         tree.inputs.socket_geometry()
         with tree.inputs.panel("Settings"):
             tree.inputs.socket_float("Scale", 1.0)
-            tree.inputs.socket_int("Count", 3)
+            tree.inputs.socket_integer("Count", 3)
 
     items = list(tree.tree.interface.items_tree)
     panels = [i for i in items if isinstance(i, bpy.types.NodeTreeInterfacePanel)]
@@ -375,7 +377,9 @@ def test_shader_vector_input():
 
 def test_shader_int_and_boolean_inputs():
     with s.tree(arrange=None) as tree:
-        samples = tree.inputs.socket_int("Samples", 128, min_value=1, max_value=4096)
+        samples = tree.inputs.socket_integer(
+            "Samples", 128, min_value=1, max_value=4096
+        )
         enabled = tree.inputs.socket_boolean("Enabled", default_value=True)
         shader_out = tree.outputs.socket_shader()
 
@@ -456,7 +460,7 @@ def test_compositor_multiple_outputs():
 
 def test_compositor_int_and_boolean_sockets():
     with c.tree(arrange=None) as tree:
-        size = tree.inputs.socket_int("Size", 3, min_value=1, max_value=32)
+        size = tree.inputs.socket_integer("Size", 3, min_value=1, max_value=32)
         enabled = tree.inputs.socket_boolean("Enabled")
         out = tree.outputs.socket_color("Image")
 
