@@ -1,5 +1,5 @@
 from . import nodes, screenshot, sockets
-from .builder import TreeBuilder
+from .builder import TreeBuilder, NodeGroupBuilder
 from .nodes import compositor, geometry, shader
 
 __all__ = [
@@ -10,4 +10,5 @@ __all__ = [
     "sockets",
     "screenshot",
     "TreeBuilder",
+    "NodeGroupBuilder",
 ]

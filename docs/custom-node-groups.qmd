@@ -3,8 +3,7 @@ title: Custom Node Groups
 ---
 
 ```{python}
-from nodebpy import TreeBuilder, geometry as g
-from nodebpy import builder
+from nodebpy import NodeGroupBuilder, geometry as g
 from nodebpy.types import (
     InputFloat,
     InputInteger,
@@ -27,7 +26,6 @@ A custom node group class has four parts:
 
 ```{python}
 # | eval: false
-from nodebpy import NodeGroupBuilder, geometry as g
 
 class MyNode(NodeGroupBuilder):
     _name = "My Node"  # 1. Name
@@ -48,7 +46,7 @@ The display name for the group inside Blender. This is also the key used to cach
 Let's start with something visually obvious -- a node that randomly displaces each point on a mesh. This is useful any time you want to add organic variation to geometry.
 
 ```{python}
-class Jitter(builder.NodeGroupBuilder):
+class Jitter(NodeGroupBuilder):
     """Randomly offset each point by a bounded amount."""
 
     _name = "Jitter"
@@ -77,7 +75,7 @@ class Jitter(builder.NodeGroupBuilder):
 Let's see the internal node graph:
 
 ```{python}
-with TreeBuilder("JitterInternal") as tree:
+with g.tree("JitterInternal") as tree:
     _ = Jitter()
 
 tree
@@ -86,7 +84,7 @@ tree
 Now use it like any built-in node -- apply it to an ico sphere:
 
 ```{python}
-with TreeBuilder("JitterDemo") as tree:
+with g.tree("JitterDemo") as tree:
     out = tree.outputs.geometry()
     _ = g.IcoSphere(subdivisions=4) >> Jitter(amount=0.15) >> out
 
@@ -102,7 +100,7 @@ Next, a node that distributes instances in a ring. This is a common pattern for 
 from math import tau
 
 
-class RadialArray(builder.NodeGroupBuilder):
+class RadialArray(NodeGroupBuilder):
     """Distribute instances evenly around a circle."""
 
     _name = "Radial Array"
@@ -140,14 +138,14 @@ class RadialArray(builder.NodeGroupBuilder):
 ```
 
 ```{python}
-with TreeBuilder("RadialInternal") as tree:
+with g.tree("RadialInternal") as tree:
     _ = RadialArray()
 
 tree
 ```
 
 ```{python}
-with TreeBuilder("RadialDemo") as tree:
+with g.tree("RadialDemo") as tree:
     petal = g.Cone(vertices=4, radius_bottom=0.3, depth=0.8)
     _ = (
         petal
@@ -165,7 +163,7 @@ tree
 Custom groups compose naturally -- they chain with `>>`, accept each other's outputs, and mix with operators just like built-in nodes. Let's combine `Jitter` and `RadialArray` to build a flower-like structure with some organic randomness.
 
 ```{python}
-with TreeBuilder("JitteredFlower") as tree:
+with g.tree("JitteredFlower") as tree:
     petals = tree.inputs.integer("Petals", 20, min_value=3, max_value=24)
     radius = tree.inputs.float("Radius", 0.5, min_value=0.1)
     jitter = tree.inputs.float("Jitter", 0.1)
