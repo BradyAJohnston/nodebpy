@@ -537,7 +537,11 @@ def test_nested_trees():
             group.node.node_tree = tree3.tree
 
             with tree2.inputs:
-                items = (socket.SocketInteger("Count", 10) >> g.Points(), g.Cube(), group)
+                items = (
+                    socket.SocketInteger("Count", 10) >> g.Points(),
+                    g.Cube(),
+                    group,
+                )
 
             with tree2.outputs:
                 _ = g.JoinGeometry(*items) >> socket.SocketGeometry("Output")

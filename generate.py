@@ -484,14 +484,16 @@ class NodeInfo:
         cls_name = self.class_name_for_config(config) if config else self.class_name
 
         for prop in self.properties:
-            if prop.identifier not in [
-                "operation",
-                "domain",
-                "data_type",
-                "input_type",
-                "attribute_type",
-                "type",
-            ]:
+            if (
+                prop.identifier
+                not in [
+                    "operation",
+                    "domain",
+                    "mode",
+                ]
+                and "type" not in prop.identifier
+                or prop.identifier in ["blend_type", "direction_type"]
+            ):
                 continue
 
             # assert operation_enum.enum_items
@@ -968,10 +970,48 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         init_params.append(f"{param_name}: {socket.type_hint} = {default}")
         establish_links_params.append((param_name, socket))
 
+    # Add sockets that only appear in certain enum states (e.g. mode="FREE" reveals
+    # a "Custom Normal" socket that isn't in the default state).  Without these the
+    # generated classmethods call cls(..., custom_normal=...) but __init__ never
+    # declares the parameter.
+    def _generates_classmethods(prop: PropertyInfo) -> bool:
+        """Mirror the filter used in generate_enum_class_methods."""
+        return not (
+            (
+                prop.identifier not in ["operation", "domain", "mode"]
+                and "type" not in prop.identifier
+            )
+            or prop.identifier in ["blend_type", "direction_type"]
+        )
+
+    _seen_identifiers = {s.identifier for s in node_info.inputs}
+    _extra_sockets: list[SocketInfo] = []
+
+    for prop in node_info.properties:
+        if not _generates_classmethods(prop):
+            continue
+        for enum in prop.enum_items:
+            for socket in enum.sockets:
+                if socket.identifier not in _seen_identifiers:
+                    _seen_identifiers.add(socket.identifier)
+                    _extra_sockets.append(socket)
+
+    for enum in node_info.type_socket_enums:
+        for socket in enum.sockets:
+            if socket.identifier not in _seen_identifiers:
+                _seen_identifiers.add(socket.identifier)
+                _extra_sockets.append(socket)
+
+    for socket in _extra_sockets:
+        param_name = get_socket_param_name(socket, sockets_use_same_name)
+        init_params.append(f"{param_name}: {socket.type_hint} = None")
+        establish_links_params.append((param_name, socket))
+
     # Add properties as parameters
+    _has_socket_params = len(node_info.inputs) > 0 or bool(_extra_sockets)
     for i, prop in enumerate(node_info.properties):
         if i == 0:
-            if len(node_info.inputs) > 0:
+            if _has_socket_params:
                 init_params.append("*")
 
         init_params.append(prop.format_property_argument())
@@ -983,19 +1023,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         init_signature = "(" + ", ".join(init_params) + ")"
 
     # Build establish_links call - map parameter names to socket identifiers
-    establish_call = ""
-    if establish_links_params:
-        # Create mapping of parameter names to socket identifiers for _establish_links
-        link_mappings = []
-        for param_name, socket in establish_links_params:
-            # Use socket identifier as key (which maps to the actual blender socket)
-            # parameter name as value
-            link_mappings.append(f'"{socket.identifier}": {param_name}')
-
-        if link_mappings:
-            establish_call = f"""        key_args = {{{", ".join(link_mappings)}}}"""
-    else:
-        establish_call = "        key_args = {}"
+    link_mappings = []
+    for param_name, socket in establish_links_params:
+        link_mappings.append(f'"{socket.identifier}": {param_name}')
 
     # Build property setting calls
     property_calls = []
@@ -1003,8 +1033,22 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         param_name = normalize_name(prop.identifier)
         property_calls.append(f"""        self.{prop.identifier} = {param_name}""")
 
-    # if property_calls:
     property_setting = "\n".join(property_calls)
+
+    if _extra_sockets:
+        # When there are enum-state-dependent sockets, set properties first so the
+        # node reflects the correct enum state, then filter key_args at runtime to
+        # only include sockets that actually exist in the current state.
+        establish_call = (
+            f"        _all_args = {{{', '.join(link_mappings)}}}\n"
+            f"        _socket_ids = {{s.identifier for s in self.node.inputs}}\n"
+            f"        key_args = {{k: v for k, v in _all_args.items() if k in _socket_ids}}"
+        )
+    else:
+        if link_mappings:
+            establish_call = f"""        key_args = {{{", ".join(link_mappings)}}}"""
+        else:
+            establish_call = "        key_args = {}"
 
     # Generate input properties
     input_properties = [socket.format_property() for socket in node_info.inputs]
@@ -1036,6 +1080,13 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         body_parts.append(chr(10).join(property_accessors))
     body = chr(10).join(body_parts)
 
+    # When extra sockets exist, properties must be set before collecting socket IDs
+    # so the node reflects the correct enum state when we filter key_args.
+    if _extra_sockets and property_setting:
+        init_body = f"\n{property_setting}\n{establish_call}"
+    else:
+        init_body = f"\n{establish_call}\n{property_setting}"
+
     class_code = f'''class {class_name}(NodeBuilder):
     """
     {node_info.description}
@@ -1045,9 +1096,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     node: {node_type_annotation}
 
     def __init__{init_signature}:
-        super().__init__()
-{establish_call}
-{property_setting}
+        super().__init__(){init_body}
         self._establish_links(**key_args)
 
 {body}'''

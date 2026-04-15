@@ -515,6 +515,65 @@ class VectorRotate(NodeBuilder):
         self.invert = invert
         self._establish_links(**key_args)
 
+    @classmethod
+    def axis_angle(
+        cls,
+        vector: InputVector = None,
+        center: InputVector = None,
+        axis: InputVector = None,
+        angle: InputFloat = 0.0,
+    ) -> "VectorRotate":
+        """Create Vector Rotate with operation 'Axis Angle'. Rotate a point using axis angle"""
+        return cls(
+            rotation_type="AXIS_ANGLE",
+            vector=vector,
+            center=center,
+            axis=axis,
+            angle=angle,
+        )
+
+    @classmethod
+    def x_axis(
+        cls,
+        vector: InputVector = None,
+        center: InputVector = None,
+        angle: InputFloat = 0.0,
+    ) -> "VectorRotate":
+        """Create Vector Rotate with operation 'X Axis'. Rotate a point using X axis"""
+        return cls(rotation_type="X_AXIS", vector=vector, center=center, angle=angle)
+
+    @classmethod
+    def y_axis(
+        cls,
+        vector: InputVector = None,
+        center: InputVector = None,
+        angle: InputFloat = 0.0,
+    ) -> "VectorRotate":
+        """Create Vector Rotate with operation 'Y Axis'. Rotate a point using Y axis"""
+        return cls(rotation_type="Y_AXIS", vector=vector, center=center, angle=angle)
+
+    @classmethod
+    def z_axis(
+        cls,
+        vector: InputVector = None,
+        center: InputVector = None,
+        angle: InputFloat = 0.0,
+    ) -> "VectorRotate":
+        """Create Vector Rotate with operation 'Z Axis'. Rotate a point using Z axis"""
+        return cls(rotation_type="Z_AXIS", vector=vector, center=center, angle=angle)
+
+    @classmethod
+    def euler(
+        cls,
+        vector: InputVector = None,
+        center: InputVector = None,
+        rotation: InputVector = None,
+    ) -> "VectorRotate":
+        """Create Vector Rotate with operation 'Euler'. Rotate a point using XYZ order"""
+        return cls(
+            rotation_type="EULER_XYZ", vector=vector, center=center, rotation=rotation
+        )
+
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""

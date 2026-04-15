@@ -496,6 +496,60 @@ class MetallicBSDF(NodeBuilder):
         self.fresnel_type = fresnel_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def physical_conductor(
+        cls,
+        ior: InputVector = None,
+        extinction: InputVector = None,
+        roughness: InputFloat = 0.5,
+        anisotropy: InputFloat = 0.0,
+        rotation: InputFloat = 0.0,
+        normal: InputVector = None,
+        tangent: InputVector = None,
+        thin_film_thickness: InputFloat = 0.0,
+        thin_film_ior: InputFloat = 1.33,
+    ) -> "MetallicBSDF":
+        """Create Metallic BSDF with operation 'Physical Conductor'. Fresnel conductor based on the complex refractive index per color channel"""
+        return cls(
+            fresnel_type="PHYSICAL_CONDUCTOR",
+            ior=ior,
+            extinction=extinction,
+            roughness=roughness,
+            anisotropy=anisotropy,
+            rotation=rotation,
+            normal=normal,
+            tangent=tangent,
+            thin_film_thickness=thin_film_thickness,
+            thin_film_ior=thin_film_ior,
+        )
+
+    @classmethod
+    def f82_tint(
+        cls,
+        base_color: InputColor = None,
+        edge_tint: InputColor = None,
+        roughness: InputFloat = 0.5,
+        anisotropy: InputFloat = 0.0,
+        rotation: InputFloat = 0.0,
+        normal: InputVector = None,
+        tangent: InputVector = None,
+        thin_film_thickness: InputFloat = 0.0,
+        thin_film_ior: InputFloat = 1.33,
+    ) -> "MetallicBSDF":
+        """Create Metallic BSDF with operation 'F82 Tint'. An approximation of the Fresnel conductor curve based on the colors at perpendicular and near-grazing (roughly 82°) angles"""
+        return cls(
+            fresnel_type="F82",
+            base_color=base_color,
+            edge_tint=edge_tint,
+            roughness=roughness,
+            anisotropy=anisotropy,
+            rotation=rotation,
+            normal=normal,
+            tangent=tangent,
+            thin_film_thickness=thin_film_thickness,
+            thin_film_ior=thin_film_ior,
+        )
+
     @property
     def i_base_color(self) -> Socket:
         """Input socket: Base Color"""
