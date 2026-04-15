@@ -258,23 +258,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="arithmetic-operators" class="level2">
 <h2 class="anchored" data-anchor-id="arithmetic-operators">Arithmetic Operators</h2>
 <p>The standard arithmetic operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> are joined by <code>**</code> (power), <code>%</code> (modulo), <code>//</code> (floor division), unary <code>-</code> (negate), and <code>abs()</code>.</p>
-<div id="0588b09c" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"ArithmeticDemo"</span>) <span class="im">as</span> tree:</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    val <span class="op">=</span> g.Value(<span class="fl">2.0</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    scaled <span class="op">=</span> val <span class="op">**</span> <span class="dv">2</span>         <span class="co"># Math.power</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    wrapped <span class="op">=</span> scaled <span class="op">%</span> <span class="fl">5.0</span>    <span class="co"># Math.floored_modulo</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    snapped <span class="op">=</span> scaled <span class="op">//</span> <span class="fl">3.0</span>   <span class="co"># Math.divide -&gt; Math.floor</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        g.Points(<span class="dv">100</span>, position<span class="op">=</span>g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(offset<span class="op">=</span>g.Position() <span class="op">*</span> snapped)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="615e4dd2" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"ArithmeticDemo"</span>) <span class="im">as</span> tree:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    val <span class="op">=</span> g.Value(<span class="fl">2.0</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    scaled <span class="op">=</span> val<span class="op">**</span><span class="dv">2</span>  <span class="co"># Math.power</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    wrapped <span class="op">=</span> scaled <span class="op">%</span> <span class="fl">5.0</span>  <span class="co"># Math.floored_modulo</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    snapped <span class="op">=</span> scaled <span class="op">//</span> <span class="fl">3.0</span>  <span class="co"># Math.divide -&gt; Math.floor</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        g.Points(<span class="dv">100</span>, position<span class="op">=</span>g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(offset<span class="op">=</span>g.Position() <span class="op">*</span> snapped)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -321,24 +320,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>All operators automatically select the right node type. With integers you get <code>IntegerMath</code>, with vectors you get <code>VectorMath</code>, and scalars are broadcast when mixed with vectors:</p>
-<div id="da5c4b42" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"TypeDispatch"</span>) <span class="im">as</span> tree:</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Integer operations use IntegerMath nodes</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> g.Index()</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> idx <span class="op">//</span> <span class="dv">10</span>           <span class="co"># IntegerMath.divide_floor</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> idx <span class="op">%</span> <span class="dv">10</span>            <span class="co"># IntegerMath.modulo</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Vector operations use VectorMath nodes</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position()</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    offset <span class="op">=</span> pos <span class="op">**</span> <span class="dv">2</span>         <span class="co"># VectorMath.power (element-wise)</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    wrapped <span class="op">=</span> pos <span class="op">%</span> (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="co"># VectorMath.modulo</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> g.Grid(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">100</span>) <span class="op">&gt;&gt;</span> g.SetPosition(offset<span class="op">=</span>wrapped) <span class="op">&gt;&gt;</span> out</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="418c063c" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"TypeDispatch"</span>) <span class="im">as</span> tree:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Integer operations use IntegerMath nodes</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> g.Index()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> idx <span class="op">//</span> <span class="dv">10</span>  <span class="co"># IntegerMath.divide_floor</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> idx <span class="op">%</span> <span class="dv">10</span>  <span class="co"># IntegerMath.modulo</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Vector operations use VectorMath nodes</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position()</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    offset <span class="op">=</span> pos<span class="op">**</span><span class="dv">2</span>  <span class="co"># VectorMath.power (element-wise)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    wrapped <span class="op">=</span> pos <span class="op">%</span> (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)  <span class="co"># VectorMath.modulo</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> g.Grid(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">100</span>) <span class="op">&gt;&gt;</span> g.SetPosition(offset<span class="op">=</span>wrapped) <span class="op">&gt;&gt;</span> out</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -382,16 +380,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="negation-and-absolute-value" class="level3">
 <h3 class="anchored" data-anchor-id="negation-and-absolute-value">Negation and Absolute Value</h3>
 <p>The unary <code>-</code> and <code>abs()</code> operators work with all numeric types:</p>
-<div id="1e95b15e" class="cell" data-results="false" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"UnaryOps"</span>) <span class="im">as</span> tree:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> (</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            g.Cube()</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>            <span class="op">&gt;&gt;</span> g.SetPosition(offset<span class="op">=-</span><span class="bu">abs</span>(g.Position()))</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>            <span class="op">&gt;&gt;</span> s.SocketGeometry()</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ccd15350" class="cell" data-results="false" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"UnaryOps"</span>) <span class="im">as</span> tree:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        g.Cube()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(offset<span class="op">=-</span><span class="bu">abs</span>(g.Position()))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -432,24 +429,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="comparison-operators" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-operators">Comparison Operators</h2>
 <p>The <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> operators create <code>Compare</code> nodes that output boolean sockets. The correct data type (float, integer, or vector) is inferred from the left-hand operand.</p>
-<div id="dfee8d49" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"CompareDemo"</span>) <span class="im">as</span> tree:</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position()</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> g.SeparateXYZ(pos).o_z</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    above_ground <span class="op">=</span> z <span class="op">&gt;</span> <span class="fl">0.0</span>       <span class="co"># Compare.float.greater_than</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    below_ceiling <span class="op">=</span> z <span class="op">&lt;=</span> <span class="fl">5.0</span>     <span class="co"># Compare.float.less_equal</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        g.Cube(size<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>above_ground, offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="beabc536" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"CompareDemo"</span>) <span class="im">as</span> tree:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> g.SeparateXYZ(pos).o_z</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    above_ground <span class="op">=</span> z <span class="op">&gt;</span> <span class="fl">0.0</span>  <span class="co"># Compare.float.greater_than</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    below_ceiling <span class="op">=</span> z <span class="op">&lt;=</span> <span class="fl">5.0</span>  <span class="co"># Compare.float.less_equal</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        g.Cube(size<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>above_ground, offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -491,8 +487,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="comparison-into-a-switch" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-into-a-switch">Comparison into a Switch</h2>
 <p>The result of a comparison is a <code>Compare</code> node, which can be used to directly chain into a <code>Switch</code> node when in a Geometry node tree. This saves us some time having to directly use <code>g.Switch.float(pos.z &gt; v, ...)</code></p>
-<div id="9c62336f" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"SwitchDemo"</span>) <span class="im">as</span> tree:</span>
+<div id="f0c870b4" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"SwitchDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    v <span class="op">=</span> g.Value(<span class="fl">5.0</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position().o_position</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> (pos.z <span class="op">&gt;</span> v).switch(g.RandomValue.<span class="bu">float</span>(), <span class="fl">5.0</span> <span class="op">**</span> g.Value(<span class="fl">10.0</span>))</span>
@@ -541,24 +537,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="boolean-operators" class="level2">
 <h2 class="anchored" data-anchor-id="boolean-operators">Boolean Operators</h2>
 <p>Python’s bitwise operators <code>&amp;</code> (and), <code>|</code> (or), <code>^</code> (xor), and <code>~</code> (not) map to <code>BooleanMath</code> nodes. These are especially useful for combining comparison results into complex selections.</p>
-<div id="924ff403" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"BooleanDemo"</span>) <span class="im">as</span> tree:</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> g.SeparateXYZ(g.Position()).o_z</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Combine conditions: select points in a vertical band</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    selection <span class="op">=</span> (z <span class="op">&gt;</span> <span class="op">-</span><span class="fl">2.0</span>) <span class="op">&amp;</span> (z <span class="op">&lt;</span> <span class="fl">2.0</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        g.Cube(size<span class="op">=</span><span class="dv">6</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToPoints()</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>selection, offset<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="d61b19fe" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"BooleanDemo"</span>) <span class="im">as</span> tree:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> g.SeparateXYZ(g.Position()).o_z</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Combine conditions: select points in a vertical band</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    selection <span class="op">=</span> (z <span class="op">&gt;</span> <span class="op">-</span><span class="fl">2.0</span>) <span class="op">&amp;</span> (z <span class="op">&lt;</span> <span class="fl">2.0</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        g.Cube(size<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToPoints()</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>selection, offset<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="7">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -602,22 +597,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The <code>~</code> operator inverts a boolean:</p>
-<div id="edf9053e" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"InvertDemo"</span>) <span class="im">as</span> tree:</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
+<div id="10934a9e" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"InvertDemo"</span>) <span class="im">as</span> tree:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    is_even <span class="op">=</span> (g.Index() <span class="op">%</span> <span class="dv">2</span>) <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    is_odd <span class="op">=</span> <span class="op">~</span>is_even</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    is_even <span class="op">=</span> (g.Index() <span class="op">%</span> <span class="dv">2</span>) <span class="op">&gt;</span> <span class="dv">0</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    is_odd <span class="op">=</span> <span class="op">~</span>is_even</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        g.MeshLine(count<span class="op">=</span><span class="dv">20</span>)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToPoints()</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>is_odd, offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>))</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        g.MeshLine(count<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToPoints()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>is_odd, offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -661,21 +653,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="matrix-multiplication" class="level2">
 <h2 class="anchored" data-anchor-id="matrix-multiplication">Matrix Multiplication</h2>
 <p>The <code>@</code> operator maps to <code>MultiplyMatrices</code>, composing two 4x4 transformation matrices. You can also multiply a matrix by a vector using <code>@</code> and a <code>TransformPoint</code> will automatically be added.</p>
-<div id="222289c0" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"MatmulDemo"</span>) <span class="im">as</span> tree:</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
+<div id="c0e1f346" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"MatmulDemo"</span>) <span class="im">as</span> tree:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    rotate <span class="op">=</span> g.CombineTransform(rotation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">45</span>, <span class="dv">0</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    translate <span class="op">=</span> g.CombineTransform(translation<span class="op">=</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    rotate <span class="op">=</span> g.CombineTransform(rotation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">45</span>, <span class="dv">0</span>))</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    translate <span class="op">=</span> g.CombineTransform(translation<span class="op">=</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        g.Cube()</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(position<span class="op">=</span>rotate <span class="op">@</span> translate <span class="op">@</span> g.Position())</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> g.Cube() <span class="op">&gt;&gt;</span> g.SetPosition(position<span class="op">=</span>rotate <span class="op">@</span> translate <span class="op">@</span> g.Position())</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="9">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -690,14 +675,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N4("Cube"):::geometry-node
     N5("Transform Point"):::converter-node
     N6("Set Position"):::geometry-node
-    N7("Group Output"):::default-node
     N0 --&gt;|"Transform-&gt;Matrix"| N3
     N1 --&gt;|"Transform-&gt;Matrix"| N3
     N2 --&gt;|"Position-&gt;Vector"| N5
     N3 --&gt;|"Matrix-&gt;Transform"| N5
     N5 --&gt;|"Vector-&gt;Position"| N6
     N4 --&gt;|"Mesh-&gt;Geometry"| N6
-    N6 --&gt;|"Geometry-&gt;Geometry"| N7
 
     classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
     classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
@@ -722,23 +705,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="checkerboard-selection" class="level3">
 <h3 class="anchored" data-anchor-id="checkerboard-selection">Checkerboard Selection</h3>
 <p>Select alternating faces on a grid using integer modulo and comparisons:</p>
-<div id="120a7552" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Checkerboard"</span>) <span class="im">as</span> tree:</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> g.Index()</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> idx <span class="op">//</span> <span class="dv">10</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> idx <span class="op">%</span> <span class="dv">10</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    is_checker <span class="op">=</span> ((row <span class="op">+</span> col) <span class="op">%</span> <span class="dv">2</span>) <span class="op">&gt;</span> <span class="dv">0</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        g.Grid(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>is_checker, offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>))</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="76b8b4c2" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Checkerboard"</span>) <span class="im">as</span> tree:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> g.Index()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> idx <span class="op">//</span> <span class="dv">10</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> idx <span class="op">%</span> <span class="dv">10</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    is_checker <span class="op">=</span> ((row <span class="op">+</span> col) <span class="op">%</span> <span class="dv">2</span>) <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        g.Grid(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>is_checker, offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -785,24 +765,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="layered-selection" class="level3">
 <h3 class="anchored" data-anchor-id="layered-selection">Layered Selection</h3>
 <p>Divide space into layers using floor division, then select specific layers:</p>
-<div id="74b14f35" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Layers"</span>) <span class="im">as</span> tree:</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
+<div id="412165f9" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Layers"</span>) <span class="im">as</span> tree:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> g.SeparateXYZ(g.Position()).o_z</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    layer <span class="op">=</span> g.SeparateXYZ(g.Position() <span class="op">//</span> (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)).o_z</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> g.SeparateXYZ(g.Position()).o_z</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    layer <span class="op">=</span> g.SeparateXYZ(g.Position() <span class="op">//</span> (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)).o_z</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    selection <span class="op">=</span> (layer <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (layer <span class="op">&lt;</span> <span class="dv">3</span>) <span class="op">&amp;</span> <span class="op">~</span>(layer <span class="op">&gt;</span> <span class="dv">1</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        g.Cube(size<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToPoints()</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>selection, offset<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    selection <span class="op">=</span> (layer <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (layer <span class="op">&lt;</span> <span class="dv">3</span>) <span class="op">&amp;</span> <span class="op">~</span>(layer <span class="op">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        g.Cube(size<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToPoints()</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(selection<span class="op">=</span>selection, offset<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="11">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -863,28 +840,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="spiral-point-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="spiral-point-distribution">Spiral Point Distribution</h3>
 <p>Use power and modulo to create a spiral-like displacement pattern:</p>
-<div id="4f95206c" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Spiral"</span>) <span class="im">as</span> tree:</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tree.outputs:</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> s.SocketGeometry()</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position()</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    angle <span class="op">=</span> g.SeparateXYZ(pos).o_x <span class="op">*</span> <span class="fl">3.14</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> <span class="bu">abs</span>(g.SeparateXYZ(pos).o_y) <span class="op">**</span> <span class="fl">0.5</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    spiral_offset <span class="op">=</span> g.CombineXYZ(</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span>g.Math.cosine(angle) <span class="op">*</span> radius,</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span>g.Math.sine(angle) <span class="op">*</span> radius,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        z<span class="op">=</span>g.SeparateXYZ(pos).o_z,</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        g.Points(<span class="dv">500</span>, position<span class="op">=</span>g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>))</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(position<span class="op">=</span>spiral_offset)</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> out</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="daf5d72d" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Spiral"</span>) <span class="im">as</span> tree:</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position()</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    angle <span class="op">=</span> g.SeparateXYZ(pos).o_x <span class="op">*</span> <span class="fl">3.14</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> <span class="bu">abs</span>(g.SeparateXYZ(pos).o_y) <span class="op">**</span> <span class="fl">0.5</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    spiral_offset <span class="op">=</span> g.CombineXYZ(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span>g.Math.cosine(angle) <span class="op">*</span> radius,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span>g.Math.sine(angle) <span class="op">*</span> radius,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        z<span class="op">=</span>g.SeparateXYZ(pos).o_z,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        g.Points(<span class="dv">500</span>, position<span class="op">=</span>g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>))</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(position<span class="op">=</span>spiral_offset)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="12">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
