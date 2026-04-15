@@ -51,7 +51,7 @@ class TestTreeBuilder:
 
         with tree.outputs:
             socket.SocketGeometry()
-            socket.SocketInt("Count")
+            socket.SocketInteger("Count")
 
         # Check inputs were created
         input_names = [
@@ -201,7 +201,7 @@ class TestExamples:
 
         with tree.outputs:
             o_geo = socket.SocketGeometry("Geometry")
-            count = socket.SocketInt("Count")
+            count = socket.SocketInteger("Count")
 
         with tree:
             # Access multiple named sockets
@@ -395,7 +395,7 @@ def test_nodes():
 def test_mix_node():
     tree = TreeBuilder()
     with tree.inputs:
-        count = socket.SocketInt("Count", 50, min_value=0, max_value=100)
+        count = socket.SocketInteger("Count", 50, min_value=0, max_value=100)
     with tree.outputs:
         output = socket.SocketGeometry("Instances")
 
@@ -447,7 +447,7 @@ def test_warning_innactive_socket():
 def test_readme_tree():
     with TreeBuilder("AnotherTree", collapse=True, arrange="simple") as tree:
         with tree.inputs:
-            count = socket.SocketInt("Count", 10)
+            count = socket.SocketInteger("Count", 10)
         with tree.outputs:
             instances = socket.SocketGeometry("Instances")
 
@@ -537,7 +537,7 @@ def test_nested_trees():
             group.node.node_tree = tree3.tree
 
             with tree2.inputs:
-                items = (socket.SocketInt("Count", 10) >> g.Points(), g.Cube(), group)
+                items = (socket.SocketInteger("Count", 10) >> g.Points(), g.Cube(), group)
 
             with tree2.outputs:
                 _ = g.JoinGeometry(*items) >> socket.SocketGeometry("Output")

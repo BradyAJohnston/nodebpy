@@ -24,13 +24,11 @@ The dots can appear at multiple locations and each input will be linked to the p
 
 ```{python}
 # | output: asis
-from nodebpy import TreeBuilder, geometry as g, sockets as s
+from nodebpy import geometry as g
 
-with TreeBuilder("AnotherTree") as tree:
-    with tree.inputs:
-        count = s.SocketInt("Count", 10)
-    with tree.outputs:
-        instances = s.SocketGeometry("Instances")
+with g.tree("AnotherTree") as tree:
+    count = tree.inputs.integer("Count", 10)
+    instances = tree.outputs.geometry("Instances")
 
     rotation = (
         g.RandomValue.vector(min=(-1, -1, -1), seed=2)

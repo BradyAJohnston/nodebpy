@@ -18,7 +18,7 @@ def test_initial_compositor():
             )
 
             outline_depth = s.SocketFloat("Socket Depth", 5.0)
-            outline_size = s.SocketInt("Outline Size", 2)
+            outline_size = s.SocketInteger("Outline Size", 2)
             outline_color = s.SocketColor("Outline Color")
 
         with t.outputs:

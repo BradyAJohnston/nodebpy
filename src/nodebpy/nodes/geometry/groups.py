@@ -1,8 +1,6 @@
 from ...builder import (
     IntegerSocket,
     NodeGroupBuilder,
-    SocketInt,
-    SocketVector,
     VectorSocket,
 )
 from ...types import InputInteger, InputVector
@@ -30,9 +28,8 @@ class OtherVertex(NodeGroupBuilder):
 
     @classmethod
     def _build_group(cls, tree):
-        with tree.inputs:
-            vertex_index = SocketInt("Vertex Index", default_input="INDEX")
-            edge_number = SocketInt("Edge Number")
+        vertex_index = tree.inputs.integer("Vertex Index", default_input="INDEX")
+        edge_number = tree.inputs.integer("Edge Number")
 
         eov = EdgesOfVertex(vertex_index, sort_index=edge_number)
         ev = EdgeVertices()
@@ -40,8 +37,7 @@ class OtherVertex(NodeGroupBuilder):
         vert_2 = EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
         switch = (vert_1 != vertex_index) >> Switch.integer(..., vert_1, vert_2)
 
-        with tree.outputs:
-            _ = switch >> SocketInt("Other Vertex")
+        _ = switch >> tree.outputs.integer("Other Vertex")
 
 
 class OffsetVector(NodeGroupBuilder):
@@ -67,12 +63,10 @@ class OffsetVector(NodeGroupBuilder):
 
     @classmethod
     def _build_group(cls, tree):
-        with tree.inputs:
-            index = SocketInt("Index", default_input="INDEX")
-            vector = SocketVector("Vector", default_input="POSITION")
-            offset = SocketInt("Offset")
+        index = tree.inputs.integer("Index", default_input="INDEX")
+        vector = tree.inputs.vector("Vector", default_input="POSITION")
+        offset = tree.inputs.integer("Offset")
 
         value = EvaluateAtIndex.point.vector(vector, index + offset)
 
-        with tree.outputs:
-            _ = value >> SocketVector("Vector")
+        _ = value >> tree.outputs.vector("Vector")
