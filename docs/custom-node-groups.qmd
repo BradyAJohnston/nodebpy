@@ -3,8 +3,7 @@ title: Custom Node Groups
 ---
 
 ```{python}
-from nodebpy import TreeBuilder, geometry as g, sockets as s
-from nodebpy import builder
+from nodebpy import NodeGroupBuilder, geometry as g
 from nodebpy.types import (
     InputFloat,
     InputInteger,
@@ -27,9 +26,6 @@ A custom node group class has four parts:
 
 ```{python}
 # | eval: false
-from nodebpy.builder import NodeGroupBuilder, InputSpec, OutputSpec
-from nodebpy import sockets as s
-
 
 class MyNode(NodeGroupBuilder):
     _name = "My Node"  # 1. Name
@@ -39,7 +35,7 @@ class MyNode(NodeGroupBuilder):
 
     @classmethod
     def _build_group(cls, tree):  # 4. Graph logic
-        return {"Result": value * 2.0}
+        return (value + g.Value(1.0)) >> tree.ouptuts.float()
 ```
 
 ### 1. `_name`
@@ -50,7 +46,7 @@ The display name for the group inside Blender. This is also the key used to cach
 Let's start with something visually obvious -- a node that randomly displaces each point on a mesh. This is useful any time you want to add organic variation to geometry.
 
 ```{python}
-class Jitter(builder.NodeGroupBuilder):
+class Jitter(NodeGroupBuilder):
     """Randomly offset each point by a bounded amount."""
 
     _name = "Jitter"
@@ -66,22 +62,20 @@ class Jitter(builder.NodeGroupBuilder):
 
     @classmethod
     def _build_group(cls, tree):
-        with tree.inputs:
-            geometry = s.SocketGeometry("Geometry")
-            amount = s.SocketFloat("Amount", 0.2)
-            seed = s.SocketInt("Seed")
+        geometry = tree.inputs.geometry("Geometry")
+        amount = tree.inputs.float("Amount", 0.2)
+        seed = tree.inputs.integer("Seed")
 
         offset = g.RandomValue.vector(min=-1, seed=seed) * amount
         result = geometry >> g.SetPosition(offset=offset)
 
-        with tree.outputs:
-            _ = result >> s.SocketGeometry()
+        _ = result >> tree.outputs.geometry()
 ```
 
 Let's see the internal node graph:
 
 ```{python}
-with TreeBuilder("JitterInternal") as tree:
+with g.tree("JitterInternal") as tree:
     _ = Jitter()
 
 tree
@@ -90,10 +84,8 @@ tree
 Now use it like any built-in node -- apply it to an ico sphere:
 
 ```{python}
-with TreeBuilder("JitterDemo") as tree:
-    with tree.outputs:
-        out = s.SocketGeometry()
-
+with g.tree("JitterDemo") as tree:
+    out = tree.outputs.geometry()
     _ = g.IcoSphere(subdivisions=4) >> Jitter(amount=0.15) >> out
 
 tree
@@ -108,7 +100,7 @@ Next, a node that distributes instances in a ring. This is a common pattern for 
 from math import tau
 
 
-class RadialArray(builder.NodeGroupBuilder):
+class RadialArray(NodeGroupBuilder):
     """Distribute instances evenly around a circle."""
 
     _name = "Radial Array"
@@ -124,10 +116,9 @@ class RadialArray(builder.NodeGroupBuilder):
 
     @classmethod
     def _build_group(cls, tree):
-        with tree.inputs:
-            geometry = s.SocketGeometry()
-            count = s.SocketInt("Count", 6)
-            radius = s.SocketFloat("Radius", 2.0)
+        geometry = tree.inputs.geometry()
+        count = tree.inputs.integer("Count", 6)
+        radius = tree.inputs.float("Radius", 2.0)
 
         # Create points arranged in a circle
         angle = g.Index() * tau / count
@@ -143,28 +134,24 @@ class RadialArray(builder.NodeGroupBuilder):
             >> g.InstanceOnPoints(instance=geometry, rotation=rotation)
         )
 
-        with tree.outputs:
-            _ = result >> s.SocketGeometry()
+        _ = result >> tree.outputs.geometry()
 ```
 
 ```{python}
-with TreeBuilder("RadialInternal") as tree:
+with g.tree("RadialInternal") as tree:
     _ = RadialArray()
 
 tree
 ```
 
 ```{python}
-with TreeBuilder("RadialDemo") as tree:
-    with tree.outputs:
-        out = s.SocketGeometry()
-
+with g.tree("RadialDemo") as tree:
     petal = g.Cone(vertices=4, radius_bottom=0.3, depth=0.8)
     _ = (
         petal
         >> RadialArray(count=8, radius=2.0)
         >> g.RealizeInstances()
-        >> out
+        >> tree.outputs.geometry()
     )
 
 tree
@@ -176,20 +163,16 @@ tree
 Custom groups compose naturally -- they chain with `>>`, accept each other's outputs, and mix with operators just like built-in nodes. Let's combine `Jitter` and `RadialArray` to build a flower-like structure with some organic randomness.
 
 ```{python}
-with TreeBuilder("JitteredFlower") as tree:
-    with tree.inputs:
-        petals = s.SocketInt("Petals", 20, min_value=3, max_value=24)
-        radius = s.SocketFloat("Radius", 0.5, min_value=0.1)
-        jitter = s.SocketFloat("Jitter", 0.1)
+with g.tree("JitteredFlower") as tree:
+    petals = tree.inputs.integer("Petals", 20, min_value=3, max_value=24)
+    radius = tree.inputs.float("Radius", 0.5, min_value=0.1)
+    jitter = tree.inputs.float("Jitter", 0.1)
+    out = tree.outputs.geometry()
 
-    with tree.outputs:
-        out = s.SocketGeometry()
+    PETAL_LENGTH = 0.8
 
-    petal_length = 0.8
-
-    petal = (
-        g.Cube(size=(petal_length, 0.2, 0.1))
-        >> g.TransformGeometry(translation=(petal_length / 4, 0, 0))
+    petal = g.Cube(size=(PETAL_LENGTH, 0.2, 0.1)) >> g.TransformGeometry(
+        translation=(PETAL_LENGTH / 4, 0, 0)
     )
     ring = (
         petal

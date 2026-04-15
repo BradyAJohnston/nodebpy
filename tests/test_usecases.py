@@ -9,8 +9,8 @@ def import_channel():
     with TreeBuilder("Channel Import", arrange="simple") as tree:
         with tree.inputs:
             base_path = s.SocketString("base_path", subtype="FILE_PATH")
-            time = s.SocketInt("Time")
-            channel_number = s.SocketInt("Channel Number")
+            time = s.SocketInteger("Time")
+            channel_number = s.SocketInteger("Channel Number")
             channel_name = s.SocketString("Channel Name")
             min_value = s.SocketFloat("Minimum Value")
             max_value = s.SocketFloat("Maximum Value")

@@ -120,6 +120,11 @@ quartodoc:
     - nodes.compositor.output
     - nodes.compositor.vector
 
+  - title: Interface
+    contents:
+    - builder.interface
+    - builder.tree
+
   - title: Internals
     desc: Internal nodes used by nodebpy
     contents:

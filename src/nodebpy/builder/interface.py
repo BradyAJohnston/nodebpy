@@ -111,7 +111,7 @@ class SocketFloat(InterfaceSocket):
         )
 
 
-class SocketInt(_IntegerMixin, InterfaceSocket):
+class SocketInteger(_IntegerMixin, InterfaceSocket):
     """Integer socket"""
 
     _bl_socket_type: str = "NodeSocketInt"
@@ -272,7 +272,7 @@ class SocketRotation(_RotationMixin, InterfaceSocket):
     def __init__(
         self,
         name: str = "Rotation",
-        default_value: tuple[float, float, float] = (1.0, 0.0, 0.0),
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
         description: str = "",
         *,
         optional_label: bool = False,

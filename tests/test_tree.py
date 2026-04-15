@@ -8,7 +8,7 @@ from nodebpy import sockets as s
 def test_create_tree_and_save():
     with TreeBuilder("AnotherTree") as tree:
         with tree.inputs:
-            count = s.SocketInt("Count")
+            count = s.SocketInteger("Count")
         with tree.outputs:
             instances = s.SocketGeometry("Instances")
 
@@ -41,7 +41,7 @@ def test_panel_groups_input_sockets():
         with tree.inputs:
             s.SocketGeometry("Geometry")
             with tree.inputs.panel("Settings"):
-                s.SocketInt("Count")
+                s.SocketInteger("Count")
                 s.SocketFloat("Scale")
 
         items = list(tree.tree.interface.items_tree)
@@ -125,8 +125,8 @@ def test_panel_context_clears_after_exit():
     with TreeBuilder("PanelClearTest") as tree:
         with tree.inputs:
             with tree.inputs.panel("Group"):
-                s.SocketInt("Inside")
-            s.SocketInt("Outside")
+                s.SocketInteger("Inside")
+            s.SocketInteger("Outside")
 
         items = list(tree.tree.interface.items_tree)
         panel = next(
