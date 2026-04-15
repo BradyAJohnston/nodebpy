@@ -15,7 +15,7 @@ The standard arithmetic operators `+`, `-`, `*`, `/` are joined by `**` (power),
 
 ```{python}
 with g.tree("ArithmeticDemo") as tree:
-    out = tree.outputs.socket_geometry()
+    out = tree.outputs.geometry()
 
     val = g.Value(2.0)
     scaled = val**2  # Math.power
@@ -35,7 +35,7 @@ All operators automatically select the right node type. With integers you get `I
 
 ```{python}
 with g.tree("TypeDispatch") as tree:
-    out = tree.outputs.socket_geometry()
+    out = tree.outputs.geometry()
 
     # Integer operations use IntegerMath nodes
     idx = g.Index()
@@ -63,7 +63,7 @@ with g.tree("UnaryOps") as tree:
     _ = (
         g.Cube()
         >> g.SetPosition(offset=-abs(g.Position()))
-        >> tree.outputs.socket_geometry()
+        >> tree.outputs.geometry()
     )
 
 tree
@@ -75,7 +75,7 @@ The `<`, `>`, `<=`, `>=` operators create `Compare` nodes that output boolean so
 
 ```{python}
 with g.tree("CompareDemo") as tree:
-    out = tree.outputs.socket_geometry()
+    out = tree.outputs.geometry()
 
     pos = g.Position()
     z = g.SeparateXYZ(pos).o_z
@@ -112,7 +112,7 @@ Python's bitwise operators `&` (and), `|` (or), `^` (xor), and `~` (not) map to 
 
 ```{python}
 with g.tree("BooleanDemo") as tree:
-    out = tree.outputs.socket_geometry()
+    out = tree.outputs.geometry()
 
     z = g.SeparateXYZ(g.Position()).o_z
 
@@ -140,7 +140,7 @@ with g.tree("InvertDemo") as tree:
         g.MeshLine(count=20)
         >> g.MeshToPoints()
         >> g.SetPosition(selection=is_odd, offset=(0, 0, 0.5))
-        >> tree.outputs.socket_geometry()
+        >> tree.outputs.geometry()
     )
 
 tree
@@ -179,7 +179,7 @@ with g.tree("Checkerboard") as tree:
     _ = (
         g.Grid(10, 10, 10, 10)
         >> g.SetPosition(selection=is_checker, offset=(0, 0, 0.5))
-        >> tree.outputs.socket_geometry()
+        >> tree.outputs.geometry()
     )
 
 tree
@@ -200,7 +200,7 @@ with g.tree("Layers") as tree:
         g.Cube(size=5)
         >> g.MeshToPoints()
         >> g.SetPosition(selection=selection, offset=(1, 0, 0))
-        >> tree.outputs.socket_geometry()
+        >> tree.outputs.geometry()
     )
 
 tree
@@ -225,7 +225,7 @@ with g.tree("Spiral") as tree:
     _ = (
         g.Points(500, position=g.RandomValue.vector(min=-1))
         >> g.SetPosition(position=spiral_offset)
-        >> tree.outputs.socket_geometry()
+        >> tree.outputs.geometry()
     )
 
 tree

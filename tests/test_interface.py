@@ -16,16 +16,15 @@ def test_geometry_interface():
         # sockets are ordered by the order they are created, so to have "Position"
         # at the top under geometry we need to call it first rather than later in the tree
         # like the inputs for the transform
-        geo = tree.inputs.socket_geometry()
-        pos = tree.inputs.socket_vector("Position", default_input="POSITION")
+        geo = tree.inputs.geometry()
+        pos = tree.inputs.vector("Position", default_input="POSITION")
 
         set_pos = g.SetPosition(
             geo,
             position=g.CombineTransform(
-                tree.inputs.socket_vector("Translation")
-                * tree.inputs.socket_float("Scale", 1.0),
-                tree.inputs.socket_rotation("Rotation"),
-                tree.inputs.socket_vector("Scale"),
+                tree.inputs.vector("Translation") * tree.inputs.float("Scale", 1.0),
+                tree.inputs.rotation("Rotation"),
+                tree.inputs.vector("Scale"),
             )
             @ pos,
         )
@@ -42,9 +41,9 @@ def test_geometry_interface():
 def test_geometry_scalar_sockets():
     """Float, Int, and Boolean sockets are created with correct names and defaults."""
     with g.tree(arrange=None) as tree:
-        f = tree.inputs.socket_float("Value", default_value=2.5)
-        i = tree.inputs.socket_integer("Count", default_value=4)
-        b = tree.inputs.socket_boolean("Enabled", default_value=True)
+        f = tree.inputs.float("Value", default_value=2.5)
+        i = tree.inputs.integer("Count", default_value=4)
+        b = tree.inputs.boolean("Enabled", default_value=True)
 
     assert isinstance(f, InterfaceSocket)
     assert isinstance(i, InterfaceSocket)
@@ -60,9 +59,9 @@ def test_geometry_scalar_sockets():
 def test_geometry_vector_sockets():
     """Vector, Rotation, and Matrix sockets are created correctly."""
     with g.tree(arrange=None) as tree:
-        v = tree.inputs.socket_vector("Direction", (1.0, 0.0, 0.0))
-        r = tree.inputs.socket_rotation("Rotation")
-        m = tree.inputs.socket_matrix("Transform")
+        v = tree.inputs.vector("Direction", (1.0, 0.0, 0.0))
+        r = tree.inputs.rotation("Rotation")
+        m = tree.inputs.matrix("Transform")
 
     assert v.interface_socket.name == "Direction"
     assert r.interface_socket.name == "Rotation"
@@ -74,7 +73,7 @@ def test_geometry_vector_sockets():
 
 def test_geometry_string_socket():
     with g.tree(arrange=None) as tree:
-        ss = tree.inputs.socket_string("Label", default_value="hello")
+        ss = tree.inputs.string("Label", default_value="hello")
 
     assert ss.interface_socket.name == "Label"
     assert ss.interface_socket.default_value == "hello"
@@ -82,7 +81,7 @@ def test_geometry_string_socket():
 
 def test_geometry_menu_socket():
     with g.tree(arrange=None) as tree:
-        menu = tree.inputs.socket_menu("Mode")
+        menu = tree.inputs.menu("Mode")
 
     assert menu.interface_socket.name == "Mode"
     assert menu.interface_socket.socket_type == "NodeSocketMenu"
@@ -91,10 +90,10 @@ def test_geometry_menu_socket():
 def test_geometry_datablock_sockets():
     """Object, Collection, Material, and Image sockets are created correctly."""
     with g.tree(arrange=None) as tree:
-        obj = tree.inputs.socket_object("Object")
-        col = tree.inputs.socket_collection("Collection")
-        mat = tree.inputs.socket_material("Material")
-        img = tree.inputs.socket_image("Image")
+        obj = tree.inputs.object("Object")
+        col = tree.inputs.collection("Collection")
+        mat = tree.inputs.material("Material")
+        img = tree.inputs.image("Image")
 
     assert obj.interface_socket.socket_type == "NodeSocketObject"
     assert col.interface_socket.socket_type == "NodeSocketCollection"
@@ -104,8 +103,8 @@ def test_geometry_datablock_sockets():
 
 def test_geometry_bundle_and_closure_sockets():
     with g.tree(arrange=None) as tree:
-        bundle = tree.inputs.socket_bundle("Bundle")
-        closure = tree.inputs.socket_closure("Closure")
+        bundle = tree.inputs.bundle("Bundle")
+        closure = tree.inputs.closure("Closure")
 
     assert bundle.interface_socket.socket_type == "NodeSocketBundle"
     assert closure.interface_socket.socket_type == "NodeSocketClosure"
@@ -113,7 +112,7 @@ def test_geometry_bundle_and_closure_sockets():
 
 def test_geometry_color_socket():
     with g.tree(arrange=None) as tree:
-        col = tree.inputs.socket_color("Tint", (0.5, 0.1, 0.9, 1.0))
+        col = tree.inputs.color("Tint", (0.5, 0.1, 0.9, 1.0))
 
     assert col.interface_socket.name == "Tint"
     assert col.interface_socket.default_value[0] == pytest.approx(0.5)
@@ -125,9 +124,9 @@ def test_geometry_color_socket():
 # ---------------------------------------------------------------------------
 
 
-def test_socket_float_subtype_and_limits():
+def test_float_subtype_and_limits():
     with g.tree(arrange=None) as tree:
-        f = tree.inputs.socket_float(
+        f = tree.inputs.float(
             "Factor",
             default_value=0.5,
             min_value=0.0,
@@ -141,11 +140,9 @@ def test_socket_float_subtype_and_limits():
     assert f.interface_socket.subtype == "FACTOR"
 
 
-def test_socket_integer_limits():
+def test_integer_limits():
     with g.tree(arrange=None) as tree:
-        i = tree.inputs.socket_integer(
-            "Count", default_value=10, min_value=1, max_value=100
-        )
+        i = tree.inputs.integer("Count", default_value=10, min_value=1, max_value=100)
 
     assert i.interface_socket.default_value == 10
     assert i.interface_socket.min_value == 1
@@ -154,8 +151,8 @@ def test_socket_integer_limits():
 
 def test_socket_description():
     with g.tree(arrange=None) as tree:
-        geo = tree.inputs.socket_geometry("Geometry", description="The input mesh")
-        f = tree.inputs.socket_float("Scale", description="Uniform scale factor")
+        geo = tree.inputs.geometry("Geometry", description="The input mesh")
+        f = tree.inputs.float("Scale", description="Uniform scale factor")
 
     assert geo.interface_socket.description == "The input mesh"
     assert f.interface_socket.description == "Uniform scale factor"
@@ -163,8 +160,8 @@ def test_socket_description():
 
 def test_socket_vector_default_input():
     with g.tree(arrange=None) as tree:
-        pos = tree.inputs.socket_vector("Position", default_input="POSITION")
-        normal = tree.inputs.socket_vector("Normal", default_input="NORMAL")
+        pos = tree.inputs.vector("Position", default_input="POSITION")
+        normal = tree.inputs.vector("Normal", default_input="NORMAL")
 
     assert pos.interface_socket.default_input == "POSITION"
     assert normal.interface_socket.default_input == "NORMAL"
@@ -172,8 +169,8 @@ def test_socket_vector_default_input():
 
 def test_socket_hide_value():
     with g.tree(arrange=None) as tree:
-        f = tree.inputs.socket_float("Hidden", hide_value=True)
-        i = tree.inputs.socket_integer("Visible")
+        f = tree.inputs.float("Hidden", hide_value=True)
+        i = tree.inputs.integer("Visible")
 
     assert f.interface_socket.hide_value is True
     assert i.interface_socket.hide_value is False
@@ -181,23 +178,21 @@ def test_socket_hide_value():
 
 def test_socket_menu_expanded():
     with g.tree(arrange=None) as tree:
-        menu = tree.inputs.socket_menu("Mode", expanded=True)
+        menu = tree.inputs.menu("Mode", expanded=True)
 
     assert menu.interface_socket.menu_expanded is True
 
 
-def test_socket_integer_percentage_subtype():
+def test_integer_percentage_subtype():
     with g.tree(arrange=None) as tree:
-        pct = tree.inputs.socket_integer(
-            "Progress", default_value=50, subtype="PERCENTAGE"
-        )
+        pct = tree.inputs.integer("Progress", default_value=50, subtype="PERCENTAGE")
 
     assert pct.interface_socket.subtype == "PERCENTAGE"
 
 
 def test_socket_vector_subtype():
     with g.tree(arrange=None) as tree:
-        vel = tree.inputs.socket_vector("Velocity", subtype="VELOCITY")
+        vel = tree.inputs.vector("Velocity", subtype="VELOCITY")
 
     assert vel.interface_socket.subtype == "VELOCITY"
 
@@ -209,9 +204,9 @@ def test_socket_vector_subtype():
 
 def test_geometry_output_sockets():
     with g.tree(arrange=None) as tree:
-        geo_out = tree.outputs.socket_geometry()
-        f_out = tree.outputs.socket_float("Score")
-        b_out = tree.outputs.socket_boolean("Valid")
+        geo_out = tree.outputs.geometry()
+        f_out = tree.outputs.float("Score")
+        b_out = tree.outputs.boolean("Valid")
 
     assert geo_out.interface_socket.in_out == "OUTPUT"
     assert f_out.interface_socket.in_out == "OUTPUT"
@@ -222,8 +217,8 @@ def test_geometry_output_sockets():
 def test_input_and_output_same_name_independent():
     """An input and output socket with the same name are separate interface items."""
     with g.tree(arrange=None) as tree:
-        geo_in = tree.inputs.socket_geometry("Geometry")
-        geo_out = tree.outputs.socket_geometry("Geometry")
+        geo_in = tree.inputs.geometry("Geometry")
+        geo_out = tree.outputs.geometry("Geometry")
 
     assert geo_in.interface_socket.in_out == "INPUT"
     assert geo_out.interface_socket.in_out == "OUTPUT"
@@ -238,8 +233,8 @@ def test_input_and_output_same_name_independent():
 def test_geometry_socket_links_to_node():
     """Socket returned by factory method can be wired directly into a node."""
     with g.tree(arrange=None) as tree:
-        geo = tree.inputs.socket_geometry()
-        out = tree.outputs.socket_geometry()
+        geo = tree.inputs.geometry()
+        out = tree.outputs.geometry()
 
         set_pos = g.SetPosition(geo)
         set_pos >> out
@@ -251,9 +246,9 @@ def test_geometry_socket_links_to_node():
 def test_geometry_float_socket_in_expression():
     """Float socket participates in arithmetic expressions."""
     with g.tree(arrange=None) as tree:
-        geo = tree.inputs.socket_geometry()
-        scale = tree.inputs.socket_float("Scale", default_value=2.0)
-        out = tree.outputs.socket_geometry()
+        geo = tree.inputs.geometry()
+        scale = tree.inputs.float("Scale", default_value=2.0)
+        out = tree.outputs.geometry()
 
         (
             g.SetPosition(
@@ -269,9 +264,9 @@ def test_geometry_float_socket_in_expression():
 def test_multiple_sockets_link_independently():
     """Two separate input sockets wire to different node inputs."""
     with g.tree(arrange=None) as tree:
-        geo = tree.inputs.socket_geometry()
-        offset = tree.inputs.socket_vector("Offset")
-        out = tree.outputs.socket_geometry()
+        geo = tree.inputs.geometry()
+        offset = tree.inputs.vector("Offset")
+        out = tree.outputs.geometry()
 
         g.SetPosition(geo, offset=offset) >> out
 
@@ -287,10 +282,10 @@ def test_multiple_sockets_link_independently():
 def test_panel_with_socket_methods():
     """Sockets created inside a panel() context are parented to that panel."""
     with g.tree(arrange=None) as tree:
-        tree.inputs.socket_geometry()
+        tree.inputs.geometry()
         with tree.inputs.panel("Settings"):
-            tree.inputs.socket_float("Scale", 1.0)
-            tree.inputs.socket_integer("Count", 3)
+            tree.inputs.float("Scale", 1.0)
+            tree.inputs.integer("Count", 3)
 
     items = list(tree.tree.interface.items_tree)
     panels = [i for i in items if isinstance(i, bpy.types.NodeTreeInterfacePanel)]
@@ -308,7 +303,7 @@ def test_panel_with_socket_methods():
 def test_panel_default_closed_with_method_api():
     with g.tree(arrange=None) as tree:
         with tree.inputs.panel("Advanced", default_closed=True):
-            tree.inputs.socket_float("Threshold", 0.1)
+            tree.inputs.float("Threshold", 0.1)
 
     items = list(tree.tree.interface.items_tree)
     panel = next(i for i in items if isinstance(i, bpy.types.NodeTreeInterfacePanel))
@@ -318,11 +313,11 @@ def test_panel_default_closed_with_method_api():
 def test_multiple_panels_with_method_api():
     with g.tree(arrange=None) as tree:
         with tree.inputs.panel("Transform"):
-            tree.inputs.socket_vector("Translation")
-            tree.inputs.socket_rotation("Rotation")
+            tree.inputs.vector("Translation")
+            tree.inputs.rotation("Rotation")
         with tree.inputs.panel("Appearance"):
-            tree.inputs.socket_color("Color")
-            tree.inputs.socket_float("Roughness", 0.5)
+            tree.inputs.color("Color")
+            tree.inputs.float("Roughness", 0.5)
 
     items = list(tree.tree.interface.items_tree)
     panels = [i for i in items if isinstance(i, bpy.types.NodeTreeInterfacePanel)]
@@ -341,14 +336,10 @@ def test_multiple_panels_with_method_api():
 
 def test_shader_interface_basic():
     with s.tree(arrange=None) as tree:
-        base_color = tree.inputs.socket_color("Color", (0.8, 0.2, 0.2, 1.0))
-        metallic = tree.inputs.socket_float(
-            "Metallic", 0.0, min_value=0.0, max_value=1.0
-        )
-        roughness = tree.inputs.socket_float(
-            "Roughness", 0.5, min_value=0.0, max_value=1.0
-        )
-        shader_out = tree.outputs.socket_shader("Shader")
+        base_color = tree.inputs.color("Color", (0.8, 0.2, 0.2, 1.0))
+        metallic = tree.inputs.float("Metallic", 0.0, min_value=0.0, max_value=1.0)
+        roughness = tree.inputs.float("Roughness", 0.5, min_value=0.0, max_value=1.0)
+        shader_out = tree.outputs.shader("Shader")
 
         prin = s.PrincipledBSDF(
             base_color=base_color,
@@ -366,8 +357,8 @@ def test_shader_interface_basic():
 def test_shader_vector_input():
     """Vector sockets are valid in shader trees (default_input is geometry-tree-only)."""
     with s.tree(arrange=None) as tree:
-        normal = tree.inputs.socket_vector("Normal")
-        shader_out = tree.outputs.socket_shader()
+        normal = tree.inputs.vector("Normal")
+        shader_out = tree.outputs.shader()
 
         s.PrincipledBSDF(normal=normal) >> shader_out
 
@@ -377,11 +368,9 @@ def test_shader_vector_input():
 
 def test_shader_int_and_boolean_inputs():
     with s.tree(arrange=None) as tree:
-        samples = tree.inputs.socket_integer(
-            "Samples", 128, min_value=1, max_value=4096
-        )
-        enabled = tree.inputs.socket_boolean("Enabled", default_value=True)
-        shader_out = tree.outputs.socket_shader()
+        samples = tree.inputs.integer("Samples", 128, min_value=1, max_value=4096)
+        enabled = tree.inputs.boolean("Enabled", default_value=True)
+        shader_out = tree.outputs.shader()
 
         s.PrincipledBSDF() >> shader_out
 
@@ -392,8 +381,8 @@ def test_shader_int_and_boolean_inputs():
 
 def test_shader_float_output():
     with s.tree(arrange=None) as tree:
-        shader_out = tree.outputs.socket_shader()
-        alpha_out = tree.outputs.socket_float("Alpha")
+        shader_out = tree.outputs.shader()
+        alpha_out = tree.outputs.float("Alpha")
 
         prin = s.PrincipledBSDF()
         prin >> shader_out
@@ -409,11 +398,11 @@ def test_shader_float_output():
 
 def test_compositor_color_and_float_sockets():
     with c.tree(arrange=None) as tree:
-        image = tree.inputs.socket_color("Image")
-        fac = tree.inputs.socket_float(
+        image = tree.inputs.color("Image")
+        fac = tree.inputs.float(
             "Factor", default_value=1.0, min_value=0.0, max_value=1.0
         )
-        out = tree.outputs.socket_color("Image")
+        out = tree.outputs.color("Image")
 
         c.Mix.color(fac, image, c.Blur(image)) >> out
 
@@ -424,8 +413,8 @@ def test_compositor_color_and_float_sockets():
 
 def test_compositor_vector_socket():
     with c.tree(arrange=None) as tree:
-        normal = tree.inputs.socket_vector("Normal")
-        out = tree.outputs.socket_color("Image")
+        normal = tree.inputs.vector("Normal")
+        out = tree.outputs.color("Image")
 
         c.Blur(normal) >> out
 
@@ -434,9 +423,9 @@ def test_compositor_vector_socket():
 
 def test_compositor_menu_socket():
     with c.tree(arrange=None) as tree:
-        mode = tree.inputs.socket_menu("Mode", expanded=True)
-        image = tree.inputs.socket_color("Image")
-        out = tree.outputs.socket_color("Image")
+        mode = tree.inputs.menu("Mode", expanded=True)
+        image = tree.inputs.color("Image")
+        out = tree.outputs.color("Image")
 
         c.Blur(image) >> out
 
@@ -446,9 +435,9 @@ def test_compositor_menu_socket():
 
 def test_compositor_multiple_outputs():
     with c.tree(arrange=None) as tree:
-        image = tree.inputs.socket_color("Image")
-        image_out = tree.outputs.socket_color("Image")
-        mask_out = tree.outputs.socket_float("Mask")
+        image = tree.inputs.color("Image")
+        image_out = tree.outputs.color("Image")
+        mask_out = tree.outputs.float("Mask")
 
         c.Blur(image) >> image_out
 
@@ -460,11 +449,11 @@ def test_compositor_multiple_outputs():
 
 def test_compositor_int_and_boolean_sockets():
     with c.tree(arrange=None) as tree:
-        size = tree.inputs.socket_integer("Size", 3, min_value=1, max_value=32)
-        enabled = tree.inputs.socket_boolean("Enabled")
-        out = tree.outputs.socket_color("Image")
+        size = tree.inputs.integer("Size", 3, min_value=1, max_value=32)
+        enabled = tree.inputs.boolean("Enabled")
+        out = tree.outputs.color("Image")
 
-        image = tree.inputs.socket_color("Image")
+        image = tree.inputs.color("Image")
         c.Blur(image) >> out
 
     assert size.interface_socket.default_value == 3
@@ -474,11 +463,11 @@ def test_compositor_int_and_boolean_sockets():
 
 def test_compositor_panel_with_socket_methods():
     with c.tree(arrange=None) as tree:
-        image = tree.inputs.socket_color("Image")
+        image = tree.inputs.color("Image")
         with tree.inputs.panel("Outline"):
-            tree.inputs.socket_float("Threshold", 0.5)
-            tree.inputs.socket_color("Color")
-        out = tree.outputs.socket_color("Image")
+            tree.inputs.float("Threshold", 0.5)
+            tree.inputs.color("Color")
+        out = tree.outputs.color("Image")
 
         c.Blur(image) >> out
 

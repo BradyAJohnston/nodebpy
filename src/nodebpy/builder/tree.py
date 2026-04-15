@@ -111,7 +111,7 @@ class SocketContext:
         finally:
             SocketContext._active_context = prev
 
-    def socket_float(
+    def float(
         self,
         name: str = "Value",
         default_value: float = 0.0,
@@ -146,7 +146,7 @@ class SocketContext:
             default_attribute=default_attribute,
         )
 
-    def socket_integer(
+    def integer(
         self,
         name: str = "Integer",
         default_value: int = 0,
@@ -183,7 +183,7 @@ class SocketContext:
             default_attribute=default_attribute,
         )
 
-    def socket_boolean(
+    def boolean(
         self,
         name: str = "Boolean",
         default_value: bool = False,
@@ -216,7 +216,7 @@ class SocketContext:
             is_panel_toggle=is_panel_toggle,
         )
 
-    def socket_vector(
+    def vector(
         self,
         name: str = "Vector",
         default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
@@ -257,7 +257,7 @@ class SocketContext:
             attribute_domain=attribute_domain,
         )
 
-    def socket_color(
+    def color(
         self,
         name: str = "Color",
         default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
@@ -286,7 +286,7 @@ class SocketContext:
             default_attribute=default_attribute,
         )
 
-    def socket_rotation(
+    def rotation(
         self,
         name: str = "Rotation",
         default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
@@ -315,7 +315,7 @@ class SocketContext:
             default_attribute=default_attribute,
         )
 
-    def socket_matrix(
+    def matrix(
         self,
         name: str = "Matrix",
         description: str = "",
@@ -344,7 +344,7 @@ class SocketContext:
             default_attribute=default_attribute,
         )
 
-    def socket_string(
+    def string(
         self,
         name: str = "String",
         default_value: str = "",
@@ -369,7 +369,7 @@ class SocketContext:
             subtype=subtype,
         )
 
-    def socket_menu(
+    def menu(
         self,
         name: str = "Menu",
         default_value: str | None = None,
@@ -396,7 +396,7 @@ class SocketContext:
             structure_type=structure_type,
         )
 
-    def socket_object(
+    def object(
         self,
         name: str = "Object",
         default_value: bpy.types.Object | None = None,
@@ -419,7 +419,7 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
         )
 
-    def socket_geometry(
+    def geometry(
         self,
         name: str = "Geometry",
         description: str = "",
@@ -440,7 +440,7 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
         )
 
-    def socket_collection(
+    def collection(
         self,
         name: str = "Collection",
         default_value: bpy.types.Collection | None = None,
@@ -463,7 +463,7 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
         )
 
-    def socket_image(
+    def image(
         self,
         name: str = "Image",
         default_value: bpy.types.Image | None = None,
@@ -486,7 +486,7 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
         )
 
-    def socket_material(
+    def material(
         self,
         name: str = "Material",
         default_value: bpy.types.Material | None = None,
@@ -509,7 +509,7 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
         )
 
-    def socket_bundle(
+    def bundle(
         self,
         name: str = "Bundle",
         description: str = "",
@@ -530,7 +530,7 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
         )
 
-    def socket_closure(
+    def closure(
         self,
         name: str = "Closure",
         description: str = "",
@@ -551,7 +551,7 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
         )
 
-    def socket_shader(
+    def shader(
         self,
         name: str = "Shader",
         description: str = "",

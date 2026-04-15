@@ -37,7 +37,7 @@ class MyNode(NodeGroupBuilder):
 
     @classmethod
     def _build_group(cls, tree):  # 4. Graph logic
-        return (value + g.Value(1.0)) >> tree.ouptuts.socket_float()
+        return (value + g.Value(1.0)) >> tree.ouptuts.float()
 ```
 
 ### 1. `_name`
@@ -64,14 +64,14 @@ class Jitter(builder.NodeGroupBuilder):
 
     @classmethod
     def _build_group(cls, tree):
-        geometry = tree.inputs.socket_geometry("Geometry")
-        amount = tree.inputs.socket_float("Amount", 0.2)
-        seed = tree.inputs.socket_integer("Seed")
+        geometry = tree.inputs.geometry("Geometry")
+        amount = tree.inputs.float("Amount", 0.2)
+        seed = tree.inputs.integer("Seed")
 
         offset = g.RandomValue.vector(min=-1, seed=seed) * amount
         result = geometry >> g.SetPosition(offset=offset)
 
-        _ = result >> tree.outputs.socket_geometry()
+        _ = result >> tree.outputs.geometry()
 ```
 
 Let's see the internal node graph:
@@ -87,7 +87,7 @@ Now use it like any built-in node -- apply it to an ico sphere:
 
 ```{python}
 with TreeBuilder("JitterDemo") as tree:
-    out = tree.outputs.socket_geometry()
+    out = tree.outputs.geometry()
     _ = g.IcoSphere(subdivisions=4) >> Jitter(amount=0.15) >> out
 
 tree
@@ -118,9 +118,9 @@ class RadialArray(builder.NodeGroupBuilder):
 
     @classmethod
     def _build_group(cls, tree):
-        geometry = tree.inputs.socket_geometry()
-        count = tree.inputs.socket_integer("Count", 6)
-        radius = tree.inputs.socket_float("Radius", 2.0)
+        geometry = tree.inputs.geometry()
+        count = tree.inputs.integer("Count", 6)
+        radius = tree.inputs.float("Radius", 2.0)
 
         # Create points arranged in a circle
         angle = g.Index() * tau / count
@@ -136,7 +136,7 @@ class RadialArray(builder.NodeGroupBuilder):
             >> g.InstanceOnPoints(instance=geometry, rotation=rotation)
         )
 
-        _ = result >> tree.outputs.socket_geometry()
+        _ = result >> tree.outputs.geometry()
 ```
 
 ```{python}
@@ -153,7 +153,7 @@ with TreeBuilder("RadialDemo") as tree:
         petal
         >> RadialArray(count=8, radius=2.0)
         >> g.RealizeInstances()
-        >> tree.outputs.socket_geometry()
+        >> tree.outputs.geometry()
     )
 
 tree
@@ -166,10 +166,10 @@ Custom groups compose naturally -- they chain with `>>`, accept each other's out
 
 ```{python}
 with TreeBuilder("JitteredFlower") as tree:
-    petals = tree.inputs.socket_integer("Petals", 20, min_value=3, max_value=24)
-    radius = tree.inputs.socket_float("Radius", 0.5, min_value=0.1)
-    jitter = tree.inputs.socket_float("Jitter", 0.1)
-    out = tree.outputs.socket_geometry()
+    petals = tree.inputs.integer("Petals", 20, min_value=3, max_value=24)
+    radius = tree.inputs.float("Radius", 0.5, min_value=0.1)
+    jitter = tree.inputs.float("Jitter", 0.1)
+    out = tree.outputs.geometry()
 
     PETAL_LENGTH = 0.8
 

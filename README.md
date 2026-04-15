@@ -61,14 +61,9 @@ with TreeBuilder("MyTree") as tree:
 The node tree below creates a integer input and geometry output to the node group. We create a `rotation` variable that can be used later on as an argument, then construct a longer chain of nodes being created and linked together. The nodes are added and linked as each node is instantiated. After we exit the tree context, the nodes are automatically arranged.
 
 ``` python
-from nodebpy import TreeBuilder, geometry as g, sockets as s
+from nodebpy import geometry as g
 
-with TreeBuilder("AnotherTree", collapse=True) as tree:
-    with tree.inputs:
-        count = s.SocketInteger("Count", 10)
-    with tree.outputs:
-        instances = s.SocketGeometry("Instances")
-
+with g.tree("AnotherTree", collapse=True) as tree:
     rotation = (
         g.RandomValue.vector(min=-1, seed=2)
         >> g.AlignRotationToVector()
@@ -76,7 +71,7 @@ with TreeBuilder("AnotherTree", collapse=True) as tree:
     )
 
     _ = (
-        count
+        tree.inputs.integer("Count", 10)
         >> g.Points(position=g.RandomValue.vector(min=-1))
         >> g.InstanceOnPoints(instance=g.Cube(), rotation=rotation)
         >> g.SetPosition(
@@ -85,7 +80,7 @@ with TreeBuilder("AnotherTree", collapse=True) as tree:
         )
         >> g.RealizeInstances()
         >> g.InstanceOnPoints(g.Cube(), instance=...)
-        >> instances
+        >> tree.outputs.geometry("Instances")
     )
 ```
 
@@ -106,7 +101,9 @@ math.operation = "SUBTRACT"
 
 # operation can be chose as a class method
 math = g.Math.subtract(1.0, 2.0)
+math = g.Value(1.0) - 2.0
 math = g.Math.add(1.0, 2.0)
+math = g.Value(1.0) + 2.0
 
 # these are equivalent, the g.Math.multiply is automatically added
 g.Value(1.0) * 2

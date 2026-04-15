@@ -61,8 +61,8 @@ We define them in a similar way to the socekts themselves, using context with th
 
 ```{python}
 with g.tree("NewTree") as tree:
-    geom_inputs = [tree.inputs.socket_geometry(f"Geometry_{i}") for i in range(5)]
-    g.JoinGeometry(*geom_inputs) >> tree.outputs.socket_geometry("The Output Socket")
+    geom_inputs = [tree.inputs.geometry(f"Geometry_{i}") for i in range(5)]
+    g.JoinGeometry(*geom_inputs) >> tree.outputs.geometry("The Output Socket")
 
 tree
 
@@ -72,9 +72,9 @@ tree
 ```{python}
 with g.tree() as tree:
     (
-        tree.inputs.socket_integer("Count", 10)
+        tree.inputs.integer("Count", 10)
         >> g.Points(position=g.RandomValue.vector(min=(-0.1,-0.1,-0.2)))
-        >> tree.outputs.socket_geometry()
+        >> tree.outputs.geometry()
     )
 
 tree
@@ -82,8 +82,8 @@ tree
 
 ```{python}
 with g.tree() as tree:
-    count = tree.inputs.socket_integer("Count", 10)
-    output = tree.outputs.socket_geometry()
+    count = tree.inputs.integer("Count", 10)
+    output = tree.outputs.geometry()
 
     (
         count

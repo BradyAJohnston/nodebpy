@@ -27,8 +27,8 @@ The dots can appear at multiple locations and each input will be linked to the p
 from nodebpy import geometry as g
 
 with g.tree("AnotherTree") as tree:
-    count = tree.inputs.socket_integer("Count", 10)
-    instances = tree.outputs.socket_geometry("Instances")
+    count = tree.inputs.integer("Count", 10)
+    instances = tree.outputs.geometry("Instances")
 
     rotation = (
         g.RandomValue.vector(min=(-1, -1, -1), seed=2)
