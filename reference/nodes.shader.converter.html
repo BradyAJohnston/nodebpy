@@ -625,16 +625,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.converter.CombineColor.hsl">hsl</a></td>
+<td>Create Combine Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.converter.CombineColor.hsv">hsv</a></td>
+<td>Create Combine Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.converter.CombineColor.rgb">rgb</a></td>
+<td>Create Combine Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.converter.CombineColor.hsl" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.CombineColor.hsl">hsl</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hsl(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Combine Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing</p>
+</section>
+<section id="nodebpy.nodes.shader.converter.CombineColor.hsv" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.CombineColor.hsv">hsv</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hsv(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Combine Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing</p>
+</section>
+<section id="nodebpy.nodes.shader.converter.CombineColor.rgb" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.CombineColor.rgb">rgb</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rgb(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Combine Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.shader.converter.EvaluateClosure" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.EvaluateClosure">EvaluateClosure</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>EvaluateClosure(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    closure<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    active_input_index<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    active_output_index<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    define_signature<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>EvaluateClosure(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    closure<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    active_input_index<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    active_output_index<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    define_signature<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Execute a given closure</p>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
@@ -692,24 +732,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.converter.Mix" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.Mix">Mix</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Mix(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    factor_float<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    factor_vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    a_float<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    b_float<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    a_vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    b_vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    a_color<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    b_color<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    a_rotation<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    b_rotation<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    factor_mode<span class="op">=</span><span class="st">'UNIFORM'</span>,</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    clamp_result<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Mix(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    factor_float<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    factor_vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    a_float<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    b_float<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    a_vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    b_vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    a_color<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    b_color<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    a_rotation<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    b_rotation<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    factor_mode<span class="op">=</span><span class="st">'UNIFORM'</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    clamp_factor<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    clamp_result<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Mix values by a factor</p>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
@@ -824,8 +864,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods" class="level4">
-<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -850,24 +890,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.shader.converter.Mix.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.Mix.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>color(factor<span class="op">=</span><span class="fl">0.5</span>, a_color<span class="op">=</span><span class="va">None</span>, b_color<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>color(factor<span class="op">=</span><span class="fl">0.5</span>, a_color<span class="op">=</span><span class="va">None</span>, b_color<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Mix with operation ‘Color’.</p>
 </section>
 <section id="nodebpy.nodes.shader.converter.Mix.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.Mix.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(factor<span class="op">=</span><span class="fl">0.5</span>, a<span class="op">=</span><span class="fl">0.0</span>, b<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(factor<span class="op">=</span><span class="fl">0.5</span>, a<span class="op">=</span><span class="fl">0.0</span>, b<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Mix with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.shader.converter.Mix.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.Mix.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>vector(factor<span class="op">=</span><span class="fl">0.5</span>, a<span class="op">=</span><span class="va">None</span>, b<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>vector(factor<span class="op">=</span><span class="fl">0.5</span>, a<span class="op">=</span><span class="va">None</span>, b<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Mix with operation ‘Vector’.</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.shader.converter.RGBToBw" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.RGBToBw">RGBToBw</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>RGBToBw(color<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>RGBToBw(color<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert a color’s luminance to a grayscale value</p>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
@@ -917,7 +957,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.converter.SeparateColor" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.SeparateColor">SeparateColor</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>SeparateColor(color<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, mode<span class="op">=</span><span class="st">'RGB'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>SeparateColor(color<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, mode<span class="op">=</span><span class="st">'RGB'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Split a color into its individual components using multiple models</p>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
@@ -976,10 +1016,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods-2" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.converter.SeparateColor.hsl">hsl</a></td>
+<td>Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.converter.SeparateColor.hsv">hsv</a></td>
+<td>Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.converter.SeparateColor.rgb">rgb</a></td>
+<td>Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.converter.SeparateColor.hsl" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.SeparateColor.hsl">hsl</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hsl(color<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing</p>
+</section>
+<section id="nodebpy.nodes.shader.converter.SeparateColor.hsv" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.SeparateColor.hsv">hsv</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>hsv(color<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing</p>
+</section>
+<section id="nodebpy.nodes.shader.converter.SeparateColor.rgb" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.SeparateColor.rgb">rgb</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rgb(color<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.shader.converter.ShaderToRGB" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.ShaderToRGB">ShaderToRGB</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ShaderToRGB(shader<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ShaderToRGB(shader<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Convert rendering effect (such as light and shadow) to color. Typically used for non-photorealistic rendering, to apply additional effects on the output of BSDFs.</code></pre>
 <p>Note: only supported in EEVEE</p>
 <section id="attributes-5" class="level4">
@@ -1034,7 +1114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.converter.Wavelength" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.converter.Wavelength">Wavelength</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Wavelength(wavelength<span class="op">=</span><span class="fl">500.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Wavelength(wavelength<span class="op">=</span><span class="fl">500.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert a wavelength value to an RGB value</p>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>

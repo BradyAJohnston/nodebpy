@@ -673,17 +673,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.external">external</a></td>
+<td>Create IES Texture with operation ‘External’. Use external .ies file</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.IesTexture.internal">internal</a></td>
+<td>Create IES Texture with operation ‘Internal’. Use internal text data-block</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.texture.IesTexture.external" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IesTexture.external">external</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>external(vector<span class="op">=</span><span class="va">None</span>, strength<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create IES Texture with operation ‘External’. Use external .ies file</p>
+</section>
+<section id="nodebpy.nodes.shader.texture.IesTexture.internal" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.IesTexture.internal">internal</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>internal(vector<span class="op">=</span><span class="va">None</span>, strength<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create IES Texture with operation ‘Internal’. Use internal text data-block</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.shader.texture.ImageTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.ImageTexture">ImageTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ImageTexture(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    projection<span class="op">=</span><span class="st">'FLAT'</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Linear'</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    projection_blend<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    extension<span class="op">=</span><span class="st">'REPEAT'</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ImageTexture(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    projection<span class="op">=</span><span class="st">'FLAT'</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Linear'</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    projection_blend<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    extension<span class="op">=</span><span class="st">'REPEAT'</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Sample an image file as a texture</p>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
@@ -753,23 +784,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.texture.SkyTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.SkyTexture">SkyTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>SkyTexture(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    sky_type<span class="op">=</span><span class="st">'MULTIPLE_SCATTERING'</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    sun_disc<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    sun_size<span class="op">=</span><span class="fl">0.01</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    sun_intensity<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    sun_elevation<span class="op">=</span><span class="fl">0.262</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    sun_rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    altitude<span class="op">=</span><span class="fl">100.0</span>,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    air_density<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    aerosol_density<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    ozone_density<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    sun_direction<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    turbidity<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    ground_albedo<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>SkyTexture(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    sky_type<span class="op">=</span><span class="st">'MULTIPLE_SCATTERING'</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    sun_disc<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    sun_size<span class="op">=</span><span class="fl">0.01</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    sun_intensity<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    sun_elevation<span class="op">=</span><span class="fl">0.262</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    sun_rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    altitude<span class="op">=</span><span class="fl">100.0</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    air_density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    aerosol_density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    ozone_density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    sun_direction<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    turbidity<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    ground_albedo<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a procedural sky texture</p>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
@@ -867,8 +898,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+</section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.hosek_wilkie">hosek_wilkie</a></td>
+<td>Create Sky Texture with operation ‘Hosek / Wilkie’. Hosek / Wilkie 2012 (Legacy)</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.multiple_scattering">multiple_scattering</a></td>
+<td>Create Sky Texture with operation ‘Multiple Scattering’. Multiple scattering sky model (more accurate)</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.preetham">preetham</a></td>
+<td>Create Sky Texture with operation ‘Preetham’. Preetham 1999 (Legacy)</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.texture.SkyTexture.single_scattering">single_scattering</a></td>
+<td>Create Sky Texture with operation ‘Single Scattering’. Single scattering sky model</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.texture.SkyTexture.hosek_wilkie" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.SkyTexture.hosek_wilkie">hosek_wilkie</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>hosek_wilkie(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Sky Texture with operation ‘Hosek / Wilkie’. Hosek / Wilkie 2012 (Legacy)</p>
+</section>
+<section id="nodebpy.nodes.shader.texture.SkyTexture.multiple_scattering" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.SkyTexture.multiple_scattering">multiple_scattering</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>multiple_scattering()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Sky Texture with operation ‘Multiple Scattering’. Multiple scattering sky model (more accurate)</p>
+</section>
+<section id="nodebpy.nodes.shader.texture.SkyTexture.preetham" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.SkyTexture.preetham">preetham</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>preetham(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Sky Texture with operation ‘Preetham’. Preetham 1999 (Legacy)</p>
+</section>
+<section id="nodebpy.nodes.shader.texture.SkyTexture.single_scattering" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.texture.SkyTexture.single_scattering">single_scattering</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>single_scattering()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Sky Texture with operation ‘Single Scattering’. Single scattering sky model</p>
 
 
+</section>
 </section>
 </section>
 </section>

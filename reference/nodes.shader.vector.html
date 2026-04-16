@@ -787,10 +787,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.normal">normal</a></td>
+<td>Create Mapping with operation ‘Normal’. Transform a unit normal vector (Location is ignored)</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.point">point</a></td>
+<td>Create Mapping with operation ‘Point’. Transform a point</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.texture">texture</a></td>
+<td>Create Mapping with operation ‘Texture’. Transform a texture by inverse mapping the texture coordinate</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.Mapping.vector">vector</a></td>
+<td>Create Mapping with operation ‘Vector’. Transform a direction vector (Location is ignored)</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.vector.Mapping.normal" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Mapping.normal">normal</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>normal(vector<span class="op">=</span><span class="va">None</span>, rotation<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mapping with operation ‘Normal’. Transform a unit normal vector (Location is ignored)</p>
+</section>
+<section id="nodebpy.nodes.shader.vector.Mapping.point" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Mapping.point">point</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>point(vector<span class="op">=</span><span class="va">None</span>, location<span class="op">=</span><span class="va">None</span>, rotation<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mapping with operation ‘Point’. Transform a point</p>
+</section>
+<section id="nodebpy.nodes.shader.vector.Mapping.texture" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Mapping.texture">texture</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>texture(vector<span class="op">=</span><span class="va">None</span>, location<span class="op">=</span><span class="va">None</span>, rotation<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mapping with operation ‘Texture’. Transform a texture by inverse mapping the texture coordinate</p>
+</section>
+<section id="nodebpy.nodes.shader.vector.Mapping.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Mapping.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>vector(vector<span class="op">=</span><span class="va">None</span>, rotation<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Mapping with operation ‘Vector’. Transform a direction vector (Location is ignored)</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.shader.vector.Normal" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.Normal">Normal</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Normal(normal<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Normal(normal<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a normal vector and a dot product</p>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
@@ -844,7 +893,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.vector.NormalMap" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.NormalMap">NormalMap</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>NormalMap(strength<span class="op">=</span><span class="fl">1.0</span>, color<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, space<span class="op">=</span><span class="st">'TANGENT'</span>, uv_map<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>NormalMap(strength<span class="op">=</span><span class="fl">1.0</span>, color<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, space<span class="op">=</span><span class="st">'TANGENT'</span>, uv_map<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a perturbed normal from an RGB normal map image. Typically used for faking highly detailed surfaces</p>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
@@ -906,7 +955,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.vector.VectorDisplacement" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.VectorDisplacement">VectorDisplacement</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>VectorDisplacement(vector<span class="op">=</span><span class="va">None</span>, midlevel<span class="op">=</span><span class="fl">0.0</span>, scale<span class="op">=</span><span class="fl">0.01</span>, <span class="op">*</span>, space<span class="op">=</span><span class="st">'TANGENT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>VectorDisplacement(vector<span class="op">=</span><span class="va">None</span>, midlevel<span class="op">=</span><span class="fl">0.0</span>, scale<span class="op">=</span><span class="fl">0.01</span>, <span class="op">*</span>, space<span class="op">=</span><span class="st">'TANGENT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Displace the surface along an arbitrary direction</p>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
@@ -968,13 +1017,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.vector.VectorTransform" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.VectorTransform">VectorTransform</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>VectorTransform(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    vector_type<span class="op">=</span><span class="st">'VECTOR'</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    convert_from<span class="op">=</span><span class="st">'WORLD'</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    convert_to<span class="op">=</span><span class="st">'OBJECT'</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>VectorTransform(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    vector_type<span class="op">=</span><span class="st">'VECTOR'</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    convert_from<span class="op">=</span><span class="st">'WORLD'</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    convert_to<span class="op">=</span><span class="st">'OBJECT'</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert a vector, point, or normal between world, camera, and object coordinate space</p>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
@@ -1032,8 +1081,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+</section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.normal">normal</a></td>
+<td>Create Vector Transform with operation ‘Normal’. Transform a normal vector with unit length</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.point">point</a></td>
+<td>Create Vector Transform with operation ‘Point’. Transform a point</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.vector.VectorTransform.vector">vector</a></td>
+<td>Create Vector Transform with operation ‘Vector’. Transform a direction vector</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.shader.vector.VectorTransform.normal" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.VectorTransform.normal">normal</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>normal(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Transform with operation ‘Normal’. Transform a normal vector with unit length</p>
+</section>
+<section id="nodebpy.nodes.shader.vector.VectorTransform.point" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.VectorTransform.point">point</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>point(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Transform with operation ‘Point’. Transform a point</p>
+</section>
+<section id="nodebpy.nodes.shader.vector.VectorTransform.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.shader.vector.VectorTransform.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>vector(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Transform with operation ‘Vector’. Transform a direction vector</p>
 
 
+</section>
 </section>
 </section>
 </section>

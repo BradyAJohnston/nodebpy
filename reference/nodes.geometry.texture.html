@@ -857,10 +857,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods" class="level4">
+<h4 class="anchored" data-anchor-id="methods">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.input_2d">input_2d</a></td>
+<td>Create Gabor Texture with operation ‘2D’. Use the 2D vector (X, Y) as input. The Z component is ignored.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.texture.GaborTexture.input_3d">input_3d</a></td>
+<td>Create Gabor Texture with operation ‘3D’. Use the 3D vector (X, Y, Z) as input</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.texture.GaborTexture.input_2d" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GaborTexture.input_2d">input_2d</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>input_2d(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    frequency<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    anisotropy<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    orientation_2d<span class="op">=</span><span class="fl">0.7854</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gabor Texture with operation ‘2D’. Use the 2D vector (X, Y) as input. The Z component is ignored.</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.GaborTexture.input_3d" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GaborTexture.input_3d">input_3d</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>input_3d(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    frequency<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    anisotropy<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    orientation_3d<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gabor Texture with operation ‘3D’. Use the 3D vector (X, Y, Z) as input</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.geometry.texture.GradientTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture">GradientTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>GradientTexture(vector<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, gradient_type<span class="op">=</span><span class="st">'LINEAR'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>GradientTexture(vector<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, gradient_type<span class="op">=</span><span class="st">'LINEAR'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate interpolated color and intensity values based on the input vector</p>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
@@ -915,17 +958,93 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.diagonal">diagonal</a></td>
+<td>Create Gradient Texture with operation ‘Diagonal’. Create a diagonal progression</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.easing">easing</a></td>
+<td>Create Gradient Texture with operation ‘Easing’. Create a progression easing from one step to the next</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.linear">linear</a></td>
+<td>Create Gradient Texture with operation ‘Linear’. Create a linear progression</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.quadratic">quadratic</a></td>
+<td>Create Gradient Texture with operation ‘Quadratic’. Create a quadratic progression</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.quadratic_sphere">quadratic_sphere</a></td>
+<td>Create Gradient Texture with operation ‘Quadratic Sphere’. Create a quadratic progression in the shape of a sphere</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.radial">radial</a></td>
+<td>Create Gradient Texture with operation ‘Radial’. Create a radial progression</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.GradientTexture.spherical">spherical</a></td>
+<td>Create Gradient Texture with operation ‘Spherical’. Create a spherical progression</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.texture.GradientTexture.diagonal" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture.diagonal">diagonal</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>diagonal(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gradient Texture with operation ‘Diagonal’. Create a diagonal progression</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.GradientTexture.easing" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture.easing">easing</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>easing(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gradient Texture with operation ‘Easing’. Create a progression easing from one step to the next</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.GradientTexture.linear" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture.linear">linear</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>linear(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gradient Texture with operation ‘Linear’. Create a linear progression</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.GradientTexture.quadratic" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture.quadratic">quadratic</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>quadratic(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gradient Texture with operation ‘Quadratic’. Create a quadratic progression</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.GradientTexture.quadratic_sphere" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture.quadratic_sphere">quadratic_sphere</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>quadratic_sphere(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gradient Texture with operation ‘Quadratic Sphere’. Create a quadratic progression in the shape of a sphere</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.GradientTexture.radial" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture.radial">radial</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>radial(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gradient Texture with operation ‘Radial’. Create a radial progression</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.GradientTexture.spherical" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.GradientTexture.spherical">spherical</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>spherical(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Gradient Texture with operation ‘Spherical’. Create a spherical progression</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.geometry.texture.ImageTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.ImageTexture">ImageTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ImageTexture(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    frame<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Linear'</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    extension<span class="op">=</span><span class="st">'REPEAT'</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ImageTexture(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    frame<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Linear'</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    extension<span class="op">=</span><span class="st">'REPEAT'</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Sample values from an image texture</p>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
@@ -995,7 +1114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.texture.MagicTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.MagicTexture">MagicTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>MagicTexture(vector<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="fl">5.0</span>, distortion<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, turbulence_depth<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>MagicTexture(vector<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="fl">5.0</span>, distortion<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, turbulence_depth<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a psychedelic color texture</p>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
@@ -1061,21 +1180,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.texture.NoiseTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.NoiseTexture">NoiseTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>NoiseTexture(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    w<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    gain<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    noise_dimensions<span class="op">=</span><span class="st">'3D'</span>,</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    noise_type<span class="op">=</span><span class="st">'FBM'</span>,</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    normalize<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>NoiseTexture(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    w<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    gain<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    noise_dimensions<span class="op">=</span><span class="st">'3D'</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    noise_type<span class="op">=</span><span class="st">'FBM'</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    normalize<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate fractal Perlin noise</p>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
@@ -1170,25 +1289,123 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods-2" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.fbm">fbm</a></td>
+<td>Create Noise Texture with operation ‘fBM’. The standard fractal Perlin noise</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.hetero_terrain">hetero_terrain</a></td>
+<td>Create Noise Texture with operation ‘Hetero Terrain’. Similar to Hybrid Multifractal creates a heterogeneous terrain, but with the likeness of river channels</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.hybrid_multifractal">hybrid_multifractal</a></td>
+<td>Create Noise Texture with operation ‘Hybrid Multifractal’. Create peaks and valleys with different roughness values</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.multifractal">multifractal</a></td>
+<td>Create Noise Texture with operation ‘Multifractal’. More uneven result (varies with location), more similar to a real terrain</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.NoiseTexture.ridged_multifractal">ridged_multifractal</a></td>
+<td>Create Noise Texture with operation ‘Ridged Multifractal’. Create sharp peaks</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.texture.NoiseTexture.fbm" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.NoiseTexture.fbm">fbm</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fbm(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Noise Texture with operation ‘fBM’. The standard fractal Perlin noise</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.NoiseTexture.hetero_terrain" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.NoiseTexture.hetero_terrain">hetero_terrain</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>hetero_terrain(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Noise Texture with operation ‘Hetero Terrain’. Similar to Hybrid Multifractal creates a heterogeneous terrain, but with the likeness of river channels</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.NoiseTexture.hybrid_multifractal" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.NoiseTexture.hybrid_multifractal">hybrid_multifractal</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>hybrid_multifractal(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    gain<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Noise Texture with operation ‘Hybrid Multifractal’. Create peaks and valleys with different roughness values</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.NoiseTexture.multifractal" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.NoiseTexture.multifractal">multifractal</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>multifractal(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Noise Texture with operation ‘Multifractal’. More uneven result (varies with location), more similar to a real terrain</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.NoiseTexture.ridged_multifractal" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.NoiseTexture.ridged_multifractal">ridged_multifractal</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ridged_multifractal(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    gain<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Noise Texture with operation ‘Ridged Multifractal’. Create sharp peaks</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.geometry.texture.VoronoiTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.VoronoiTexture">VoronoiTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>VoronoiTexture(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    w<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    exponent<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    randomness<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    voronoi_dimensions<span class="op">=</span><span class="st">'3D'</span>,</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    distance<span class="op">=</span><span class="st">'EUCLIDEAN'</span>,</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    feature<span class="op">=</span><span class="st">'F1'</span>,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    normalize<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>VoronoiTexture(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    w<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    lacunarity<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    smoothness<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    exponent<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    randomness<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    voronoi_dimensions<span class="op">=</span><span class="st">'3D'</span>,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    distance<span class="op">=</span><span class="st">'EUCLIDEAN'</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    feature<span class="op">=</span><span class="st">'F1'</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    normalize<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells</p>
 <section id="attributes-7" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
@@ -1302,20 +1519,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.texture.WaveTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.WaveTexture">WaveTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>WaveTexture(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    detail_scale<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    detail_roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    phase_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    wave_type<span class="op">=</span><span class="st">'BANDS'</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    bands_direction<span class="op">=</span><span class="st">'X'</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    rings_direction<span class="op">=</span><span class="st">'X'</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    wave_profile<span class="op">=</span><span class="st">'SIN'</span>,</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>WaveTexture(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    detail_scale<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    detail_roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    phase_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    wave_type<span class="op">=</span><span class="st">'BANDS'</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    bands_direction<span class="op">=</span><span class="st">'X'</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    rings_direction<span class="op">=</span><span class="st">'X'</span>,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    wave_profile<span class="op">=</span><span class="st">'SIN'</span>,</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate procedural bands or rings with noise</p>
 <section id="attributes-8" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
@@ -1406,10 +1623,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
+<section id="methods-3" class="level4">
+<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.bands">bands</a></td>
+<td>Create Wave Texture with operation ‘Bands’. Use standard wave texture in bands</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.texture.WaveTexture.rings">rings</a></td>
+<td>Create Wave Texture with operation ‘Rings’. Use wave texture in rings</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.texture.WaveTexture.bands" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.WaveTexture.bands">bands</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>bands(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    detail_scale<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    detail_roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    phase_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Wave Texture with operation ‘Bands’. Use standard wave texture in bands</p>
+</section>
+<section id="nodebpy.nodes.geometry.texture.WaveTexture.rings" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.WaveTexture.rings">rings</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>rings(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">5.0</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    distortion<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    detail<span class="op">=</span><span class="fl">2.0</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    detail_scale<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    detail_roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    phase_offset<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Wave Texture with operation ‘Rings’. Use wave texture in rings</p>
+</section>
+</section>
 </section>
 <section id="nodebpy.nodes.geometry.texture.WhiteNoiseTexture" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.texture.WhiteNoiseTexture">WhiteNoiseTexture</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>WhiteNoiseTexture(vector<span class="op">=</span><span class="va">None</span>, w<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, noise_dimensions<span class="op">=</span><span class="st">'3D'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>WhiteNoiseTexture(vector<span class="op">=</span><span class="va">None</span>, w<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, noise_dimensions<span class="op">=</span><span class="st">'3D'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate a random value or color based on an input seed</p>
 <section id="attributes-9" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
