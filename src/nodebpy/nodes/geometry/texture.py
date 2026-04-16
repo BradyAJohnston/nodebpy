@@ -246,6 +246,44 @@ class GaborTexture(NodeBuilder):
         self.gabor_type = gabor_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def input_2d(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        frequency: InputFloat = 2.0,
+        anisotropy: InputFloat = 1.0,
+        orientation_2d: InputFloat = 0.7854,
+    ) -> "GaborTexture":
+        """Create Gabor Texture with operation '2D'. Use the 2D vector (X, Y) as input. The Z component is ignored."""
+        return cls(
+            gabor_type="2D",
+            vector=vector,
+            scale=scale,
+            frequency=frequency,
+            anisotropy=anisotropy,
+            orientation_2d=orientation_2d,
+        )
+
+    @classmethod
+    def input_3d(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        frequency: InputFloat = 2.0,
+        anisotropy: InputFloat = 1.0,
+        orientation_3d: InputVector = None,
+    ) -> "GaborTexture":
+        """Create Gabor Texture with operation '3D'. Use the 3D vector (X, Y, Z) as input"""
+        return cls(
+            gabor_type="3D",
+            vector=vector,
+            scale=scale,
+            frequency=frequency,
+            anisotropy=anisotropy,
+            orientation_3d=orientation_3d,
+        )
+
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
@@ -326,6 +364,41 @@ class GradientTexture(NodeBuilder):
         key_args = {"Vector": vector}
         self.gradient_type = gradient_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def linear(cls, vector: InputVector = None) -> "GradientTexture":
+        """Create Gradient Texture with operation 'Linear'. Create a linear progression"""
+        return cls(gradient_type="LINEAR", vector=vector)
+
+    @classmethod
+    def quadratic(cls, vector: InputVector = None) -> "GradientTexture":
+        """Create Gradient Texture with operation 'Quadratic'. Create a quadratic progression"""
+        return cls(gradient_type="QUADRATIC", vector=vector)
+
+    @classmethod
+    def easing(cls, vector: InputVector = None) -> "GradientTexture":
+        """Create Gradient Texture with operation 'Easing'. Create a progression easing from one step to the next"""
+        return cls(gradient_type="EASING", vector=vector)
+
+    @classmethod
+    def diagonal(cls, vector: InputVector = None) -> "GradientTexture":
+        """Create Gradient Texture with operation 'Diagonal'. Create a diagonal progression"""
+        return cls(gradient_type="DIAGONAL", vector=vector)
+
+    @classmethod
+    def spherical(cls, vector: InputVector = None) -> "GradientTexture":
+        """Create Gradient Texture with operation 'Spherical'. Create a spherical progression"""
+        return cls(gradient_type="SPHERICAL", vector=vector)
+
+    @classmethod
+    def quadratic_sphere(cls, vector: InputVector = None) -> "GradientTexture":
+        """Create Gradient Texture with operation 'Quadratic Sphere'. Create a quadratic progression in the shape of a sphere"""
+        return cls(gradient_type="QUADRATIC_SPHERE", vector=vector)
+
+    @classmethod
+    def radial(cls, vector: InputVector = None) -> "GradientTexture":
+        """Create Gradient Texture with operation 'Radial'. Create a radial progression"""
+        return cls(gradient_type="RADIAL", vector=vector)
 
     @property
     def i_vector(self) -> Socket:
@@ -538,6 +611,121 @@ class NoiseTexture(NodeBuilder):
         self.noise_type = noise_type
         self.normalize = normalize
         self._establish_links(**key_args)
+
+    @classmethod
+    def multifractal(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        detail: InputFloat = 2.0,
+        roughness: InputFloat = 0.5,
+        lacunarity: InputFloat = 2.0,
+        distortion: InputFloat = 0.0,
+    ) -> "NoiseTexture":
+        """Create Noise Texture with operation 'Multifractal'. More uneven result (varies with location), more similar to a real terrain"""
+        return cls(
+            noise_type="MULTIFRACTAL",
+            vector=vector,
+            scale=scale,
+            detail=detail,
+            roughness=roughness,
+            lacunarity=lacunarity,
+            distortion=distortion,
+        )
+
+    @classmethod
+    def ridged_multifractal(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        detail: InputFloat = 2.0,
+        roughness: InputFloat = 0.5,
+        lacunarity: InputFloat = 2.0,
+        offset: InputFloat = 0.0,
+        gain: InputFloat = 1.0,
+        distortion: InputFloat = 0.0,
+    ) -> "NoiseTexture":
+        """Create Noise Texture with operation 'Ridged Multifractal'. Create sharp peaks"""
+        return cls(
+            noise_type="RIDGED_MULTIFRACTAL",
+            vector=vector,
+            scale=scale,
+            detail=detail,
+            roughness=roughness,
+            lacunarity=lacunarity,
+            offset=offset,
+            gain=gain,
+            distortion=distortion,
+        )
+
+    @classmethod
+    def hybrid_multifractal(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        detail: InputFloat = 2.0,
+        roughness: InputFloat = 0.5,
+        lacunarity: InputFloat = 2.0,
+        offset: InputFloat = 0.0,
+        gain: InputFloat = 1.0,
+        distortion: InputFloat = 0.0,
+    ) -> "NoiseTexture":
+        """Create Noise Texture with operation 'Hybrid Multifractal'. Create peaks and valleys with different roughness values"""
+        return cls(
+            noise_type="HYBRID_MULTIFRACTAL",
+            vector=vector,
+            scale=scale,
+            detail=detail,
+            roughness=roughness,
+            lacunarity=lacunarity,
+            offset=offset,
+            gain=gain,
+            distortion=distortion,
+        )
+
+    @classmethod
+    def fbm(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        detail: InputFloat = 2.0,
+        roughness: InputFloat = 0.5,
+        lacunarity: InputFloat = 2.0,
+        distortion: InputFloat = 0.0,
+    ) -> "NoiseTexture":
+        """Create Noise Texture with operation 'fBM'. The standard fractal Perlin noise"""
+        return cls(
+            noise_type="FBM",
+            vector=vector,
+            scale=scale,
+            detail=detail,
+            roughness=roughness,
+            lacunarity=lacunarity,
+            distortion=distortion,
+        )
+
+    @classmethod
+    def hetero_terrain(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        detail: InputFloat = 2.0,
+        roughness: InputFloat = 0.5,
+        lacunarity: InputFloat = 2.0,
+        offset: InputFloat = 0.0,
+        distortion: InputFloat = 0.0,
+    ) -> "NoiseTexture":
+        """Create Noise Texture with operation 'Hetero Terrain'. Similar to Hybrid Multifractal creates a heterogeneous terrain, but with the likeness of river channels"""
+        return cls(
+            noise_type="HETERO_TERRAIN",
+            vector=vector,
+            scale=scale,
+            detail=detail,
+            roughness=roughness,
+            lacunarity=lacunarity,
+            offset=offset,
+            distortion=distortion,
+        )
 
     @property
     def i_vector(self) -> Socket:
@@ -831,6 +1019,52 @@ class WaveTexture(NodeBuilder):
         self.rings_direction = rings_direction
         self.wave_profile = wave_profile
         self._establish_links(**key_args)
+
+    @classmethod
+    def bands(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        distortion: InputFloat = 0.0,
+        detail: InputFloat = 2.0,
+        detail_scale: InputFloat = 1.0,
+        detail_roughness: InputFloat = 0.5,
+        phase_offset: InputFloat = 0.0,
+    ) -> "WaveTexture":
+        """Create Wave Texture with operation 'Bands'. Use standard wave texture in bands"""
+        return cls(
+            wave_type="BANDS",
+            vector=vector,
+            scale=scale,
+            distortion=distortion,
+            detail=detail,
+            detail_scale=detail_scale,
+            detail_roughness=detail_roughness,
+            phase_offset=phase_offset,
+        )
+
+    @classmethod
+    def rings(
+        cls,
+        vector: InputVector = None,
+        scale: InputFloat = 5.0,
+        distortion: InputFloat = 0.0,
+        detail: InputFloat = 2.0,
+        detail_scale: InputFloat = 1.0,
+        detail_roughness: InputFloat = 0.5,
+        phase_offset: InputFloat = 0.0,
+    ) -> "WaveTexture":
+        """Create Wave Texture with operation 'Rings'. Use wave texture in rings"""
+        return cls(
+            wave_type="RINGS",
+            vector=vector,
+            scale=scale,
+            distortion=distortion,
+            detail=detail,
+            detail_scale=detail_scale,
+            detail_roughness=detail_roughness,
+            phase_offset=phase_offset,
+        )
 
     @property
     def i_vector(self) -> Socket:

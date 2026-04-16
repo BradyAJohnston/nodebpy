@@ -560,6 +560,21 @@ class Warning(NodeBuilder):
         self.warning_type = warning_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def error(cls, show: InputBoolean = True, message: InputString = "") -> "Warning":
+        """Create Warning with operation 'Error'."""
+        return cls(warning_type="ERROR", show=show, message=message)
+
+    @classmethod
+    def warning(cls, show: InputBoolean = True, message: InputString = "") -> "Warning":
+        """Create Warning with operation 'Warning'."""
+        return cls(warning_type="WARNING", show=show, message=message)
+
+    @classmethod
+    def info(cls, show: InputBoolean = True, message: InputString = "") -> "Warning":
+        """Create Warning with operation 'Info'."""
+        return cls(warning_type="INFO", show=show, message=message)
+
     @property
     def i_show(self) -> Socket:
         """Input socket: Show"""

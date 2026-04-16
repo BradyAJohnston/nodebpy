@@ -212,6 +212,23 @@ class DistributePointsInGrid(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def random(
+        cls, grid: InputFloat = 0.0, density: InputFloat = 1.0, seed: InputInteger = 0
+    ) -> "DistributePointsInGrid":
+        """Create Distribute Points in Grid with operation 'Random'. Distribute points randomly inside of the volume"""
+        return cls(mode="DENSITY_RANDOM", grid=grid, density=density, seed=seed)
+
+    @classmethod
+    def grid(
+        cls,
+        grid: InputFloat = 0.0,
+        spacing: InputVector = None,
+        threshold: InputFloat = 0.1,
+    ) -> "DistributePointsInGrid":
+        """Create Distribute Points in Grid with operation 'Grid'. Distribute the points in a grid pattern inside of the volume"""
+        return cls(mode="DENSITY_GRID", grid=grid, spacing=spacing, threshold=threshold)
+
     @property
     def i_grid(self) -> Socket:
         """Input socket: Grid"""
