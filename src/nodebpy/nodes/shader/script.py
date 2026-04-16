@@ -33,6 +33,16 @@ class Script(NodeBuilder):
         self.bytecode_hash = bytecode_hash
         self._establish_links(**key_args)
 
+    @classmethod
+    def internal(cls) -> "Script":
+        """Create Script with operation 'Internal'. Use internal text data-block"""
+        return cls(mode="INTERNAL")
+
+    @classmethod
+    def external(cls) -> "Script":
+        """Create Script with operation 'External'. Use external .osl or .oso file"""
+        return cls(mode="EXTERNAL")
+
     @property
     def filepath(self) -> str:
         return self.node.filepath

@@ -70,6 +70,50 @@ class Arc(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def points(
+        cls,
+        resolution: InputInteger = 16,
+        start: InputVector = None,
+        middle: InputVector = None,
+        end: InputVector = None,
+        offset_angle: InputFloat = 0.0,
+        connect_center: InputBoolean = False,
+        invert_arc: InputBoolean = False,
+    ) -> "Arc":
+        """Create Arc with operation 'Points'. Define arc by 3 points on circle. Arc is calculated between start and end points"""
+        return cls(
+            mode="POINTS",
+            resolution=resolution,
+            start=start,
+            middle=middle,
+            end=end,
+            offset_angle=offset_angle,
+            connect_center=connect_center,
+            invert_arc=invert_arc,
+        )
+
+    @classmethod
+    def radius(
+        cls,
+        resolution: InputInteger = 16,
+        radius: InputFloat = 1.0,
+        start_angle: InputFloat = 0.0,
+        sweep_angle: InputFloat = 5.4978,
+        connect_center: InputBoolean = False,
+        invert_arc: InputBoolean = False,
+    ) -> "Arc":
+        """Create Arc with operation 'Radius'. Define radius with a float"""
+        return cls(
+            mode="RADIUS",
+            resolution=resolution,
+            radius=radius,
+            start_angle=start_angle,
+            sweep_angle=sweep_angle,
+            connect_center=connect_center,
+            invert_arc=invert_arc,
+        )
+
     @property
     def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
@@ -222,6 +266,44 @@ class BezierSegment(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def position(
+        cls,
+        resolution: InputInteger = 16,
+        start: InputVector = None,
+        start_handle: InputVector = None,
+        end_handle: InputVector = None,
+        end: InputVector = None,
+    ) -> "BezierSegment":
+        """Create Bézier Segment with operation 'Position'. The start and end handles are fixed positions"""
+        return cls(
+            mode="POSITION",
+            resolution=resolution,
+            start=start,
+            start_handle=start_handle,
+            end_handle=end_handle,
+            end=end,
+        )
+
+    @classmethod
+    def offset(
+        cls,
+        resolution: InputInteger = 16,
+        start: InputVector = None,
+        start_handle: InputVector = None,
+        end_handle: InputVector = None,
+        end: InputVector = None,
+    ) -> "BezierSegment":
+        """Create Bézier Segment with operation 'Offset'. The start and end handles are offsets from the spline's control points"""
+        return cls(
+            mode="OFFSET",
+            resolution=resolution,
+            start=start,
+            start_handle=start_handle,
+            end_handle=end_handle,
+            end=end,
+        )
+
     @property
     def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
@@ -291,6 +373,67 @@ class Cone(NodeBuilder):
         }
         self.fill_type = fill_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def none(
+        cls,
+        vertices: InputInteger = 32,
+        side_segments: InputInteger = 1,
+        radius_top: InputFloat = 0.0,
+        radius_bottom: InputFloat = 1.0,
+        depth: InputFloat = 2.0,
+    ) -> "Cone":
+        """Create Cone with operation 'None'."""
+        return cls(
+            fill_type="NONE",
+            vertices=vertices,
+            side_segments=side_segments,
+            radius_top=radius_top,
+            radius_bottom=radius_bottom,
+            depth=depth,
+        )
+
+    @classmethod
+    def n_gon(
+        cls,
+        vertices: InputInteger = 32,
+        side_segments: InputInteger = 1,
+        fill_segments: InputInteger = 1,
+        radius_top: InputFloat = 0.0,
+        radius_bottom: InputFloat = 1.0,
+        depth: InputFloat = 2.0,
+    ) -> "Cone":
+        """Create Cone with operation 'N-Gon'."""
+        return cls(
+            fill_type="NGON",
+            vertices=vertices,
+            side_segments=side_segments,
+            fill_segments=fill_segments,
+            radius_top=radius_top,
+            radius_bottom=radius_bottom,
+            depth=depth,
+        )
+
+    @classmethod
+    def triangles(
+        cls,
+        vertices: InputInteger = 32,
+        side_segments: InputInteger = 1,
+        fill_segments: InputInteger = 1,
+        radius_top: InputFloat = 0.0,
+        radius_bottom: InputFloat = 1.0,
+        depth: InputFloat = 2.0,
+    ) -> "Cone":
+        """Create Cone with operation 'Triangles'."""
+        return cls(
+            fill_type="TRIANGLE_FAN",
+            vertices=vertices,
+            side_segments=side_segments,
+            fill_segments=fill_segments,
+            radius_top=radius_top,
+            radius_bottom=radius_bottom,
+            depth=depth,
+        )
 
     @property
     def i_vertices(self) -> Socket:
@@ -466,6 +609,30 @@ class CurveCircle(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def points(
+        cls,
+        resolution: InputInteger = 32,
+        point_1: InputVector = None,
+        point_2: InputVector = None,
+        point_3: InputVector = None,
+    ) -> "CurveCircle":
+        """Create Curve Circle with operation 'Points'. Define the radius and location with three points"""
+        return cls(
+            mode="POINTS",
+            resolution=resolution,
+            point_1=point_1,
+            point_2=point_2,
+            point_3=point_3,
+        )
+
+    @classmethod
+    def radius(
+        cls, resolution: InputInteger = 32, radius: InputFloat = 1.0
+    ) -> "CurveCircle":
+        """Create Curve Circle with operation 'Radius'. Define the radius with a float"""
+        return cls(mode="RADIUS", resolution=resolution, radius=radius)
+
     @property
     def i_resolution(self) -> Socket:
         """Input socket: Resolution"""
@@ -561,6 +728,21 @@ class CurveLine(NodeBuilder):
         }
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def points(cls, start: InputVector = None, end: InputVector = None) -> "CurveLine":
+        """Create Curve Line with operation 'Points'. Define the start and end points of the line"""
+        return cls(mode="POINTS", start=start, end=end)
+
+    @classmethod
+    def direction(
+        cls,
+        start: InputVector = None,
+        direction: InputVector = None,
+        length: InputFloat = 1.0,
+    ) -> "CurveLine":
+        """Create Curve Line with operation 'Direction'. Define a line with a start point, direction and length"""
+        return cls(mode="DIRECTION", start=start, direction=direction, length=length)
 
     @property
     def i_start(self) -> Socket:
@@ -667,6 +849,25 @@ class CurveToPoints(NodeBuilder):
         key_args = {"Curve": curve, "Count": count, "Length": length}
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def evaluated(cls, curve: InputGeometry = None) -> "CurveToPoints":
+        """Create Curve to Points with operation 'Evaluated'. Create points from the curve's evaluated points, based on the resolution attribute for NURBS and Bézier splines"""
+        return cls(mode="EVALUATED", curve=curve)
+
+    @classmethod
+    def count(
+        cls, curve: InputGeometry = None, count: InputInteger = 10
+    ) -> "CurveToPoints":
+        """Create Curve to Points with operation 'Count'. Sample each spline by evenly distributing the specified number of points"""
+        return cls(mode="COUNT", curve=curve, count=count)
+
+    @classmethod
+    def length(
+        cls, curve: InputGeometry = None, length: InputFloat = 0.1
+    ) -> "CurveToPoints":
+        """Create Curve to Points with operation 'Length'. Sample each spline by splitting it into segments with the specified length"""
+        return cls(mode="LENGTH", curve=curve, length=length)
 
     @property
     def i_curve(self) -> Socket:
@@ -785,6 +986,61 @@ class Cylinder(NodeBuilder):
         self.fill_type = fill_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def none(
+        cls,
+        vertices: InputInteger = 32,
+        side_segments: InputInteger = 1,
+        radius: InputFloat = 1.0,
+        depth: InputFloat = 2.0,
+    ) -> "Cylinder":
+        """Create Cylinder with operation 'None'."""
+        return cls(
+            fill_type="NONE",
+            vertices=vertices,
+            side_segments=side_segments,
+            radius=radius,
+            depth=depth,
+        )
+
+    @classmethod
+    def n_gon(
+        cls,
+        vertices: InputInteger = 32,
+        side_segments: InputInteger = 1,
+        fill_segments: InputInteger = 1,
+        radius: InputFloat = 1.0,
+        depth: InputFloat = 2.0,
+    ) -> "Cylinder":
+        """Create Cylinder with operation 'N-Gon'."""
+        return cls(
+            fill_type="NGON",
+            vertices=vertices,
+            side_segments=side_segments,
+            fill_segments=fill_segments,
+            radius=radius,
+            depth=depth,
+        )
+
+    @classmethod
+    def triangles(
+        cls,
+        vertices: InputInteger = 32,
+        side_segments: InputInteger = 1,
+        fill_segments: InputInteger = 1,
+        radius: InputFloat = 1.0,
+        depth: InputFloat = 2.0,
+    ) -> "Cylinder":
+        """Create Cylinder with operation 'Triangles'."""
+        return cls(
+            fill_type="TRIANGLE_FAN",
+            vertices=vertices,
+            side_segments=side_segments,
+            fill_segments=fill_segments,
+            radius=radius,
+            depth=depth,
+        )
+
     @property
     def i_vertices(self) -> Socket:
         """Input socket: Vertices"""
@@ -892,6 +1148,27 @@ class DeleteGeometry(NodeBuilder):
         self.mode = mode
         self.domain = domain
         self._establish_links(**key_args)
+
+    @classmethod
+    def all(
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'All'."""
+        return cls(mode="ALL", geometry=geometry, selection=selection)
+
+    @classmethod
+    def only_edges_faces(
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'Only Edges & Faces'."""
+        return cls(mode="EDGE_FACE", geometry=geometry, selection=selection)
+
+    @classmethod
+    def only_faces(
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+    ) -> "DeleteGeometry":
+        """Create Delete Geometry with operation 'Only Faces'."""
+        return cls(mode="ONLY_FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def point(
@@ -1304,6 +1581,59 @@ class ExtrudeMesh(NodeBuilder):
         }
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def vertices(
+        cls,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        offset: InputVector = None,
+        offset_scale: InputFloat = 1.0,
+    ) -> "ExtrudeMesh":
+        """Create Extrude Mesh with operation 'Vertices'."""
+        return cls(
+            mode="VERTICES",
+            mesh=mesh,
+            selection=selection,
+            offset=offset,
+            offset_scale=offset_scale,
+        )
+
+    @classmethod
+    def edges(
+        cls,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        offset: InputVector = None,
+        offset_scale: InputFloat = 1.0,
+    ) -> "ExtrudeMesh":
+        """Create Extrude Mesh with operation 'Edges'."""
+        return cls(
+            mode="EDGES",
+            mesh=mesh,
+            selection=selection,
+            offset=offset,
+            offset_scale=offset_scale,
+        )
+
+    @classmethod
+    def faces(
+        cls,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        offset: InputVector = None,
+        offset_scale: InputFloat = 1.0,
+        individual: InputBoolean = True,
+    ) -> "ExtrudeMesh":
+        """Create Extrude Mesh with operation 'Faces'."""
+        return cls(
+            mode="FACES",
+            mesh=mesh,
+            selection=selection,
+            offset=offset,
+            offset_scale=offset_scale,
+            individual=individual,
+        )
 
     @property
     def i_mesh(self) -> Socket:
@@ -1952,6 +2282,30 @@ class MergeLayers(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def by_name(
+        cls, grease_pencil: InputGeometry = None, selection: InputBoolean = True
+    ) -> "MergeLayers":
+        """Create Merge Layers with operation 'By Name'. Combine all layers which have the same name"""
+        return cls(
+            mode="MERGE_BY_NAME", grease_pencil=grease_pencil, selection=selection
+        )
+
+    @classmethod
+    def by_group_id(
+        cls,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+    ) -> "MergeLayers":
+        """Create Merge Layers with operation 'By Group ID'. Provide a custom group ID for each layer and all layers with the same ID will be merged into one"""
+        return cls(
+            mode="MERGE_BY_ID",
+            grease_pencil=grease_pencil,
+            selection=selection,
+            group_id=group_id,
+        )
+
     @property
     def i_grease_pencil(self) -> Socket:
         """Input socket: Grease Pencil"""
@@ -2145,6 +2499,27 @@ class MeshCircle(NodeBuilder):
         self.fill_type = fill_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def none(
+        cls, vertices: InputInteger = 32, radius: InputFloat = 1.0
+    ) -> "MeshCircle":
+        """Create Mesh Circle with operation 'None'."""
+        return cls(fill_type="NONE", vertices=vertices, radius=radius)
+
+    @classmethod
+    def n_gon(
+        cls, vertices: InputInteger = 32, radius: InputFloat = 1.0
+    ) -> "MeshCircle":
+        """Create Mesh Circle with operation 'N-Gon'."""
+        return cls(fill_type="NGON", vertices=vertices, radius=radius)
+
+    @classmethod
+    def triangles(
+        cls, vertices: InputInteger = 32, radius: InputFloat = 1.0
+    ) -> "MeshCircle":
+        """Create Mesh Circle with operation 'Triangles'."""
+        return cls(fill_type="TRIANGLE_FAN", vertices=vertices, radius=radius)
+
     @property
     def i_vertices(self) -> Socket:
         """Input socket: Vertices"""
@@ -2197,6 +2572,30 @@ class MeshLine(NodeBuilder):
         self.mode = mode
         self.count_mode = count_mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def offset(
+        cls,
+        count: InputInteger = 10,
+        start_location: InputVector = None,
+        offset: InputVector = None,
+    ) -> "MeshLine":
+        """Create Mesh Line with operation 'Offset'. Specify the offset from one vertex to the next"""
+        return cls(
+            mode="OFFSET", count=count, start_location=start_location, offset=offset
+        )
+
+    @classmethod
+    def end_points(
+        cls,
+        count: InputInteger = 10,
+        start_location: InputVector = None,
+        offset: InputVector = None,
+    ) -> "MeshLine":
+        """Create Mesh Line with operation 'End Points'. Specify the line's start and end points"""
+        return cls(
+            mode="END_POINTS", count=count, start_location=start_location, offset=offset
+        )
 
     @property
     def i_count(self) -> Socket:
@@ -2260,6 +2659,20 @@ class MeshToCurve(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def edges(
+        cls, mesh: InputGeometry = None, selection: InputBoolean = True
+    ) -> "MeshToCurve":
+        """Create Mesh to Curve with operation 'Edges'. Convert mesh edges to curve segments. Attributes are propagated to curve points."""
+        return cls(mode="EDGES", mesh=mesh, selection=selection)
+
+    @classmethod
+    def faces(
+        cls, mesh: InputGeometry = None, selection: InputBoolean = True
+    ) -> "MeshToCurve":
+        """Create Mesh to Curve with operation 'Faces'. Convert each mesh face to a cyclic curve. Face attributes are propagated to curves."""
+        return cls(mode="FACES", mesh=mesh, selection=selection)
+
     @property
     def i_mesh(self) -> Socket:
         """Input socket: Mesh"""
@@ -2310,6 +2723,74 @@ class MeshToPoints(NodeBuilder):
         }
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def vertices(
+        cls,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        radius: InputFloat = 0.05,
+    ) -> "MeshToPoints":
+        """Create Mesh to Points with operation 'Vertices'. Create a point in the point cloud for each selected vertex"""
+        return cls(
+            mode="VERTICES",
+            mesh=mesh,
+            selection=selection,
+            position=position,
+            radius=radius,
+        )
+
+    @classmethod
+    def edges(
+        cls,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        radius: InputFloat = 0.05,
+    ) -> "MeshToPoints":
+        """Create Mesh to Points with operation 'Edges'. Create a point in the point cloud for each selected edge"""
+        return cls(
+            mode="EDGES",
+            mesh=mesh,
+            selection=selection,
+            position=position,
+            radius=radius,
+        )
+
+    @classmethod
+    def faces(
+        cls,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        radius: InputFloat = 0.05,
+    ) -> "MeshToPoints":
+        """Create Mesh to Points with operation 'Faces'. Create a point in the point cloud for each selected face"""
+        return cls(
+            mode="FACES",
+            mesh=mesh,
+            selection=selection,
+            position=position,
+            radius=radius,
+        )
+
+    @classmethod
+    def corners(
+        cls,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        radius: InputFloat = 0.05,
+    ) -> "MeshToPoints":
+        """Create Mesh to Points with operation 'Corners'. Create a point in the point cloud for each selected face corner"""
+        return cls(
+            mode="CORNERS",
+            mesh=mesh,
+            selection=selection,
+            position=position,
+            radius=radius,
+        )
 
     @property
     def i_mesh(self) -> Socket:
@@ -2556,6 +3037,66 @@ class Quadrilateral(NodeBuilder):
         }
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def rectangle(
+        cls, width: InputFloat = 2.0, height: InputFloat = 2.0
+    ) -> "Quadrilateral":
+        """Create Quadrilateral with operation 'Rectangle'. Create a rectangle"""
+        return cls(mode="RECTANGLE", width=width, height=height)
+
+    @classmethod
+    def parallelogram(
+        cls, width: InputFloat = 2.0, height: InputFloat = 2.0, offset: InputFloat = 1.0
+    ) -> "Quadrilateral":
+        """Create Quadrilateral with operation 'Parallelogram'. Create a parallelogram"""
+        return cls(mode="PARALLELOGRAM", width=width, height=height, offset=offset)
+
+    @classmethod
+    def trapezoid(
+        cls,
+        height: InputFloat = 2.0,
+        bottom_width: InputFloat = 4.0,
+        top_width: InputFloat = 2.0,
+        offset: InputFloat = 1.0,
+    ) -> "Quadrilateral":
+        """Create Quadrilateral with operation 'Trapezoid'. Create a trapezoid"""
+        return cls(
+            mode="TRAPEZOID",
+            height=height,
+            bottom_width=bottom_width,
+            top_width=top_width,
+            offset=offset,
+        )
+
+    @classmethod
+    def kite(
+        cls,
+        width: InputFloat = 2.0,
+        bottom_height: InputFloat = 3.0,
+        top_height: InputFloat = 1.0,
+    ) -> "Quadrilateral":
+        """Create Quadrilateral with operation 'Kite'. Create a Kite / Dart"""
+        return cls(
+            mode="KITE", width=width, bottom_height=bottom_height, top_height=top_height
+        )
+
+    @classmethod
+    def points(
+        cls,
+        point_1: InputVector = None,
+        point_2: InputVector = None,
+        point_3: InputVector = None,
+        point_4: InputVector = None,
+    ) -> "Quadrilateral":
+        """Create Quadrilateral with operation 'Points'. Create a quadrilateral from four points"""
+        return cls(
+            mode="POINTS",
+            point_1=point_1,
+            point_2=point_2,
+            point_3=point_3,
+            point_4=point_4,
+        )
 
     @property
     def i_width(self) -> Socket:
@@ -3193,6 +3734,40 @@ class SampleCurve(NodeBuilder):
         self.use_all_curves = use_all_curves
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def factor(
+        cls,
+        curves: InputGeometry = None,
+        value: InputFloat = 0.0,
+        factor: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation 'Factor'. Find sample positions on the curve using a factor of its total length"""
+        return cls(
+            mode="FACTOR",
+            curves=curves,
+            value=value,
+            factor=factor,
+            curve_index=curve_index,
+        )
+
+    @classmethod
+    def length(
+        cls,
+        curves: InputGeometry = None,
+        value: InputFloat = 0.0,
+        length: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
+    ) -> "SampleCurve":
+        """Create Sample Curve with operation 'Length'. Find sample positions on the curve using a distance from its beginning"""
+        return cls(
+            mode="LENGTH",
+            curves=curves,
+            value=value,
+            length=length,
+            curve_index=curve_index,
+        )
 
     @classmethod
     def float(
@@ -4721,6 +5296,40 @@ class SetGreasePencilColor(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def stroke(
+        cls,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = True,
+        color: InputColor = None,
+        opacity: InputFloat = 1.0,
+    ) -> "SetGreasePencilColor":
+        """Create Set Grease Pencil Color with operation 'Stroke'. Set the color and opacity for the points of the stroke"""
+        return cls(
+            mode="STROKE",
+            grease_pencil=grease_pencil,
+            selection=selection,
+            color=color,
+            opacity=opacity,
+        )
+
+    @classmethod
+    def fill(
+        cls,
+        grease_pencil: InputGeometry = None,
+        selection: InputBoolean = True,
+        color: InputColor = None,
+        opacity: InputFloat = 1.0,
+    ) -> "SetGreasePencilColor":
+        """Create Set Grease Pencil Color with operation 'Fill'. Set the color and opacity for the stroke fills"""
+        return cls(
+            mode="FILL",
+            grease_pencil=grease_pencil,
+            selection=selection,
+            color=color,
+            opacity=opacity,
+        )
+
     @property
     def i_grease_pencil(self) -> Socket:
         """Input socket: Grease Pencil"""
@@ -4863,6 +5472,40 @@ class SetHandlePositions(NodeBuilder):
         }
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def left(
+        cls,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        offset: InputVector = None,
+    ) -> "SetHandlePositions":
+        """Create Set Handle Positions with operation 'Left'. Use the left handles"""
+        return cls(
+            mode="LEFT",
+            curve=curve,
+            selection=selection,
+            position=position,
+            offset=offset,
+        )
+
+    @classmethod
+    def right(
+        cls,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        offset: InputVector = None,
+    ) -> "SetHandlePositions":
+        """Create Set Handle Positions with operation 'Right'. Use the right handles"""
+        return cls(
+            mode="RIGHT",
+            curve=curve,
+            selection=selection,
+            position=position,
+            offset=offset,
+        )
 
     @property
     def i_curve(self) -> Socket:
@@ -5080,20 +5723,55 @@ class SetMeshNormal(NodeBuilder):
         remove_custom: InputBoolean = True,
         edge_sharpness: InputBoolean = False,
         face_sharpness: InputBoolean = False,
+        custom_normal: InputVector = None,
         *,
         mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
         domain: Literal["POINT", "FACE", "CORNER"] = "POINT",
     ):
         super().__init__()
-        key_args = {
+        self.mode = mode
+        self.domain = domain
+        _all_args = {
             "Mesh": mesh,
             "Remove Custom": remove_custom,
             "Edge Sharpness": edge_sharpness,
             "Face Sharpness": face_sharpness,
+            "Custom Normal": custom_normal,
         }
-        self.mode = mode
-        self.domain = domain
+        _socket_ids = {s.identifier for s in self.node.inputs}
+        key_args = {k: v for k, v in _all_args.items() if k in _socket_ids}
         self._establish_links(**key_args)
+
+    @classmethod
+    def sharpness(
+        cls,
+        mesh: InputGeometry = None,
+        remove_custom: InputBoolean = True,
+        edge_sharpness: InputBoolean = False,
+        face_sharpness: InputBoolean = False,
+    ) -> "SetMeshNormal":
+        """Create Set Mesh Normal with operation 'Sharpness'. Store the sharpness of each face or edge. Similar to the "Shade Smooth" and "Shade Flat" operators."""
+        return cls(
+            mode="SHARPNESS",
+            mesh=mesh,
+            remove_custom=remove_custom,
+            edge_sharpness=edge_sharpness,
+            face_sharpness=face_sharpness,
+        )
+
+    @classmethod
+    def free(
+        cls, mesh: InputGeometry = None, custom_normal: InputVector = None
+    ) -> "SetMeshNormal":
+        """Create Set Mesh Normal with operation 'Free'. Store custom normals as simple vectors in the local space of the mesh. Values are not necessarily updated automatically later on as the mesh is deformed."""
+        return cls(mode="FREE", mesh=mesh, custom_normal=custom_normal)
+
+    @classmethod
+    def tangent_space(
+        cls, mesh: InputGeometry = None, custom_normal: InputVector = None
+    ) -> "SetMeshNormal":
+        """Create Set Mesh Normal with operation 'Tangent Space'. Store normals in a deformation dependent custom transformation space. This method is slower, but can be better when subsequent operations change the mesh without handling normals specifically."""
+        return cls(mode="TANGENT_SPACE", mesh=mesh, custom_normal=custom_normal)
 
     @classmethod
     def point(
@@ -5329,6 +6007,20 @@ class SetSelection(NodeBuilder):
         """Create Set Selection with operation 'Spline'. Attribute on spline"""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
+    @classmethod
+    def boolean(
+        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetSelection":
+        """Create Set Selection with operation 'Boolean'. Store true or false selection values in edit mode"""
+        return cls(selection_type="BOOLEAN", geometry=geometry, selection=selection)
+
+    @classmethod
+    def float(
+        cls, geometry: InputGeometry = None, selection: InputFloat = 1.0
+    ) -> "SetSelection":
+        """Create Set Selection with operation 'Float'. Store floating point selection values. For mesh geometry, stored inverted as the sculpt mode mask"""
+        return cls(selection_type="FLOAT", geometry=geometry, selection=selection)
+
     @property
     def i_geometry(self) -> Socket:
         """Input socket: Geometry"""
@@ -5548,6 +6240,34 @@ class SetSplineType(NodeBuilder):
         key_args = {"Curve": curve, "Selection": selection}
         self.spline_type = spline_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def catmull_rom(
+        cls, curve: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetSplineType":
+        """Create Set Spline Type with operation 'Catmull Rom'."""
+        return cls(spline_type="CATMULL_ROM", curve=curve, selection=selection)
+
+    @classmethod
+    def poly(
+        cls, curve: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetSplineType":
+        """Create Set Spline Type with operation 'Poly'."""
+        return cls(spline_type="POLY", curve=curve, selection=selection)
+
+    @classmethod
+    def bézier(
+        cls, curve: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetSplineType":
+        """Create Set Spline Type with operation 'Bézier'."""
+        return cls(spline_type="BEZIER", curve=curve, selection=selection)
+
+    @classmethod
+    def nurbs(
+        cls, curve: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetSplineType":
+        """Create Set Spline Type with operation 'NURBS'."""
+        return cls(spline_type="NURBS", curve=curve, selection=selection)
 
     @property
     def i_curve(self) -> Socket:
@@ -6520,6 +7240,36 @@ class TrimCurve(NodeBuilder):
         }
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def factor(
+        cls,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        start: InputFloat = 0.0,
+        end: InputFloat = 1.0,
+    ) -> "TrimCurve":
+        """Create Trim Curve with operation 'Factor'. Find the endpoint positions using a factor of each spline's length"""
+        return cls(
+            mode="FACTOR", curve=curve, selection=selection, start=start, end=end
+        )
+
+    @classmethod
+    def length(
+        cls,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        start_001: InputFloat = 0.0,
+        end_001: InputFloat = 1.0,
+    ) -> "TrimCurve":
+        """Create Trim Curve with operation 'Length'. Find the endpoint positions using a length from the start of each spline"""
+        return cls(
+            mode="LENGTH",
+            curve=curve,
+            selection=selection,
+            start_001=start_001,
+            end_001=end_001,
+        )
 
     @property
     def i_curve(self) -> Socket:

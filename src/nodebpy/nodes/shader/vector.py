@@ -169,6 +169,60 @@ class Mapping(NodeBuilder):
         self.vector_type = vector_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def point(
+        cls,
+        vector: InputVector = None,
+        location: InputVector = None,
+        rotation: InputVector = None,
+        scale: InputVector = None,
+    ) -> "Mapping":
+        """Create Mapping with operation 'Point'. Transform a point"""
+        return cls(
+            vector_type="POINT",
+            vector=vector,
+            location=location,
+            rotation=rotation,
+            scale=scale,
+        )
+
+    @classmethod
+    def texture(
+        cls,
+        vector: InputVector = None,
+        location: InputVector = None,
+        rotation: InputVector = None,
+        scale: InputVector = None,
+    ) -> "Mapping":
+        """Create Mapping with operation 'Texture'. Transform a texture by inverse mapping the texture coordinate"""
+        return cls(
+            vector_type="TEXTURE",
+            vector=vector,
+            location=location,
+            rotation=rotation,
+            scale=scale,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        vector: InputVector = None,
+        rotation: InputVector = None,
+        scale: InputVector = None,
+    ) -> "Mapping":
+        """Create Mapping with operation 'Vector'. Transform a direction vector (Location is ignored)"""
+        return cls(vector_type="VECTOR", vector=vector, rotation=rotation, scale=scale)
+
+    @classmethod
+    def normal(
+        cls,
+        vector: InputVector = None,
+        rotation: InputVector = None,
+        scale: InputVector = None,
+    ) -> "Mapping":
+        """Create Mapping with operation 'Normal'. Transform a unit normal vector (Location is ignored)"""
+        return cls(vector_type="NORMAL", vector=vector, rotation=rotation, scale=scale)
+
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
@@ -366,6 +420,21 @@ class VectorTransform(NodeBuilder):
         self.convert_from = convert_from
         self.convert_to = convert_to
         self._establish_links(**key_args)
+
+    @classmethod
+    def point(cls, vector: InputVector = None) -> "VectorTransform":
+        """Create Vector Transform with operation 'Point'. Transform a point"""
+        return cls(vector_type="POINT", vector=vector)
+
+    @classmethod
+    def vector(cls, vector: InputVector = None) -> "VectorTransform":
+        """Create Vector Transform with operation 'Vector'. Transform a direction vector"""
+        return cls(vector_type="VECTOR", vector=vector)
+
+    @classmethod
+    def normal(cls, vector: InputVector = None) -> "VectorTransform":
+        """Create Vector Transform with operation 'Normal'. Transform a normal vector with unit length"""
+        return cls(vector_type="NORMAL", vector=vector)
 
     @property
     def i_vector(self) -> Socket:

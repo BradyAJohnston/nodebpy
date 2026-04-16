@@ -427,6 +427,20 @@ class Clamp(NodeBuilder):
         self.clamp_type = clamp_type
         self._establish_links(**key_args)
 
+    @classmethod
+    def min_max(
+        cls, value: InputFloat = 1.0, min: InputFloat = 0.0, max: InputFloat = 1.0
+    ) -> "Clamp":
+        """Create Clamp with operation 'Min Max'. Constrain value between min and max"""
+        return cls(clamp_type="MINMAX", value=value, min=min, max=max)
+
+    @classmethod
+    def range(
+        cls, value: InputFloat = 1.0, min: InputFloat = 0.0, max: InputFloat = 1.0
+    ) -> "Clamp":
+        """Create Clamp with operation 'Range'. Constrain value between min and max, swapping arguments when min > max"""
+        return cls(clamp_type="RANGE", value=value, min=min, max=max)
+
     @property
     def i_value(self) -> Socket:
         """Input socket: Value"""
@@ -535,6 +549,39 @@ class CombineColor(NodeBuilder):
         key_args = {"Red": red, "Green": green, "Blue": blue, "Alpha": alpha}
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def rgb(
+        cls,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
+        return cls(mode="RGB", red=red, green=green, blue=blue, alpha=alpha)
+
+    @classmethod
+    def hsv(
+        cls,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
+        return cls(mode="HSV", red=red, green=green, blue=blue, alpha=alpha)
+
+    @classmethod
+    def hsl(
+        cls,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
+        return cls(mode="HSL", red=red, green=green, blue=blue, alpha=alpha)
 
     @property
     def i_red(self) -> Socket:
@@ -1416,6 +1463,84 @@ class MapRange(NodeBuilder):
         self.interpolation_type = interpolation_type
         self.data_type = data_type
         self._establish_links(**key_args)
+
+    @classmethod
+    def linear(
+        cls,
+        value: InputFloat = 1.0,
+        from_min: InputFloat = 0.0,
+        from_max: InputFloat = 1.0,
+        to_min: InputFloat = 0.0,
+        to_max: InputFloat = 1.0,
+    ) -> "MapRange":
+        """Create Map Range with operation 'Linear'. Linear interpolation between From Min and From Max values"""
+        return cls(
+            interpolation_type="LINEAR",
+            value=value,
+            from_min=from_min,
+            from_max=from_max,
+            to_min=to_min,
+            to_max=to_max,
+        )
+
+    @classmethod
+    def stepped_linear(
+        cls,
+        value: InputFloat = 1.0,
+        from_min: InputFloat = 0.0,
+        from_max: InputFloat = 1.0,
+        to_min: InputFloat = 0.0,
+        to_max: InputFloat = 1.0,
+        steps: InputFloat = 4.0,
+    ) -> "MapRange":
+        """Create Map Range with operation 'Stepped Linear'. Stepped linear interpolation between From Min and From Max values"""
+        return cls(
+            interpolation_type="STEPPED",
+            value=value,
+            from_min=from_min,
+            from_max=from_max,
+            to_min=to_min,
+            to_max=to_max,
+            steps=steps,
+        )
+
+    @classmethod
+    def smooth_step(
+        cls,
+        value: InputFloat = 1.0,
+        from_min: InputFloat = 0.0,
+        from_max: InputFloat = 1.0,
+        to_min: InputFloat = 0.0,
+        to_max: InputFloat = 1.0,
+    ) -> "MapRange":
+        """Create Map Range with operation 'Smooth Step'. Smooth Hermite edge interpolation between From Min and From Max values"""
+        return cls(
+            interpolation_type="SMOOTHSTEP",
+            value=value,
+            from_min=from_min,
+            from_max=from_max,
+            to_min=to_min,
+            to_max=to_max,
+        )
+
+    @classmethod
+    def smoother_step(
+        cls,
+        value: InputFloat = 1.0,
+        from_min: InputFloat = 0.0,
+        from_max: InputFloat = 1.0,
+        to_min: InputFloat = 0.0,
+        to_max: InputFloat = 1.0,
+    ) -> "MapRange":
+        """Create Map Range with operation 'Smoother Step'. Smoother Hermite edge interpolation between From Min and From Max values"""
+        return cls(
+            interpolation_type="SMOOTHERSTEP",
+            value=value,
+            from_min=from_min,
+            from_max=from_max,
+            to_min=to_min,
+            to_max=to_max,
+        )
 
     @classmethod
     def float(
@@ -2723,6 +2848,25 @@ class RotateEuler(NodeBuilder):
         self.space = space
         self._establish_links(**key_args)
 
+    @classmethod
+    def axis_angle(
+        cls,
+        rotation: InputVector = None,
+        axis: InputVector = None,
+        angle: InputFloat = 0.0,
+    ) -> "RotateEuler":
+        """Create Rotate Euler with operation 'Axis Angle'. Rotate around an axis by an angle"""
+        return cls(
+            rotation_type="AXIS_ANGLE", rotation=rotation, axis=axis, angle=angle
+        )
+
+    @classmethod
+    def euler(
+        cls, rotation: InputVector = None, rotate_by: InputVector = None
+    ) -> "RotateEuler":
+        """Create Rotate Euler with operation 'Euler'. Rotate around the X, Y, and Z axes"""
+        return cls(rotation_type="EULER", rotation=rotation, rotate_by=rotate_by)
+
     @property
     def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
@@ -2989,6 +3133,21 @@ class SeparateColor(NodeBuilder):
         key_args = {"Color": color}
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def rgb(cls, color: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
+        return cls(mode="RGB", color=color)
+
+    @classmethod
+    def hsv(cls, color: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
+        return cls(mode="HSV", color=color)
+
+    @classmethod
+    def hsl(cls, color: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
+        return cls(mode="HSL", color=color)
 
     @property
     def i_color(self) -> Socket:

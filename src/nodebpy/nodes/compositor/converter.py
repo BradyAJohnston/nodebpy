@@ -93,6 +93,61 @@ class CombineColor(NodeBuilder):
         self.ycc_mode = ycc_mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def rgb(
+        cls,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
+        return cls(mode="RGB", red=red, green=green, blue=blue, alpha=alpha)
+
+    @classmethod
+    def hsv(
+        cls,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
+        return cls(mode="HSV", red=red, green=green, blue=blue, alpha=alpha)
+
+    @classmethod
+    def hsl(
+        cls,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
+        return cls(mode="HSL", red=red, green=green, blue=blue, alpha=alpha)
+
+    @classmethod
+    def ycbcr(
+        cls,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'YCbCr'. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing"""
+        return cls(mode="YCC", red=red, green=green, blue=blue, alpha=alpha)
+
+    @classmethod
+    def yuv(
+        cls,
+        red: InputFloat = 0.0,
+        green: InputFloat = 0.0,
+        blue: InputFloat = 0.0,
+        alpha: InputFloat = 1.0,
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'YUV'. Use YUV (Y - luma, U V - chroma) color processing"""
+        return cls(mode="YUV", red=red, green=green, blue=blue, alpha=alpha)
+
     @property
     def i_red(self) -> Socket:
         """Input socket: Red"""
@@ -847,6 +902,31 @@ class SeparateColor(NodeBuilder):
         self.mode = mode
         self.ycc_mode = ycc_mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def rgb(cls, image: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
+        return cls(mode="RGB", image=image)
+
+    @classmethod
+    def hsv(cls, image: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
+        return cls(mode="HSV", image=image)
+
+    @classmethod
+    def hsl(cls, image: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
+        return cls(mode="HSL", image=image)
+
+    @classmethod
+    def ycbcr(cls, image: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'YCbCr'. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing"""
+        return cls(mode="YCC", image=image)
+
+    @classmethod
+    def yuv(cls, image: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'YUV'. Use YUV (Y - luma, U V - chroma) color processing"""
+        return cls(mode="YUV", image=image)
 
     @property
     def i_image(self) -> Socket:

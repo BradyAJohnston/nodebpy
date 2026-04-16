@@ -33,7 +33,7 @@ GEO_NODE_NAMES = (
 
 def normalize_name(name: str) -> str:
     """Convert 'Geometry' or 'My Socket' to 'geometry' or 'my_socket'."""
-    return name.lower().replace(" ", "_")
+    return name.lower().replace(" ", "_").replace("é", "e")
 
 
 def denormalize_name(attr_name: str) -> str:

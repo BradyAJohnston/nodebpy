@@ -82,6 +82,20 @@ class IesTexture(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def internal(
+        cls, vector: InputVector = None, strength: InputFloat = 1.0
+    ) -> "IesTexture":
+        """Create IES Texture with operation 'Internal'. Use internal text data-block"""
+        return cls(mode="INTERNAL", vector=vector, strength=strength)
+
+    @classmethod
+    def external(
+        cls, vector: InputVector = None, strength: InputFloat = 1.0
+    ) -> "IesTexture":
+        """Create IES Texture with operation 'External'. Use external .ies file"""
+        return cls(mode="EXTERNAL", vector=vector, strength=strength)
+
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
@@ -231,6 +245,26 @@ class SkyTexture(NodeBuilder):
         self.turbidity = turbidity
         self.ground_albedo = ground_albedo
         self._establish_links(**key_args)
+
+    @classmethod
+    def single_scattering(cls) -> "SkyTexture":
+        """Create Sky Texture with operation 'Single Scattering'. Single scattering sky model"""
+        return cls(sky_type="SINGLE_SCATTERING")
+
+    @classmethod
+    def multiple_scattering(cls) -> "SkyTexture":
+        """Create Sky Texture with operation 'Multiple Scattering'. Multiple scattering sky model (more accurate)"""
+        return cls(sky_type="MULTIPLE_SCATTERING")
+
+    @classmethod
+    def preetham(cls, vector: InputVector = None) -> "SkyTexture":
+        """Create Sky Texture with operation 'Preetham'. Preetham 1999 (Legacy)"""
+        return cls(sky_type="PREETHAM", vector=vector)
+
+    @classmethod
+    def hosek_wilkie(cls, vector: InputVector = None) -> "SkyTexture":
+        """Create Sky Texture with operation 'Hosek / Wilkie'. Hosek / Wilkie 2012 (Legacy)"""
+        return cls(sky_type="HOSEK_WILKIE", vector=vector)
 
     @property
     def i_vector(self) -> Socket:

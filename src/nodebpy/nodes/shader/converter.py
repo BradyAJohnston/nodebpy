@@ -44,6 +44,27 @@ class CombineColor(NodeBuilder):
         self.mode = mode
         self._establish_links(**key_args)
 
+    @classmethod
+    def rgb(
+        cls, red: InputFloat = 0.0, green: InputFloat = 0.0, blue: InputFloat = 0.0
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
+        return cls(mode="RGB", red=red, green=green, blue=blue)
+
+    @classmethod
+    def hsv(
+        cls, red: InputFloat = 0.0, green: InputFloat = 0.0, blue: InputFloat = 0.0
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
+        return cls(mode="HSV", red=red, green=green, blue=blue)
+
+    @classmethod
+    def hsl(
+        cls, red: InputFloat = 0.0, green: InputFloat = 0.0, blue: InputFloat = 0.0
+    ) -> "CombineColor":
+        """Create Combine Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
+        return cls(mode="HSL", red=red, green=green, blue=blue)
+
     @property
     def i_red(self) -> Socket:
         """Input socket: Red"""
@@ -418,6 +439,21 @@ class SeparateColor(NodeBuilder):
         key_args = {"Color": color}
         self.mode = mode
         self._establish_links(**key_args)
+
+    @classmethod
+    def rgb(cls, color: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
+        return cls(mode="RGB", color=color)
+
+    @classmethod
+    def hsv(cls, color: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
+        return cls(mode="HSV", color=color)
+
+    @classmethod
+    def hsl(cls, color: InputColor = None) -> "SeparateColor":
+        """Create Separate Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
+        return cls(mode="HSL", color=color)
 
     @property
     def i_color(self) -> Socket:
