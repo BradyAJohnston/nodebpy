@@ -221,14 +221,14 @@ class LinkingMixin:
 
         possible_combos = []
         if hasattr(source, "outputs"):
-            outputs = source.outputs.available  # type: ignore[union-attr]
+            outputs = source.outputs._available  # type: ignore[union-attr]
         elif isinstance(source, NodeSocket):
             outputs = [source]
         else:
             raise TypeError(f"Cannot get outputs from {type(source)}")
 
         if hasattr(target, "inputs"):
-            inputs = target.inputs.available  # type: ignore[union-attr]
+            inputs = target.inputs._available  # type: ignore[union-attr]
         else:
             inputs = [target]
 

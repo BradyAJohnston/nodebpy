@@ -51,11 +51,11 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
 
     @property
     def outputs(self) -> SocketAccessor:
-        return SocketAccessor([self.socket], "output", self.node)
+        return SocketAccessor([self.socket], "output")
 
     @property
     def inputs(self) -> SocketAccessor:
-        return SocketAccessor([self.socket], "input", self.node)
+        return SocketAccessor([self.socket], "input")
 
     @property
     def type(self) -> SOCKET_TYPES:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Literal
 
 import bpy
 from bpy.types import NodeSocket
@@ -23,13 +23,11 @@ class SocketAccessor:
 
     def __init__(
         self,
-        sockets: Any,
+        collection: bpy.types.NodeInputs | bpy.types.NodeOutputs,
         direction: Literal["input", "output"],
-        node: bpy.types.Node,
     ):
-        self._sockets = sockets
         self._direction = direction
-        self._node = node
+        self._collection = collection
 
     def index(self, key: str | int) -> int:
         """Find socket index by identifier, falling back to name.
@@ -40,10 +38,10 @@ class SocketAccessor:
         """
         if isinstance(key, int):
             return key
-        ids = [s.identifier for s in self._sockets]
+        ids = [s.identifier for s in self._collection]
         if key in ids:
             return ids.index(key)
-        names = [s.name for s in self._sockets]
+        names = [s.name for s in self._collection]
         for key in (key, denormalize_name(key)):
             if key in names:
                 if names.count(key) > 1:
@@ -60,11 +58,22 @@ class SocketAccessor:
 
     def get(self, key: str | int) -> "Socket":
         """Get a Socket for a socket by identifier, name, or index."""
-        return _get_socket_linker(self._sockets[self.index(key)])
+        return _get_socket_linker(self._collection[self.index(key)])
 
     def __getitem__(self, key: str | int) -> "Socket":
         """Access by identifier, name, or integer index."""
         return self.get(key)
+
+    @property
+    def _node(self) -> bpy.types.Node:
+        """The node this accessor is associated with."""
+        if isinstance(self._collection, list):
+            return self._collection[0].node
+        # bpy NodeInputs/NodeOutputs.id_data returns the NodeTree (top-level ID),
+        # not the Node. Retrieve the node via the first socket instead.
+        for s in self._collection:
+            return s.node
+        return self._collection.id_data  # empty collection fallback
 
     @property
     def _ignore_visibility(self) -> bool:
@@ -92,14 +101,14 @@ class SocketAccessor:
         if self._direction == "input":
             return [
                 s
-                for s in self._sockets
+                for s in self._collection
                 if _allow_innactive_sockets(self._node)
                 or (not s.is_inactive and s.is_icon_visible)
             ]
-        return [s for s in self._sockets if s.is_icon_visible]
+        return [s for s in self._collection if s.is_icon_visible]
 
     @property
-    def available(self) -> list[NodeSocket]:
+    def _available(self) -> list[NodeSocket]:
         """Sockets eligible for automatic linking.
 
         Respects ``ignore_visibility`` on the active ``TreeBuilder`` context, so
@@ -109,14 +118,14 @@ class SocketAccessor:
         if self._direction == "input":
             return [
                 s
-                for s in self._sockets
+                for s in self._collection
                 if (
                     self._ignore_visibility or (not s.is_inactive and s.is_icon_visible)
                 )
                 and (not s.links or s.is_multi_input)
             ]
         return [
-            s for s in self._sockets if self._ignore_visibility or s.is_icon_visible
+            s for s in self._collection if self._ignore_visibility or s.is_icon_visible
         ]
 
     def best_match(self, socket_type: str) -> NodeSocket:
@@ -124,7 +133,7 @@ class SocketAccessor:
         from ..types import SOCKET_COMPATIBILITY
 
         compatible = SOCKET_COMPATIBILITY.get(socket_type, ())
-        possible = [s for s in self.available if s.type in compatible]
+        possible = [s for s in self._available if s.type in compatible]
         if possible:
             possible.sort(key=lambda x: compatible.index(x.type))
             return possible[0]
@@ -133,7 +142,7 @@ class SocketAccessor:
             f"{socket_type} on {self._node.name}"
         )
 
-    def values(self) -> "list[Socket]":
+    def _values(self) -> "list[Socket]":
         """All visible sockets as Sockets.
 
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
@@ -141,7 +150,7 @@ class SocketAccessor:
         """
         return [_get_socket_linker(s) for s in self._visible_sockets()]
 
-    def items(self) -> "list[tuple[str, Socket]]":
+    def _items(self) -> "list[tuple[str, Socket]]":
         """All visible sockets as (name, Socket) pairs.
 
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
@@ -149,13 +158,13 @@ class SocketAccessor:
         """
         return [(s.name, _get_socket_linker(s)) for s in self._visible_sockets()]
 
-    def keys(self) -> list[str]:
+    def _keys(self) -> list[str]:
         """All visible socket names."""
-        return [name for name, _ in self.items()]
+        return [name for name, _ in self._items()]
 
     def __len__(self) -> int:
-        return len(self.items())
+        return len(self._items())
 
     def __iter__(self):
         """Iterate over socket names (enables ``**node.outputs`` unpacking)."""
-        return iter(self.keys())
+        return iter(self._keys())

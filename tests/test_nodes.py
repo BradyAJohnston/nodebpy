@@ -343,7 +343,7 @@ def test_menu_switch():
                 name,
                 x.socket.default_value if hasattr(x.socket, "default_value") else None,
             )
-            for name, x in switch.inputs.items()
+            for name, x in switch.inputs._items()
         ]
     )
     assert switch.inputs["Input_5"].socket.default_value == 5

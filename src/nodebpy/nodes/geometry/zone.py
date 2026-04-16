@@ -298,9 +298,7 @@ class ForEachGeometryElementInput(BaseZoneInput):
         new_output_idx = [o.identifier for o in self.node.outputs].index(
             "__extend__"
         ) - 1
-        print(f"{new_output_idx=}")
         output = self.node.outputs[new_output_idx]
-        print(f"{output=} {output.type=}")
 
         return SocketLinker(output)
 

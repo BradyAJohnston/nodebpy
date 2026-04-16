@@ -122,11 +122,11 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
     @property
     def outputs(self) -> SocketAccessor:
-        return SocketAccessor(self.node.outputs, "output", self.node)
+        return SocketAccessor(self.node.outputs, "output")
 
     @property
     def inputs(self) -> SocketAccessor:
-        return SocketAccessor(self.node.inputs, "input", self.node)
+        return SocketAccessor(self.node.inputs, "input")
 
 
 class DynamicInputsMixin:
@@ -167,7 +167,7 @@ class DynamicInputsMixin:
             items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
-            socket_source, type = self._match_compatible_data(source.outputs.available)
+            socket_source, type = self._match_compatible_data(source.outputs._available)
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)

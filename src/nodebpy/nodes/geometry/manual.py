@@ -1016,7 +1016,7 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
             name: self.node.outputs[name] for name in self._add_inputs(*args, **kwargs)
         }
 
-        return [SocketLinker(x) for x in outputs.values()]
+        return [SocketLinker(x) for x in outputs._values()]
 
     @classmethod
     def float(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):

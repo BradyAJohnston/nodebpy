@@ -714,19 +714,19 @@ def test_add_all_nodes(module, tree_type, class_names):
 
 def test_iter_outputs():
     with TreeBuilder("IndexSwitch"):
-        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).outputs.values())
+        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).outputs._values())
 
     assert len(switch.node.outputs) == 1
     # 1 input for the index, another for the dynamic socket
     assert len(switch.node.inputs) == 5
 
     with TreeBuilder("MultipleOutputs") as tree:
-        for name, output in g.SeparateXYZ(g.Position()).outputs.items():
+        for name, output in g.SeparateXYZ(g.Position()).outputs._items():
             with tree.outputs:
                 _ = output >> socket.SocketFloat(name)
 
     with TreeBuilder("MenuSwitch") as tree:
-        switch = g.MenuSwitch.float(**g.SeparateXYZ(g.Position()).outputs)
+        switch = g.MenuSwitch.float(**dict(g.SeparateXYZ().outputs._items()))
 
     assert len(switch.inputs) == 5
 
@@ -808,11 +808,11 @@ class TestSocketAccessor:
 
         with TreeBuilder("IterTest"):
             pos = g.Position()
-            _assert_equal(dict(**pos.outputs), {"Position": pos.o_position})
+            _assert_equal(dict(pos.outputs._items()), {"Position": pos.o_position})
 
             setpos = g.SetPosition()
             _assert_equal(
-                dict(**setpos.inputs),
+                dict(setpos.inputs._items()),
                 {
                     "Geometry": setpos.i_geometry,
                     "Selection": setpos.i_selection,
@@ -862,13 +862,13 @@ class TestSocketAccessor:
         """
         with TreeBuilder("NormalVis", arrange=None) as _:
             node_normal = g.SeparateXYZ(g.Position())
-            normal_values = node_normal.outputs.values()
-            normal_keys = node_normal.outputs.keys()
+            normal_values = node_normal.outputs._values()
+            normal_keys = node_normal.outputs._keys()
 
         with TreeBuilder("IgnoreVis", arrange=None, ignore_visibility=True) as _:
             node_ignore = g.SeparateXYZ(g.Position())
-            ignore_values = node_ignore.outputs.values()
-            ignore_keys = node_ignore.outputs.keys()
+            ignore_values = node_ignore.outputs._values()
+            ignore_keys = node_ignore.outputs._keys()
 
         # SeparateXYZ has three visible outputs (X, Y, Z) regardless of the flag.
         assert len(normal_values) == len(ignore_values)
@@ -881,11 +881,11 @@ class TestSocketAccessor:
         # accessor should expose more (or equal) sockets than without it.
         with TreeBuilder("NormalAvail", arrange=None):
             mix = g.Mix()
-            normal_available = len(mix.inputs.available)
+            normal_available = len(mix.inputs._available)
 
         with TreeBuilder("IgnoreAvail", arrange=None, ignore_visibility=True):
             mix = g.Mix()
-            ignore_available = len(mix.inputs.available)
+            ignore_available = len(mix.inputs._available)
 
         assert ignore_available >= normal_available
 
@@ -897,14 +897,14 @@ class TestSocketAccessor:
             def __init__(self, identifier, name):
                 self.identifier = identifier
                 self.name = name
+                self.node = g.Value().node
 
         with TreeBuilder("AmbiguousName", arrange=None):
-            pos = g.Position()
             fake_sockets = [
                 _FakeSocket("unique_id_1", "Value"),
                 _FakeSocket("unique_id_2", "Value"),  # same name, different identifier
             ]
-            accessor = SocketAccessor(fake_sockets, "input", pos.node)
+            accessor = SocketAccessor(fake_sockets, "input")
 
             # Unique identifier lookup is fine.
             assert accessor.index("unique_id_1") == 0
