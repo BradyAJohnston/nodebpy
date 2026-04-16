@@ -117,7 +117,7 @@ class SimulationInput(BaseSimulationZone, BaseZoneInput):
     @property
     def o_delta_time(self) -> SocketLinker:
         """Output socket: Delta Time"""
-        return self.outputs.get("Delta Time")
+        return self.outputs._get("Delta Time")
 
 
 class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
@@ -129,7 +129,7 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
     @property
     def i_skip(self) -> SocketLinker:
         """Input socket: Skip simluation frame"""
-        return self.inputs.get("Skip")
+        return self.inputs._get("Skip")
 
 
 class SimulationZone:
@@ -194,7 +194,7 @@ class RepeatInput(BaseRepeatZone, BaseZoneInput):
     @property
     def o_iteration(self) -> SocketLinker:
         """Output socket: Iteration"""
-        return self.outputs.get("Iteration")
+        return self.outputs._get("Iteration")
 
 
 class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
@@ -309,17 +309,17 @@ class ForEachGeometryElementInput(BaseZoneInput):
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
-        return self.inputs.get("Geometry")
+        return self.inputs._get("Geometry")
 
     @property
     def i_selection(self) -> SocketLinker:
         """Input socket: Selection"""
-        return self.inputs.get("Selection")
+        return self.inputs._get("Selection")
 
     @property
     def o_index(self) -> SocketLinker:
         """Output socket: Index"""
-        return self.outputs.get("Index")
+        return self.outputs._get("Index")
 
 
 class ForEachGeometryElementOutput(BaseZoneOutput):
@@ -398,17 +398,17 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     @property
     def i_geometry(self) -> SocketLinker:
         """Input socket: Geometry"""
-        return self.inputs.get("Generation_0")
+        return self.inputs._get("Generation_0")
 
     @property
     def o_geometry(self) -> SocketLinker:
         """Output socket: Geometry"""
-        return self.outputs.get("Geometry")
+        return self.outputs._get("Geometry")
 
     @property
     def o_generation(self) -> SocketLinker:
         """Output socket: Geometry"""
-        return self.outputs.get("Generation_0")
+        return self.outputs._get("Generation_0")
 
     @property
     def domain(

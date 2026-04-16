@@ -88,7 +88,7 @@ class Viewer(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def ui_shortcut(self) -> int:

@@ -46,7 +46,7 @@ class ClosureOutput(NodeBuilder):
     @property
     def o_closure(self) -> ClosureSocket:
         """Output socket: Closure"""
-        return self.outputs.get("Closure")
+        return self.outputs._get("Closure")
 
     @property
     def active_input_index(self) -> int:

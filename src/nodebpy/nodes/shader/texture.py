@@ -36,12 +36,12 @@ class EnvironmentTexture(NodeBuilder):
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
-        return self.inputs.get("Vector")
+        return self.inputs._get("Vector")
 
     @property
     def o_color(self) -> ColorSocket:
         """Output socket: Color"""
-        return self.outputs.get("Color")
+        return self.outputs._get("Color")
 
     @property
     def projection(self) -> Literal["EQUIRECTANGULAR", "MIRROR_BALL"]:
@@ -99,17 +99,17 @@ class IesTexture(NodeBuilder):
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
-        return self.inputs.get("Vector")
+        return self.inputs._get("Vector")
 
     @property
     def i_strength(self) -> Socket:
         """Input socket: Strength"""
-        return self.inputs.get("Strength")
+        return self.inputs._get("Strength")
 
     @property
     def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
-        return self.outputs.get("Fac")
+        return self.outputs._get("Fac")
 
     @property
     def filepath(self) -> str:
@@ -156,17 +156,17 @@ class ImageTexture(NodeBuilder):
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
-        return self.inputs.get("Vector")
+        return self.inputs._get("Vector")
 
     @property
     def o_color(self) -> ColorSocket:
         """Output socket: Color"""
-        return self.outputs.get("Color")
+        return self.outputs._get("Color")
 
     @property
     def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
-        return self.outputs.get("Alpha")
+        return self.outputs._get("Alpha")
 
     @property
     def projection(self) -> Literal["FLAT", "BOX", "SPHERE", "TUBE"]:
@@ -269,12 +269,12 @@ class SkyTexture(NodeBuilder):
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
-        return self.inputs.get("Vector")
+        return self.inputs._get("Vector")
 
     @property
     def o_color(self) -> ColorSocket:
         """Output socket: Color"""
-        return self.outputs.get("Color")
+        return self.outputs._get("Color")
 
     @property
     def sky_type(

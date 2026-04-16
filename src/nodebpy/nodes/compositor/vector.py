@@ -27,9 +27,9 @@ class Normalize(NodeBuilder):
     @property
     def i_value(self) -> Socket:
         """Input socket: Value"""
-        return self.inputs.get("Value")
+        return self.inputs._get("Value")
 
     @property
     def o_value(self) -> FloatSocket:
         """Output socket: Value"""
-        return self.outputs.get("Value")
+        return self.outputs._get("Value")

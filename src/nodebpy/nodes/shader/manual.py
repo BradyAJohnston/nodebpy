@@ -106,22 +106,22 @@ class Attribute(NodeBuilder):
     @property
     def o_color(self) -> ColorSocket:
         """Output socket: Color"""
-        return self.outputs.get("Color")
+        return self.outputs._get("Color")
 
     @property
     def o_vector(self) -> VectorSocket:
         """Output socket: Vector"""
-        return self.outputs.get("Vector")
+        return self.outputs._get("Vector")
 
     @property
     def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
-        return self.outputs.get("Fac")
+        return self.outputs._get("Fac")
 
     @property
     def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
-        return self.outputs.get("Alpha")
+        return self.outputs._get("Alpha")
 
     @property
     def attribute_type(

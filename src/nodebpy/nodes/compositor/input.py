@@ -37,7 +37,7 @@ class Color(NodeBuilder):
     @property
     def o_color(self) -> ColorSocket:
         """Output socket: Color"""
-        return self.outputs.get("Color")
+        return self.outputs._get("Color")
 
 
 class Mask(NodeBuilder):
@@ -75,42 +75,42 @@ class Mask(NodeBuilder):
     @property
     def i_size_source(self) -> Socket:
         """Input socket: Size Source"""
-        return self.inputs.get("Size Source")
+        return self.inputs._get("Size Source")
 
     @property
     def i_size_x(self) -> Socket:
         """Input socket: Size X"""
-        return self.inputs.get("Size X")
+        return self.inputs._get("Size X")
 
     @property
     def i_size_y(self) -> Socket:
         """Input socket: Size Y"""
-        return self.inputs.get("Size Y")
+        return self.inputs._get("Size Y")
 
     @property
     def i_feather(self) -> Socket:
         """Input socket: Feather"""
-        return self.inputs.get("Feather")
+        return self.inputs._get("Feather")
 
     @property
     def i_motion_blur(self) -> Socket:
         """Input socket: Motion Blur"""
-        return self.inputs.get("Motion Blur")
+        return self.inputs._get("Motion Blur")
 
     @property
     def i_motion_blur_samples(self) -> Socket:
         """Input socket: Samples"""
-        return self.inputs.get("Motion Blur Samples")
+        return self.inputs._get("Motion Blur Samples")
 
     @property
     def i_motion_blur_shutter(self) -> Socket:
         """Input socket: Shutter"""
-        return self.inputs.get("Motion Blur Shutter")
+        return self.inputs._get("Motion Blur Shutter")
 
     @property
     def o_mask(self) -> FloatSocket:
         """Output socket: Mask"""
-        return self.outputs.get("Mask")
+        return self.outputs._get("Mask")
 
 
 class MovieClip(NodeBuilder):
@@ -130,32 +130,32 @@ class MovieClip(NodeBuilder):
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
     @property
     def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
-        return self.outputs.get("Alpha")
+        return self.outputs._get("Alpha")
 
     @property
     def o_offset_x(self) -> FloatSocket:
         """Output socket: Offset X"""
-        return self.outputs.get("Offset X")
+        return self.outputs._get("Offset X")
 
     @property
     def o_offset_y(self) -> FloatSocket:
         """Output socket: Offset Y"""
-        return self.outputs.get("Offset Y")
+        return self.outputs._get("Offset Y")
 
     @property
     def o_scale(self) -> FloatSocket:
         """Output socket: Scale"""
-        return self.outputs.get("Scale")
+        return self.outputs._get("Scale")
 
     @property
     def o_angle(self) -> FloatSocket:
         """Output socket: Angle"""
-        return self.outputs.get("Angle")
+        return self.outputs._get("Angle")
 
 
 class Normal(NodeBuilder):
@@ -175,7 +175,7 @@ class Normal(NodeBuilder):
     @property
     def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
-        return self.outputs.get("Normal")
+        return self.outputs._get("Normal")
 
 
 class RenderLayers(NodeBuilder):
@@ -195,157 +195,157 @@ class RenderLayers(NodeBuilder):
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
     @property
     def o_alpha(self) -> FloatSocket:
         """Output socket: Alpha"""
-        return self.outputs.get("Alpha")
+        return self.outputs._get("Alpha")
 
     @property
     def o_depth(self) -> FloatSocket:
         """Output socket: Depth"""
-        return self.outputs.get("Depth")
+        return self.outputs._get("Depth")
 
     @property
     def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
-        return self.outputs.get("Normal")
+        return self.outputs._get("Normal")
 
     @property
     def o_uv(self) -> VectorSocket:
         """Output socket: UV"""
-        return self.outputs.get("UV")
+        return self.outputs._get("UV")
 
     @property
     def o_vector(self) -> VectorSocket:
         """Output socket: Vector"""
-        return self.outputs.get("Vector")
+        return self.outputs._get("Vector")
 
     @property
     def o_position(self) -> VectorSocket:
         """Output socket: Position"""
-        return self.outputs.get("Position")
+        return self.outputs._get("Position")
 
     @property
     def o_deprecated(self) -> ColorSocket:
         """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated")
+        return self.outputs._get("Deprecated")
 
     @property
     def o_deprecated_001(self) -> ColorSocket:
         """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated_001")
+        return self.outputs._get("Deprecated_001")
 
     @property
     def o_shadow(self) -> ColorSocket:
         """Output socket: Shadow"""
-        return self.outputs.get("Shadow")
+        return self.outputs._get("Shadow")
 
     @property
     def o_ambient_occlusion(self) -> ColorSocket:
         """Output socket: Ambient Occlusion"""
-        return self.outputs.get("Ambient Occlusion")
+        return self.outputs._get("Ambient Occlusion")
 
     @property
     def o_deprecated_002(self) -> ColorSocket:
         """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated_002")
+        return self.outputs._get("Deprecated_002")
 
     @property
     def o_deprecated_003(self) -> ColorSocket:
         """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated_003")
+        return self.outputs._get("Deprecated_003")
 
     @property
     def o_deprecated_004(self) -> ColorSocket:
         """Output socket: Deprecated"""
-        return self.outputs.get("Deprecated_004")
+        return self.outputs._get("Deprecated_004")
 
     @property
     def o_object_index(self) -> FloatSocket:
         """Output socket: Object Index"""
-        return self.outputs.get("Object Index")
+        return self.outputs._get("Object Index")
 
     @property
     def o_material_index(self) -> FloatSocket:
         """Output socket: Material Index"""
-        return self.outputs.get("Material Index")
+        return self.outputs._get("Material Index")
 
     @property
     def o_mist(self) -> FloatSocket:
         """Output socket: Mist"""
-        return self.outputs.get("Mist")
+        return self.outputs._get("Mist")
 
     @property
     def o_emission(self) -> ColorSocket:
         """Output socket: Emission"""
-        return self.outputs.get("Emission")
+        return self.outputs._get("Emission")
 
     @property
     def o_environment(self) -> ColorSocket:
         """Output socket: Environment"""
-        return self.outputs.get("Environment")
+        return self.outputs._get("Environment")
 
     @property
     def o_diffuse_direct(self) -> ColorSocket:
         """Output socket: Diffuse Direct"""
-        return self.outputs.get("Diffuse Direct")
+        return self.outputs._get("Diffuse Direct")
 
     @property
     def o_diffuse_indirect(self) -> ColorSocket:
         """Output socket: Diffuse Indirect"""
-        return self.outputs.get("Diffuse Indirect")
+        return self.outputs._get("Diffuse Indirect")
 
     @property
     def o_diffuse_color(self) -> ColorSocket:
         """Output socket: Diffuse Color"""
-        return self.outputs.get("Diffuse Color")
+        return self.outputs._get("Diffuse Color")
 
     @property
     def o_glossy_direct(self) -> ColorSocket:
         """Output socket: Glossy Direct"""
-        return self.outputs.get("Glossy Direct")
+        return self.outputs._get("Glossy Direct")
 
     @property
     def o_glossy_indirect(self) -> ColorSocket:
         """Output socket: Glossy Indirect"""
-        return self.outputs.get("Glossy Indirect")
+        return self.outputs._get("Glossy Indirect")
 
     @property
     def o_glossy_color(self) -> ColorSocket:
         """Output socket: Glossy Color"""
-        return self.outputs.get("Glossy Color")
+        return self.outputs._get("Glossy Color")
 
     @property
     def o_transmission_direct(self) -> ColorSocket:
         """Output socket: Transmission Direct"""
-        return self.outputs.get("Transmission Direct")
+        return self.outputs._get("Transmission Direct")
 
     @property
     def o_transmission_indirect(self) -> ColorSocket:
         """Output socket: Transmission Indirect"""
-        return self.outputs.get("Transmission Indirect")
+        return self.outputs._get("Transmission Indirect")
 
     @property
     def o_transmission_color(self) -> ColorSocket:
         """Output socket: Transmission Color"""
-        return self.outputs.get("Transmission Color")
+        return self.outputs._get("Transmission Color")
 
     @property
     def o_subsurface_direct(self) -> ColorSocket:
         """Output socket: Subsurface Direct"""
-        return self.outputs.get("Subsurface Direct")
+        return self.outputs._get("Subsurface Direct")
 
     @property
     def o_subsurface_indirect(self) -> ColorSocket:
         """Output socket: Subsurface Indirect"""
-        return self.outputs.get("Subsurface Indirect")
+        return self.outputs._get("Subsurface Indirect")
 
     @property
     def o_subsurface_color(self) -> ColorSocket:
         """Output socket: Subsurface Color"""
-        return self.outputs.get("Subsurface Color")
+        return self.outputs._get("Subsurface Color")
 
     @property
     def layer(self) -> str:
@@ -373,12 +373,12 @@ class SceneTime(NodeBuilder):
     @property
     def o_seconds(self) -> FloatSocket:
         """Output socket: Seconds"""
-        return self.outputs.get("Seconds")
+        return self.outputs._get("Seconds")
 
     @property
     def o_frame(self) -> FloatSocket:
         """Output socket: Frame"""
-        return self.outputs.get("Frame")
+        return self.outputs._get("Frame")
 
 
 class TimeCurve(NodeBuilder):
@@ -402,17 +402,17 @@ class TimeCurve(NodeBuilder):
     @property
     def i_start_frame(self) -> Socket:
         """Input socket: Start Frame"""
-        return self.inputs.get("Start Frame")
+        return self.inputs._get("Start Frame")
 
     @property
     def i_end_frame(self) -> Socket:
         """Input socket: End Frame"""
-        return self.inputs.get("End Frame")
+        return self.inputs._get("End Frame")
 
     @property
     def o_fac(self) -> FloatSocket:
         """Output socket: Factor"""
-        return self.outputs.get("Fac")
+        return self.outputs._get("Fac")
 
 
 class TrackPosition(NodeBuilder):
@@ -443,27 +443,27 @@ class TrackPosition(NodeBuilder):
     @property
     def i_mode(self) -> Socket:
         """Input socket: Mode"""
-        return self.inputs.get("Mode")
+        return self.inputs._get("Mode")
 
     @property
     def i_frame(self) -> Socket:
         """Input socket: Frame"""
-        return self.inputs.get("Frame")
+        return self.inputs._get("Frame")
 
     @property
     def o_x(self) -> FloatSocket:
         """Output socket: X"""
-        return self.outputs.get("X")
+        return self.outputs._get("X")
 
     @property
     def o_y(self) -> FloatSocket:
         """Output socket: Y"""
-        return self.outputs.get("Y")
+        return self.outputs._get("Y")
 
     @property
     def o_speed(self) -> VectorSocket:
         """Output socket: Speed"""
-        return self.outputs.get("Speed")
+        return self.outputs._get("Speed")
 
     @property
     def tracking_object(self) -> str:

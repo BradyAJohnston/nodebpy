@@ -44,27 +44,27 @@ class AntiAliasing(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_threshold(self) -> Socket:
         """Input socket: Threshold"""
-        return self.inputs.get("Threshold")
+        return self.inputs._get("Threshold")
 
     @property
     def i_contrast_limit(self) -> Socket:
         """Input socket: Contrast Limit"""
-        return self.inputs.get("Contrast Limit")
+        return self.inputs._get("Contrast Limit")
 
     @property
     def i_corner_rounding(self) -> Socket:
         """Input socket: Corner Rounding"""
-        return self.inputs.get("Corner Rounding")
+        return self.inputs._get("Corner Rounding")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class BilateralBlur(NodeBuilder):
@@ -95,27 +95,27 @@ class BilateralBlur(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_determinator(self) -> Socket:
         """Input socket: Determinator"""
-        return self.inputs.get("Determinator")
+        return self.inputs._get("Determinator")
 
     @property
     def i_size(self) -> Socket:
         """Input socket: Size"""
-        return self.inputs.get("Size")
+        return self.inputs._get("Size")
 
     @property
     def i_threshold(self) -> Socket:
         """Input socket: Threshold"""
-        return self.inputs.get("Threshold")
+        return self.inputs._get("Threshold")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Blur(NodeBuilder):
@@ -294,32 +294,32 @@ class Blur(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_size(self) -> Socket:
         """Input socket: Size"""
-        return self.inputs.get("Size")
+        return self.inputs._get("Size")
 
     @property
     def i_type(self) -> Socket:
         """Input socket: Type"""
-        return self.inputs.get("Type")
+        return self.inputs._get("Type")
 
     @property
     def i_extend_bounds(self) -> Socket:
         """Input socket: Extend Bounds"""
-        return self.inputs.get("Extend Bounds")
+        return self.inputs._get("Extend Bounds")
 
     @property
     def i_separable(self) -> Socket:
         """Input socket: Separable"""
-        return self.inputs.get("Separable")
+        return self.inputs._get("Separable")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class BokehBlur(NodeBuilder):
@@ -352,32 +352,32 @@ class BokehBlur(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_bokeh(self) -> Socket:
         """Input socket: Bokeh"""
-        return self.inputs.get("Bokeh")
+        return self.inputs._get("Bokeh")
 
     @property
     def i_size(self) -> Socket:
         """Input socket: Size"""
-        return self.inputs.get("Size")
+        return self.inputs._get("Size")
 
     @property
     def i_mask(self) -> Socket:
         """Input socket: Mask"""
-        return self.inputs.get("Mask")
+        return self.inputs._get("Mask")
 
     @property
     def i_extend_bounds(self) -> Socket:
         """Input socket: Extend Bounds"""
-        return self.inputs.get("Extend Bounds")
+        return self.inputs._get("Extend Bounds")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Convolve(NodeBuilder):
@@ -410,32 +410,32 @@ class Convolve(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_kernel_data_type(self) -> Socket:
         """Input socket: Kernel Data Type"""
-        return self.inputs.get("Kernel Data Type")
+        return self.inputs._get("Kernel Data Type")
 
     @property
     def i_float_kernel(self) -> Socket:
         """Input socket: Kernel"""
-        return self.inputs.get("Float Kernel")
+        return self.inputs._get("Float Kernel")
 
     @property
     def i_color_kernel(self) -> Socket:
         """Input socket: Kernel"""
-        return self.inputs.get("Color Kernel")
+        return self.inputs._get("Color Kernel")
 
     @property
     def i_normalize_kernel(self) -> Socket:
         """Input socket: Normalize Kernel"""
-        return self.inputs.get("Normalize Kernel")
+        return self.inputs._get("Normalize Kernel")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Defocus(NodeBuilder):
@@ -473,17 +473,17 @@ class Defocus(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_z(self) -> Socket:
         """Input socket: Z"""
-        return self.inputs.get("Z")
+        return self.inputs._get("Z")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
     @property
     def bokeh(
@@ -576,37 +576,37 @@ class Denoise(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_albedo(self) -> Socket:
         """Input socket: Albedo"""
-        return self.inputs.get("Albedo")
+        return self.inputs._get("Albedo")
 
     @property
     def i_normal(self) -> Socket:
         """Input socket: Normal"""
-        return self.inputs.get("Normal")
+        return self.inputs._get("Normal")
 
     @property
     def i_hdr(self) -> Socket:
         """Input socket: HDR"""
-        return self.inputs.get("HDR")
+        return self.inputs._get("HDR")
 
     @property
     def i_prefilter(self) -> Socket:
         """Input socket: Prefilter"""
-        return self.inputs.get("Prefilter")
+        return self.inputs._get("Prefilter")
 
     @property
     def i_quality(self) -> Socket:
         """Input socket: Quality"""
-        return self.inputs.get("Quality")
+        return self.inputs._get("Quality")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Despeckle(NodeBuilder):
@@ -637,27 +637,27 @@ class Despeckle(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_fac(self) -> Socket:
         """Input socket: Factor"""
-        return self.inputs.get("Fac")
+        return self.inputs._get("Fac")
 
     @property
     def i_color_threshold(self) -> Socket:
         """Input socket: Color Threshold"""
-        return self.inputs.get("Color Threshold")
+        return self.inputs._get("Color Threshold")
 
     @property
     def i_neighbor_threshold(self) -> Socket:
         """Input socket: Neighbor Threshold"""
-        return self.inputs.get("Neighbor Threshold")
+        return self.inputs._get("Neighbor Threshold")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Dilateerode(NodeBuilder):
@@ -727,32 +727,32 @@ class Dilateerode(NodeBuilder):
     @property
     def i_mask(self) -> Socket:
         """Input socket: Mask"""
-        return self.inputs.get("Mask")
+        return self.inputs._get("Mask")
 
     @property
     def i_size(self) -> Socket:
         """Input socket: Size"""
-        return self.inputs.get("Size")
+        return self.inputs._get("Size")
 
     @property
     def i_type(self) -> Socket:
         """Input socket: Type"""
-        return self.inputs.get("Type")
+        return self.inputs._get("Type")
 
     @property
     def i_falloff_size(self) -> Socket:
         """Input socket: Falloff Size"""
-        return self.inputs.get("Falloff Size")
+        return self.inputs._get("Falloff Size")
 
     @property
     def i_falloff(self) -> Socket:
         """Input socket: Falloff"""
-        return self.inputs.get("Falloff")
+        return self.inputs._get("Falloff")
 
     @property
     def o_mask(self) -> FloatSocket:
         """Output socket: Mask"""
-        return self.outputs.get("Mask")
+        return self.outputs._get("Mask")
 
 
 class DirectionalBlur(NodeBuilder):
@@ -789,42 +789,42 @@ class DirectionalBlur(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_samples(self) -> Socket:
         """Input socket: Samples"""
-        return self.inputs.get("Samples")
+        return self.inputs._get("Samples")
 
     @property
     def i_center(self) -> Socket:
         """Input socket: Center"""
-        return self.inputs.get("Center")
+        return self.inputs._get("Center")
 
     @property
     def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
-        return self.inputs.get("Rotation")
+        return self.inputs._get("Rotation")
 
     @property
     def i_scale(self) -> Socket:
         """Input socket: Scale"""
-        return self.inputs.get("Scale")
+        return self.inputs._get("Scale")
 
     @property
     def i_translation_amount(self) -> Socket:
         """Input socket: Amount"""
-        return self.inputs.get("Translation Amount")
+        return self.inputs._get("Translation Amount")
 
     @property
     def i_translation_direction(self) -> Socket:
         """Input socket: Direction"""
-        return self.inputs.get("Translation Direction")
+        return self.inputs._get("Translation Direction")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Filter(NodeBuilder):
@@ -901,22 +901,22 @@ class Filter(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_fac(self) -> Socket:
         """Input socket: Factor"""
-        return self.inputs.get("Fac")
+        return self.inputs._get("Fac")
 
     @property
     def i_type(self) -> Socket:
         """Input socket: Type"""
-        return self.inputs.get("Type")
+        return self.inputs._get("Type")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Glare(NodeBuilder):
@@ -1215,127 +1215,127 @@ class Glare(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_type(self) -> Socket:
         """Input socket: Type"""
-        return self.inputs.get("Type")
+        return self.inputs._get("Type")
 
     @property
     def i_quality(self) -> Socket:
         """Input socket: Quality"""
-        return self.inputs.get("Quality")
+        return self.inputs._get("Quality")
 
     @property
     def i_highlights_threshold(self) -> Socket:
         """Input socket: Threshold"""
-        return self.inputs.get("Highlights Threshold")
+        return self.inputs._get("Highlights Threshold")
 
     @property
     def i_highlights_smoothness(self) -> Socket:
         """Input socket: Smoothness"""
-        return self.inputs.get("Highlights Smoothness")
+        return self.inputs._get("Highlights Smoothness")
 
     @property
     def i_clamp_highlights(self) -> Socket:
         """Input socket: Clamp"""
-        return self.inputs.get("Clamp Highlights")
+        return self.inputs._get("Clamp Highlights")
 
     @property
     def i_maximum_highlights(self) -> Socket:
         """Input socket: Maximum"""
-        return self.inputs.get("Maximum Highlights")
+        return self.inputs._get("Maximum Highlights")
 
     @property
     def i_strength(self) -> Socket:
         """Input socket: Strength"""
-        return self.inputs.get("Strength")
+        return self.inputs._get("Strength")
 
     @property
     def i_saturation(self) -> Socket:
         """Input socket: Saturation"""
-        return self.inputs.get("Saturation")
+        return self.inputs._get("Saturation")
 
     @property
     def i_tint(self) -> Socket:
         """Input socket: Tint"""
-        return self.inputs.get("Tint")
+        return self.inputs._get("Tint")
 
     @property
     def i_size(self) -> Socket:
         """Input socket: Size"""
-        return self.inputs.get("Size")
+        return self.inputs._get("Size")
 
     @property
     def i_streaks(self) -> Socket:
         """Input socket: Streaks"""
-        return self.inputs.get("Streaks")
+        return self.inputs._get("Streaks")
 
     @property
     def i_streaks_angle(self) -> Socket:
         """Input socket: Streaks Angle"""
-        return self.inputs.get("Streaks Angle")
+        return self.inputs._get("Streaks Angle")
 
     @property
     def i_iterations(self) -> Socket:
         """Input socket: Iterations"""
-        return self.inputs.get("Iterations")
+        return self.inputs._get("Iterations")
 
     @property
     def i_fade(self) -> Socket:
         """Input socket: Fade"""
-        return self.inputs.get("Fade")
+        return self.inputs._get("Fade")
 
     @property
     def i_color_modulation(self) -> Socket:
         """Input socket: Color Modulation"""
-        return self.inputs.get("Color Modulation")
+        return self.inputs._get("Color Modulation")
 
     @property
     def i_diagonal_star(self) -> Socket:
         """Input socket: Diagonal"""
-        return self.inputs.get("Diagonal Star")
+        return self.inputs._get("Diagonal Star")
 
     @property
     def i_sun_position(self) -> Socket:
         """Input socket: Sun Position"""
-        return self.inputs.get("Sun Position")
+        return self.inputs._get("Sun Position")
 
     @property
     def i_jitter(self) -> Socket:
         """Input socket: Jitter"""
-        return self.inputs.get("Jitter")
+        return self.inputs._get("Jitter")
 
     @property
     def i_kernel_data_type(self) -> Socket:
         """Input socket: Kernel Data Type"""
-        return self.inputs.get("Kernel Data Type")
+        return self.inputs._get("Kernel Data Type")
 
     @property
     def i_float_kernel(self) -> Socket:
         """Input socket: Kernel"""
-        return self.inputs.get("Float Kernel")
+        return self.inputs._get("Float Kernel")
 
     @property
     def i_color_kernel(self) -> Socket:
         """Input socket: Kernel"""
-        return self.inputs.get("Color Kernel")
+        return self.inputs._get("Color Kernel")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
     @property
     def o_glare(self) -> ColorSocket:
         """Output socket: Glare"""
-        return self.outputs.get("Glare")
+        return self.outputs._get("Glare")
 
     @property
     def o_highlights(self) -> ColorSocket:
         """Output socket: Highlights"""
-        return self.outputs.get("Highlights")
+        return self.outputs._get("Highlights")
 
 
 class Inpaint(NodeBuilder):
@@ -1359,17 +1359,17 @@ class Inpaint(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_size(self) -> Socket:
         """Input socket: Size"""
-        return self.inputs.get("Size")
+        return self.inputs._get("Size")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Kuwahara(NodeBuilder):
@@ -1437,42 +1437,42 @@ class Kuwahara(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_size(self) -> Socket:
         """Input socket: Size"""
-        return self.inputs.get("Size")
+        return self.inputs._get("Size")
 
     @property
     def i_type(self) -> Socket:
         """Input socket: Type"""
-        return self.inputs.get("Type")
+        return self.inputs._get("Type")
 
     @property
     def i_uniformity(self) -> Socket:
         """Input socket: Uniformity"""
-        return self.inputs.get("Uniformity")
+        return self.inputs._get("Uniformity")
 
     @property
     def i_sharpness(self) -> Socket:
         """Input socket: Sharpness"""
-        return self.inputs.get("Sharpness")
+        return self.inputs._get("Sharpness")
 
     @property
     def i_eccentricity(self) -> Socket:
         """Input socket: Eccentricity"""
-        return self.inputs.get("Eccentricity")
+        return self.inputs._get("Eccentricity")
 
     @property
     def i_high_precision(self) -> Socket:
         """Input socket: High Precision"""
-        return self.inputs.get("High Precision")
+        return self.inputs._get("High Precision")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")
 
 
 class Pixelate(NodeBuilder):
@@ -1496,17 +1496,17 @@ class Pixelate(NodeBuilder):
     @property
     def i_color(self) -> Socket:
         """Input socket: Color"""
-        return self.inputs.get("Color")
+        return self.inputs._get("Color")
 
     @property
     def i_size(self) -> Socket:
         """Input socket: Size"""
-        return self.inputs.get("Size")
+        return self.inputs._get("Size")
 
     @property
     def o_color(self) -> ColorSocket:
         """Output socket: Color"""
-        return self.outputs.get("Color")
+        return self.outputs._get("Color")
 
 
 class VectorBlur(NodeBuilder):
@@ -1539,29 +1539,29 @@ class VectorBlur(NodeBuilder):
     @property
     def i_image(self) -> Socket:
         """Input socket: Image"""
-        return self.inputs.get("Image")
+        return self.inputs._get("Image")
 
     @property
     def i_speed(self) -> Socket:
         """Input socket: Speed"""
-        return self.inputs.get("Speed")
+        return self.inputs._get("Speed")
 
     @property
     def i_z(self) -> Socket:
         """Input socket: Z"""
-        return self.inputs.get("Z")
+        return self.inputs._get("Z")
 
     @property
     def i_samples(self) -> Socket:
         """Input socket: Samples"""
-        return self.inputs.get("Samples")
+        return self.inputs._get("Samples")
 
     @property
     def i_shutter(self) -> Socket:
         """Input socket: Shutter"""
-        return self.inputs.get("Shutter")
+        return self.inputs._get("Shutter")
 
     @property
     def o_image(self) -> ColorSocket:
         """Output socket: Image"""
-        return self.outputs.get("Image")
+        return self.outputs._get("Image")

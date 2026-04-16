@@ -268,7 +268,7 @@ class LinkingMixin:
             try:
                 self._link(source, self.node.inputs[input])  # type: ignore[attr-defined]
             except KeyError:
-                self._link(source, self.node.inputs[self.inputs.index(input)])  # type: ignore[attr-defined]
+                self._link(source, self.node.inputs[self.inputs._index(input)])  # type: ignore[attr-defined]
         else:
             self._link(source, input)
 
@@ -292,8 +292,8 @@ class LinkingMixin:
             try:
                 target = other.node.inputs[name]  # type: ignore[union-attr]
             except KeyError:
-                target = other.node.inputs[other.inputs.index(name)]  # type: ignore[union-attr]
-            source = self.outputs.best_match(target.type)  # type: ignore[attr-defined]
+                target = other.node.inputs[other.inputs._index(name)]  # type: ignore[union-attr]
+            source = self.outputs._best_match(target.type)  # type: ignore[attr-defined]
         else:
             try:
                 source, target = self._find_best_socket_pair(self, other)  # type: ignore[arg-type]

@@ -57,13 +57,13 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     @property
     def _default_input_socket(self) -> NodeSocket:
         if self._default_input_id is not None:
-            return self.node.inputs[self.inputs.index(self._default_input_id)]
+            return self.node.inputs[self.inputs._index(self._default_input_id)]
         return self.node.inputs[0]
 
     @property
     def _default_output_socket(self) -> NodeSocket:
         if self._default_output_id is not None:
-            return self.node.outputs[self.outputs.index(self._default_output_id)]
+            return self.node.outputs[self.outputs._index(self._default_output_id)]
 
         counter = 0
         socket = self.node.outputs[counter]
@@ -107,7 +107,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
                 self._link_from(
-                    value.outputs.best_match(self.inputs.get(name).type), name
+                    value.outputs._best_match(self.inputs._get(name).type), name
                 )
             else:
                 if name in input_ids:
@@ -226,9 +226,9 @@ class NodeGroupBuilder(BaseNode, ABC):
         The suffix is denormalized (snake_case → Title Case) via :func:`denormalize_name`.
         """
         if name.startswith("i_"):
-            return self.inputs.get(name[2:])
+            return self.inputs._get(name[2:])
         if name.startswith("o_"):
-            return self.outputs.get(name[2:])
+            return self.outputs._get(name[2:])
         raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
 
     @classmethod

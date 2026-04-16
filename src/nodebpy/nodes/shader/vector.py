@@ -45,32 +45,32 @@ class Bump(NodeBuilder):
     @property
     def i_strength(self) -> Socket:
         """Input socket: Strength"""
-        return self.inputs.get("Strength")
+        return self.inputs._get("Strength")
 
     @property
     def i_distance(self) -> Socket:
         """Input socket: Distance"""
-        return self.inputs.get("Distance")
+        return self.inputs._get("Distance")
 
     @property
     def i_filter_width(self) -> Socket:
         """Input socket: Filter Width"""
-        return self.inputs.get("Filter Width")
+        return self.inputs._get("Filter Width")
 
     @property
     def i_height(self) -> Socket:
         """Input socket: Height"""
-        return self.inputs.get("Height")
+        return self.inputs._get("Height")
 
     @property
     def i_normal(self) -> Socket:
         """Input socket: Normal"""
-        return self.inputs.get("Normal")
+        return self.inputs._get("Normal")
 
     @property
     def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
-        return self.outputs.get("Normal")
+        return self.outputs._get("Normal")
 
     @property
     def invert(self) -> bool:
@@ -111,27 +111,27 @@ class Displacement(NodeBuilder):
     @property
     def i_height(self) -> Socket:
         """Input socket: Height"""
-        return self.inputs.get("Height")
+        return self.inputs._get("Height")
 
     @property
     def i_midlevel(self) -> Socket:
         """Input socket: Midlevel"""
-        return self.inputs.get("Midlevel")
+        return self.inputs._get("Midlevel")
 
     @property
     def i_scale(self) -> Socket:
         """Input socket: Scale"""
-        return self.inputs.get("Scale")
+        return self.inputs._get("Scale")
 
     @property
     def i_normal(self) -> Socket:
         """Input socket: Normal"""
-        return self.inputs.get("Normal")
+        return self.inputs._get("Normal")
 
     @property
     def o_displacement(self) -> VectorSocket:
         """Output socket: Displacement"""
-        return self.outputs.get("Displacement")
+        return self.outputs._get("Displacement")
 
     @property
     def space(self) -> Literal["OBJECT", "WORLD"]:
@@ -226,27 +226,27 @@ class Mapping(NodeBuilder):
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
-        return self.inputs.get("Vector")
+        return self.inputs._get("Vector")
 
     @property
     def i_location(self) -> Socket:
         """Input socket: Location"""
-        return self.inputs.get("Location")
+        return self.inputs._get("Location")
 
     @property
     def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
-        return self.inputs.get("Rotation")
+        return self.inputs._get("Rotation")
 
     @property
     def i_scale(self) -> Socket:
         """Input socket: Scale"""
-        return self.inputs.get("Scale")
+        return self.inputs._get("Scale")
 
     @property
     def o_vector(self) -> VectorSocket:
         """Output socket: Vector"""
-        return self.outputs.get("Vector")
+        return self.outputs._get("Vector")
 
     @property
     def vector_type(self) -> Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"]:
@@ -274,17 +274,17 @@ class Normal(NodeBuilder):
     @property
     def i_normal(self) -> Socket:
         """Input socket: Normal"""
-        return self.inputs.get("Normal")
+        return self.inputs._get("Normal")
 
     @property
     def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
-        return self.outputs.get("Normal")
+        return self.outputs._get("Normal")
 
     @property
     def o_dot(self) -> FloatSocket:
         """Output socket: Dot"""
-        return self.outputs.get("Dot")
+        return self.outputs._get("Dot")
 
 
 class NormalMap(NodeBuilder):
@@ -314,17 +314,17 @@ class NormalMap(NodeBuilder):
     @property
     def i_strength(self) -> Socket:
         """Input socket: Strength"""
-        return self.inputs.get("Strength")
+        return self.inputs._get("Strength")
 
     @property
     def i_color(self) -> Socket:
         """Input socket: Color"""
-        return self.inputs.get("Color")
+        return self.inputs._get("Color")
 
     @property
     def o_normal(self) -> VectorSocket:
         """Output socket: Normal"""
-        return self.outputs.get("Normal")
+        return self.outputs._get("Normal")
 
     @property
     def space(
@@ -372,22 +372,22 @@ class VectorDisplacement(NodeBuilder):
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
-        return self.inputs.get("Vector")
+        return self.inputs._get("Vector")
 
     @property
     def i_midlevel(self) -> Socket:
         """Input socket: Midlevel"""
-        return self.inputs.get("Midlevel")
+        return self.inputs._get("Midlevel")
 
     @property
     def i_scale(self) -> Socket:
         """Input socket: Scale"""
-        return self.inputs.get("Scale")
+        return self.inputs._get("Scale")
 
     @property
     def o_displacement(self) -> VectorSocket:
         """Output socket: Displacement"""
-        return self.outputs.get("Displacement")
+        return self.outputs._get("Displacement")
 
     @property
     def space(self) -> Literal["TANGENT", "OBJECT", "WORLD"]:
@@ -439,12 +439,12 @@ class VectorTransform(NodeBuilder):
     @property
     def i_vector(self) -> Socket:
         """Input socket: Vector"""
-        return self.inputs.get("Vector")
+        return self.inputs._get("Vector")
 
     @property
     def o_vector(self) -> VectorSocket:
         """Output socket: Vector"""
-        return self.outputs.get("Vector")
+        return self.outputs._get("Vector")
 
     @property
     def vector_type(self) -> Literal["POINT", "VECTOR", "NORMAL"]:

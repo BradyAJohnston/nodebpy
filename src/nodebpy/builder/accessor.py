@@ -29,7 +29,7 @@ class SocketAccessor:
         self._direction = direction
         self._collection = collection
 
-    def index(self, key: str | int) -> int:
+    def _index(self, key: str | int) -> int:
         """Find socket index by identifier, falling back to name.
 
         Tries identifier match first. If no identifier matches, falls back to
@@ -56,13 +56,13 @@ class SocketAccessor:
             f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"
         )
 
-    def get(self, key: str | int) -> "Socket":
+    def _get(self, key: str | int) -> "Socket":
         """Get a Socket for a socket by identifier, name, or index."""
-        return _get_socket_linker(self._collection[self.index(key)])
+        return _get_socket_linker(self._collection[self._index(key)])
 
     def __getitem__(self, key: str | int) -> "Socket":
         """Access by identifier, name, or integer index."""
-        return self.get(key)
+        return self._get(key)
 
     @property
     def _node(self) -> bpy.types.Node:
@@ -128,7 +128,7 @@ class SocketAccessor:
             s for s in self._collection if self._ignore_visibility or s.is_icon_visible
         ]
 
-    def best_match(self, socket_type: str) -> NodeSocket:
+    def _best_match(self, socket_type: str) -> NodeSocket:
         """Find the best compatible socket for the given type."""
         from ..types import SOCKET_COMPATIBILITY
 

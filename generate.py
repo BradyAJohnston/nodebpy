@@ -258,7 +258,7 @@ class SocketInfo:
                     return_type = cls
                     break
 
-        return_value = "self.{}s.get('{}')".format(
+        return_value = "self.{}s._get('{}')".format(
             "output" if self.is_output else "input",
             self.identifier,
         )

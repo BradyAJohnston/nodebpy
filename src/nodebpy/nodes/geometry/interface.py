@@ -64,32 +64,32 @@ class DialGizmo(NodeBuilder):
     @property
     def i_value(self) -> Socket:
         """Input socket: Value"""
-        return self.inputs.get("Value")
+        return self.inputs._get("Value")
 
     @property
     def i_position(self) -> Socket:
         """Input socket: Position"""
-        return self.inputs.get("Position")
+        return self.inputs._get("Position")
 
     @property
     def i_up(self) -> Socket:
         """Input socket: Up"""
-        return self.inputs.get("Up")
+        return self.inputs._get("Up")
 
     @property
     def i_screen_space(self) -> Socket:
         """Input socket: Screen Space"""
-        return self.inputs.get("Screen Space")
+        return self.inputs._get("Screen Space")
 
     @property
     def i_radius(self) -> Socket:
         """Input socket: Radius"""
-        return self.inputs.get("Radius")
+        return self.inputs._get("Radius")
 
     @property
     def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
-        return self.outputs.get("Transform")
+        return self.outputs._get("Transform")
 
     @property
     def color_id(self) -> Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]:
@@ -252,17 +252,17 @@ class EnableOutput(NodeBuilder):
     @property
     def i_enable(self) -> Socket:
         """Input socket: Enable"""
-        return self.inputs.get("Enable")
+        return self.inputs._get("Enable")
 
     @property
     def i_value(self) -> Socket:
         """Input socket: Value"""
-        return self.inputs.get("Value")
+        return self.inputs._get("Value")
 
     @property
     def o_value(self) -> FloatSocket:
         """Output socket: Value"""
-        return self.outputs.get("Value")
+        return self.outputs._get("Value")
 
     @property
     def data_type(
@@ -376,22 +376,22 @@ class LinearGizmo(NodeBuilder):
     @property
     def i_value(self) -> Socket:
         """Input socket: Value"""
-        return self.inputs.get("Value")
+        return self.inputs._get("Value")
 
     @property
     def i_position(self) -> Socket:
         """Input socket: Position"""
-        return self.inputs.get("Position")
+        return self.inputs._get("Position")
 
     @property
     def i_direction(self) -> Socket:
         """Input socket: Direction"""
-        return self.inputs.get("Direction")
+        return self.inputs._get("Direction")
 
     @property
     def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
-        return self.outputs.get("Transform")
+        return self.outputs._get("Transform")
 
     @property
     def color_id(self) -> Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]:
@@ -450,22 +450,22 @@ class TransformGizmo(NodeBuilder):
     @property
     def i_value(self) -> Socket:
         """Input socket: Value"""
-        return self.inputs.get("Value")
+        return self.inputs._get("Value")
 
     @property
     def i_position(self) -> Socket:
         """Input socket: Position"""
-        return self.inputs.get("Position")
+        return self.inputs._get("Position")
 
     @property
     def i_rotation(self) -> Socket:
         """Input socket: Rotation"""
-        return self.inputs.get("Rotation")
+        return self.inputs._get("Rotation")
 
     @property
     def o_transform(self) -> GeometrySocket:
         """Output socket: Transform"""
-        return self.outputs.get("Transform")
+        return self.outputs._get("Transform")
 
     @property
     def use_translation_x(self) -> bool:
@@ -578,17 +578,17 @@ class Warning(NodeBuilder):
     @property
     def i_show(self) -> Socket:
         """Input socket: Show"""
-        return self.inputs.get("Show")
+        return self.inputs._get("Show")
 
     @property
     def i_message(self) -> Socket:
         """Input socket: Message"""
-        return self.inputs.get("Message")
+        return self.inputs._get("Message")
 
     @property
     def o_show(self) -> BooleanSocket:
         """Output socket: Show"""
-        return self.outputs.get("Show")
+        return self.outputs._get("Show")
 
     @property
     def warning_type(self) -> Literal["ERROR", "WARNING", "INFO"]:

@@ -907,10 +907,10 @@ class TestSocketAccessor:
             accessor = SocketAccessor(fake_sockets, "input")
 
             # Unique identifier lookup is fine.
-            assert accessor.index("unique_id_1") == 0
+            assert accessor._index("unique_id_1") == 0
             # Duplicate name lookup must raise with a clear message.
             with pytest.raises(RuntimeError, match="ambiguous"):
-                accessor.index("Value")
+                accessor._index("Value")
 
 
 class TestIntegerSocketLinker:

@@ -366,7 +366,7 @@ class _RotationMixin:
         for link in self.socket.links:
             if link.to_node.bl_idname == "FunctionNodeRotationToQuaternion":
                 return _get_socket_linker(link.to_node.outputs[component])
-        return RotationToQuaternion(self).outputs.get(component)
+        return RotationToQuaternion(self).outputs._get(component)
 
     @property
     def w(self) -> Socket:
@@ -397,7 +397,7 @@ class _MatrixMixin:
         for link in self.socket.links:
             if link.to_node.bl_idname == "FunctionNodeSeparateTransform":
                 return _get_socket_linker(link.to_node.outputs[output])
-        return SeparateTransform(self).outputs.get(output)
+        return SeparateTransform(self).outputs._get(output)
 
     @property
     def translation(self) -> "VectorSocket":
