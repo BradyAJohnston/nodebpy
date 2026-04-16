@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket
+from ...builder import BaseNode as NodeBuilder, SocketAccessor, Socket
 
 from ...types import (
     InputColor,
@@ -18,10 +18,32 @@ class AovOutput(NodeBuilder):
     """
         Arbitrary Output Variables.
     Provide custom render passes for arbitrary shader node outputs
+
+        Parameters
+        ----------
+        color : InputColor
+            Color
+        value : InputFloat
+            Value
     """
 
     _bl_idname = "ShaderNodeOutputAOV"
     node: bpy.types.ShaderNodeOutputAOV
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        value: Socket
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "AovOutput.Inputs":
+        return AovOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AovOutput.Outputs":
+        return AovOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -36,16 +58,6 @@ class AovOutput(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
     def aov_name(self) -> str:
         return self.node.aov_name
 
@@ -57,10 +69,29 @@ class AovOutput(NodeBuilder):
 class LightOutput(NodeBuilder):
     """
     Output light information to a light object
+
+    Parameters
+    ----------
+    surface : InputShader
+        Surface
     """
 
     _bl_idname = "ShaderNodeOutputLight"
     node: bpy.types.ShaderNodeOutputLight
+
+    class Inputs(SocketAccessor):
+        surface: Socket
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "LightOutput.Inputs":
+        return LightOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "LightOutput.Outputs":
+        return LightOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -74,11 +105,6 @@ class LightOutput(NodeBuilder):
         self.is_active_output = is_active_output
         self.target = target
         self._establish_links(**key_args)
-
-    @property
-    def i_surface(self) -> Socket:
-        """Input socket: Surface"""
-        return self.inputs._get("Surface")
 
     @property
     def is_active_output(self) -> bool:
@@ -100,10 +126,38 @@ class LightOutput(NodeBuilder):
 class LineStyleOutput(NodeBuilder):
     """
     Control the mixing of texture information into the base color of line styles
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    color_fac : InputFloat
+        Color Fac
+    alpha : InputFloat
+        Alpha
+    alpha_fac : InputFloat
+        Alpha Fac
     """
 
     _bl_idname = "ShaderNodeOutputLineStyle"
     node: bpy.types.ShaderNodeOutputLineStyle
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        color_fac: Socket
+        alpha: Socket
+        alpha_fac: Socket
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "LineStyleOutput.Inputs":
+        return LineStyleOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "LineStyleOutput.Outputs":
+        return LineStyleOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -151,26 +205,6 @@ class LineStyleOutput(NodeBuilder):
         self.use_alpha = use_alpha
         self.use_clamp = use_clamp
         self._establish_links(**key_args)
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_color_fac(self) -> Socket:
-        """Input socket: Color Fac"""
-        return self.inputs._get("Color Fac")
-
-    @property
-    def i_alpha(self) -> Socket:
-        """Input socket: Alpha"""
-        return self.inputs._get("Alpha")
-
-    @property
-    def i_alpha_fac(self) -> Socket:
-        """Input socket: Alpha Fac"""
-        return self.inputs._get("Alpha Fac")
 
     @property
     def is_active_output(self) -> bool:
@@ -261,10 +295,38 @@ class LineStyleOutput(NodeBuilder):
 class MaterialOutput(NodeBuilder):
     """
     Output surface material information for use in rendering
+
+    Parameters
+    ----------
+    surface : InputShader
+        Surface
+    volume : InputShader
+        Volume
+    displacement : InputVector
+        Displacement
+    thickness : InputFloat
+        Thickness
     """
 
     _bl_idname = "ShaderNodeOutputMaterial"
     node: bpy.types.ShaderNodeOutputMaterial
+
+    class Inputs(SocketAccessor):
+        surface: Socket
+        volume: Socket
+        displacement: Socket
+        thickness: Socket
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "MaterialOutput.Inputs":
+        return MaterialOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MaterialOutput.Outputs":
+        return MaterialOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -288,26 +350,6 @@ class MaterialOutput(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_surface(self) -> Socket:
-        """Input socket: Surface"""
-        return self.inputs._get("Surface")
-
-    @property
-    def i_volume(self) -> Socket:
-        """Input socket: Volume"""
-        return self.inputs._get("Volume")
-
-    @property
-    def i_displacement(self) -> Socket:
-        """Input socket: Displacement"""
-        return self.inputs._get("Displacement")
-
-    @property
-    def i_thickness(self) -> Socket:
-        """Input socket: Thickness"""
-        return self.inputs._get("Thickness")
-
-    @property
     def is_active_output(self) -> bool:
         return self.node.is_active_output
 
@@ -327,10 +369,32 @@ class MaterialOutput(NodeBuilder):
 class WorldOutput(NodeBuilder):
     """
     Output light color information to the scene's World
+
+    Parameters
+    ----------
+    surface : InputShader
+        Surface
+    volume : InputShader
+        Volume
     """
 
     _bl_idname = "ShaderNodeOutputWorld"
     node: bpy.types.ShaderNodeOutputWorld
+
+    class Inputs(SocketAccessor):
+        surface: Socket
+        volume: Socket
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "WorldOutput.Inputs":
+        return WorldOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "WorldOutput.Outputs":
+        return WorldOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -345,16 +409,6 @@ class WorldOutput(NodeBuilder):
         self.is_active_output = is_active_output
         self.target = target
         self._establish_links(**key_args)
-
-    @property
-    def i_surface(self) -> Socket:
-        """Input socket: Surface"""
-        return self.inputs._get("Surface")
-
-    @property
-    def i_volume(self) -> Socket:
-        """Input socket: Volume"""
-        return self.inputs._get("Volume")
 
     @property
     def is_active_output(self) -> bool:

@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder
+from ...builder import BaseNode as NodeBuilder, SocketAccessor
 
 
 class Script(NodeBuilder):
@@ -15,6 +15,20 @@ class Script(NodeBuilder):
 
     _bl_idname = "ShaderNodeScript"
     node: bpy.types.ShaderNodeScript
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "Script.Inputs":
+        return Script.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Script.Outputs":
+        return Script.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,

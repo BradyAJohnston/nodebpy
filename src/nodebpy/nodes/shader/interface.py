@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, ClosureSocket
+from ...builder import BaseNode as NodeBuilder, SocketAccessor, ClosureSocket
 
 
 
@@ -15,6 +15,20 @@ class ClosureInput(NodeBuilder):
     _bl_idname = "NodeClosureInput"
     node: bpy.types.Node
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "ClosureInput.Inputs":
+        return ClosureInput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ClosureInput.Outputs":
+        return ClosureInput.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
@@ -25,10 +39,29 @@ class ClosureInput(NodeBuilder):
 class ClosureOutput(NodeBuilder):
     """
     Closure Output node
+
+    Outputs
+    -------
+    closure : ClosureSocket
+        Closure
     """
 
     _bl_idname = "NodeClosureOutput"
     node: bpy.types.Node
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        closure: ClosureSocket
+
+    @property
+    def i(self) -> "ClosureOutput.Inputs":
+        return ClosureOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ClosureOutput.Outputs":
+        return ClosureOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -42,11 +75,6 @@ class ClosureOutput(NodeBuilder):
         self.active_output_index = active_output_index
         self.define_signature = define_signature
         self._establish_links(**key_args)
-
-    @property
-    def o_closure(self) -> ClosureSocket:
-        """Output socket: Closure"""
-        return self.outputs._get("Closure")
 
     @property
     def active_input_index(self) -> int:

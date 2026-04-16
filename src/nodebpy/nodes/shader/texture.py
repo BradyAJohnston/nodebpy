@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    SocketAccessor,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+)
 
 from ...types import (
     InputFloat,
@@ -15,10 +21,34 @@ from ...types import (
 class EnvironmentTexture(NodeBuilder):
     """
     Sample an image file as an environment texture. Typically used to light the scene with the background node
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeTexEnvironment"
     node: bpy.types.ShaderNodeTexEnvironment
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "EnvironmentTexture.Inputs":
+        return EnvironmentTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EnvironmentTexture.Outputs":
+        return EnvironmentTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -32,16 +62,6 @@ class EnvironmentTexture(NodeBuilder):
         self.projection = projection
         self.interpolation = interpolation
         self._establish_links(**key_args)
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
 
     @property
     def projection(self) -> Literal["EQUIRECTANGULAR", "MIRROR_BALL"]:
@@ -63,10 +83,37 @@ class EnvironmentTexture(NodeBuilder):
 class IesTexture(NodeBuilder):
     """
     Match real world lights with IES files, which store the directional intensity distribution of light sources
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    strength : InputFloat
+        Strength
+
+    Outputs
+    -------
+    fac : FloatSocket
+        Factor
     """
 
     _bl_idname = "ShaderNodeTexIES"
     node: bpy.types.ShaderNodeTexIES
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        strength: Socket
+
+    class Outputs(SocketAccessor):
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "IesTexture.Inputs":
+        return IesTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IesTexture.Outputs":
+        return IesTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -97,21 +144,6 @@ class IesTexture(NodeBuilder):
         return cls(mode="EXTERNAL", vector=vector, strength=strength)
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Strength")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
-    @property
     def filepath(self) -> str:
         return self.node.filepath
 
@@ -131,10 +163,37 @@ class IesTexture(NodeBuilder):
 class ImageTexture(NodeBuilder):
     """
     Sample an image file as a texture
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    alpha : FloatSocket
+        Alpha
     """
 
     _bl_idname = "ShaderNodeTexImage"
     node: bpy.types.ShaderNodeTexImage
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        alpha: FloatSocket
+
+    @property
+    def i(self) -> "ImageTexture.Inputs":
+        return ImageTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImageTexture.Outputs":
+        return ImageTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -152,21 +211,6 @@ class ImageTexture(NodeBuilder):
         self.projection_blend = projection_blend
         self.extension = extension
         self._establish_links(**key_args)
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
 
     @property
     def projection(self) -> Literal["FLAT", "BOX", "SPHERE", "TUBE"]:
@@ -204,10 +248,34 @@ class ImageTexture(NodeBuilder):
 class SkyTexture(NodeBuilder):
     """
     Generate a procedural sky texture
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeTexSky"
     node: bpy.types.ShaderNodeTexSky
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "SkyTexture.Inputs":
+        return SkyTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SkyTexture.Outputs":
+        return SkyTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -265,16 +333,6 @@ class SkyTexture(NodeBuilder):
     def hosek_wilkie(cls, vector: InputVector = None) -> "SkyTexture":
         """Create Sky Texture with operation 'Hosek / Wilkie'. Hosek / Wilkie 2012 (Legacy)"""
         return cls(sky_type="HOSEK_WILKIE", vector=vector)
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
 
     @property
     def sky_type(

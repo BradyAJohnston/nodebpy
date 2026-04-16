@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    SocketAccessor,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -19,10 +25,58 @@ from ...types import (
 class CornerPin(NodeBuilder):
     """
     Plane warp transformation using explicit corner values
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    upper_left : InputVector
+        Upper Left
+    upper_right : InputVector
+        Upper Right
+    lower_left : InputVector
+        Lower Left
+    lower_right : InputVector
+        Lower Right
+    interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
+        Interpolation
+    extension_x : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension X
+    extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    plane : FloatSocket
+        Plane
     """
 
     _bl_idname = "CompositorNodeCornerPin"
     node: bpy.types.CompositorNodeCornerPin
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        upper_left: Socket
+        upper_right: Socket
+        lower_left: Socket
+        lower_right: Socket
+        interpolation: Socket
+        extension_x: Socket
+        extension_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        plane: FloatSocket
+
+    @property
+    def i(self) -> "CornerPin.Inputs":
+        return CornerPin.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CornerPin.Outputs":
+        return CornerPin.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -50,64 +104,53 @@ class CornerPin(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_upper_left(self) -> Socket:
-        """Input socket: Upper Left"""
-        return self.inputs._get("Upper Left")
-
-    @property
-    def i_upper_right(self) -> Socket:
-        """Input socket: Upper Right"""
-        return self.inputs._get("Upper Right")
-
-    @property
-    def i_lower_left(self) -> Socket:
-        """Input socket: Lower Left"""
-        return self.inputs._get("Lower Left")
-
-    @property
-    def i_lower_right(self) -> Socket:
-        """Input socket: Lower Right"""
-        return self.inputs._get("Lower Right")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_extension_x(self) -> Socket:
-        """Input socket: Extension X"""
-        return self.inputs._get("Extension X")
-
-    @property
-    def i_extension_y(self) -> Socket:
-        """Input socket: Extension Y"""
-        return self.inputs._get("Extension Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_plane(self) -> FloatSocket:
-        """Output socket: Plane"""
-        return self.outputs._get("Plane")
-
 
 class Crop(NodeBuilder):
     """
     Crops image to a smaller region, either making the cropped area transparent or resizing the image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    x : InputInteger
+        X
+    y : InputInteger
+        Y
+    width : InputInteger
+        Width
+    height : InputInteger
+        Height
+    alpha_crop : InputBoolean
+        Alpha Crop
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeCrop"
     node: bpy.types.CompositorNodeCrop
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        x: Socket
+        y: Socket
+        width: Socket
+        height: Socket
+        alpha_crop: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Crop.Inputs":
+        return Crop.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Crop.Outputs":
+        return Crop.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -130,49 +173,50 @@ class Crop(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_x(self) -> Socket:
-        """Input socket: X"""
-        return self.inputs._get("X")
-
-    @property
-    def i_y(self) -> Socket:
-        """Input socket: Y"""
-        return self.inputs._get("Y")
-
-    @property
-    def i_width(self) -> Socket:
-        """Input socket: Width"""
-        return self.inputs._get("Width")
-
-    @property
-    def i_height(self) -> Socket:
-        """Input socket: Height"""
-        return self.inputs._get("Height")
-
-    @property
-    def i_alpha_crop(self) -> Socket:
-        """Input socket: Alpha Crop"""
-        return self.inputs._get("Alpha Crop")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Displace(NodeBuilder):
     """
     Displace pixel position using an offset vector
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    displacement : InputVector
+        Displacement
+    interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
+        Interpolation
+    extension_x : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension X
+    extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeDisplace"
     node: bpy.types.CompositorNodeDisplace
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        displacement: Socket
+        interpolation: Socket
+        extension_x: Socket
+        extension_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Displace.Inputs":
+        return Displace.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Displace.Outputs":
+        return Displace.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -194,44 +238,44 @@ class Displace(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_displacement(self) -> Socket:
-        """Input socket: Displacement"""
-        return self.inputs._get("Displacement")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_extension_x(self) -> Socket:
-        """Input socket: Extension X"""
-        return self.inputs._get("Extension X")
-
-    @property
-    def i_extension_y(self) -> Socket:
-        """Input socket: Extension Y"""
-        return self.inputs._get("Extension Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Flip(NodeBuilder):
     """
     Flip an image along a defined axis
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    flip_x : InputBoolean
+        Flip X
+    flip_y : InputBoolean
+        Flip Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeFlip"
     node: bpy.types.CompositorNodeFlip
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        flip_x: Socket
+        flip_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Flip.Inputs":
+        return Flip.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Flip.Outputs":
+        return Flip.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -244,34 +288,53 @@ class Flip(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_flip_x(self) -> Socket:
-        """Input socket: Flip X"""
-        return self.inputs._get("Flip X")
-
-    @property
-    def i_flip_y(self) -> Socket:
-        """Input socket: Flip Y"""
-        return self.inputs._get("Flip Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class LensDistortion(NodeBuilder):
     """
     Simulate distortion and dispersion from camera lenses
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    type : InputMenu | Literal['Radial', 'Horizontal']
+        Type
+    distortion : InputFloat
+        Distortion
+    dispersion : InputFloat
+        Dispersion
+    jitter : InputBoolean
+        Jitter
+    fit : InputBoolean
+        Fit
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeLensdist"
     node: bpy.types.CompositorNodeLensdist
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        type: Socket
+        distortion: Socket
+        dispersion: Socket
+        jitter: Socket
+        fit: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "LensDistortion.Inputs":
+        return LensDistortion.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "LensDistortion.Outputs":
+        return LensDistortion.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -320,49 +383,50 @@ class LensDistortion(NodeBuilder):
         """Create Lens Distortion node with type 'Horizontal'."""
         return cls(image=image, dispersion=dispersion, type="Horizontal")
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_distortion(self) -> Socket:
-        """Input socket: Distortion"""
-        return self.inputs._get("Distortion")
-
-    @property
-    def i_dispersion(self) -> Socket:
-        """Input socket: Dispersion"""
-        return self.inputs._get("Dispersion")
-
-    @property
-    def i_jitter(self) -> Socket:
-        """Input socket: Jitter"""
-        return self.inputs._get("Jitter")
-
-    @property
-    def i_fit(self) -> Socket:
-        """Input socket: Fit"""
-        return self.inputs._get("Fit")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class MapUV(NodeBuilder):
     """
     Map a texture using UV coordinates, to apply a texture to objects in compositing
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    uv : InputVector
+        UV
+    interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
+        Interpolation
+    extension_x : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension X
+    extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeMapUV"
     node: bpy.types.CompositorNodeMapUV
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        uv: Socket
+        interpolation: Socket
+        extension_x: Socket
+        extension_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "MapUV.Inputs":
+        return MapUV.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MapUV.Outputs":
+        return MapUV.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -384,44 +448,41 @@ class MapUV(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_uv(self) -> Socket:
-        """Input socket: UV"""
-        return self.inputs._get("UV")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_extension_x(self) -> Socket:
-        """Input socket: Extension X"""
-        return self.inputs._get("Extension X")
-
-    @property
-    def i_extension_y(self) -> Socket:
-        """Input socket: Extension Y"""
-        return self.inputs._get("Extension Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class MovieDistortion(NodeBuilder):
     """
     Remove lens distortion from footage, using motion tracking camera lens settings
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    type : InputMenu | Literal['Undistort', 'Distort']
+        Type
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeMovieDistortion"
     node: bpy.types.CompositorNodeMovieDistortion
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        type: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "MovieDistortion.Inputs":
+        return MovieDistortion.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MovieDistortion.Outputs":
+        return MovieDistortion.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -443,29 +504,50 @@ class MovieDistortion(NodeBuilder):
         """Create Movie Distortion node with type 'Distort'."""
         return cls(image=image, type="Distort")
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class PlaneTrackDeform(NodeBuilder):
     """
     Replace flat planes in footage by another image, detected by plane tracks from motion tracking
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    motion_blur : InputBoolean
+        Motion Blur
+    motion_blur_samples : InputInteger
+        Samples
+    motion_blur_shutter : InputFloat
+        Shutter
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    plane : FloatSocket
+        Plane
     """
 
     _bl_idname = "CompositorNodePlaneTrackDeform"
     node: bpy.types.CompositorNodePlaneTrackDeform
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        motion_blur: Socket
+        motion_blur_samples: Socket
+        motion_blur_shutter: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        plane: FloatSocket
+
+    @property
+    def i(self) -> "PlaneTrackDeform.Inputs":
+        return PlaneTrackDeform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PlaneTrackDeform.Outputs":
+        return PlaneTrackDeform.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -489,36 +571,6 @@ class PlaneTrackDeform(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_motion_blur(self) -> Socket:
-        """Input socket: Motion Blur"""
-        return self.inputs._get("Motion Blur")
-
-    @property
-    def i_motion_blur_samples(self) -> Socket:
-        """Input socket: Samples"""
-        return self.inputs._get("Motion Blur Samples")
-
-    @property
-    def i_motion_blur_shutter(self) -> Socket:
-        """Input socket: Shutter"""
-        return self.inputs._get("Motion Blur Shutter")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_plane(self) -> FloatSocket:
-        """Output socket: Plane"""
-        return self.outputs._get("Plane")
-
-    @property
     def tracking_object(self) -> str:
         return self.node.tracking_object
 
@@ -538,10 +590,46 @@ class PlaneTrackDeform(NodeBuilder):
 class Rotate(NodeBuilder):
     """
     Rotate image by specified angle
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    angle : InputFloat
+        Angle
+    interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
+        Interpolation
+    extension_x : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension X
+    extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeRotate"
     node: bpy.types.CompositorNodeRotate
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        angle: Socket
+        interpolation: Socket
+        extension_x: Socket
+        extension_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Rotate.Inputs":
+        return Rotate.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Rotate.Outputs":
+        return Rotate.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -563,44 +651,59 @@ class Rotate(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_angle(self) -> Socket:
-        """Input socket: Angle"""
-        return self.inputs._get("Angle")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_extension_x(self) -> Socket:
-        """Input socket: Extension X"""
-        return self.inputs._get("Extension X")
-
-    @property
-    def i_extension_y(self) -> Socket:
-        """Input socket: Extension Y"""
-        return self.inputs._get("Extension Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Scale(NodeBuilder):
     """
     Change the size of the image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    type : InputMenu | Literal['Relative', 'Absolute', 'Scene Size', 'Render Size']
+        Type
+    x : InputFloat
+        X
+    y : InputFloat
+        Y
+    frame_type : InputMenu | Literal['Stretch', 'Fit', 'Crop']
+        Frame Type
+    interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
+        Interpolation
+    extension_x : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension X
+    extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeScale"
     node: bpy.types.CompositorNodeScale
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        type: Socket
+        x: Socket
+        y: Socket
+        frame_type: Socket
+        interpolation: Socket
+        extension_x: Socket
+        extension_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Scale.Inputs":
+        return Scale.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Scale.Outputs":
+        return Scale.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -711,59 +814,50 @@ class Scale(NodeBuilder):
             type="Render Size",
         )
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_x(self) -> Socket:
-        """Input socket: X"""
-        return self.inputs._get("X")
-
-    @property
-    def i_y(self) -> Socket:
-        """Input socket: Y"""
-        return self.inputs._get("Y")
-
-    @property
-    def i_frame_type(self) -> Socket:
-        """Input socket: Frame Type"""
-        return self.inputs._get("Frame Type")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_extension_x(self) -> Socket:
-        """Input socket: Extension X"""
-        return self.inputs._get("Extension X")
-
-    @property
-    def i_extension_y(self) -> Socket:
-        """Input socket: Extension Y"""
-        return self.inputs._get("Extension Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Stabilize2D(NodeBuilder):
     """
     Stabilize footage using 2D stabilization motion tracking settings
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    invert : InputBoolean
+        Invert
+    interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
+        Interpolation
+    extension_x : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension X
+    extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeStabilize"
     node: bpy.types.CompositorNodeStabilize
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        invert: Socket
+        interpolation: Socket
+        extension_x: Socket
+        extension_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Stabilize2D.Inputs":
+        return Stabilize2D.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Stabilize2D.Outputs":
+        return Stabilize2D.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -785,44 +879,59 @@ class Stabilize2D(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_invert(self) -> Socket:
-        """Input socket: Invert"""
-        return self.inputs._get("Invert")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_extension_x(self) -> Socket:
-        """Input socket: Extension X"""
-        return self.inputs._get("Extension X")
-
-    @property
-    def i_extension_y(self) -> Socket:
-        """Input socket: Extension Y"""
-        return self.inputs._get("Extension Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Transform(NodeBuilder):
     """
     Scale, translate and rotate an image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    x : InputFloat
+        X
+    y : InputFloat
+        Y
+    angle : InputFloat
+        Angle
+    scale : InputFloat
+        Scale
+    interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
+        Interpolation
+    extension_x : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension X
+    extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeTransform"
     node: bpy.types.CompositorNodeTransform
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        x: Socket
+        y: Socket
+        angle: Socket
+        scale: Socket
+        interpolation: Socket
+        extension_x: Socket
+        extension_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Transform.Inputs":
+        return Transform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Transform.Outputs":
+        return Transform.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -850,59 +959,53 @@ class Transform(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_x(self) -> Socket:
-        """Input socket: X"""
-        return self.inputs._get("X")
-
-    @property
-    def i_y(self) -> Socket:
-        """Input socket: Y"""
-        return self.inputs._get("Y")
-
-    @property
-    def i_angle(self) -> Socket:
-        """Input socket: Angle"""
-        return self.inputs._get("Angle")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_extension_x(self) -> Socket:
-        """Input socket: Extension X"""
-        return self.inputs._get("Extension X")
-
-    @property
-    def i_extension_y(self) -> Socket:
-        """Input socket: Extension Y"""
-        return self.inputs._get("Extension Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Translate(NodeBuilder):
     """
     Offset an image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    x : InputFloat
+        X
+    y : InputFloat
+        Y
+    interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
+        Interpolation
+    extension_x : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension X
+    extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
+        Extension Y
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeTranslate"
     node: bpy.types.CompositorNodeTranslate
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        x: Socket
+        y: Socket
+        interpolation: Socket
+        extension_x: Socket
+        extension_y: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Translate.Inputs":
+        return Translate.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Translate.Outputs":
+        return Translate.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -925,38 +1028,3 @@ class Translate(NodeBuilder):
         }
 
         self._establish_links(**key_args)
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_x(self) -> Socket:
-        """Input socket: X"""
-        return self.inputs._get("X")
-
-    @property
-    def i_y(self) -> Socket:
-        """Input socket: Y"""
-        return self.inputs._get("Y")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_extension_x(self) -> Socket:
-        """Input socket: Extension X"""
-        return self.inputs._get("Extension X")
-
-    @property
-    def i_extension_y(self) -> Socket:
-        """Input socket: Extension Y"""
-        return self.inputs._get("Extension Y")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")

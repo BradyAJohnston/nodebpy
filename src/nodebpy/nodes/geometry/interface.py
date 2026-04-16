@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     BooleanSocket,
     FloatSocket,
@@ -35,10 +36,46 @@ from ...types import (
 class DialGizmo(NodeBuilder):
     """
     Show a dial gizmo in the viewport for a value
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    position : InputVector
+        Position
+    up : InputVector
+        Up
+    screen_space : InputBoolean
+        Screen Space
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    transform : GeometrySocket
+        Transform
     """
 
     _bl_idname = "GeometryNodeGizmoDial"
     node: bpy.types.GeometryNodeGizmoDial
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        position: Socket
+        up: Socket
+        screen_space: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        transform: GeometrySocket
+
+    @property
+    def i(self) -> "DialGizmo.Inputs":
+        return DialGizmo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DialGizmo.Outputs":
+        return DialGizmo.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -62,36 +99,6 @@ class DialGizmo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_up(self) -> Socket:
-        """Input socket: Up"""
-        return self.inputs._get("Up")
-
-    @property
-    def i_screen_space(self) -> Socket:
-        """Input socket: Screen Space"""
-        return self.inputs._get("Screen Space")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_transform(self) -> GeometrySocket:
-        """Output socket: Transform"""
-        return self.outputs._get("Transform")
-
-    @property
     def color_id(self) -> Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]:
         return self.node.color_id
 
@@ -103,10 +110,37 @@ class DialGizmo(NodeBuilder):
 class EnableOutput(NodeBuilder):
     """
     Either pass through the input value or output the fallback value
+
+    Parameters
+    ----------
+    enable : InputBoolean
+        Enable
+    value : InputFloat
+        Value
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "NodeEnableOutput"
     node: bpy.types.Node
+
+    class Inputs(SocketAccessor):
+        enable: Socket
+        value: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "EnableOutput.Inputs":
+        return EnableOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EnableOutput.Outputs":
+        return EnableOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -250,21 +284,6 @@ class EnableOutput(NodeBuilder):
         return cls(data_type="CLOSURE", enable=enable, value=value)
 
     @property
-    def i_enable(self) -> Socket:
-        """Input socket: Enable"""
-        return self.inputs._get("Enable")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def data_type(
         self,
     ) -> Literal[
@@ -320,6 +339,20 @@ class GroupInput(NodeBuilder):
     _bl_idname = "NodeGroupInput"
     node: bpy.types.Node
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "GroupInput.Inputs":
+        return GroupInput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GroupInput.Outputs":
+        return GroupInput.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
@@ -334,6 +367,20 @@ class GroupOutput(NodeBuilder):
 
     _bl_idname = "NodeGroupOutput"
     node: bpy.types.Node
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "GroupOutput.Inputs":
+        return GroupOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GroupOutput.Outputs":
+        return GroupOutput.Outputs(self.node.outputs, "output")
 
     def __init__(self, is_active_output: bool = False):
         super().__init__()
@@ -353,10 +400,40 @@ class GroupOutput(NodeBuilder):
 class LinearGizmo(NodeBuilder):
     """
     Show a linear gizmo in the viewport for a value
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    position : InputVector
+        Position
+    direction : InputVector
+        Direction
+
+    Outputs
+    -------
+    transform : GeometrySocket
+        Transform
     """
 
     _bl_idname = "GeometryNodeGizmoLinear"
     node: bpy.types.GeometryNodeGizmoLinear
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        position: Socket
+        direction: Socket
+
+    class Outputs(SocketAccessor):
+        transform: GeometrySocket
+
+    @property
+    def i(self) -> "LinearGizmo.Inputs":
+        return LinearGizmo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "LinearGizmo.Outputs":
+        return LinearGizmo.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -372,26 +449,6 @@ class LinearGizmo(NodeBuilder):
         self.color_id = color_id
         self.draw_style = draw_style
         self._establish_links(**key_args)
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_direction(self) -> Socket:
-        """Input socket: Direction"""
-        return self.inputs._get("Direction")
-
-    @property
-    def o_transform(self) -> GeometrySocket:
-        """Output socket: Transform"""
-        return self.outputs._get("Transform")
 
     @property
     def color_id(self) -> Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]:
@@ -413,10 +470,40 @@ class LinearGizmo(NodeBuilder):
 class TransformGizmo(NodeBuilder):
     """
     Show a transform gizmo in the viewport
+
+    Parameters
+    ----------
+    value : InputMatrix
+        Value
+    position : InputVector
+        Position
+    rotation : InputRotation
+        Rotation
+
+    Outputs
+    -------
+    transform : GeometrySocket
+        Transform
     """
 
     _bl_idname = "GeometryNodeGizmoTransform"
     node: bpy.types.GeometryNodeGizmoTransform
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        position: Socket
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        transform: GeometrySocket
+
+    @property
+    def i(self) -> "TransformGizmo.Inputs":
+        return TransformGizmo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TransformGizmo.Outputs":
+        return TransformGizmo.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -446,26 +533,6 @@ class TransformGizmo(NodeBuilder):
         self.use_scale_y = use_scale_y
         self.use_scale_z = use_scale_z
         self._establish_links(**key_args)
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_transform(self) -> GeometrySocket:
-        """Output socket: Transform"""
-        return self.outputs._get("Transform")
 
     @property
     def use_translation_x(self) -> bool:
@@ -543,10 +610,37 @@ class TransformGizmo(NodeBuilder):
 class Warning(NodeBuilder):
     """
     Create custom warnings in node groups
+
+    Parameters
+    ----------
+    show : InputBoolean
+        Show
+    message : InputString
+        Message
+
+    Outputs
+    -------
+    show : BooleanSocket
+        Show
     """
 
     _bl_idname = "GeometryNodeWarning"
     node: bpy.types.GeometryNodeWarning
+
+    class Inputs(SocketAccessor):
+        show: Socket
+        message: Socket
+
+    class Outputs(SocketAccessor):
+        show: BooleanSocket
+
+    @property
+    def i(self) -> "Warning.Inputs":
+        return Warning.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Warning.Outputs":
+        return Warning.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -574,21 +668,6 @@ class Warning(NodeBuilder):
     def info(cls, show: InputBoolean = True, message: InputString = "") -> "Warning":
         """Create Warning with operation 'Info'."""
         return cls(warning_type="INFO", show=show, message=message)
-
-    @property
-    def i_show(self) -> Socket:
-        """Input socket: Show"""
-        return self.inputs._get("Show")
-
-    @property
-    def i_message(self) -> Socket:
-        """Input socket: Message"""
-        return self.inputs._get("Message")
-
-    @property
-    def o_show(self) -> BooleanSocket:
-        """Output socket: Show"""
-        return self.outputs._get("Show")
 
     @property
     def warning_type(self) -> Literal["ERROR", "WARNING", "INFO"]:

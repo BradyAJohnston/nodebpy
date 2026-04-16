@@ -705,7 +705,7 @@ class TestComparisonChaining:
             pos = g.Position()
             xyz = g.SeparateXYZ(pos)
             # select points where x > 0 and z <= 1
-            selection = (xyz > 0.0) & (g.SeparateXYZ(pos).o_z <= 1.0)
+            selection = (xyz > 0.0) & (g.SeparateXYZ(pos).o.z <= 1.0)
             _ = g.Cube() >> g.SetPosition(selection=selection, offset=(0, 0, 1))
 
         assert len(tree) >= 5
@@ -713,7 +713,7 @@ class TestComparisonChaining:
     def test_comparison_xyz(self):
         """Full pipeline: compare + boolean logic as selection for SetPosition."""
         with TreeBuilder("TestCompareBoolSetPos") as tree:
-            pos = g.Position().o_position
+            pos = g.Position().o.position
             # select points where x > 0 and z <= 1
             selection = (pos.x > 0.0) & (pos.z <= 1.0)
             _ = g.Cube() >> g.SetPosition(selection=selection, offset=(0, 0, 1))
@@ -884,7 +884,7 @@ class TestReverseOperators:
             b = g.CombineTransform(rotation=(0, 90, 0))
             mat = np.random.rand(4, 4)
             # use the output socket as the left operand so Python calls b.__rmatmul__
-            result = a.o_transform.socket @ b
+            result = a.o.transform.socket @ b
             result2 = mat @ a
 
         assert result.node.bl_idname == g.MultiplyMatrices._bl_idname
@@ -934,13 +934,13 @@ class TestMatrixMultiplcation:
                 >> out
             )
 
-        assert cube.o_mesh.links[0].to_node.bl_idname == g.SetPosition._bl_idname
+        assert cube.o.mesh.links[0].to_node.bl_idname == g.SetPosition._bl_idname
         assert (
-            cube.o_mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname  # type: ignore
+            cube.o.mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname  # type: ignore
             == g.TransformPoint._bl_idname
         )
         assert (
-            cube.o_mesh.links[0]  # type: ignore
+            cube.o.mesh.links[0]  # type: ignore
             .to_node.inputs["Position"]
             .links[0]
             .from_node.inputs["Transform"]

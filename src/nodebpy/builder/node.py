@@ -13,7 +13,7 @@ from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
 
 if TYPE_CHECKING:
-    from .socket import Socket
+    pass
 
 
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
@@ -128,6 +128,16 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     def inputs(self) -> SocketAccessor:
         return SocketAccessor(self.node.inputs, "input")
 
+    @property
+    def o(self) -> SocketAccessor:
+        """Output socket accessor. Typed subclasses override this on generated nodes."""
+        return self.outputs
+
+    @property
+    def i(self) -> SocketAccessor:
+        """Input socket accessor. Typed subclasses override this on generated nodes."""
+        return self.inputs
+
 
 class DynamicInputsMixin:
     _socket_data_types: tuple[str, ...]
@@ -200,6 +210,13 @@ class NodeGroupBuilder(BaseNode, ABC):
     ] = "NONE"
     node: bpy.types.GeometryNodeGroup
 
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if "Inputs" in cls.__dict__:
+            cls.i = property(lambda self, c=cls: c.Inputs(self.node.inputs, "input"))
+        if "Outputs" in cls.__dict__:
+            cls.o = property(lambda self, c=cls: c.Outputs(self.node.outputs, "output"))
+
     def __init__(self, **kwargs):
         super().__init__()
         self.node.node_tree = self._get_or_create_group()
@@ -217,19 +234,6 @@ class NodeGroupBuilder(BaseNode, ABC):
             tree.tree.color_tag = self._color_tag
 
         return tree.tree
-
-    def __getattr__(self, name: str) -> "Socket":
-        """Allow ``i_*`` / ``o_*`` attribute access to resolve to input/output sockets.
-
-        ``node.i_vertex_index`` is equivalent to ``node.inputs["vertex_index"]``.
-        ``node.o_other_vertex`` is equivalent to ``node.outputs["other_vertex"]``.
-        The suffix is denormalized (snake_case → Title Case) via :func:`denormalize_name`.
-        """
-        if name.startswith("i_"):
-            return self.inputs._get(name[2:])
-        if name.startswith("o_"):
-            return self.outputs._get(name[2:])
-        raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
 
     @classmethod
     @abstractmethod

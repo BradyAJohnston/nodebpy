@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     BooleanSocket,
     BundleSocket,
@@ -42,10 +43,40 @@ from ...types import (
 class AlignRotationToVector(NodeBuilder):
     """
     Orient a rotation along the given direction
+
+    Parameters
+    ----------
+    rotation : InputRotation
+        Rotation
+    factor : InputFloat
+        Factor
+    vector : InputVector
+        Vector
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeAlignRotationToVector"
     node: bpy.types.FunctionNodeAlignRotationToVector
+
+    class Inputs(SocketAccessor):
+        rotation: Socket
+        factor: Socket
+        vector: Socket
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "AlignRotationToVector.Inputs":
+        return AlignRotationToVector.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AlignRotationToVector.Outputs":
+        return AlignRotationToVector.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -61,26 +92,6 @@ class AlignRotationToVector(NodeBuilder):
         self.axis = axis
         self.pivot_axis = pivot_axis
         self._establish_links(**key_args)
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_factor(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor")
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
 
     @property
     def axis(self) -> Literal["X", "Y", "Z"]:
@@ -102,10 +113,37 @@ class AlignRotationToVector(NodeBuilder):
 class AxesToRotation(NodeBuilder):
     """
     Create a rotation from a primary and (ideally orthogonal) secondary axis
+
+    Parameters
+    ----------
+    primary_axis : InputVector
+        Primary Axis
+    secondary_axis : InputVector
+        Secondary Axis
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeAxesToRotation"
     node: bpy.types.FunctionNodeAxesToRotation
+
+    class Inputs(SocketAccessor):
+        primary_axis: Socket
+        secondary_axis: Socket
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "AxesToRotation.Inputs":
+        return AxesToRotation.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AxesToRotation.Outputs":
+        return AxesToRotation.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -120,21 +158,6 @@ class AxesToRotation(NodeBuilder):
         self.primary_axis = primary_axis
         self.secondary_axis = secondary_axis
         self._establish_links(**key_args)
-
-    @property
-    def i_primary_axis(self) -> Socket:
-        """Input socket: Primary Axis"""
-        return self.inputs._get("Primary Axis")
-
-    @property
-    def i_secondary_axis(self) -> Socket:
-        """Input socket: Secondary Axis"""
-        return self.inputs._get("Secondary Axis")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
 
     @property
     def primary(self) -> Literal["X", "Y", "Z"]:
@@ -156,10 +179,37 @@ class AxesToRotation(NodeBuilder):
 class AxisAngleToRotation(NodeBuilder):
     """
     Build a rotation from an axis and a rotation around that axis
+
+    Parameters
+    ----------
+    axis : InputVector
+        Axis
+    angle : InputFloat
+        Angle
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeAxisAngleToRotation"
     node: bpy.types.FunctionNodeAxisAngleToRotation
+
+    class Inputs(SocketAccessor):
+        axis: Socket
+        angle: Socket
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "AxisAngleToRotation.Inputs":
+        return AxisAngleToRotation.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AxisAngleToRotation.Outputs":
+        return AxisAngleToRotation.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -171,29 +221,44 @@ class AxisAngleToRotation(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_axis(self) -> Socket:
-        """Input socket: Axis"""
-        return self.inputs._get("Axis")
-
-    @property
-    def i_angle(self) -> Socket:
-        """Input socket: Angle"""
-        return self.inputs._get("Angle")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
 
 class BitMath(NodeBuilder):
     """
     Perform bitwise operations on 32-bit integers
+
+    Parameters
+    ----------
+    a : InputInteger
+        A
+    b : InputInteger
+        B
+    shift : InputInteger
+        Shift
+
+    Outputs
+    -------
+    value : IntegerSocket
+        Value
     """
 
     _bl_idname = "FunctionNodeBitMath"
     node: bpy.types.FunctionNodeBitMath
+
+    class Inputs(SocketAccessor):
+        a: Socket
+        b: Socket
+        shift: Socket
+
+    class Outputs(SocketAccessor):
+        value: IntegerSocket
+
+    @property
+    def i(self) -> "BitMath.Inputs":
+        return BitMath.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BitMath.Outputs":
+        return BitMath.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -239,26 +304,6 @@ class BitMath(NodeBuilder):
         return cls(operation="ROTATE", a=a, shift=shift)
 
     @property
-    def i_a(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A")
-
-    @property
-    def i_b(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B")
-
-    @property
-    def i_shift(self) -> Socket:
-        """Input socket: Shift"""
-        return self.inputs._get("Shift")
-
-    @property
-    def o_value(self) -> IntegerSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def operation(self) -> Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"]:
         return self.node.operation
 
@@ -270,10 +315,34 @@ class BitMath(NodeBuilder):
 class Blackbody(NodeBuilder):
     """
     Convert a blackbody temperature to an RGB value
+
+    Parameters
+    ----------
+    temperature : InputFloat
+        Temperature
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeBlackbody"
     node: bpy.types.ShaderNodeBlackbody
+
+    class Inputs(SocketAccessor):
+        temperature: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Blackbody.Inputs":
+        return Blackbody.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Blackbody.Outputs":
+        return Blackbody.Outputs(self.node.outputs, "output")
 
     def __init__(self, temperature: InputFloat = 6500.0):
         super().__init__()
@@ -281,24 +350,41 @@ class Blackbody(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_temperature(self) -> Socket:
-        """Input socket: Temperature"""
-        return self.inputs._get("Temperature")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class BooleanMath(NodeBuilder):
     """
     Perform a logical operation on the given boolean inputs
+
+    Parameters
+    ----------
+    boolean : InputBoolean
+        Boolean
+    boolean_001 : InputBoolean
+        Boolean
+
+    Outputs
+    -------
+    boolean : BooleanSocket
+        Boolean
     """
 
     _bl_idname = "FunctionNodeBooleanMath"
     node: bpy.types.FunctionNodeBooleanMath
+
+    class Inputs(SocketAccessor):
+        boolean: Socket
+        boolean_001: Socket
+
+    class Outputs(SocketAccessor):
+        boolean: BooleanSocket
+
+    @property
+    def i(self) -> "BooleanMath.Inputs":
+        return BooleanMath.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BooleanMath.Outputs":
+        return BooleanMath.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -376,21 +462,6 @@ class BooleanMath(NodeBuilder):
         return cls(operation="NIMPLY", boolean=boolean, boolean_001=boolean_001)
 
     @property
-    def i_boolean(self) -> Socket:
-        """Input socket: Boolean"""
-        return self.inputs._get("Boolean")
-
-    @property
-    def i_boolean_001(self) -> Socket:
-        """Input socket: Boolean"""
-        return self.inputs._get("Boolean_001")
-
-    @property
-    def o_boolean(self) -> BooleanSocket:
-        """Output socket: Boolean"""
-        return self.outputs._get("Boolean")
-
-    @property
     def operation(
         self,
     ) -> Literal["AND", "OR", "NOT", "NAND", "NOR", "XNOR", "XOR", "IMPLY", "NIMPLY"]:
@@ -409,10 +480,40 @@ class BooleanMath(NodeBuilder):
 class Clamp(NodeBuilder):
     """
     Clamp a value between a minimum and a maximum
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    min : InputFloat
+        Min
+    max : InputFloat
+        Max
+
+    Outputs
+    -------
+    result : FloatSocket
+        Result
     """
 
     _bl_idname = "ShaderNodeClamp"
     node: bpy.types.ShaderNodeClamp
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        min: Socket
+        max: Socket
+
+    class Outputs(SocketAccessor):
+        result: FloatSocket
+
+    @property
+    def i(self) -> "Clamp.Inputs":
+        return Clamp.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Clamp.Outputs":
+        return Clamp.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -442,26 +543,6 @@ class Clamp(NodeBuilder):
         return cls(clamp_type="RANGE", value=value, min=min, max=max)
 
     @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_min(self) -> Socket:
-        """Input socket: Min"""
-        return self.inputs._get("Min")
-
-    @property
-    def i_max(self) -> Socket:
-        """Input socket: Max"""
-        return self.inputs._get("Max")
-
-    @property
-    def o_result(self) -> FloatSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result")
-
-    @property
     def clamp_type(self) -> Literal["MINMAX", "RANGE"]:
         return self.node.clamp_type
 
@@ -473,10 +554,37 @@ class Clamp(NodeBuilder):
 class ColorRamp(NodeBuilder):
     """
     Map values to colors with the use of a gradient
+
+    Parameters
+    ----------
+    fac : InputFloat
+        Factor
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    alpha : FloatSocket
+        Alpha
     """
 
     _bl_idname = "ShaderNodeValToRGB"
     node: bpy.types.ShaderNodeValToRGB
+
+    class Inputs(SocketAccessor):
+        fac: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        alpha: FloatSocket
+
+    @property
+    def i(self) -> "ColorRamp.Inputs":
+        return ColorRamp.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ColorRamp.Outputs":
+        return ColorRamp.Outputs(self.node.outputs, "output")
 
     def __init__(self, fac: InputFloat = 0.5):
         super().__init__()
@@ -484,40 +592,39 @@ class ColorRamp(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
-
 
 class CombineBundle(NodeBuilder):
     """
     Combine multiple socket values into one.
+
+    Outputs
+    -------
+    bundle : BundleSocket
+        Bundle
     """
 
     _bl_idname = "NodeCombineBundle"
     node: bpy.types.Node
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        bundle: BundleSocket
+
+    @property
+    def i(self) -> "CombineBundle.Inputs":
+        return CombineBundle.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CombineBundle.Outputs":
+        return CombineBundle.Outputs(self.node.outputs, "output")
 
     def __init__(self, define_signature: bool = False):
         super().__init__()
         key_args = {}
         self.define_signature = define_signature
         self._establish_links(**key_args)
-
-    @property
-    def o_bundle(self) -> BundleSocket:
-        """Output socket: Bundle"""
-        return self.outputs._get("Bundle")
 
     @property
     def define_signature(self) -> bool:
@@ -531,10 +638,43 @@ class CombineBundle(NodeBuilder):
 class CombineColor(NodeBuilder):
     """
     Combine four channels into a single color, based on a particular color model
+
+    Parameters
+    ----------
+    red : InputFloat
+        Red
+    green : InputFloat
+        Green
+    blue : InputFloat
+        Blue
+    alpha : InputFloat
+        Alpha
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "FunctionNodeCombineColor"
     node: bpy.types.FunctionNodeCombineColor
+
+    class Inputs(SocketAccessor):
+        red: Socket
+        green: Socket
+        blue: Socket
+        alpha: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "CombineColor.Inputs":
+        return CombineColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CombineColor.Outputs":
+        return CombineColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -584,31 +724,6 @@ class CombineColor(NodeBuilder):
         return cls(mode="HSL", red=red, green=green, blue=blue, alpha=alpha)
 
     @property
-    def i_red(self) -> Socket:
-        """Input socket: Red"""
-        return self.inputs._get("Red")
-
-    @property
-    def i_green(self) -> Socket:
-        """Input socket: Green"""
-        return self.inputs._get("Green")
-
-    @property
-    def i_blue(self) -> Socket:
-        """Input socket: Blue"""
-        return self.inputs._get("Blue")
-
-    @property
-    def i_alpha(self) -> Socket:
-        """Input socket: Alpha"""
-        return self.inputs._get("Alpha")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
     def mode(self) -> Literal["RGB", "HSV", "HSL"]:
         return self.node.mode
 
@@ -620,10 +735,79 @@ class CombineColor(NodeBuilder):
 class CombineMatrix(NodeBuilder):
     """
     Construct a 4x4 matrix from its individual values
+
+    Parameters
+    ----------
+    column_1_row_1 : InputFloat
+        Column 1 Row 1
+    column_1_row_2 : InputFloat
+        Column 1 Row 2
+    column_1_row_3 : InputFloat
+        Column 1 Row 3
+    column_1_row_4 : InputFloat
+        Column 1 Row 4
+    column_2_row_1 : InputFloat
+        Column 2 Row 1
+    column_2_row_2 : InputFloat
+        Column 2 Row 2
+    column_2_row_3 : InputFloat
+        Column 2 Row 3
+    column_2_row_4 : InputFloat
+        Column 2 Row 4
+    column_3_row_1 : InputFloat
+        Column 3 Row 1
+    column_3_row_2 : InputFloat
+        Column 3 Row 2
+    column_3_row_3 : InputFloat
+        Column 3 Row 3
+    column_3_row_4 : InputFloat
+        Column 3 Row 4
+    column_4_row_1 : InputFloat
+        Column 4 Row 1
+    column_4_row_2 : InputFloat
+        Column 4 Row 2
+    column_4_row_3 : InputFloat
+        Column 4 Row 3
+    column_4_row_4 : InputFloat
+        Column 4 Row 4
+
+    Outputs
+    -------
+    matrix : MatrixSocket
+        Matrix
     """
 
     _bl_idname = "FunctionNodeCombineMatrix"
     node: bpy.types.FunctionNodeCombineMatrix
+
+    class Inputs(SocketAccessor):
+        column_1_row_1: Socket
+        column_1_row_2: Socket
+        column_1_row_3: Socket
+        column_1_row_4: Socket
+        column_2_row_1: Socket
+        column_2_row_2: Socket
+        column_2_row_3: Socket
+        column_2_row_4: Socket
+        column_3_row_1: Socket
+        column_3_row_2: Socket
+        column_3_row_3: Socket
+        column_3_row_4: Socket
+        column_4_row_1: Socket
+        column_4_row_2: Socket
+        column_4_row_3: Socket
+        column_4_row_4: Socket
+
+    class Outputs(SocketAccessor):
+        matrix: MatrixSocket
+
+    @property
+    def i(self) -> "CombineMatrix.Inputs":
+        return CombineMatrix.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CombineMatrix.Outputs":
+        return CombineMatrix.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -666,99 +850,44 @@ class CombineMatrix(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_column_1_row_1(self) -> Socket:
-        """Input socket: Column 1 Row 1"""
-        return self.inputs._get("Column 1 Row 1")
-
-    @property
-    def i_column_1_row_2(self) -> Socket:
-        """Input socket: Column 1 Row 2"""
-        return self.inputs._get("Column 1 Row 2")
-
-    @property
-    def i_column_1_row_3(self) -> Socket:
-        """Input socket: Column 1 Row 3"""
-        return self.inputs._get("Column 1 Row 3")
-
-    @property
-    def i_column_1_row_4(self) -> Socket:
-        """Input socket: Column 1 Row 4"""
-        return self.inputs._get("Column 1 Row 4")
-
-    @property
-    def i_column_2_row_1(self) -> Socket:
-        """Input socket: Column 2 Row 1"""
-        return self.inputs._get("Column 2 Row 1")
-
-    @property
-    def i_column_2_row_2(self) -> Socket:
-        """Input socket: Column 2 Row 2"""
-        return self.inputs._get("Column 2 Row 2")
-
-    @property
-    def i_column_2_row_3(self) -> Socket:
-        """Input socket: Column 2 Row 3"""
-        return self.inputs._get("Column 2 Row 3")
-
-    @property
-    def i_column_2_row_4(self) -> Socket:
-        """Input socket: Column 2 Row 4"""
-        return self.inputs._get("Column 2 Row 4")
-
-    @property
-    def i_column_3_row_1(self) -> Socket:
-        """Input socket: Column 3 Row 1"""
-        return self.inputs._get("Column 3 Row 1")
-
-    @property
-    def i_column_3_row_2(self) -> Socket:
-        """Input socket: Column 3 Row 2"""
-        return self.inputs._get("Column 3 Row 2")
-
-    @property
-    def i_column_3_row_3(self) -> Socket:
-        """Input socket: Column 3 Row 3"""
-        return self.inputs._get("Column 3 Row 3")
-
-    @property
-    def i_column_3_row_4(self) -> Socket:
-        """Input socket: Column 3 Row 4"""
-        return self.inputs._get("Column 3 Row 4")
-
-    @property
-    def i_column_4_row_1(self) -> Socket:
-        """Input socket: Column 4 Row 1"""
-        return self.inputs._get("Column 4 Row 1")
-
-    @property
-    def i_column_4_row_2(self) -> Socket:
-        """Input socket: Column 4 Row 2"""
-        return self.inputs._get("Column 4 Row 2")
-
-    @property
-    def i_column_4_row_3(self) -> Socket:
-        """Input socket: Column 4 Row 3"""
-        return self.inputs._get("Column 4 Row 3")
-
-    @property
-    def i_column_4_row_4(self) -> Socket:
-        """Input socket: Column 4 Row 4"""
-        return self.inputs._get("Column 4 Row 4")
-
-    @property
-    def o_matrix(self) -> MatrixSocket:
-        """Output socket: Matrix"""
-        return self.outputs._get("Matrix")
-
 
 class CombineTransform(NodeBuilder):
     """
     Combine a translation vector, a rotation, and a scale vector into a transformation matrix
+
+    Parameters
+    ----------
+    translation : InputVector
+        Translation
+    rotation : InputRotation
+        Rotation
+    scale : InputVector
+        Scale
+
+    Outputs
+    -------
+    transform : MatrixSocket
+        Transform
     """
 
     _bl_idname = "FunctionNodeCombineTransform"
     node: bpy.types.FunctionNodeCombineTransform
+
+    class Inputs(SocketAccessor):
+        translation: Socket
+        rotation: Socket
+        scale: Socket
+
+    class Outputs(SocketAccessor):
+        transform: MatrixSocket
+
+    @property
+    def i(self) -> "CombineTransform.Inputs":
+        return CombineTransform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CombineTransform.Outputs":
+        return CombineTransform.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -771,34 +900,44 @@ class CombineTransform(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_translation(self) -> Socket:
-        """Input socket: Translation"""
-        return self.inputs._get("Translation")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def o_transform(self) -> MatrixSocket:
-        """Output socket: Transform"""
-        return self.outputs._get("Transform")
-
 
 class CombineXYZ(NodeBuilder):
     """
     Create a vector from X, Y, and Z components
+
+    Parameters
+    ----------
+    x : InputFloat
+        X
+    y : InputFloat
+        Y
+    z : InputFloat
+        Z
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "ShaderNodeCombineXYZ"
     node: bpy.types.ShaderNodeCombineXYZ
+
+    class Inputs(SocketAccessor):
+        x: Socket
+        y: Socket
+        z: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "CombineXYZ.Inputs":
+        return CombineXYZ.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CombineXYZ.Outputs":
+        return CombineXYZ.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -811,34 +950,38 @@ class CombineXYZ(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_x(self) -> Socket:
-        """Input socket: X"""
-        return self.inputs._get("X")
-
-    @property
-    def i_y(self) -> Socket:
-        """Input socket: Y"""
-        return self.inputs._get("Y")
-
-    @property
-    def i_z(self) -> Socket:
-        """Input socket: Z"""
-        return self.inputs._get("Z")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
 
 class EulerToRotation(NodeBuilder):
     """
     Build a rotation from separate angles around each axis
+
+    Parameters
+    ----------
+    euler : InputVector
+        Euler
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeEulerToRotation"
     node: bpy.types.FunctionNodeEulerToRotation
+
+    class Inputs(SocketAccessor):
+        euler: Socket
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "EulerToRotation.Inputs":
+        return EulerToRotation.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EulerToRotation.Outputs":
+        return EulerToRotation.Outputs(self.node.outputs, "output")
 
     def __init__(self, euler: InputVector = None):
         super().__init__()
@@ -846,24 +989,44 @@ class EulerToRotation(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_euler(self) -> Socket:
-        """Input socket: Euler"""
-        return self.inputs._get("Euler")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
 
 class FindInString(NodeBuilder):
     """
     Find the number of times a given string occurs in another string and the position of the first match
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    search : InputString
+        Search
+
+    Outputs
+    -------
+    first_found : IntegerSocket
+        First Found
+    count : IntegerSocket
+        Count
     """
 
     _bl_idname = "FunctionNodeFindInString"
     node: bpy.types.FunctionNodeFindInString
+
+    class Inputs(SocketAccessor):
+        string: Socket
+        search: Socket
+
+    class Outputs(SocketAccessor):
+        first_found: IntegerSocket
+        count: IntegerSocket
+
+    @property
+    def i(self) -> "FindInString.Inputs":
+        return FindInString.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FindInString.Outputs":
+        return FindInString.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -875,34 +1038,41 @@ class FindInString(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_string(self) -> Socket:
-        """Input socket: String"""
-        return self.inputs._get("String")
-
-    @property
-    def i_search(self) -> Socket:
-        """Input socket: Search"""
-        return self.inputs._get("Search")
-
-    @property
-    def o_first_found(self) -> IntegerSocket:
-        """Output socket: First Found"""
-        return self.outputs._get("First Found")
-
-    @property
-    def o_count(self) -> IntegerSocket:
-        """Output socket: Count"""
-        return self.outputs._get("Count")
-
 
 class FloatCurve(NodeBuilder):
     """
     Map an input float to a curve and outputs a float value
+
+    Parameters
+    ----------
+    factor : InputFloat
+        Factor
+    value : InputFloat
+        Value
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "ShaderNodeFloatCurve"
     node: bpy.types.ShaderNodeFloatCurve
+
+    class Inputs(SocketAccessor):
+        factor: Socket
+        value: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "FloatCurve.Inputs":
+        return FloatCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FloatCurve.Outputs":
+        return FloatCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -914,29 +1084,38 @@ class FloatCurve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_factor(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
 
 class FloatToInteger(NodeBuilder):
     """
     Convert the given floating-point number to an integer, with a choice of methods
+
+    Parameters
+    ----------
+    float : InputFloat
+        Float
+
+    Outputs
+    -------
+    integer : IntegerSocket
+        Integer
     """
 
     _bl_idname = "FunctionNodeFloatToInt"
     node: bpy.types.FunctionNodeFloatToInt
+
+    class Inputs(SocketAccessor):
+        float: Socket
+
+    class Outputs(SocketAccessor):
+        integer: IntegerSocket
+
+    @property
+    def i(self) -> "FloatToInteger.Inputs":
+        return FloatToInteger.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FloatToInteger.Outputs":
+        return FloatToInteger.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -950,16 +1129,6 @@ class FloatToInteger(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_float(self) -> Socket:
-        """Input socket: Float"""
-        return self.inputs._get("Float")
-
-    @property
-    def o_integer(self) -> IntegerSocket:
-        """Output socket: Integer"""
-        return self.outputs._get("Integer")
-
-    @property
     def rounding_mode(self) -> Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]:
         return self.node.rounding_mode
 
@@ -971,10 +1140,37 @@ class FloatToInteger(NodeBuilder):
 class HashValue(NodeBuilder):
     """
     Generate a randomized integer using the given input value as a seed
+
+    Parameters
+    ----------
+    value : InputInteger
+        Value
+    seed : InputInteger
+        Seed
+
+    Outputs
+    -------
+    hash : IntegerSocket
+        Hash
     """
 
     _bl_idname = "FunctionNodeHashValue"
     node: bpy.types.FunctionNodeHashValue
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        seed: Socket
+
+    class Outputs(SocketAccessor):
+        hash: IntegerSocket
+
+    @property
+    def i(self) -> "HashValue.Inputs":
+        return HashValue.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "HashValue.Outputs":
+        return HashValue.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1028,21 +1224,6 @@ class HashValue(NodeBuilder):
         return cls(data_type="STRING", value=value, seed=seed)
 
     @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_seed(self) -> Socket:
-        """Input socket: Seed"""
-        return self.inputs._get("Seed")
-
-    @property
-    def o_hash(self) -> IntegerSocket:
-        """Output socket: Hash"""
-        return self.outputs._get("Hash")
-
-    @property
     def data_type(
         self,
     ) -> Literal["FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"]:
@@ -1061,10 +1242,40 @@ class HashValue(NodeBuilder):
 class IndexOfNearest(NodeBuilder):
     """
     Find the nearest element in a group. Similar to the "Sample Nearest" node
+
+    Parameters
+    ----------
+    position : InputVector
+        Position
+    group_id : InputInteger
+        Group ID
+
+    Outputs
+    -------
+    index : IntegerSocket
+        Index
+    has_neighbor : BooleanSocket
+        Has Neighbor
     """
 
     _bl_idname = "GeometryNodeIndexOfNearest"
     node: bpy.types.GeometryNodeIndexOfNearest
+
+    class Inputs(SocketAccessor):
+        position: Socket
+        group_id: Socket
+
+    class Outputs(SocketAccessor):
+        index: IntegerSocket
+        has_neighbor: BooleanSocket
+
+    @property
+    def i(self) -> "IndexOfNearest.Inputs":
+        return IndexOfNearest.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IndexOfNearest.Outputs":
+        return IndexOfNearest.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1076,34 +1287,44 @@ class IndexOfNearest(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_group_id(self) -> Socket:
-        """Input socket: Group ID"""
-        return self.inputs._get("Group ID")
-
-    @property
-    def o_index(self) -> IntegerSocket:
-        """Output socket: Index"""
-        return self.outputs._get("Index")
-
-    @property
-    def o_has_neighbor(self) -> BooleanSocket:
-        """Output socket: Has Neighbor"""
-        return self.outputs._get("Has Neighbor")
-
 
 class IntegerMath(NodeBuilder):
     """
     Perform various math operations on the given integer inputs
+
+    Parameters
+    ----------
+    value : InputInteger
+        Value
+    value_001 : InputInteger
+        Value
+    value_002 : InputInteger
+        Value
+
+    Outputs
+    -------
+    value : IntegerSocket
+        Value
     """
 
     _bl_idname = "FunctionNodeIntegerMath"
     node: bpy.types.FunctionNodeIntegerMath
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        value_001: Socket
+        value_002: Socket
+
+    class Outputs(SocketAccessor):
+        value: IntegerSocket
+
+    @property
+    def i(self) -> "IntegerMath.Inputs":
+        return IntegerMath.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IntegerMath.Outputs":
+        return IntegerMath.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1264,26 +1485,6 @@ class IntegerMath(NodeBuilder):
         return cls(operation="LCM", value=value, value_001=value_001)
 
     @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_value_001(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value_001")
-
-    @property
-    def i_value_002(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value_002")
-
-    @property
-    def o_value(self) -> IntegerSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def operation(
         self,
     ) -> Literal[
@@ -1338,10 +1539,37 @@ class IntegerMath(NodeBuilder):
 class InvertMatrix(NodeBuilder):
     """
     Compute the inverse of the given matrix, if one exists
+
+    Parameters
+    ----------
+    matrix : InputMatrix
+        Matrix
+
+    Outputs
+    -------
+    matrix : MatrixSocket
+        Matrix
+    invertible : BooleanSocket
+        Invertible
     """
 
     _bl_idname = "FunctionNodeInvertMatrix"
     node: bpy.types.FunctionNodeInvertMatrix
+
+    class Inputs(SocketAccessor):
+        matrix: Socket
+
+    class Outputs(SocketAccessor):
+        matrix: MatrixSocket
+        invertible: BooleanSocket
+
+    @property
+    def i(self) -> "InvertMatrix.Inputs":
+        return InvertMatrix.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InvertMatrix.Outputs":
+        return InvertMatrix.Outputs(self.node.outputs, "output")
 
     def __init__(self, matrix: InputMatrix = None):
         super().__init__()
@@ -1349,29 +1577,38 @@ class InvertMatrix(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_matrix(self) -> Socket:
-        """Input socket: Matrix"""
-        return self.inputs._get("Matrix")
-
-    @property
-    def o_matrix(self) -> MatrixSocket:
-        """Output socket: Matrix"""
-        return self.outputs._get("Matrix")
-
-    @property
-    def o_invertible(self) -> BooleanSocket:
-        """Output socket: Invertible"""
-        return self.outputs._get("Invertible")
-
 
 class InvertRotation(NodeBuilder):
     """
     Compute the inverse of the given rotation
+
+    Parameters
+    ----------
+    rotation : InputRotation
+        Rotation
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeInvertRotation"
     node: bpy.types.FunctionNodeInvertRotation
+
+    class Inputs(SocketAccessor):
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "InvertRotation.Inputs":
+        return InvertRotation.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InvertRotation.Outputs":
+        return InvertRotation.Outputs(self.node.outputs, "output")
 
     def __init__(self, rotation: InputRotation = None):
         super().__init__()
@@ -1379,24 +1616,38 @@ class InvertRotation(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
 
 class JoinBundle(NodeBuilder):
     """
     Join multiple bundles together
+
+    Parameters
+    ----------
+    bundle : InputBundle
+        Bundle
+
+    Outputs
+    -------
+    bundle : BundleSocket
+        Bundle
     """
 
     _bl_idname = "NodeJoinBundle"
     node: bpy.types.Node
+
+    class Inputs(SocketAccessor):
+        bundle: Socket
+
+    class Outputs(SocketAccessor):
+        bundle: BundleSocket
+
+    @property
+    def i(self) -> "JoinBundle.Inputs":
+        return JoinBundle.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "JoinBundle.Outputs":
+        return JoinBundle.Outputs(self.node.outputs, "output")
 
     def __init__(self, bundle: InputBundle = None):
         super().__init__()
@@ -1404,24 +1655,74 @@ class JoinBundle(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_bundle(self) -> Socket:
-        """Input socket: Bundle"""
-        return self.inputs._get("Bundle")
-
-    @property
-    def o_bundle(self) -> BundleSocket:
-        """Output socket: Bundle"""
-        return self.outputs._get("Bundle")
-
 
 class MapRange(NodeBuilder):
     """
     Remap a value from a range to a target range
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    from_min : InputFloat
+        From Min
+    from_max : InputFloat
+        From Max
+    to_min : InputFloat
+        To Min
+    to_max : InputFloat
+        To Max
+    steps : InputFloat
+        Steps
+    vector : InputVector
+        Vector
+    from_min_float3 : InputVector
+        From Min
+    from_max_float3 : InputVector
+        From Max
+    to_min_float3 : InputVector
+        To Min
+    to_max_float3 : InputVector
+        To Max
+    steps_float3 : InputVector
+        Steps
+
+    Outputs
+    -------
+    result : FloatSocket
+        Result
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "ShaderNodeMapRange"
     node: bpy.types.ShaderNodeMapRange
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        from_min: Socket
+        from_max: Socket
+        to_min: Socket
+        to_max: Socket
+        steps: Socket
+        vector: Socket
+        from_min_float3: Socket
+        from_max_float3: Socket
+        to_min_float3: Socket
+        to_max_float3: Socket
+        steps_float3: Socket
+
+    class Outputs(SocketAccessor):
+        result: FloatSocket
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "MapRange.Inputs":
+        return MapRange.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MapRange.Outputs":
+        return MapRange.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1581,76 +1882,6 @@ class MapRange(NodeBuilder):
         )
 
     @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_from_min(self) -> Socket:
-        """Input socket: From Min"""
-        return self.inputs._get("From Min")
-
-    @property
-    def i_from_max(self) -> Socket:
-        """Input socket: From Max"""
-        return self.inputs._get("From Max")
-
-    @property
-    def i_to_min(self) -> Socket:
-        """Input socket: To Min"""
-        return self.inputs._get("To Min")
-
-    @property
-    def i_to_max(self) -> Socket:
-        """Input socket: To Max"""
-        return self.inputs._get("To Max")
-
-    @property
-    def i_steps(self) -> Socket:
-        """Input socket: Steps"""
-        return self.inputs._get("Steps")
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_from_min_float3(self) -> Socket:
-        """Input socket: From Min"""
-        return self.inputs._get("From_Min_FLOAT3")
-
-    @property
-    def i_from_max_float3(self) -> Socket:
-        """Input socket: From Max"""
-        return self.inputs._get("From_Max_FLOAT3")
-
-    @property
-    def i_to_min_float3(self) -> Socket:
-        """Input socket: To Min"""
-        return self.inputs._get("To_Min_FLOAT3")
-
-    @property
-    def i_to_max_float3(self) -> Socket:
-        """Input socket: To Max"""
-        return self.inputs._get("To_Max_FLOAT3")
-
-    @property
-    def i_steps_float3(self) -> Socket:
-        """Input socket: Steps"""
-        return self.inputs._get("Steps_FLOAT3")
-
-    @property
-    def o_result(self) -> FloatSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
-    @property
     def clamp(self) -> bool:
         return self.node.clamp
 
@@ -1682,10 +1913,40 @@ class MapRange(NodeBuilder):
 class MatchString(NodeBuilder):
     """
     Check if a given string exists within another string
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    operation : InputMenu | Literal['Starts With', 'Ends With', 'Contains']
+        Operation
+    key : InputString
+        Key
+
+    Outputs
+    -------
+    result : BooleanSocket
+        Result
     """
 
     _bl_idname = "FunctionNodeMatchString"
     node: bpy.types.FunctionNodeMatchString
+
+    class Inputs(SocketAccessor):
+        string: Socket
+        operation: Socket
+        key: Socket
+
+    class Outputs(SocketAccessor):
+        result: BooleanSocket
+
+    @property
+    def i(self) -> "MatchString.Inputs":
+        return MatchString.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MatchString.Outputs":
+        return MatchString.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1699,34 +1960,44 @@ class MatchString(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_string(self) -> Socket:
-        """Input socket: String"""
-        return self.inputs._get("String")
-
-    @property
-    def i_operation(self) -> Socket:
-        """Input socket: Operation"""
-        return self.inputs._get("Operation")
-
-    @property
-    def i_key(self) -> Socket:
-        """Input socket: Key"""
-        return self.inputs._get("Key")
-
-    @property
-    def o_result(self) -> BooleanSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result")
-
 
 class Math(NodeBuilder):
     """
     Perform math operations
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    value_001 : InputFloat
+        Value
+    value_002 : InputFloat
+        Value
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "ShaderNodeMath"
     node: bpy.types.ShaderNodeMath
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        value_001: Socket
+        value_002: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "Math.Inputs":
+        return Math.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Math.Outputs":
+        return Math.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2041,26 +2312,6 @@ class Math(NodeBuilder):
         return cls(operation="DEGREES", value=value)
 
     @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_value_001(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value_001")
-
-    @property
-    def i_value_002(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value_002")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def operation(
         self,
     ) -> Literal[
@@ -2169,10 +2420,34 @@ class Math(NodeBuilder):
 class MatrixDeterminant(NodeBuilder):
     """
     Compute the determinant of the given matrix
+
+    Parameters
+    ----------
+    matrix : InputMatrix
+        Matrix
+
+    Outputs
+    -------
+    determinant : FloatSocket
+        Determinant
     """
 
     _bl_idname = "FunctionNodeMatrixDeterminant"
     node: bpy.types.FunctionNodeMatrixDeterminant
+
+    class Inputs(SocketAccessor):
+        matrix: Socket
+
+    class Outputs(SocketAccessor):
+        determinant: FloatSocket
+
+    @property
+    def i(self) -> "MatrixDeterminant.Inputs":
+        return MatrixDeterminant.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MatrixDeterminant.Outputs":
+        return MatrixDeterminant.Outputs(self.node.outputs, "output")
 
     def __init__(self, matrix: InputMatrix = None):
         super().__init__()
@@ -2180,24 +2455,74 @@ class MatrixDeterminant(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_matrix(self) -> Socket:
-        """Input socket: Matrix"""
-        return self.inputs._get("Matrix")
-
-    @property
-    def o_determinant(self) -> FloatSocket:
-        """Output socket: Determinant"""
-        return self.outputs._get("Determinant")
-
 
 class Mix(NodeBuilder):
     """
     Mix values by a factor
+
+    Parameters
+    ----------
+    factor_float : InputFloat
+        Factor
+    factor_vector : InputVector
+        Factor
+    a_float : InputFloat
+        A
+    b_float : InputFloat
+        B
+    a_vector : InputVector
+        A
+    b_vector : InputVector
+        B
+    a_color : InputColor
+        A
+    b_color : InputColor
+        B
+    a_rotation : InputRotation
+        A
+    b_rotation : InputRotation
+        B
+
+    Outputs
+    -------
+    result_float : FloatSocket
+        Result
+    result_vector : VectorSocket
+        Result
+    result_color : ColorSocket
+        Result
+    result_rotation : RotationSocket
+        Result
     """
 
     _bl_idname = "ShaderNodeMix"
     node: bpy.types.ShaderNodeMix
+
+    class Inputs(SocketAccessor):
+        factor_float: Socket
+        factor_vector: Socket
+        a_float: Socket
+        b_float: Socket
+        a_vector: Socket
+        b_vector: Socket
+        a_color: Socket
+        b_color: Socket
+        a_rotation: Socket
+        b_rotation: Socket
+
+    class Outputs(SocketAccessor):
+        result_float: FloatSocket
+        result_vector: VectorSocket
+        result_color: ColorSocket
+        result_rotation: RotationSocket
+
+    @property
+    def i(self) -> "Mix.Inputs":
+        return Mix.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Mix.Outputs":
+        return Mix.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2300,76 +2625,6 @@ class Mix(NodeBuilder):
         )
 
     @property
-    def i_factor_float(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor_Float")
-
-    @property
-    def i_factor_vector(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor_Vector")
-
-    @property
-    def i_a_float(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Float")
-
-    @property
-    def i_b_float(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Float")
-
-    @property
-    def i_a_vector(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Vector")
-
-    @property
-    def i_b_vector(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Vector")
-
-    @property
-    def i_a_color(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Color")
-
-    @property
-    def i_b_color(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Color")
-
-    @property
-    def i_a_rotation(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Rotation")
-
-    @property
-    def i_b_rotation(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Rotation")
-
-    @property
-    def o_result_float(self) -> FloatSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Float")
-
-    @property
-    def o_result_vector(self) -> VectorSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Vector")
-
-    @property
-    def o_result_color(self) -> ColorSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Color")
-
-    @property
-    def o_result_rotation(self) -> RotationSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Rotation")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]:
         return self.node.data_type
 
@@ -2458,10 +2713,37 @@ class Mix(NodeBuilder):
 class MultiplyMatrices(NodeBuilder):
     """
     Perform a matrix multiplication on two input matrices
+
+    Parameters
+    ----------
+    matrix : InputMatrix
+        Matrix
+    matrix_001 : InputMatrix
+        Matrix
+
+    Outputs
+    -------
+    matrix : MatrixSocket
+        Matrix
     """
 
     _bl_idname = "FunctionNodeMatrixMultiply"
     node: bpy.types.FunctionNodeMatrixMultiply
+
+    class Inputs(SocketAccessor):
+        matrix: Socket
+        matrix_001: Socket
+
+    class Outputs(SocketAccessor):
+        matrix: MatrixSocket
+
+    @property
+    def i(self) -> "MultiplyMatrices.Inputs":
+        return MultiplyMatrices.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MultiplyMatrices.Outputs":
+        return MultiplyMatrices.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2473,29 +2755,50 @@ class MultiplyMatrices(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_matrix(self) -> Socket:
-        """Input socket: Matrix"""
-        return self.inputs._get("Matrix")
-
-    @property
-    def i_matrix_001(self) -> Socket:
-        """Input socket: Matrix"""
-        return self.inputs._get("Matrix_001")
-
-    @property
-    def o_matrix(self) -> MatrixSocket:
-        """Output socket: Matrix"""
-        return self.outputs._get("Matrix")
-
 
 class PackUVIslands(NodeBuilder):
     """
     Scale islands of a UV map and move them so they fill the UV space as much as possible
+
+    Parameters
+    ----------
+    uv : InputVector
+        UV
+    selection : InputBoolean
+        Selection
+    margin : InputFloat
+        Margin
+    rotate : InputBoolean
+        Rotate
+    method : InputMenu | Literal['Bounding Box', 'Convex Hull', 'Exact Shape']
+        Method
+
+    Outputs
+    -------
+    uv : VectorSocket
+        UV
     """
 
     _bl_idname = "GeometryNodeUVPackIslands"
     node: bpy.types.GeometryNodeUVPackIslands
+
+    class Inputs(SocketAccessor):
+        uv: Socket
+        selection: Socket
+        margin: Socket
+        rotate: Socket
+        method: Socket
+
+    class Outputs(SocketAccessor):
+        uv: VectorSocket
+
+    @property
+    def i(self) -> "PackUVIslands.Inputs":
+        return PackUVIslands.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PackUVIslands.Outputs":
+        return PackUVIslands.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2517,44 +2820,41 @@ class PackUVIslands(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_uv(self) -> Socket:
-        """Input socket: UV"""
-        return self.inputs._get("UV")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_margin(self) -> Socket:
-        """Input socket: Margin"""
-        return self.inputs._get("Margin")
-
-    @property
-    def i_rotate(self) -> Socket:
-        """Input socket: Rotate"""
-        return self.inputs._get("Rotate")
-
-    @property
-    def i_method(self) -> Socket:
-        """Input socket: Method"""
-        return self.inputs._get("Method")
-
-    @property
-    def o_uv(self) -> VectorSocket:
-        """Output socket: UV"""
-        return self.outputs._get("UV")
-
 
 class ProjectPoint(NodeBuilder):
     """
     Project a point using a matrix, using location, rotation, scale, and perspective divide
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    transform : InputMatrix
+        Transform
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "FunctionNodeProjectPoint"
     node: bpy.types.FunctionNodeProjectPoint
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        transform: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "ProjectPoint.Inputs":
+        return ProjectPoint.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ProjectPoint.Outputs":
+        return ProjectPoint.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2566,29 +2866,47 @@ class ProjectPoint(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_transform(self) -> Socket:
-        """Input socket: Transform"""
-        return self.inputs._get("Transform")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
 
 class QuaternionToRotation(NodeBuilder):
     """
     Build a rotation from quaternion components
+
+    Parameters
+    ----------
+    w : InputFloat
+        W
+    x : InputFloat
+        X
+    y : InputFloat
+        Y
+    z : InputFloat
+        Z
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeQuaternionToRotation"
     node: bpy.types.FunctionNodeQuaternionToRotation
+
+    class Inputs(SocketAccessor):
+        w: Socket
+        x: Socket
+        y: Socket
+        z: Socket
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "QuaternionToRotation.Inputs":
+        return QuaternionToRotation.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "QuaternionToRotation.Outputs":
+        return QuaternionToRotation.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2602,39 +2920,71 @@ class QuaternionToRotation(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_w(self) -> Socket:
-        """Input socket: W"""
-        return self.inputs._get("W")
-
-    @property
-    def i_x(self) -> Socket:
-        """Input socket: X"""
-        return self.inputs._get("X")
-
-    @property
-    def i_y(self) -> Socket:
-        """Input socket: Y"""
-        return self.inputs._get("Y")
-
-    @property
-    def i_z(self) -> Socket:
-        """Input socket: Z"""
-        return self.inputs._get("Z")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
 
 class RandomValue(NodeBuilder):
     """
     Output a randomized value
+
+    Parameters
+    ----------
+    min : InputVector
+        Min
+    max : InputVector
+        Max
+    min_001 : InputFloat
+        Min
+    max_001 : InputFloat
+        Max
+    min_002 : InputInteger
+        Min
+    max_002 : InputInteger
+        Max
+    probability : InputFloat
+        Probability
+    id : InputInteger
+        ID
+    seed : InputInteger
+        Seed
+
+    Outputs
+    -------
+    value : VectorSocket
+        Value
+    value_001 : FloatSocket
+        Value
+    value_002 : IntegerSocket
+        Value
+    value_003 : BooleanSocket
+        Value
     """
 
     _bl_idname = "FunctionNodeRandomValue"
     node: bpy.types.FunctionNodeRandomValue
+
+    class Inputs(SocketAccessor):
+        min: Socket
+        max: Socket
+        min_001: Socket
+        max_001: Socket
+        min_002: Socket
+        max_002: Socket
+        probability: Socket
+        id: Socket
+        seed: Socket
+
+    class Outputs(SocketAccessor):
+        value: VectorSocket
+        value_001: FloatSocket
+        value_002: IntegerSocket
+        value_003: BooleanSocket
+
+    @property
+    def i(self) -> "RandomValue.Inputs":
+        return RandomValue.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RandomValue.Outputs":
+        return RandomValue.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2706,71 +3056,6 @@ class RandomValue(NodeBuilder):
         return cls(data_type="FLOAT_VECTOR", min=min, max=max, id=id, seed=seed)
 
     @property
-    def i_min(self) -> Socket:
-        """Input socket: Min"""
-        return self.inputs._get("Min")
-
-    @property
-    def i_max(self) -> Socket:
-        """Input socket: Max"""
-        return self.inputs._get("Max")
-
-    @property
-    def i_min_001(self) -> Socket:
-        """Input socket: Min"""
-        return self.inputs._get("Min_001")
-
-    @property
-    def i_max_001(self) -> Socket:
-        """Input socket: Max"""
-        return self.inputs._get("Max_001")
-
-    @property
-    def i_min_002(self) -> Socket:
-        """Input socket: Min"""
-        return self.inputs._get("Min_002")
-
-    @property
-    def i_max_002(self) -> Socket:
-        """Input socket: Max"""
-        return self.inputs._get("Max_002")
-
-    @property
-    def i_probability(self) -> Socket:
-        """Input socket: Probability"""
-        return self.inputs._get("Probability")
-
-    @property
-    def i_id(self) -> Socket:
-        """Input socket: ID"""
-        return self.inputs._get("ID")
-
-    @property
-    def i_seed(self) -> Socket:
-        """Input socket: Seed"""
-        return self.inputs._get("Seed")
-
-    @property
-    def o_value(self) -> VectorSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
-    def o_value_001(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value_001")
-
-    @property
-    def o_value_002(self) -> IntegerSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value_002")
-
-    @property
-    def o_value_003(self) -> BooleanSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value_003")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]:
         return self.node.data_type
 
@@ -2782,10 +3067,40 @@ class RandomValue(NodeBuilder):
 class ReplaceString(NodeBuilder):
     """
     Replace a given string segment with another
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    find : InputString
+        Find
+    replace : InputString
+        Replace
+
+    Outputs
+    -------
+    string : StringSocket
+        String
     """
 
     _bl_idname = "FunctionNodeReplaceString"
     node: bpy.types.FunctionNodeReplaceString
+
+    class Inputs(SocketAccessor):
+        string: Socket
+        find: Socket
+        replace: Socket
+
+    class Outputs(SocketAccessor):
+        string: StringSocket
+
+    @property
+    def i(self) -> "ReplaceString.Inputs":
+        return ReplaceString.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ReplaceString.Outputs":
+        return ReplaceString.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2798,34 +3113,47 @@ class ReplaceString(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_string(self) -> Socket:
-        """Input socket: String"""
-        return self.inputs._get("String")
-
-    @property
-    def i_find(self) -> Socket:
-        """Input socket: Find"""
-        return self.inputs._get("Find")
-
-    @property
-    def i_replace(self) -> Socket:
-        """Input socket: Replace"""
-        return self.inputs._get("Replace")
-
-    @property
-    def o_string(self) -> StringSocket:
-        """Output socket: String"""
-        return self.outputs._get("String")
-
 
 class RotateEuler(NodeBuilder):
     """
     Apply a secondary Euler rotation to a given Euler rotation
+
+    Parameters
+    ----------
+    rotation : InputVector
+        Rotation
+    rotate_by : InputVector
+        Rotate By
+    axis : InputVector
+        Axis
+    angle : InputFloat
+        Angle
+
+    Outputs
+    -------
+    rotation : VectorSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeRotateEuler"
     node: bpy.types.FunctionNodeRotateEuler
+
+    class Inputs(SocketAccessor):
+        rotation: Socket
+        rotate_by: Socket
+        axis: Socket
+        angle: Socket
+
+    class Outputs(SocketAccessor):
+        rotation: VectorSocket
+
+    @property
+    def i(self) -> "RotateEuler.Inputs":
+        return RotateEuler.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RotateEuler.Outputs":
+        return RotateEuler.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2868,31 +3196,6 @@ class RotateEuler(NodeBuilder):
         return cls(rotation_type="EULER", rotation=rotation, rotate_by=rotate_by)
 
     @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_rotate_by(self) -> Socket:
-        """Input socket: Rotate By"""
-        return self.inputs._get("Rotate By")
-
-    @property
-    def i_axis(self) -> Socket:
-        """Input socket: Axis"""
-        return self.inputs._get("Axis")
-
-    @property
-    def i_angle(self) -> Socket:
-        """Input socket: Angle"""
-        return self.inputs._get("Angle")
-
-    @property
-    def o_rotation(self) -> VectorSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
-    @property
     def rotation_type(self) -> Literal["AXIS_ANGLE", "EULER"]:
         return self.node.rotation_type
 
@@ -2912,10 +3215,37 @@ class RotateEuler(NodeBuilder):
 class RotateRotation(NodeBuilder):
     """
     Apply a secondary rotation to a given rotation value
+
+    Parameters
+    ----------
+    rotation : InputRotation
+        Rotation
+    rotate_by : InputRotation
+        Rotate By
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeRotateRotation"
     node: bpy.types.FunctionNodeRotateRotation
+
+    class Inputs(SocketAccessor):
+        rotation: Socket
+        rotate_by: Socket
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "RotateRotation.Inputs":
+        return RotateRotation.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RotateRotation.Outputs":
+        return RotateRotation.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2930,21 +3260,6 @@ class RotateRotation(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_rotate_by(self) -> Socket:
-        """Input socket: Rotate By"""
-        return self.inputs._get("Rotate By")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
-    @property
     def rotation_space(self) -> Literal["GLOBAL", "LOCAL"]:
         return self.node.rotation_space
 
@@ -2956,10 +3271,37 @@ class RotateRotation(NodeBuilder):
 class RotateVector(NodeBuilder):
     """
     Apply a rotation to a given vector
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    rotation : InputRotation
+        Rotation
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "FunctionNodeRotateVector"
     node: bpy.types.FunctionNodeRotateVector
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "RotateVector.Inputs":
+        return RotateVector.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RotateVector.Outputs":
+        return RotateVector.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2971,84 +3313,128 @@ class RotateVector(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
 
 class RotationToAxisAngle(NodeBuilder):
     """
     Convert a rotation to axis angle components
+
+    Parameters
+    ----------
+    rotation : InputRotation
+        Rotation
+
+    Outputs
+    -------
+    axis : VectorSocket
+        Axis
+    angle : FloatSocket
+        Angle
     """
 
     _bl_idname = "FunctionNodeRotationToAxisAngle"
     node: bpy.types.FunctionNodeRotationToAxisAngle
 
+    class Inputs(SocketAccessor):
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        axis: VectorSocket
+        angle: FloatSocket
+
+    @property
+    def i(self) -> "RotationToAxisAngle.Inputs":
+        return RotationToAxisAngle.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RotationToAxisAngle.Outputs":
+        return RotationToAxisAngle.Outputs(self.node.outputs, "output")
+
     def __init__(self, rotation: InputRotation = None):
         super().__init__()
         key_args = {"Rotation": rotation}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_axis(self) -> VectorSocket:
-        """Output socket: Axis"""
-        return self.outputs._get("Axis")
-
-    @property
-    def o_angle(self) -> FloatSocket:
-        """Output socket: Angle"""
-        return self.outputs._get("Angle")
 
 
 class RotationToEuler(NodeBuilder):
     """
     Convert a standard rotation value to an Euler rotation
+
+    Parameters
+    ----------
+    rotation : InputRotation
+        Rotation
+
+    Outputs
+    -------
+    euler : VectorSocket
+        Euler
     """
 
     _bl_idname = "FunctionNodeRotationToEuler"
     node: bpy.types.FunctionNodeRotationToEuler
 
+    class Inputs(SocketAccessor):
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        euler: VectorSocket
+
+    @property
+    def i(self) -> "RotationToEuler.Inputs":
+        return RotationToEuler.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RotationToEuler.Outputs":
+        return RotationToEuler.Outputs(self.node.outputs, "output")
+
     def __init__(self, rotation: InputRotation = None):
         super().__init__()
         key_args = {"Rotation": rotation}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_euler(self) -> VectorSocket:
-        """Output socket: Euler"""
-        return self.outputs._get("Euler")
 
 
 class RotationToQuaternion(NodeBuilder):
     """
     Retrieve the quaternion components representing a rotation
+
+    Parameters
+    ----------
+    rotation : InputRotation
+        Rotation
+
+    Outputs
+    -------
+    w : FloatSocket
+        W
+    x : FloatSocket
+        X
+    y : FloatSocket
+        Y
+    z : FloatSocket
+        Z
     """
 
     _bl_idname = "FunctionNodeRotationToQuaternion"
     node: bpy.types.FunctionNodeRotationToQuaternion
+
+    class Inputs(SocketAccessor):
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        w: FloatSocket
+        x: FloatSocket
+        y: FloatSocket
+        z: FloatSocket
+
+    @property
+    def i(self) -> "RotationToQuaternion.Inputs":
+        return RotationToQuaternion.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RotationToQuaternion.Outputs":
+        return RotationToQuaternion.Outputs(self.node.outputs, "output")
 
     def __init__(self, rotation: InputRotation = None):
         super().__init__()
@@ -3056,39 +3442,33 @@ class RotationToQuaternion(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_w(self) -> FloatSocket:
-        """Output socket: W"""
-        return self.outputs._get("W")
-
-    @property
-    def o_x(self) -> FloatSocket:
-        """Output socket: X"""
-        return self.outputs._get("X")
-
-    @property
-    def o_y(self) -> FloatSocket:
-        """Output socket: Y"""
-        return self.outputs._get("Y")
-
-    @property
-    def o_z(self) -> FloatSocket:
-        """Output socket: Z"""
-        return self.outputs._get("Z")
-
 
 class SeparateBundle(NodeBuilder):
     """
     Split a bundle into multiple sockets.
+
+    Parameters
+    ----------
+    bundle : InputBundle
+        Bundle
     """
 
     _bl_idname = "NodeSeparateBundle"
     node: bpy.types.Node
+
+    class Inputs(SocketAccessor):
+        bundle: Socket
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "SeparateBundle.Inputs":
+        return SeparateBundle.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateBundle.Outputs":
+        return SeparateBundle.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3102,11 +3482,6 @@ class SeparateBundle(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_bundle(self) -> Socket:
-        """Input socket: Bundle"""
-        return self.inputs._get("Bundle")
-
-    @property
     def define_signature(self) -> bool:
         return self.node.define_signature
 
@@ -3118,10 +3493,43 @@ class SeparateBundle(NodeBuilder):
 class SeparateColor(NodeBuilder):
     """
     Split a color into separate channels, based on a particular color model
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+
+    Outputs
+    -------
+    red : FloatSocket
+        Red
+    green : FloatSocket
+        Green
+    blue : FloatSocket
+        Blue
+    alpha : FloatSocket
+        Alpha
     """
 
     _bl_idname = "FunctionNodeSeparateColor"
     node: bpy.types.FunctionNodeSeparateColor
+
+    class Inputs(SocketAccessor):
+        color: Socket
+
+    class Outputs(SocketAccessor):
+        red: FloatSocket
+        green: FloatSocket
+        blue: FloatSocket
+        alpha: FloatSocket
+
+    @property
+    def i(self) -> "SeparateColor.Inputs":
+        return SeparateColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateColor.Outputs":
+        return SeparateColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3150,31 +3558,6 @@ class SeparateColor(NodeBuilder):
         return cls(mode="HSL", color=color)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def o_red(self) -> FloatSocket:
-        """Output socket: Red"""
-        return self.outputs._get("Red")
-
-    @property
-    def o_green(self) -> FloatSocket:
-        """Output socket: Green"""
-        return self.outputs._get("Green")
-
-    @property
-    def o_blue(self) -> FloatSocket:
-        """Output socket: Blue"""
-        return self.outputs._get("Blue")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
-
-    @property
     def mode(self) -> Literal["RGB", "HSV", "HSL"]:
         return self.node.mode
 
@@ -3186,10 +3569,79 @@ class SeparateColor(NodeBuilder):
 class SeparateMatrix(NodeBuilder):
     """
     Split a 4x4 matrix into its individual values
+
+    Parameters
+    ----------
+    matrix : InputMatrix
+        Matrix
+
+    Outputs
+    -------
+    column_1_row_1 : FloatSocket
+        Column 1 Row 1
+    column_1_row_2 : FloatSocket
+        Column 1 Row 2
+    column_1_row_3 : FloatSocket
+        Column 1 Row 3
+    column_1_row_4 : FloatSocket
+        Column 1 Row 4
+    column_2_row_1 : FloatSocket
+        Column 2 Row 1
+    column_2_row_2 : FloatSocket
+        Column 2 Row 2
+    column_2_row_3 : FloatSocket
+        Column 2 Row 3
+    column_2_row_4 : FloatSocket
+        Column 2 Row 4
+    column_3_row_1 : FloatSocket
+        Column 3 Row 1
+    column_3_row_2 : FloatSocket
+        Column 3 Row 2
+    column_3_row_3 : FloatSocket
+        Column 3 Row 3
+    column_3_row_4 : FloatSocket
+        Column 3 Row 4
+    column_4_row_1 : FloatSocket
+        Column 4 Row 1
+    column_4_row_2 : FloatSocket
+        Column 4 Row 2
+    column_4_row_3 : FloatSocket
+        Column 4 Row 3
+    column_4_row_4 : FloatSocket
+        Column 4 Row 4
     """
 
     _bl_idname = "FunctionNodeSeparateMatrix"
     node: bpy.types.FunctionNodeSeparateMatrix
+
+    class Inputs(SocketAccessor):
+        matrix: Socket
+
+    class Outputs(SocketAccessor):
+        column_1_row_1: FloatSocket
+        column_1_row_2: FloatSocket
+        column_1_row_3: FloatSocket
+        column_1_row_4: FloatSocket
+        column_2_row_1: FloatSocket
+        column_2_row_2: FloatSocket
+        column_2_row_3: FloatSocket
+        column_2_row_4: FloatSocket
+        column_3_row_1: FloatSocket
+        column_3_row_2: FloatSocket
+        column_3_row_3: FloatSocket
+        column_3_row_4: FloatSocket
+        column_4_row_1: FloatSocket
+        column_4_row_2: FloatSocket
+        column_4_row_3: FloatSocket
+        column_4_row_4: FloatSocket
+
+    @property
+    def i(self) -> "SeparateMatrix.Inputs":
+        return SeparateMatrix.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateMatrix.Outputs":
+        return SeparateMatrix.Outputs(self.node.outputs, "output")
 
     def __init__(self, matrix: InputMatrix = None):
         super().__init__()
@@ -3197,99 +3649,44 @@ class SeparateMatrix(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_matrix(self) -> Socket:
-        """Input socket: Matrix"""
-        return self.inputs._get("Matrix")
-
-    @property
-    def o_column_1_row_1(self) -> FloatSocket:
-        """Output socket: Column 1 Row 1"""
-        return self.outputs._get("Column 1 Row 1")
-
-    @property
-    def o_column_1_row_2(self) -> FloatSocket:
-        """Output socket: Column 1 Row 2"""
-        return self.outputs._get("Column 1 Row 2")
-
-    @property
-    def o_column_1_row_3(self) -> FloatSocket:
-        """Output socket: Column 1 Row 3"""
-        return self.outputs._get("Column 1 Row 3")
-
-    @property
-    def o_column_1_row_4(self) -> FloatSocket:
-        """Output socket: Column 1 Row 4"""
-        return self.outputs._get("Column 1 Row 4")
-
-    @property
-    def o_column_2_row_1(self) -> FloatSocket:
-        """Output socket: Column 2 Row 1"""
-        return self.outputs._get("Column 2 Row 1")
-
-    @property
-    def o_column_2_row_2(self) -> FloatSocket:
-        """Output socket: Column 2 Row 2"""
-        return self.outputs._get("Column 2 Row 2")
-
-    @property
-    def o_column_2_row_3(self) -> FloatSocket:
-        """Output socket: Column 2 Row 3"""
-        return self.outputs._get("Column 2 Row 3")
-
-    @property
-    def o_column_2_row_4(self) -> FloatSocket:
-        """Output socket: Column 2 Row 4"""
-        return self.outputs._get("Column 2 Row 4")
-
-    @property
-    def o_column_3_row_1(self) -> FloatSocket:
-        """Output socket: Column 3 Row 1"""
-        return self.outputs._get("Column 3 Row 1")
-
-    @property
-    def o_column_3_row_2(self) -> FloatSocket:
-        """Output socket: Column 3 Row 2"""
-        return self.outputs._get("Column 3 Row 2")
-
-    @property
-    def o_column_3_row_3(self) -> FloatSocket:
-        """Output socket: Column 3 Row 3"""
-        return self.outputs._get("Column 3 Row 3")
-
-    @property
-    def o_column_3_row_4(self) -> FloatSocket:
-        """Output socket: Column 3 Row 4"""
-        return self.outputs._get("Column 3 Row 4")
-
-    @property
-    def o_column_4_row_1(self) -> FloatSocket:
-        """Output socket: Column 4 Row 1"""
-        return self.outputs._get("Column 4 Row 1")
-
-    @property
-    def o_column_4_row_2(self) -> FloatSocket:
-        """Output socket: Column 4 Row 2"""
-        return self.outputs._get("Column 4 Row 2")
-
-    @property
-    def o_column_4_row_3(self) -> FloatSocket:
-        """Output socket: Column 4 Row 3"""
-        return self.outputs._get("Column 4 Row 3")
-
-    @property
-    def o_column_4_row_4(self) -> FloatSocket:
-        """Output socket: Column 4 Row 4"""
-        return self.outputs._get("Column 4 Row 4")
-
 
 class SeparateTransform(NodeBuilder):
     """
     Split a transformation matrix into a translation vector, a rotation, and a scale vector
+
+    Parameters
+    ----------
+    transform : InputMatrix
+        Transform
+
+    Outputs
+    -------
+    translation : VectorSocket
+        Translation
+    rotation : RotationSocket
+        Rotation
+    scale : VectorSocket
+        Scale
     """
 
     _bl_idname = "FunctionNodeSeparateTransform"
     node: bpy.types.FunctionNodeSeparateTransform
+
+    class Inputs(SocketAccessor):
+        transform: Socket
+
+    class Outputs(SocketAccessor):
+        translation: VectorSocket
+        rotation: RotationSocket
+        scale: VectorSocket
+
+    @property
+    def i(self) -> "SeparateTransform.Inputs":
+        return SeparateTransform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateTransform.Outputs":
+        return SeparateTransform.Outputs(self.node.outputs, "output")
 
     def __init__(self, transform: InputMatrix = None):
         super().__init__()
@@ -3297,34 +3694,44 @@ class SeparateTransform(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_transform(self) -> Socket:
-        """Input socket: Transform"""
-        return self.inputs._get("Transform")
-
-    @property
-    def o_translation(self) -> VectorSocket:
-        """Output socket: Translation"""
-        return self.outputs._get("Translation")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
-    @property
-    def o_scale(self) -> VectorSocket:
-        """Output socket: Scale"""
-        return self.outputs._get("Scale")
-
 
 class SeparateXYZ(NodeBuilder):
     """
     Split a vector into its X, Y, and Z components
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+
+    Outputs
+    -------
+    x : FloatSocket
+        X
+    y : FloatSocket
+        Y
+    z : FloatSocket
+        Z
     """
 
     _bl_idname = "ShaderNodeSeparateXYZ"
     node: bpy.types.ShaderNodeSeparateXYZ
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+
+    class Outputs(SocketAccessor):
+        x: FloatSocket
+        y: FloatSocket
+        z: FloatSocket
+
+    @property
+    def i(self) -> "SeparateXYZ.Inputs":
+        return SeparateXYZ.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateXYZ.Outputs":
+        return SeparateXYZ.Outputs(self.node.outputs, "output")
 
     def __init__(self, vector: InputVector = None):
         super().__init__()
@@ -3332,34 +3739,44 @@ class SeparateXYZ(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def o_x(self) -> FloatSocket:
-        """Output socket: X"""
-        return self.outputs._get("X")
-
-    @property
-    def o_y(self) -> FloatSocket:
-        """Output socket: Y"""
-        return self.outputs._get("Y")
-
-    @property
-    def o_z(self) -> FloatSocket:
-        """Output socket: Z"""
-        return self.outputs._get("Z")
-
 
 class SliceString(NodeBuilder):
     """
     Extract a string segment from a larger string
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    position : InputInteger
+        Position
+    length : InputInteger
+        Length
+
+    Outputs
+    -------
+    string : StringSocket
+        String
     """
 
     _bl_idname = "FunctionNodeSliceString"
     node: bpy.types.FunctionNodeSliceString
+
+    class Inputs(SocketAccessor):
+        string: Socket
+        position: Socket
+        length: Socket
+
+    class Outputs(SocketAccessor):
+        string: StringSocket
+
+    @property
+    def i(self) -> "SliceString.Inputs":
+        return SliceString.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SliceString.Outputs":
+        return SliceString.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3372,34 +3789,38 @@ class SliceString(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_string(self) -> Socket:
-        """Input socket: String"""
-        return self.inputs._get("String")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_length(self) -> Socket:
-        """Input socket: Length"""
-        return self.inputs._get("Length")
-
-    @property
-    def o_string(self) -> StringSocket:
-        """Output socket: String"""
-        return self.outputs._get("String")
-
 
 class StringLength(NodeBuilder):
     """
     Output the number of characters in the given string
+
+    Parameters
+    ----------
+    string : InputString
+        String
+
+    Outputs
+    -------
+    length : IntegerSocket
+        Length
     """
 
     _bl_idname = "FunctionNodeStringLength"
     node: bpy.types.FunctionNodeStringLength
+
+    class Inputs(SocketAccessor):
+        string: Socket
+
+    class Outputs(SocketAccessor):
+        length: IntegerSocket
+
+    @property
+    def i(self) -> "StringLength.Inputs":
+        return StringLength.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "StringLength.Outputs":
+        return StringLength.Outputs(self.node.outputs, "output")
 
     def __init__(self, string: InputString = ""):
         super().__init__()
@@ -3407,24 +3828,41 @@ class StringLength(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_string(self) -> Socket:
-        """Input socket: String"""
-        return self.inputs._get("String")
-
-    @property
-    def o_length(self) -> IntegerSocket:
-        """Output socket: Length"""
-        return self.outputs._get("Length")
-
 
 class StringToValue(NodeBuilder):
     """
     Derive a numeric value from a given string representation
+
+    Parameters
+    ----------
+    string : InputString
+        String
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
+    length : IntegerSocket
+        Length
     """
 
     _bl_idname = "FunctionNodeStringToValue"
     node: bpy.types.FunctionNodeStringToValue
+
+    class Inputs(SocketAccessor):
+        string: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+        length: IntegerSocket
+
+    @property
+    def i(self) -> "StringToValue.Inputs":
+        return StringToValue.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "StringToValue.Outputs":
+        return StringToValue.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3448,21 +3886,6 @@ class StringToValue(NodeBuilder):
         return cls(data_type="INT", string=string)
 
     @property
-    def i_string(self) -> Socket:
-        """Input socket: String"""
-        return self.inputs._get("String")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
-    def o_length(self) -> IntegerSocket:
-        """Output socket: Length"""
-        return self.outputs._get("Length")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT"]:
         return self.node.data_type
 
@@ -3474,10 +3897,40 @@ class StringToValue(NodeBuilder):
 class Switch(NodeBuilder):
     """
     Switch between two inputs
+
+    Parameters
+    ----------
+    switch : InputBoolean
+        Switch
+    false : InputGeometry
+        False
+    true : InputGeometry
+        True
+
+    Outputs
+    -------
+    output : GeometrySocket
+        Output
     """
 
     _bl_idname = "GeometryNodeSwitch"
     node: bpy.types.GeometryNodeSwitch
+
+    class Inputs(SocketAccessor):
+        switch: Socket
+        false: Socket
+        true: Socket
+
+    class Outputs(SocketAccessor):
+        output: GeometrySocket
+
+    @property
+    def i(self) -> "Switch.Inputs":
+        return Switch.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Switch.Outputs":
+        return Switch.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3670,26 +4123,6 @@ class Switch(NodeBuilder):
         return cls(input_type="CLOSURE", switch=switch, false=false, true=true)
 
     @property
-    def i_switch(self) -> Socket:
-        """Input socket: Switch"""
-        return self.inputs._get("Switch")
-
-    @property
-    def i_false(self) -> Socket:
-        """Input socket: False"""
-        return self.inputs._get("False")
-
-    @property
-    def i_true(self) -> Socket:
-        """Input socket: True"""
-        return self.inputs._get("True")
-
-    @property
-    def o_output(self) -> GeometrySocket:
-        """Output socket: Output"""
-        return self.outputs._get("Output")
-
-    @property
     def input_type(
         self,
     ) -> Literal[
@@ -3740,10 +4173,37 @@ class Switch(NodeBuilder):
 class TransformDirection(NodeBuilder):
     """
     Apply a transformation matrix (excluding translation) to the given vector
+
+    Parameters
+    ----------
+    direction : InputVector
+        Direction
+    transform : InputMatrix
+        Transform
+
+    Outputs
+    -------
+    direction : VectorSocket
+        Direction
     """
 
     _bl_idname = "FunctionNodeTransformDirection"
     node: bpy.types.FunctionNodeTransformDirection
+
+    class Inputs(SocketAccessor):
+        direction: Socket
+        transform: Socket
+
+    class Outputs(SocketAccessor):
+        direction: VectorSocket
+
+    @property
+    def i(self) -> "TransformDirection.Inputs":
+        return TransformDirection.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TransformDirection.Outputs":
+        return TransformDirection.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3755,29 +4215,41 @@ class TransformDirection(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_direction(self) -> Socket:
-        """Input socket: Direction"""
-        return self.inputs._get("Direction")
-
-    @property
-    def i_transform(self) -> Socket:
-        """Input socket: Transform"""
-        return self.inputs._get("Transform")
-
-    @property
-    def o_direction(self) -> VectorSocket:
-        """Output socket: Direction"""
-        return self.outputs._get("Direction")
-
 
 class TransformPoint(NodeBuilder):
     """
     Apply a transformation matrix to the given vector
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    transform : InputMatrix
+        Transform
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "FunctionNodeTransformPoint"
     node: bpy.types.FunctionNodeTransformPoint
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        transform: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "TransformPoint.Inputs":
+        return TransformPoint.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TransformPoint.Outputs":
+        return TransformPoint.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3789,29 +4261,38 @@ class TransformPoint(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_transform(self) -> Socket:
-        """Input socket: Transform"""
-        return self.inputs._get("Transform")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
 
 class TransposeMatrix(NodeBuilder):
     """
     Flip a matrix over its diagonal, turning columns into rows and vice-versa
+
+    Parameters
+    ----------
+    matrix : InputMatrix
+        Matrix
+
+    Outputs
+    -------
+    matrix : MatrixSocket
+        Matrix
     """
 
     _bl_idname = "FunctionNodeTransposeMatrix"
     node: bpy.types.FunctionNodeTransposeMatrix
+
+    class Inputs(SocketAccessor):
+        matrix: Socket
+
+    class Outputs(SocketAccessor):
+        matrix: MatrixSocket
+
+    @property
+    def i(self) -> "TransposeMatrix.Inputs":
+        return TransposeMatrix.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TransposeMatrix.Outputs":
+        return TransposeMatrix.Outputs(self.node.outputs, "output")
 
     def __init__(self, matrix: InputMatrix = None):
         super().__init__()
@@ -3819,24 +4300,50 @@ class TransposeMatrix(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_matrix(self) -> Socket:
-        """Input socket: Matrix"""
-        return self.inputs._get("Matrix")
-
-    @property
-    def o_matrix(self) -> MatrixSocket:
-        """Output socket: Matrix"""
-        return self.outputs._get("Matrix")
-
 
 class UVUnwrap(NodeBuilder):
     """
     Generate a UV map based on seam edges
+
+    Parameters
+    ----------
+    selection : InputBoolean
+        Selection
+    seam : InputBoolean
+        Seam
+    margin : InputFloat
+        Margin
+    fill_holes : InputBoolean
+        Fill Holes
+    method : InputMenu | Literal['Angle Based', 'Conformal']
+        Method
+
+    Outputs
+    -------
+    uv : VectorSocket
+        UV
     """
 
     _bl_idname = "GeometryNodeUVUnwrap"
     node: bpy.types.GeometryNodeUVUnwrap
+
+    class Inputs(SocketAccessor):
+        selection: Socket
+        seam: Socket
+        margin: Socket
+        fill_holes: Socket
+        method: Socket
+
+    class Outputs(SocketAccessor):
+        uv: VectorSocket
+
+    @property
+    def i(self) -> "UVUnwrap.Inputs":
+        return UVUnwrap.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "UVUnwrap.Outputs":
+        return UVUnwrap.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3857,44 +4364,41 @@ class UVUnwrap(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_seam(self) -> Socket:
-        """Input socket: Seam"""
-        return self.inputs._get("Seam")
-
-    @property
-    def i_margin(self) -> Socket:
-        """Input socket: Margin"""
-        return self.inputs._get("Margin")
-
-    @property
-    def i_fill_holes(self) -> Socket:
-        """Input socket: Fill Holes"""
-        return self.inputs._get("Fill Holes")
-
-    @property
-    def i_method(self) -> Socket:
-        """Input socket: Method"""
-        return self.inputs._get("Method")
-
-    @property
-    def o_uv(self) -> VectorSocket:
-        """Output socket: UV"""
-        return self.outputs._get("UV")
-
 
 class ValueToString(NodeBuilder):
     """
     Generate a string representation of the given input value
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    decimals : InputInteger
+        Decimals
+
+    Outputs
+    -------
+    string : StringSocket
+        String
     """
 
     _bl_idname = "FunctionNodeValueToString"
     node: bpy.types.FunctionNodeValueToString
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        decimals: Socket
+
+    class Outputs(SocketAccessor):
+        string: StringSocket
+
+    @property
+    def i(self) -> "ValueToString.Inputs":
+        return ValueToString.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ValueToString.Outputs":
+        return ValueToString.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3919,21 +4423,6 @@ class ValueToString(NodeBuilder):
     def integer(cls, value: InputInteger = 0) -> "ValueToString":
         """Create Value to String with operation 'Integer'. 32-bit integer"""
         return cls(data_type="INT", value=value)
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_decimals(self) -> Socket:
-        """Input socket: Decimals"""
-        return self.inputs._get("Decimals")
-
-    @property
-    def o_string(self) -> StringSocket:
-        """Output socket: String"""
-        return self.outputs._get("String")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT"]:

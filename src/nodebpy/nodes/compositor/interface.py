@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, FloatSocket
+from ...builder import BaseNode as NodeBuilder, SocketAccessor, Socket, FloatSocket
 
 from ...types import (
     InputBoolean,
@@ -20,10 +20,37 @@ from ...types import (
 class EnableOutput(NodeBuilder):
     """
     Either pass through the input value or output the fallback value
+
+    Parameters
+    ----------
+    enable : InputBoolean
+        Enable
+    value : InputFloat
+        Value
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "NodeEnableOutput"
     node: bpy.types.Node
+
+    class Inputs(SocketAccessor):
+        enable: Socket
+        value: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "EnableOutput.Inputs":
+        return EnableOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EnableOutput.Outputs":
+        return EnableOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -87,21 +114,6 @@ class EnableOutput(NodeBuilder):
     ) -> "EnableOutput":
         """Create Enable Output with operation 'Menu'."""
         return cls(data_type="MENU", enable=enable, value=value)
-
-    @property
-    def i_enable(self) -> Socket:
-        """Input socket: Enable"""
-        return self.inputs._get("Enable")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
 
     @property
     def data_type(

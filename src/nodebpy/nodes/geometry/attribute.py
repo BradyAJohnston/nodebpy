@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     FloatSocket,
     GeometrySocket,
@@ -29,10 +30,40 @@ from ...types import (
 class BlurAttribute(NodeBuilder):
     """
     Mix attribute values of neighboring elements
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    iterations : InputInteger
+        Iterations
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "GeometryNodeBlurAttribute"
     node: bpy.types.GeometryNodeBlurAttribute
+
+    class Inputs(SocketAccessor):
+        value: Socket
+        iterations: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "BlurAttribute.Inputs":
+        return BlurAttribute.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BlurAttribute.Outputs":
+        return BlurAttribute.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -92,26 +123,6 @@ class BlurAttribute(NodeBuilder):
         )
 
     @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_iterations(self) -> Socket:
-        """Input socket: Iterations"""
-        return self.inputs._get("Iterations")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]:
         return self.node.data_type
 
@@ -123,10 +134,52 @@ class BlurAttribute(NodeBuilder):
 class DomainSize(NodeBuilder):
     """
     Retrieve the number of elements in a geometry for each attribute domain
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+
+    Outputs
+    -------
+    point_count : IntegerSocket
+        Point Count
+    edge_count : IntegerSocket
+        Edge Count
+    face_count : IntegerSocket
+        Face Count
+    face_corner_count : IntegerSocket
+        Face Corner Count
+    spline_count : IntegerSocket
+        Spline Count
+    instance_count : IntegerSocket
+        Instance Count
+    layer_count : IntegerSocket
+        Layer Count
     """
 
     _bl_idname = "GeometryNodeAttributeDomainSize"
     node: bpy.types.GeometryNodeAttributeDomainSize
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+
+    class Outputs(SocketAccessor):
+        point_count: IntegerSocket
+        edge_count: IntegerSocket
+        face_count: IntegerSocket
+        face_corner_count: IntegerSocket
+        spline_count: IntegerSocket
+        instance_count: IntegerSocket
+        layer_count: IntegerSocket
+
+    @property
+    def i(self) -> "DomainSize.Inputs":
+        return DomainSize.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DomainSize.Outputs":
+        return DomainSize.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -140,46 +193,6 @@ class DomainSize(NodeBuilder):
         key_args = {"Geometry": geometry}
         self.component = component
         self._establish_links(**key_args)
-
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def o_point_count(self) -> IntegerSocket:
-        """Output socket: Point Count"""
-        return self.outputs._get("Point Count")
-
-    @property
-    def o_edge_count(self) -> IntegerSocket:
-        """Output socket: Edge Count"""
-        return self.outputs._get("Edge Count")
-
-    @property
-    def o_face_count(self) -> IntegerSocket:
-        """Output socket: Face Count"""
-        return self.outputs._get("Face Count")
-
-    @property
-    def o_face_corner_count(self) -> IntegerSocket:
-        """Output socket: Face Corner Count"""
-        return self.outputs._get("Face Corner Count")
-
-    @property
-    def o_spline_count(self) -> IntegerSocket:
-        """Output socket: Spline Count"""
-        return self.outputs._get("Spline Count")
-
-    @property
-    def o_instance_count(self) -> IntegerSocket:
-        """Output socket: Instance Count"""
-        return self.outputs._get("Instance Count")
-
-    @property
-    def o_layer_count(self) -> IntegerSocket:
-        """Output socket: Layer Count"""
-        return self.outputs._get("Layer Count")
 
     @property
     def component(
@@ -197,10 +210,40 @@ class DomainSize(NodeBuilder):
 class RemoveNamedAttribute(NodeBuilder):
     """
     Delete an attribute with a specified name from a geometry. Typically used to optimize performance
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    pattern_mode : InputMenu | Literal['Exact', 'Wildcard']
+        Pattern Mode
+    name : InputString
+        Name
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeRemoveAttribute"
     node: bpy.types.GeometryNodeRemoveAttribute
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        pattern_mode: Socket
+        name: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "RemoveNamedAttribute.Inputs":
+        return RemoveNamedAttribute.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RemoveNamedAttribute.Outputs":
+        return RemoveNamedAttribute.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -213,34 +256,47 @@ class RemoveNamedAttribute(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_pattern_mode(self) -> Socket:
-        """Input socket: Pattern Mode"""
-        return self.inputs._get("Pattern Mode")
-
-    @property
-    def i_name(self) -> Socket:
-        """Input socket: Name"""
-        return self.inputs._get("Name")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class StoreNamedAttribute(NodeBuilder):
     """
     Store the result of a field on a geometry as an attribute with the specified name
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    name : InputString
+        Name
+    value : InputFloat
+        Value
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeStoreNamedAttribute"
     node: bpy.types.GeometryNodeStoreNamedAttribute
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        name: Socket
+        value: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "StoreNamedAttribute.Inputs":
+        return StoreNamedAttribute.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "StoreNamedAttribute.Outputs":
+        return StoreNamedAttribute.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -564,31 +620,6 @@ class StoreNamedAttribute(NodeBuilder):
             name=name,
             value=value,
         )
-
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_name(self) -> Socket:
-        """Input socket: Name"""
-        return self.inputs._get("Name")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
 
     @property
     def data_type(

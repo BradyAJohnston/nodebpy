@@ -270,14 +270,14 @@ class TestGeneratedNodes:
             bbox = g.BoundingBox()
 
             # Test output property accessors
-            assert hasattr(bbox, "o_bounding_box")
-            assert hasattr(bbox, "o_min")
-            assert hasattr(bbox, "o_max")
+            assert hasattr(bbox.o, "bounding_box")
+            assert hasattr(bbox.o, "min")
+            assert hasattr(bbox.o, "max")
 
             # They should return sockets
-            assert bbox.o_bounding_box is not None
-            assert bbox.o_min is not None
-            assert bbox.o_max is not None
+            assert bbox.o.bounding_box is not None
+            assert bbox.o.min is not None
+            assert bbox.o.max is not None
 
 
 class TestComplexWorkflow:
@@ -733,10 +733,10 @@ def test_iter_outputs():
 
 def test_vector_socket_linker():
     with TreeBuilder("SeparateXYZ_z"):
-        pos = g.Position().o_position
+        pos = g.Position().o.position
 
         result = g.SetPosition(position=pos.x * g.Position())
-        pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
+        pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i.offset
 
     assert result.node
     assert result.node.inputs["Position"].links[0].from_node.operation == "SCALE"
@@ -745,7 +745,7 @@ def test_vector_socket_linker():
 
 def test_color_socket_linker():
     with TreeBuilder("ColorChannels"):
-        color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
+        color = g.Color((1.0, 0.5, 0.25, 1.0)).o.color
 
         assert isinstance(color, ColorSocketLinker)
 
@@ -767,7 +767,7 @@ def test_color_socket_linker():
 
 def test_color_socket_linker_in_shader_tree():
     with TreeBuilder.shader():
-        color = s.CombineColor(red=1.0, green=0.5, blue=0.25).o_color
+        color = s.CombineColor(red=1.0, green=0.5, blue=0.25).o.color
 
         assert isinstance(color, ColorSocketLinker)
 
@@ -781,7 +781,7 @@ def test_color_socket_linker_in_shader_tree():
 
 def test_color_socket_linker_channel_into_math():
     with TreeBuilder("ColorMath"):
-        color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
+        color = g.Color((1.0, 0.5, 0.25, 1.0)).o.color
 
         # Use a color channel in a math expression
         result = color.r * 2.0 + color.g
@@ -808,16 +808,16 @@ class TestSocketAccessor:
 
         with TreeBuilder("IterTest"):
             pos = g.Position()
-            _assert_equal(dict(pos.outputs._items()), {"Position": pos.o_position})
+            _assert_equal(dict(pos.outputs._items()), {"Position": pos.o.position})
 
             setpos = g.SetPosition()
             _assert_equal(
                 dict(setpos.inputs._items()),
                 {
-                    "Geometry": setpos.i_geometry,
-                    "Selection": setpos.i_selection,
-                    "Position": setpos.i_position,
-                    "Offset": setpos.i_offset,
+                    "Geometry": setpos.i.geometry,
+                    "Selection": setpos.i.selection,
+                    "Position": setpos.i.position,
+                    "Offset": setpos.i.offset,
                 },
             )
 
@@ -925,9 +925,9 @@ class TestIntegerSocketLinker:
         with TreeBuilder("IntPlusIntSocket"):
             a = g.Integer(1)
             b = g.Integer(2)
-            # b.o_integer is an IntegerSocketLinker; adding it to another integer
+            # b.o.integer is an IntegerSocketLinker; adding it to another integer
             # socket linker should use IntegerMath.add, not Math.add
-            result = a.o_integer + b.o_integer
+            result = a.o.integer + b.o.integer
 
         assert isinstance(result, g.IntegerMath)
         assert result.node.operation == "ADD"
@@ -942,7 +942,7 @@ class TestIntegerSocketLinker:
             a = g.Integer(1)
             b = g.Integer(2)
             # Use the NodeBuilder directly (not its output socket linker)
-            result = a.o_integer + b
+            result = a.o.integer + b
 
         assert isinstance(result, g.IntegerMath)
         assert result.node.operation == "ADD"
@@ -955,7 +955,7 @@ class TestIntegerSocketLinker:
         """
         with TreeBuilder("IntFloorDivFloat"):
             n = g.Integer(10)
-            result = n.o_integer // 2.5
+            result = n.o.integer // 2.5
 
         # Should be the Math.floor wrapping a Math.divide — not IntegerMath
         assert isinstance(result, g.Math)

@@ -240,16 +240,9 @@ class SocketInfo:
                 return item
         raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
-    def format_property(self) -> str:
-        """Generate the property string for this socket."""
-        prop_name = "{}_{}".format(
-            "o" if self.is_output else "i", normalize_name(self.identifier)
-        )
-        description = "{} socket: {}".format(
-            "Output" if self.is_output else "Input", self.name
-        )
-        if self.description != "":
-            description += f"\n        {self.description}\n        "
+    def format_accessor_annotation(self) -> str:
+        """Generate an annotation + attribute docstring for use in Inputs/Outputs inner classes."""
+        attr_name = normalize_name(self.identifier)
 
         return_type = "Socket"
         if self.is_output:
@@ -258,16 +251,10 @@ class SocketInfo:
                     return_type = cls
                     break
 
-        return_value = "self.{}s._get('{}')".format(
-            "output" if self.is_output else "input",
-            self.identifier,
-        )
-
-        return f'''    @property
-    def {prop_name}(self) -> {return_type}:
-        """{description}"""
-        return {return_value}
-'''
+        lines = [f"        {attr_name}: {return_type}"]
+        if self.description:
+            lines.append(f'        """{self.description}"""')
+        return "\n".join(lines)
 
 
 @dataclass
@@ -1050,10 +1037,6 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         else:
             establish_call = "        key_args = {}"
 
-    # Generate input properties
-    input_properties = [socket.format_property() for socket in node_info.inputs]
-    output_properties = [socket.format_property() for socket in node_info.outputs]
-
     property_accessors = [
         prop.format_property_accessors() for prop in node_info.properties
     ]
@@ -1068,17 +1051,65 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         else "bpy.types.Node"
     )
 
+    # Build numpy-style class docstring
+    doc_lines = [node_info.description, ""]
+    all_init_sockets = [s for s in node_info.inputs] + _extra_sockets
+    if all_init_sockets:
+        doc_lines += ["Parameters", "----------"]
+        for socket in all_init_sockets:
+            param_name = get_socket_param_name(socket, sockets_use_same_name)
+            return_type = "Socket"
+            for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                if key in socket.bl_socket_type:
+                    return_type = cls
+                    break
+            doc_lines.append(f"{param_name} : {socket.type_hint}")
+            desc = socket.description if socket.description else socket.name
+            doc_lines.append(f"    {desc}")
+        doc_lines.append("")
+    if node_info.outputs:
+        doc_lines += ["Outputs", "-------"]
+        for socket in node_info.outputs:
+            return_type = "Socket"
+            for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                if key in socket.bl_socket_type:
+                    return_type = cls
+                    break
+            attr_name = normalize_name(socket.identifier)
+            doc_lines.append(f"{attr_name} : {return_type}")
+            desc = socket.description if socket.description else socket.name
+            doc_lines.append(f"    {desc}")
+    docstring_body = "\n    ".join(doc_lines).rstrip()
+
+    # Build Inputs inner class
+    input_annotations = [
+        socket.format_accessor_annotation() for socket in node_info.inputs
+    ] + [socket.format_accessor_annotation() for socket in _extra_sockets]
+    if input_annotations:
+        inputs_class = "    class Inputs(SocketAccessor):\n" + "\n".join(
+            input_annotations
+        )
+    else:
+        inputs_class = "    class Inputs(SocketAccessor):\n        pass"
+
+    # Build Outputs inner class
+    output_annotations = [
+        socket.format_accessor_annotation() for socket in node_info.outputs
+    ]
+    if output_annotations:
+        outputs_class = "    class Outputs(SocketAccessor):\n" + "\n".join(
+            output_annotations
+        )
+    else:
+        outputs_class = "    class Outputs(SocketAccessor):\n        pass"
+
     # Build class body after __init__
-    body_parts = []
+    body_parts = [inputs_class, outputs_class]
     if enum_methods:
         body_parts.append(enum_methods)
-    if input_properties:
-        body_parts.append(chr(10).join(input_properties))
-    if output_properties:
-        body_parts.append(chr(10).join(output_properties))
     if property_accessors:
         body_parts.append(chr(10).join(property_accessors))
-    body = chr(10).join(body_parts)
+    body = "\n\n".join(body_parts)
 
     # When extra sockets exist, properties must be set before collecting socket IDs
     # so the node reflects the correct enum state when we filter key_args.
@@ -1089,17 +1120,30 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     class_code = f'''class {class_name}(NodeBuilder):
     """
-    {node_info.description}
+    {docstring_body}
     """
 
     _bl_idname = "{node_info.bl_idname}"
     node: {node_type_annotation}
 
+{inputs_class}
+
+{outputs_class}
+
+    @property
+    def i(self) -> "{class_name}.Inputs":
+        return {class_name}.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "{class_name}.Outputs":
+        return {class_name}.Outputs(self.node.outputs, "output")
+
     def __init__{init_signature}:
         super().__init__(){init_body}
         self._establish_links(**key_args)
 
-{body}'''
+{enum_methods}
+{chr(10).join(property_accessors) if property_accessors else ""}'''
 
     return class_code.strip()
 
@@ -1153,7 +1197,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     lines.append("import bpy")
 
     # Builder imports
-    builder_imports = ["BaseNode as NodeBuilder"]
+    builder_imports = ["BaseNode as NodeBuilder", "SocketAccessor"]
     if has_sockets:
         builder_imports.append("Socket")
     # Add only the specific output socket classes actually used in this file

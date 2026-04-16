@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    SocketAccessor,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -17,10 +23,46 @@ from ...types import (
 class AlphaOver(NodeBuilder):
     """
     Overlay a foreground image onto a background image
+
+    Parameters
+    ----------
+    background : InputColor
+        Background
+    foreground : InputColor
+        Foreground
+    fac : InputFloat
+        Factor
+    type : InputMenu | Literal['Over', 'Disjoint Over', 'Conjoint Over']
+        Type
+    straight_alpha : InputBoolean
+        Straight Alpha
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeAlphaOver"
     node: bpy.types.CompositorNodeAlphaOver
+
+    class Inputs(SocketAccessor):
+        background: Socket
+        foreground: Socket
+        fac: Socket
+        type: Socket
+        straight_alpha: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "AlphaOver.Inputs":
+        return AlphaOver.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AlphaOver.Outputs":
+        return AlphaOver.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -92,44 +134,44 @@ class AlphaOver(NodeBuilder):
             type="Conjoint Over",
         )
 
-    @property
-    def i_background(self) -> Socket:
-        """Input socket: Background"""
-        return self.inputs._get("Background")
-
-    @property
-    def i_foreground(self) -> Socket:
-        """Input socket: Foreground"""
-        return self.inputs._get("Foreground")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_straight_alpha(self) -> Socket:
-        """Input socket: Straight Alpha"""
-        return self.inputs._get("Straight Alpha")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Brightnesscontrast(NodeBuilder):
     """
     Adjust brightness and contrast
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    bright : InputFloat
+        Brightness
+    contrast : InputFloat
+        Contrast
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeBrightContrast"
     node: bpy.types.CompositorNodeBrightContrast
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        bright: Socket
+        contrast: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Brightnesscontrast.Inputs":
+        return Brightnesscontrast.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Brightnesscontrast.Outputs":
+        return Brightnesscontrast.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -142,34 +184,92 @@ class Brightnesscontrast(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_bright(self) -> Socket:
-        """Input socket: Brightness"""
-        return self.inputs._get("Bright")
-
-    @property
-    def i_contrast(self) -> Socket:
-        """Input socket: Contrast"""
-        return self.inputs._get("Contrast")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class ColorBalance(NodeBuilder):
     """
     Adjust color and values
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    fac : InputFloat
+        Factor
+    type : InputMenu | Literal['Lift/Gamma/Gain', 'Offset/Power/Slope (ASC-CDL)', 'White Point']
+        Type
+    base_lift : InputFloat
+        Lift
+    color_lift : InputColor
+        Lift
+    base_gamma : InputFloat
+        Gamma
+    color_gamma : InputColor
+        Gamma
+    base_gain : InputFloat
+        Gain
+    color_gain : InputColor
+        Gain
+    base_offset : InputFloat
+        Offset
+    color_offset : InputColor
+        Offset
+    base_power : InputFloat
+        Power
+    color_power : InputColor
+        Power
+    base_slope : InputFloat
+        Slope
+    color_slope : InputColor
+        Slope
+    input_temperature : InputFloat
+        Temperature
+    input_tint : InputFloat
+        Tint
+    output_temperature : InputFloat
+        Temperature
+    output_tint : InputFloat
+        Tint
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeColorBalance"
     node: bpy.types.CompositorNodeColorBalance
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        fac: Socket
+        type: Socket
+        base_lift: Socket
+        color_lift: Socket
+        base_gamma: Socket
+        color_gamma: Socket
+        base_gain: Socket
+        color_gain: Socket
+        base_offset: Socket
+        color_offset: Socket
+        base_power: Socket
+        color_power: Socket
+        base_slope: Socket
+        color_slope: Socket
+        input_temperature: Socket
+        input_tint: Socket
+        output_temperature: Socket
+        output_tint: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "ColorBalance.Inputs":
+        return ColorBalance.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ColorBalance.Outputs":
+        return ColorBalance.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -297,106 +397,6 @@ class ColorBalance(NodeBuilder):
         )
 
     @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_base_lift(self) -> Socket:
-        """Input socket: Lift"""
-        return self.inputs._get("Base Lift")
-
-    @property
-    def i_color_lift(self) -> Socket:
-        """Input socket: Lift"""
-        return self.inputs._get("Color Lift")
-
-    @property
-    def i_base_gamma(self) -> Socket:
-        """Input socket: Gamma"""
-        return self.inputs._get("Base Gamma")
-
-    @property
-    def i_color_gamma(self) -> Socket:
-        """Input socket: Gamma"""
-        return self.inputs._get("Color Gamma")
-
-    @property
-    def i_base_gain(self) -> Socket:
-        """Input socket: Gain"""
-        return self.inputs._get("Base Gain")
-
-    @property
-    def i_color_gain(self) -> Socket:
-        """Input socket: Gain"""
-        return self.inputs._get("Color Gain")
-
-    @property
-    def i_base_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Base Offset")
-
-    @property
-    def i_color_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Color Offset")
-
-    @property
-    def i_base_power(self) -> Socket:
-        """Input socket: Power"""
-        return self.inputs._get("Base Power")
-
-    @property
-    def i_color_power(self) -> Socket:
-        """Input socket: Power"""
-        return self.inputs._get("Color Power")
-
-    @property
-    def i_base_slope(self) -> Socket:
-        """Input socket: Slope"""
-        return self.inputs._get("Base Slope")
-
-    @property
-    def i_color_slope(self) -> Socket:
-        """Input socket: Slope"""
-        return self.inputs._get("Color Slope")
-
-    @property
-    def i_input_temperature(self) -> Socket:
-        """Input socket: Temperature"""
-        return self.inputs._get("Input Temperature")
-
-    @property
-    def i_input_tint(self) -> Socket:
-        """Input socket: Tint"""
-        return self.inputs._get("Input Tint")
-
-    @property
-    def i_output_temperature(self) -> Socket:
-        """Input socket: Temperature"""
-        return self.inputs._get("Output Temperature")
-
-    @property
-    def i_output_tint(self) -> Socket:
-        """Input socket: Tint"""
-        return self.inputs._get("Output Tint")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
     def input_whitepoint(self) -> tuple[float, float, float]:
         return self.node.input_whitepoint
 
@@ -416,10 +416,112 @@ class ColorBalance(NodeBuilder):
 class ColorCorrection(NodeBuilder):
     """
     Adjust the color of an image, separately in several tonal ranges (highlights, midtones and shadows)
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    mask : InputFloat
+        Mask
+    master_saturation : InputFloat
+        Saturation
+    master_contrast : InputFloat
+        Contrast
+    master_gamma : InputFloat
+        Gamma
+    master_gain : InputFloat
+        Gain
+    master_offset : InputFloat
+        Offset
+    highlights_saturation : InputFloat
+        Saturation
+    highlights_contrast : InputFloat
+        Contrast
+    highlights_gamma : InputFloat
+        Gamma
+    highlights_gain : InputFloat
+        Gain
+    highlights_offset : InputFloat
+        Offset
+    midtones_saturation : InputFloat
+        Saturation
+    midtones_contrast : InputFloat
+        Contrast
+    midtones_gamma : InputFloat
+        Gamma
+    midtones_gain : InputFloat
+        Gain
+    midtones_offset : InputFloat
+        Offset
+    shadows_saturation : InputFloat
+        Saturation
+    shadows_contrast : InputFloat
+        Contrast
+    shadows_gamma : InputFloat
+        Gamma
+    shadows_gain : InputFloat
+        Gain
+    shadows_offset : InputFloat
+        Offset
+    midtones_start : InputFloat
+        Midtones Start
+    midtones_end : InputFloat
+        Midtones End
+    apply_on_red : InputBoolean
+        Red
+    apply_on_green : InputBoolean
+        Green
+    apply_on_blue : InputBoolean
+        Blue
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeColorCorrection"
     node: bpy.types.CompositorNodeColorCorrection
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        mask: Socket
+        master_saturation: Socket
+        master_contrast: Socket
+        master_gamma: Socket
+        master_gain: Socket
+        master_offset: Socket
+        highlights_saturation: Socket
+        highlights_contrast: Socket
+        highlights_gamma: Socket
+        highlights_gain: Socket
+        highlights_offset: Socket
+        midtones_saturation: Socket
+        midtones_contrast: Socket
+        midtones_gamma: Socket
+        midtones_gain: Socket
+        midtones_offset: Socket
+        shadows_saturation: Socket
+        shadows_contrast: Socket
+        shadows_gamma: Socket
+        shadows_gain: Socket
+        shadows_offset: Socket
+        midtones_start: Socket
+        midtones_end: Socket
+        apply_on_red: Socket
+        apply_on_green: Socket
+        apply_on_blue: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "ColorCorrection.Inputs":
+        return ColorCorrection.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ColorCorrection.Outputs":
+        return ColorCorrection.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -484,154 +586,56 @@ class ColorCorrection(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_mask(self) -> Socket:
-        """Input socket: Mask"""
-        return self.inputs._get("Mask")
-
-    @property
-    def i_master_saturation(self) -> Socket:
-        """Input socket: Saturation"""
-        return self.inputs._get("Master Saturation")
-
-    @property
-    def i_master_contrast(self) -> Socket:
-        """Input socket: Contrast"""
-        return self.inputs._get("Master Contrast")
-
-    @property
-    def i_master_gamma(self) -> Socket:
-        """Input socket: Gamma"""
-        return self.inputs._get("Master Gamma")
-
-    @property
-    def i_master_gain(self) -> Socket:
-        """Input socket: Gain"""
-        return self.inputs._get("Master Gain")
-
-    @property
-    def i_master_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Master Offset")
-
-    @property
-    def i_highlights_saturation(self) -> Socket:
-        """Input socket: Saturation"""
-        return self.inputs._get("Highlights Saturation")
-
-    @property
-    def i_highlights_contrast(self) -> Socket:
-        """Input socket: Contrast"""
-        return self.inputs._get("Highlights Contrast")
-
-    @property
-    def i_highlights_gamma(self) -> Socket:
-        """Input socket: Gamma"""
-        return self.inputs._get("Highlights Gamma")
-
-    @property
-    def i_highlights_gain(self) -> Socket:
-        """Input socket: Gain"""
-        return self.inputs._get("Highlights Gain")
-
-    @property
-    def i_highlights_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Highlights Offset")
-
-    @property
-    def i_midtones_saturation(self) -> Socket:
-        """Input socket: Saturation"""
-        return self.inputs._get("Midtones Saturation")
-
-    @property
-    def i_midtones_contrast(self) -> Socket:
-        """Input socket: Contrast"""
-        return self.inputs._get("Midtones Contrast")
-
-    @property
-    def i_midtones_gamma(self) -> Socket:
-        """Input socket: Gamma"""
-        return self.inputs._get("Midtones Gamma")
-
-    @property
-    def i_midtones_gain(self) -> Socket:
-        """Input socket: Gain"""
-        return self.inputs._get("Midtones Gain")
-
-    @property
-    def i_midtones_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Midtones Offset")
-
-    @property
-    def i_shadows_saturation(self) -> Socket:
-        """Input socket: Saturation"""
-        return self.inputs._get("Shadows Saturation")
-
-    @property
-    def i_shadows_contrast(self) -> Socket:
-        """Input socket: Contrast"""
-        return self.inputs._get("Shadows Contrast")
-
-    @property
-    def i_shadows_gamma(self) -> Socket:
-        """Input socket: Gamma"""
-        return self.inputs._get("Shadows Gamma")
-
-    @property
-    def i_shadows_gain(self) -> Socket:
-        """Input socket: Gain"""
-        return self.inputs._get("Shadows Gain")
-
-    @property
-    def i_shadows_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Shadows Offset")
-
-    @property
-    def i_midtones_start(self) -> Socket:
-        """Input socket: Midtones Start"""
-        return self.inputs._get("Midtones Start")
-
-    @property
-    def i_midtones_end(self) -> Socket:
-        """Input socket: Midtones End"""
-        return self.inputs._get("Midtones End")
-
-    @property
-    def i_apply_on_red(self) -> Socket:
-        """Input socket: Red"""
-        return self.inputs._get("Apply On Red")
-
-    @property
-    def i_apply_on_green(self) -> Socket:
-        """Input socket: Green"""
-        return self.inputs._get("Apply On Green")
-
-    @property
-    def i_apply_on_blue(self) -> Socket:
-        """Input socket: Blue"""
-        return self.inputs._get("Apply On Blue")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class DepthCombine(NodeBuilder):
     """
     Combine two images using depth maps
+
+    Parameters
+    ----------
+    a : InputColor
+        A
+    depth_a : InputFloat
+        Depth A
+    b : InputColor
+        B
+    depth_b : InputFloat
+        Depth B
+    use_alpha : InputBoolean
+        Use Alpha
+    anti_alias : InputBoolean
+        Anti-Alias
+
+    Outputs
+    -------
+    result : ColorSocket
+        Result
+    depth : FloatSocket
+        Depth
     """
 
     _bl_idname = "CompositorNodeZcombine"
     node: bpy.types.CompositorNodeZcombine
+
+    class Inputs(SocketAccessor):
+        a: Socket
+        depth_a: Socket
+        b: Socket
+        depth_b: Socket
+        use_alpha: Socket
+        anti_alias: Socket
+
+    class Outputs(SocketAccessor):
+        result: ColorSocket
+        depth: FloatSocket
+
+    @property
+    def i(self) -> "DepthCombine.Inputs":
+        return DepthCombine.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DepthCombine.Outputs":
+        return DepthCombine.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -654,54 +658,41 @@ class DepthCombine(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_a(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A")
-
-    @property
-    def i_depth_a(self) -> Socket:
-        """Input socket: Depth A"""
-        return self.inputs._get("Depth A")
-
-    @property
-    def i_b(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B")
-
-    @property
-    def i_depth_b(self) -> Socket:
-        """Input socket: Depth B"""
-        return self.inputs._get("Depth B")
-
-    @property
-    def i_use_alpha(self) -> Socket:
-        """Input socket: Use Alpha"""
-        return self.inputs._get("Use Alpha")
-
-    @property
-    def i_anti_alias(self) -> Socket:
-        """Input socket: Anti-Alias"""
-        return self.inputs._get("Anti-Alias")
-
-    @property
-    def o_result(self) -> ColorSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result")
-
-    @property
-    def o_depth(self) -> FloatSocket:
-        """Output socket: Depth"""
-        return self.outputs._get("Depth")
-
 
 class Exposure(NodeBuilder):
     """
     Adjust brightness using a camera exposure parameter
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    exposure : InputFloat
+        Exposure
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeExposure"
     node: bpy.types.CompositorNodeExposure
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        exposure: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Exposure.Inputs":
+        return Exposure.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Exposure.Outputs":
+        return Exposure.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -713,29 +704,41 @@ class Exposure(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_exposure(self) -> Socket:
-        """Input socket: Exposure"""
-        return self.inputs._get("Exposure")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class HueCorrect(NodeBuilder):
     """
     Adjust hue, saturation, and value with a curve
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    fac : InputFloat
+        Factor
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeHueCorrect"
     node: bpy.types.CompositorNodeHueCorrect
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        fac: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "HueCorrect.Inputs":
+        return HueCorrect.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "HueCorrect.Outputs":
+        return HueCorrect.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -747,29 +750,50 @@ class HueCorrect(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Huesaturationvalue(NodeBuilder):
     """
     Apply a color transformation in the HSV color model
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    hue : InputFloat
+        Hue
+    saturation : InputFloat
+        Saturation
+    value : InputFloat
+        Value
+    fac : InputFloat
+        Factor
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeHueSat"
     node: bpy.types.CompositorNodeHueSat
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        hue: Socket
+        saturation: Socket
+        value: Socket
+        fac: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Huesaturationvalue.Inputs":
+        return Huesaturationvalue.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Huesaturationvalue.Outputs":
+        return Huesaturationvalue.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -790,44 +814,47 @@ class Huesaturationvalue(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_hue(self) -> Socket:
-        """Input socket: Hue"""
-        return self.inputs._get("Hue")
-
-    @property
-    def i_saturation(self) -> Socket:
-        """Input socket: Saturation"""
-        return self.inputs._get("Saturation")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class InvertColor(NodeBuilder):
     """
     Invert colors, producing a negative
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    fac : InputFloat
+        Factor
+    invert_color : InputBoolean
+        Invert Color
+    invert_alpha : InputBoolean
+        Invert Alpha
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "CompositorNodeInvert"
     node: bpy.types.CompositorNodeInvert
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        fac: Socket
+        invert_color: Socket
+        invert_alpha: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "InvertColor.Inputs":
+        return InvertColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InvertColor.Outputs":
+        return InvertColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -846,39 +873,41 @@ class InvertColor(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_invert_color(self) -> Socket:
-        """Input socket: Invert Color"""
-        return self.inputs._get("Invert Color")
-
-    @property
-    def i_invert_alpha(self) -> Socket:
-        """Input socket: Invert Alpha"""
-        return self.inputs._get("Invert Alpha")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class Posterize(NodeBuilder):
     """
     Reduce number of colors in an image, converting smooth gradients into sharp transitions
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    steps : InputFloat
+        Steps
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodePosterize"
     node: bpy.types.CompositorNodePosterize
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        steps: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Posterize.Inputs":
+        return Posterize.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Posterize.Outputs":
+        return Posterize.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -890,29 +919,47 @@ class Posterize(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_steps(self) -> Socket:
-        """Input socket: Steps"""
-        return self.inputs._get("Steps")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class RGBCurves(NodeBuilder):
     """
     Perform level adjustments on each color channel of an image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    fac : InputFloat
+        Factor
+    black_level : InputColor
+        Black Level
+    white_level : InputColor
+        White Level
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeCurveRGB"
     node: bpy.types.CompositorNodeCurveRGB
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        fac: Socket
+        black_level: Socket
+        white_level: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "RGBCurves.Inputs":
+        return RGBCurves.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RGBCurves.Outputs":
+        return RGBCurves.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -931,39 +978,62 @@ class RGBCurves(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_black_level(self) -> Socket:
-        """Input socket: Black Level"""
-        return self.inputs._get("Black Level")
-
-    @property
-    def i_white_level(self) -> Socket:
-        """Input socket: White Level"""
-        return self.inputs._get("White Level")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Tonemap(NodeBuilder):
     """
     Map one set of colors to another in order to approximate the appearance of high dynamic range
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    type : InputMenu | Literal['R/D Photoreceptor', 'Rh Simple']
+        Type
+    key : InputFloat
+        Key
+    balance : InputFloat
+        Balance
+    gamma : InputFloat
+        Gamma
+    intensity : InputFloat
+        Intensity
+    contrast : InputFloat
+        Contrast
+    light_adaptation : InputFloat
+        Light Adaptation
+    chromatic_adaptation : InputFloat
+        Chromatic Adaptation
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeTonemap"
     node: bpy.types.CompositorNodeTonemap
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        type: Socket
+        key: Socket
+        balance: Socket
+        gamma: Socket
+        intensity: Socket
+        contrast: Socket
+        light_adaptation: Socket
+        chromatic_adaptation: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Tonemap.Inputs":
+        return Tonemap.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Tonemap.Outputs":
+        return Tonemap.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1022,53 +1092,3 @@ class Tonemap(NodeBuilder):
     ) -> "Tonemap":
         """Create Tonemap node with type 'Rh Simple'."""
         return cls(image=image, key=key, balance=balance, gamma=gamma, type="Rh Simple")
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_key(self) -> Socket:
-        """Input socket: Key"""
-        return self.inputs._get("Key")
-
-    @property
-    def i_balance(self) -> Socket:
-        """Input socket: Balance"""
-        return self.inputs._get("Balance")
-
-    @property
-    def i_gamma(self) -> Socket:
-        """Input socket: Gamma"""
-        return self.inputs._get("Gamma")
-
-    @property
-    def i_intensity(self) -> Socket:
-        """Input socket: Intensity"""
-        return self.inputs._get("Intensity")
-
-    @property
-    def i_contrast(self) -> Socket:
-        """Input socket: Contrast"""
-        return self.inputs._get("Contrast")
-
-    @property
-    def i_light_adaptation(self) -> Socket:
-        """Input socket: Light Adaptation"""
-        return self.inputs._get("Light Adaptation")
-
-    @property
-    def i_chromatic_adaptation(self) -> Socket:
-        """Input socket: Chromatic Adaptation"""
-        return self.inputs._get("Chromatic Adaptation")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")

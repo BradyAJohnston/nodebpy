@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     ColorSocket,
     FloatSocket,
@@ -23,10 +24,43 @@ class AmbientOcclusion(NodeBuilder):
     """
         Compute how much the hemisphere above the shading point is occluded, for example to add weathering effects to corners.
     Note: For Cycles, this may slow down renders significantly
+
+        Parameters
+        ----------
+        color : InputColor
+            Color
+        distance : InputFloat
+            Distance
+        normal : InputVector
+            Normal
+
+        Outputs
+        -------
+        color : ColorSocket
+            Color
+        ao : FloatSocket
+            AO
     """
 
     _bl_idname = "ShaderNodeAmbientOcclusion"
     node: bpy.types.ShaderNodeAmbientOcclusion
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        distance: Socket
+        normal: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        ao: FloatSocket
+
+    @property
+    def i(self) -> "AmbientOcclusion.Inputs":
+        return AmbientOcclusion.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AmbientOcclusion.Outputs":
+        return AmbientOcclusion.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -44,31 +78,6 @@ class AmbientOcclusion(NodeBuilder):
         self.inside = inside
         self.only_local = only_local
         self._establish_links(**key_args)
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_distance(self) -> Socket:
-        """Input socket: Distance"""
-        return self.inputs._get("Distance")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_ao(self) -> FloatSocket:
-        """Output socket: AO"""
-        return self.outputs._get("AO")
 
     @property
     def samples(self) -> int:
@@ -99,10 +108,37 @@ class Bevel(NodeBuilder):
     """
         Generates normals with round corners.
     Note: only supported in Cycles, and may slow down renders
+
+        Parameters
+        ----------
+        radius : InputFloat
+            Radius
+        normal : InputVector
+            Normal
+
+        Outputs
+        -------
+        normal : VectorSocket
+            Normal
     """
 
     _bl_idname = "ShaderNodeBevel"
     node: bpy.types.ShaderNodeBevel
+
+    class Inputs(SocketAccessor):
+        radius: Socket
+        normal: Socket
+
+    class Outputs(SocketAccessor):
+        normal: VectorSocket
+
+    @property
+    def i(self) -> "Bevel.Inputs":
+        return Bevel.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Bevel.Outputs":
+        return Bevel.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -117,21 +153,6 @@ class Bevel(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
     def samples(self) -> int:
         return self.node.samples
 
@@ -143,40 +164,69 @@ class Bevel(NodeBuilder):
 class CameraData(NodeBuilder):
     """
     Retrieve information about the camera and how it relates to the current shading point's position
+
+    Outputs
+    -------
+    view_vector : VectorSocket
+        View Vector
+    view_z_depth : FloatSocket
+        View Z Depth
+    view_distance : FloatSocket
+        View Distance
     """
 
     _bl_idname = "ShaderNodeCameraData"
     node: bpy.types.ShaderNodeCameraData
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        view_vector: VectorSocket
+        view_z_depth: FloatSocket
+        view_distance: FloatSocket
+
+    @property
+    def i(self) -> "CameraData.Inputs":
+        return CameraData.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CameraData.Outputs":
+        return CameraData.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_view_vector(self) -> VectorSocket:
-        """Output socket: View Vector"""
-        return self.outputs._get("View Vector")
-
-    @property
-    def o_view_z_depth(self) -> FloatSocket:
-        """Output socket: View Z Depth"""
-        return self.outputs._get("View Z Depth")
-
-    @property
-    def o_view_distance(self) -> FloatSocket:
-        """Output socket: View Distance"""
-        return self.outputs._get("View Distance")
 
 
 class Color(NodeBuilder):
     """
     A color picker
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeRGB"
     node: bpy.types.ShaderNodeRGB
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Color.Inputs":
+        return Color.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Color.Outputs":
+        return Color.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -184,35 +234,42 @@ class Color(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class ColorAttribute(NodeBuilder):
     """
     Retrieve a color attribute, or the default fallback if none is specified
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    alpha : FloatSocket
+        Alpha
     """
 
     _bl_idname = "ShaderNodeVertexColor"
     node: bpy.types.ShaderNodeVertexColor
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        alpha: FloatSocket
+
+    @property
+    def i(self) -> "ColorAttribute.Inputs":
+        return ColorAttribute.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ColorAttribute.Outputs":
+        return ColorAttribute.Outputs(self.node.outputs, "output")
 
     def __init__(self, layer_name: str = ""):
         super().__init__()
         key_args = {}
         self.layer_name = layer_name
         self._establish_links(**key_args)
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
 
     @property
     def layer_name(self) -> str:
@@ -226,10 +283,44 @@ class ColorAttribute(NodeBuilder):
 class CurvesInfo(NodeBuilder):
     """
     Retrieve hair curve information
+
+    Outputs
+    -------
+    is_strand : FloatSocket
+        Is Strand
+    intercept : FloatSocket
+        Intercept
+    length : FloatSocket
+        Length
+    thickness : FloatSocket
+        Thickness
+    tangent_normal : VectorSocket
+        Tangent Normal
+    random : FloatSocket
+        Random
     """
 
     _bl_idname = "ShaderNodeHairInfo"
     node: bpy.types.ShaderNodeHairInfo
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        is_strand: FloatSocket
+        intercept: FloatSocket
+        length: FloatSocket
+        thickness: FloatSocket
+        tangent_normal: VectorSocket
+        random: FloatSocket
+
+    @property
+    def i(self) -> "CurvesInfo.Inputs":
+        return CurvesInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurvesInfo.Outputs":
+        return CurvesInfo.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -237,45 +328,42 @@ class CurvesInfo(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_is_strand(self) -> FloatSocket:
-        """Output socket: Is Strand"""
-        return self.outputs._get("Is Strand")
-
-    @property
-    def o_intercept(self) -> FloatSocket:
-        """Output socket: Intercept"""
-        return self.outputs._get("Intercept")
-
-    @property
-    def o_length(self) -> FloatSocket:
-        """Output socket: Length"""
-        return self.outputs._get("Length")
-
-    @property
-    def o_thickness(self) -> FloatSocket:
-        """Output socket: Thickness"""
-        return self.outputs._get("Thickness")
-
-    @property
-    def o_tangent_normal(self) -> VectorSocket:
-        """Output socket: Tangent Normal"""
-        return self.outputs._get("Tangent Normal")
-
-    @property
-    def o_random(self) -> FloatSocket:
-        """Output socket: Random"""
-        return self.outputs._get("Random")
-
 
 class Fresnel(NodeBuilder):
     """
         Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations.
     Typically used for mixing reflections at grazing angles
+
+        Parameters
+        ----------
+        ior : InputFloat
+            IOR
+        normal : InputVector
+            Normal
+
+        Outputs
+        -------
+        fac : FloatSocket
+            Factor
     """
 
     _bl_idname = "ShaderNodeFresnel"
     node: bpy.types.ShaderNodeFresnel
+
+    class Inputs(SocketAccessor):
+        ior: Socket
+        normal: Socket
+
+    class Outputs(SocketAccessor):
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "Fresnel.Inputs":
+        return Fresnel.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Fresnel.Outputs":
+        return Fresnel.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -287,29 +375,57 @@ class Fresnel(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
 
 class Geometry(NodeBuilder):
     """
     Retrieve geometric information about the current shading point
+
+    Outputs
+    -------
+    position : VectorSocket
+        Position
+    normal : VectorSocket
+        Normal
+    tangent : VectorSocket
+        Tangent
+    true_normal : VectorSocket
+        True Normal
+    incoming : VectorSocket
+        Incoming
+    parametric : VectorSocket
+        Parametric
+    backfacing : FloatSocket
+        Backfacing
+    pointiness : FloatSocket
+        Pointiness
+    random_per_island : FloatSocket
+        Random Per Island
     """
 
     _bl_idname = "ShaderNodeNewGeometry"
     node: bpy.types.ShaderNodeNewGeometry
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        position: VectorSocket
+        normal: VectorSocket
+        tangent: VectorSocket
+        true_normal: VectorSocket
+        incoming: VectorSocket
+        parametric: VectorSocket
+        backfacing: FloatSocket
+        pointiness: FloatSocket
+        random_per_island: FloatSocket
+
+    @property
+    def i(self) -> "Geometry.Inputs":
+        return Geometry.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Geometry.Outputs":
+        return Geometry.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -317,60 +433,45 @@ class Geometry(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_position(self) -> VectorSocket:
-        """Output socket: Position"""
-        return self.outputs._get("Position")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
-    def o_tangent(self) -> VectorSocket:
-        """Output socket: Tangent"""
-        return self.outputs._get("Tangent")
-
-    @property
-    def o_true_normal(self) -> VectorSocket:
-        """Output socket: True Normal"""
-        return self.outputs._get("True Normal")
-
-    @property
-    def o_incoming(self) -> VectorSocket:
-        """Output socket: Incoming"""
-        return self.outputs._get("Incoming")
-
-    @property
-    def o_parametric(self) -> VectorSocket:
-        """Output socket: Parametric"""
-        return self.outputs._get("Parametric")
-
-    @property
-    def o_backfacing(self) -> FloatSocket:
-        """Output socket: Backfacing"""
-        return self.outputs._get("Backfacing")
-
-    @property
-    def o_pointiness(self) -> FloatSocket:
-        """Output socket: Pointiness"""
-        return self.outputs._get("Pointiness")
-
-    @property
-    def o_random_per_island(self) -> FloatSocket:
-        """Output socket: Random Per Island"""
-        return self.outputs._get("Random Per Island")
-
 
 class LayerWeight(NodeBuilder):
     """
         Produce a blending factor depending on the angle between the surface normal and the view direction.
     Typically used for layering shaders with the Mix Shader node
+
+        Parameters
+        ----------
+        blend : InputFloat
+            Blend
+        normal : InputVector
+            Normal
+
+        Outputs
+        -------
+        fresnel : FloatSocket
+            Fresnel
+        facing : FloatSocket
+            Facing
     """
 
     _bl_idname = "ShaderNodeLayerWeight"
     node: bpy.types.ShaderNodeLayerWeight
+
+    class Inputs(SocketAccessor):
+        blend: Socket
+        normal: Socket
+
+    class Outputs(SocketAccessor):
+        fresnel: FloatSocket
+        facing: FloatSocket
+
+    @property
+    def i(self) -> "LayerWeight.Inputs":
+        return LayerWeight.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "LayerWeight.Outputs":
+        return LayerWeight.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -382,225 +483,220 @@ class LayerWeight(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_blend(self) -> Socket:
-        """Input socket: Blend"""
-        return self.inputs._get("Blend")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def o_fresnel(self) -> FloatSocket:
-        """Output socket: Fresnel"""
-        return self.outputs._get("Fresnel")
-
-    @property
-    def o_facing(self) -> FloatSocket:
-        """Output socket: Facing"""
-        return self.outputs._get("Facing")
-
 
 class LightPath(NodeBuilder):
     """
         Retrieve the type of incoming ray for which the shader is being executed.
     Typically used for non-physically-based tricks
+
+        Outputs
+        -------
+        is_camera_ray : FloatSocket
+            Is Camera Ray
+        is_shadow_ray : FloatSocket
+            Is Shadow Ray
+        is_diffuse_ray : FloatSocket
+            Is Diffuse Ray
+        is_glossy_ray : FloatSocket
+            Is Glossy Ray
+        is_singular_ray : FloatSocket
+            Is Singular Ray
+        is_reflection_ray : FloatSocket
+            Is Reflection Ray
+        is_transmission_ray : FloatSocket
+            Is Transmission Ray
+        is_volume_scatter_ray : FloatSocket
+            Is Volume Scatter Ray
+        ray_length : FloatSocket
+            Ray Length
+        ray_depth : FloatSocket
+            Ray Depth
+        diffuse_depth : FloatSocket
+            Diffuse Depth
+        glossy_depth : FloatSocket
+            Glossy Depth
+        transparent_depth : FloatSocket
+            Transparent Depth
+        transmission_depth : FloatSocket
+            Transmission Depth
+        portal_depth : FloatSocket
+            Portal Depth
     """
 
     _bl_idname = "ShaderNodeLightPath"
     node: bpy.types.ShaderNodeLightPath
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        is_camera_ray: FloatSocket
+        is_shadow_ray: FloatSocket
+        is_diffuse_ray: FloatSocket
+        is_glossy_ray: FloatSocket
+        is_singular_ray: FloatSocket
+        is_reflection_ray: FloatSocket
+        is_transmission_ray: FloatSocket
+        is_volume_scatter_ray: FloatSocket
+        ray_length: FloatSocket
+        ray_depth: FloatSocket
+        diffuse_depth: FloatSocket
+        glossy_depth: FloatSocket
+        transparent_depth: FloatSocket
+        transmission_depth: FloatSocket
+        portal_depth: FloatSocket
+
+    @property
+    def i(self) -> "LightPath.Inputs":
+        return LightPath.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "LightPath.Outputs":
+        return LightPath.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_is_camera_ray(self) -> FloatSocket:
-        """Output socket: Is Camera Ray"""
-        return self.outputs._get("Is Camera Ray")
-
-    @property
-    def o_is_shadow_ray(self) -> FloatSocket:
-        """Output socket: Is Shadow Ray"""
-        return self.outputs._get("Is Shadow Ray")
-
-    @property
-    def o_is_diffuse_ray(self) -> FloatSocket:
-        """Output socket: Is Diffuse Ray"""
-        return self.outputs._get("Is Diffuse Ray")
-
-    @property
-    def o_is_glossy_ray(self) -> FloatSocket:
-        """Output socket: Is Glossy Ray"""
-        return self.outputs._get("Is Glossy Ray")
-
-    @property
-    def o_is_singular_ray(self) -> FloatSocket:
-        """Output socket: Is Singular Ray"""
-        return self.outputs._get("Is Singular Ray")
-
-    @property
-    def o_is_reflection_ray(self) -> FloatSocket:
-        """Output socket: Is Reflection Ray"""
-        return self.outputs._get("Is Reflection Ray")
-
-    @property
-    def o_is_transmission_ray(self) -> FloatSocket:
-        """Output socket: Is Transmission Ray"""
-        return self.outputs._get("Is Transmission Ray")
-
-    @property
-    def o_is_volume_scatter_ray(self) -> FloatSocket:
-        """Output socket: Is Volume Scatter Ray"""
-        return self.outputs._get("Is Volume Scatter Ray")
-
-    @property
-    def o_ray_length(self) -> FloatSocket:
-        """Output socket: Ray Length"""
-        return self.outputs._get("Ray Length")
-
-    @property
-    def o_ray_depth(self) -> FloatSocket:
-        """Output socket: Ray Depth"""
-        return self.outputs._get("Ray Depth")
-
-    @property
-    def o_diffuse_depth(self) -> FloatSocket:
-        """Output socket: Diffuse Depth"""
-        return self.outputs._get("Diffuse Depth")
-
-    @property
-    def o_glossy_depth(self) -> FloatSocket:
-        """Output socket: Glossy Depth"""
-        return self.outputs._get("Glossy Depth")
-
-    @property
-    def o_transparent_depth(self) -> FloatSocket:
-        """Output socket: Transparent Depth"""
-        return self.outputs._get("Transparent Depth")
-
-    @property
-    def o_transmission_depth(self) -> FloatSocket:
-        """Output socket: Transmission Depth"""
-        return self.outputs._get("Transmission Depth")
-
-    @property
-    def o_portal_depth(self) -> FloatSocket:
-        """Output socket: Portal Depth"""
-        return self.outputs._get("Portal Depth")
 
 
 class ObjectInfo(NodeBuilder):
     """
     Retrieve information about the object instance
+
+    Outputs
+    -------
+    location : VectorSocket
+        Location
+    color : ColorSocket
+        Color
+    alpha : FloatSocket
+        Alpha
+    object_index : FloatSocket
+        Object Index
+    material_index : FloatSocket
+        Material Index
+    random : FloatSocket
+        Random
     """
 
     _bl_idname = "ShaderNodeObjectInfo"
     node: bpy.types.ShaderNodeObjectInfo
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        location: VectorSocket
+        color: ColorSocket
+        alpha: FloatSocket
+        object_index: FloatSocket
+        material_index: FloatSocket
+        random: FloatSocket
+
+    @property
+    def i(self) -> "ObjectInfo.Inputs":
+        return ObjectInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ObjectInfo.Outputs":
+        return ObjectInfo.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_location(self) -> VectorSocket:
-        """Output socket: Location"""
-        return self.outputs._get("Location")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
-
-    @property
-    def o_object_index(self) -> FloatSocket:
-        """Output socket: Object Index"""
-        return self.outputs._get("Object Index")
-
-    @property
-    def o_material_index(self) -> FloatSocket:
-        """Output socket: Material Index"""
-        return self.outputs._get("Material Index")
-
-    @property
-    def o_random(self) -> FloatSocket:
-        """Output socket: Random"""
-        return self.outputs._get("Random")
 
 
 class ParticleInfo(NodeBuilder):
     """
     Retrieve the data of the particle that spawned the object instance, for example to give variation to multiple instances of an object
+
+    Outputs
+    -------
+    index : FloatSocket
+        Index
+    random : FloatSocket
+        Random
+    age : FloatSocket
+        Age
+    lifetime : FloatSocket
+        Lifetime
+    location : VectorSocket
+        Location
+    size : FloatSocket
+        Size
+    velocity : VectorSocket
+        Velocity
+    angular_velocity : VectorSocket
+        Angular Velocity
     """
 
     _bl_idname = "ShaderNodeParticleInfo"
     node: bpy.types.ShaderNodeParticleInfo
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        index: FloatSocket
+        random: FloatSocket
+        age: FloatSocket
+        lifetime: FloatSocket
+        location: VectorSocket
+        size: FloatSocket
+        velocity: VectorSocket
+        angular_velocity: VectorSocket
+
+    @property
+    def i(self) -> "ParticleInfo.Inputs":
+        return ParticleInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ParticleInfo.Outputs":
+        return ParticleInfo.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_index(self) -> FloatSocket:
-        """Output socket: Index"""
-        return self.outputs._get("Index")
-
-    @property
-    def o_random(self) -> FloatSocket:
-        """Output socket: Random"""
-        return self.outputs._get("Random")
-
-    @property
-    def o_age(self) -> FloatSocket:
-        """Output socket: Age"""
-        return self.outputs._get("Age")
-
-    @property
-    def o_lifetime(self) -> FloatSocket:
-        """Output socket: Lifetime"""
-        return self.outputs._get("Lifetime")
-
-    @property
-    def o_location(self) -> VectorSocket:
-        """Output socket: Location"""
-        return self.outputs._get("Location")
-
-    @property
-    def o_size(self) -> FloatSocket:
-        """Output socket: Size"""
-        return self.outputs._get("Size")
-
-    @property
-    def o_velocity(self) -> VectorSocket:
-        """Output socket: Velocity"""
-        return self.outputs._get("Velocity")
-
-    @property
-    def o_angular_velocity(self) -> VectorSocket:
-        """Output socket: Angular Velocity"""
-        return self.outputs._get("Angular Velocity")
 
 
 class PointInfo(NodeBuilder):
     """
     Retrieve information about points in a point cloud
+
+    Outputs
+    -------
+    position : VectorSocket
+        Position
+    radius : FloatSocket
+        Radius
+    random : FloatSocket
+        Random
     """
 
     _bl_idname = "ShaderNodePointInfo"
     node: bpy.types.ShaderNodePointInfo
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        position: VectorSocket
+        radius: FloatSocket
+        random: FloatSocket
+
+    @property
+    def i(self) -> "PointInfo.Inputs":
+        return PointInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PointInfo.Outputs":
+        return PointInfo.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -608,29 +704,33 @@ class PointInfo(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_position(self) -> VectorSocket:
-        """Output socket: Position"""
-        return self.outputs._get("Position")
-
-    @property
-    def o_radius(self) -> FloatSocket:
-        """Output socket: Radius"""
-        return self.outputs._get("Radius")
-
-    @property
-    def o_random(self) -> FloatSocket:
-        """Output socket: Random"""
-        return self.outputs._get("Random")
-
 
 class Tangent(NodeBuilder):
     """
     Generate a tangent direction for the Anisotropic BSDF
+
+    Outputs
+    -------
+    tangent : VectorSocket
+        Tangent
     """
 
     _bl_idname = "ShaderNodeTangent"
     node: bpy.types.ShaderNodeTangent
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        tangent: VectorSocket
+
+    @property
+    def i(self) -> "Tangent.Inputs":
+        return Tangent.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Tangent.Outputs":
+        return Tangent.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -644,11 +744,6 @@ class Tangent(NodeBuilder):
         self.axis = axis
         self.uv_map = uv_map
         self._establish_links(**key_args)
-
-    @property
-    def o_tangent(self) -> VectorSocket:
-        """Output socket: Tangent"""
-        return self.outputs._get("Tangent")
 
     @property
     def direction_type(self) -> Literal["RADIAL", "UV_MAP"]:
@@ -679,51 +774,53 @@ class TextureCoordinate(NodeBuilder):
     """
         Retrieve multiple types of texture coordinates.
     Typically used as inputs for texture nodes
+
+        Outputs
+        -------
+        generated : VectorSocket
+            Generated
+        normal : VectorSocket
+            Normal
+        uv : VectorSocket
+            UV
+        object : VectorSocket
+            Object
+        camera : VectorSocket
+            Camera
+        window : VectorSocket
+            Window
+        reflection : VectorSocket
+            Reflection
     """
 
     _bl_idname = "ShaderNodeTexCoord"
     node: bpy.types.ShaderNodeTexCoord
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        generated: VectorSocket
+        normal: VectorSocket
+        uv: VectorSocket
+        object: VectorSocket
+        camera: VectorSocket
+        window: VectorSocket
+        reflection: VectorSocket
+
+    @property
+    def i(self) -> "TextureCoordinate.Inputs":
+        return TextureCoordinate.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TextureCoordinate.Outputs":
+        return TextureCoordinate.Outputs(self.node.outputs, "output")
 
     def __init__(self, from_instancer: bool = False):
         super().__init__()
         key_args = {}
         self.from_instancer = from_instancer
         self._establish_links(**key_args)
-
-    @property
-    def o_generated(self) -> VectorSocket:
-        """Output socket: Generated"""
-        return self.outputs._get("Generated")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
-    def o_uv(self) -> VectorSocket:
-        """Output socket: UV"""
-        return self.outputs._get("UV")
-
-    @property
-    def o_object(self) -> VectorSocket:
-        """Output socket: Object"""
-        return self.outputs._get("Object")
-
-    @property
-    def o_camera(self) -> VectorSocket:
-        """Output socket: Camera"""
-        return self.outputs._get("Camera")
-
-    @property
-    def o_window(self) -> VectorSocket:
-        """Output socket: Window"""
-        return self.outputs._get("Window")
-
-    @property
-    def o_reflection(self) -> VectorSocket:
-        """Output socket: Reflection"""
-        return self.outputs._get("Reflection")
 
     @property
     def from_instancer(self) -> bool:
@@ -737,21 +834,35 @@ class TextureCoordinate(NodeBuilder):
 class UVAlongStroke(NodeBuilder):
     """
     UV coordinates that map a texture along the stroke length
+
+    Outputs
+    -------
+    uv : VectorSocket
+        UV
     """
 
     _bl_idname = "ShaderNodeUVAlongStroke"
     node: bpy.types.ShaderNodeUVAlongStroke
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        uv: VectorSocket
+
+    @property
+    def i(self) -> "UVAlongStroke.Inputs":
+        return UVAlongStroke.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "UVAlongStroke.Outputs":
+        return UVAlongStroke.Outputs(self.node.outputs, "output")
 
     def __init__(self, use_tips: bool = False):
         super().__init__()
         key_args = {}
         self.use_tips = use_tips
         self._establish_links(**key_args)
-
-    @property
-    def o_uv(self) -> VectorSocket:
-        """Output socket: UV"""
-        return self.outputs._get("UV")
 
     @property
     def use_tips(self) -> bool:
@@ -765,10 +876,29 @@ class UVAlongStroke(NodeBuilder):
 class UVMap(NodeBuilder):
     """
     Retrieve a UV map from the geometry, or the default fallback if none is specified
+
+    Outputs
+    -------
+    uv : VectorSocket
+        UV
     """
 
     _bl_idname = "ShaderNodeUVMap"
     node: bpy.types.ShaderNodeUVMap
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        uv: VectorSocket
+
+    @property
+    def i(self) -> "UVMap.Inputs":
+        return UVMap.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "UVMap.Outputs":
+        return UVMap.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -780,11 +910,6 @@ class UVMap(NodeBuilder):
         self.from_instancer = from_instancer
         self.uv_map = uv_map
         self._establish_links(**key_args)
-
-    @property
-    def o_uv(self) -> VectorSocket:
-        """Output socket: UV"""
-        return self.outputs._get("UV")
 
     @property
     def from_instancer(self) -> bool:
@@ -807,10 +932,34 @@ class Wireframe(NodeBuilder):
     """
         Retrieve the edges of an object as it appears to Cycles.
     Note: as meshes are triangulated before being processed by Cycles, topology will always appear triangulated
+
+        Parameters
+        ----------
+        size : InputFloat
+            Size
+
+        Outputs
+        -------
+        fac : FloatSocket
+            Factor
     """
 
     _bl_idname = "ShaderNodeWireframe"
     node: bpy.types.ShaderNodeWireframe
+
+    class Inputs(SocketAccessor):
+        size: Socket
+
+    class Outputs(SocketAccessor):
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "Wireframe.Inputs":
+        return Wireframe.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Wireframe.Outputs":
+        return Wireframe.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -822,16 +971,6 @@ class Wireframe(NodeBuilder):
         key_args = {"Size": size}
         self.use_pixel_size = use_pixel_size
         self._establish_links(**key_args)
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
 
     @property
     def use_pixel_size(self) -> bool:

@@ -60,13 +60,13 @@ def test_socket_selection():
         pos = g.SetPosition()
         vec = g.Vector()
 
-        vec >> pos.i_offset
-        g.Position() * 1.0 >> pos.i_position
+        vec >> pos.i.offset
+        g.Position() * 1.0 >> pos.i.position
 
-    assert pos.i_offset.socket_name == "Offset"
-    assert vec.o_vector.socket.links[0].to_socket.node == pos.node
-    assert vec.o_vector.socket.links[0].to_socket == pos.i_offset.socket
-    assert len(pos.i_offset.socket.links) == 1
+    assert pos.i.offset.socket_name == "Offset"
+    assert vec.o.vector.socket.links[0].to_socket.node == pos.node
+    assert vec.o.vector.socket.links[0].to_socket == pos.i.offset.socket
+    assert len(pos.i.offset.socket.links) == 1
 
 
 class TestMathOperators:
@@ -84,9 +84,9 @@ class TestMathOperators:
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 
-        assert len(set_pos.i_offset.socket.links) == 0
-        assert len(set_pos.i_geometry.socket.links) == 0
-        assert len(set_pos.i_position.socket.links) == 1
+        assert len(set_pos.i.offset.socket.links) == 0
+        assert len(set_pos.i.geometry.socket.links) == 0
+        assert len(set_pos.i.position.socket.links) == 1
 
 
 def test_format_string():
@@ -140,12 +140,12 @@ def test_field_to_grid():
 
     with TreeBuilder() as tree:
         grid = g.VolumeCube(g.NoiseTexture()) >> g.GetNamedGrid(name="density")
-        ftg = g.FieldToGrid.vector(g.NoiseTexture().o_color, topology=grid)
+        ftg = g.FieldToGrid.vector(g.NoiseTexture().o.color, topology=grid)
 
     assert ftg.data_type == "VECTOR"
     assert len(ftg.node.grid_items) == 1
-    assert ftg.i_topology.socket.links[0].from_node == grid.node
-    assert ftg.i_topology.socket.links[0].from_socket == grid.o_grid.socket
+    assert ftg.i.topology.socket.links[0].from_node == grid.node
+    assert ftg.i.topology.socket.links[0].from_socket == grid.o.grid.socket
     assert ftg.inputs["Color"].socket.links[0].from_node.name == "Noise Texture.001"
 
 
@@ -183,9 +183,9 @@ def test_advect_grid(snapshot_tree):
             velocity=ftg, time_step=g.Value(0.1), integration_scheme="Midpoint"
         )
 
-    assert ftg.i_topology.socket.links[0].from_socket == grid.o_grid.socket
-    assert len(grid.o_volume.socket.links) == 0
-    assert ag.i_integration_scheme.socket.default_value == "Midpoint"
+    assert ftg.i.topology.socket.links[0].from_socket == grid.o.grid.socket
+    assert len(grid.o.volume.socket.links) == 0
+    assert ag.i.integration_scheme.socket.default_value == "Midpoint"
 
 
 def test_sdf_grid_boolean():
@@ -200,11 +200,11 @@ def test_sdf_grid_boolean():
 
     assert len(tree) == 8
     assert (
-        bool1.i_grid_1.socket.links[0].from_node.bl_idname == "GeometryNodeGetNamedGrid"
+        bool1.i.grid_1.socket.links[0].from_node.bl_idname == "GeometryNodeGetNamedGrid"
     )
-    assert len(bool1.i_grid_2.socket.links) == 3
-    assert len(bool2.i_grid_2.socket.links) == 3
-    assert len(bool3.i_grid_2.socket.links) == 3
+    assert len(bool1.i.grid_2.socket.links) == 3
+    assert len(bool2.i.grid_2.socket.links) == 3
+    assert len(bool3.i.grid_2.socket.links) == 3
 
 
 @pytest.mark.parametrize(
@@ -267,7 +267,7 @@ def test_simulation(snapshot_tree):
         _ = (
             input
             >> g.SetPosition(
-                offset=input.o_delta_time * g.Vector((0, 0, 0.1)) * pos_math
+                offset=input.o.delta_time * g.Vector((0, 0, 0.1)) * pos_math
             )
             >> output
         )
@@ -313,7 +313,7 @@ def test_index_switch(snapshot_tree):
 
     assert len(index.node.index_switch_items) == 4
     assert len(tree) == 5
-    assert index.i_index.socket.default_value == 5
+    assert index.i.index.socket.default_value == 5
 
 
 def test_menu_switch():
@@ -330,7 +330,7 @@ def test_menu_switch():
         menu >> switch
         menu.socket.default_value = "Mesh"
 
-    assert switch.i_menu.socket.links[0].from_socket == menu.socket
+    assert switch.i.menu.socket.links[0].from_socket == menu.socket
     assert len(switch.node.enum_items) == 5
 
     with TreeBuilder() as tree:
@@ -417,7 +417,7 @@ def test_accumulate_field():
             g.EvaluateAtIndex.point.rotation(aatr, g.Index() - int(1))
         )
         _ = cube >> g.SetPosition(
-            position=g.TransformPoint(g.Position(), tran.o_trailing),
+            position=g.TransformPoint(g.Position(), tran.o.trailing),
             offset=g.FieldAverage.edge.vector(g.Position()),
         )
 
@@ -441,8 +441,8 @@ def test_edge_other_point():
         # of the edge. We compare them and return the one that isn't the current input vertex index
         eov = g.EdgesOfVertex(v_index, sort_index=e_index)
         ev = g.EdgeVertices()
-        vert_1 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
-        vert_2 = g.EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
+        vert_1 = g.EvaluateAtIndex.edge.integer(ev.o.vertex_index_1, eov)
+        vert_2 = g.EvaluateAtIndex.edge.integer(ev.o.vertex_index_2, eov)
         other_vertex = g.Switch.integer(v_index == vert_1, vert_1, vert_2)
 
         with tree.outputs:
@@ -462,11 +462,11 @@ def test_align_rotation_to_vector():
         artv2 = g.AxesToRotation() >> g.AlignRotationToVector()
 
     assert (
-        artv.i_vector.socket.links[0].from_socket
+        artv.i.vector.socket.links[0].from_socket
         == tree.nodes["Random Value"].outputs[0]
     )
     assert (
-        artv2.i_rotation.socket.links[0].from_socket
+        artv2.i.rotation.socket.links[0].from_socket
         == tree.nodes["Axes to Rotation"].outputs[0]
     )
 
@@ -496,7 +496,7 @@ def test_foreachgeometryelement_zone():
         zone.output.capture_generated(pos)
         zone.output.capture_generated(transformed)
         _ = transformed >> zone.output
-        _ = g.JoinGeometry(zone.output.o_generation, cube) >> out
+        _ = g.JoinGeometry(zone.output.outputs._get("Generation_0"), cube) >> out
 
     input, output = zone
     with pytest.raises(IndexError):
@@ -510,7 +510,7 @@ def test_foreachgeometryelement_zone():
     assert zone.input.node == input.node
     assert zone.output.node == output.node
     assert input.output == output.node
-    assert input.i_selection.socket.links[0].from_node == tree.nodes["Compare"]
+    assert input.i.selection.socket.links[0].from_node == tree.nodes["Compare"]
     assert tree.nodes["Compare"].data_type == "FLOAT"
     assert tree.nodes["Compare"].operation == "GREATER_THAN"
     assert len(zone.output.items_generated) == 3
@@ -594,12 +594,12 @@ def test_inputs():
         coll = g.CollectionInfo(g.Collection(bpy.data.collections["Collection"]))
 
     assert len(tree) == 6
-    assert object.i_object.socket.links[0].from_node.object == bpy.data.objects["Cube"]
+    assert object.i.object.socket.links[0].from_node.object == bpy.data.objects["Cube"]
     assert (
-        set_material.i_material.socket.links[0].from_node.material
+        set_material.i.material.socket.links[0].from_node.material
         == bpy.data.materials["Material"]
     )
     assert (
-        coll.i_collection.links[0].from_node.collection
+        coll.i.collection.links[0].from_node.collection
         == bpy.data.collections["Collection"]
     )

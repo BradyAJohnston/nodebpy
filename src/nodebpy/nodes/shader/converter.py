@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     ColorSocket,
     FloatSocket,
@@ -26,10 +27,40 @@ from ...types import (
 class CombineColor(NodeBuilder):
     """
     Create a color from individual components using multiple models
+
+    Parameters
+    ----------
+    red : InputFloat
+        Red
+    green : InputFloat
+        Green
+    blue : InputFloat
+        Blue
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeCombineColor"
     node: bpy.types.ShaderNodeCombineColor
+
+    class Inputs(SocketAccessor):
+        red: Socket
+        green: Socket
+        blue: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "CombineColor.Inputs":
+        return CombineColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CombineColor.Outputs":
+        return CombineColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -66,26 +97,6 @@ class CombineColor(NodeBuilder):
         return cls(mode="HSL", red=red, green=green, blue=blue)
 
     @property
-    def i_red(self) -> Socket:
-        """Input socket: Red"""
-        return self.inputs._get("Red")
-
-    @property
-    def i_green(self) -> Socket:
-        """Input socket: Green"""
-        return self.inputs._get("Green")
-
-    @property
-    def i_blue(self) -> Socket:
-        """Input socket: Blue"""
-        return self.inputs._get("Blue")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
     def mode(self) -> Literal["RGB", "HSV", "HSL"]:
         return self.node.mode
 
@@ -97,10 +108,29 @@ class CombineColor(NodeBuilder):
 class EvaluateClosure(NodeBuilder):
     """
     Execute a given closure
+
+    Parameters
+    ----------
+    closure : InputClosure
+        Closure
     """
 
     _bl_idname = "NodeEvaluateClosure"
     node: bpy.types.Node
+
+    class Inputs(SocketAccessor):
+        closure: Socket
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "EvaluateClosure.Inputs":
+        return EvaluateClosure.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EvaluateClosure.Outputs":
+        return EvaluateClosure.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -116,11 +146,6 @@ class EvaluateClosure(NodeBuilder):
         self.active_output_index = active_output_index
         self.define_signature = define_signature
         self._establish_links(**key_args)
-
-    @property
-    def i_closure(self) -> Socket:
-        """Input socket: Closure"""
-        return self.inputs._get("Closure")
 
     @property
     def active_input_index(self) -> int:
@@ -150,10 +175,70 @@ class EvaluateClosure(NodeBuilder):
 class Mix(NodeBuilder):
     """
     Mix values by a factor
+
+    Parameters
+    ----------
+    factor_float : InputFloat
+        Factor
+    factor_vector : InputVector
+        Factor
+    a_float : InputFloat
+        A
+    b_float : InputFloat
+        B
+    a_vector : InputVector
+        A
+    b_vector : InputVector
+        B
+    a_color : InputColor
+        A
+    b_color : InputColor
+        B
+    a_rotation : InputRotation
+        A
+    b_rotation : InputRotation
+        B
+
+    Outputs
+    -------
+    result_float : FloatSocket
+        Result
+    result_vector : VectorSocket
+        Result
+    result_color : ColorSocket
+        Result
+    result_rotation : RotationSocket
+        Result
     """
 
     _bl_idname = "ShaderNodeMix"
     node: bpy.types.ShaderNodeMix
+
+    class Inputs(SocketAccessor):
+        factor_float: Socket
+        factor_vector: Socket
+        a_float: Socket
+        b_float: Socket
+        a_vector: Socket
+        b_vector: Socket
+        a_color: Socket
+        b_color: Socket
+        a_rotation: Socket
+        b_rotation: Socket
+
+    class Outputs(SocketAccessor):
+        result_float: FloatSocket
+        result_vector: VectorSocket
+        result_color: ColorSocket
+        result_rotation: RotationSocket
+
+    @property
+    def i(self) -> "Mix.Inputs":
+        return Mix.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Mix.Outputs":
+        return Mix.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -239,76 +324,6 @@ class Mix(NodeBuilder):
         return cls(
             data_type="RGBA", factor_float=factor, a_color=a_color, b_color=b_color
         )
-
-    @property
-    def i_factor_float(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor_Float")
-
-    @property
-    def i_factor_vector(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor_Vector")
-
-    @property
-    def i_a_float(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Float")
-
-    @property
-    def i_b_float(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Float")
-
-    @property
-    def i_a_vector(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Vector")
-
-    @property
-    def i_b_vector(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Vector")
-
-    @property
-    def i_a_color(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Color")
-
-    @property
-    def i_b_color(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Color")
-
-    @property
-    def i_a_rotation(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Rotation")
-
-    @property
-    def i_b_rotation(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Rotation")
-
-    @property
-    def o_result_float(self) -> FloatSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Float")
-
-    @property
-    def o_result_vector(self) -> VectorSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Vector")
-
-    @property
-    def o_result_color(self) -> ColorSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Color")
-
-    @property
-    def o_result_rotation(self) -> RotationSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Rotation")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
@@ -399,10 +414,34 @@ class Mix(NodeBuilder):
 class RGBToBw(NodeBuilder):
     """
     Convert a color's luminance to a grayscale value
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+
+    Outputs
+    -------
+    val : FloatSocket
+        Val
     """
 
     _bl_idname = "ShaderNodeRGBToBW"
     node: bpy.types.ShaderNodeRGBToBW
+
+    class Inputs(SocketAccessor):
+        color: Socket
+
+    class Outputs(SocketAccessor):
+        val: FloatSocket
+
+    @property
+    def i(self) -> "RGBToBw.Inputs":
+        return RGBToBw.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RGBToBw.Outputs":
+        return RGBToBw.Outputs(self.node.outputs, "output")
 
     def __init__(self, color: InputColor = None):
         super().__init__()
@@ -410,24 +449,44 @@ class RGBToBw(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def o_val(self) -> FloatSocket:
-        """Output socket: Val"""
-        return self.outputs._get("Val")
-
 
 class SeparateColor(NodeBuilder):
     """
     Split a color into its individual components using multiple models
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+
+    Outputs
+    -------
+    red : FloatSocket
+        Red
+    green : FloatSocket
+        Green
+    blue : FloatSocket
+        Blue
     """
 
     _bl_idname = "ShaderNodeSeparateColor"
     node: bpy.types.ShaderNodeSeparateColor
+
+    class Inputs(SocketAccessor):
+        color: Socket
+
+    class Outputs(SocketAccessor):
+        red: FloatSocket
+        green: FloatSocket
+        blue: FloatSocket
+
+    @property
+    def i(self) -> "SeparateColor.Inputs":
+        return SeparateColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateColor.Outputs":
+        return SeparateColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -456,26 +515,6 @@ class SeparateColor(NodeBuilder):
         return cls(mode="HSL", color=color)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def o_red(self) -> FloatSocket:
-        """Output socket: Red"""
-        return self.outputs._get("Red")
-
-    @property
-    def o_green(self) -> FloatSocket:
-        """Output socket: Green"""
-        return self.outputs._get("Green")
-
-    @property
-    def o_blue(self) -> FloatSocket:
-        """Output socket: Blue"""
-        return self.outputs._get("Blue")
-
-    @property
     def mode(self) -> Literal["RGB", "HSV", "HSL"]:
         return self.node.mode
 
@@ -488,10 +527,37 @@ class ShaderToRGB(NodeBuilder):
     """
         Convert rendering effect (such as light and shadow) to color. Typically used for non-photorealistic rendering, to apply additional effects on the output of BSDFs.
     Note: only supported in EEVEE
+
+        Parameters
+        ----------
+        shader : InputShader
+            Shader
+
+        Outputs
+        -------
+        color : ColorSocket
+            Color
+        alpha : FloatSocket
+            Alpha
     """
 
     _bl_idname = "ShaderNodeShaderToRGB"
     node: bpy.types.ShaderNodeShaderToRGB
+
+    class Inputs(SocketAccessor):
+        shader: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        alpha: FloatSocket
+
+    @property
+    def i(self) -> "ShaderToRGB.Inputs":
+        return ShaderToRGB.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ShaderToRGB.Outputs":
+        return ShaderToRGB.Outputs(self.node.outputs, "output")
 
     def __init__(self, shader: InputShader = None):
         super().__init__()
@@ -499,42 +565,41 @@ class ShaderToRGB(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_shader(self) -> Socket:
-        """Input socket: Shader"""
-        return self.inputs._get("Shader")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
-
 
 class Wavelength(NodeBuilder):
     """
     Convert a wavelength value to an RGB value
+
+    Parameters
+    ----------
+    wavelength : InputFloat
+        Wavelength
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeWavelength"
     node: bpy.types.ShaderNodeWavelength
+
+    class Inputs(SocketAccessor):
+        wavelength: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Wavelength.Inputs":
+        return Wavelength.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Wavelength.Outputs":
+        return Wavelength.Outputs(self.node.outputs, "output")
 
     def __init__(self, wavelength: InputFloat = 500.0):
         super().__init__()
         key_args = {"Wavelength": wavelength}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_wavelength(self) -> Socket:
-        """Input socket: Wavelength"""
-        return self.inputs._get("Wavelength")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")

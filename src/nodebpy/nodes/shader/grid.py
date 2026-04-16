@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     ColorSocket,
     FloatSocket,
@@ -23,10 +24,70 @@ from ...types import (
 class PrincipledVolume(NodeBuilder):
     """
     Combine all volume shading components into a single easy to use node
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    color_attribute : InputString
+        Color Attribute
+    density : InputFloat
+        Density
+    density_attribute : InputString
+        Density Attribute
+    anisotropy : InputFloat
+        Anisotropy
+    absorption_color : InputColor
+        Absorption Color
+    emission_strength : InputFloat
+        Emission Strength
+    emission_color : InputColor
+        Emission Color
+    blackbody_intensity : InputFloat
+        Blackbody Intensity
+    blackbody_tint : InputColor
+        Blackbody Tint
+    temperature : InputFloat
+        Temperature
+    temperature_attribute : InputString
+        Temperature Attribute
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    volume : ShaderSocket
+        Volume
     """
 
     _bl_idname = "ShaderNodeVolumePrincipled"
     node: bpy.types.ShaderNodeVolumePrincipled
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        color_attribute: Socket
+        density: Socket
+        density_attribute: Socket
+        anisotropy: Socket
+        absorption_color: Socket
+        emission_strength: Socket
+        emission_color: Socket
+        blackbody_intensity: Socket
+        blackbody_tint: Socket
+        temperature: Socket
+        temperature_attribute: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        volume: ShaderSocket
+
+    @property
+    def i(self) -> "PrincipledVolume.Inputs":
+        return PrincipledVolume.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PrincipledVolume.Outputs":
+        return PrincipledVolume.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -63,84 +124,44 @@ class PrincipledVolume(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_color_attribute(self) -> Socket:
-        """Input socket: Color Attribute"""
-        return self.inputs._get("Color Attribute")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_density_attribute(self) -> Socket:
-        """Input socket: Density Attribute"""
-        return self.inputs._get("Density Attribute")
-
-    @property
-    def i_anisotropy(self) -> Socket:
-        """Input socket: Anisotropy"""
-        return self.inputs._get("Anisotropy")
-
-    @property
-    def i_absorption_color(self) -> Socket:
-        """Input socket: Absorption Color"""
-        return self.inputs._get("Absorption Color")
-
-    @property
-    def i_emission_strength(self) -> Socket:
-        """Input socket: Emission Strength"""
-        return self.inputs._get("Emission Strength")
-
-    @property
-    def i_emission_color(self) -> Socket:
-        """Input socket: Emission Color"""
-        return self.inputs._get("Emission Color")
-
-    @property
-    def i_blackbody_intensity(self) -> Socket:
-        """Input socket: Blackbody Intensity"""
-        return self.inputs._get("Blackbody Intensity")
-
-    @property
-    def i_blackbody_tint(self) -> Socket:
-        """Input socket: Blackbody Tint"""
-        return self.inputs._get("Blackbody Tint")
-
-    @property
-    def i_temperature(self) -> Socket:
-        """Input socket: Temperature"""
-        return self.inputs._get("Temperature")
-
-    @property
-    def i_temperature_attribute(self) -> Socket:
-        """Input socket: Temperature Attribute"""
-        return self.inputs._get("Temperature Attribute")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_volume(self) -> ShaderSocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
 
 class VolumeAbsorption(NodeBuilder):
     """
     Absorb light as it passes through the volume
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    density : InputFloat
+        Density
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    volume : ShaderSocket
+        Volume
     """
 
     _bl_idname = "ShaderNodeVolumeAbsorption"
     node: bpy.types.ShaderNodeVolumeAbsorption
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        density: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        volume: ShaderSocket
+
+    @property
+    def i(self) -> "VolumeAbsorption.Inputs":
+        return VolumeAbsorption.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VolumeAbsorption.Outputs":
+        return VolumeAbsorption.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -153,34 +174,62 @@ class VolumeAbsorption(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_volume(self) -> ShaderSocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
 
 class VolumeCoefficients(NodeBuilder):
     """
     Model all three physical processes in a volume, represented by their coefficients
+
+    Parameters
+    ----------
+    weight : InputFloat
+        Weight
+    absorption_coefficients : InputVector
+        Absorption Coefficients
+    scatter_coefficients : InputVector
+        Scatter Coefficients
+    anisotropy : InputFloat
+        Anisotropy
+    ior : InputFloat
+        IOR
+    backscatter : InputFloat
+        Backscatter
+    alpha : InputFloat
+        Alpha
+    diameter : InputFloat
+        Diameter
+    emission_coefficients : InputVector
+        Emission Coefficients
+
+    Outputs
+    -------
+    volume : ShaderSocket
+        Volume
     """
 
     _bl_idname = "ShaderNodeVolumeCoefficients"
     node: bpy.types.ShaderNodeVolumeCoefficients
+
+    class Inputs(SocketAccessor):
+        weight: Socket
+        absorption_coefficients: Socket
+        scatter_coefficients: Socket
+        anisotropy: Socket
+        ior: Socket
+        backscatter: Socket
+        alpha: Socket
+        diameter: Socket
+        emission_coefficients: Socket
+
+    class Outputs(SocketAccessor):
+        volume: ShaderSocket
+
+    @property
+    def i(self) -> "VolumeCoefficients.Inputs":
+        return VolumeCoefficients.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VolumeCoefficients.Outputs":
+        return VolumeCoefficients.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -214,56 +263,6 @@ class VolumeCoefficients(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def i_absorption_coefficients(self) -> Socket:
-        """Input socket: Absorption Coefficients"""
-        return self.inputs._get("Absorption Coefficients")
-
-    @property
-    def i_scatter_coefficients(self) -> Socket:
-        """Input socket: Scatter Coefficients"""
-        return self.inputs._get("Scatter Coefficients")
-
-    @property
-    def i_anisotropy(self) -> Socket:
-        """Input socket: Anisotropy"""
-        return self.inputs._get("Anisotropy")
-
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_backscatter(self) -> Socket:
-        """Input socket: Backscatter"""
-        return self.inputs._get("Backscatter")
-
-    @property
-    def i_alpha(self) -> Socket:
-        """Input socket: Alpha"""
-        return self.inputs._get("Alpha")
-
-    @property
-    def i_diameter(self) -> Socket:
-        """Input socket: Diameter"""
-        return self.inputs._get("Diameter")
-
-    @property
-    def i_emission_coefficients(self) -> Socket:
-        """Input socket: Emission Coefficients"""
-        return self.inputs._get("Emission Coefficients")
-
-    @property
-    def o_volume(self) -> ShaderSocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
-    @property
     def phase(
         self,
     ) -> Literal["HENYEY_GREENSTEIN", "FOURNIER_FORAND", "DRAINE", "RAYLEIGH", "MIE"]:
@@ -282,10 +281,38 @@ class VolumeCoefficients(NodeBuilder):
 class VolumeInfo(NodeBuilder):
     """
     Read volume data attributes from volume grids
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    density : FloatSocket
+        Density
+    flame : FloatSocket
+        Flame
+    temperature : FloatSocket
+        Temperature
     """
 
     _bl_idname = "ShaderNodeVolumeInfo"
     node: bpy.types.ShaderNodeVolumeInfo
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        density: FloatSocket
+        flame: FloatSocket
+        temperature: FloatSocket
+
+    @property
+    def i(self) -> "VolumeInfo.Inputs":
+        return VolumeInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VolumeInfo.Outputs":
+        return VolumeInfo.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -293,34 +320,59 @@ class VolumeInfo(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_density(self) -> FloatSocket:
-        """Output socket: Density"""
-        return self.outputs._get("Density")
-
-    @property
-    def o_flame(self) -> FloatSocket:
-        """Output socket: Flame"""
-        return self.outputs._get("Flame")
-
-    @property
-    def o_temperature(self) -> FloatSocket:
-        """Output socket: Temperature"""
-        return self.outputs._get("Temperature")
-
 
 class VolumeScatter(NodeBuilder):
     """
     Scatter light as it passes through the volume, often used to add fog to a scene
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    density : InputFloat
+        Density
+    anisotropy : InputFloat
+        Anisotropy
+    ior : InputFloat
+        IOR
+    backscatter : InputFloat
+        Backscatter
+    alpha : InputFloat
+        Alpha
+    diameter : InputFloat
+        Diameter
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    volume : ShaderSocket
+        Volume
     """
 
     _bl_idname = "ShaderNodeVolumeScatter"
     node: bpy.types.ShaderNodeVolumeScatter
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        density: Socket
+        anisotropy: Socket
+        ior: Socket
+        backscatter: Socket
+        alpha: Socket
+        diameter: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        volume: ShaderSocket
+
+    @property
+    def i(self) -> "VolumeScatter.Inputs":
+        return VolumeScatter.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VolumeScatter.Outputs":
+        return VolumeScatter.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -350,51 +402,6 @@ class VolumeScatter(NodeBuilder):
         }
         self.phase = phase
         self._establish_links(**key_args)
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_anisotropy(self) -> Socket:
-        """Input socket: Anisotropy"""
-        return self.inputs._get("Anisotropy")
-
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_backscatter(self) -> Socket:
-        """Input socket: Backscatter"""
-        return self.inputs._get("Backscatter")
-
-    @property
-    def i_alpha(self) -> Socket:
-        """Input socket: Alpha"""
-        return self.inputs._get("Alpha")
-
-    @property
-    def i_diameter(self) -> Socket:
-        """Input socket: Diameter"""
-        return self.inputs._get("Diameter")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_volume(self) -> ShaderSocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
 
     @property
     def phase(

@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket
+from ...builder import BaseNode as NodeBuilder, SocketAccessor, Socket
 
 from ...types import (
     InputColor,
@@ -17,6 +17,20 @@ class FileOutput(NodeBuilder):
 
     _bl_idname = "CompositorNodeOutputFile"
     node: bpy.types.CompositorNodeOutputFile
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "FileOutput.Inputs":
+        return FileOutput.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FileOutput.Outputs":
+        return FileOutput.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -69,10 +83,29 @@ class FileOutput(NodeBuilder):
 class Viewer(NodeBuilder):
     """
     Visualize data from inside a node graph, in the image editor or as a backdrop
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
     """
 
     _bl_idname = "CompositorNodeViewer"
     node: bpy.types.CompositorNodeViewer
+
+    class Inputs(SocketAccessor):
+        image: Socket
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "Viewer.Inputs":
+        return Viewer.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Viewer.Outputs":
+        return Viewer.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -84,11 +117,6 @@ class Viewer(NodeBuilder):
         key_args = {"Image": image}
         self.ui_shortcut = ui_shortcut
         self._establish_links(**key_args)
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
 
     @property
     def ui_shortcut(self) -> int:

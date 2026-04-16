@@ -39,10 +39,12 @@ class SocketAccessor:
         if isinstance(key, int):
             return key
         ids = [s.identifier for s in self._collection]
-        if key in ids:
-            return ids.index(key)
+        denorm = denormalize_name(key)
+        for candidate in (key, denorm):
+            if candidate in ids:
+                return ids.index(candidate)
         names = [s.name for s in self._collection]
-        for key in (key, denormalize_name(key)):
+        for key in (key, denorm):
             if key in names:
                 if names.count(key) > 1:
                     raise RuntimeError(
@@ -168,3 +170,19 @@ class SocketAccessor:
     def __iter__(self):
         """Iterate over socket names (enables ``**node.outputs`` unpacking)."""
         return iter(self._keys())
+
+    def __getattr__(self, name: str) -> "Socket":
+        """Dynamic socket access by normalised attribute name.
+
+        Converts ``node.o.base_color`` to ``self._get("Base Color")``.
+        Raises ``AttributeError`` (not ``RuntimeError``) so that ``hasattr``
+        and ``getattr(..., default)`` behave correctly.
+        """
+        if name.startswith("_"):
+            raise AttributeError(name)
+        try:
+            return self._get(name)
+        except RuntimeError:
+            raise AttributeError(
+                f"Socket '{name}' not found on {self._direction} accessor"
+            )

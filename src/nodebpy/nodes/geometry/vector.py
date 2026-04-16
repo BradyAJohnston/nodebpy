@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, FloatSocket, VectorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    SocketAccessor,
+    Socket,
+    FloatSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputFloat,
@@ -15,10 +21,49 @@ from ...types import (
 class RadialTiling(NodeBuilder):
     """
     Transform Coordinate System for Radial Tiling
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    sides : InputFloat
+        Sides
+    roundness : InputFloat
+        Roundness
+
+    Outputs
+    -------
+    segment_coordinates : VectorSocket
+        Segment Coordinates
+    segment_id : FloatSocket
+        Segment ID
+    segment_width : FloatSocket
+        Segment Width
+    segment_rotation : FloatSocket
+        Segment Rotation
     """
 
     _bl_idname = "ShaderNodeRadialTiling"
     node: bpy.types.ShaderNodeRadialTiling
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        sides: Socket
+        roundness: Socket
+
+    class Outputs(SocketAccessor):
+        segment_coordinates: VectorSocket
+        segment_id: FloatSocket
+        segment_width: FloatSocket
+        segment_rotation: FloatSocket
+
+    @property
+    def i(self) -> "RadialTiling.Inputs":
+        return RadialTiling.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RadialTiling.Outputs":
+        return RadialTiling.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -34,41 +79,6 @@ class RadialTiling(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_sides(self) -> Socket:
-        """Input socket: Sides"""
-        return self.inputs._get("Sides")
-
-    @property
-    def i_roundness(self) -> Socket:
-        """Input socket: Roundness"""
-        return self.inputs._get("Roundness")
-
-    @property
-    def o_segment_coordinates(self) -> VectorSocket:
-        """Output socket: Segment Coordinates"""
-        return self.outputs._get("Segment Coordinates")
-
-    @property
-    def o_segment_id(self) -> FloatSocket:
-        """Output socket: Segment ID"""
-        return self.outputs._get("Segment ID")
-
-    @property
-    def o_segment_width(self) -> FloatSocket:
-        """Output socket: Segment Width"""
-        return self.outputs._get("Segment Width")
-
-    @property
-    def o_segment_rotation(self) -> FloatSocket:
-        """Output socket: Segment Rotation"""
-        return self.outputs._get("Segment Rotation")
-
-    @property
     def normalize(self) -> bool:
         return self.node.normalize
 
@@ -80,10 +90,37 @@ class RadialTiling(NodeBuilder):
 class VectorCurves(NodeBuilder):
     """
     Map input vector components with curves
+
+    Parameters
+    ----------
+    fac : InputFloat
+        Factor
+    vector : InputVector
+        Vector
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "ShaderNodeVectorCurve"
     node: bpy.types.ShaderNodeVectorCurve
+
+    class Inputs(SocketAccessor):
+        fac: Socket
+        vector: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "VectorCurves.Inputs":
+        return VectorCurves.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VectorCurves.Outputs":
+        return VectorCurves.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -95,29 +132,50 @@ class VectorCurves(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
 
 class VectorMath(NodeBuilder):
     """
     Perform vector math operation
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    vector_001 : InputVector
+        Vector
+    vector_002 : InputVector
+        Vector
+    scale : InputFloat
+        Scale
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "ShaderNodeVectorMath"
     node: bpy.types.ShaderNodeVectorMath
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        vector_001: Socket
+        vector_002: Socket
+        scale: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+        value: FloatSocket
+
+    @property
+    def i(self) -> "VectorMath.Inputs":
+        return VectorMath.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VectorMath.Outputs":
+        return VectorMath.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -379,36 +437,6 @@ class VectorMath(NodeBuilder):
         return cls(operation="TANGENT", vector=vector)
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_vector_001(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector_001")
-
-    @property
-    def i_vector_002(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector_002")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def operation(
         self,
     ) -> Literal[
@@ -485,10 +513,46 @@ class VectorMath(NodeBuilder):
 class VectorRotate(NodeBuilder):
     """
     Rotate a vector around a pivot point (center)
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    center : InputVector
+        Center
+    axis : InputVector
+        Axis
+    angle : InputFloat
+        Angle
+    rotation : InputVector
+        Rotation
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "ShaderNodeVectorRotate"
     node: bpy.types.ShaderNodeVectorRotate
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        center: Socket
+        axis: Socket
+        angle: Socket
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "VectorRotate.Inputs":
+        return VectorRotate.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VectorRotate.Outputs":
+        return VectorRotate.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -573,36 +637,6 @@ class VectorRotate(NodeBuilder):
         return cls(
             rotation_type="EULER_XYZ", vector=vector, center=center, rotation=rotation
         )
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_center(self) -> Socket:
-        """Input socket: Center"""
-        return self.inputs._get("Center")
-
-    @property
-    def i_axis(self) -> Socket:
-        """Input socket: Axis"""
-        return self.inputs._get("Axis")
-
-    @property
-    def i_angle(self) -> Socket:
-        """Input socket: Angle"""
-        return self.inputs._get("Angle")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
 
     @property
     def rotation_type(

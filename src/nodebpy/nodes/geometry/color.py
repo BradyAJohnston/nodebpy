@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket
+from ...builder import BaseNode as NodeBuilder, SocketAccessor, Socket, ColorSocket
 
 from ...types import (
     InputColor,
@@ -14,10 +14,37 @@ from ...types import (
 class Gamma(NodeBuilder):
     """
     Apply a gamma correction
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    gamma : InputFloat
+        Gamma
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeGamma"
     node: bpy.types.ShaderNodeGamma
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        gamma: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Gamma.Inputs":
+        return Gamma.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Gamma.Outputs":
+        return Gamma.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -29,29 +56,41 @@ class Gamma(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_gamma(self) -> Socket:
-        """Input socket: Gamma"""
-        return self.inputs._get("Gamma")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class RGBCurves(NodeBuilder):
     """
     Apply color corrections for each color channel
+
+    Parameters
+    ----------
+    fac : InputFloat
+        Factor
+    color : InputColor
+        Color
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeRGBCurve"
     node: bpy.types.ShaderNodeRGBCurve
+
+    class Inputs(SocketAccessor):
+        fac: Socket
+        color: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "RGBCurves.Inputs":
+        return RGBCurves.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RGBCurves.Outputs":
+        return RGBCurves.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -62,18 +101,3 @@ class RGBCurves(NodeBuilder):
         key_args = {"Fac": fac, "Color": color}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")

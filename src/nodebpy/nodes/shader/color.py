@@ -3,7 +3,13 @@
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    SocketAccessor,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+)
 
 from ...types import (
     InputColor,
@@ -14,10 +20,40 @@ from ...types import (
 class Brightnesscontrast(NodeBuilder):
     """
     Control the brightness and contrast of the input color
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    bright : InputFloat
+        Brightness
+    contrast : InputFloat
+        Contrast
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeBrightContrast"
     node: bpy.types.ShaderNodeBrightContrast
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        bright: Socket
+        contrast: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Brightnesscontrast.Inputs":
+        return Brightnesscontrast.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Brightnesscontrast.Outputs":
+        return Brightnesscontrast.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -30,34 +66,50 @@ class Brightnesscontrast(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_bright(self) -> Socket:
-        """Input socket: Brightness"""
-        return self.inputs._get("Bright")
-
-    @property
-    def i_contrast(self) -> Socket:
-        """Input socket: Contrast"""
-        return self.inputs._get("Contrast")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class Huesaturationvalue(NodeBuilder):
     """
     Apply a color transformation in the HSV color model
+
+    Parameters
+    ----------
+    hue : InputFloat
+        Hue
+    saturation : InputFloat
+        Saturation
+    value : InputFloat
+        Value
+    fac : InputFloat
+        Factor
+    color : InputColor
+        Color
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeHueSaturation"
     node: bpy.types.ShaderNodeHueSaturation
+
+    class Inputs(SocketAccessor):
+        hue: Socket
+        saturation: Socket
+        value: Socket
+        fac: Socket
+        color: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Huesaturationvalue.Inputs":
+        return Huesaturationvalue.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Huesaturationvalue.Outputs":
+        return Huesaturationvalue.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -78,44 +130,41 @@ class Huesaturationvalue(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_hue(self) -> Socket:
-        """Input socket: Hue"""
-        return self.inputs._get("Hue")
-
-    @property
-    def i_saturation(self) -> Socket:
-        """Input socket: Saturation"""
-        return self.inputs._get("Saturation")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class InvertColor(NodeBuilder):
     """
     Invert a color, producing a negative
+
+    Parameters
+    ----------
+    fac : InputFloat
+        Factor
+    color : InputColor
+        Color
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeInvert"
     node: bpy.types.ShaderNodeInvert
+
+    class Inputs(SocketAccessor):
+        fac: Socket
+        color: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "InvertColor.Inputs":
+        return InvertColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InvertColor.Outputs":
+        return InvertColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -127,29 +176,47 @@ class InvertColor(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class LightFalloff(NodeBuilder):
     """
     Manipulate how light intensity decreases over distance. Typically used for non-physically-based effects; in reality light always falls off quadratically
+
+    Parameters
+    ----------
+    strength : InputFloat
+        Strength
+    smooth : InputFloat
+        Smooth
+
+    Outputs
+    -------
+    quadratic : FloatSocket
+        Quadratic
+    linear : FloatSocket
+        Linear
+    constant : FloatSocket
+        Constant
     """
 
     _bl_idname = "ShaderNodeLightFalloff"
     node: bpy.types.ShaderNodeLightFalloff
+
+    class Inputs(SocketAccessor):
+        strength: Socket
+        smooth: Socket
+
+    class Outputs(SocketAccessor):
+        quadratic: FloatSocket
+        linear: FloatSocket
+        constant: FloatSocket
+
+    @property
+    def i(self) -> "LightFalloff.Inputs":
+        return LightFalloff.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "LightFalloff.Outputs":
+        return LightFalloff.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -160,28 +227,3 @@ class LightFalloff(NodeBuilder):
         key_args = {"Strength": strength, "Smooth": smooth}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Strength")
-
-    @property
-    def i_smooth(self) -> Socket:
-        """Input socket: Smooth"""
-        return self.inputs._get("Smooth")
-
-    @property
-    def o_quadratic(self) -> FloatSocket:
-        """Output socket: Quadratic"""
-        return self.outputs._get("Quadratic")
-
-    @property
-    def o_linear(self) -> FloatSocket:
-        """Output socket: Linear"""
-        return self.outputs._get("Linear")
-
-    @property
-    def o_constant(self) -> FloatSocket:
-        """Output socket: Constant"""
-        return self.outputs._get("Constant")

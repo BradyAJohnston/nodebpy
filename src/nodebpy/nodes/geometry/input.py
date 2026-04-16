@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     BooleanSocket,
     ColorSocket,
@@ -36,35 +37,66 @@ from ...types import (
 class Cursor3D(NodeBuilder):
     """
     The scene's 3D cursor location and rotation
+
+    Outputs
+    -------
+    location : VectorSocket
+        Location
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "GeometryNodeTool3DCursor"
     node: bpy.types.GeometryNodeTool3DCursor
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        location: VectorSocket
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "Cursor3D.Inputs":
+        return Cursor3D.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Cursor3D.Outputs":
+        return Cursor3D.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_location(self) -> VectorSocket:
-        """Output socket: Location"""
-        return self.outputs._get("Location")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
 
 
 class ActiveCamera(NodeBuilder):
     """
     Retrieve the scene's active camera
+
+    Outputs
+    -------
+    active_camera : ObjectSocket
+        Active Camera
     """
 
     _bl_idname = "GeometryNodeInputActiveCamera"
     node: bpy.types.GeometryNodeInputActiveCamera
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        active_camera: ObjectSocket
+
+    @property
+    def i(self) -> "ActiveCamera.Inputs":
+        return ActiveCamera.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ActiveCamera.Outputs":
+        return ActiveCamera.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -72,19 +104,36 @@ class ActiveCamera(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_active_camera(self) -> ObjectSocket:
-        """Output socket: Active Camera"""
-        return self.outputs._get("Active Camera")
-
 
 class ActiveElement(NodeBuilder):
     """
     Active element indices of the edited geometry, for tool execution
+
+    Outputs
+    -------
+    index : IntegerSocket
+        Index
+    exists : BooleanSocket
+        Exists
     """
 
     _bl_idname = "GeometryNodeToolActiveElement"
     node: bpy.types.GeometryNodeToolActiveElement
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        index: IntegerSocket
+        exists: BooleanSocket
+
+    @property
+    def i(self) -> "ActiveElement.Inputs":
+        return ActiveElement.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ActiveElement.Outputs":
+        return ActiveElement.Outputs(self.node.outputs, "output")
 
     def __init__(self, domain: Literal["POINT", "EDGE", "FACE", "LAYER"] = "POINT"):
         super().__init__()
@@ -113,16 +162,6 @@ class ActiveElement(NodeBuilder):
         return cls(domain="LAYER")
 
     @property
-    def o_index(self) -> IntegerSocket:
-        """Output socket: Index"""
-        return self.outputs._get("Index")
-
-    @property
-    def o_exists(self) -> BooleanSocket:
-        """Output socket: Exists"""
-        return self.outputs._get("Exists")
-
-    @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "LAYER"]:
         return self.node.domain
 
@@ -134,21 +173,35 @@ class ActiveElement(NodeBuilder):
 class Boolean(NodeBuilder):
     """
     Provide a True/False value that can be connected to other nodes in the tree
+
+    Outputs
+    -------
+    boolean : BooleanSocket
+        Boolean
     """
 
     _bl_idname = "FunctionNodeInputBool"
     node: bpy.types.FunctionNodeInputBool
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        boolean: BooleanSocket
+
+    @property
+    def i(self) -> "Boolean.Inputs":
+        return Boolean.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Boolean.Outputs":
+        return Boolean.Outputs(self.node.outputs, "output")
 
     def __init__(self, boolean: bool = False):
         super().__init__()
         key_args = {}
         self.boolean = boolean
         self._establish_links(**key_args)
-
-    @property
-    def o_boolean(self) -> BooleanSocket:
-        """Output socket: Boolean"""
-        return self.outputs._get("Boolean")
 
     @property
     def boolean(self) -> bool:
@@ -162,10 +215,58 @@ class Boolean(NodeBuilder):
 class CameraInfo(NodeBuilder):
     """
     Retrieve information from a camera object
+
+    Parameters
+    ----------
+    camera : InputObject
+        Camera
+
+    Outputs
+    -------
+    projection_matrix : MatrixSocket
+        Projection Matrix
+    focal_length : FloatSocket
+        Focal Length
+    sensor : VectorSocket
+        Sensor
+    shift : VectorSocket
+        Shift
+    clip_start : FloatSocket
+        Clip Start
+    clip_end : FloatSocket
+        Clip End
+    focus_distance : FloatSocket
+        Focus Distance
+    is_orthographic : BooleanSocket
+        Is Orthographic
+    orthographic_scale : FloatSocket
+        Orthographic Scale
     """
 
     _bl_idname = "GeometryNodeCameraInfo"
     node: bpy.types.GeometryNodeCameraInfo
+
+    class Inputs(SocketAccessor):
+        camera: Socket
+
+    class Outputs(SocketAccessor):
+        projection_matrix: MatrixSocket
+        focal_length: FloatSocket
+        sensor: VectorSocket
+        shift: VectorSocket
+        clip_start: FloatSocket
+        clip_end: FloatSocket
+        focus_distance: FloatSocket
+        is_orthographic: BooleanSocket
+        orthographic_scale: FloatSocket
+
+    @property
+    def i(self) -> "CameraInfo.Inputs":
+        return CameraInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CameraInfo.Outputs":
+        return CameraInfo.Outputs(self.node.outputs, "output")
 
     def __init__(self, camera: InputObject = None):
         super().__init__()
@@ -173,64 +274,44 @@ class CameraInfo(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_camera(self) -> Socket:
-        """Input socket: Camera"""
-        return self.inputs._get("Camera")
-
-    @property
-    def o_projection_matrix(self) -> MatrixSocket:
-        """Output socket: Projection Matrix"""
-        return self.outputs._get("Projection Matrix")
-
-    @property
-    def o_focal_length(self) -> FloatSocket:
-        """Output socket: Focal Length"""
-        return self.outputs._get("Focal Length")
-
-    @property
-    def o_sensor(self) -> VectorSocket:
-        """Output socket: Sensor"""
-        return self.outputs._get("Sensor")
-
-    @property
-    def o_shift(self) -> VectorSocket:
-        """Output socket: Shift"""
-        return self.outputs._get("Shift")
-
-    @property
-    def o_clip_start(self) -> FloatSocket:
-        """Output socket: Clip Start"""
-        return self.outputs._get("Clip Start")
-
-    @property
-    def o_clip_end(self) -> FloatSocket:
-        """Output socket: Clip End"""
-        return self.outputs._get("Clip End")
-
-    @property
-    def o_focus_distance(self) -> FloatSocket:
-        """Output socket: Focus Distance"""
-        return self.outputs._get("Focus Distance")
-
-    @property
-    def o_is_orthographic(self) -> BooleanSocket:
-        """Output socket: Is Orthographic"""
-        return self.outputs._get("Is Orthographic")
-
-    @property
-    def o_orthographic_scale(self) -> FloatSocket:
-        """Output socket: Orthographic Scale"""
-        return self.outputs._get("Orthographic Scale")
-
 
 class CollectionInfo(NodeBuilder):
     """
     Retrieve geometry instances from a collection
+
+    Parameters
+    ----------
+    collection : InputCollection
+        Collection
+    separate_children : InputBoolean
+        Separate Children
+    reset_children : InputBoolean
+        Reset Children
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Instances
     """
 
     _bl_idname = "GeometryNodeCollectionInfo"
     node: bpy.types.GeometryNodeCollectionInfo
+
+    class Inputs(SocketAccessor):
+        collection: Socket
+        separate_children: Socket
+        reset_children: Socket
+
+    class Outputs(SocketAccessor):
+        instances: GeometrySocket
+
+    @property
+    def i(self) -> "CollectionInfo.Inputs":
+        return CollectionInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CollectionInfo.Outputs":
+        return CollectionInfo.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -250,26 +331,6 @@ class CollectionInfo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_collection(self) -> Socket:
-        """Input socket: Collection"""
-        return self.inputs._get("Collection")
-
-    @property
-    def i_separate_children(self) -> Socket:
-        """Input socket: Separate Children"""
-        return self.inputs._get("Separate Children")
-
-    @property
-    def i_reset_children(self) -> Socket:
-        """Input socket: Reset Children"""
-        return self.inputs._get("Reset Children")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
-
-    @property
     def transform_space(self) -> Literal["ORIGINAL", "RELATIVE"]:
         return self.node.transform_space
 
@@ -281,10 +342,29 @@ class CollectionInfo(NodeBuilder):
 class Color(NodeBuilder):
     """
     Output a color value chosen with the color picker widget
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "FunctionNodeInputColor"
     node: bpy.types.FunctionNodeInputColor
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Color.Inputs":
+        return Color.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Color.Outputs":
+        return Color.Outputs(self.node.outputs, "output")
 
     def __init__(
         self, value: tuple[float, float, float, float] = (0.735, 0.735, 0.735, 1.0)
@@ -293,11 +373,6 @@ class Color(NodeBuilder):
         key_args = {}
         self.value = value
         self._establish_links(**key_args)
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
 
     @property
     def value(self) -> tuple[float, float, float, float]:
@@ -311,10 +386,43 @@ class Color(NodeBuilder):
 class CornersOfEdge(NodeBuilder):
     """
     Retrieve face corners connected to edges
+
+    Parameters
+    ----------
+    edge_index : InputInteger
+        Edge Index
+    weights : InputFloat
+        Weights
+    sort_index : InputInteger
+        Sort Index
+
+    Outputs
+    -------
+    corner_index : IntegerSocket
+        Corner Index
+    total : IntegerSocket
+        Total
     """
 
     _bl_idname = "GeometryNodeCornersOfEdge"
     node: bpy.types.GeometryNodeCornersOfEdge
+
+    class Inputs(SocketAccessor):
+        edge_index: Socket
+        weights: Socket
+        sort_index: Socket
+
+    class Outputs(SocketAccessor):
+        corner_index: IntegerSocket
+        total: IntegerSocket
+
+    @property
+    def i(self) -> "CornersOfEdge.Inputs":
+        return CornersOfEdge.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CornersOfEdge.Outputs":
+        return CornersOfEdge.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -331,39 +439,47 @@ class CornersOfEdge(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_edge_index(self) -> Socket:
-        """Input socket: Edge Index"""
-        return self.inputs._get("Edge Index")
-
-    @property
-    def i_weights(self) -> Socket:
-        """Input socket: Weights"""
-        return self.inputs._get("Weights")
-
-    @property
-    def i_sort_index(self) -> Socket:
-        """Input socket: Sort Index"""
-        return self.inputs._get("Sort Index")
-
-    @property
-    def o_corner_index(self) -> IntegerSocket:
-        """Output socket: Corner Index"""
-        return self.outputs._get("Corner Index")
-
-    @property
-    def o_total(self) -> IntegerSocket:
-        """Output socket: Total"""
-        return self.outputs._get("Total")
-
 
 class CornersOfFace(NodeBuilder):
     """
     Retrieve corners that make up a face
+
+    Parameters
+    ----------
+    face_index : InputInteger
+        Face Index
+    weights : InputFloat
+        Weights
+    sort_index : InputInteger
+        Sort Index
+
+    Outputs
+    -------
+    corner_index : IntegerSocket
+        Corner Index
+    total : IntegerSocket
+        Total
     """
 
     _bl_idname = "GeometryNodeCornersOfFace"
     node: bpy.types.GeometryNodeCornersOfFace
+
+    class Inputs(SocketAccessor):
+        face_index: Socket
+        weights: Socket
+        sort_index: Socket
+
+    class Outputs(SocketAccessor):
+        corner_index: IntegerSocket
+        total: IntegerSocket
+
+    @property
+    def i(self) -> "CornersOfFace.Inputs":
+        return CornersOfFace.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CornersOfFace.Outputs":
+        return CornersOfFace.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -380,39 +496,47 @@ class CornersOfFace(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_face_index(self) -> Socket:
-        """Input socket: Face Index"""
-        return self.inputs._get("Face Index")
-
-    @property
-    def i_weights(self) -> Socket:
-        """Input socket: Weights"""
-        return self.inputs._get("Weights")
-
-    @property
-    def i_sort_index(self) -> Socket:
-        """Input socket: Sort Index"""
-        return self.inputs._get("Sort Index")
-
-    @property
-    def o_corner_index(self) -> IntegerSocket:
-        """Output socket: Corner Index"""
-        return self.outputs._get("Corner Index")
-
-    @property
-    def o_total(self) -> IntegerSocket:
-        """Output socket: Total"""
-        return self.outputs._get("Total")
-
 
 class CornersOfVertex(NodeBuilder):
     """
     Retrieve face corners connected to vertices
+
+    Parameters
+    ----------
+    vertex_index : InputInteger
+        Vertex Index
+    weights : InputFloat
+        Weights
+    sort_index : InputInteger
+        Sort Index
+
+    Outputs
+    -------
+    corner_index : IntegerSocket
+        Corner Index
+    total : IntegerSocket
+        Total
     """
 
     _bl_idname = "GeometryNodeCornersOfVertex"
     node: bpy.types.GeometryNodeCornersOfVertex
+
+    class Inputs(SocketAccessor):
+        vertex_index: Socket
+        weights: Socket
+        sort_index: Socket
+
+    class Outputs(SocketAccessor):
+        corner_index: IntegerSocket
+        total: IntegerSocket
+
+    @property
+    def i(self) -> "CornersOfVertex.Inputs":
+        return CornersOfVertex.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CornersOfVertex.Outputs":
+        return CornersOfVertex.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -429,39 +553,41 @@ class CornersOfVertex(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_vertex_index(self) -> Socket:
-        """Input socket: Vertex Index"""
-        return self.inputs._get("Vertex Index")
-
-    @property
-    def i_weights(self) -> Socket:
-        """Input socket: Weights"""
-        return self.inputs._get("Weights")
-
-    @property
-    def i_sort_index(self) -> Socket:
-        """Input socket: Sort Index"""
-        return self.inputs._get("Sort Index")
-
-    @property
-    def o_corner_index(self) -> IntegerSocket:
-        """Output socket: Corner Index"""
-        return self.outputs._get("Corner Index")
-
-    @property
-    def o_total(self) -> IntegerSocket:
-        """Output socket: Total"""
-        return self.outputs._get("Total")
-
 
 class CurveHandlePositions(NodeBuilder):
     """
     Retrieve the position of each Bézier control point's handles
+
+    Parameters
+    ----------
+    relative : InputBoolean
+        Relative
+
+    Outputs
+    -------
+    left : VectorSocket
+        Left
+    right : VectorSocket
+        Right
     """
 
     _bl_idname = "GeometryNodeInputCurveHandlePositions"
     node: bpy.types.GeometryNodeInputCurveHandlePositions
+
+    class Inputs(SocketAccessor):
+        relative: Socket
+
+    class Outputs(SocketAccessor):
+        left: VectorSocket
+        right: VectorSocket
+
+    @property
+    def i(self) -> "CurveHandlePositions.Inputs":
+        return CurveHandlePositions.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveHandlePositions.Outputs":
+        return CurveHandlePositions.Outputs(self.node.outputs, "output")
 
     def __init__(self, relative: InputBoolean = False):
         super().__init__()
@@ -469,49 +595,67 @@ class CurveHandlePositions(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_relative(self) -> Socket:
-        """Input socket: Relative"""
-        return self.inputs._get("Relative")
-
-    @property
-    def o_left(self) -> VectorSocket:
-        """Output socket: Left"""
-        return self.outputs._get("Left")
-
-    @property
-    def o_right(self) -> VectorSocket:
-        """Output socket: Right"""
-        return self.outputs._get("Right")
-
 
 class CurveTangent(NodeBuilder):
     """
     Retrieve the direction of curves at each control point
+
+    Outputs
+    -------
+    tangent : VectorSocket
+        Tangent
     """
 
     _bl_idname = "GeometryNodeInputTangent"
     node: bpy.types.GeometryNodeInputTangent
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        tangent: VectorSocket
+
+    @property
+    def i(self) -> "CurveTangent.Inputs":
+        return CurveTangent.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveTangent.Outputs":
+        return CurveTangent.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_tangent(self) -> VectorSocket:
-        """Output socket: Tangent"""
-        return self.outputs._get("Tangent")
 
 
 class CurveTilt(NodeBuilder):
     """
     Retrieve the angle at each control point used to twist the curve's normal around its tangent
+
+    Outputs
+    -------
+    tilt : FloatSocket
+        Tilt
     """
 
     _bl_idname = "GeometryNodeInputCurveTilt"
     node: bpy.types.GeometryNodeInputCurveTilt
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        tilt: FloatSocket
+
+    @property
+    def i(self) -> "CurveTilt.Inputs":
+        return CurveTilt.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveTilt.Outputs":
+        return CurveTilt.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -519,19 +663,41 @@ class CurveTilt(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_tilt(self) -> FloatSocket:
-        """Output socket: Tilt"""
-        return self.outputs._get("Tilt")
-
 
 class CurveOfPoint(NodeBuilder):
     """
     Retrieve the curve a control point is part of
+
+    Parameters
+    ----------
+    point_index : InputInteger
+        Point Index
+
+    Outputs
+    -------
+    curve_index : IntegerSocket
+        Curve Index
+    index_in_curve : IntegerSocket
+        Index in Curve
     """
 
     _bl_idname = "GeometryNodeCurveOfPoint"
     node: bpy.types.GeometryNodeCurveOfPoint
+
+    class Inputs(SocketAccessor):
+        point_index: Socket
+
+    class Outputs(SocketAccessor):
+        curve_index: IntegerSocket
+        index_in_curve: IntegerSocket
+
+    @property
+    def i(self) -> "CurveOfPoint.Inputs":
+        return CurveOfPoint.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveOfPoint.Outputs":
+        return CurveOfPoint.Outputs(self.node.outputs, "output")
 
     def __init__(self, point_index: InputInteger = 0):
         super().__init__()
@@ -539,54 +705,70 @@ class CurveOfPoint(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_point_index(self) -> Socket:
-        """Input socket: Point Index"""
-        return self.inputs._get("Point Index")
-
-    @property
-    def o_curve_index(self) -> IntegerSocket:
-        """Output socket: Curve Index"""
-        return self.outputs._get("Curve Index")
-
-    @property
-    def o_index_in_curve(self) -> IntegerSocket:
-        """Output socket: Index in Curve"""
-        return self.outputs._get("Index in Curve")
-
 
 class EdgeAngle(NodeBuilder):
     """
     The angle between the normals of connected manifold faces
+
+    Outputs
+    -------
+    unsigned_angle : FloatSocket
+        Unsigned Angle
+    signed_angle : FloatSocket
+        Signed Angle
     """
 
     _bl_idname = "GeometryNodeInputMeshEdgeAngle"
     node: bpy.types.GeometryNodeInputMeshEdgeAngle
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        unsigned_angle: FloatSocket
+        signed_angle: FloatSocket
+
+    @property
+    def i(self) -> "EdgeAngle.Inputs":
+        return EdgeAngle.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EdgeAngle.Outputs":
+        return EdgeAngle.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_unsigned_angle(self) -> FloatSocket:
-        """Output socket: Unsigned Angle"""
-        return self.outputs._get("Unsigned Angle")
-
-    @property
-    def o_signed_angle(self) -> FloatSocket:
-        """Output socket: Signed Angle"""
-        return self.outputs._get("Signed Angle")
 
 
 class EdgeNeighbors(NodeBuilder):
     """
     Retrieve the number of faces that use each edge as one of their sides
+
+    Outputs
+    -------
+    face_count : IntegerSocket
+        Face Count
     """
 
     _bl_idname = "GeometryNodeInputMeshEdgeNeighbors"
     node: bpy.types.GeometryNodeInputMeshEdgeNeighbors
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        face_count: IntegerSocket
+
+    @property
+    def i(self) -> "EdgeNeighbors.Inputs":
+        return EdgeNeighbors.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EdgeNeighbors.Outputs":
+        return EdgeNeighbors.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -594,19 +776,41 @@ class EdgeNeighbors(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_face_count(self) -> IntegerSocket:
-        """Output socket: Face Count"""
-        return self.outputs._get("Face Count")
-
 
 class EdgePathsToSelection(NodeBuilder):
     """
     Output a selection of edges by following paths across mesh edges
+
+    Parameters
+    ----------
+    start_vertices : InputBoolean
+        Start Vertices
+    next_vertex_index : InputInteger
+        Next Vertex Index
+
+    Outputs
+    -------
+    selection : BooleanSocket
+        Selection
     """
 
     _bl_idname = "GeometryNodeEdgePathsToSelection"
     node: bpy.types.GeometryNodeEdgePathsToSelection
+
+    class Inputs(SocketAccessor):
+        start_vertices: Socket
+        next_vertex_index: Socket
+
+    class Outputs(SocketAccessor):
+        selection: BooleanSocket
+
+    @property
+    def i(self) -> "EdgePathsToSelection.Inputs":
+        return EdgePathsToSelection.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EdgePathsToSelection.Outputs":
+        return EdgePathsToSelection.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -621,29 +825,42 @@ class EdgePathsToSelection(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_start_vertices(self) -> Socket:
-        """Input socket: Start Vertices"""
-        return self.inputs._get("Start Vertices")
-
-    @property
-    def i_next_vertex_index(self) -> Socket:
-        """Input socket: Next Vertex Index"""
-        return self.inputs._get("Next Vertex Index")
-
-    @property
-    def o_selection(self) -> BooleanSocket:
-        """Output socket: Selection"""
-        return self.outputs._get("Selection")
-
 
 class EdgeVertices(NodeBuilder):
     """
     Retrieve topology information relating to each edge of a mesh
+
+    Outputs
+    -------
+    vertex_index_1 : IntegerSocket
+        Vertex Index 1
+    vertex_index_2 : IntegerSocket
+        Vertex Index 2
+    position_1 : VectorSocket
+        Position 1
+    position_2 : VectorSocket
+        Position 2
     """
 
     _bl_idname = "GeometryNodeInputMeshEdgeVertices"
     node: bpy.types.GeometryNodeInputMeshEdgeVertices
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        vertex_index_1: IntegerSocket
+        vertex_index_2: IntegerSocket
+        position_1: VectorSocket
+        position_2: VectorSocket
+
+    @property
+    def i(self) -> "EdgeVertices.Inputs":
+        return EdgeVertices.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EdgeVertices.Outputs":
+        return EdgeVertices.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -651,34 +868,41 @@ class EdgeVertices(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_vertex_index_1(self) -> IntegerSocket:
-        """Output socket: Vertex Index 1"""
-        return self.outputs._get("Vertex Index 1")
-
-    @property
-    def o_vertex_index_2(self) -> IntegerSocket:
-        """Output socket: Vertex Index 2"""
-        return self.outputs._get("Vertex Index 2")
-
-    @property
-    def o_position_1(self) -> VectorSocket:
-        """Output socket: Position 1"""
-        return self.outputs._get("Position 1")
-
-    @property
-    def o_position_2(self) -> VectorSocket:
-        """Output socket: Position 2"""
-        return self.outputs._get("Position 2")
-
 
 class EdgesOfCorner(NodeBuilder):
     """
     Retrieve the edges on both sides of a face corner
+
+    Parameters
+    ----------
+    corner_index : InputInteger
+        Corner Index
+
+    Outputs
+    -------
+    next_edge_index : IntegerSocket
+        Next Edge Index
+    previous_edge_index : IntegerSocket
+        Previous Edge Index
     """
 
     _bl_idname = "GeometryNodeEdgesOfCorner"
     node: bpy.types.GeometryNodeEdgesOfCorner
+
+    class Inputs(SocketAccessor):
+        corner_index: Socket
+
+    class Outputs(SocketAccessor):
+        next_edge_index: IntegerSocket
+        previous_edge_index: IntegerSocket
+
+    @property
+    def i(self) -> "EdgesOfCorner.Inputs":
+        return EdgesOfCorner.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EdgesOfCorner.Outputs":
+        return EdgesOfCorner.Outputs(self.node.outputs, "output")
 
     def __init__(self, corner_index: InputInteger = 0):
         super().__init__()
@@ -686,29 +910,47 @@ class EdgesOfCorner(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_corner_index(self) -> Socket:
-        """Input socket: Corner Index"""
-        return self.inputs._get("Corner Index")
-
-    @property
-    def o_next_edge_index(self) -> IntegerSocket:
-        """Output socket: Next Edge Index"""
-        return self.outputs._get("Next Edge Index")
-
-    @property
-    def o_previous_edge_index(self) -> IntegerSocket:
-        """Output socket: Previous Edge Index"""
-        return self.outputs._get("Previous Edge Index")
-
 
 class EdgesOfVertex(NodeBuilder):
     """
     Retrieve the edges connected to each vertex
+
+    Parameters
+    ----------
+    vertex_index : InputInteger
+        Vertex Index
+    weights : InputFloat
+        Weights
+    sort_index : InputInteger
+        Sort Index
+
+    Outputs
+    -------
+    edge_index : IntegerSocket
+        Edge Index
+    total : IntegerSocket
+        Total
     """
 
     _bl_idname = "GeometryNodeEdgesOfVertex"
     node: bpy.types.GeometryNodeEdgesOfVertex
+
+    class Inputs(SocketAccessor):
+        vertex_index: Socket
+        weights: Socket
+        sort_index: Socket
+
+    class Outputs(SocketAccessor):
+        edge_index: IntegerSocket
+        total: IntegerSocket
+
+    @property
+    def i(self) -> "EdgesOfVertex.Inputs":
+        return EdgesOfVertex.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EdgesOfVertex.Outputs":
+        return EdgesOfVertex.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -725,39 +967,38 @@ class EdgesOfVertex(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_vertex_index(self) -> Socket:
-        """Input socket: Vertex Index"""
-        return self.inputs._get("Vertex Index")
-
-    @property
-    def i_weights(self) -> Socket:
-        """Input socket: Weights"""
-        return self.inputs._get("Weights")
-
-    @property
-    def i_sort_index(self) -> Socket:
-        """Input socket: Sort Index"""
-        return self.inputs._get("Sort Index")
-
-    @property
-    def o_edge_index(self) -> IntegerSocket:
-        """Output socket: Edge Index"""
-        return self.outputs._get("Edge Index")
-
-    @property
-    def o_total(self) -> IntegerSocket:
-        """Output socket: Total"""
-        return self.outputs._get("Total")
-
 
 class EdgesToFaceGroups(NodeBuilder):
     """
     Group faces into regions surrounded by the selected boundary edges
+
+    Parameters
+    ----------
+    boundary_edges : InputBoolean
+        Boundary Edges
+
+    Outputs
+    -------
+    face_group_id : IntegerSocket
+        Face Group ID
     """
 
     _bl_idname = "GeometryNodeEdgesToFaceGroups"
     node: bpy.types.GeometryNodeEdgesToFaceGroups
+
+    class Inputs(SocketAccessor):
+        boundary_edges: Socket
+
+    class Outputs(SocketAccessor):
+        face_group_id: IntegerSocket
+
+    @property
+    def i(self) -> "EdgesToFaceGroups.Inputs":
+        return EdgesToFaceGroups.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EdgesToFaceGroups.Outputs":
+        return EdgesToFaceGroups.Outputs(self.node.outputs, "output")
 
     def __init__(self, boundary_edges: InputBoolean = True):
         super().__init__()
@@ -765,24 +1006,41 @@ class EdgesToFaceGroups(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_boundary_edges(self) -> Socket:
-        """Input socket: Boundary Edges"""
-        return self.inputs._get("Boundary Edges")
-
-    @property
-    def o_face_group_id(self) -> IntegerSocket:
-        """Output socket: Face Group ID"""
-        return self.outputs._get("Face Group ID")
-
 
 class EndpointSelection(NodeBuilder):
     """
     Provide a selection for an arbitrary number of endpoints in each spline
+
+    Parameters
+    ----------
+    start_size : InputInteger
+        Start Size
+    end_size : InputInteger
+        End Size
+
+    Outputs
+    -------
+    selection : BooleanSocket
+        Selection
     """
 
     _bl_idname = "GeometryNodeCurveEndpointSelection"
     node: bpy.types.GeometryNodeCurveEndpointSelection
+
+    class Inputs(SocketAccessor):
+        start_size: Socket
+        end_size: Socket
+
+    class Outputs(SocketAccessor):
+        selection: BooleanSocket
+
+    @property
+    def i(self) -> "EndpointSelection.Inputs":
+        return EndpointSelection.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EndpointSelection.Outputs":
+        return EndpointSelection.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -794,29 +1052,33 @@ class EndpointSelection(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_start_size(self) -> Socket:
-        """Input socket: Start Size"""
-        return self.inputs._get("Start Size")
-
-    @property
-    def i_end_size(self) -> Socket:
-        """Input socket: End Size"""
-        return self.inputs._get("End Size")
-
-    @property
-    def o_selection(self) -> BooleanSocket:
-        """Output socket: Selection"""
-        return self.outputs._get("Selection")
-
 
 class FaceArea(NodeBuilder):
     """
     Calculate the surface area of a mesh's faces
+
+    Outputs
+    -------
+    area : FloatSocket
+        Area
     """
 
     _bl_idname = "GeometryNodeInputMeshFaceArea"
     node: bpy.types.GeometryNodeInputMeshFaceArea
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        area: FloatSocket
+
+    @property
+    def i(self) -> "FaceArea.Inputs":
+        return FaceArea.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FaceArea.Outputs":
+        return FaceArea.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -824,19 +1086,38 @@ class FaceArea(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_area(self) -> FloatSocket:
-        """Output socket: Area"""
-        return self.outputs._get("Area")
-
 
 class FaceGroupBoundaries(NodeBuilder):
     """
     Find edges on the boundaries between groups of faces with the same ID value
+
+    Parameters
+    ----------
+    face_set : InputInteger
+        Face Group ID
+
+    Outputs
+    -------
+    boundary_edges : BooleanSocket
+        Boundary Edges
     """
 
     _bl_idname = "GeometryNodeMeshFaceSetBoundaries"
     node: bpy.types.GeometryNodeMeshFaceSetBoundaries
+
+    class Inputs(SocketAccessor):
+        face_set: Socket
+
+    class Outputs(SocketAccessor):
+        boundary_edges: BooleanSocket
+
+    @property
+    def i(self) -> "FaceGroupBoundaries.Inputs":
+        return FaceGroupBoundaries.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FaceGroupBoundaries.Outputs":
+        return FaceGroupBoundaries.Outputs(self.node.outputs, "output")
 
     def __init__(self, face_set: InputInteger = 0):
         super().__init__()
@@ -844,49 +1125,73 @@ class FaceGroupBoundaries(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_face_set(self) -> Socket:
-        """Input socket: Face Group ID"""
-        return self.inputs._get("Face Set")
-
-    @property
-    def o_boundary_edges(self) -> BooleanSocket:
-        """Output socket: Boundary Edges"""
-        return self.outputs._get("Boundary Edges")
-
 
 class FaceNeighbors(NodeBuilder):
     """
     Retrieve topology information relating to each face of a mesh
+
+    Outputs
+    -------
+    vertex_count : IntegerSocket
+        Vertex Count
+    face_count : IntegerSocket
+        Face Count
     """
 
     _bl_idname = "GeometryNodeInputMeshFaceNeighbors"
     node: bpy.types.GeometryNodeInputMeshFaceNeighbors
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        vertex_count: IntegerSocket
+        face_count: IntegerSocket
+
+    @property
+    def i(self) -> "FaceNeighbors.Inputs":
+        return FaceNeighbors.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FaceNeighbors.Outputs":
+        return FaceNeighbors.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_vertex_count(self) -> IntegerSocket:
-        """Output socket: Vertex Count"""
-        return self.outputs._get("Vertex Count")
-
-    @property
-    def o_face_count(self) -> IntegerSocket:
-        """Output socket: Face Count"""
-        return self.outputs._get("Face Count")
 
 
 class FaceSet(NodeBuilder):
     """
     Each face's sculpt face set value
+
+    Outputs
+    -------
+    face_set : IntegerSocket
+        Face Set
+    exists : BooleanSocket
+        Exists
     """
 
     _bl_idname = "GeometryNodeToolFaceSet"
     node: bpy.types.GeometryNodeToolFaceSet
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        face_set: IntegerSocket
+        exists: BooleanSocket
+
+    @property
+    def i(self) -> "FaceSet.Inputs":
+        return FaceSet.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FaceSet.Outputs":
+        return FaceSet.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -894,24 +1199,41 @@ class FaceSet(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_face_set(self) -> IntegerSocket:
-        """Output socket: Face Set"""
-        return self.outputs._get("Face Set")
-
-    @property
-    def o_exists(self) -> BooleanSocket:
-        """Output socket: Exists"""
-        return self.outputs._get("Exists")
-
 
 class FaceOfCorner(NodeBuilder):
     """
     Retrieve the face each face corner is part of
+
+    Parameters
+    ----------
+    corner_index : InputInteger
+        Corner Index
+
+    Outputs
+    -------
+    face_index : IntegerSocket
+        Face Index
+    index_in_face : IntegerSocket
+        Index in Face
     """
 
     _bl_idname = "GeometryNodeFaceOfCorner"
     node: bpy.types.GeometryNodeFaceOfCorner
+
+    class Inputs(SocketAccessor):
+        corner_index: Socket
+
+    class Outputs(SocketAccessor):
+        face_index: IntegerSocket
+        index_in_face: IntegerSocket
+
+    @property
+    def i(self) -> "FaceOfCorner.Inputs":
+        return FaceOfCorner.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FaceOfCorner.Outputs":
+        return FaceOfCorner.Outputs(self.node.outputs, "output")
 
     def __init__(self, corner_index: InputInteger = 0):
         super().__init__()
@@ -919,49 +1241,67 @@ class FaceOfCorner(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_corner_index(self) -> Socket:
-        """Input socket: Corner Index"""
-        return self.inputs._get("Corner Index")
-
-    @property
-    def o_face_index(self) -> IntegerSocket:
-        """Output socket: Face Index"""
-        return self.outputs._get("Face Index")
-
-    @property
-    def o_index_in_face(self) -> IntegerSocket:
-        """Output socket: Index in Face"""
-        return self.outputs._get("Index in Face")
-
 
 class ID(NodeBuilder):
     """
     Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist
+
+    Outputs
+    -------
+    id : IntegerSocket
+        ID
     """
 
     _bl_idname = "GeometryNodeInputID"
     node: bpy.types.GeometryNodeInputID
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        id: IntegerSocket
+
+    @property
+    def i(self) -> "ID.Inputs":
+        return ID.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ID.Outputs":
+        return ID.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_id(self) -> IntegerSocket:
-        """Output socket: ID"""
-        return self.outputs._get("ID")
 
 
 class Image(NodeBuilder):
     """
     Input an image data-block
+
+    Outputs
+    -------
+    image : ImageSocket
+        Image
     """
 
     _bl_idname = "GeometryNodeInputImage"
     node: bpy.types.GeometryNodeInputImage
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        image: ImageSocket
+
+    @property
+    def i(self) -> "Image.Inputs":
+        return Image.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Image.Outputs":
+        return Image.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -969,19 +1309,53 @@ class Image(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_image(self) -> ImageSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class ImageInfo(NodeBuilder):
     """
     Retrieve information about an image
+
+    Parameters
+    ----------
+    image : InputImage
+        Image
+    frame : InputInteger
+        Frame
+
+    Outputs
+    -------
+    width : IntegerSocket
+        Width
+    height : IntegerSocket
+        Height
+    has_alpha : BooleanSocket
+        Has Alpha
+    frame_count : IntegerSocket
+        Frame Count
+    fps : FloatSocket
+        FPS
     """
 
     _bl_idname = "GeometryNodeImageInfo"
     node: bpy.types.GeometryNodeImageInfo
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        frame: Socket
+
+    class Outputs(SocketAccessor):
+        width: IntegerSocket
+        height: IntegerSocket
+        has_alpha: BooleanSocket
+        frame_count: IntegerSocket
+        fps: FloatSocket
+
+    @property
+    def i(self) -> "ImageInfo.Inputs":
+        return ImageInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImageInfo.Outputs":
+        return ImageInfo.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -993,49 +1367,41 @@ class ImageInfo(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_frame(self) -> Socket:
-        """Input socket: Frame"""
-        return self.inputs._get("Frame")
-
-    @property
-    def o_width(self) -> IntegerSocket:
-        """Output socket: Width"""
-        return self.outputs._get("Width")
-
-    @property
-    def o_height(self) -> IntegerSocket:
-        """Output socket: Height"""
-        return self.outputs._get("Height")
-
-    @property
-    def o_has_alpha(self) -> BooleanSocket:
-        """Output socket: Has Alpha"""
-        return self.outputs._get("Has Alpha")
-
-    @property
-    def o_frame_count(self) -> IntegerSocket:
-        """Output socket: Frame Count"""
-        return self.outputs._get("Frame Count")
-
-    @property
-    def o_fps(self) -> FloatSocket:
-        """Output socket: FPS"""
-        return self.outputs._get("FPS")
-
 
 class ImportCSV(NodeBuilder):
     """
     Import geometry from an CSV file
+
+    Parameters
+    ----------
+    path : InputString
+        Path
+    delimiter : InputString
+        Delimiter
+
+    Outputs
+    -------
+    point_cloud : GeometrySocket
+        Point Cloud
     """
 
     _bl_idname = "GeometryNodeImportCSV"
     node: bpy.types.GeometryNodeImportCSV
+
+    class Inputs(SocketAccessor):
+        path: Socket
+        delimiter: Socket
+
+    class Outputs(SocketAccessor):
+        point_cloud: GeometrySocket
+
+    @property
+    def i(self) -> "ImportCSV.Inputs":
+        return ImportCSV.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImportCSV.Outputs":
+        return ImportCSV.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1047,129 +1413,194 @@ class ImportCSV(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_path(self) -> Socket:
-        """Input socket: Path"""
-        return self.inputs._get("Path")
-
-    @property
-    def i_delimiter(self) -> Socket:
-        """Input socket: Delimiter"""
-        return self.inputs._get("Delimiter")
-
-    @property
-    def o_point_cloud(self) -> GeometrySocket:
-        """Output socket: Point Cloud"""
-        return self.outputs._get("Point Cloud")
-
 
 class ImportOBJ(NodeBuilder):
     """
     Import geometry from an OBJ file
+
+    Parameters
+    ----------
+    path : InputString
+        Path
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Instances
     """
 
     _bl_idname = "GeometryNodeImportOBJ"
     node: bpy.types.GeometryNodeImportOBJ
 
+    class Inputs(SocketAccessor):
+        path: Socket
+
+    class Outputs(SocketAccessor):
+        instances: GeometrySocket
+
+    @property
+    def i(self) -> "ImportOBJ.Inputs":
+        return ImportOBJ.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImportOBJ.Outputs":
+        return ImportOBJ.Outputs(self.node.outputs, "output")
+
     def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_path(self) -> Socket:
-        """Input socket: Path"""
-        return self.inputs._get("Path")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
 
 
 class ImportPLY(NodeBuilder):
     """
     Import a point cloud from a PLY file
+
+    Parameters
+    ----------
+    path : InputString
+        Path
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeImportPLY"
     node: bpy.types.GeometryNodeImportPLY
 
+    class Inputs(SocketAccessor):
+        path: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "ImportPLY.Inputs":
+        return ImportPLY.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImportPLY.Outputs":
+        return ImportPLY.Outputs(self.node.outputs, "output")
+
     def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_path(self) -> Socket:
-        """Input socket: Path"""
-        return self.inputs._get("Path")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
 
 
 class ImportSTL(NodeBuilder):
     """
     Import a mesh from an STL file
+
+    Parameters
+    ----------
+    path : InputString
+        Path
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeImportSTL"
     node: bpy.types.GeometryNodeImportSTL
 
+    class Inputs(SocketAccessor):
+        path: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "ImportSTL.Inputs":
+        return ImportSTL.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImportSTL.Outputs":
+        return ImportSTL.Outputs(self.node.outputs, "output")
+
     def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_path(self) -> Socket:
-        """Input socket: Path"""
-        return self.inputs._get("Path")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
 
 
 class ImportText(NodeBuilder):
     """
     Import a string from a text file
+
+    Parameters
+    ----------
+    path : InputString
+        Path
+
+    Outputs
+    -------
+    string : StringSocket
+        String
     """
 
     _bl_idname = "GeometryNodeImportText"
     node: bpy.types.GeometryNodeImportText
 
+    class Inputs(SocketAccessor):
+        path: Socket
+
+    class Outputs(SocketAccessor):
+        string: StringSocket
+
+    @property
+    def i(self) -> "ImportText.Inputs":
+        return ImportText.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImportText.Outputs":
+        return ImportText.Outputs(self.node.outputs, "output")
+
     def __init__(self, path: InputString = ""):
         super().__init__()
         key_args = {"Path": path}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_path(self) -> Socket:
-        """Input socket: Path"""
-        return self.inputs._get("Path")
-
-    @property
-    def o_string(self) -> StringSocket:
-        """Output socket: String"""
-        return self.outputs._get("String")
 
 
 class ImportVDB(NodeBuilder):
     """
     Import volume data from a .vdb file
+
+    Parameters
+    ----------
+    path : InputString
+        Path
+
+    Outputs
+    -------
+    volume : GeometrySocket
+        Volume
     """
 
     _bl_idname = "GeometryNodeImportVDB"
     node: bpy.types.GeometryNodeImportVDB
+
+    class Inputs(SocketAccessor):
+        path: Socket
+
+    class Outputs(SocketAccessor):
+        volume: GeometrySocket
+
+    @property
+    def i(self) -> "ImportVDB.Inputs":
+        return ImportVDB.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImportVDB.Outputs":
+        return ImportVDB.Outputs(self.node.outputs, "output")
 
     def __init__(self, path: InputString = ""):
         super().__init__()
@@ -1177,24 +1608,33 @@ class ImportVDB(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_path(self) -> Socket:
-        """Input socket: Path"""
-        return self.inputs._get("Path")
-
-    @property
-    def o_volume(self) -> GeometrySocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
 
 class Index(NodeBuilder):
     """
     Retrieve an integer value indicating the position of each element in the list, starting at zero
+
+    Outputs
+    -------
+    index : IntegerSocket
+        Index
     """
 
     _bl_idname = "GeometryNodeInputIndex"
     node: bpy.types.GeometryNodeInputIndex
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        index: IntegerSocket
+
+    @property
+    def i(self) -> "Index.Inputs":
+        return Index.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Index.Outputs":
+        return Index.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -1202,19 +1642,41 @@ class Index(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_index(self) -> IntegerSocket:
-        """Output socket: Index"""
-        return self.outputs._get("Index")
-
 
 class InstanceBounds(NodeBuilder):
     """
     Calculate position bounds of each instance's geometry set
+
+    Parameters
+    ----------
+    use_radius : InputBoolean
+        Use Radius
+
+    Outputs
+    -------
+    min : VectorSocket
+        Min
+    max : VectorSocket
+        Max
     """
 
     _bl_idname = "GeometryNodeInputInstanceBounds"
     node: bpy.types.GeometryNodeInputInstanceBounds
+
+    class Inputs(SocketAccessor):
+        use_radius: Socket
+
+    class Outputs(SocketAccessor):
+        min: VectorSocket
+        max: VectorSocket
+
+    @property
+    def i(self) -> "InstanceBounds.Inputs":
+        return InstanceBounds.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InstanceBounds.Outputs":
+        return InstanceBounds.Outputs(self.node.outputs, "output")
 
     def __init__(self, use_radius: InputBoolean = True):
         super().__init__()
@@ -1222,69 +1684,101 @@ class InstanceBounds(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_use_radius(self) -> Socket:
-        """Input socket: Use Radius"""
-        return self.inputs._get("Use Radius")
-
-    @property
-    def o_min(self) -> VectorSocket:
-        """Output socket: Min"""
-        return self.outputs._get("Min")
-
-    @property
-    def o_max(self) -> VectorSocket:
-        """Output socket: Max"""
-        return self.outputs._get("Max")
-
 
 class InstanceRotation(NodeBuilder):
     """
     Retrieve the rotation of each instance in the geometry
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "GeometryNodeInputInstanceRotation"
     node: bpy.types.GeometryNodeInputInstanceRotation
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "InstanceRotation.Inputs":
+        return InstanceRotation.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InstanceRotation.Outputs":
+        return InstanceRotation.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
 
 
 class InstanceScale(NodeBuilder):
     """
     Retrieve the scale of each instance in the geometry
+
+    Outputs
+    -------
+    scale : VectorSocket
+        Scale
     """
 
     _bl_idname = "GeometryNodeInputInstanceScale"
     node: bpy.types.GeometryNodeInputInstanceScale
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        scale: VectorSocket
+
+    @property
+    def i(self) -> "InstanceScale.Inputs":
+        return InstanceScale.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InstanceScale.Outputs":
+        return InstanceScale.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_scale(self) -> VectorSocket:
-        """Output socket: Scale"""
-        return self.outputs._get("Scale")
 
 
 class InstanceTransform(NodeBuilder):
     """
     Retrieve the full transformation of each instance in the geometry
+
+    Outputs
+    -------
+    transform : MatrixSocket
+        Transform
     """
 
     _bl_idname = "GeometryNodeInstanceTransform"
     node: bpy.types.GeometryNodeInstanceTransform
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        transform: MatrixSocket
+
+    @property
+    def i(self) -> "InstanceTransform.Inputs":
+        return InstanceTransform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InstanceTransform.Outputs":
+        return InstanceTransform.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -1292,30 +1786,39 @@ class InstanceTransform(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_transform(self) -> MatrixSocket:
-        """Output socket: Transform"""
-        return self.outputs._get("Transform")
-
 
 class Integer(NodeBuilder):
     """
     Provide an integer value that can be connected to other nodes in the tree
+
+    Outputs
+    -------
+    integer : IntegerSocket
+        Integer
     """
 
     _bl_idname = "FunctionNodeInputInt"
     node: bpy.types.FunctionNodeInputInt
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        integer: IntegerSocket
+
+    @property
+    def i(self) -> "Integer.Inputs":
+        return Integer.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Integer.Outputs":
+        return Integer.Outputs(self.node.outputs, "output")
 
     def __init__(self, integer: int = 1):
         super().__init__()
         key_args = {}
         self.integer = integer
         self._establish_links(**key_args)
-
-    @property
-    def o_integer(self) -> IntegerSocket:
-        """Output socket: Integer"""
-        return self.outputs._get("Integer")
 
     @property
     def integer(self) -> int:
@@ -1329,10 +1832,29 @@ class Integer(NodeBuilder):
 class IsEdgeSmooth(NodeBuilder):
     """
     Retrieve whether each edge is marked for smooth or split normals
+
+    Outputs
+    -------
+    smooth : BooleanSocket
+        Smooth
     """
 
     _bl_idname = "GeometryNodeInputEdgeSmooth"
     node: bpy.types.GeometryNodeInputEdgeSmooth
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        smooth: BooleanSocket
+
+    @property
+    def i(self) -> "IsEdgeSmooth.Inputs":
+        return IsEdgeSmooth.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IsEdgeSmooth.Outputs":
+        return IsEdgeSmooth.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -1340,19 +1862,38 @@ class IsEdgeSmooth(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_smooth(self) -> BooleanSocket:
-        """Output socket: Smooth"""
-        return self.outputs._get("Smooth")
-
 
 class IsFacePlanar(NodeBuilder):
     """
     Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal
+
+    Parameters
+    ----------
+    threshold : InputFloat
+        Threshold
+
+    Outputs
+    -------
+    planar : BooleanSocket
+        Planar
     """
 
     _bl_idname = "GeometryNodeInputMeshFaceIsPlanar"
     node: bpy.types.GeometryNodeInputMeshFaceIsPlanar
+
+    class Inputs(SocketAccessor):
+        threshold: Socket
+
+    class Outputs(SocketAccessor):
+        planar: BooleanSocket
+
+    @property
+    def i(self) -> "IsFacePlanar.Inputs":
+        return IsFacePlanar.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IsFacePlanar.Outputs":
+        return IsFacePlanar.Outputs(self.node.outputs, "output")
 
     def __init__(self, threshold: InputFloat = 0.01):
         super().__init__()
@@ -1360,129 +1901,215 @@ class IsFacePlanar(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Threshold")
-
-    @property
-    def o_planar(self) -> BooleanSocket:
-        """Output socket: Planar"""
-        return self.outputs._get("Planar")
-
 
 class IsFaceSmooth(NodeBuilder):
     """
     Retrieve whether each face is marked for smooth or sharp normals
+
+    Outputs
+    -------
+    smooth : BooleanSocket
+        Smooth
     """
 
     _bl_idname = "GeometryNodeInputShadeSmooth"
     node: bpy.types.GeometryNodeInputShadeSmooth
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        smooth: BooleanSocket
+
+    @property
+    def i(self) -> "IsFaceSmooth.Inputs":
+        return IsFaceSmooth.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IsFaceSmooth.Outputs":
+        return IsFaceSmooth.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_smooth(self) -> BooleanSocket:
-        """Output socket: Smooth"""
-        return self.outputs._get("Smooth")
 
 
 class IsSplineCyclic(NodeBuilder):
     """
     Retrieve whether each spline endpoint connects to the beginning
+
+    Outputs
+    -------
+    cyclic : BooleanSocket
+        Cyclic
     """
 
     _bl_idname = "GeometryNodeInputSplineCyclic"
     node: bpy.types.GeometryNodeInputSplineCyclic
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        cyclic: BooleanSocket
+
+    @property
+    def i(self) -> "IsSplineCyclic.Inputs":
+        return IsSplineCyclic.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IsSplineCyclic.Outputs":
+        return IsSplineCyclic.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_cyclic(self) -> BooleanSocket:
-        """Output socket: Cyclic"""
-        return self.outputs._get("Cyclic")
 
 
 class IsViewport(NodeBuilder):
     """
     Retrieve whether the nodes are being evaluated for the viewport rather than the final render
+
+    Outputs
+    -------
+    is_viewport : BooleanSocket
+        Is Viewport
     """
 
     _bl_idname = "GeometryNodeIsViewport"
     node: bpy.types.GeometryNodeIsViewport
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        is_viewport: BooleanSocket
+
+    @property
+    def i(self) -> "IsViewport.Inputs":
+        return IsViewport.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IsViewport.Outputs":
+        return IsViewport.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_is_viewport(self) -> BooleanSocket:
-        """Output socket: Is Viewport"""
-        return self.outputs._get("Is Viewport")
 
 
 class MaterialIndex(NodeBuilder):
     """
     Retrieve the index of the material used for each element in the geometry's list of materials
+
+    Outputs
+    -------
+    material_index : IntegerSocket
+        Material Index
     """
 
     _bl_idname = "GeometryNodeInputMaterialIndex"
     node: bpy.types.GeometryNodeInputMaterialIndex
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        material_index: IntegerSocket
+
+    @property
+    def i(self) -> "MaterialIndex.Inputs":
+        return MaterialIndex.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MaterialIndex.Outputs":
+        return MaterialIndex.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_material_index(self) -> IntegerSocket:
-        """Output socket: Material Index"""
-        return self.outputs._get("Material Index")
 
 
 class MeshIsland(NodeBuilder):
     """
     Retrieve information about separate connected regions in a mesh
+
+    Outputs
+    -------
+    island_index : IntegerSocket
+        Island Index
+    island_count : IntegerSocket
+        Island Count
     """
 
     _bl_idname = "GeometryNodeInputMeshIsland"
     node: bpy.types.GeometryNodeInputMeshIsland
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        island_index: IntegerSocket
+        island_count: IntegerSocket
+
+    @property
+    def i(self) -> "MeshIsland.Inputs":
+        return MeshIsland.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshIsland.Outputs":
+        return MeshIsland.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_island_index(self) -> IntegerSocket:
-        """Output socket: Island Index"""
-        return self.outputs._get("Island Index")
-
-    @property
-    def o_island_count(self) -> IntegerSocket:
-        """Output socket: Island Count"""
-        return self.outputs._get("Island Count")
 
 
 class MousePosition(NodeBuilder):
     """
     Retrieve the position of the mouse cursor
+
+    Outputs
+    -------
+    mouse_x : IntegerSocket
+        Mouse X
+    mouse_y : IntegerSocket
+        Mouse Y
+    region_width : IntegerSocket
+        Region Width
+    region_height : IntegerSocket
+        Region Height
     """
 
     _bl_idname = "GeometryNodeToolMousePosition"
     node: bpy.types.GeometryNodeToolMousePosition
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        mouse_x: IntegerSocket
+        mouse_y: IntegerSocket
+        region_width: IntegerSocket
+        region_height: IntegerSocket
+
+    @property
+    def i(self) -> "MousePosition.Inputs":
+        return MousePosition.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MousePosition.Outputs":
+        return MousePosition.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -1490,34 +2117,41 @@ class MousePosition(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_mouse_x(self) -> IntegerSocket:
-        """Output socket: Mouse X"""
-        return self.outputs._get("Mouse X")
-
-    @property
-    def o_mouse_y(self) -> IntegerSocket:
-        """Output socket: Mouse Y"""
-        return self.outputs._get("Mouse Y")
-
-    @property
-    def o_region_width(self) -> IntegerSocket:
-        """Output socket: Region Width"""
-        return self.outputs._get("Region Width")
-
-    @property
-    def o_region_height(self) -> IntegerSocket:
-        """Output socket: Region Height"""
-        return self.outputs._get("Region Height")
-
 
 class NamedAttribute(NodeBuilder):
     """
     Retrieve the data of a specified attribute
+
+    Parameters
+    ----------
+    name : InputString
+        Name
+
+    Outputs
+    -------
+    attribute : FloatSocket
+        Attribute
+    exists : BooleanSocket
+        Exists
     """
 
     _bl_idname = "GeometryNodeInputNamedAttribute"
     node: bpy.types.GeometryNodeInputNamedAttribute
+
+    class Inputs(SocketAccessor):
+        name: Socket
+
+    class Outputs(SocketAccessor):
+        attribute: FloatSocket
+        exists: BooleanSocket
+
+    @property
+    def i(self) -> "NamedAttribute.Inputs":
+        return NamedAttribute.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "NamedAttribute.Outputs":
+        return NamedAttribute.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1574,21 +2208,6 @@ class NamedAttribute(NodeBuilder):
         return cls(data_type="FLOAT4X4", name=name)
 
     @property
-    def i_name(self) -> Socket:
-        """Input socket: Name"""
-        return self.inputs._get("Name")
-
-    @property
-    def o_attribute(self) -> FloatSocket:
-        """Output socket: Attribute"""
-        return self.outputs._get("Attribute")
-
-    @property
-    def o_exists(self) -> BooleanSocket:
-        """Output socket: Exists"""
-        return self.outputs._get("Exists")
-
-    @property
     def data_type(
         self,
     ) -> Literal[
@@ -1621,10 +2240,34 @@ class NamedAttribute(NodeBuilder):
 class NamedLayerSelection(NodeBuilder):
     """
     Output a selection of a Grease Pencil layer
+
+    Parameters
+    ----------
+    name : InputString
+        Name
+
+    Outputs
+    -------
+    selection : BooleanSocket
+        Selection
     """
 
     _bl_idname = "GeometryNodeInputNamedLayerSelection"
     node: bpy.types.GeometryNodeInputNamedLayerSelection
+
+    class Inputs(SocketAccessor):
+        name: Socket
+
+    class Outputs(SocketAccessor):
+        selection: BooleanSocket
+
+    @property
+    def i(self) -> "NamedLayerSelection.Inputs":
+        return NamedLayerSelection.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "NamedLayerSelection.Outputs":
+        return NamedLayerSelection.Outputs(self.node.outputs, "output")
 
     def __init__(self, name: InputString = ""):
         super().__init__()
@@ -1632,40 +2275,42 @@ class NamedLayerSelection(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_name(self) -> Socket:
-        """Input socket: Name"""
-        return self.inputs._get("Name")
-
-    @property
-    def o_selection(self) -> BooleanSocket:
-        """Output socket: Selection"""
-        return self.outputs._get("Selection")
-
 
 class Normal(NodeBuilder):
     """
     Retrieve a unit length vector indicating the direction pointing away from the geometry at each element
+
+    Outputs
+    -------
+    normal : VectorSocket
+        Normal
+    true_normal : VectorSocket
+        True Normal
     """
 
     _bl_idname = "GeometryNodeInputNormal"
     node: bpy.types.GeometryNodeInputNormal
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        normal: VectorSocket
+        true_normal: VectorSocket
+
+    @property
+    def i(self) -> "Normal.Inputs":
+        return Normal.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Normal.Outputs":
+        return Normal.Outputs(self.node.outputs, "output")
 
     def __init__(self, legacy_corner_normals: bool = False):
         super().__init__()
         key_args = {}
         self.legacy_corner_normals = legacy_corner_normals
         self._establish_links(**key_args)
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
-    def o_true_normal(self) -> VectorSocket:
-        """Output socket: True Normal"""
-        return self.outputs._get("True Normal")
 
     @property
     def legacy_corner_normals(self) -> bool:
@@ -1679,10 +2324,49 @@ class Normal(NodeBuilder):
 class ObjectInfo(NodeBuilder):
     """
     Retrieve information from an object
+
+    Parameters
+    ----------
+    object : InputObject
+        Object
+    as_instance : InputBoolean
+        As Instance
+
+    Outputs
+    -------
+    transform : MatrixSocket
+        Transform
+    location : VectorSocket
+        Location
+    rotation : RotationSocket
+        Rotation
+    scale : VectorSocket
+        Scale
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeObjectInfo"
     node: bpy.types.GeometryNodeObjectInfo
+
+    class Inputs(SocketAccessor):
+        object: Socket
+        as_instance: Socket
+
+    class Outputs(SocketAccessor):
+        transform: MatrixSocket
+        location: VectorSocket
+        rotation: RotationSocket
+        scale: VectorSocket
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "ObjectInfo.Inputs":
+        return ObjectInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ObjectInfo.Outputs":
+        return ObjectInfo.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1697,41 +2381,6 @@ class ObjectInfo(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_object(self) -> Socket:
-        """Input socket: Object"""
-        return self.inputs._get("Object")
-
-    @property
-    def i_as_instance(self) -> Socket:
-        """Input socket: As Instance"""
-        return self.inputs._get("As Instance")
-
-    @property
-    def o_transform(self) -> MatrixSocket:
-        """Output socket: Transform"""
-        return self.outputs._get("Transform")
-
-    @property
-    def o_location(self) -> VectorSocket:
-        """Output socket: Location"""
-        return self.outputs._get("Location")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
-    @property
-    def o_scale(self) -> VectorSocket:
-        """Output socket: Scale"""
-        return self.outputs._get("Scale")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
-    @property
     def transform_space(self) -> Literal["ORIGINAL", "RELATIVE"]:
         return self.node.transform_space
 
@@ -1743,10 +2392,37 @@ class ObjectInfo(NodeBuilder):
 class OffsetCornerInFace(NodeBuilder):
     """
     Retrieve corners in the same face as another
+
+    Parameters
+    ----------
+    corner_index : InputInteger
+        Corner Index
+    offset : InputInteger
+        Offset
+
+    Outputs
+    -------
+    corner_index : IntegerSocket
+        Corner Index
     """
 
     _bl_idname = "GeometryNodeOffsetCornerInFace"
     node: bpy.types.GeometryNodeOffsetCornerInFace
+
+    class Inputs(SocketAccessor):
+        corner_index: Socket
+        offset: Socket
+
+    class Outputs(SocketAccessor):
+        corner_index: IntegerSocket
+
+    @property
+    def i(self) -> "OffsetCornerInFace.Inputs":
+        return OffsetCornerInFace.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "OffsetCornerInFace.Outputs":
+        return OffsetCornerInFace.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1758,29 +2434,44 @@ class OffsetCornerInFace(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_corner_index(self) -> Socket:
-        """Input socket: Corner Index"""
-        return self.inputs._get("Corner Index")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def o_corner_index(self) -> IntegerSocket:
-        """Output socket: Corner Index"""
-        return self.outputs._get("Corner Index")
-
 
 class OffsetPointInCurve(NodeBuilder):
     """
     Offset a control point index within its curve
+
+    Parameters
+    ----------
+    point_index : InputInteger
+        Point Index
+    offset : InputInteger
+        Offset
+
+    Outputs
+    -------
+    is_valid_offset : BooleanSocket
+        Is Valid Offset
+    point_index : IntegerSocket
+        Point Index
     """
 
     _bl_idname = "GeometryNodeOffsetPointInCurve"
     node: bpy.types.GeometryNodeOffsetPointInCurve
+
+    class Inputs(SocketAccessor):
+        point_index: Socket
+        offset: Socket
+
+    class Outputs(SocketAccessor):
+        is_valid_offset: BooleanSocket
+        point_index: IntegerSocket
+
+    @property
+    def i(self) -> "OffsetPointInCurve.Inputs":
+        return OffsetPointInCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "OffsetPointInCurve.Outputs":
+        return OffsetPointInCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1792,34 +2483,47 @@ class OffsetPointInCurve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_point_index(self) -> Socket:
-        """Input socket: Point Index"""
-        return self.inputs._get("Point Index")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def o_is_valid_offset(self) -> BooleanSocket:
-        """Output socket: Is Valid Offset"""
-        return self.outputs._get("Is Valid Offset")
-
-    @property
-    def o_point_index(self) -> IntegerSocket:
-        """Output socket: Point Index"""
-        return self.outputs._get("Point Index")
-
 
 class PointsOfCurve(NodeBuilder):
     """
     Retrieve a point index within a curve
+
+    Parameters
+    ----------
+    curve_index : InputInteger
+        Curve Index
+    weights : InputFloat
+        Weights
+    sort_index : InputInteger
+        Sort Index
+
+    Outputs
+    -------
+    point_index : IntegerSocket
+        Point Index
+    total : IntegerSocket
+        Total
     """
 
     _bl_idname = "GeometryNodePointsOfCurve"
     node: bpy.types.GeometryNodePointsOfCurve
+
+    class Inputs(SocketAccessor):
+        curve_index: Socket
+        weights: Socket
+        sort_index: Socket
+
+    class Outputs(SocketAccessor):
+        point_index: IntegerSocket
+        total: IntegerSocket
+
+    @property
+    def i(self) -> "PointsOfCurve.Inputs":
+        return PointsOfCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PointsOfCurve.Outputs":
+        return PointsOfCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1836,59 +2540,67 @@ class PointsOfCurve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve_index(self) -> Socket:
-        """Input socket: Curve Index"""
-        return self.inputs._get("Curve Index")
-
-    @property
-    def i_weights(self) -> Socket:
-        """Input socket: Weights"""
-        return self.inputs._get("Weights")
-
-    @property
-    def i_sort_index(self) -> Socket:
-        """Input socket: Sort Index"""
-        return self.inputs._get("Sort Index")
-
-    @property
-    def o_point_index(self) -> IntegerSocket:
-        """Output socket: Point Index"""
-        return self.outputs._get("Point Index")
-
-    @property
-    def o_total(self) -> IntegerSocket:
-        """Output socket: Total"""
-        return self.outputs._get("Total")
-
 
 class Position(NodeBuilder):
     """
     Retrieve a vector indicating the location of each element
+
+    Outputs
+    -------
+    position : VectorSocket
+        Position
     """
 
     _bl_idname = "GeometryNodeInputPosition"
     node: bpy.types.GeometryNodeInputPosition
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        position: VectorSocket
+
+    @property
+    def i(self) -> "Position.Inputs":
+        return Position.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Position.Outputs":
+        return Position.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_position(self) -> VectorSocket:
-        """Output socket: Position"""
-        return self.outputs._get("Position")
 
 
 class Radius(NodeBuilder):
     """
     Retrieve the radius at each point on curve or point cloud geometry
+
+    Outputs
+    -------
+    radius : FloatSocket
+        Radius
     """
 
     _bl_idname = "GeometryNodeInputRadius"
     node: bpy.types.GeometryNodeInputRadius
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        radius: FloatSocket
+
+    @property
+    def i(self) -> "Radius.Inputs":
+        return Radius.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Radius.Outputs":
+        return Radius.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -1896,30 +2608,39 @@ class Radius(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_radius(self) -> FloatSocket:
-        """Output socket: Radius"""
-        return self.outputs._get("Radius")
-
 
 class Rotation(NodeBuilder):
     """
     Provide a rotation value that can be connected to other nodes in the tree
+
+    Outputs
+    -------
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "FunctionNodeInputRotation"
     node: bpy.types.FunctionNodeInputRotation
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "Rotation.Inputs":
+        return Rotation.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Rotation.Outputs":
+        return Rotation.Outputs(self.node.outputs, "output")
 
     def __init__(self, rotation_euler: tuple[float, float, float] = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {}
         self.rotation_euler = rotation_euler
         self._establish_links(**key_args)
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
 
     @property
     def rotation_euler(self) -> tuple[float, float, float]:
@@ -1933,60 +2654,103 @@ class Rotation(NodeBuilder):
 class SceneTime(NodeBuilder):
     """
     Retrieve the current time in the scene's animation in units of seconds or frames
+
+    Outputs
+    -------
+    seconds : FloatSocket
+        Seconds
+    frame : FloatSocket
+        Frame
     """
 
     _bl_idname = "GeometryNodeInputSceneTime"
     node: bpy.types.GeometryNodeInputSceneTime
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        seconds: FloatSocket
+        frame: FloatSocket
+
+    @property
+    def i(self) -> "SceneTime.Inputs":
+        return SceneTime.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SceneTime.Outputs":
+        return SceneTime.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_seconds(self) -> FloatSocket:
-        """Output socket: Seconds"""
-        return self.outputs._get("Seconds")
-
-    @property
-    def o_frame(self) -> FloatSocket:
-        """Output socket: Frame"""
-        return self.outputs._get("Frame")
 
 
 class Selection(NodeBuilder):
     """
     User selection of the edited geometry, for tool execution
+
+    Outputs
+    -------
+    selection : BooleanSocket
+        Boolean
+    float : FloatSocket
+        Float
     """
 
     _bl_idname = "GeometryNodeToolSelection"
     node: bpy.types.GeometryNodeToolSelection
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        selection: BooleanSocket
+        float: FloatSocket
+
+    @property
+    def i(self) -> "Selection.Inputs":
+        return Selection.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Selection.Outputs":
+        return Selection.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_selection(self) -> BooleanSocket:
-        """Output socket: Boolean"""
-        return self.outputs._get("Selection")
-
-    @property
-    def o_float(self) -> FloatSocket:
-        """Output socket: Float"""
-        return self.outputs._get("Float")
 
 
 class SelfObject(NodeBuilder):
     """
     Retrieve the object that contains the geometry nodes modifier currently being executed
+
+    Outputs
+    -------
+    self_object : ObjectSocket
+        Self Object
     """
 
     _bl_idname = "GeometryNodeSelfObject"
     node: bpy.types.GeometryNodeSelfObject
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        self_object: ObjectSocket
+
+    @property
+    def i(self) -> "SelfObject.Inputs":
+        return SelfObject.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SelfObject.Outputs":
+        return SelfObject.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -1994,19 +2758,44 @@ class SelfObject(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_self_object(self) -> ObjectSocket:
-        """Output socket: Self Object"""
-        return self.outputs._get("Self Object")
-
 
 class ShortestEdgePaths(NodeBuilder):
     """
     Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge
+
+    Parameters
+    ----------
+    end_vertex : InputBoolean
+        End Vertex
+    edge_cost : InputFloat
+        Edge Cost
+
+    Outputs
+    -------
+    next_vertex_index : IntegerSocket
+        Next Vertex Index
+    total_cost : FloatSocket
+        Total Cost
     """
 
     _bl_idname = "GeometryNodeInputShortestEdgePaths"
     node: bpy.types.GeometryNodeInputShortestEdgePaths
+
+    class Inputs(SocketAccessor):
+        end_vertex: Socket
+        edge_cost: Socket
+
+    class Outputs(SocketAccessor):
+        next_vertex_index: IntegerSocket
+        total_cost: FloatSocket
+
+    @property
+    def i(self) -> "ShortestEdgePaths.Inputs":
+        return ShortestEdgePaths.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ShortestEdgePaths.Outputs":
+        return ShortestEdgePaths.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2018,114 +2807,147 @@ class ShortestEdgePaths(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_end_vertex(self) -> Socket:
-        """Input socket: End Vertex"""
-        return self.inputs._get("End Vertex")
-
-    @property
-    def i_edge_cost(self) -> Socket:
-        """Input socket: Edge Cost"""
-        return self.inputs._get("Edge Cost")
-
-    @property
-    def o_next_vertex_index(self) -> IntegerSocket:
-        """Output socket: Next Vertex Index"""
-        return self.outputs._get("Next Vertex Index")
-
-    @property
-    def o_total_cost(self) -> FloatSocket:
-        """Output socket: Total Cost"""
-        return self.outputs._get("Total Cost")
-
 
 class SpecialCharacters(NodeBuilder):
     """
     Output string characters that cannot be typed directly with the keyboard
+
+    Outputs
+    -------
+    line_break : StringSocket
+        Line Break
+    tab : StringSocket
+        Tab
     """
 
     _bl_idname = "FunctionNodeInputSpecialCharacters"
     node: bpy.types.FunctionNodeInputSpecialCharacters
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        line_break: StringSocket
+        tab: StringSocket
+
+    @property
+    def i(self) -> "SpecialCharacters.Inputs":
+        return SpecialCharacters.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SpecialCharacters.Outputs":
+        return SpecialCharacters.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_line_break(self) -> StringSocket:
-        """Output socket: Line Break"""
-        return self.outputs._get("Line Break")
-
-    @property
-    def o_tab(self) -> StringSocket:
-        """Output socket: Tab"""
-        return self.outputs._get("Tab")
 
 
 class SplineLength(NodeBuilder):
     """
     Retrieve the total length of each spline, as a distance or as a number of points
+
+    Outputs
+    -------
+    length : FloatSocket
+        Length
+    point_count : IntegerSocket
+        Point Count
     """
 
     _bl_idname = "GeometryNodeSplineLength"
     node: bpy.types.GeometryNodeSplineLength
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        length: FloatSocket
+        point_count: IntegerSocket
+
+    @property
+    def i(self) -> "SplineLength.Inputs":
+        return SplineLength.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SplineLength.Outputs":
+        return SplineLength.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_length(self) -> FloatSocket:
-        """Output socket: Length"""
-        return self.outputs._get("Length")
-
-    @property
-    def o_point_count(self) -> IntegerSocket:
-        """Output socket: Point Count"""
-        return self.outputs._get("Point Count")
 
 
 class SplineParameter(NodeBuilder):
     """
     Retrieve how far along each spline a control point is
+
+    Outputs
+    -------
+    factor : FloatSocket
+        Factor
+    length : FloatSocket
+        Length
+    index : IntegerSocket
+        Index
     """
 
     _bl_idname = "GeometryNodeSplineParameter"
     node: bpy.types.GeometryNodeSplineParameter
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        factor: FloatSocket
+        length: FloatSocket
+        index: IntegerSocket
+
+    @property
+    def i(self) -> "SplineParameter.Inputs":
+        return SplineParameter.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SplineParameter.Outputs":
+        return SplineParameter.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_factor(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Factor")
-
-    @property
-    def o_length(self) -> FloatSocket:
-        """Output socket: Length"""
-        return self.outputs._get("Length")
-
-    @property
-    def o_index(self) -> IntegerSocket:
-        """Output socket: Index"""
-        return self.outputs._get("Index")
 
 
 class SplineResolution(NodeBuilder):
     """
     Retrieve the number of evaluated points that will be generated for every control point on curves
+
+    Outputs
+    -------
+    resolution : IntegerSocket
+        Resolution
     """
 
     _bl_idname = "GeometryNodeInputSplineResolution"
     node: bpy.types.GeometryNodeInputSplineResolution
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        resolution: IntegerSocket
+
+    @property
+    def i(self) -> "SplineResolution.Inputs":
+        return SplineResolution.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SplineResolution.Outputs":
+        return SplineResolution.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -2133,30 +2955,39 @@ class SplineResolution(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_resolution(self) -> IntegerSocket:
-        """Output socket: Resolution"""
-        return self.outputs._get("Resolution")
-
 
 class String(NodeBuilder):
     """
     Provide a string value that can be connected to other nodes in the tree
+
+    Outputs
+    -------
+    string : StringSocket
+        String
     """
 
     _bl_idname = "FunctionNodeInputString"
     node: bpy.types.FunctionNodeInputString
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        string: StringSocket
+
+    @property
+    def i(self) -> "String.Inputs":
+        return String.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "String.Outputs":
+        return String.Outputs(self.node.outputs, "output")
 
     def __init__(self, string: str = ""):
         super().__init__()
         key_args = {}
         self.string = string
         self._establish_links(**key_args)
-
-    @property
-    def o_string(self) -> StringSocket:
-        """Output socket: String"""
-        return self.outputs._get("String")
 
     @property
     def string(self) -> str:
@@ -2170,10 +3001,37 @@ class String(NodeBuilder):
 class UVTangent(NodeBuilder):
     """
     Generate tangent directions based on a UV map
+
+    Parameters
+    ----------
+    method : InputMenu | Literal['Exact', 'Fast']
+        Method
+    uv : InputVector
+        UV
+
+    Outputs
+    -------
+    tangent : VectorSocket
+        Tangent
     """
 
     _bl_idname = "GeometryNodeUVTangent"
     node: bpy.types.GeometryNodeUVTangent
+
+    class Inputs(SocketAccessor):
+        method: Socket
+        uv: Socket
+
+    class Outputs(SocketAccessor):
+        tangent: VectorSocket
+
+    @property
+    def i(self) -> "UVTangent.Inputs":
+        return UVTangent.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "UVTangent.Outputs":
+        return UVTangent.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2185,40 +3043,39 @@ class UVTangent(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_method(self) -> Socket:
-        """Input socket: Method"""
-        return self.inputs._get("Method")
-
-    @property
-    def i_uv(self) -> Socket:
-        """Input socket: UV"""
-        return self.inputs._get("UV")
-
-    @property
-    def o_tangent(self) -> VectorSocket:
-        """Output socket: Tangent"""
-        return self.outputs._get("Tangent")
-
 
 class Vector(NodeBuilder):
     """
     Provide a vector value that can be connected to other nodes in the tree
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "FunctionNodeInputVector"
     node: bpy.types.FunctionNodeInputVector
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "Vector.Inputs":
+        return Vector.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Vector.Outputs":
+        return Vector.Outputs(self.node.outputs, "output")
 
     def __init__(self, vector: tuple[float, float, float] = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {}
         self.vector = vector
         self._establish_links(**key_args)
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
 
     @property
     def vector(self) -> tuple[float, float, float]:
@@ -2232,10 +3089,32 @@ class Vector(NodeBuilder):
 class VertexNeighbors(NodeBuilder):
     """
     Retrieve topology information relating to each vertex of a mesh
+
+    Outputs
+    -------
+    vertex_count : IntegerSocket
+        Vertex Count
+    face_count : IntegerSocket
+        Face Count
     """
 
     _bl_idname = "GeometryNodeInputMeshVertexNeighbors"
     node: bpy.types.GeometryNodeInputMeshVertexNeighbors
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        vertex_count: IntegerSocket
+        face_count: IntegerSocket
+
+    @property
+    def i(self) -> "VertexNeighbors.Inputs":
+        return VertexNeighbors.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VertexNeighbors.Outputs":
+        return VertexNeighbors.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -2243,24 +3122,38 @@ class VertexNeighbors(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_vertex_count(self) -> IntegerSocket:
-        """Output socket: Vertex Count"""
-        return self.outputs._get("Vertex Count")
-
-    @property
-    def o_face_count(self) -> IntegerSocket:
-        """Output socket: Face Count"""
-        return self.outputs._get("Face Count")
-
 
 class VertexOfCorner(NodeBuilder):
     """
     Retrieve the vertex each face corner is attached to
+
+    Parameters
+    ----------
+    corner_index : InputInteger
+        Corner Index
+
+    Outputs
+    -------
+    vertex_index : IntegerSocket
+        Vertex Index
     """
 
     _bl_idname = "GeometryNodeVertexOfCorner"
     node: bpy.types.GeometryNodeVertexOfCorner
+
+    class Inputs(SocketAccessor):
+        corner_index: Socket
+
+    class Outputs(SocketAccessor):
+        vertex_index: IntegerSocket
+
+    @property
+    def i(self) -> "VertexOfCorner.Inputs":
+        return VertexOfCorner.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VertexOfCorner.Outputs":
+        return VertexOfCorner.Outputs(self.node.outputs, "output")
 
     def __init__(self, corner_index: InputInteger = 0):
         super().__init__()
@@ -2268,92 +3161,94 @@ class VertexOfCorner(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_corner_index(self) -> Socket:
-        """Input socket: Corner Index"""
-        return self.inputs._get("Corner Index")
-
-    @property
-    def o_vertex_index(self) -> IntegerSocket:
-        """Output socket: Vertex Index"""
-        return self.outputs._get("Vertex Index")
-
 
 class ViewportTransform(NodeBuilder):
     """
     Retrieve the view direction and location of the 3D viewport
+
+    Outputs
+    -------
+    projection : MatrixSocket
+        Projection
+    view : MatrixSocket
+        View
+    is_orthographic : BooleanSocket
+        Is Orthographic
     """
 
     _bl_idname = "GeometryNodeViewportTransform"
     node: bpy.types.GeometryNodeViewportTransform
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        projection: MatrixSocket
+        view: MatrixSocket
+        is_orthographic: BooleanSocket
+
+    @property
+    def i(self) -> "ViewportTransform.Inputs":
+        return ViewportTransform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ViewportTransform.Outputs":
+        return ViewportTransform.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_projection(self) -> MatrixSocket:
-        """Output socket: Projection"""
-        return self.outputs._get("Projection")
-
-    @property
-    def o_view(self) -> MatrixSocket:
-        """Output socket: View"""
-        return self.outputs._get("View")
-
-    @property
-    def o_is_orthographic(self) -> BooleanSocket:
-        """Output socket: Is Orthographic"""
-        return self.outputs._get("Is Orthographic")
 
 
 class VoxelIndex(NodeBuilder):
     """
     Retrieve the integer coordinates of the voxel that the field is evaluated on
+
+    Outputs
+    -------
+    x : IntegerSocket
+        X
+    y : IntegerSocket
+        Y
+    z : IntegerSocket
+        Z
+    is_tile : BooleanSocket
+        Is Tile
+    extent_x : IntegerSocket
+        Extent X
+    extent_y : IntegerSocket
+        Extent Y
+    extent_z : IntegerSocket
+        Extent Z
     """
 
     _bl_idname = "GeometryNodeInputVoxelIndex"
     node: bpy.types.GeometryNodeInputVoxelIndex
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        x: IntegerSocket
+        y: IntegerSocket
+        z: IntegerSocket
+        is_tile: BooleanSocket
+        extent_x: IntegerSocket
+        extent_y: IntegerSocket
+        extent_z: IntegerSocket
+
+    @property
+    def i(self) -> "VoxelIndex.Inputs":
+        return VoxelIndex.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VoxelIndex.Outputs":
+        return VoxelIndex.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_x(self) -> IntegerSocket:
-        """Output socket: X"""
-        return self.outputs._get("X")
-
-    @property
-    def o_y(self) -> IntegerSocket:
-        """Output socket: Y"""
-        return self.outputs._get("Y")
-
-    @property
-    def o_z(self) -> IntegerSocket:
-        """Output socket: Z"""
-        return self.outputs._get("Z")
-
-    @property
-    def o_is_tile(self) -> BooleanSocket:
-        """Output socket: Is Tile"""
-        return self.outputs._get("Is Tile")
-
-    @property
-    def o_extent_x(self) -> IntegerSocket:
-        """Output socket: Extent X"""
-        return self.outputs._get("Extent X")
-
-    @property
-    def o_extent_y(self) -> IntegerSocket:
-        """Output socket: Extent Y"""
-        return self.outputs._get("Extent Y")
-
-    @property
-    def o_extent_z(self) -> IntegerSocket:
-        """Output socket: Extent Z"""
-        return self.outputs._get("Extent Z")

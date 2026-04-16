@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     BooleanSocket,
     FloatSocket,
@@ -34,10 +35,70 @@ from ...types import (
 class Arc(NodeBuilder):
     """
     Generate a poly spline arc
+
+    Parameters
+    ----------
+    resolution : InputInteger
+        Resolution
+    start : InputVector
+        Start
+    middle : InputVector
+        Middle
+    end : InputVector
+        End
+    radius : InputFloat
+        Radius
+    start_angle : InputFloat
+        Start Angle
+    sweep_angle : InputFloat
+        Sweep Angle
+    offset_angle : InputFloat
+        Offset Angle
+    connect_center : InputBoolean
+        Connect Center
+    invert_arc : InputBoolean
+        Invert Arc
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
+    center : VectorSocket
+        Center
+    normal : VectorSocket
+        Normal
+    radius : FloatSocket
+        Radius
     """
 
     _bl_idname = "GeometryNodeCurveArc"
     node: bpy.types.GeometryNodeCurveArc
+
+    class Inputs(SocketAccessor):
+        resolution: Socket
+        start: Socket
+        middle: Socket
+        end: Socket
+        radius: Socket
+        start_angle: Socket
+        sweep_angle: Socket
+        offset_angle: Socket
+        connect_center: Socket
+        invert_arc: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+        center: VectorSocket
+        normal: VectorSocket
+        radius: FloatSocket
+
+    @property
+    def i(self) -> "Arc.Inputs":
+        return Arc.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Arc.Outputs":
+        return Arc.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -115,76 +176,6 @@ class Arc(NodeBuilder):
         )
 
     @property
-    def i_resolution(self) -> Socket:
-        """Input socket: Resolution"""
-        return self.inputs._get("Resolution")
-
-    @property
-    def i_start(self) -> Socket:
-        """Input socket: Start"""
-        return self.inputs._get("Start")
-
-    @property
-    def i_middle(self) -> Socket:
-        """Input socket: Middle"""
-        return self.inputs._get("Middle")
-
-    @property
-    def i_end(self) -> Socket:
-        """Input socket: End"""
-        return self.inputs._get("End")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def i_start_angle(self) -> Socket:
-        """Input socket: Start Angle"""
-        return self.inputs._get("Start Angle")
-
-    @property
-    def i_sweep_angle(self) -> Socket:
-        """Input socket: Sweep Angle"""
-        return self.inputs._get("Sweep Angle")
-
-    @property
-    def i_offset_angle(self) -> Socket:
-        """Input socket: Offset Angle"""
-        return self.inputs._get("Offset Angle")
-
-    @property
-    def i_connect_center(self) -> Socket:
-        """Input socket: Connect Center"""
-        return self.inputs._get("Connect Center")
-
-    @property
-    def i_invert_arc(self) -> Socket:
-        """Input socket: Invert Arc"""
-        return self.inputs._get("Invert Arc")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
-    def o_center(self) -> VectorSocket:
-        """Output socket: Center"""
-        return self.outputs._get("Center")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
-    def o_radius(self) -> FloatSocket:
-        """Output socket: Radius"""
-        return self.outputs._get("Radius")
-
-    @property
     def mode(self) -> Literal["POINTS", "RADIUS"]:
         return self.node.mode
 
@@ -196,10 +187,43 @@ class Arc(NodeBuilder):
 class BoundingBox(NodeBuilder):
     """
     Calculate the limits of a geometry's positions and generate a box mesh with those dimensions
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    use_radius : InputBoolean
+        Use Radius
+
+    Outputs
+    -------
+    bounding_box : GeometrySocket
+        Bounding Box
+    min : VectorSocket
+        Min
+    max : VectorSocket
+        Max
     """
 
     _bl_idname = "GeometryNodeBoundBox"
     node: bpy.types.GeometryNodeBoundBox
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        use_radius: Socket
+
+    class Outputs(SocketAccessor):
+        bounding_box: GeometrySocket
+        min: VectorSocket
+        max: VectorSocket
+
+    @property
+    def i(self) -> "BoundingBox.Inputs":
+        return BoundingBox.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BoundingBox.Outputs":
+        return BoundingBox.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -211,39 +235,50 @@ class BoundingBox(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_use_radius(self) -> Socket:
-        """Input socket: Use Radius"""
-        return self.inputs._get("Use Radius")
-
-    @property
-    def o_bounding_box(self) -> GeometrySocket:
-        """Output socket: Bounding Box"""
-        return self.outputs._get("Bounding Box")
-
-    @property
-    def o_min(self) -> VectorSocket:
-        """Output socket: Min"""
-        return self.outputs._get("Min")
-
-    @property
-    def o_max(self) -> VectorSocket:
-        """Output socket: Max"""
-        return self.outputs._get("Max")
-
 
 class BezierSegment(NodeBuilder):
     """
     Generate a 2D Bézier spline from the given control points and handles
+
+    Parameters
+    ----------
+    resolution : InputInteger
+        Resolution
+    start : InputVector
+        Start
+    start_handle : InputVector
+        Start Handle
+    end_handle : InputVector
+        End Handle
+    end : InputVector
+        End
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeCurvePrimitiveBezierSegment"
     node: bpy.types.GeometryNodeCurvePrimitiveBezierSegment
+
+    class Inputs(SocketAccessor):
+        resolution: Socket
+        start: Socket
+        start_handle: Socket
+        end_handle: Socket
+        end: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "BezierSegment.Inputs":
+        return BezierSegment.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BezierSegment.Outputs":
+        return BezierSegment.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -305,36 +340,6 @@ class BezierSegment(NodeBuilder):
         )
 
     @property
-    def i_resolution(self) -> Socket:
-        """Input socket: Resolution"""
-        return self.inputs._get("Resolution")
-
-    @property
-    def i_start(self) -> Socket:
-        """Input socket: Start"""
-        return self.inputs._get("Start")
-
-    @property
-    def i_start_handle(self) -> Socket:
-        """Input socket: Start Handle"""
-        return self.inputs._get("Start Handle")
-
-    @property
-    def i_end_handle(self) -> Socket:
-        """Input socket: End Handle"""
-        return self.inputs._get("End Handle")
-
-    @property
-    def i_end(self) -> Socket:
-        """Input socket: End"""
-        return self.inputs._get("End")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
     def mode(self) -> Literal["POSITION", "OFFSET"]:
         return self.node.mode
 
@@ -346,10 +351,61 @@ class BezierSegment(NodeBuilder):
 class Cone(NodeBuilder):
     """
     Generate a cone mesh
+
+    Parameters
+    ----------
+    vertices : InputInteger
+        Vertices
+    side_segments : InputInteger
+        Side Segments
+    fill_segments : InputInteger
+        Fill Segments
+    radius_top : InputFloat
+        Radius Top
+    radius_bottom : InputFloat
+        Radius Bottom
+    depth : InputFloat
+        Depth
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    top : BooleanSocket
+        Top
+    bottom : BooleanSocket
+        Bottom
+    side : BooleanSocket
+        Side
+    uv_map : VectorSocket
+        UV Map
     """
 
     _bl_idname = "GeometryNodeMeshCone"
     node: bpy.types.GeometryNodeMeshCone
+
+    class Inputs(SocketAccessor):
+        vertices: Socket
+        side_segments: Socket
+        fill_segments: Socket
+        radius_top: Socket
+        radius_bottom: Socket
+        depth: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        top: BooleanSocket
+        bottom: BooleanSocket
+        side: BooleanSocket
+        uv_map: VectorSocket
+
+    @property
+    def i(self) -> "Cone.Inputs":
+        return Cone.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Cone.Outputs":
+        return Cone.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -436,61 +492,6 @@ class Cone(NodeBuilder):
         )
 
     @property
-    def i_vertices(self) -> Socket:
-        """Input socket: Vertices"""
-        return self.inputs._get("Vertices")
-
-    @property
-    def i_side_segments(self) -> Socket:
-        """Input socket: Side Segments"""
-        return self.inputs._get("Side Segments")
-
-    @property
-    def i_fill_segments(self) -> Socket:
-        """Input socket: Fill Segments"""
-        return self.inputs._get("Fill Segments")
-
-    @property
-    def i_radius_top(self) -> Socket:
-        """Input socket: Radius Top"""
-        return self.inputs._get("Radius Top")
-
-    @property
-    def i_radius_bottom(self) -> Socket:
-        """Input socket: Radius Bottom"""
-        return self.inputs._get("Radius Bottom")
-
-    @property
-    def i_depth(self) -> Socket:
-        """Input socket: Depth"""
-        return self.inputs._get("Depth")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_top(self) -> BooleanSocket:
-        """Output socket: Top"""
-        return self.outputs._get("Top")
-
-    @property
-    def o_bottom(self) -> BooleanSocket:
-        """Output socket: Bottom"""
-        return self.outputs._get("Bottom")
-
-    @property
-    def o_side(self) -> BooleanSocket:
-        """Output socket: Side"""
-        return self.outputs._get("Side")
-
-    @property
-    def o_uv_map(self) -> VectorSocket:
-        """Output socket: UV Map"""
-        return self.outputs._get("UV Map")
-
-    @property
     def fill_type(self) -> Literal["NONE", "NGON", "TRIANGLE_FAN"]:
         return self.node.fill_type
 
@@ -502,10 +503,34 @@ class Cone(NodeBuilder):
 class ConvexHull(NodeBuilder):
     """
     Create a mesh that encloses all points in the input geometry with the smallest number of points
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+
+    Outputs
+    -------
+    convex_hull : GeometrySocket
+        Convex Hull
     """
 
     _bl_idname = "GeometryNodeConvexHull"
     node: bpy.types.GeometryNodeConvexHull
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+
+    class Outputs(SocketAccessor):
+        convex_hull: GeometrySocket
+
+    @property
+    def i(self) -> "ConvexHull.Inputs":
+        return ConvexHull.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ConvexHull.Outputs":
+        return ConvexHull.Outputs(self.node.outputs, "output")
 
     def __init__(self, geometry: InputGeometry = None):
         super().__init__()
@@ -513,24 +538,50 @@ class ConvexHull(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def o_convex_hull(self) -> GeometrySocket:
-        """Output socket: Convex Hull"""
-        return self.outputs._get("Convex Hull")
-
 
 class Cube(NodeBuilder):
     """
     Generate a cuboid mesh with variable side lengths and subdivisions
+
+    Parameters
+    ----------
+    size : InputVector
+        Size
+    vertices_x : InputInteger
+        Vertices X
+    vertices_y : InputInteger
+        Vertices Y
+    vertices_z : InputInteger
+        Vertices Z
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    uv_map : VectorSocket
+        UV Map
     """
 
     _bl_idname = "GeometryNodeMeshCube"
     node: bpy.types.GeometryNodeMeshCube
+
+    class Inputs(SocketAccessor):
+        size: Socket
+        vertices_x: Socket
+        vertices_y: Socket
+        vertices_z: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        uv_map: VectorSocket
+
+    @property
+    def i(self) -> "Cube.Inputs":
+        return Cube.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Cube.Outputs":
+        return Cube.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -549,44 +600,53 @@ class Cube(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_vertices_x(self) -> Socket:
-        """Input socket: Vertices X"""
-        return self.inputs._get("Vertices X")
-
-    @property
-    def i_vertices_y(self) -> Socket:
-        """Input socket: Vertices Y"""
-        return self.inputs._get("Vertices Y")
-
-    @property
-    def i_vertices_z(self) -> Socket:
-        """Input socket: Vertices Z"""
-        return self.inputs._get("Vertices Z")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_uv_map(self) -> VectorSocket:
-        """Output socket: UV Map"""
-        return self.outputs._get("UV Map")
-
 
 class CurveCircle(NodeBuilder):
     """
     Generate a poly spline circle
+
+    Parameters
+    ----------
+    resolution : InputInteger
+        Resolution
+    point_1 : InputVector
+        Point 1
+    point_2 : InputVector
+        Point 2
+    point_3 : InputVector
+        Point 3
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
+    center : VectorSocket
+        Center
     """
 
     _bl_idname = "GeometryNodeCurvePrimitiveCircle"
     node: bpy.types.GeometryNodeCurvePrimitiveCircle
+
+    class Inputs(SocketAccessor):
+        resolution: Socket
+        point_1: Socket
+        point_2: Socket
+        point_3: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+        center: VectorSocket
+
+    @property
+    def i(self) -> "CurveCircle.Inputs":
+        return CurveCircle.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveCircle.Outputs":
+        return CurveCircle.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -634,41 +694,6 @@ class CurveCircle(NodeBuilder):
         return cls(mode="RADIUS", resolution=resolution, radius=radius)
 
     @property
-    def i_resolution(self) -> Socket:
-        """Input socket: Resolution"""
-        return self.inputs._get("Resolution")
-
-    @property
-    def i_point_1(self) -> Socket:
-        """Input socket: Point 1"""
-        return self.inputs._get("Point 1")
-
-    @property
-    def i_point_2(self) -> Socket:
-        """Input socket: Point 2"""
-        return self.inputs._get("Point 2")
-
-    @property
-    def i_point_3(self) -> Socket:
-        """Input socket: Point 3"""
-        return self.inputs._get("Point 3")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
-    def o_center(self) -> VectorSocket:
-        """Output socket: Center"""
-        return self.outputs._get("Center")
-
-    @property
     def mode(self) -> Literal["POINTS", "RADIUS"]:
         return self.node.mode
 
@@ -680,10 +705,34 @@ class CurveCircle(NodeBuilder):
 class CurveLength(NodeBuilder):
     """
     Retrieve the length of all splines added together
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+
+    Outputs
+    -------
+    length : FloatSocket
+        Length
     """
 
     _bl_idname = "GeometryNodeCurveLength"
     node: bpy.types.GeometryNodeCurveLength
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+
+    class Outputs(SocketAccessor):
+        length: FloatSocket
+
+    @property
+    def i(self) -> "CurveLength.Inputs":
+        return CurveLength.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveLength.Outputs":
+        return CurveLength.Outputs(self.node.outputs, "output")
 
     def __init__(self, curve: InputGeometry = None):
         super().__init__()
@@ -691,24 +740,47 @@ class CurveLength(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def o_length(self) -> FloatSocket:
-        """Output socket: Length"""
-        return self.outputs._get("Length")
-
 
 class CurveLine(NodeBuilder):
     """
     Generate a poly spline line with two points
+
+    Parameters
+    ----------
+    start : InputVector
+        Start
+    end : InputVector
+        End
+    direction : InputVector
+        Direction
+    length : InputFloat
+        Length
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeCurvePrimitiveLine"
     node: bpy.types.GeometryNodeCurvePrimitiveLine
+
+    class Inputs(SocketAccessor):
+        start: Socket
+        end: Socket
+        direction: Socket
+        length: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "CurveLine.Inputs":
+        return CurveLine.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveLine.Outputs":
+        return CurveLine.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -745,31 +817,6 @@ class CurveLine(NodeBuilder):
         return cls(mode="DIRECTION", start=start, direction=direction, length=length)
 
     @property
-    def i_start(self) -> Socket:
-        """Input socket: Start"""
-        return self.inputs._get("Start")
-
-    @property
-    def i_end(self) -> Socket:
-        """Input socket: End"""
-        return self.inputs._get("End")
-
-    @property
-    def i_direction(self) -> Socket:
-        """Input socket: Direction"""
-        return self.inputs._get("Direction")
-
-    @property
-    def i_length(self) -> Socket:
-        """Input socket: Length"""
-        return self.inputs._get("Length")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
     def mode(self) -> Literal["POINTS", "DIRECTION"]:
         return self.node.mode
 
@@ -781,10 +828,43 @@ class CurveLine(NodeBuilder):
 class CurveToMesh(NodeBuilder):
     """
     Convert curves into a mesh, optionally with a custom profile shape defined by curves
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    profile_curve : InputGeometry
+        Profile Curve
+    scale : InputFloat
+        Scale
+    fill_caps : InputBoolean
+        Fill Caps
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeCurveToMesh"
     node: bpy.types.GeometryNodeCurveToMesh
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        profile_curve: Socket
+        scale: Socket
+        fill_caps: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "CurveToMesh.Inputs":
+        return CurveToMesh.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveToMesh.Outputs":
+        return CurveToMesh.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -803,39 +883,53 @@ class CurveToMesh(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_profile_curve(self) -> Socket:
-        """Input socket: Profile Curve"""
-        return self.inputs._get("Profile Curve")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_fill_caps(self) -> Socket:
-        """Input socket: Fill Caps"""
-        return self.inputs._get("Fill Caps")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class CurveToPoints(NodeBuilder):
     """
     Generate a point cloud by sampling positions along curves
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    count : InputInteger
+        Count
+    length : InputFloat
+        Length
+
+    Outputs
+    -------
+    points : GeometrySocket
+        Points
+    tangent : VectorSocket
+        Tangent
+    normal : VectorSocket
+        Normal
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "GeometryNodeCurveToPoints"
     node: bpy.types.GeometryNodeCurveToPoints
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        count: Socket
+        length: Socket
+
+    class Outputs(SocketAccessor):
+        points: GeometrySocket
+        tangent: VectorSocket
+        normal: VectorSocket
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "CurveToPoints.Inputs":
+        return CurveToPoints.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurveToPoints.Outputs":
+        return CurveToPoints.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -870,41 +964,6 @@ class CurveToPoints(NodeBuilder):
         return cls(mode="LENGTH", curve=curve, length=length)
 
     @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_count(self) -> Socket:
-        """Input socket: Count"""
-        return self.inputs._get("Count")
-
-    @property
-    def i_length(self) -> Socket:
-        """Input socket: Length"""
-        return self.inputs._get("Length")
-
-    @property
-    def o_points(self) -> GeometrySocket:
-        """Output socket: Points"""
-        return self.outputs._get("Points")
-
-    @property
-    def o_tangent(self) -> VectorSocket:
-        """Output socket: Tangent"""
-        return self.outputs._get("Tangent")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
-    @property
     def mode(self) -> Literal["EVALUATED", "COUNT", "LENGTH"]:
         return self.node.mode
 
@@ -916,10 +975,40 @@ class CurveToPoints(NodeBuilder):
 class CurvesToGreasePencil(NodeBuilder):
     """
     Convert the curves in each top-level instance into Grease Pencil layer
+
+    Parameters
+    ----------
+    curves : InputGeometry
+        Curves
+    selection : InputBoolean
+        Selection
+    instances_as_layers : InputBoolean
+        Instances as Layers
+
+    Outputs
+    -------
+    grease_pencil : GeometrySocket
+        Grease Pencil
     """
 
     _bl_idname = "GeometryNodeCurvesToGreasePencil"
     node: bpy.types.GeometryNodeCurvesToGreasePencil
+
+    class Inputs(SocketAccessor):
+        curves: Socket
+        selection: Socket
+        instances_as_layers: Socket
+
+    class Outputs(SocketAccessor):
+        grease_pencil: GeometrySocket
+
+    @property
+    def i(self) -> "CurvesToGreasePencil.Inputs":
+        return CurvesToGreasePencil.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CurvesToGreasePencil.Outputs":
+        return CurvesToGreasePencil.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -936,34 +1025,62 @@ class CurvesToGreasePencil(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curves(self) -> Socket:
-        """Input socket: Curves"""
-        return self.inputs._get("Curves")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_instances_as_layers(self) -> Socket:
-        """Input socket: Instances as Layers"""
-        return self.inputs._get("Instances as Layers")
-
-    @property
-    def o_grease_pencil(self) -> GeometrySocket:
-        """Output socket: Grease Pencil"""
-        return self.outputs._get("Grease Pencil")
-
 
 class Cylinder(NodeBuilder):
     """
     Generate a cylinder mesh
+
+    Parameters
+    ----------
+    vertices : InputInteger
+        Vertices
+    side_segments : InputInteger
+        Side Segments
+    fill_segments : InputInteger
+        Fill Segments
+    radius : InputFloat
+        Radius
+    depth : InputFloat
+        Depth
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    top : BooleanSocket
+        Top
+    side : BooleanSocket
+        Side
+    bottom : BooleanSocket
+        Bottom
+    uv_map : VectorSocket
+        UV Map
     """
 
     _bl_idname = "GeometryNodeMeshCylinder"
     node: bpy.types.GeometryNodeMeshCylinder
+
+    class Inputs(SocketAccessor):
+        vertices: Socket
+        side_segments: Socket
+        fill_segments: Socket
+        radius: Socket
+        depth: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        top: BooleanSocket
+        side: BooleanSocket
+        bottom: BooleanSocket
+        uv_map: VectorSocket
+
+    @property
+    def i(self) -> "Cylinder.Inputs":
+        return Cylinder.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Cylinder.Outputs":
+        return Cylinder.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1042,56 +1159,6 @@ class Cylinder(NodeBuilder):
         )
 
     @property
-    def i_vertices(self) -> Socket:
-        """Input socket: Vertices"""
-        return self.inputs._get("Vertices")
-
-    @property
-    def i_side_segments(self) -> Socket:
-        """Input socket: Side Segments"""
-        return self.inputs._get("Side Segments")
-
-    @property
-    def i_fill_segments(self) -> Socket:
-        """Input socket: Fill Segments"""
-        return self.inputs._get("Fill Segments")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def i_depth(self) -> Socket:
-        """Input socket: Depth"""
-        return self.inputs._get("Depth")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_top(self) -> BooleanSocket:
-        """Output socket: Top"""
-        return self.outputs._get("Top")
-
-    @property
-    def o_side(self) -> BooleanSocket:
-        """Output socket: Side"""
-        return self.outputs._get("Side")
-
-    @property
-    def o_bottom(self) -> BooleanSocket:
-        """Output socket: Bottom"""
-        return self.outputs._get("Bottom")
-
-    @property
-    def o_uv_map(self) -> VectorSocket:
-        """Output socket: UV Map"""
-        return self.outputs._get("UV Map")
-
-    @property
     def fill_type(self) -> Literal["NONE", "NGON", "TRIANGLE_FAN"]:
         return self.node.fill_type
 
@@ -1103,10 +1170,34 @@ class Cylinder(NodeBuilder):
 class DeformCurvesOnSurface(NodeBuilder):
     """
     Translate and rotate curves based on changes between the object's original and evaluated surface mesh
+
+    Parameters
+    ----------
+    curves : InputGeometry
+        Curves
+
+    Outputs
+    -------
+    curves : GeometrySocket
+        Curves
     """
 
     _bl_idname = "GeometryNodeDeformCurvesOnSurface"
     node: bpy.types.GeometryNodeDeformCurvesOnSurface
+
+    class Inputs(SocketAccessor):
+        curves: Socket
+
+    class Outputs(SocketAccessor):
+        curves: GeometrySocket
+
+    @property
+    def i(self) -> "DeformCurvesOnSurface.Inputs":
+        return DeformCurvesOnSurface.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DeformCurvesOnSurface.Outputs":
+        return DeformCurvesOnSurface.Outputs(self.node.outputs, "output")
 
     def __init__(self, curves: InputGeometry = None):
         super().__init__()
@@ -1114,24 +1205,41 @@ class DeformCurvesOnSurface(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curves(self) -> Socket:
-        """Input socket: Curves"""
-        return self.inputs._get("Curves")
-
-    @property
-    def o_curves(self) -> GeometrySocket:
-        """Output socket: Curves"""
-        return self.outputs._get("Curves")
-
 
 class DeleteGeometry(NodeBuilder):
     """
     Remove selected elements of a geometry
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeDeleteGeometry"
     node: bpy.types.GeometryNodeDeleteGeometry
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "DeleteGeometry.Inputs":
+        return DeleteGeometry.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DeleteGeometry.Outputs":
+        return DeleteGeometry.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1213,21 +1321,6 @@ class DeleteGeometry(NodeBuilder):
         return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
-    @property
     def mode(self) -> Literal["ALL", "EDGE_FACE", "ONLY_FACE"]:
         return self.node.mode
 
@@ -1249,10 +1342,58 @@ class DeleteGeometry(NodeBuilder):
 class DistributePointsOnFaces(NodeBuilder):
     """
     Generate points spread out on the surface of a mesh
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+    distance_min : InputFloat
+        Distance Min
+    density_max : InputFloat
+        Density Max
+    density : InputFloat
+        Density
+    density_factor : InputFloat
+        Density Factor
+    seed : InputInteger
+        Seed
+
+    Outputs
+    -------
+    points : GeometrySocket
+        Points
+    normal : VectorSocket
+        Normal
+    rotation : RotationSocket
+        Rotation
     """
 
     _bl_idname = "GeometryNodeDistributePointsOnFaces"
     node: bpy.types.GeometryNodeDistributePointsOnFaces
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        selection: Socket
+        distance_min: Socket
+        density_max: Socket
+        density: Socket
+        density_factor: Socket
+        seed: Socket
+
+    class Outputs(SocketAccessor):
+        points: GeometrySocket
+        normal: VectorSocket
+        rotation: RotationSocket
+
+    @property
+    def i(self) -> "DistributePointsOnFaces.Inputs":
+        return DistributePointsOnFaces.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DistributePointsOnFaces.Outputs":
+        return DistributePointsOnFaces.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1282,56 +1423,6 @@ class DistributePointsOnFaces(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_distance_min(self) -> Socket:
-        """Input socket: Distance Min"""
-        return self.inputs._get("Distance Min")
-
-    @property
-    def i_density_max(self) -> Socket:
-        """Input socket: Density Max"""
-        return self.inputs._get("Density Max")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_density_factor(self) -> Socket:
-        """Input socket: Density Factor"""
-        return self.inputs._get("Density Factor")
-
-    @property
-    def i_seed(self) -> Socket:
-        """Input socket: Seed"""
-        return self.inputs._get("Seed")
-
-    @property
-    def o_points(self) -> GeometrySocket:
-        """Output socket: Points"""
-        return self.outputs._get("Points")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
-    def o_rotation(self) -> RotationSocket:
-        """Output socket: Rotation"""
-        return self.outputs._get("Rotation")
-
-    @property
     def distribute_method(self) -> Literal["RANDOM", "POISSON"]:
         return self.node.distribute_method
 
@@ -1351,10 +1442,37 @@ class DistributePointsOnFaces(NodeBuilder):
 class DualMesh(NodeBuilder):
     """
     Convert Faces into vertices and vertices into faces
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    keep_boundaries : InputBoolean
+        Keep Boundaries
+
+    Outputs
+    -------
+    dual_mesh : GeometrySocket
+        Dual Mesh
     """
 
     _bl_idname = "GeometryNodeDualMesh"
     node: bpy.types.GeometryNodeDualMesh
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        keep_boundaries: Socket
+
+    class Outputs(SocketAccessor):
+        dual_mesh: GeometrySocket
+
+    @property
+    def i(self) -> "DualMesh.Inputs":
+        return DualMesh.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DualMesh.Outputs":
+        return DualMesh.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1366,29 +1484,47 @@ class DualMesh(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_keep_boundaries(self) -> Socket:
-        """Input socket: Keep Boundaries"""
-        return self.inputs._get("Keep Boundaries")
-
-    @property
-    def o_dual_mesh(self) -> GeometrySocket:
-        """Output socket: Dual Mesh"""
-        return self.outputs._get("Dual Mesh")
-
 
 class DuplicateElements(NodeBuilder):
     """
     Generate an arbitrary number copies of each selected input element
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    amount : InputInteger
+        Amount
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
+    duplicate_index : IntegerSocket
+        Duplicate Index
     """
 
     _bl_idname = "GeometryNodeDuplicateElements"
     node: bpy.types.GeometryNodeDuplicateElements
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        amount: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+        duplicate_index: IntegerSocket
+
+    @property
+    def i(self) -> "DuplicateElements.Inputs":
+        return DuplicateElements.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DuplicateElements.Outputs":
+        return DuplicateElements.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1474,31 +1610,6 @@ class DuplicateElements(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_amount(self) -> Socket:
-        """Input socket: Amount"""
-        return self.inputs._get("Amount")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
-    @property
-    def o_duplicate_index(self) -> IntegerSocket:
-        """Output socket: Duplicate Index"""
-        return self.outputs._get("Duplicate Index")
-
-    @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"]:
         return self.node.domain
 
@@ -1512,10 +1623,40 @@ class DuplicateElements(NodeBuilder):
 class EdgePathsToCurves(NodeBuilder):
     """
     Output curves following paths across mesh edges
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    start_vertices : InputBoolean
+        Start Vertices
+    next_vertex_index : InputInteger
+        Next Vertex Index
+
+    Outputs
+    -------
+    curves : GeometrySocket
+        Curves
     """
 
     _bl_idname = "GeometryNodeEdgePathsToCurves"
     node: bpy.types.GeometryNodeEdgePathsToCurves
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        start_vertices: Socket
+        next_vertex_index: Socket
+
+    class Outputs(SocketAccessor):
+        curves: GeometrySocket
+
+    @property
+    def i(self) -> "EdgePathsToCurves.Inputs":
+        return EdgePathsToCurves.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EdgePathsToCurves.Outputs":
+        return EdgePathsToCurves.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1532,34 +1673,56 @@ class EdgePathsToCurves(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_start_vertices(self) -> Socket:
-        """Input socket: Start Vertices"""
-        return self.inputs._get("Start Vertices")
-
-    @property
-    def i_next_vertex_index(self) -> Socket:
-        """Input socket: Next Vertex Index"""
-        return self.inputs._get("Next Vertex Index")
-
-    @property
-    def o_curves(self) -> GeometrySocket:
-        """Output socket: Curves"""
-        return self.outputs._get("Curves")
-
 
 class ExtrudeMesh(NodeBuilder):
     """
     Generate new vertices, edges, or faces from selected elements and move them based on an offset while keeping them connected by their boundary
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+    offset : InputVector
+        Offset
+    offset_scale : InputFloat
+        Offset Scale
+    individual : InputBoolean
+        Individual
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    top : BooleanSocket
+        Top
+    side : BooleanSocket
+        Side
     """
 
     _bl_idname = "GeometryNodeExtrudeMesh"
     node: bpy.types.GeometryNodeExtrudeMesh
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        selection: Socket
+        offset: Socket
+        offset_scale: Socket
+        individual: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        top: BooleanSocket
+        side: BooleanSocket
+
+    @property
+    def i(self) -> "ExtrudeMesh.Inputs":
+        return ExtrudeMesh.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ExtrudeMesh.Outputs":
+        return ExtrudeMesh.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1636,46 +1799,6 @@ class ExtrudeMesh(NodeBuilder):
         )
 
     @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def i_offset_scale(self) -> Socket:
-        """Input socket: Offset Scale"""
-        return self.inputs._get("Offset Scale")
-
-    @property
-    def i_individual(self) -> Socket:
-        """Input socket: Individual"""
-        return self.inputs._get("Individual")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_top(self) -> BooleanSocket:
-        """Output socket: Top"""
-        return self.outputs._get("Top")
-
-    @property
-    def o_side(self) -> BooleanSocket:
-        """Output socket: Side"""
-        return self.outputs._get("Side")
-
-    @property
     def mode(self) -> Literal["VERTICES", "EDGES", "FACES"]:
         return self.node.mode
 
@@ -1687,10 +1810,40 @@ class ExtrudeMesh(NodeBuilder):
 class FillCurve(NodeBuilder):
     """
     Generate a mesh on the XY plane with faces on the inside of input curves
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    group_id : InputInteger
+        Group ID
+    mode : InputMenu | Literal['Triangles', 'N-gons']
+        Mode
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeFillCurve"
     node: bpy.types.GeometryNodeFillCurve
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        group_id: Socket
+        mode: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "FillCurve.Inputs":
+        return FillCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FillCurve.Outputs":
+        return FillCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1703,34 +1856,50 @@ class FillCurve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_group_id(self) -> Socket:
-        """Input socket: Group ID"""
-        return self.inputs._get("Group ID")
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class FilletCurve(NodeBuilder):
     """
     Round corners by generating circular arcs on each control point
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    radius : InputFloat
+        Radius
+    limit_radius : InputBoolean
+        Limit Radius
+    mode : InputMenu | Literal['Bézier', 'Poly']
+        Mode
+    count : InputInteger
+        Count
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeFilletCurve"
     node: bpy.types.GeometryNodeFilletCurve
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        radius: Socket
+        limit_radius: Socket
+        mode: Socket
+        count: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "FilletCurve.Inputs":
+        return FilletCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FilletCurve.Outputs":
+        return FilletCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1751,44 +1920,41 @@ class FilletCurve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def i_limit_radius(self) -> Socket:
-        """Input socket: Limit Radius"""
-        return self.inputs._get("Limit Radius")
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def i_count(self) -> Socket:
-        """Input socket: Count"""
-        return self.inputs._get("Count")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
 
 class FlipFaces(NodeBuilder):
     """
     Reverse the order of the vertices and edges of selected faces, flipping their normal direction
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeFlipFaces"
     node: bpy.types.GeometryNodeFlipFaces
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "FlipFaces.Inputs":
+        return FlipFaces.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "FlipFaces.Outputs":
+        return FlipFaces.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1800,29 +1966,53 @@ class FlipFaces(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class GeometryProximity(NodeBuilder):
     """
     Compute the closest location on the target geometry
+
+    Parameters
+    ----------
+    target : InputGeometry
+        Geometry
+    group_id : InputInteger
+        Group ID
+    source_position : InputVector
+        Sample Position
+    sample_group_id : InputInteger
+        Sample Group ID
+
+    Outputs
+    -------
+    position : VectorSocket
+        Position
+    distance : FloatSocket
+        Distance
+    is_valid : BooleanSocket
+        Is Valid
     """
 
     _bl_idname = "GeometryNodeProximity"
     node: bpy.types.GeometryNodeProximity
+
+    class Inputs(SocketAccessor):
+        target: Socket
+        group_id: Socket
+        source_position: Socket
+        sample_group_id: Socket
+
+    class Outputs(SocketAccessor):
+        position: VectorSocket
+        distance: FloatSocket
+        is_valid: BooleanSocket
+
+    @property
+    def i(self) -> "GeometryProximity.Inputs":
+        return GeometryProximity.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GeometryProximity.Outputs":
+        return GeometryProximity.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1844,41 +2034,6 @@ class GeometryProximity(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_target(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Target")
-
-    @property
-    def i_group_id(self) -> Socket:
-        """Input socket: Group ID"""
-        return self.inputs._get("Group ID")
-
-    @property
-    def i_source_position(self) -> Socket:
-        """Input socket: Sample Position"""
-        return self.inputs._get("Source Position")
-
-    @property
-    def i_sample_group_id(self) -> Socket:
-        """Input socket: Sample Group ID"""
-        return self.inputs._get("Sample Group ID")
-
-    @property
-    def o_position(self) -> VectorSocket:
-        """Output socket: Position"""
-        return self.outputs._get("Position")
-
-    @property
-    def o_distance(self) -> FloatSocket:
-        """Output socket: Distance"""
-        return self.outputs._get("Distance")
-
-    @property
-    def o_is_valid(self) -> BooleanSocket:
-        """Output socket: Is Valid"""
-        return self.outputs._get("Is Valid")
-
-    @property
     def target_element(self) -> Literal["POINTS", "EDGES", "FACES"]:
         return self.node.target_element
 
@@ -1890,10 +2045,40 @@ class GeometryProximity(NodeBuilder):
 class GreasePencilToCurves(NodeBuilder):
     """
     Convert Grease Pencil layers into curve instances
+
+    Parameters
+    ----------
+    grease_pencil : InputGeometry
+        Grease Pencil
+    selection : InputBoolean
+        Selection
+    layers_as_instances : InputBoolean
+        Layers as Instances
+
+    Outputs
+    -------
+    curves : GeometrySocket
+        Curves
     """
 
     _bl_idname = "GeometryNodeGreasePencilToCurves"
     node: bpy.types.GeometryNodeGreasePencilToCurves
+
+    class Inputs(SocketAccessor):
+        grease_pencil: Socket
+        selection: Socket
+        layers_as_instances: Socket
+
+    class Outputs(SocketAccessor):
+        curves: GeometrySocket
+
+    @property
+    def i(self) -> "GreasePencilToCurves.Inputs":
+        return GreasePencilToCurves.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GreasePencilToCurves.Outputs":
+        return GreasePencilToCurves.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1910,34 +2095,50 @@ class GreasePencilToCurves(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grease_pencil(self) -> Socket:
-        """Input socket: Grease Pencil"""
-        return self.inputs._get("Grease Pencil")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_layers_as_instances(self) -> Socket:
-        """Input socket: Layers as Instances"""
-        return self.inputs._get("Layers as Instances")
-
-    @property
-    def o_curves(self) -> GeometrySocket:
-        """Output socket: Curves"""
-        return self.outputs._get("Curves")
-
 
 class Grid(NodeBuilder):
     """
     Generate a planar mesh on the XY plane
+
+    Parameters
+    ----------
+    size_x : InputFloat
+        Size X
+    size_y : InputFloat
+        Size Y
+    vertices_x : InputInteger
+        Vertices X
+    vertices_y : InputInteger
+        Vertices Y
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    uv_map : VectorSocket
+        UV Map
     """
 
     _bl_idname = "GeometryNodeMeshGrid"
     node: bpy.types.GeometryNodeMeshGrid
+
+    class Inputs(SocketAccessor):
+        size_x: Socket
+        size_y: Socket
+        vertices_x: Socket
+        vertices_y: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        uv_map: VectorSocket
+
+    @property
+    def i(self) -> "Grid.Inputs":
+        return Grid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Grid.Outputs":
+        return Grid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1956,44 +2157,44 @@ class Grid(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_size_x(self) -> Socket:
-        """Input socket: Size X"""
-        return self.inputs._get("Size X")
-
-    @property
-    def i_size_y(self) -> Socket:
-        """Input socket: Size Y"""
-        return self.inputs._get("Size Y")
-
-    @property
-    def i_vertices_x(self) -> Socket:
-        """Input socket: Vertices X"""
-        return self.inputs._get("Vertices X")
-
-    @property
-    def i_vertices_y(self) -> Socket:
-        """Input socket: Vertices Y"""
-        return self.inputs._get("Vertices Y")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_uv_map(self) -> VectorSocket:
-        """Output socket: UV Map"""
-        return self.outputs._get("UV Map")
-
 
 class IcoSphere(NodeBuilder):
     """
     Generate a spherical mesh that consists of equally sized triangles
+
+    Parameters
+    ----------
+    radius : InputFloat
+        Radius
+    subdivisions : InputInteger
+        Subdivisions
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    uv_map : VectorSocket
+        UV Map
     """
 
     _bl_idname = "GeometryNodeMeshIcoSphere"
     node: bpy.types.GeometryNodeMeshIcoSphere
+
+    class Inputs(SocketAccessor):
+        radius: Socket
+        subdivisions: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        uv_map: VectorSocket
+
+    @property
+    def i(self) -> "IcoSphere.Inputs":
+        return IcoSphere.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IcoSphere.Outputs":
+        return IcoSphere.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2005,34 +2206,56 @@ class IcoSphere(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def i_subdivisions(self) -> Socket:
-        """Input socket: Subdivisions"""
-        return self.inputs._get("Subdivisions")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_uv_map(self) -> VectorSocket:
-        """Output socket: UV Map"""
-        return self.outputs._get("UV Map")
-
 
 class InstanceOnPoints(NodeBuilder):
     """
     Generate a reference to geometry at each of the input points, without duplicating its underlying data
+
+    Parameters
+    ----------
+    points : InputGeometry
+        Points
+    selection : InputBoolean
+        Selection
+    instance : InputGeometry
+        Instance
+    pick_instance : InputBoolean
+        Pick Instance
+    instance_index : InputInteger
+        Instance Index
+    rotation : InputRotation
+        Rotation
+    scale : InputVector
+        Scale
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Instances
     """
 
     _bl_idname = "GeometryNodeInstanceOnPoints"
     node: bpy.types.GeometryNodeInstanceOnPoints
+
+    class Inputs(SocketAccessor):
+        points: Socket
+        selection: Socket
+        instance: Socket
+        pick_instance: Socket
+        instance_index: Socket
+        rotation: Socket
+        scale: Socket
+
+    class Outputs(SocketAccessor):
+        instances: GeometrySocket
+
+    @property
+    def i(self) -> "InstanceOnPoints.Inputs":
+        return InstanceOnPoints.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InstanceOnPoints.Outputs":
+        return InstanceOnPoints.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2057,55 +2280,48 @@ class InstanceOnPoints(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_points(self) -> Socket:
-        """Input socket: Points"""
-        return self.inputs._get("Points")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_instance(self) -> Socket:
-        """Input socket: Instance"""
-        return self.inputs._get("Instance")
-
-    @property
-    def i_pick_instance(self) -> Socket:
-        """Input socket: Pick Instance"""
-        return self.inputs._get("Pick Instance")
-
-    @property
-    def i_instance_index(self) -> Socket:
-        """Input socket: Instance Index"""
-        return self.inputs._get("Instance Index")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
-
 
 class InstancesToPoints(NodeBuilder):
     """
         Generate points at the origins of instances.
     Note: Nested instances are not affected by this node
+
+        Parameters
+        ----------
+        instances : InputGeometry
+            Instances
+        selection : InputBoolean
+            Selection
+        position : InputVector
+            Position
+        radius : InputFloat
+            Radius
+
+        Outputs
+        -------
+        points : GeometrySocket
+            Points
     """
 
     _bl_idname = "GeometryNodeInstancesToPoints"
     node: bpy.types.GeometryNodeInstancesToPoints
+
+    class Inputs(SocketAccessor):
+        instances: Socket
+        selection: Socket
+        position: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        points: GeometrySocket
+
+    @property
+    def i(self) -> "InstancesToPoints.Inputs":
+        return InstancesToPoints.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InstancesToPoints.Outputs":
+        return InstancesToPoints.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2124,39 +2340,62 @@ class InstancesToPoints(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_instances(self) -> Socket:
-        """Input socket: Instances"""
-        return self.inputs._get("Instances")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_points(self) -> GeometrySocket:
-        """Output socket: Points"""
-        return self.outputs._get("Points")
-
 
 class InterpolateCurves(NodeBuilder):
     """
     Generate new curves on points by interpolating between existing curves
+
+    Parameters
+    ----------
+    guide_curves : InputGeometry
+        Guide Curves
+    guide_up : InputVector
+        Guide Up
+    guide_group_id : InputInteger
+        Guide Group ID
+    points : InputGeometry
+        Points
+    point_up : InputVector
+        Point Up
+    point_group_id : InputInteger
+        Point Group ID
+    max_neighbors : InputInteger
+        Max Neighbors
+
+    Outputs
+    -------
+    curves : GeometrySocket
+        Curves
+    closest_index : IntegerSocket
+        Closest Index
+    closest_weight : FloatSocket
+        Closest Weight
     """
 
     _bl_idname = "GeometryNodeInterpolateCurves"
     node: bpy.types.GeometryNodeInterpolateCurves
+
+    class Inputs(SocketAccessor):
+        guide_curves: Socket
+        guide_up: Socket
+        guide_group_id: Socket
+        points: Socket
+        point_up: Socket
+        point_group_id: Socket
+        max_neighbors: Socket
+
+    class Outputs(SocketAccessor):
+        curves: GeometrySocket
+        closest_index: IntegerSocket
+        closest_weight: FloatSocket
+
+    @property
+    def i(self) -> "InterpolateCurves.Inputs":
+        return InterpolateCurves.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "InterpolateCurves.Outputs":
+        return InterpolateCurves.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2181,64 +2420,38 @@ class InterpolateCurves(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_guide_curves(self) -> Socket:
-        """Input socket: Guide Curves"""
-        return self.inputs._get("Guide Curves")
-
-    @property
-    def i_guide_up(self) -> Socket:
-        """Input socket: Guide Up"""
-        return self.inputs._get("Guide Up")
-
-    @property
-    def i_guide_group_id(self) -> Socket:
-        """Input socket: Guide Group ID"""
-        return self.inputs._get("Guide Group ID")
-
-    @property
-    def i_points(self) -> Socket:
-        """Input socket: Points"""
-        return self.inputs._get("Points")
-
-    @property
-    def i_point_up(self) -> Socket:
-        """Input socket: Point Up"""
-        return self.inputs._get("Point Up")
-
-    @property
-    def i_point_group_id(self) -> Socket:
-        """Input socket: Point Group ID"""
-        return self.inputs._get("Point Group ID")
-
-    @property
-    def i_max_neighbors(self) -> Socket:
-        """Input socket: Max Neighbors"""
-        return self.inputs._get("Max Neighbors")
-
-    @property
-    def o_curves(self) -> GeometrySocket:
-        """Output socket: Curves"""
-        return self.outputs._get("Curves")
-
-    @property
-    def o_closest_index(self) -> IntegerSocket:
-        """Output socket: Closest Index"""
-        return self.outputs._get("Closest Index")
-
-    @property
-    def o_closest_weight(self) -> FloatSocket:
-        """Output socket: Closest Weight"""
-        return self.outputs._get("Closest Weight")
-
 
 class MaterialSelection(NodeBuilder):
     """
     Provide a selection of faces that use the specified material
+
+    Parameters
+    ----------
+    material : InputMaterial
+        Material
+
+    Outputs
+    -------
+    selection : BooleanSocket
+        Selection
     """
 
     _bl_idname = "GeometryNodeMaterialSelection"
     node: bpy.types.GeometryNodeMaterialSelection
+
+    class Inputs(SocketAccessor):
+        material: Socket
+
+    class Outputs(SocketAccessor):
+        selection: BooleanSocket
+
+    @property
+    def i(self) -> "MaterialSelection.Inputs":
+        return MaterialSelection.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MaterialSelection.Outputs":
+        return MaterialSelection.Outputs(self.node.outputs, "output")
 
     def __init__(self, material: InputMaterial = None):
         super().__init__()
@@ -2246,24 +2459,44 @@ class MaterialSelection(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_material(self) -> Socket:
-        """Input socket: Material"""
-        return self.inputs._get("Material")
-
-    @property
-    def o_selection(self) -> BooleanSocket:
-        """Output socket: Selection"""
-        return self.outputs._get("Selection")
-
 
 class MergeLayers(NodeBuilder):
     """
     Join groups of Grease Pencil layers into one
+
+    Parameters
+    ----------
+    grease_pencil : InputGeometry
+        Grease Pencil
+    selection : InputBoolean
+        Selection
+    group_id : InputInteger
+        Group ID
+
+    Outputs
+    -------
+    grease_pencil : GeometrySocket
+        Grease Pencil
     """
 
     _bl_idname = "GeometryNodeMergeLayers"
     node: bpy.types.GeometryNodeMergeLayers
+
+    class Inputs(SocketAccessor):
+        grease_pencil: Socket
+        selection: Socket
+        group_id: Socket
+
+    class Outputs(SocketAccessor):
+        grease_pencil: GeometrySocket
+
+    @property
+    def i(self) -> "MergeLayers.Inputs":
+        return MergeLayers.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MergeLayers.Outputs":
+        return MergeLayers.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2307,26 +2540,6 @@ class MergeLayers(NodeBuilder):
         )
 
     @property
-    def i_grease_pencil(self) -> Socket:
-        """Input socket: Grease Pencil"""
-        return self.inputs._get("Grease Pencil")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_group_id(self) -> Socket:
-        """Input socket: Group ID"""
-        return self.inputs._get("Group ID")
-
-    @property
-    def o_grease_pencil(self) -> GeometrySocket:
-        """Output socket: Grease Pencil"""
-        return self.outputs._get("Grease Pencil")
-
-    @property
     def mode(self) -> Literal["MERGE_BY_NAME", "MERGE_BY_ID"]:
         return self.node.mode
 
@@ -2338,10 +2551,43 @@ class MergeLayers(NodeBuilder):
 class MergeByDistance(NodeBuilder):
     """
     Merge vertices or points within a given distance
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    mode : InputMenu | Literal['All', 'Connected']
+        Mode
+    distance : InputFloat
+        Distance
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeMergeByDistance"
     node: bpy.types.GeometryNodeMergeByDistance
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        mode: Socket
+        distance: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "MergeByDistance.Inputs":
+        return MergeByDistance.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MergeByDistance.Outputs":
+        return MergeByDistance.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2360,39 +2606,50 @@ class MergeByDistance(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def i_distance(self) -> Socket:
-        """Input socket: Distance"""
-        return self.inputs._get("Distance")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class MeshBoolean(NodeBuilder):
     """
     Cut, subtract, or join multiple mesh inputs
+
+    Parameters
+    ----------
+    mesh_1 : InputGeometry
+        Mesh 1
+    mesh_2 : InputGeometry
+        Mesh 2
+    self_intersection : InputBoolean
+        Self Intersection
+    hole_tolerant : InputBoolean
+        Hole Tolerant
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    intersecting_edges : BooleanSocket
+        Intersecting Edges
     """
 
     _bl_idname = "GeometryNodeMeshBoolean"
     node: bpy.types.GeometryNodeMeshBoolean
+
+    class Inputs(SocketAccessor):
+        mesh_1: Socket
+        mesh_2: Socket
+        self_intersection: Socket
+        hole_tolerant: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        intersecting_edges: BooleanSocket
+
+    @property
+    def i(self) -> "MeshBoolean.Inputs":
+        return MeshBoolean.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshBoolean.Outputs":
+        return MeshBoolean.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2433,36 +2690,6 @@ class MeshBoolean(NodeBuilder):
         return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
 
     @property
-    def i_mesh_1(self) -> Socket:
-        """Input socket: Mesh 1"""
-        return self.inputs._get("Mesh 1")
-
-    @property
-    def i_mesh_2(self) -> Socket:
-        """Input socket: Mesh 2"""
-        return self.inputs._get("Mesh 2")
-
-    @property
-    def i_self_intersection(self) -> Socket:
-        """Input socket: Self Intersection"""
-        return self.inputs._get("Self Intersection")
-
-    @property
-    def i_hole_tolerant(self) -> Socket:
-        """Input socket: Hole Tolerant"""
-        return self.inputs._get("Hole Tolerant")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_intersecting_edges(self) -> BooleanSocket:
-        """Output socket: Intersecting Edges"""
-        return self.outputs._get("Intersecting Edges")
-
-    @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
         return self.node.operation
 
@@ -2482,10 +2709,37 @@ class MeshBoolean(NodeBuilder):
 class MeshCircle(NodeBuilder):
     """
     Generate a circular ring of edges
+
+    Parameters
+    ----------
+    vertices : InputInteger
+        Vertices
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeMeshCircle"
     node: bpy.types.GeometryNodeMeshCircle
+
+    class Inputs(SocketAccessor):
+        vertices: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "MeshCircle.Inputs":
+        return MeshCircle.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshCircle.Outputs":
+        return MeshCircle.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2521,21 +2775,6 @@ class MeshCircle(NodeBuilder):
         return cls(fill_type="TRIANGLE_FAN", vertices=vertices, radius=radius)
 
     @property
-    def i_vertices(self) -> Socket:
-        """Input socket: Vertices"""
-        return self.inputs._get("Vertices")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
     def fill_type(self) -> Literal["NONE", "NGON", "TRIANGLE_FAN"]:
         return self.node.fill_type
 
@@ -2547,10 +2786,43 @@ class MeshCircle(NodeBuilder):
 class MeshLine(NodeBuilder):
     """
     Generate vertices in a line and connect them with edges
+
+    Parameters
+    ----------
+    count : InputInteger
+        Count
+    resolution : InputFloat
+        Resolution
+    start_location : InputVector
+        Start Location
+    offset : InputVector
+        Offset
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeMeshLine"
     node: bpy.types.GeometryNodeMeshLine
+
+    class Inputs(SocketAccessor):
+        count: Socket
+        resolution: Socket
+        start_location: Socket
+        offset: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "MeshLine.Inputs":
+        return MeshLine.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshLine.Outputs":
+        return MeshLine.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2598,31 +2870,6 @@ class MeshLine(NodeBuilder):
         )
 
     @property
-    def i_count(self) -> Socket:
-        """Input socket: Count"""
-        return self.inputs._get("Count")
-
-    @property
-    def i_resolution(self) -> Socket:
-        """Input socket: Resolution"""
-        return self.inputs._get("Resolution")
-
-    @property
-    def i_start_location(self) -> Socket:
-        """Input socket: Start Location"""
-        return self.inputs._get("Start Location")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
     def mode(self) -> Literal["OFFSET", "END_POINTS"]:
         return self.node.mode
 
@@ -2642,10 +2889,37 @@ class MeshLine(NodeBuilder):
 class MeshToCurve(NodeBuilder):
     """
     Generate a curve from a mesh
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeMeshToCurve"
     node: bpy.types.GeometryNodeMeshToCurve
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "MeshToCurve.Inputs":
+        return MeshToCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshToCurve.Outputs":
+        return MeshToCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2674,21 +2948,6 @@ class MeshToCurve(NodeBuilder):
         return cls(mode="FACES", mesh=mesh, selection=selection)
 
     @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
     def mode(self) -> Literal["EDGES", "FACES"]:
         return self.node.mode
 
@@ -2700,10 +2959,43 @@ class MeshToCurve(NodeBuilder):
 class MeshToPoints(NodeBuilder):
     """
     Generate a point cloud from a mesh's vertices
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+    position : InputVector
+        Position
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    points : GeometrySocket
+        Points
     """
 
     _bl_idname = "GeometryNodeMeshToPoints"
     node: bpy.types.GeometryNodeMeshToPoints
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        selection: Socket
+        position: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        points: GeometrySocket
+
+    @property
+    def i(self) -> "MeshToPoints.Inputs":
+        return MeshToPoints.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshToPoints.Outputs":
+        return MeshToPoints.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2793,31 +3085,6 @@ class MeshToPoints(NodeBuilder):
         )
 
     @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_points(self) -> GeometrySocket:
-        """Output socket: Points"""
-        return self.outputs._get("Points")
-
-    @property
     def mode(self) -> Literal["VERTICES", "EDGES", "FACES", "CORNERS"]:
         return self.node.mode
 
@@ -2829,10 +3096,40 @@ class MeshToPoints(NodeBuilder):
 class Points(NodeBuilder):
     """
     Generate a point cloud with positions and radii defined by fields
+
+    Parameters
+    ----------
+    count : InputInteger
+        Count
+    position : InputVector
+        Position
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Points
     """
 
     _bl_idname = "GeometryNodePoints"
     node: bpy.types.GeometryNodePoints
+
+    class Inputs(SocketAccessor):
+        count: Socket
+        position: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "Points.Inputs":
+        return Points.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Points.Outputs":
+        return Points.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2845,34 +3142,44 @@ class Points(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_count(self) -> Socket:
-        """Input socket: Count"""
-        return self.inputs._get("Count")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Points"""
-        return self.outputs._get("Geometry")
-
 
 class PointsToCurves(NodeBuilder):
     """
     Split all points to curve by its group ID and reorder by weight
+
+    Parameters
+    ----------
+    points : InputGeometry
+        Points
+    curve_group_id : InputInteger
+        Curve Group ID
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    curves : GeometrySocket
+        Curves
     """
 
     _bl_idname = "GeometryNodePointsToCurves"
     node: bpy.types.GeometryNodePointsToCurves
+
+    class Inputs(SocketAccessor):
+        points: Socket
+        curve_group_id: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        curves: GeometrySocket
+
+    @property
+    def i(self) -> "PointsToCurves.Inputs":
+        return PointsToCurves.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PointsToCurves.Outputs":
+        return PointsToCurves.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2889,34 +3196,41 @@ class PointsToCurves(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_points(self) -> Socket:
-        """Input socket: Points"""
-        return self.inputs._get("Points")
-
-    @property
-    def i_curve_group_id(self) -> Socket:
-        """Input socket: Curve Group ID"""
-        return self.inputs._get("Curve Group ID")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_curves(self) -> GeometrySocket:
-        """Output socket: Curves"""
-        return self.outputs._get("Curves")
-
 
 class PointsToVertices(NodeBuilder):
     """
     Generate a mesh vertex for each point cloud point
+
+    Parameters
+    ----------
+    points : InputGeometry
+        Points
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodePointsToVertices"
     node: bpy.types.GeometryNodePointsToVertices
+
+    class Inputs(SocketAccessor):
+        points: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "PointsToVertices.Inputs":
+        return PointsToVertices.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PointsToVertices.Outputs":
+        return PointsToVertices.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2928,29 +3242,47 @@ class PointsToVertices(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_points(self) -> Socket:
-        """Input socket: Points"""
-        return self.inputs._get("Points")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class QuadraticBezier(NodeBuilder):
     """
     Generate a poly spline in a parabola shape with control points positions
+
+    Parameters
+    ----------
+    resolution : InputInteger
+        Resolution
+    start : InputVector
+        Start
+    middle : InputVector
+        Middle
+    end : InputVector
+        End
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeCurveQuadraticBezier"
     node: bpy.types.GeometryNodeCurveQuadraticBezier
+
+    class Inputs(SocketAccessor):
+        resolution: Socket
+        start: Socket
+        middle: Socket
+        end: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "QuadraticBezier.Inputs":
+        return QuadraticBezier.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "QuadraticBezier.Outputs":
+        return QuadraticBezier.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -2969,39 +3301,68 @@ class QuadraticBezier(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_resolution(self) -> Socket:
-        """Input socket: Resolution"""
-        return self.inputs._get("Resolution")
-
-    @property
-    def i_start(self) -> Socket:
-        """Input socket: Start"""
-        return self.inputs._get("Start")
-
-    @property
-    def i_middle(self) -> Socket:
-        """Input socket: Middle"""
-        return self.inputs._get("Middle")
-
-    @property
-    def i_end(self) -> Socket:
-        """Input socket: End"""
-        return self.inputs._get("End")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
 
 class Quadrilateral(NodeBuilder):
     """
     Generate a polygon with four points
+
+    Parameters
+    ----------
+    width : InputFloat
+        Width
+    height : InputFloat
+        Height
+    bottom_width : InputFloat
+        Bottom Width
+    top_width : InputFloat
+        Top Width
+    offset : InputFloat
+        Offset
+    bottom_height : InputFloat
+        Bottom Height
+    top_height : InputFloat
+        Top Height
+    point_1 : InputVector
+        Point 1
+    point_2 : InputVector
+        Point 2
+    point_3 : InputVector
+        Point 3
+    point_4 : InputVector
+        Point 4
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeCurvePrimitiveQuadrilateral"
     node: bpy.types.GeometryNodeCurvePrimitiveQuadrilateral
+
+    class Inputs(SocketAccessor):
+        width: Socket
+        height: Socket
+        bottom_width: Socket
+        top_width: Socket
+        offset: Socket
+        bottom_height: Socket
+        top_height: Socket
+        point_1: Socket
+        point_2: Socket
+        point_3: Socket
+        point_4: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "Quadrilateral.Inputs":
+        return Quadrilateral.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Quadrilateral.Outputs":
+        return Quadrilateral.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3099,66 +3460,6 @@ class Quadrilateral(NodeBuilder):
         )
 
     @property
-    def i_width(self) -> Socket:
-        """Input socket: Width"""
-        return self.inputs._get("Width")
-
-    @property
-    def i_height(self) -> Socket:
-        """Input socket: Height"""
-        return self.inputs._get("Height")
-
-    @property
-    def i_bottom_width(self) -> Socket:
-        """Input socket: Bottom Width"""
-        return self.inputs._get("Bottom Width")
-
-    @property
-    def i_top_width(self) -> Socket:
-        """Input socket: Top Width"""
-        return self.inputs._get("Top Width")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def i_bottom_height(self) -> Socket:
-        """Input socket: Bottom Height"""
-        return self.inputs._get("Bottom Height")
-
-    @property
-    def i_top_height(self) -> Socket:
-        """Input socket: Top Height"""
-        return self.inputs._get("Top Height")
-
-    @property
-    def i_point_1(self) -> Socket:
-        """Input socket: Point 1"""
-        return self.inputs._get("Point 1")
-
-    @property
-    def i_point_2(self) -> Socket:
-        """Input socket: Point 2"""
-        return self.inputs._get("Point 2")
-
-    @property
-    def i_point_3(self) -> Socket:
-        """Input socket: Point 3"""
-        return self.inputs._get("Point 3")
-
-    @property
-    def i_point_4(self) -> Socket:
-        """Input socket: Point 4"""
-        return self.inputs._get("Point 4")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
     def mode(
         self,
     ) -> Literal["RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"]:
@@ -3175,10 +3476,61 @@ class Quadrilateral(NodeBuilder):
 class Raycast(NodeBuilder):
     """
     Cast rays from the context geometry onto a target geometry, and retrieve information from each hit point
+
+    Parameters
+    ----------
+    target_geometry : InputGeometry
+        Target Geometry
+    attribute : InputFloat
+        Attribute
+    interpolation : InputMenu | Literal['Interpolated', 'Nearest']
+        Interpolation
+    source_position : InputVector
+        Source Position
+    ray_direction : InputVector
+        Ray Direction
+    ray_length : InputFloat
+        Ray Length
+
+    Outputs
+    -------
+    is_hit : BooleanSocket
+        Is Hit
+    hit_position : VectorSocket
+        Hit Position
+    hit_normal : VectorSocket
+        Hit Normal
+    hit_distance : FloatSocket
+        Hit Distance
+    attribute : FloatSocket
+        Attribute
     """
 
     _bl_idname = "GeometryNodeRaycast"
     node: bpy.types.GeometryNodeRaycast
+
+    class Inputs(SocketAccessor):
+        target_geometry: Socket
+        attribute: Socket
+        interpolation: Socket
+        source_position: Socket
+        ray_direction: Socket
+        ray_length: Socket
+
+    class Outputs(SocketAccessor):
+        is_hit: BooleanSocket
+        hit_position: VectorSocket
+        hit_normal: VectorSocket
+        hit_distance: FloatSocket
+        attribute: FloatSocket
+
+    @property
+    def i(self) -> "Raycast.Inputs":
+        return Raycast.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Raycast.Outputs":
+        return Raycast.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3359,61 +3711,6 @@ class Raycast(NodeBuilder):
         )
 
     @property
-    def i_target_geometry(self) -> Socket:
-        """Input socket: Target Geometry"""
-        return self.inputs._get("Target Geometry")
-
-    @property
-    def i_attribute(self) -> Socket:
-        """Input socket: Attribute"""
-        return self.inputs._get("Attribute")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def i_source_position(self) -> Socket:
-        """Input socket: Source Position"""
-        return self.inputs._get("Source Position")
-
-    @property
-    def i_ray_direction(self) -> Socket:
-        """Input socket: Ray Direction"""
-        return self.inputs._get("Ray Direction")
-
-    @property
-    def i_ray_length(self) -> Socket:
-        """Input socket: Ray Length"""
-        return self.inputs._get("Ray Length")
-
-    @property
-    def o_is_hit(self) -> BooleanSocket:
-        """Output socket: Is Hit"""
-        return self.outputs._get("Is Hit")
-
-    @property
-    def o_hit_position(self) -> VectorSocket:
-        """Output socket: Hit Position"""
-        return self.outputs._get("Hit Position")
-
-    @property
-    def o_hit_normal(self) -> VectorSocket:
-        """Output socket: Hit Normal"""
-        return self.outputs._get("Hit Normal")
-
-    @property
-    def o_hit_distance(self) -> FloatSocket:
-        """Output socket: Hit Distance"""
-        return self.outputs._get("Hit Distance")
-
-    @property
-    def o_attribute(self) -> FloatSocket:
-        """Output socket: Attribute"""
-        return self.outputs._get("Attribute")
-
-    @property
     def data_type(
         self,
     ) -> Literal[
@@ -3446,10 +3743,43 @@ class Raycast(NodeBuilder):
 class RealizeInstances(NodeBuilder):
     """
     Convert instances into real geometry data
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    realize_all : InputBoolean
+        Realize All
+    depth : InputInteger
+        Depth
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeRealizeInstances"
     node: bpy.types.GeometryNodeRealizeInstances
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        realize_all: Socket
+        depth: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "RealizeInstances.Inputs":
+        return RealizeInstances.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RealizeInstances.Outputs":
+        return RealizeInstances.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3468,39 +3798,44 @@ class RealizeInstances(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_realize_all(self) -> Socket:
-        """Input socket: Realize All"""
-        return self.inputs._get("Realize All")
-
-    @property
-    def i_depth(self) -> Socket:
-        """Input socket: Depth"""
-        return self.inputs._get("Depth")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class ReplaceMaterial(NodeBuilder):
     """
     Swap one material with another
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    old : InputMaterial
+        Old
+    new : InputMaterial
+        New
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeReplaceMaterial"
     node: bpy.types.GeometryNodeReplaceMaterial
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        old: Socket
+        new: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "ReplaceMaterial.Inputs":
+        return ReplaceMaterial.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ReplaceMaterial.Outputs":
+        return ReplaceMaterial.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3513,34 +3848,50 @@ class ReplaceMaterial(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_old(self) -> Socket:
-        """Input socket: Old"""
-        return self.inputs._get("Old")
-
-    @property
-    def i_new(self) -> Socket:
-        """Input socket: New"""
-        return self.inputs._get("New")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class ResampleCurve(NodeBuilder):
     """
     Generate a poly spline for each input spline
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+    mode : InputMenu | Literal['Evaluated', 'Count', 'Length']
+        Mode
+    count : InputInteger
+        Count
+    length : InputFloat
+        Length
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeResampleCurve"
     node: bpy.types.GeometryNodeResampleCurve
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        selection: Socket
+        mode: Socket
+        count: Socket
+        length: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "ResampleCurve.Inputs":
+        return ResampleCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ResampleCurve.Outputs":
+        return ResampleCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3564,36 +3915,6 @@ class ResampleCurve(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def i_count(self) -> Socket:
-        """Input socket: Count"""
-        return self.inputs._get("Count")
-
-    @property
-    def i_length(self) -> Socket:
-        """Input socket: Length"""
-        return self.inputs._get("Length")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
     def keep_last_segment(self) -> bool:
         return self.node.keep_last_segment
 
@@ -3605,10 +3926,37 @@ class ResampleCurve(NodeBuilder):
 class ReverseCurve(NodeBuilder):
     """
     Change the direction of curves by swapping their start and end data
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeReverseCurve"
     node: bpy.types.GeometryNodeReverseCurve
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "ReverseCurve.Inputs":
+        return ReverseCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ReverseCurve.Outputs":
+        return ReverseCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3620,29 +3968,50 @@ class ReverseCurve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
 
 class RotateInstances(NodeBuilder):
     """
     Rotate geometry instances in local or global space
+
+    Parameters
+    ----------
+    instances : InputGeometry
+        Instances
+    selection : InputBoolean
+        Selection
+    rotation : InputRotation
+        Rotation
+    pivot_point : InputVector
+        Pivot Point
+    local_space : InputBoolean
+        Local Space
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Instances
     """
 
     _bl_idname = "GeometryNodeRotateInstances"
     node: bpy.types.GeometryNodeRotateInstances
+
+    class Inputs(SocketAccessor):
+        instances: Socket
+        selection: Socket
+        rotation: Socket
+        pivot_point: Socket
+        local_space: Socket
+
+    class Outputs(SocketAccessor):
+        instances: GeometrySocket
+
+    @property
+    def i(self) -> "RotateInstances.Inputs":
+        return RotateInstances.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RotateInstances.Outputs":
+        return RotateInstances.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3663,44 +4032,59 @@ class RotateInstances(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_instances(self) -> Socket:
-        """Input socket: Instances"""
-        return self.inputs._get("Instances")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_pivot_point(self) -> Socket:
-        """Input socket: Pivot Point"""
-        return self.inputs._get("Pivot Point")
-
-    @property
-    def i_local_space(self) -> Socket:
-        """Input socket: Local Space"""
-        return self.inputs._get("Local Space")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
-
 
 class SampleCurve(NodeBuilder):
     """
     Retrieve data from a point on a curve at a certain distance from its start
+
+    Parameters
+    ----------
+    curves : InputGeometry
+        Curves
+    value : InputFloat
+        Value
+    factor : InputFloat
+        Factor
+    length : InputFloat
+        Length
+    curve_index : InputInteger
+        Curve Index
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
+    position : VectorSocket
+        Position
+    tangent : VectorSocket
+        Tangent
+    normal : VectorSocket
+        Normal
     """
 
     _bl_idname = "GeometryNodeSampleCurve"
     node: bpy.types.GeometryNodeSampleCurve
+
+    class Inputs(SocketAccessor):
+        curves: Socket
+        value: Socket
+        factor: Socket
+        length: Socket
+        curve_index: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+        position: VectorSocket
+        tangent: VectorSocket
+        normal: VectorSocket
+
+    @property
+    def i(self) -> "SampleCurve.Inputs":
+        return SampleCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SampleCurve.Outputs":
+        return SampleCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -3889,51 +4273,6 @@ class SampleCurve(NodeBuilder):
         )
 
     @property
-    def i_curves(self) -> Socket:
-        """Input socket: Curves"""
-        return self.inputs._get("Curves")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_factor(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor")
-
-    @property
-    def i_length(self) -> Socket:
-        """Input socket: Length"""
-        return self.inputs._get("Length")
-
-    @property
-    def i_curve_index(self) -> Socket:
-        """Input socket: Curve Index"""
-        return self.inputs._get("Curve Index")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
-    def o_position(self) -> VectorSocket:
-        """Output socket: Position"""
-        return self.outputs._get("Position")
-
-    @property
-    def o_tangent(self) -> VectorSocket:
-        """Output socket: Tangent"""
-        return self.outputs._get("Tangent")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
     def mode(self) -> Literal["FACTOR", "LENGTH"]:
         return self.node.mode
 
@@ -3982,10 +4321,40 @@ class SampleCurve(NodeBuilder):
 class SampleIndex(NodeBuilder):
     """
     Retrieve values from specific geometry elements
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    value : InputFloat
+        Value
+    index : InputInteger
+        Index
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "GeometryNodeSampleIndex"
     node: bpy.types.GeometryNodeSampleIndex
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        value: Socket
+        index: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "SampleIndex.Inputs":
+        return SampleIndex.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SampleIndex.Outputs":
+        return SampleIndex.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -4157,26 +4526,6 @@ class SampleIndex(NodeBuilder):
         return cls(domain="LAYER", geometry=geometry, value=value, index=index)
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_index(self) -> Socket:
-        """Input socket: Index"""
-        return self.inputs._get("Index")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def data_type(
         self,
     ) -> Literal[
@@ -4230,10 +4579,37 @@ class SampleIndex(NodeBuilder):
 class SampleNearest(NodeBuilder):
     """
     Find the element of a geometry closest to a position. Similar to the "Index of Nearest" node
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    sample_position : InputVector
+        Sample Position
+
+    Outputs
+    -------
+    index : IntegerSocket
+        Index
     """
 
     _bl_idname = "GeometryNodeSampleNearest"
     node: bpy.types.GeometryNodeSampleNearest
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        sample_position: Socket
+
+    class Outputs(SocketAccessor):
+        index: IntegerSocket
+
+    @property
+    def i(self) -> "SampleNearest.Inputs":
+        return SampleNearest.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SampleNearest.Outputs":
+        return SampleNearest.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -4276,21 +4652,6 @@ class SampleNearest(NodeBuilder):
         return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_sample_position(self) -> Socket:
-        """Input socket: Sample Position"""
-        return self.inputs._get("Sample Position")
-
-    @property
-    def o_index(self) -> IntegerSocket:
-        """Output socket: Index"""
-        return self.outputs._get("Index")
-
-    @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "CORNER"]:
         return self.node.domain
 
@@ -4302,10 +4663,49 @@ class SampleNearest(NodeBuilder):
 class SampleNearestSurface(NodeBuilder):
     """
     Calculate the interpolated value of a mesh attribute on the closest point of its surface
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    value : InputFloat
+        Value
+    group_id : InputInteger
+        Group ID
+    sample_position : InputVector
+        Sample Position
+    sample_group_id : InputInteger
+        Sample Group ID
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
+    is_valid : BooleanSocket
+        Is Valid
     """
 
     _bl_idname = "GeometryNodeSampleNearestSurface"
     node: bpy.types.GeometryNodeSampleNearestSurface
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        value: Socket
+        group_id: Socket
+        sample_position: Socket
+        sample_group_id: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+        is_valid: BooleanSocket
+
+    @property
+    def i(self) -> "SampleNearestSurface.Inputs":
+        return SampleNearestSurface.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SampleNearestSurface.Outputs":
+        return SampleNearestSurface.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -4470,41 +4870,6 @@ class SampleNearestSurface(NodeBuilder):
         )
 
     @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_group_id(self) -> Socket:
-        """Input socket: Group ID"""
-        return self.inputs._get("Group ID")
-
-    @property
-    def i_sample_position(self) -> Socket:
-        """Input socket: Sample Position"""
-        return self.inputs._get("Sample Position")
-
-    @property
-    def i_sample_group_id(self) -> Socket:
-        """Input socket: Sample Group ID"""
-        return self.inputs._get("Sample Group ID")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
-    def o_is_valid(self) -> BooleanSocket:
-        """Output socket: Is Valid"""
-        return self.outputs._get("Is Valid")
-
-    @property
     def data_type(
         self,
     ) -> Literal[
@@ -4537,10 +4902,46 @@ class SampleNearestSurface(NodeBuilder):
 class SampleUVSurface(NodeBuilder):
     """
     Calculate the interpolated values of a mesh attribute at a UV coordinate
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    value : InputFloat
+        Value
+    source_uv_map : InputVector
+        UV Map
+    sample_uv : InputVector
+        Sample UV
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
+    is_valid : BooleanSocket
+        Is Valid
     """
 
     _bl_idname = "GeometryNodeSampleUVSurface"
     node: bpy.types.GeometryNodeSampleUVSurface
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        value: Socket
+        source_uv_map: Socket
+        sample_uv: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+        is_valid: BooleanSocket
+
+    @property
+    def i(self) -> "SampleUVSurface.Inputs":
+        return SampleUVSurface.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SampleUVSurface.Outputs":
+        return SampleUVSurface.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -4689,36 +5090,6 @@ class SampleUVSurface(NodeBuilder):
         )
 
     @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_source_uv_map(self) -> Socket:
-        """Input socket: UV Map"""
-        return self.inputs._get("Source UV Map")
-
-    @property
-    def i_sample_uv(self) -> Socket:
-        """Input socket: Sample UV"""
-        return self.inputs._get("Sample UV")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
-    def o_is_valid(self) -> BooleanSocket:
-        """Output socket: Is Valid"""
-        return self.outputs._get("Is Valid")
-
-    @property
     def data_type(
         self,
     ) -> Literal[
@@ -4751,10 +5122,49 @@ class SampleUVSurface(NodeBuilder):
 class ScaleElements(NodeBuilder):
     """
     Scale groups of connected edges and faces
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    scale : InputFloat
+        Scale
+    center : InputVector
+        Center
+    scale_mode : InputMenu | Literal['Uniform', 'Single Axis']
+        Scale Mode
+    axis : InputVector
+        Axis
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeScaleElements"
     node: bpy.types.GeometryNodeScaleElements
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        scale: Socket
+        center: Socket
+        scale_mode: Socket
+        axis: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "ScaleElements.Inputs":
+        return ScaleElements.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ScaleElements.Outputs":
+        return ScaleElements.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -4818,41 +5228,6 @@ class ScaleElements(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_center(self) -> Socket:
-        """Input socket: Center"""
-        return self.inputs._get("Center")
-
-    @property
-    def i_scale_mode(self) -> Socket:
-        """Input socket: Scale Mode"""
-        return self.inputs._get("Scale Mode")
-
-    @property
-    def i_axis(self) -> Socket:
-        """Input socket: Axis"""
-        return self.inputs._get("Axis")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
-    @property
     def domain(self) -> Literal["FACE", "EDGE"]:
         return self.node.domain
 
@@ -4864,10 +5239,46 @@ class ScaleElements(NodeBuilder):
 class ScaleInstances(NodeBuilder):
     """
     Scale geometry instances in local or global space
+
+    Parameters
+    ----------
+    instances : InputGeometry
+        Instances
+    selection : InputBoolean
+        Selection
+    scale : InputVector
+        Scale
+    center : InputVector
+        Center
+    local_space : InputBoolean
+        Local Space
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Instances
     """
 
     _bl_idname = "GeometryNodeScaleInstances"
     node: bpy.types.GeometryNodeScaleInstances
+
+    class Inputs(SocketAccessor):
+        instances: Socket
+        selection: Socket
+        scale: Socket
+        center: Socket
+        local_space: Socket
+
+    class Outputs(SocketAccessor):
+        instances: GeometrySocket
+
+    @property
+    def i(self) -> "ScaleInstances.Inputs":
+        return ScaleInstances.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ScaleInstances.Outputs":
+        return ScaleInstances.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -4888,44 +5299,53 @@ class ScaleInstances(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_instances(self) -> Socket:
-        """Input socket: Instances"""
-        return self.inputs._get("Instances")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_center(self) -> Socket:
-        """Input socket: Center"""
-        return self.inputs._get("Center")
-
-    @property
-    def i_local_space(self) -> Socket:
-        """Input socket: Local Space"""
-        return self.inputs._get("Local Space")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
-
 
 class SeparateComponents(NodeBuilder):
     """
     Split a geometry into a separate output for each type of data in the geometry
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    curve : GeometrySocket
+        Curve
+    grease_pencil : GeometrySocket
+        Grease Pencil
+    point_cloud : GeometrySocket
+        Point Cloud
+    volume : GeometrySocket
+        Volume
+    instances : GeometrySocket
+        Instances
     """
 
     _bl_idname = "GeometryNodeSeparateComponents"
     node: bpy.types.GeometryNodeSeparateComponents
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        curve: GeometrySocket
+        grease_pencil: GeometrySocket
+        point_cloud: GeometrySocket
+        volume: GeometrySocket
+        instances: GeometrySocket
+
+    @property
+    def i(self) -> "SeparateComponents.Inputs":
+        return SeparateComponents.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateComponents.Outputs":
+        return SeparateComponents.Outputs(self.node.outputs, "output")
 
     def __init__(self, geometry: InputGeometry = None):
         super().__init__()
@@ -4933,49 +5353,44 @@ class SeparateComponents(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
-    def o_grease_pencil(self) -> GeometrySocket:
-        """Output socket: Grease Pencil"""
-        return self.outputs._get("Grease Pencil")
-
-    @property
-    def o_point_cloud(self) -> GeometrySocket:
-        """Output socket: Point Cloud"""
-        return self.outputs._get("Point Cloud")
-
-    @property
-    def o_volume(self) -> GeometrySocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
-
 
 class SeparateGeometry(NodeBuilder):
     """
     Split a geometry into two geometry outputs based on a selection
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    selection : GeometrySocket
+        Selection
+    inverted : GeometrySocket
+        Inverted
     """
 
     _bl_idname = "GeometryNodeSeparateGeometry"
     node: bpy.types.GeometryNodeSeparateGeometry
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        selection: GeometrySocket
+        inverted: GeometrySocket
+
+    @property
+    def i(self) -> "SeparateGeometry.Inputs":
+        return SeparateGeometry.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateGeometry.Outputs":
+        return SeparateGeometry.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5034,26 +5449,6 @@ class SeparateGeometry(NodeBuilder):
         return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_selection(self) -> GeometrySocket:
-        """Output socket: Selection"""
-        return self.outputs._get("Selection")
-
-    @property
-    def o_inverted(self) -> GeometrySocket:
-        """Output socket: Inverted"""
-        return self.outputs._get("Inverted")
-
-    @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]:
         return self.node.domain
 
@@ -5067,10 +5462,43 @@ class SeparateGeometry(NodeBuilder):
 class SetCurveNormal(NodeBuilder):
     """
     Set the evaluation mode for curve normals
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+    mode : InputMenu | Literal['Minimum Twist', 'Z Up', 'Free']
+        Mode
+    normal : InputVector
+        Normal
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeSetCurveNormal"
     node: bpy.types.GeometryNodeSetCurveNormal
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        selection: Socket
+        mode: Socket
+        normal: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "SetCurveNormal.Inputs":
+        return SetCurveNormal.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetCurveNormal.Outputs":
+        return SetCurveNormal.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5089,39 +5517,44 @@ class SetCurveNormal(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
 
 class SetCurveRadius(NodeBuilder):
     """
     Set the radius of the curve at each control point
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeSetCurveRadius"
     node: bpy.types.GeometryNodeSetCurveRadius
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        selection: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "SetCurveRadius.Inputs":
+        return SetCurveRadius.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetCurveRadius.Outputs":
+        return SetCurveRadius.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5134,34 +5567,44 @@ class SetCurveRadius(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
 
 class SetCurveTilt(NodeBuilder):
     """
     Set the tilt angle at each curve control point
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+    tilt : InputFloat
+        Tilt
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeSetCurveTilt"
     node: bpy.types.GeometryNodeSetCurveTilt
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        selection: Socket
+        tilt: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "SetCurveTilt.Inputs":
+        return SetCurveTilt.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetCurveTilt.Outputs":
+        return SetCurveTilt.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5174,34 +5617,44 @@ class SetCurveTilt(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_tilt(self) -> Socket:
-        """Input socket: Tilt"""
-        return self.inputs._get("Tilt")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
 
 class SetFaceSet(NodeBuilder):
     """
     Set sculpt face set values for faces
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+    face_set : InputInteger
+        Face Set
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeToolSetFaceSet"
     node: bpy.types.GeometryNodeToolSetFaceSet
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        selection: Socket
+        face_set: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "SetFaceSet.Inputs":
+        return SetFaceSet.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetFaceSet.Outputs":
+        return SetFaceSet.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5214,34 +5667,41 @@ class SetFaceSet(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_face_set(self) -> Socket:
-        """Input socket: Face Set"""
-        return self.inputs._get("Face Set")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class SetGeometryName(NodeBuilder):
     """
     Set the name of a geometry for easier debugging
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    name : InputString
+        Name
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeSetGeometryName"
     node: bpy.types.GeometryNodeSetGeometryName
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        name: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetGeometryName.Inputs":
+        return SetGeometryName.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetGeometryName.Outputs":
+        return SetGeometryName.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5253,29 +5713,47 @@ class SetGeometryName(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_name(self) -> Socket:
-        """Input socket: Name"""
-        return self.inputs._get("Name")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class SetGreasePencilColor(NodeBuilder):
     """
     Set color and opacity attributes on Grease Pencil geometry
+
+    Parameters
+    ----------
+    grease_pencil : InputGeometry
+        Grease Pencil
+    selection : InputBoolean
+        Selection
+    color : InputColor
+        Color
+    opacity : InputFloat
+        Opacity
+
+    Outputs
+    -------
+    grease_pencil : GeometrySocket
+        Grease Pencil
     """
 
     _bl_idname = "GeometryNodeSetGreasePencilColor"
     node: bpy.types.GeometryNodeSetGreasePencilColor
+
+    class Inputs(SocketAccessor):
+        grease_pencil: Socket
+        selection: Socket
+        color: Socket
+        opacity: Socket
+
+    class Outputs(SocketAccessor):
+        grease_pencil: GeometrySocket
+
+    @property
+    def i(self) -> "SetGreasePencilColor.Inputs":
+        return SetGreasePencilColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetGreasePencilColor.Outputs":
+        return SetGreasePencilColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5331,31 +5809,6 @@ class SetGreasePencilColor(NodeBuilder):
         )
 
     @property
-    def i_grease_pencil(self) -> Socket:
-        """Input socket: Grease Pencil"""
-        return self.inputs._get("Grease Pencil")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_opacity(self) -> Socket:
-        """Input socket: Opacity"""
-        return self.inputs._get("Opacity")
-
-    @property
-    def o_grease_pencil(self) -> GeometrySocket:
-        """Output socket: Grease Pencil"""
-        return self.outputs._get("Grease Pencil")
-
-    @property
     def mode(self) -> Literal["STROKE", "FILL"]:
         return self.node.mode
 
@@ -5367,10 +5820,34 @@ class SetGreasePencilColor(NodeBuilder):
 class SetGreasePencilDepth(NodeBuilder):
     """
     Set the Grease Pencil depth order to use
+
+    Parameters
+    ----------
+    grease_pencil : InputGeometry
+        Grease Pencil
+
+    Outputs
+    -------
+    grease_pencil : GeometrySocket
+        Grease Pencil
     """
 
     _bl_idname = "GeometryNodeSetGreasePencilDepth"
     node: bpy.types.GeometryNodeSetGreasePencilDepth
+
+    class Inputs(SocketAccessor):
+        grease_pencil: Socket
+
+    class Outputs(SocketAccessor):
+        grease_pencil: GeometrySocket
+
+    @property
+    def i(self) -> "SetGreasePencilDepth.Inputs":
+        return SetGreasePencilDepth.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetGreasePencilDepth.Outputs":
+        return SetGreasePencilDepth.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5384,16 +5861,6 @@ class SetGreasePencilDepth(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_grease_pencil(self) -> Socket:
-        """Input socket: Grease Pencil"""
-        return self.inputs._get("Grease Pencil")
-
-    @property
-    def o_grease_pencil(self) -> GeometrySocket:
-        """Output socket: Grease Pencil"""
-        return self.outputs._get("Grease Pencil")
-
-    @property
     def depth_order(self) -> Literal["2D", "3D"]:
         return self.node.depth_order
 
@@ -5405,10 +5872,40 @@ class SetGreasePencilDepth(NodeBuilder):
 class SetGreasePencilSoftness(NodeBuilder):
     """
     Set softness attribute on Grease Pencil geometry
+
+    Parameters
+    ----------
+    grease_pencil : InputGeometry
+        Grease Pencil
+    selection : InputBoolean
+        Selection
+    softness : InputFloat
+        Softness
+
+    Outputs
+    -------
+    grease_pencil : GeometrySocket
+        Grease Pencil
     """
 
     _bl_idname = "GeometryNodeSetGreasePencilSoftness"
     node: bpy.types.GeometryNodeSetGreasePencilSoftness
+
+    class Inputs(SocketAccessor):
+        grease_pencil: Socket
+        selection: Socket
+        softness: Socket
+
+    class Outputs(SocketAccessor):
+        grease_pencil: GeometrySocket
+
+    @property
+    def i(self) -> "SetGreasePencilSoftness.Inputs":
+        return SetGreasePencilSoftness.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetGreasePencilSoftness.Outputs":
+        return SetGreasePencilSoftness.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5425,34 +5922,47 @@ class SetGreasePencilSoftness(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grease_pencil(self) -> Socket:
-        """Input socket: Grease Pencil"""
-        return self.inputs._get("Grease Pencil")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_softness(self) -> Socket:
-        """Input socket: Softness"""
-        return self.inputs._get("Softness")
-
-    @property
-    def o_grease_pencil(self) -> GeometrySocket:
-        """Output socket: Grease Pencil"""
-        return self.outputs._get("Grease Pencil")
-
 
 class SetHandlePositions(NodeBuilder):
     """
     Set the positions for the handles of Bézier curves
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+    position : InputVector
+        Position
+    offset : InputVector
+        Offset
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeSetCurveHandlePositions"
     node: bpy.types.GeometryNodeSetCurveHandlePositions
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        selection: Socket
+        position: Socket
+        offset: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "SetHandlePositions.Inputs":
+        return SetHandlePositions.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetHandlePositions.Outputs":
+        return SetHandlePositions.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5508,31 +6018,6 @@ class SetHandlePositions(NodeBuilder):
         )
 
     @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
     def mode(self) -> Literal["LEFT", "RIGHT"]:
         return self.node.mode
 
@@ -5544,10 +6029,40 @@ class SetHandlePositions(NodeBuilder):
 class SetID(NodeBuilder):
     """
     Set the id attribute on the input geometry, mainly used internally for randomizing
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    id : InputInteger
+        ID
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeSetID"
     node: bpy.types.GeometryNodeSetID
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        id: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetID.Inputs":
+        return SetID.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetID.Outputs":
+        return SetID.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5560,34 +6075,44 @@ class SetID(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_id(self) -> Socket:
-        """Input socket: ID"""
-        return self.inputs._get("ID")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class SetInstanceTransform(NodeBuilder):
     """
     Set the transformation matrix of every instance
+
+    Parameters
+    ----------
+    instances : InputGeometry
+        Instances
+    selection : InputBoolean
+        Selection
+    transform : InputMatrix
+        Transform
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Instances
     """
 
     _bl_idname = "GeometryNodeSetInstanceTransform"
     node: bpy.types.GeometryNodeSetInstanceTransform
+
+    class Inputs(SocketAccessor):
+        instances: Socket
+        selection: Socket
+        transform: Socket
+
+    class Outputs(SocketAccessor):
+        instances: GeometrySocket
+
+    @property
+    def i(self) -> "SetInstanceTransform.Inputs":
+        return SetInstanceTransform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetInstanceTransform.Outputs":
+        return SetInstanceTransform.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5604,34 +6129,44 @@ class SetInstanceTransform(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_instances(self) -> Socket:
-        """Input socket: Instances"""
-        return self.inputs._get("Instances")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_transform(self) -> Socket:
-        """Input socket: Transform"""
-        return self.inputs._get("Transform")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
-
 
 class SetMaterial(NodeBuilder):
     """
     Assign a material to geometry elements
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    material : InputMaterial
+        Material
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeSetMaterial"
     node: bpy.types.GeometryNodeSetMaterial
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        material: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetMaterial.Inputs":
+        return SetMaterial.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetMaterial.Outputs":
+        return SetMaterial.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5644,34 +6179,44 @@ class SetMaterial(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_material(self) -> Socket:
-        """Input socket: Material"""
-        return self.inputs._get("Material")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class SetMaterialIndex(NodeBuilder):
     """
     Set the material index for each selected geometry element
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    material_index : InputInteger
+        Material Index
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeSetMaterialIndex"
     node: bpy.types.GeometryNodeSetMaterialIndex
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        material_index: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetMaterialIndex.Inputs":
+        return SetMaterialIndex.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetMaterialIndex.Outputs":
+        return SetMaterialIndex.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5688,34 +6233,50 @@ class SetMaterialIndex(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_material_index(self) -> Socket:
-        """Input socket: Material Index"""
-        return self.inputs._get("Material Index")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class SetMeshNormal(NodeBuilder):
     """
     Store a normal vector for each mesh element
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    remove_custom : InputBoolean
+        Remove Custom
+    edge_sharpness : InputBoolean
+        Edge Sharpness
+    face_sharpness : InputBoolean
+        Face Sharpness
+    custom_normal : InputVector
+        Custom Normal
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeSetMeshNormal"
     node: bpy.types.GeometryNodeSetMeshNormal
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        remove_custom: Socket
+        edge_sharpness: Socket
+        face_sharpness: Socket
+        custom_normal: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "SetMeshNormal.Inputs":
+        return SetMeshNormal.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetMeshNormal.Outputs":
+        return SetMeshNormal.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5825,31 +6386,6 @@ class SetMeshNormal(NodeBuilder):
         )
 
     @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_remove_custom(self) -> Socket:
-        """Input socket: Remove Custom"""
-        return self.inputs._get("Remove Custom")
-
-    @property
-    def i_edge_sharpness(self) -> Socket:
-        """Input socket: Edge Sharpness"""
-        return self.inputs._get("Edge Sharpness")
-
-    @property
-    def i_face_sharpness(self) -> Socket:
-        """Input socket: Face Sharpness"""
-        return self.inputs._get("Face Sharpness")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
     def mode(self) -> Literal["SHARPNESS", "FREE", "TANGENT_SPACE"]:
         return self.node.mode
 
@@ -5869,10 +6405,40 @@ class SetMeshNormal(NodeBuilder):
 class SetPointRadius(NodeBuilder):
     """
     Set the display size of point cloud points
+
+    Parameters
+    ----------
+    points : InputGeometry
+        Points
+    selection : InputBoolean
+        Selection
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    points : GeometrySocket
+        Points
     """
 
     _bl_idname = "GeometryNodeSetPointRadius"
     node: bpy.types.GeometryNodeSetPointRadius
+
+    class Inputs(SocketAccessor):
+        points: Socket
+        selection: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        points: GeometrySocket
+
+    @property
+    def i(self) -> "SetPointRadius.Inputs":
+        return SetPointRadius.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetPointRadius.Outputs":
+        return SetPointRadius.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5885,34 +6451,47 @@ class SetPointRadius(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_points(self) -> Socket:
-        """Input socket: Points"""
-        return self.inputs._get("Points")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_points(self) -> GeometrySocket:
-        """Output socket: Points"""
-        return self.outputs._get("Points")
-
 
 class SetPosition(NodeBuilder):
     """
     Set the location of each point
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    position : InputVector
+        Position
+    offset : InputVector
+        Offset
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeSetPosition"
     node: bpy.types.GeometryNodeSetPosition
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        position: Socket
+        offset: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetPosition.Inputs":
+        return SetPosition.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetPosition.Outputs":
+        return SetPosition.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -5931,39 +6510,41 @@ class SetPosition(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class SetSelection(NodeBuilder):
     """
     Set selection of the edited geometry, for tool execution
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeToolSetSelection"
     node: bpy.types.GeometryNodeToolSetSelection
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetSelection.Inputs":
+        return SetSelection.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetSelection.Outputs":
+        return SetSelection.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6022,21 +6603,6 @@ class SetSelection(NodeBuilder):
         return cls(selection_type="FLOAT", geometry=geometry, selection=selection)
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
-    @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "CURVE"]:
         return self.node.domain
 
@@ -6056,10 +6622,40 @@ class SetSelection(NodeBuilder):
 class SetShadeSmooth(NodeBuilder):
     """
     Control the smoothness of mesh normals around each face by changing the "shade smooth" attribute
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+    shade_smooth : InputBoolean
+        Shade Smooth
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeSetShadeSmooth"
     node: bpy.types.GeometryNodeSetShadeSmooth
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        shade_smooth: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetShadeSmooth.Inputs":
+        return SetShadeSmooth.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetShadeSmooth.Outputs":
+        return SetShadeSmooth.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6109,26 +6705,6 @@ class SetShadeSmooth(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_shade_smooth(self) -> Socket:
-        """Input socket: Shade Smooth"""
-        return self.inputs._get("Shade Smooth")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Geometry")
-
-    @property
     def domain(self) -> Literal["EDGE", "FACE"]:
         return self.node.domain
 
@@ -6140,10 +6716,40 @@ class SetShadeSmooth(NodeBuilder):
 class SetSplineCyclic(NodeBuilder):
     """
     Control whether each spline loops back on itself by changing the "cyclic" attribute
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+    cyclic : InputBoolean
+        Cyclic
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeSetSplineCyclic"
     node: bpy.types.GeometryNodeSetSplineCyclic
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        cyclic: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetSplineCyclic.Inputs":
+        return SetSplineCyclic.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetSplineCyclic.Outputs":
+        return SetSplineCyclic.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6156,34 +6762,44 @@ class SetSplineCyclic(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_cyclic(self) -> Socket:
-        """Input socket: Cyclic"""
-        return self.inputs._get("Cyclic")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Geometry")
-
 
 class SetSplineResolution(NodeBuilder):
     """
     Control how many evaluated points should be generated on every curve segment
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+    resolution : InputInteger
+        Resolution
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeSetSplineResolution"
     node: bpy.types.GeometryNodeSetSplineResolution
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        resolution: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SetSplineResolution.Inputs":
+        return SetSplineResolution.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetSplineResolution.Outputs":
+        return SetSplineResolution.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6200,34 +6816,41 @@ class SetSplineResolution(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_resolution(self) -> Socket:
-        """Input socket: Resolution"""
-        return self.inputs._get("Resolution")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Geometry")
-
 
 class SetSplineType(NodeBuilder):
     """
     Change the type of curves
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeCurveSplineType"
     node: bpy.types.GeometryNodeCurveSplineType
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "SetSplineType.Inputs":
+        return SetSplineType.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetSplineType.Outputs":
+        return SetSplineType.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6270,21 +6893,6 @@ class SetSplineType(NodeBuilder):
         return cls(spline_type="NURBS", curve=curve, selection=selection)
 
     @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
     def spline_type(self) -> Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"]:
         return self.node.spline_type
 
@@ -6296,10 +6904,43 @@ class SetSplineType(NodeBuilder):
 class SortElements(NodeBuilder):
     """
     Rearrange geometry elements, changing their indices
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    group_id : InputInteger
+        Group ID
+    sort_weight : InputFloat
+        Sort Weight
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeSortElements"
     node: bpy.types.GeometryNodeSortElements
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        group_id: Socket
+        sort_weight: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "SortElements.Inputs":
+        return SortElements.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SortElements.Outputs":
+        return SortElements.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6406,31 +7047,6 @@ class SortElements(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_group_id(self) -> Socket:
-        """Input socket: Group ID"""
-        return self.inputs._get("Group ID")
-
-    @property
-    def i_sort_weight(self) -> Socket:
-        """Input socket: Sort Weight"""
-        return self.inputs._get("Sort Weight")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
-    @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE"]:
         return self.node.domain
 
@@ -6442,10 +7058,49 @@ class SortElements(NodeBuilder):
 class Spiral(NodeBuilder):
     """
     Generate a poly spline in a spiral shape
+
+    Parameters
+    ----------
+    resolution : InputInteger
+        Resolution
+    rotations : InputFloat
+        Rotations
+    start_radius : InputFloat
+        Start Radius
+    end_radius : InputFloat
+        End Radius
+    height : InputFloat
+        Height
+    reverse : InputBoolean
+        Reverse
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeCurveSpiral"
     node: bpy.types.GeometryNodeCurveSpiral
+
+    class Inputs(SocketAccessor):
+        resolution: Socket
+        rotations: Socket
+        start_radius: Socket
+        end_radius: Socket
+        height: Socket
+        reverse: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "Spiral.Inputs":
+        return Spiral.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Spiral.Outputs":
+        return Spiral.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6468,49 +7123,41 @@ class Spiral(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_resolution(self) -> Socket:
-        """Input socket: Resolution"""
-        return self.inputs._get("Resolution")
-
-    @property
-    def i_rotations(self) -> Socket:
-        """Input socket: Rotations"""
-        return self.inputs._get("Rotations")
-
-    @property
-    def i_start_radius(self) -> Socket:
-        """Input socket: Start Radius"""
-        return self.inputs._get("Start Radius")
-
-    @property
-    def i_end_radius(self) -> Socket:
-        """Input socket: End Radius"""
-        return self.inputs._get("End Radius")
-
-    @property
-    def i_height(self) -> Socket:
-        """Input socket: Height"""
-        return self.inputs._get("Height")
-
-    @property
-    def i_reverse(self) -> Socket:
-        """Input socket: Reverse"""
-        return self.inputs._get("Reverse")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
 
 class SplitEdges(NodeBuilder):
     """
     Duplicate mesh edges and break connections with the surrounding faces
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeSplitEdges"
     node: bpy.types.GeometryNodeSplitEdges
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        selection: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "SplitEdges.Inputs":
+        return SplitEdges.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SplitEdges.Outputs":
+        return SplitEdges.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6522,29 +7169,47 @@ class SplitEdges(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class SplitToInstances(NodeBuilder):
     """
     Create separate geometries containing the elements from the same group
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    group_id : InputInteger
+        Group ID
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Instances
+    group_id : IntegerSocket
+        Group ID
     """
 
     _bl_idname = "GeometryNodeSplitToInstances"
     node: bpy.types.GeometryNodeSplitToInstances
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        selection: Socket
+        group_id: Socket
+
+    class Outputs(SocketAccessor):
+        instances: GeometrySocket
+        group_id: IntegerSocket
+
+    @property
+    def i(self) -> "SplitToInstances.Inputs":
+        return SplitToInstances.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SplitToInstances.Outputs":
+        return SplitToInstances.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6634,31 +7299,6 @@ class SplitToInstances(NodeBuilder):
         )
 
     @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_group_id(self) -> Socket:
-        """Input socket: Group ID"""
-        return self.inputs._get("Group ID")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
-
-    @property
-    def o_group_id(self) -> IntegerSocket:
-        """Output socket: Group ID"""
-        return self.outputs._get("Group ID")
-
-    @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]:
         return self.node.domain
 
@@ -6672,10 +7312,46 @@ class SplitToInstances(NodeBuilder):
 class Star(NodeBuilder):
     """
     Generate a poly spline in a star pattern by connecting alternating points of two circles
+
+    Parameters
+    ----------
+    points : InputInteger
+        Points
+    inner_radius : InputFloat
+        Inner Radius
+    outer_radius : InputFloat
+        Outer Radius
+    twist : InputFloat
+        Twist
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
+    outer_points : BooleanSocket
+        Outer Points
     """
 
     _bl_idname = "GeometryNodeCurveStar"
     node: bpy.types.GeometryNodeCurveStar
+
+    class Inputs(SocketAccessor):
+        points: Socket
+        inner_radius: Socket
+        outer_radius: Socket
+        twist: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+        outer_points: BooleanSocket
+
+    @property
+    def i(self) -> "Star.Inputs":
+        return Star.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Star.Outputs":
+        return Star.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6694,44 +7370,65 @@ class Star(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_points(self) -> Socket:
-        """Input socket: Points"""
-        return self.inputs._get("Points")
-
-    @property
-    def i_inner_radius(self) -> Socket:
-        """Input socket: Inner Radius"""
-        return self.inputs._get("Inner Radius")
-
-    @property
-    def i_outer_radius(self) -> Socket:
-        """Input socket: Outer Radius"""
-        return self.inputs._get("Outer Radius")
-
-    @property
-    def i_twist(self) -> Socket:
-        """Input socket: Twist"""
-        return self.inputs._get("Twist")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
-    def o_outer_points(self) -> BooleanSocket:
-        """Output socket: Outer Points"""
-        return self.outputs._get("Outer Points")
-
 
 class StringToCurves(NodeBuilder):
     """
     Generate a paragraph of text with a specific font, using a curve instance to store each character
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    size : InputFloat
+        Size
+    character_spacing : InputFloat
+        Character Spacing
+    word_spacing : InputFloat
+        Word Spacing
+    line_spacing : InputFloat
+        Line Spacing
+    text_box_width : InputFloat
+        Text Box Width
+    text_box_height : InputFloat
+        Text Box Height
+
+    Outputs
+    -------
+    curve_instances : GeometrySocket
+        Curve Instances
+    remainder : StringSocket
+        Remainder
+    line : IntegerSocket
+        Line
+    pivot_point : VectorSocket
+        Pivot Point
     """
 
     _bl_idname = "GeometryNodeStringToCurves"
     node: bpy.types.GeometryNodeStringToCurves
+
+    class Inputs(SocketAccessor):
+        string: Socket
+        size: Socket
+        character_spacing: Socket
+        word_spacing: Socket
+        line_spacing: Socket
+        text_box_width: Socket
+        text_box_height: Socket
+
+    class Outputs(SocketAccessor):
+        curve_instances: GeometrySocket
+        remainder: StringSocket
+        line: IntegerSocket
+        pivot_point: VectorSocket
+
+    @property
+    def i(self) -> "StringToCurves.Inputs":
+        return StringToCurves.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "StringToCurves.Outputs":
+        return StringToCurves.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6773,61 +7470,6 @@ class StringToCurves(NodeBuilder):
         self.align_y = align_y
         self.pivot_mode = pivot_mode
         self._establish_links(**key_args)
-
-    @property
-    def i_string(self) -> Socket:
-        """Input socket: String"""
-        return self.inputs._get("String")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_character_spacing(self) -> Socket:
-        """Input socket: Character Spacing"""
-        return self.inputs._get("Character Spacing")
-
-    @property
-    def i_word_spacing(self) -> Socket:
-        """Input socket: Word Spacing"""
-        return self.inputs._get("Word Spacing")
-
-    @property
-    def i_line_spacing(self) -> Socket:
-        """Input socket: Line Spacing"""
-        return self.inputs._get("Line Spacing")
-
-    @property
-    def i_text_box_width(self) -> Socket:
-        """Input socket: Text Box Width"""
-        return self.inputs._get("Text Box Width")
-
-    @property
-    def i_text_box_height(self) -> Socket:
-        """Input socket: Text Box Height"""
-        return self.inputs._get("Text Box Height")
-
-    @property
-    def o_curve_instances(self) -> GeometrySocket:
-        """Output socket: Curve Instances"""
-        return self.outputs._get("Curve Instances")
-
-    @property
-    def o_remainder(self) -> StringSocket:
-        """Output socket: Remainder"""
-        return self.outputs._get("Remainder")
-
-    @property
-    def o_line(self) -> IntegerSocket:
-        """Output socket: Line"""
-        return self.outputs._get("Line")
-
-    @property
-    def o_pivot_point(self) -> VectorSocket:
-        """Output socket: Pivot Point"""
-        return self.outputs._get("Pivot Point")
 
     @property
     def overflow(self) -> Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"]:
@@ -6891,10 +7533,37 @@ class StringToCurves(NodeBuilder):
 class SubdivideCurve(NodeBuilder):
     """
     Dividing each curve segment into a specified number of pieces
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    cuts : InputInteger
+        Cuts
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeSubdivideCurve"
     node: bpy.types.GeometryNodeSubdivideCurve
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        cuts: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "SubdivideCurve.Inputs":
+        return SubdivideCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SubdivideCurve.Outputs":
+        return SubdivideCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6906,29 +7575,41 @@ class SubdivideCurve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_cuts(self) -> Socket:
-        """Input socket: Cuts"""
-        return self.inputs._get("Cuts")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
 
 class SubdivideMesh(NodeBuilder):
     """
     Divide mesh faces into smaller ones without changing the shape or volume, using linear interpolation to place the new vertices
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    level : InputInteger
+        Level
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeSubdivideMesh"
     node: bpy.types.GeometryNodeSubdivideMesh
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        level: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "SubdivideMesh.Inputs":
+        return SubdivideMesh.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SubdivideMesh.Outputs":
+        return SubdivideMesh.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6940,29 +7621,56 @@ class SubdivideMesh(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_level(self) -> Socket:
-        """Input socket: Level"""
-        return self.inputs._get("Level")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class SubdivisionSurface(NodeBuilder):
     """
     Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision method
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    level : InputInteger
+        Level
+    edge_crease : InputFloat
+        Edge Crease
+    vertex_crease : InputFloat
+        Vertex Crease
+    limit_surface : InputBoolean
+        Limit Surface
+    uv_smooth : InputMenu | Literal['None', 'Keep Corners', 'Keep Corners, Junctions', 'Keep Corners, Junctions, Concave', 'Keep Boundaries', 'All']
+        UV Smooth
+    boundary_smooth : InputMenu | Literal['Keep Corners', 'All']
+        Boundary Smooth
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeSubdivisionSurface"
     node: bpy.types.GeometryNodeSubdivisionSurface
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        level: Socket
+        edge_crease: Socket
+        vertex_crease: Socket
+        limit_surface: Socket
+        uv_smooth: Socket
+        boundary_smooth: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "SubdivisionSurface.Inputs":
+        return SubdivisionSurface.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SubdivisionSurface.Outputs":
+        return SubdivisionSurface.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -6995,54 +7703,53 @@ class SubdivisionSurface(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_level(self) -> Socket:
-        """Input socket: Level"""
-        return self.inputs._get("Level")
-
-    @property
-    def i_edge_crease(self) -> Socket:
-        """Input socket: Edge Crease"""
-        return self.inputs._get("Edge Crease")
-
-    @property
-    def i_vertex_crease(self) -> Socket:
-        """Input socket: Vertex Crease"""
-        return self.inputs._get("Vertex Crease")
-
-    @property
-    def i_limit_surface(self) -> Socket:
-        """Input socket: Limit Surface"""
-        return self.inputs._get("Limit Surface")
-
-    @property
-    def i_uv_smooth(self) -> Socket:
-        """Input socket: UV Smooth"""
-        return self.inputs._get("UV Smooth")
-
-    @property
-    def i_boundary_smooth(self) -> Socket:
-        """Input socket: Boundary Smooth"""
-        return self.inputs._get("Boundary Smooth")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class TransformGeometry(NodeBuilder):
     """
     Translate, rotate or scale the geometry
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    mode : InputMenu | Literal['Components', 'Matrix']
+        Mode
+    translation : InputVector
+        Translation
+    rotation : InputRotation
+        Rotation
+    scale : InputVector
+        Scale
+    transform : InputMatrix
+        Transform
+
+    Outputs
+    -------
+    geometry : GeometrySocket
+        Geometry
     """
 
     _bl_idname = "GeometryNodeTransform"
     node: bpy.types.GeometryNodeTransform
+
+    class Inputs(SocketAccessor):
+        geometry: Socket
+        mode: Socket
+        translation: Socket
+        rotation: Socket
+        scale: Socket
+        transform: Socket
+
+    class Outputs(SocketAccessor):
+        geometry: GeometrySocket
+
+    @property
+    def i(self) -> "TransformGeometry.Inputs":
+        return TransformGeometry.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TransformGeometry.Outputs":
+        return TransformGeometry.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -7065,49 +7772,47 @@ class TransformGeometry(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_geometry(self) -> Socket:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def i_translation(self) -> Socket:
-        """Input socket: Translation"""
-        return self.inputs._get("Translation")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_transform(self) -> Socket:
-        """Input socket: Transform"""
-        return self.inputs._get("Transform")
-
-    @property
-    def o_geometry(self) -> GeometrySocket:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class TranslateInstances(NodeBuilder):
     """
     Move top-level geometry instances in local or global space
+
+    Parameters
+    ----------
+    instances : InputGeometry
+        Instances
+    selection : InputBoolean
+        Selection
+    translation : InputVector
+        Translation
+    local_space : InputBoolean
+        Local Space
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Instances
     """
 
     _bl_idname = "GeometryNodeTranslateInstances"
     node: bpy.types.GeometryNodeTranslateInstances
+
+    class Inputs(SocketAccessor):
+        instances: Socket
+        selection: Socket
+        translation: Socket
+        local_space: Socket
+
+    class Outputs(SocketAccessor):
+        instances: GeometrySocket
+
+    @property
+    def i(self) -> "TranslateInstances.Inputs":
+        return TranslateInstances.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TranslateInstances.Outputs":
+        return TranslateInstances.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -7126,39 +7831,47 @@ class TranslateInstances(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_instances(self) -> Socket:
-        """Input socket: Instances"""
-        return self.inputs._get("Instances")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_translation(self) -> Socket:
-        """Input socket: Translation"""
-        return self.inputs._get("Translation")
-
-    @property
-    def i_local_space(self) -> Socket:
-        """Input socket: Local Space"""
-        return self.inputs._get("Local Space")
-
-    @property
-    def o_instances(self) -> GeometrySocket:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
-
 
 class Triangulate(NodeBuilder):
     """
     Convert all faces in a mesh to triangular faces
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+    quad_method : InputMenu | Literal['Beauty', 'Fixed', 'Fixed Alternate', 'Shortest Diagonal', 'Longest Diagonal']
+        Quad Method
+    n_gon_method : InputMenu | Literal['Beauty', 'Clip']
+        N-gon Method
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeTriangulate"
     node: bpy.types.GeometryNodeTriangulate
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        selection: Socket
+        quad_method: Socket
+        n_gon_method: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "Triangulate.Inputs":
+        return Triangulate.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Triangulate.Outputs":
+        return Triangulate.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -7184,39 +7897,53 @@ class Triangulate(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_quad_method(self) -> Socket:
-        """Input socket: Quad Method"""
-        return self.inputs._get("Quad Method")
-
-    @property
-    def i_n_gon_method(self) -> Socket:
-        """Input socket: N-gon Method"""
-        return self.inputs._get("N-gon Method")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class TrimCurve(NodeBuilder):
     """
     Shorten curves by removing portions at the start or end
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+    start : InputFloat
+        Start
+    end : InputFloat
+        End
+    start_001 : InputFloat
+        Start
+    end_001 : InputFloat
+        End
+
+    Outputs
+    -------
+    curve : GeometrySocket
+        Curve
     """
 
     _bl_idname = "GeometryNodeTrimCurve"
     node: bpy.types.GeometryNodeTrimCurve
+
+    class Inputs(SocketAccessor):
+        curve: Socket
+        selection: Socket
+        start: Socket
+        end: Socket
+        start_001: Socket
+        end_001: Socket
+
+    class Outputs(SocketAccessor):
+        curve: GeometrySocket
+
+    @property
+    def i(self) -> "TrimCurve.Inputs":
+        return TrimCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TrimCurve.Outputs":
+        return TrimCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -7272,41 +7999,6 @@ class TrimCurve(NodeBuilder):
         )
 
     @property
-    def i_curve(self) -> Socket:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> Socket:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def i_start(self) -> Socket:
-        """Input socket: Start"""
-        return self.inputs._get("Start")
-
-    @property
-    def i_end(self) -> Socket:
-        """Input socket: End"""
-        return self.inputs._get("End")
-
-    @property
-    def i_start_001(self) -> Socket:
-        """Input socket: Start"""
-        return self.inputs._get("Start_001")
-
-    @property
-    def i_end_001(self) -> Socket:
-        """Input socket: End"""
-        return self.inputs._get("End_001")
-
-    @property
-    def o_curve(self) -> GeometrySocket:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
-
-    @property
     def mode(self) -> Literal["FACTOR", "LENGTH"]:
         return self.node.mode
 
@@ -7318,10 +8010,43 @@ class TrimCurve(NodeBuilder):
 class UVSphere(NodeBuilder):
     """
     Generate a spherical mesh with quads, except for triangles at the top and bottom
+
+    Parameters
+    ----------
+    segments : InputInteger
+        Segments
+    rings : InputInteger
+        Rings
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
+    uv_map : VectorSocket
+        UV Map
     """
 
     _bl_idname = "GeometryNodeMeshUVSphere"
     node: bpy.types.GeometryNodeMeshUVSphere
+
+    class Inputs(SocketAccessor):
+        segments: Socket
+        rings: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        uv_map: VectorSocket
+
+    @property
+    def i(self) -> "UVSphere.Inputs":
+        return UVSphere.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "UVSphere.Outputs":
+        return UVSphere.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -7333,28 +8058,3 @@ class UVSphere(NodeBuilder):
         key_args = {"Segments": segments, "Rings": rings, "Radius": radius}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_segments(self) -> Socket:
-        """Input socket: Segments"""
-        return self.inputs._get("Segments")
-
-    @property
-    def i_rings(self) -> Socket:
-        """Input socket: Rings"""
-        return self.inputs._get("Rings")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_uv_map(self) -> VectorSocket:
-        """Output socket: UV Map"""
-        return self.outputs._get("UV Map")

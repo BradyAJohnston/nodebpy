@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder
+from ...builder import BaseNode as NodeBuilder, SocketAccessor
 
 
 class Viewer(NodeBuilder):
@@ -14,6 +14,20 @@ class Viewer(NodeBuilder):
 
     _bl_idname = "GeometryNodeViewer"
     node: bpy.types.GeometryNodeViewer
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "Viewer.Inputs":
+        return Viewer.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Viewer.Outputs":
+        return Viewer.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,

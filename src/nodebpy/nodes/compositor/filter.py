@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    SocketAccessor,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -19,10 +25,43 @@ from ...types import (
 class AntiAliasing(NodeBuilder):
     """
     Smooth away jagged edges
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    threshold : InputFloat
+        Threshold
+    contrast_limit : InputFloat
+        Contrast Limit
+    corner_rounding : InputFloat
+        Corner Rounding
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeAntiAliasing"
     node: bpy.types.CompositorNodeAntiAliasing
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        threshold: Socket
+        contrast_limit: Socket
+        corner_rounding: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "AntiAliasing.Inputs":
+        return AntiAliasing.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AntiAliasing.Outputs":
+        return AntiAliasing.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -41,39 +80,47 @@ class AntiAliasing(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Threshold")
-
-    @property
-    def i_contrast_limit(self) -> Socket:
-        """Input socket: Contrast Limit"""
-        return self.inputs._get("Contrast Limit")
-
-    @property
-    def i_corner_rounding(self) -> Socket:
-        """Input socket: Corner Rounding"""
-        return self.inputs._get("Corner Rounding")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class BilateralBlur(NodeBuilder):
     """
     Adaptively blur image, while retaining sharp edges
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    determinator : InputColor
+        Determinator
+    size : InputInteger
+        Size
+    threshold : InputFloat
+        Threshold
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeBilateralblur"
     node: bpy.types.CompositorNodeBilateralblur
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        determinator: Socket
+        size: Socket
+        threshold: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "BilateralBlur.Inputs":
+        return BilateralBlur.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BilateralBlur.Outputs":
+        return BilateralBlur.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -92,39 +139,50 @@ class BilateralBlur(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_determinator(self) -> Socket:
-        """Input socket: Determinator"""
-        return self.inputs._get("Determinator")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Threshold")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Blur(NodeBuilder):
     """
     Blur an image, using several blur modes
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    size : InputVector
+        Size
+    type : InputMenu | Literal['Flat', 'Tent', 'Quadratic', 'Cubic', 'Gaussian', 'Fast Gaussian', 'Catrom', 'Mitch']
+        Type
+    extend_bounds : InputBoolean
+        Extend Bounds
+    separable : InputBoolean
+        Separable
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeBlur"
     node: bpy.types.CompositorNodeBlur
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        size: Socket
+        type: Socket
+        extend_bounds: Socket
+        separable: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Blur.Inputs":
+        return Blur.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Blur.Outputs":
+        return Blur.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -291,44 +349,50 @@ class Blur(NodeBuilder):
             type="Mitch",
         )
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_extend_bounds(self) -> Socket:
-        """Input socket: Extend Bounds"""
-        return self.inputs._get("Extend Bounds")
-
-    @property
-    def i_separable(self) -> Socket:
-        """Input socket: Separable"""
-        return self.inputs._get("Separable")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class BokehBlur(NodeBuilder):
     """
     Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region is defined in the compositor
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    bokeh : InputColor
+        Bokeh
+    size : InputFloat
+        Size
+    mask : InputFloat
+        Mask
+    extend_bounds : InputBoolean
+        Extend Bounds
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeBokehBlur"
     node: bpy.types.CompositorNodeBokehBlur
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        bokeh: Socket
+        size: Socket
+        mask: Socket
+        extend_bounds: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "BokehBlur.Inputs":
+        return BokehBlur.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BokehBlur.Outputs":
+        return BokehBlur.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -349,44 +413,50 @@ class BokehBlur(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_bokeh(self) -> Socket:
-        """Input socket: Bokeh"""
-        return self.inputs._get("Bokeh")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_mask(self) -> Socket:
-        """Input socket: Mask"""
-        return self.inputs._get("Mask")
-
-    @property
-    def i_extend_bounds(self) -> Socket:
-        """Input socket: Extend Bounds"""
-        return self.inputs._get("Extend Bounds")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Convolve(NodeBuilder):
     """
     Convolves an image with a kernel
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    kernel_data_type : InputMenu | Literal['Float', 'Color']
+        Kernel Data Type
+    float_kernel : InputFloat
+        Kernel
+    color_kernel : InputColor
+        Kernel
+    normalize_kernel : InputBoolean
+        Normalize Kernel
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeConvolve"
     node: bpy.types.CompositorNodeConvolve
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        kernel_data_type: Socket
+        float_kernel: Socket
+        color_kernel: Socket
+        normalize_kernel: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Convolve.Inputs":
+        return Convolve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Convolve.Outputs":
+        return Convolve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -407,44 +477,41 @@ class Convolve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_kernel_data_type(self) -> Socket:
-        """Input socket: Kernel Data Type"""
-        return self.inputs._get("Kernel Data Type")
-
-    @property
-    def i_float_kernel(self) -> Socket:
-        """Input socket: Kernel"""
-        return self.inputs._get("Float Kernel")
-
-    @property
-    def i_color_kernel(self) -> Socket:
-        """Input socket: Kernel"""
-        return self.inputs._get("Color Kernel")
-
-    @property
-    def i_normalize_kernel(self) -> Socket:
-        """Input socket: Normalize Kernel"""
-        return self.inputs._get("Normalize Kernel")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Defocus(NodeBuilder):
     """
     Apply depth of field in 2D, using a Z depth map or mask
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    z : InputFloat
+        Z
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeDefocus"
     node: bpy.types.CompositorNodeDefocus
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        z: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Defocus.Inputs":
+        return Defocus.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Defocus.Outputs":
+        return Defocus.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -469,21 +536,6 @@ class Defocus(NodeBuilder):
         self.use_zbuffer = use_zbuffer
         self.z_scale = z_scale
         self._establish_links(**key_args)
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_z(self) -> Socket:
-        """Input socket: Z"""
-        return self.inputs._get("Z")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
 
     @property
     def bokeh(
@@ -546,10 +598,49 @@ class Defocus(NodeBuilder):
 class Denoise(NodeBuilder):
     """
     Denoise renders from Cycles and other ray tracing renderers
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    albedo : InputColor
+        Albedo
+    normal : InputVector
+        Normal
+    hdr : InputBoolean
+        HDR
+    prefilter : InputMenu | Literal['None', 'Fast', 'Accurate']
+        Prefilter
+    quality : InputMenu | Literal['Follow Scene', 'High', 'Balanced', 'Fast']
+        Quality
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeDenoise"
     node: bpy.types.CompositorNodeDenoise
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        albedo: Socket
+        normal: Socket
+        hdr: Socket
+        prefilter: Socket
+        quality: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Denoise.Inputs":
+        return Denoise.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Denoise.Outputs":
+        return Denoise.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -573,49 +664,47 @@ class Denoise(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_albedo(self) -> Socket:
-        """Input socket: Albedo"""
-        return self.inputs._get("Albedo")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_hdr(self) -> Socket:
-        """Input socket: HDR"""
-        return self.inputs._get("HDR")
-
-    @property
-    def i_prefilter(self) -> Socket:
-        """Input socket: Prefilter"""
-        return self.inputs._get("Prefilter")
-
-    @property
-    def i_quality(self) -> Socket:
-        """Input socket: Quality"""
-        return self.inputs._get("Quality")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Despeckle(NodeBuilder):
     """
     Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    fac : InputFloat
+        Factor
+    color_threshold : InputFloat
+        Color Threshold
+    neighbor_threshold : InputFloat
+        Neighbor Threshold
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeDespeckle"
     node: bpy.types.CompositorNodeDespeckle
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        fac: Socket
+        color_threshold: Socket
+        neighbor_threshold: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Despeckle.Inputs":
+        return Despeckle.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Despeckle.Outputs":
+        return Despeckle.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -634,39 +723,50 @@ class Despeckle(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_color_threshold(self) -> Socket:
-        """Input socket: Color Threshold"""
-        return self.inputs._get("Color Threshold")
-
-    @property
-    def i_neighbor_threshold(self) -> Socket:
-        """Input socket: Neighbor Threshold"""
-        return self.inputs._get("Neighbor Threshold")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Dilateerode(NodeBuilder):
     """
     Expand and shrink masks
+
+    Parameters
+    ----------
+    mask : InputFloat
+        Mask
+    size : InputInteger
+        Size
+    type : InputMenu | Literal['Steps', 'Threshold', 'Distance', 'Feather']
+        Type
+    falloff_size : InputFloat
+        Falloff Size
+    falloff : InputMenu | Literal['Smooth', 'Sphere', 'Root', 'Inverse Square', 'Sharp', 'Linear']
+        Falloff
+
+    Outputs
+    -------
+    mask : FloatSocket
+        Mask
     """
 
     _bl_idname = "CompositorNodeDilateErode"
     node: bpy.types.CompositorNodeDilateErode
+
+    class Inputs(SocketAccessor):
+        mask: Socket
+        size: Socket
+        type: Socket
+        falloff_size: Socket
+        falloff: Socket
+
+    class Outputs(SocketAccessor):
+        mask: FloatSocket
+
+    @property
+    def i(self) -> "Dilateerode.Inputs":
+        return Dilateerode.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Dilateerode.Outputs":
+        return Dilateerode.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -724,44 +824,56 @@ class Dilateerode(NodeBuilder):
         """Create Dilate/Erode node with type 'Feather'."""
         return cls(mask=mask, size=size, falloff=falloff, type="Feather")
 
-    @property
-    def i_mask(self) -> Socket:
-        """Input socket: Mask"""
-        return self.inputs._get("Mask")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_falloff_size(self) -> Socket:
-        """Input socket: Falloff Size"""
-        return self.inputs._get("Falloff Size")
-
-    @property
-    def i_falloff(self) -> Socket:
-        """Input socket: Falloff"""
-        return self.inputs._get("Falloff")
-
-    @property
-    def o_mask(self) -> FloatSocket:
-        """Output socket: Mask"""
-        return self.outputs._get("Mask")
-
 
 class DirectionalBlur(NodeBuilder):
     """
     Blur an image along a direction
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    samples : InputInteger
+        Samples
+    center : InputVector
+        Center
+    rotation : InputFloat
+        Rotation
+    scale : InputFloat
+        Scale
+    translation_amount : InputFloat
+        Amount
+    translation_direction : InputFloat
+        Direction
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeDBlur"
     node: bpy.types.CompositorNodeDBlur
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        samples: Socket
+        center: Socket
+        rotation: Socket
+        scale: Socket
+        translation_amount: Socket
+        translation_direction: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "DirectionalBlur.Inputs":
+        return DirectionalBlur.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DirectionalBlur.Outputs":
+        return DirectionalBlur.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -786,54 +898,44 @@ class DirectionalBlur(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_samples(self) -> Socket:
-        """Input socket: Samples"""
-        return self.inputs._get("Samples")
-
-    @property
-    def i_center(self) -> Socket:
-        """Input socket: Center"""
-        return self.inputs._get("Center")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_translation_amount(self) -> Socket:
-        """Input socket: Amount"""
-        return self.inputs._get("Translation Amount")
-
-    @property
-    def i_translation_direction(self) -> Socket:
-        """Input socket: Direction"""
-        return self.inputs._get("Translation Direction")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Filter(NodeBuilder):
     """
     Apply common image enhancement filters
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    fac : InputFloat
+        Factor
+    type : InputMenu | Literal['Soften', 'Box Sharpen', 'Diamond Sharpen', 'Laplace', 'Sobel', 'Prewitt', 'Kirsch', 'Shadow']
+        Type
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeFilter"
     node: bpy.types.CompositorNodeFilter
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        fac: Socket
+        type: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Filter.Inputs":
+        return Filter.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Filter.Outputs":
+        return Filter.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -898,34 +1000,107 @@ class Filter(NodeBuilder):
         """Create Filter node with type 'Shadow'."""
         return cls(image=image, fac=fac, type="Shadow")
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Glare(NodeBuilder):
     """
     Add lens flares, fog and glows around bright parts of the image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    type : InputMenu | Literal['Bloom', 'Ghosts', 'Streaks', 'Fog Glow', 'Simple Star', 'Sun Beams', 'Kernel']
+        Type
+    quality : InputMenu | Literal['High', 'Medium', 'Low']
+        Quality
+    highlights_threshold : InputFloat
+        Threshold
+    highlights_smoothness : InputFloat
+        Smoothness
+    clamp_highlights : InputBoolean
+        Clamp
+    maximum_highlights : InputFloat
+        Maximum
+    strength : InputFloat
+        Strength
+    saturation : InputFloat
+        Saturation
+    tint : InputColor
+        Tint
+    size : InputFloat
+        Size
+    streaks : InputInteger
+        Streaks
+    streaks_angle : InputFloat
+        Streaks Angle
+    iterations : InputInteger
+        Iterations
+    fade : InputFloat
+        Fade
+    color_modulation : InputFloat
+        Color Modulation
+    diagonal_star : InputBoolean
+        Diagonal
+    sun_position : InputVector
+        Sun Position
+    jitter : InputFloat
+        Jitter
+    kernel_data_type : InputMenu | Literal['Float', 'Color']
+        Kernel Data Type
+    float_kernel : InputFloat
+        Kernel
+    color_kernel : InputColor
+        Kernel
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    glare : ColorSocket
+        Glare
+    highlights : ColorSocket
+        Highlights
     """
 
     _bl_idname = "CompositorNodeGlare"
     node: bpy.types.CompositorNodeGlare
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        type: Socket
+        quality: Socket
+        highlights_threshold: Socket
+        highlights_smoothness: Socket
+        clamp_highlights: Socket
+        maximum_highlights: Socket
+        strength: Socket
+        saturation: Socket
+        tint: Socket
+        size: Socket
+        streaks: Socket
+        streaks_angle: Socket
+        iterations: Socket
+        fade: Socket
+        color_modulation: Socket
+        diagonal_star: Socket
+        sun_position: Socket
+        jitter: Socket
+        kernel_data_type: Socket
+        float_kernel: Socket
+        color_kernel: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        glare: ColorSocket
+        highlights: ColorSocket
+
+    @property
+    def i(self) -> "Glare.Inputs":
+        return Glare.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Glare.Outputs":
+        return Glare.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1212,139 +1387,41 @@ class Glare(NodeBuilder):
             type="Kernel",
         )
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_quality(self) -> Socket:
-        """Input socket: Quality"""
-        return self.inputs._get("Quality")
-
-    @property
-    def i_highlights_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Highlights Threshold")
-
-    @property
-    def i_highlights_smoothness(self) -> Socket:
-        """Input socket: Smoothness"""
-        return self.inputs._get("Highlights Smoothness")
-
-    @property
-    def i_clamp_highlights(self) -> Socket:
-        """Input socket: Clamp"""
-        return self.inputs._get("Clamp Highlights")
-
-    @property
-    def i_maximum_highlights(self) -> Socket:
-        """Input socket: Maximum"""
-        return self.inputs._get("Maximum Highlights")
-
-    @property
-    def i_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Strength")
-
-    @property
-    def i_saturation(self) -> Socket:
-        """Input socket: Saturation"""
-        return self.inputs._get("Saturation")
-
-    @property
-    def i_tint(self) -> Socket:
-        """Input socket: Tint"""
-        return self.inputs._get("Tint")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_streaks(self) -> Socket:
-        """Input socket: Streaks"""
-        return self.inputs._get("Streaks")
-
-    @property
-    def i_streaks_angle(self) -> Socket:
-        """Input socket: Streaks Angle"""
-        return self.inputs._get("Streaks Angle")
-
-    @property
-    def i_iterations(self) -> Socket:
-        """Input socket: Iterations"""
-        return self.inputs._get("Iterations")
-
-    @property
-    def i_fade(self) -> Socket:
-        """Input socket: Fade"""
-        return self.inputs._get("Fade")
-
-    @property
-    def i_color_modulation(self) -> Socket:
-        """Input socket: Color Modulation"""
-        return self.inputs._get("Color Modulation")
-
-    @property
-    def i_diagonal_star(self) -> Socket:
-        """Input socket: Diagonal"""
-        return self.inputs._get("Diagonal Star")
-
-    @property
-    def i_sun_position(self) -> Socket:
-        """Input socket: Sun Position"""
-        return self.inputs._get("Sun Position")
-
-    @property
-    def i_jitter(self) -> Socket:
-        """Input socket: Jitter"""
-        return self.inputs._get("Jitter")
-
-    @property
-    def i_kernel_data_type(self) -> Socket:
-        """Input socket: Kernel Data Type"""
-        return self.inputs._get("Kernel Data Type")
-
-    @property
-    def i_float_kernel(self) -> Socket:
-        """Input socket: Kernel"""
-        return self.inputs._get("Float Kernel")
-
-    @property
-    def i_color_kernel(self) -> Socket:
-        """Input socket: Kernel"""
-        return self.inputs._get("Color Kernel")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_glare(self) -> ColorSocket:
-        """Output socket: Glare"""
-        return self.outputs._get("Glare")
-
-    @property
-    def o_highlights(self) -> ColorSocket:
-        """Output socket: Highlights"""
-        return self.outputs._get("Highlights")
-
 
 class Inpaint(NodeBuilder):
     """
     Extend borders of an image into transparent or masked regions
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    size : InputInteger
+        Size
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeInpaint"
     node: bpy.types.CompositorNodeInpaint
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        size: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Inpaint.Inputs":
+        return Inpaint.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Inpaint.Outputs":
+        return Inpaint.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1356,29 +1433,56 @@ class Inpaint(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Kuwahara(NodeBuilder):
     """
     Apply smoothing filter that preserves edges, for stylized and painterly effects
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    size : InputFloat
+        Size
+    type : InputMenu | Literal['Classic', 'Anisotropic']
+        Type
+    uniformity : InputInteger
+        Uniformity
+    sharpness : InputFloat
+        Sharpness
+    eccentricity : InputFloat
+        Eccentricity
+    high_precision : InputBoolean
+        High Precision
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeKuwahara"
     node: bpy.types.CompositorNodeKuwahara
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        size: Socket
+        type: Socket
+        uniformity: Socket
+        sharpness: Socket
+        eccentricity: Socket
+        high_precision: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Kuwahara.Inputs":
+        return Kuwahara.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Kuwahara.Outputs":
+        return Kuwahara.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1434,54 +1538,41 @@ class Kuwahara(NodeBuilder):
             type="Anisotropic",
         )
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def i_uniformity(self) -> Socket:
-        """Input socket: Uniformity"""
-        return self.inputs._get("Uniformity")
-
-    @property
-    def i_sharpness(self) -> Socket:
-        """Input socket: Sharpness"""
-        return self.inputs._get("Sharpness")
-
-    @property
-    def i_eccentricity(self) -> Socket:
-        """Input socket: Eccentricity"""
-        return self.inputs._get("Eccentricity")
-
-    @property
-    def i_high_precision(self) -> Socket:
-        """Input socket: High Precision"""
-        return self.inputs._get("High Precision")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Pixelate(NodeBuilder):
     """
     Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    size : InputInteger
+        Size
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "CompositorNodePixelate"
     node: bpy.types.CompositorNodePixelate
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        size: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Pixelate.Inputs":
+        return Pixelate.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Pixelate.Outputs":
+        return Pixelate.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1493,29 +1584,50 @@ class Pixelate(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class VectorBlur(NodeBuilder):
     """
     Uses the vector speed render pass to blur the image pixels in 2D
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    speed : InputVector
+        Speed
+    z : InputFloat
+        Z
+    samples : InputInteger
+        Samples
+    shutter : InputFloat
+        Shutter
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeVecBlur"
     node: bpy.types.CompositorNodeVecBlur
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        speed: Socket
+        z: Socket
+        samples: Socket
+        shutter: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "VectorBlur.Inputs":
+        return VectorBlur.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VectorBlur.Outputs":
+        return VectorBlur.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1535,33 +1647,3 @@ class VectorBlur(NodeBuilder):
         }
 
         self._establish_links(**key_args)
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_speed(self) -> Socket:
-        """Input socket: Speed"""
-        return self.inputs._get("Speed")
-
-    @property
-    def i_z(self) -> Socket:
-        """Input socket: Z"""
-        return self.inputs._get("Z")
-
-    @property
-    def i_samples(self) -> Socket:
-        """Input socket: Samples"""
-        return self.inputs._get("Samples")
-
-    @property
-    def i_shutter(self) -> Socket:
-        """Input socket: Shutter"""
-        return self.inputs._get("Shutter")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")

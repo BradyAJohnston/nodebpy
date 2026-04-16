@@ -141,7 +141,7 @@ class _VectorMixin:
             if link.to_node.bl_idname == "ShaderNodeSeparateXYZ":
                 return Socket(link.to_node.outputs[value])
 
-        return getattr(SeparateXYZ(self), f"o_{value.lower()}")
+        return SeparateXYZ(self).o._get(value.lower())
 
     @property
     def x(self) -> Socket:
@@ -258,7 +258,7 @@ class _ColorMixin:
                 return Socket(link.to_node.outputs[channel])
 
         SeparateColor = self._get_separate_color_cls()
-        return getattr(SeparateColor(self), f"o_{channel.lower()}")
+        return SeparateColor(self).o._get(channel.lower())
 
     @property
     def r(self) -> Socket:

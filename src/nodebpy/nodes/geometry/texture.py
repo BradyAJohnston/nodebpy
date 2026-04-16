@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     ColorSocket,
     FloatSocket,
@@ -24,10 +25,64 @@ from ...types import (
 class BrickTexture(NodeBuilder):
     """
     Generate a procedural texture producing bricks
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    color1 : InputColor
+        Color1
+    color2 : InputColor
+        Color2
+    mortar : InputColor
+        Mortar
+    scale : InputFloat
+        Scale
+    mortar_size : InputFloat
+        Mortar Size
+    mortar_smooth : InputFloat
+        Mortar Smooth
+    bias : InputFloat
+        Bias
+    brick_width : InputFloat
+        Brick Width
+    row_height : InputFloat
+        Row Height
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    fac : FloatSocket
+        Factor
     """
 
     _bl_idname = "ShaderNodeTexBrick"
     node: bpy.types.ShaderNodeTexBrick
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        color1: Socket
+        color2: Socket
+        mortar: Socket
+        scale: Socket
+        mortar_size: Socket
+        mortar_smooth: Socket
+        bias: Socket
+        brick_width: Socket
+        row_height: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "BrickTexture.Inputs":
+        return BrickTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BrickTexture.Outputs":
+        return BrickTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -67,66 +122,6 @@ class BrickTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_color1(self) -> Socket:
-        """Input socket: Color1"""
-        return self.inputs._get("Color1")
-
-    @property
-    def i_color2(self) -> Socket:
-        """Input socket: Color2"""
-        return self.inputs._get("Color2")
-
-    @property
-    def i_mortar(self) -> Socket:
-        """Input socket: Mortar"""
-        return self.inputs._get("Mortar")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_mortar_size(self) -> Socket:
-        """Input socket: Mortar Size"""
-        return self.inputs._get("Mortar Size")
-
-    @property
-    def i_mortar_smooth(self) -> Socket:
-        """Input socket: Mortar Smooth"""
-        return self.inputs._get("Mortar Smooth")
-
-    @property
-    def i_bias(self) -> Socket:
-        """Input socket: Bias"""
-        return self.inputs._get("Bias")
-
-    @property
-    def i_brick_width(self) -> Socket:
-        """Input socket: Brick Width"""
-        return self.inputs._get("Brick Width")
-
-    @property
-    def i_row_height(self) -> Socket:
-        """Input socket: Row Height"""
-        return self.inputs._get("Row Height")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
-    @property
     def offset_frequency(self) -> int:
         return self.node.offset_frequency
 
@@ -162,10 +157,46 @@ class BrickTexture(NodeBuilder):
 class CheckerTexture(NodeBuilder):
     """
     Generate a checkerboard texture
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    color1 : InputColor
+        Color1
+    color2 : InputColor
+        Color2
+    scale : InputFloat
+        Scale
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    fac : FloatSocket
+        Factor
     """
 
     _bl_idname = "ShaderNodeTexChecker"
     node: bpy.types.ShaderNodeTexChecker
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        color1: Socket
+        color2: Socket
+        scale: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "CheckerTexture.Inputs":
+        return CheckerTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CheckerTexture.Outputs":
+        return CheckerTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -184,44 +215,59 @@ class CheckerTexture(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_color1(self) -> Socket:
-        """Input socket: Color1"""
-        return self.inputs._get("Color1")
-
-    @property
-    def i_color2(self) -> Socket:
-        """Input socket: Color2"""
-        return self.inputs._get("Color2")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
 
 class GaborTexture(NodeBuilder):
     """
     Generate Gabor noise
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    scale : InputFloat
+        Scale
+    frequency : InputFloat
+        Frequency
+    anisotropy : InputFloat
+        Anisotropy
+    orientation_2d : InputFloat
+        Orientation
+    orientation_3d : InputVector
+        Orientation
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
+    phase : FloatSocket
+        Phase
+    intensity : FloatSocket
+        Intensity
     """
 
     _bl_idname = "ShaderNodeTexGabor"
     node: bpy.types.ShaderNodeTexGabor
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        scale: Socket
+        frequency: Socket
+        anisotropy: Socket
+        orientation_2d: Socket
+        orientation_3d: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+        phase: FloatSocket
+        intensity: FloatSocket
+
+    @property
+    def i(self) -> "GaborTexture.Inputs":
+        return GaborTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GaborTexture.Outputs":
+        return GaborTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -285,51 +331,6 @@ class GaborTexture(NodeBuilder):
         )
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_frequency(self) -> Socket:
-        """Input socket: Frequency"""
-        return self.inputs._get("Frequency")
-
-    @property
-    def i_anisotropy(self) -> Socket:
-        """Input socket: Anisotropy"""
-        return self.inputs._get("Anisotropy")
-
-    @property
-    def i_orientation_2d(self) -> Socket:
-        """Input socket: Orientation"""
-        return self.inputs._get("Orientation 2D")
-
-    @property
-    def i_orientation_3d(self) -> Socket:
-        """Input socket: Orientation"""
-        return self.inputs._get("Orientation 3D")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
-    def o_phase(self) -> FloatSocket:
-        """Output socket: Phase"""
-        return self.outputs._get("Phase")
-
-    @property
-    def o_intensity(self) -> FloatSocket:
-        """Output socket: Intensity"""
-        return self.outputs._get("Intensity")
-
-    @property
     def gabor_type(self) -> Literal["2D", "3D"]:
         return self.node.gabor_type
 
@@ -341,10 +342,37 @@ class GaborTexture(NodeBuilder):
 class GradientTexture(NodeBuilder):
     """
     Generate interpolated color and intensity values based on the input vector
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    fac : FloatSocket
+        Factor
     """
 
     _bl_idname = "ShaderNodeTexGradient"
     node: bpy.types.ShaderNodeTexGradient
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "GradientTexture.Inputs":
+        return GradientTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GradientTexture.Outputs":
+        return GradientTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -401,21 +429,6 @@ class GradientTexture(NodeBuilder):
         return cls(gradient_type="RADIAL", vector=vector)
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
-    @property
     def gradient_type(
         self,
     ) -> Literal[
@@ -448,10 +461,43 @@ class GradientTexture(NodeBuilder):
 class ImageTexture(NodeBuilder):
     """
     Sample values from an image texture
+
+    Parameters
+    ----------
+    image : InputImage
+        Image
+    vector : InputVector
+        Vector
+    frame : InputInteger
+        Frame
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    alpha : FloatSocket
+        Alpha
     """
 
     _bl_idname = "GeometryNodeImageTexture"
     node: bpy.types.GeometryNodeImageTexture
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        vector: Socket
+        frame: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        alpha: FloatSocket
+
+    @property
+    def i(self) -> "ImageTexture.Inputs":
+        return ImageTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ImageTexture.Outputs":
+        return ImageTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -467,31 +513,6 @@ class ImageTexture(NodeBuilder):
         self.interpolation = interpolation
         self.extension = extension
         self._establish_links(**key_args)
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_frame(self) -> Socket:
-        """Input socket: Frame"""
-        return self.inputs._get("Frame")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
 
     @property
     def interpolation(self) -> Literal["Linear", "Closest", "Cubic"]:
@@ -513,10 +534,43 @@ class ImageTexture(NodeBuilder):
 class MagicTexture(NodeBuilder):
     """
     Generate a psychedelic color texture
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    scale : InputFloat
+        Scale
+    distortion : InputFloat
+        Distortion
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    fac : FloatSocket
+        Factor
     """
 
     _bl_idname = "ShaderNodeTexMagic"
     node: bpy.types.ShaderNodeTexMagic
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        scale: Socket
+        distortion: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "MagicTexture.Inputs":
+        return MagicTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MagicTexture.Outputs":
+        return MagicTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -532,31 +586,6 @@ class MagicTexture(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_distortion(self) -> Socket:
-        """Input socket: Distortion"""
-        return self.inputs._get("Distortion")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
-    @property
     def turbulence_depth(self) -> int:
         return self.node.turbulence_depth
 
@@ -568,10 +597,61 @@ class MagicTexture(NodeBuilder):
 class NoiseTexture(NodeBuilder):
     """
     Generate fractal Perlin noise
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    w : InputFloat
+        W
+    scale : InputFloat
+        Scale
+    detail : InputFloat
+        Detail
+    roughness : InputFloat
+        Roughness
+    lacunarity : InputFloat
+        Lacunarity
+    offset : InputFloat
+        Offset
+    gain : InputFloat
+        Gain
+    distortion : InputFloat
+        Distortion
+
+    Outputs
+    -------
+    fac : FloatSocket
+        Factor
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeTexNoise"
     node: bpy.types.ShaderNodeTexNoise
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        w: Socket
+        scale: Socket
+        detail: Socket
+        roughness: Socket
+        lacunarity: Socket
+        offset: Socket
+        gain: Socket
+        distortion: Socket
+
+    class Outputs(SocketAccessor):
+        fac: FloatSocket
+        color: ColorSocket
+
+    @property
+    def i(self) -> "NoiseTexture.Inputs":
+        return NoiseTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "NoiseTexture.Outputs":
+        return NoiseTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -728,61 +808,6 @@ class NoiseTexture(NodeBuilder):
         )
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_w(self) -> Socket:
-        """Input socket: W"""
-        return self.inputs._get("W")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_detail(self) -> Socket:
-        """Input socket: Detail"""
-        return self.inputs._get("Detail")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_lacunarity(self) -> Socket:
-        """Input socket: Lacunarity"""
-        return self.inputs._get("Lacunarity")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def i_gain(self) -> Socket:
-        """Input socket: Gain"""
-        return self.inputs._get("Gain")
-
-    @property
-    def i_distortion(self) -> Socket:
-        """Input socket: Distortion"""
-        return self.inputs._get("Distortion")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
     def noise_dimensions(self) -> Literal["1D", "2D", "3D", "4D"]:
         return self.node.noise_dimensions
 
@@ -827,10 +852,70 @@ class NoiseTexture(NodeBuilder):
 class VoronoiTexture(NodeBuilder):
     """
     Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    w : InputFloat
+        W
+    scale : InputFloat
+        Scale
+    detail : InputFloat
+        Detail
+    roughness : InputFloat
+        Roughness
+    lacunarity : InputFloat
+        Lacunarity
+    smoothness : InputFloat
+        Smoothness
+    exponent : InputFloat
+        Exponent
+    randomness : InputFloat
+        Randomness
+
+    Outputs
+    -------
+    distance : FloatSocket
+        Distance
+    color : ColorSocket
+        Color
+    position : VectorSocket
+        Position
+    w : FloatSocket
+        W
+    radius : FloatSocket
+        Radius
     """
 
     _bl_idname = "ShaderNodeTexVoronoi"
     node: bpy.types.ShaderNodeTexVoronoi
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        w: Socket
+        scale: Socket
+        detail: Socket
+        roughness: Socket
+        lacunarity: Socket
+        smoothness: Socket
+        exponent: Socket
+        randomness: Socket
+
+    class Outputs(SocketAccessor):
+        distance: FloatSocket
+        color: ColorSocket
+        position: VectorSocket
+        w: FloatSocket
+        radius: FloatSocket
+
+    @property
+    def i(self) -> "VoronoiTexture.Inputs":
+        return VoronoiTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VoronoiTexture.Outputs":
+        return VoronoiTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -870,76 +955,6 @@ class VoronoiTexture(NodeBuilder):
         self.feature = feature
         self.normalize = normalize
         self._establish_links(**key_args)
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_w(self) -> Socket:
-        """Input socket: W"""
-        return self.inputs._get("W")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_detail(self) -> Socket:
-        """Input socket: Detail"""
-        return self.inputs._get("Detail")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_lacunarity(self) -> Socket:
-        """Input socket: Lacunarity"""
-        return self.inputs._get("Lacunarity")
-
-    @property
-    def i_smoothness(self) -> Socket:
-        """Input socket: Smoothness"""
-        return self.inputs._get("Smoothness")
-
-    @property
-    def i_exponent(self) -> Socket:
-        """Input socket: Exponent"""
-        return self.inputs._get("Exponent")
-
-    @property
-    def i_randomness(self) -> Socket:
-        """Input socket: Randomness"""
-        return self.inputs._get("Randomness")
-
-    @property
-    def o_distance(self) -> FloatSocket:
-        """Output socket: Distance"""
-        return self.outputs._get("Distance")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_position(self) -> VectorSocket:
-        """Output socket: Position"""
-        return self.outputs._get("Position")
-
-    @property
-    def o_w(self) -> FloatSocket:
-        """Output socket: W"""
-        return self.outputs._get("W")
-
-    @property
-    def o_radius(self) -> FloatSocket:
-        """Output socket: Radius"""
-        return self.outputs._get("Radius")
 
     @property
     def voronoi_dimensions(self) -> Literal["1D", "2D", "3D", "4D"]:
@@ -984,10 +999,55 @@ class VoronoiTexture(NodeBuilder):
 class WaveTexture(NodeBuilder):
     """
     Generate procedural bands or rings with noise
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    scale : InputFloat
+        Scale
+    distortion : InputFloat
+        Distortion
+    detail : InputFloat
+        Detail
+    detail_scale : InputFloat
+        Detail Scale
+    detail_roughness : InputFloat
+        Detail Roughness
+    phase_offset : InputFloat
+        Phase Offset
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
+    fac : FloatSocket
+        Factor
     """
 
     _bl_idname = "ShaderNodeTexWave"
     node: bpy.types.ShaderNodeTexWave
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        scale: Socket
+        distortion: Socket
+        detail: Socket
+        detail_scale: Socket
+        detail_roughness: Socket
+        phase_offset: Socket
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "WaveTexture.Inputs":
+        return WaveTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "WaveTexture.Outputs":
+        return WaveTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1067,51 +1127,6 @@ class WaveTexture(NodeBuilder):
         )
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_distortion(self) -> Socket:
-        """Input socket: Distortion"""
-        return self.inputs._get("Distortion")
-
-    @property
-    def i_detail(self) -> Socket:
-        """Input socket: Detail"""
-        return self.inputs._get("Detail")
-
-    @property
-    def i_detail_scale(self) -> Socket:
-        """Input socket: Detail Scale"""
-        return self.inputs._get("Detail Scale")
-
-    @property
-    def i_detail_roughness(self) -> Socket:
-        """Input socket: Detail Roughness"""
-        return self.inputs._get("Detail Roughness")
-
-    @property
-    def i_phase_offset(self) -> Socket:
-        """Input socket: Phase Offset"""
-        return self.inputs._get("Phase Offset")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
-    @property
     def wave_type(self) -> Literal["BANDS", "RINGS"]:
         return self.node.wave_type
 
@@ -1147,10 +1162,40 @@ class WaveTexture(NodeBuilder):
 class WhiteNoiseTexture(NodeBuilder):
     """
     Calculate a random value or color based on an input seed
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    w : InputFloat
+        W
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "ShaderNodeTexWhiteNoise"
     node: bpy.types.ShaderNodeTexWhiteNoise
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        w: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+        color: ColorSocket
+
+    @property
+    def i(self) -> "WhiteNoiseTexture.Inputs":
+        return WhiteNoiseTexture.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "WhiteNoiseTexture.Outputs":
+        return WhiteNoiseTexture.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1163,26 +1208,6 @@ class WhiteNoiseTexture(NodeBuilder):
         key_args = {"Vector": vector, "W": w}
         self.noise_dimensions = noise_dimensions
         self._establish_links(**key_args)
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_w(self) -> Socket:
-        """Input socket: W"""
-        return self.inputs._get("W")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
 
     @property
     def noise_dimensions(self) -> Literal["1D", "2D", "3D", "4D"]:

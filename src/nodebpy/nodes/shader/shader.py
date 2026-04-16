@@ -4,7 +4,7 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ShaderSocket
+from ...builder import BaseNode as NodeBuilder, SocketAccessor, Socket, ShaderSocket
 
 from ...types import (
     InputColor,
@@ -17,10 +17,37 @@ from ...types import (
 class AddShader(NodeBuilder):
     """
     Add two Shaders together
+
+    Parameters
+    ----------
+    shader : InputShader
+        Shader
+    shader_001 : InputShader
+        Shader
+
+    Outputs
+    -------
+    shader : ShaderSocket
+        Shader
     """
 
     _bl_idname = "ShaderNodeAddShader"
     node: bpy.types.ShaderNodeAddShader
+
+    class Inputs(SocketAccessor):
+        shader: Socket
+        shader_001: Socket
+
+    class Outputs(SocketAccessor):
+        shader: ShaderSocket
+
+    @property
+    def i(self) -> "AddShader.Inputs":
+        return AddShader.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AddShader.Outputs":
+        return AddShader.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -32,30 +59,45 @@ class AddShader(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_shader(self) -> Socket:
-        """Input socket: Shader"""
-        return self.inputs._get("Shader")
-
-    @property
-    def i_shader_001(self) -> Socket:
-        """Input socket: Shader"""
-        return self.inputs._get("Shader_001")
-
-    @property
-    def o_shader(self) -> ShaderSocket:
-        """Output socket: Shader"""
-        return self.outputs._get("Shader")
-
 
 class Background(NodeBuilder):
     """
         Add background light emission.
     Note: This node should only be used for the world surface output
+
+        Parameters
+        ----------
+        color : InputColor
+            Color
+        strength : InputFloat
+            Strength
+        weight : InputFloat
+            Weight
+
+        Outputs
+        -------
+        background : ShaderSocket
+            Background
     """
 
     _bl_idname = "ShaderNodeBackground"
     node: bpy.types.ShaderNodeBackground
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        strength: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        background: ShaderSocket
+
+    @property
+    def i(self) -> "Background.Inputs":
+        return Background.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Background.Outputs":
+        return Background.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -68,34 +110,47 @@ class Background(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Strength")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_background(self) -> ShaderSocket:
-        """Output socket: Background"""
-        return self.outputs._get("Background")
-
 
 class DiffuseBSDF(NodeBuilder):
     """
     Lambertian and Oren-Nayar diffuse reflection
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    roughness : InputFloat
+        Roughness
+    normal : InputVector
+        Normal
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfDiffuse"
     node: bpy.types.ShaderNodeBsdfDiffuse
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        roughness: Socket
+        normal: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "DiffuseBSDF.Inputs":
+        return DiffuseBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DiffuseBSDF.Outputs":
+        return DiffuseBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -114,39 +169,44 @@ class DiffuseBSDF(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
 
 class Emission(NodeBuilder):
     """
     Lambertian emission shader
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    strength : InputFloat
+        Strength
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    emission : ShaderSocket
+        Emission
     """
 
     _bl_idname = "ShaderNodeEmission"
     node: bpy.types.ShaderNodeEmission
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        strength: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        emission: ShaderSocket
+
+    @property
+    def i(self) -> "Emission.Inputs":
+        return Emission.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Emission.Outputs":
+        return Emission.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -159,34 +219,56 @@ class Emission(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Strength")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_emission(self) -> ShaderSocket:
-        """Output socket: Emission"""
-        return self.outputs._get("Emission")
-
 
 class GlassBSDF(NodeBuilder):
     """
     Glass-like shader mixing refraction and reflection at grazing angles
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    roughness : InputFloat
+        Roughness
+    ior : InputFloat
+        IOR
+    normal : InputVector
+        Normal
+    weight : InputFloat
+        Weight
+    thin_film_thickness : InputFloat
+        Thin Film Thickness
+    thin_film_ior : InputFloat
+        Thin Film IOR
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfGlass"
     node: bpy.types.ShaderNodeBsdfGlass
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        roughness: Socket
+        ior: Socket
+        normal: Socket
+        weight: Socket
+        thin_film_thickness: Socket
+        thin_film_ior: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "GlassBSDF.Inputs":
+        return GlassBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GlassBSDF.Outputs":
+        return GlassBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -214,46 +296,6 @@ class GlassBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def i_thin_film_thickness(self) -> Socket:
-        """Input socket: Thin Film Thickness"""
-        return self.inputs._get("Thin Film Thickness")
-
-    @property
-    def i_thin_film_ior(self) -> Socket:
-        """Input socket: Thin Film IOR"""
-        return self.inputs._get("Thin Film IOR")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def distribution(self) -> Literal["BECKMANN", "GGX", "MULTI_GGX"]:
         return self.node.distribution
 
@@ -265,10 +307,52 @@ class GlassBSDF(NodeBuilder):
 class GlossyBSDF(NodeBuilder):
     """
     Reflection with microfacet distribution, used for materials such as metal or mirrors
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    roughness : InputFloat
+        Roughness
+    anisotropy : InputFloat
+        Anisotropy
+    rotation : InputFloat
+        Rotation
+    normal : InputVector
+        Normal
+    tangent : InputVector
+        Tangent
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfAnisotropic"
     node: bpy.types.ShaderNodeBsdfAnisotropic
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        roughness: Socket
+        anisotropy: Socket
+        rotation: Socket
+        normal: Socket
+        tangent: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "GlossyBSDF.Inputs":
+        return GlossyBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GlossyBSDF.Outputs":
+        return GlossyBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -298,46 +382,6 @@ class GlossyBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_anisotropy(self) -> Socket:
-        """Input socket: Anisotropy"""
-        return self.inputs._get("Anisotropy")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_tangent(self) -> Socket:
-        """Input socket: Tangent"""
-        return self.inputs._get("Tangent")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def distribution(
         self,
     ) -> Literal["BECKMANN", "GGX", "ASHIKHMIN_SHIRLEY", "MULTI_GGX"]:
@@ -353,10 +397,49 @@ class GlossyBSDF(NodeBuilder):
 class HairBSDF(NodeBuilder):
     """
     Reflection and transmission shaders optimized for hair rendering
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    offset : InputFloat
+        Offset
+    roughnessu : InputFloat
+        RoughnessU
+    roughnessv : InputFloat
+        RoughnessV
+    tangent : InputVector
+        Tangent
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfHair"
     node: bpy.types.ShaderNodeBsdfHair
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        offset: Socket
+        roughnessu: Socket
+        roughnessv: Socket
+        tangent: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "HairBSDF.Inputs":
+        return HairBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "HairBSDF.Outputs":
+        return HairBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -382,41 +465,6 @@ class HairBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def i_roughnessu(self) -> Socket:
-        """Input socket: RoughnessU"""
-        return self.inputs._get("RoughnessU")
-
-    @property
-    def i_roughnessv(self) -> Socket:
-        """Input socket: RoughnessV"""
-        return self.inputs._get("RoughnessV")
-
-    @property
-    def i_tangent(self) -> Socket:
-        """Input socket: Tangent"""
-        return self.inputs._get("Tangent")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def component(self) -> Literal["Reflection", "Transmission"]:
         return self.node.component
 
@@ -429,10 +477,34 @@ class Holdout(NodeBuilder):
     """
         Create a "hole" in the image with zero alpha transparency, which is useful for compositing.
     Note: the holdout shader can only create alpha when transparency is enabled in the film settings
+
+        Parameters
+        ----------
+        weight : InputFloat
+            Weight
+
+        Outputs
+        -------
+        holdout : ShaderSocket
+            Holdout
     """
 
     _bl_idname = "ShaderNodeHoldout"
     node: bpy.types.ShaderNodeHoldout
+
+    class Inputs(SocketAccessor):
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        holdout: ShaderSocket
+
+    @property
+    def i(self) -> "Holdout.Inputs":
+        return Holdout.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Holdout.Outputs":
+        return Holdout.Outputs(self.node.outputs, "output")
 
     def __init__(self, weight: InputFloat = 0.0):
         super().__init__()
@@ -440,24 +512,71 @@ class Holdout(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_holdout(self) -> ShaderSocket:
-        """Output socket: Holdout"""
-        return self.outputs._get("Holdout")
-
 
 class MetallicBSDF(NodeBuilder):
     """
     Metallic reflection with microfacet distribution, and metallic fresnel
+
+    Parameters
+    ----------
+    base_color : InputColor
+        Base Color
+    edge_tint : InputColor
+        Edge Tint
+    ior : InputVector
+        IOR
+    extinction : InputVector
+        Extinction
+    roughness : InputFloat
+        Roughness
+    anisotropy : InputFloat
+        Anisotropy
+    rotation : InputFloat
+        Rotation
+    normal : InputVector
+        Normal
+    tangent : InputVector
+        Tangent
+    weight : InputFloat
+        Weight
+    thin_film_thickness : InputFloat
+        Thin Film Thickness
+    thin_film_ior : InputFloat
+        Thin Film IOR
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfMetallic"
     node: bpy.types.ShaderNodeBsdfMetallic
+
+    class Inputs(SocketAccessor):
+        base_color: Socket
+        edge_tint: Socket
+        ior: Socket
+        extinction: Socket
+        roughness: Socket
+        anisotropy: Socket
+        rotation: Socket
+        normal: Socket
+        tangent: Socket
+        weight: Socket
+        thin_film_thickness: Socket
+        thin_film_ior: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "MetallicBSDF.Inputs":
+        return MetallicBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MetallicBSDF.Outputs":
+        return MetallicBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -551,71 +670,6 @@ class MetallicBSDF(NodeBuilder):
         )
 
     @property
-    def i_base_color(self) -> Socket:
-        """Input socket: Base Color"""
-        return self.inputs._get("Base Color")
-
-    @property
-    def i_edge_tint(self) -> Socket:
-        """Input socket: Edge Tint"""
-        return self.inputs._get("Edge Tint")
-
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_extinction(self) -> Socket:
-        """Input socket: Extinction"""
-        return self.inputs._get("Extinction")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_anisotropy(self) -> Socket:
-        """Input socket: Anisotropy"""
-        return self.inputs._get("Anisotropy")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_tangent(self) -> Socket:
-        """Input socket: Tangent"""
-        return self.inputs._get("Tangent")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def i_thin_film_thickness(self) -> Socket:
-        """Input socket: Thin Film Thickness"""
-        return self.inputs._get("Thin Film Thickness")
-
-    @property
-    def i_thin_film_ior(self) -> Socket:
-        """Input socket: Thin Film IOR"""
-        return self.inputs._get("Thin Film IOR")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def distribution(self) -> Literal["BECKMANN", "GGX", "MULTI_GGX"]:
         return self.node.distribution
 
@@ -635,10 +689,40 @@ class MetallicBSDF(NodeBuilder):
 class MixShader(NodeBuilder):
     """
     Mix two shaders together. Typically used for material layering
+
+    Parameters
+    ----------
+    fac : InputFloat
+        Factor
+    shader : InputShader
+        Shader
+    shader_001 : InputShader
+        Shader
+
+    Outputs
+    -------
+    shader : ShaderSocket
+        Shader
     """
 
     _bl_idname = "ShaderNodeMixShader"
     node: bpy.types.ShaderNodeMixShader
+
+    class Inputs(SocketAccessor):
+        fac: Socket
+        shader: Socket
+        shader_001: Socket
+
+    class Outputs(SocketAccessor):
+        shader: ShaderSocket
+
+    @property
+    def i(self) -> "MixShader.Inputs":
+        return MixShader.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MixShader.Outputs":
+        return MixShader.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -651,34 +735,128 @@ class MixShader(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_shader(self) -> Socket:
-        """Input socket: Shader"""
-        return self.inputs._get("Shader")
-
-    @property
-    def i_shader_001(self) -> Socket:
-        """Input socket: Shader"""
-        return self.inputs._get("Shader_001")
-
-    @property
-    def o_shader(self) -> ShaderSocket:
-        """Output socket: Shader"""
-        return self.outputs._get("Shader")
-
 
 class PrincipledBSDF(NodeBuilder):
     """
     Physically-based, easy-to-use shader for rendering surface materials, based on the OpenPBR model
+
+    Parameters
+    ----------
+    base_color : InputColor
+        Base Color
+    metallic : InputFloat
+        Metallic
+    roughness : InputFloat
+        Roughness
+    ior : InputFloat
+        IOR
+    alpha : InputFloat
+        Alpha
+    normal : InputVector
+        Normal
+    weight : InputFloat
+        Weight
+    diffuse_roughness : InputFloat
+        Diffuse Roughness
+    subsurface_weight : InputFloat
+        Subsurface Weight
+    subsurface_radius : InputVector
+        Subsurface Radius
+    subsurface_scale : InputFloat
+        Subsurface Scale
+    subsurface_ior : InputFloat
+        Subsurface IOR
+    subsurface_anisotropy : InputFloat
+        Subsurface Anisotropy
+    specular_ior_level : InputFloat
+        Specular IOR Level
+    specular_tint : InputColor
+        Specular Tint
+    anisotropic : InputFloat
+        Anisotropic
+    anisotropic_rotation : InputFloat
+        Anisotropic Rotation
+    tangent : InputVector
+        Tangent
+    transmission_weight : InputFloat
+        Transmission Weight
+    coat_weight : InputFloat
+        Coat Weight
+    coat_roughness : InputFloat
+        Coat Roughness
+    coat_ior : InputFloat
+        Coat IOR
+    coat_tint : InputColor
+        Coat Tint
+    coat_normal : InputVector
+        Coat Normal
+    sheen_weight : InputFloat
+        Sheen Weight
+    sheen_roughness : InputFloat
+        Sheen Roughness
+    sheen_tint : InputColor
+        Sheen Tint
+    emission_color : InputColor
+        Emission Color
+    emission_strength : InputFloat
+        Emission Strength
+    thin_film_thickness : InputFloat
+        Thin Film Thickness
+    thin_film_ior : InputFloat
+        Thin Film IOR
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfPrincipled"
     node: bpy.types.ShaderNodeBsdfPrincipled
+
+    class Inputs(SocketAccessor):
+        base_color: Socket
+        metallic: Socket
+        roughness: Socket
+        ior: Socket
+        alpha: Socket
+        normal: Socket
+        weight: Socket
+        diffuse_roughness: Socket
+        subsurface_weight: Socket
+        subsurface_radius: Socket
+        subsurface_scale: Socket
+        subsurface_ior: Socket
+        subsurface_anisotropy: Socket
+        specular_ior_level: Socket
+        specular_tint: Socket
+        anisotropic: Socket
+        anisotropic_rotation: Socket
+        tangent: Socket
+        transmission_weight: Socket
+        coat_weight: Socket
+        coat_roughness: Socket
+        coat_ior: Socket
+        coat_tint: Socket
+        coat_normal: Socket
+        sheen_weight: Socket
+        sheen_roughness: Socket
+        sheen_tint: Socket
+        emission_color: Socket
+        emission_strength: Socket
+        thin_film_thickness: Socket
+        thin_film_ior: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "PrincipledBSDF.Inputs":
+        return PrincipledBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PrincipledBSDF.Outputs":
+        return PrincipledBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -758,166 +936,6 @@ class PrincipledBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_base_color(self) -> Socket:
-        """Input socket: Base Color"""
-        return self.inputs._get("Base Color")
-
-    @property
-    def i_metallic(self) -> Socket:
-        """Input socket: Metallic"""
-        return self.inputs._get("Metallic")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_alpha(self) -> Socket:
-        """Input socket: Alpha"""
-        return self.inputs._get("Alpha")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def i_diffuse_roughness(self) -> Socket:
-        """Input socket: Diffuse Roughness"""
-        return self.inputs._get("Diffuse Roughness")
-
-    @property
-    def i_subsurface_weight(self) -> Socket:
-        """Input socket: Subsurface Weight"""
-        return self.inputs._get("Subsurface Weight")
-
-    @property
-    def i_subsurface_radius(self) -> Socket:
-        """Input socket: Subsurface Radius"""
-        return self.inputs._get("Subsurface Radius")
-
-    @property
-    def i_subsurface_scale(self) -> Socket:
-        """Input socket: Subsurface Scale"""
-        return self.inputs._get("Subsurface Scale")
-
-    @property
-    def i_subsurface_ior(self) -> Socket:
-        """Input socket: Subsurface IOR"""
-        return self.inputs._get("Subsurface IOR")
-
-    @property
-    def i_subsurface_anisotropy(self) -> Socket:
-        """Input socket: Subsurface Anisotropy"""
-        return self.inputs._get("Subsurface Anisotropy")
-
-    @property
-    def i_specular_ior_level(self) -> Socket:
-        """Input socket: Specular IOR Level"""
-        return self.inputs._get("Specular IOR Level")
-
-    @property
-    def i_specular_tint(self) -> Socket:
-        """Input socket: Specular Tint"""
-        return self.inputs._get("Specular Tint")
-
-    @property
-    def i_anisotropic(self) -> Socket:
-        """Input socket: Anisotropic"""
-        return self.inputs._get("Anisotropic")
-
-    @property
-    def i_anisotropic_rotation(self) -> Socket:
-        """Input socket: Anisotropic Rotation"""
-        return self.inputs._get("Anisotropic Rotation")
-
-    @property
-    def i_tangent(self) -> Socket:
-        """Input socket: Tangent"""
-        return self.inputs._get("Tangent")
-
-    @property
-    def i_transmission_weight(self) -> Socket:
-        """Input socket: Transmission Weight"""
-        return self.inputs._get("Transmission Weight")
-
-    @property
-    def i_coat_weight(self) -> Socket:
-        """Input socket: Coat Weight"""
-        return self.inputs._get("Coat Weight")
-
-    @property
-    def i_coat_roughness(self) -> Socket:
-        """Input socket: Coat Roughness"""
-        return self.inputs._get("Coat Roughness")
-
-    @property
-    def i_coat_ior(self) -> Socket:
-        """Input socket: Coat IOR"""
-        return self.inputs._get("Coat IOR")
-
-    @property
-    def i_coat_tint(self) -> Socket:
-        """Input socket: Coat Tint"""
-        return self.inputs._get("Coat Tint")
-
-    @property
-    def i_coat_normal(self) -> Socket:
-        """Input socket: Coat Normal"""
-        return self.inputs._get("Coat Normal")
-
-    @property
-    def i_sheen_weight(self) -> Socket:
-        """Input socket: Sheen Weight"""
-        return self.inputs._get("Sheen Weight")
-
-    @property
-    def i_sheen_roughness(self) -> Socket:
-        """Input socket: Sheen Roughness"""
-        return self.inputs._get("Sheen Roughness")
-
-    @property
-    def i_sheen_tint(self) -> Socket:
-        """Input socket: Sheen Tint"""
-        return self.inputs._get("Sheen Tint")
-
-    @property
-    def i_emission_color(self) -> Socket:
-        """Input socket: Emission Color"""
-        return self.inputs._get("Emission Color")
-
-    @property
-    def i_emission_strength(self) -> Socket:
-        """Input socket: Emission Strength"""
-        return self.inputs._get("Emission Strength")
-
-    @property
-    def i_thin_film_thickness(self) -> Socket:
-        """Input socket: Thin Film Thickness"""
-        return self.inputs._get("Thin Film Thickness")
-
-    @property
-    def i_thin_film_ior(self) -> Socket:
-        """Input socket: Thin Film IOR"""
-        return self.inputs._get("Thin Film IOR")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def distribution(self) -> Literal["GGX", "MULTI_GGX"]:
         return self.node.distribution
 
@@ -939,10 +957,85 @@ class PrincipledBSDF(NodeBuilder):
 class PrincipledHairBSDF(NodeBuilder):
     """
     Physically-based, easy-to-use shader for rendering hair and fur
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    melanin : InputFloat
+        Melanin
+    melanin_redness : InputFloat
+        Melanin Redness
+    tint : InputColor
+        Tint
+    absorption_coefficient : InputVector
+        Absorption Coefficient
+    aspect_ratio : InputFloat
+        Aspect Ratio
+    roughness : InputFloat
+        Roughness
+    radial_roughness : InputFloat
+        Radial Roughness
+    coat : InputFloat
+        Coat
+    ior : InputFloat
+        IOR
+    offset : InputFloat
+        Offset
+    random_color : InputFloat
+        Random Color
+    random_roughness : InputFloat
+        Random Roughness
+    random : InputFloat
+        Random
+    weight : InputFloat
+        Weight
+    r_lobe : InputFloat
+        Reflection
+    tt_lobe : InputFloat
+        Transmission
+    trt_lobe : InputFloat
+        Secondary Reflection
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfHairPrincipled"
     node: bpy.types.ShaderNodeBsdfHairPrincipled
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        melanin: Socket
+        melanin_redness: Socket
+        tint: Socket
+        absorption_coefficient: Socket
+        aspect_ratio: Socket
+        roughness: Socket
+        radial_roughness: Socket
+        coat: Socket
+        ior: Socket
+        offset: Socket
+        random_color: Socket
+        random_roughness: Socket
+        random: Socket
+        weight: Socket
+        r_lobe: Socket
+        tt_lobe: Socket
+        trt_lobe: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "PrincipledHairBSDF.Inputs":
+        return PrincipledHairBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PrincipledHairBSDF.Outputs":
+        return PrincipledHairBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -994,101 +1087,6 @@ class PrincipledHairBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_melanin(self) -> Socket:
-        """Input socket: Melanin"""
-        return self.inputs._get("Melanin")
-
-    @property
-    def i_melanin_redness(self) -> Socket:
-        """Input socket: Melanin Redness"""
-        return self.inputs._get("Melanin Redness")
-
-    @property
-    def i_tint(self) -> Socket:
-        """Input socket: Tint"""
-        return self.inputs._get("Tint")
-
-    @property
-    def i_absorption_coefficient(self) -> Socket:
-        """Input socket: Absorption Coefficient"""
-        return self.inputs._get("Absorption Coefficient")
-
-    @property
-    def i_aspect_ratio(self) -> Socket:
-        """Input socket: Aspect Ratio"""
-        return self.inputs._get("Aspect Ratio")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_radial_roughness(self) -> Socket:
-        """Input socket: Radial Roughness"""
-        return self.inputs._get("Radial Roughness")
-
-    @property
-    def i_coat(self) -> Socket:
-        """Input socket: Coat"""
-        return self.inputs._get("Coat")
-
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_offset(self) -> Socket:
-        """Input socket: Offset"""
-        return self.inputs._get("Offset")
-
-    @property
-    def i_random_color(self) -> Socket:
-        """Input socket: Random Color"""
-        return self.inputs._get("Random Color")
-
-    @property
-    def i_random_roughness(self) -> Socket:
-        """Input socket: Random Roughness"""
-        return self.inputs._get("Random Roughness")
-
-    @property
-    def i_random(self) -> Socket:
-        """Input socket: Random"""
-        return self.inputs._get("Random")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def i_r_lobe(self) -> Socket:
-        """Input socket: Reflection"""
-        return self.inputs._get("R lobe")
-
-    @property
-    def i_tt_lobe(self) -> Socket:
-        """Input socket: Transmission"""
-        return self.inputs._get("TT lobe")
-
-    @property
-    def i_trt_lobe(self) -> Socket:
-        """Input socket: Secondary Reflection"""
-        return self.inputs._get("TRT lobe")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def model(self) -> Literal["CHIANG", "HUANG"]:
         return self.node.model
 
@@ -1108,10 +1106,43 @@ class PrincipledHairBSDF(NodeBuilder):
 class RayPortalBSDF(NodeBuilder):
     """
     Continue tracing from an arbitrary new position and in a new direction
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    position : InputVector
+        Position
+    direction : InputVector
+        Direction
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfRayPortal"
     node: bpy.types.ShaderNodeBsdfRayPortal
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        position: Socket
+        direction: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "RayPortalBSDF.Inputs":
+        return RayPortalBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RayPortalBSDF.Outputs":
+        return RayPortalBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1130,39 +1161,50 @@ class RayPortalBSDF(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_direction(self) -> Socket:
-        """Input socket: Direction"""
-        return self.inputs._get("Direction")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
 
 class RefractionBSDF(NodeBuilder):
     """
     Glossy refraction with sharp or microfacet distribution, typically used for materials that transmit light
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    roughness : InputFloat
+        Roughness
+    ior : InputFloat
+        IOR
+    normal : InputVector
+        Normal
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfRefraction"
     node: bpy.types.ShaderNodeBsdfRefraction
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        roughness: Socket
+        ior: Socket
+        normal: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "RefractionBSDF.Inputs":
+        return RefractionBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RefractionBSDF.Outputs":
+        return RefractionBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1186,36 +1228,6 @@ class RefractionBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def distribution(self) -> Literal["BECKMANN", "GGX"]:
         return self.node.distribution
 
@@ -1228,10 +1240,43 @@ class SheenBSDF(NodeBuilder):
     """
         Reflection for materials such as cloth.
     Typically mixed with other shaders (such as a Diffuse Shader) and is not particularly useful on its own
+
+        Parameters
+        ----------
+        color : InputColor
+            Color
+        roughness : InputFloat
+            Roughness
+        normal : InputVector
+            Normal
+        weight : InputFloat
+            Weight
+
+        Outputs
+        -------
+        bsdf : ShaderSocket
+            BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfSheen"
     node: bpy.types.ShaderNodeBsdfSheen
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        roughness: Socket
+        normal: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "SheenBSDF.Inputs":
+        return SheenBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SheenBSDF.Outputs":
+        return SheenBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1253,31 +1298,6 @@ class SheenBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def distribution(self) -> Literal["ASHIKHMIN", "MICROFIBER"]:
         return self.node.distribution
 
@@ -1289,10 +1309,61 @@ class SheenBSDF(NodeBuilder):
 class SpecularBSDF(NodeBuilder):
     """
     Similar to the Principled BSDF node but uses the specular workflow instead of metallic, which functions by specifying the facing (along normal) reflection color. Energy is not conserved, so the result may not be physically accurate
+
+    Parameters
+    ----------
+    base_color : InputColor
+        Base Color
+    specular : InputColor
+        Specular
+    roughness : InputFloat
+        Roughness
+    emissive_color : InputColor
+        Emissive Color
+    transparency : InputFloat
+        Transparency
+    normal : InputVector
+        Normal
+    clear_coat : InputFloat
+        Clear Coat
+    clear_coat_roughness : InputFloat
+        Clear Coat Roughness
+    clear_coat_normal : InputVector
+        Clear Coat Normal
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeEeveeSpecular"
     node: bpy.types.ShaderNodeEeveeSpecular
+
+    class Inputs(SocketAccessor):
+        base_color: Socket
+        specular: Socket
+        roughness: Socket
+        emissive_color: Socket
+        transparency: Socket
+        normal: Socket
+        clear_coat: Socket
+        clear_coat_roughness: Socket
+        clear_coat_normal: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "SpecularBSDF.Inputs":
+        return SpecularBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SpecularBSDF.Outputs":
+        return SpecularBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1323,70 +1394,60 @@ class SpecularBSDF(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_base_color(self) -> Socket:
-        """Input socket: Base Color"""
-        return self.inputs._get("Base Color")
-
-    @property
-    def i_specular(self) -> Socket:
-        """Input socket: Specular"""
-        return self.inputs._get("Specular")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_emissive_color(self) -> Socket:
-        """Input socket: Emissive Color"""
-        return self.inputs._get("Emissive Color")
-
-    @property
-    def i_transparency(self) -> Socket:
-        """Input socket: Transparency"""
-        return self.inputs._get("Transparency")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_clear_coat(self) -> Socket:
-        """Input socket: Clear Coat"""
-        return self.inputs._get("Clear Coat")
-
-    @property
-    def i_clear_coat_roughness(self) -> Socket:
-        """Input socket: Clear Coat Roughness"""
-        return self.inputs._get("Clear Coat Roughness")
-
-    @property
-    def i_clear_coat_normal(self) -> Socket:
-        """Input socket: Clear Coat Normal"""
-        return self.inputs._get("Clear Coat Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
 
 class SubsurfaceScattering(NodeBuilder):
     """
         Subsurface multiple scattering shader to simulate light entering the surface and bouncing internally.
     Typically used for materials such as skin, wax, marble or milk
+
+        Parameters
+        ----------
+        color : InputColor
+            Color
+        scale : InputFloat
+            Scale
+        radius : InputVector
+            Radius
+        ior : InputFloat
+            IOR
+        roughness : InputFloat
+            Roughness
+        anisotropy : InputFloat
+            Anisotropy
+        normal : InputVector
+            Normal
+        weight : InputFloat
+            Weight
+
+        Outputs
+        -------
+        bssrdf : ShaderSocket
+            BSSRDF
     """
 
     _bl_idname = "ShaderNodeSubsurfaceScattering"
     node: bpy.types.ShaderNodeSubsurfaceScattering
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        scale: Socket
+        radius: Socket
+        ior: Socket
+        roughness: Socket
+        anisotropy: Socket
+        normal: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bssrdf: ShaderSocket
+
+    @property
+    def i(self) -> "SubsurfaceScattering.Inputs":
+        return SubsurfaceScattering.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SubsurfaceScattering.Outputs":
+        return SubsurfaceScattering.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1416,51 +1477,6 @@ class SubsurfaceScattering(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def i_ior(self) -> Socket:
-        """Input socket: IOR"""
-        return self.inputs._get("IOR")
-
-    @property
-    def i_roughness(self) -> Socket:
-        """Input socket: Roughness"""
-        return self.inputs._get("Roughness")
-
-    @property
-    def i_anisotropy(self) -> Socket:
-        """Input socket: Anisotropy"""
-        return self.inputs._get("Anisotropy")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bssrdf(self) -> ShaderSocket:
-        """Output socket: BSSRDF"""
-        return self.outputs._get("BSSRDF")
-
-    @property
     def falloff(self) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]:
         return self.node.falloff
 
@@ -1472,10 +1488,46 @@ class SubsurfaceScattering(NodeBuilder):
 class ToonBSDF(NodeBuilder):
     """
     Diffuse and Glossy shaders with cartoon light effects
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    size : InputFloat
+        Size
+    smooth : InputFloat
+        Smooth
+    normal : InputVector
+        Normal
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfToon"
     node: bpy.types.ShaderNodeBsdfToon
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        size: Socket
+        smooth: Socket
+        normal: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "ToonBSDF.Inputs":
+        return ToonBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ToonBSDF.Outputs":
+        return ToonBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1499,36 +1551,6 @@ class ToonBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_smooth(self) -> Socket:
-        """Input socket: Smooth"""
-        return self.inputs._get("Smooth")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
-    @property
     def component(self) -> Literal["DIFFUSE", "GLOSSY"]:
         return self.node.component
 
@@ -1540,10 +1562,40 @@ class ToonBSDF(NodeBuilder):
 class TranslucentBSDF(NodeBuilder):
     """
     Lambertian diffuse transmission
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    normal : InputVector
+        Normal
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfTranslucent"
     node: bpy.types.ShaderNodeBsdfTranslucent
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        normal: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "TranslucentBSDF.Inputs":
+        return TranslucentBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TranslucentBSDF.Outputs":
+        return TranslucentBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1556,34 +1608,41 @@ class TranslucentBSDF(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")
-
 
 class TransparentBSDF(NodeBuilder):
     """
     Transparency without refraction, passing straight through the surface as if there were no geometry
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    weight : InputFloat
+        Weight
+
+    Outputs
+    -------
+    bsdf : ShaderSocket
+        BSDF
     """
 
     _bl_idname = "ShaderNodeBsdfTransparent"
     node: bpy.types.ShaderNodeBsdfTransparent
+
+    class Inputs(SocketAccessor):
+        color: Socket
+        weight: Socket
+
+    class Outputs(SocketAccessor):
+        bsdf: ShaderSocket
+
+    @property
+    def i(self) -> "TransparentBSDF.Inputs":
+        return TransparentBSDF.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TransparentBSDF.Outputs":
+        return TransparentBSDF.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1594,18 +1653,3 @@ class TransparentBSDF(NodeBuilder):
         key_args = {"Color": color, "Weight": weight}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def i_weight(self) -> Socket:
-        """Input socket: Weight"""
-        return self.inputs._get("Weight")
-
-    @property
-    def o_bsdf(self) -> ShaderSocket:
-        """Output socket: BSDF"""
-        return self.outputs._get("BSDF")

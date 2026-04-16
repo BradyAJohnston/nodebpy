@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     ColorSocket,
     FloatSocket,
@@ -23,10 +24,29 @@ from ...types import (
 class Color(NodeBuilder):
     """
     A color picker
+
+    Outputs
+    -------
+    color : ColorSocket
+        Color
     """
 
     _bl_idname = "CompositorNodeRGB"
     node: bpy.types.CompositorNodeRGB
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        color: ColorSocket
+
+    @property
+    def i(self) -> "Color.Inputs":
+        return Color.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Color.Outputs":
+        return Color.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -34,19 +54,56 @@ class Color(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
-
 
 class Mask(NodeBuilder):
     """
     Input mask from a mask data-block, created in the image editor
+
+    Parameters
+    ----------
+    size_source : InputMenu | Literal['Scene Size', 'Fixed', 'Fixed/Scene']
+        Size Source
+    size_x : InputInteger
+        Size X
+    size_y : InputInteger
+        Size Y
+    feather : InputBoolean
+        Feather
+    motion_blur : InputBoolean
+        Motion Blur
+    motion_blur_samples : InputInteger
+        Samples
+    motion_blur_shutter : InputFloat
+        Shutter
+
+    Outputs
+    -------
+    mask : FloatSocket
+        Mask
     """
 
     _bl_idname = "CompositorNodeMask"
     node: bpy.types.CompositorNodeMask
+
+    class Inputs(SocketAccessor):
+        size_source: Socket
+        size_x: Socket
+        size_y: Socket
+        feather: Socket
+        motion_blur: Socket
+        motion_blur_samples: Socket
+        motion_blur_shutter: Socket
+
+    class Outputs(SocketAccessor):
+        mask: FloatSocket
+
+    @property
+    def i(self) -> "Mask.Inputs":
+        return Mask.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Mask.Outputs":
+        return Mask.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -72,99 +129,82 @@ class Mask(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_size_source(self) -> Socket:
-        """Input socket: Size Source"""
-        return self.inputs._get("Size Source")
-
-    @property
-    def i_size_x(self) -> Socket:
-        """Input socket: Size X"""
-        return self.inputs._get("Size X")
-
-    @property
-    def i_size_y(self) -> Socket:
-        """Input socket: Size Y"""
-        return self.inputs._get("Size Y")
-
-    @property
-    def i_feather(self) -> Socket:
-        """Input socket: Feather"""
-        return self.inputs._get("Feather")
-
-    @property
-    def i_motion_blur(self) -> Socket:
-        """Input socket: Motion Blur"""
-        return self.inputs._get("Motion Blur")
-
-    @property
-    def i_motion_blur_samples(self) -> Socket:
-        """Input socket: Samples"""
-        return self.inputs._get("Motion Blur Samples")
-
-    @property
-    def i_motion_blur_shutter(self) -> Socket:
-        """Input socket: Shutter"""
-        return self.inputs._get("Motion Blur Shutter")
-
-    @property
-    def o_mask(self) -> FloatSocket:
-        """Output socket: Mask"""
-        return self.outputs._get("Mask")
-
 
 class MovieClip(NodeBuilder):
     """
     Input image or movie from a movie clip data-block, typically used for motion tracking
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    alpha : FloatSocket
+        Alpha
+    offset_x : FloatSocket
+        Offset X
+    offset_y : FloatSocket
+        Offset Y
+    scale : FloatSocket
+        Scale
+    angle : FloatSocket
+        Angle
     """
 
     _bl_idname = "CompositorNodeMovieClip"
     node: bpy.types.CompositorNodeMovieClip
 
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        alpha: FloatSocket
+        offset_x: FloatSocket
+        offset_y: FloatSocket
+        scale: FloatSocket
+        angle: FloatSocket
+
+    @property
+    def i(self) -> "MovieClip.Inputs":
+        return MovieClip.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MovieClip.Outputs":
+        return MovieClip.Outputs(self.node.outputs, "output")
+
     def __init__(self):
         super().__init__()
         key_args = {}
 
         self._establish_links(**key_args)
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
-
-    @property
-    def o_offset_x(self) -> FloatSocket:
-        """Output socket: Offset X"""
-        return self.outputs._get("Offset X")
-
-    @property
-    def o_offset_y(self) -> FloatSocket:
-        """Output socket: Offset Y"""
-        return self.outputs._get("Offset Y")
-
-    @property
-    def o_scale(self) -> FloatSocket:
-        """Output socket: Scale"""
-        return self.outputs._get("Scale")
-
-    @property
-    def o_angle(self) -> FloatSocket:
-        """Output socket: Angle"""
-        return self.outputs._get("Angle")
 
 
 class Normal(NodeBuilder):
     """
     Input normalized normal values to other nodes in the tree
+
+    Outputs
+    -------
+    normal : VectorSocket
+        Normal
     """
 
     _bl_idname = "CompositorNodeNormal"
     node: bpy.types.CompositorNodeNormal
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        normal: VectorSocket
+
+    @property
+    def i(self) -> "Normal.Inputs":
+        return Normal.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Normal.Outputs":
+        return Normal.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -172,180 +212,129 @@ class Normal(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
 
 class RenderLayers(NodeBuilder):
     """
     Input render passes from a scene render
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    alpha : FloatSocket
+        Alpha
+    depth : FloatSocket
+        Depth
+    normal : VectorSocket
+        Normal
+    uv : VectorSocket
+        UV
+    vector : VectorSocket
+        Vector
+    position : VectorSocket
+        Position
+    deprecated : ColorSocket
+        Deprecated
+    deprecated_001 : ColorSocket
+        Deprecated
+    shadow : ColorSocket
+        Shadow
+    ambient_occlusion : ColorSocket
+        Ambient Occlusion
+    deprecated_002 : ColorSocket
+        Deprecated
+    deprecated_003 : ColorSocket
+        Deprecated
+    deprecated_004 : ColorSocket
+        Deprecated
+    object_index : FloatSocket
+        Object Index
+    material_index : FloatSocket
+        Material Index
+    mist : FloatSocket
+        Mist
+    emission : ColorSocket
+        Emission
+    environment : ColorSocket
+        Environment
+    diffuse_direct : ColorSocket
+        Diffuse Direct
+    diffuse_indirect : ColorSocket
+        Diffuse Indirect
+    diffuse_color : ColorSocket
+        Diffuse Color
+    glossy_direct : ColorSocket
+        Glossy Direct
+    glossy_indirect : ColorSocket
+        Glossy Indirect
+    glossy_color : ColorSocket
+        Glossy Color
+    transmission_direct : ColorSocket
+        Transmission Direct
+    transmission_indirect : ColorSocket
+        Transmission Indirect
+    transmission_color : ColorSocket
+        Transmission Color
+    subsurface_direct : ColorSocket
+        Subsurface Direct
+    subsurface_indirect : ColorSocket
+        Subsurface Indirect
+    subsurface_color : ColorSocket
+        Subsurface Color
     """
 
     _bl_idname = "CompositorNodeRLayers"
     node: bpy.types.CompositorNodeRLayers
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        alpha: FloatSocket
+        depth: FloatSocket
+        normal: VectorSocket
+        uv: VectorSocket
+        vector: VectorSocket
+        position: VectorSocket
+        deprecated: ColorSocket
+        deprecated_001: ColorSocket
+        shadow: ColorSocket
+        ambient_occlusion: ColorSocket
+        deprecated_002: ColorSocket
+        deprecated_003: ColorSocket
+        deprecated_004: ColorSocket
+        object_index: FloatSocket
+        material_index: FloatSocket
+        mist: FloatSocket
+        emission: ColorSocket
+        environment: ColorSocket
+        diffuse_direct: ColorSocket
+        diffuse_indirect: ColorSocket
+        diffuse_color: ColorSocket
+        glossy_direct: ColorSocket
+        glossy_indirect: ColorSocket
+        glossy_color: ColorSocket
+        transmission_direct: ColorSocket
+        transmission_indirect: ColorSocket
+        transmission_color: ColorSocket
+        subsurface_direct: ColorSocket
+        subsurface_indirect: ColorSocket
+        subsurface_color: ColorSocket
+
+    @property
+    def i(self) -> "RenderLayers.Inputs":
+        return RenderLayers.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RenderLayers.Outputs":
+        return RenderLayers.Outputs(self.node.outputs, "output")
 
     def __init__(self, layer: str = "ViewLayer"):
         super().__init__()
         key_args = {}
         self.layer = layer
         self._establish_links(**key_args)
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
-
-    @property
-    def o_depth(self) -> FloatSocket:
-        """Output socket: Depth"""
-        return self.outputs._get("Depth")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
-    def o_uv(self) -> VectorSocket:
-        """Output socket: UV"""
-        return self.outputs._get("UV")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
-    @property
-    def o_position(self) -> VectorSocket:
-        """Output socket: Position"""
-        return self.outputs._get("Position")
-
-    @property
-    def o_deprecated(self) -> ColorSocket:
-        """Output socket: Deprecated"""
-        return self.outputs._get("Deprecated")
-
-    @property
-    def o_deprecated_001(self) -> ColorSocket:
-        """Output socket: Deprecated"""
-        return self.outputs._get("Deprecated_001")
-
-    @property
-    def o_shadow(self) -> ColorSocket:
-        """Output socket: Shadow"""
-        return self.outputs._get("Shadow")
-
-    @property
-    def o_ambient_occlusion(self) -> ColorSocket:
-        """Output socket: Ambient Occlusion"""
-        return self.outputs._get("Ambient Occlusion")
-
-    @property
-    def o_deprecated_002(self) -> ColorSocket:
-        """Output socket: Deprecated"""
-        return self.outputs._get("Deprecated_002")
-
-    @property
-    def o_deprecated_003(self) -> ColorSocket:
-        """Output socket: Deprecated"""
-        return self.outputs._get("Deprecated_003")
-
-    @property
-    def o_deprecated_004(self) -> ColorSocket:
-        """Output socket: Deprecated"""
-        return self.outputs._get("Deprecated_004")
-
-    @property
-    def o_object_index(self) -> FloatSocket:
-        """Output socket: Object Index"""
-        return self.outputs._get("Object Index")
-
-    @property
-    def o_material_index(self) -> FloatSocket:
-        """Output socket: Material Index"""
-        return self.outputs._get("Material Index")
-
-    @property
-    def o_mist(self) -> FloatSocket:
-        """Output socket: Mist"""
-        return self.outputs._get("Mist")
-
-    @property
-    def o_emission(self) -> ColorSocket:
-        """Output socket: Emission"""
-        return self.outputs._get("Emission")
-
-    @property
-    def o_environment(self) -> ColorSocket:
-        """Output socket: Environment"""
-        return self.outputs._get("Environment")
-
-    @property
-    def o_diffuse_direct(self) -> ColorSocket:
-        """Output socket: Diffuse Direct"""
-        return self.outputs._get("Diffuse Direct")
-
-    @property
-    def o_diffuse_indirect(self) -> ColorSocket:
-        """Output socket: Diffuse Indirect"""
-        return self.outputs._get("Diffuse Indirect")
-
-    @property
-    def o_diffuse_color(self) -> ColorSocket:
-        """Output socket: Diffuse Color"""
-        return self.outputs._get("Diffuse Color")
-
-    @property
-    def o_glossy_direct(self) -> ColorSocket:
-        """Output socket: Glossy Direct"""
-        return self.outputs._get("Glossy Direct")
-
-    @property
-    def o_glossy_indirect(self) -> ColorSocket:
-        """Output socket: Glossy Indirect"""
-        return self.outputs._get("Glossy Indirect")
-
-    @property
-    def o_glossy_color(self) -> ColorSocket:
-        """Output socket: Glossy Color"""
-        return self.outputs._get("Glossy Color")
-
-    @property
-    def o_transmission_direct(self) -> ColorSocket:
-        """Output socket: Transmission Direct"""
-        return self.outputs._get("Transmission Direct")
-
-    @property
-    def o_transmission_indirect(self) -> ColorSocket:
-        """Output socket: Transmission Indirect"""
-        return self.outputs._get("Transmission Indirect")
-
-    @property
-    def o_transmission_color(self) -> ColorSocket:
-        """Output socket: Transmission Color"""
-        return self.outputs._get("Transmission Color")
-
-    @property
-    def o_subsurface_direct(self) -> ColorSocket:
-        """Output socket: Subsurface Direct"""
-        return self.outputs._get("Subsurface Direct")
-
-    @property
-    def o_subsurface_indirect(self) -> ColorSocket:
-        """Output socket: Subsurface Indirect"""
-        return self.outputs._get("Subsurface Indirect")
-
-    @property
-    def o_subsurface_color(self) -> ColorSocket:
-        """Output socket: Subsurface Color"""
-        return self.outputs._get("Subsurface Color")
 
     @property
     def layer(self) -> str:
@@ -359,10 +348,32 @@ class RenderLayers(NodeBuilder):
 class SceneTime(NodeBuilder):
     """
     Input the current scene time in seconds or frames
+
+    Outputs
+    -------
+    seconds : FloatSocket
+        Seconds
+    frame : FloatSocket
+        Frame
     """
 
     _bl_idname = "CompositorNodeSceneTime"
     node: bpy.types.CompositorNodeSceneTime
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        seconds: FloatSocket
+        frame: FloatSocket
+
+    @property
+    def i(self) -> "SceneTime.Inputs":
+        return SceneTime.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SceneTime.Outputs":
+        return SceneTime.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()
@@ -370,24 +381,41 @@ class SceneTime(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def o_seconds(self) -> FloatSocket:
-        """Output socket: Seconds"""
-        return self.outputs._get("Seconds")
-
-    @property
-    def o_frame(self) -> FloatSocket:
-        """Output socket: Frame"""
-        return self.outputs._get("Frame")
-
 
 class TimeCurve(NodeBuilder):
     """
     Generate a factor value (from 0.0 to 1.0) between scene start and end time, using a curve mapping
+
+    Parameters
+    ----------
+    start_frame : InputInteger
+        Start Frame
+    end_frame : InputInteger
+        End Frame
+
+    Outputs
+    -------
+    fac : FloatSocket
+        Factor
     """
 
     _bl_idname = "CompositorNodeTime"
     node: bpy.types.CompositorNodeTime
+
+    class Inputs(SocketAccessor):
+        start_frame: Socket
+        end_frame: Socket
+
+    class Outputs(SocketAccessor):
+        fac: FloatSocket
+
+    @property
+    def i(self) -> "TimeCurve.Inputs":
+        return TimeCurve.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TimeCurve.Outputs":
+        return TimeCurve.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -399,29 +427,47 @@ class TimeCurve(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_start_frame(self) -> Socket:
-        """Input socket: Start Frame"""
-        return self.inputs._get("Start Frame")
-
-    @property
-    def i_end_frame(self) -> Socket:
-        """Input socket: End Frame"""
-        return self.inputs._get("End Frame")
-
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
 
 class TrackPosition(NodeBuilder):
     """
     Provide information about motion tracking points, such as x and y values
+
+    Parameters
+    ----------
+    mode : InputMenu | Literal['Absolute', 'Relative Start', 'Relative Frame', 'Absolute Frame']
+        Mode
+    frame : InputInteger
+        Frame
+
+    Outputs
+    -------
+    x : FloatSocket
+        X
+    y : FloatSocket
+        Y
+    speed : VectorSocket
+        Speed
     """
 
     _bl_idname = "CompositorNodeTrackPos"
     node: bpy.types.CompositorNodeTrackPos
+
+    class Inputs(SocketAccessor):
+        mode: Socket
+        frame: Socket
+
+    class Outputs(SocketAccessor):
+        x: FloatSocket
+        y: FloatSocket
+        speed: VectorSocket
+
+    @property
+    def i(self) -> "TrackPosition.Inputs":
+        return TrackPosition.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "TrackPosition.Outputs":
+        return TrackPosition.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -439,31 +485,6 @@ class TrackPosition(NodeBuilder):
         self.tracking_object = tracking_object
         self.track_name = track_name
         self._establish_links(**key_args)
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def i_frame(self) -> Socket:
-        """Input socket: Frame"""
-        return self.inputs._get("Frame")
-
-    @property
-    def o_x(self) -> FloatSocket:
-        """Output socket: X"""
-        return self.outputs._get("X")
-
-    @property
-    def o_y(self) -> FloatSocket:
-        """Output socket: Y"""
-        return self.outputs._get("Y")
-
-    @property
-    def o_speed(self) -> VectorSocket:
-        """Output socket: Speed"""
-        return self.outputs._get("Speed")
 
     @property
     def tracking_object(self) -> str:

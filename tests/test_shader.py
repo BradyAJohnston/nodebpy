@@ -15,7 +15,7 @@ def test_simple_shader():
 
 def test_shader_math():
     with s.tree() as tree:
-        comp = s.Geometry().o_random_per_island >= 10.0
+        comp = s.Geometry().o.random_per_island >= 10.0
         prin = s.PrincipledBSDF(ior=comp)
         with tree.outputs:
             _ = prin >> sockets.SocketShader()
@@ -81,7 +81,7 @@ def test_color_shader():
 def test_material_node_cartoon():
     with s.material("Cartoon", fake_user=True) as mat:
         mat.nodes.clear()
-        output = s.MaterialOutput(surface=s.Attribute.geometry("Color").o_color)
+        output = s.MaterialOutput(surface=s.Attribute.geometry("Color").o.color)
         attr = s.Attribute.geometry("sec_struct")
         aov = s.AovOutput(value=attr, aov_name="sec_struct")
 

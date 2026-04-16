@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder
+from ...builder import BaseNode as NodeBuilder, SocketAccessor
 
 
 class Group(NodeBuilder):
@@ -13,6 +13,20 @@ class Group(NodeBuilder):
 
     _bl_idname = "CompositorNodeGroup"
     node: bpy.types.CompositorNodeGroup
+
+    class Inputs(SocketAccessor):
+        pass
+
+    class Outputs(SocketAccessor):
+        pass
+
+    @property
+    def i(self) -> "Group.Inputs":
+        return Group.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Group.Outputs":
+        return Group.Outputs(self.node.outputs, "output")
 
     def __init__(self):
         super().__init__()

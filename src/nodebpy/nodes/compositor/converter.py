@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     ColorSocket,
     FloatSocket,
@@ -27,10 +28,37 @@ from ...types import (
 class AlphaConvert(NodeBuilder):
     """
     Convert to and from premultiplied (associated) alpha
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    type : InputMenu | Literal['To Premultiplied', 'To Straight']
+        Type
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodePremulKey"
     node: bpy.types.CompositorNodePremulKey
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        type: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "AlphaConvert.Inputs":
+        return AlphaConvert.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AlphaConvert.Outputs":
+        return AlphaConvert.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -53,29 +81,47 @@ class AlphaConvert(NodeBuilder):
         """Create Alpha Convert node with type 'To Straight'."""
         return cls(image=image, type="To Straight")
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class CombineColor(NodeBuilder):
     """
     Combine an image from its composite color channels
+
+    Parameters
+    ----------
+    red : InputFloat
+        Red
+    green : InputFloat
+        Green
+    blue : InputFloat
+        Blue
+    alpha : InputFloat
+        Alpha
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeCombineColor"
     node: bpy.types.CompositorNodeCombineColor
+
+    class Inputs(SocketAccessor):
+        red: Socket
+        green: Socket
+        blue: Socket
+        alpha: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "CombineColor.Inputs":
+        return CombineColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "CombineColor.Outputs":
+        return CombineColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -149,31 +195,6 @@ class CombineColor(NodeBuilder):
         return cls(mode="YUV", red=red, green=green, blue=blue, alpha=alpha)
 
     @property
-    def i_red(self) -> Socket:
-        """Input socket: Red"""
-        return self.inputs._get("Red")
-
-    @property
-    def i_green(self) -> Socket:
-        """Input socket: Green"""
-        return self.inputs._get("Green")
-
-    @property
-    def i_blue(self) -> Socket:
-        """Input socket: Blue"""
-        return self.inputs._get("Blue")
-
-    @property
-    def i_alpha(self) -> Socket:
-        """Input socket: Alpha"""
-        return self.inputs._get("Alpha")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
     def mode(self) -> Literal["RGB", "HSV", "HSL", "YCC", "YUV"]:
         return self.node.mode
 
@@ -193,10 +214,34 @@ class CombineColor(NodeBuilder):
 class ConvertColorspace(NodeBuilder):
     """
     Convert between color spaces
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeConvertColorSpace"
     node: bpy.types.CompositorNodeConvertColorSpace
+
+    class Inputs(SocketAccessor):
+        image: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "ConvertColorspace.Inputs":
+        return ConvertColorspace.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ConvertColorspace.Outputs":
+        return ConvertColorspace.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -262,16 +307,6 @@ class ConvertColorspace(NodeBuilder):
         self.from_color_space = from_color_space
         self.to_color_space = to_color_space
         self._establish_links(**key_args)
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
 
     @property
     def from_color_space(
@@ -407,10 +442,37 @@ class ConvertColorspace(NodeBuilder):
 class ConvertToDisplay(NodeBuilder):
     """
     Convert from scene linear to display color space, with a view transform and look for tone mapping
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    invert : InputBoolean
+        Invert
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeConvertToDisplay"
     node: bpy.types.CompositorNodeConvertToDisplay
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        invert: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "ConvertToDisplay.Inputs":
+        return ConvertToDisplay.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ConvertToDisplay.Outputs":
+        return ConvertToDisplay.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -422,29 +484,44 @@ class ConvertToDisplay(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_invert(self) -> Socket:
-        """Input socket: Invert"""
-        return self.inputs._get("Invert")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class IDMask(NodeBuilder):
     """
     Create a matte from an object or material index pass
+
+    Parameters
+    ----------
+    id_value : InputFloat
+        ID value
+    index : InputInteger
+        Index
+    anti_alias : InputBoolean
+        Anti-Alias
+
+    Outputs
+    -------
+    alpha : FloatSocket
+        Alpha
     """
 
     _bl_idname = "CompositorNodeIDMask"
     node: bpy.types.CompositorNodeIDMask
+
+    class Inputs(SocketAccessor):
+        id_value: Socket
+        index: Socket
+        anti_alias: Socket
+
+    class Outputs(SocketAccessor):
+        alpha: FloatSocket
+
+    @property
+    def i(self) -> "IDMask.Inputs":
+        return IDMask.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IDMask.Outputs":
+        return IDMask.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -457,34 +534,44 @@ class IDMask(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_id_value(self) -> Socket:
-        """Input socket: ID value"""
-        return self.inputs._get("ID value")
-
-    @property
-    def i_index(self) -> Socket:
-        """Input socket: Index"""
-        return self.inputs._get("Index")
-
-    @property
-    def i_anti_alias(self) -> Socket:
-        """Input socket: Anti-Alias"""
-        return self.inputs._get("Anti-Alias")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
-
 
 class Levels(NodeBuilder):
     """
     Compute average and standard deviation of pixel values
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    channel : InputMenu | Literal['Combined', 'Red', 'Green', 'Blue', 'Luminance']
+        Channel
+
+    Outputs
+    -------
+    mean : FloatSocket
+        Mean
+    standard_deviation : FloatSocket
+        Standard Deviation
     """
 
     _bl_idname = "CompositorNodeLevels"
     node: bpy.types.CompositorNodeLevels
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        channel: Socket
+
+    class Outputs(SocketAccessor):
+        mean: FloatSocket
+        standard_deviation: FloatSocket
+
+    @property
+    def i(self) -> "Levels.Inputs":
+        return Levels.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Levels.Outputs":
+        return Levels.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -497,34 +584,74 @@ class Levels(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_channel(self) -> Socket:
-        """Input socket: Channel"""
-        return self.inputs._get("Channel")
-
-    @property
-    def o_mean(self) -> FloatSocket:
-        """Output socket: Mean"""
-        return self.outputs._get("Mean")
-
-    @property
-    def o_standard_deviation(self) -> FloatSocket:
-        """Output socket: Standard Deviation"""
-        return self.outputs._get("Standard Deviation")
-
 
 class Mix(NodeBuilder):
     """
     Mix values by a factor
+
+    Parameters
+    ----------
+    factor_float : InputFloat
+        Factor
+    factor_vector : InputVector
+        Factor
+    a_float : InputFloat
+        A
+    b_float : InputFloat
+        B
+    a_vector : InputVector
+        A
+    b_vector : InputVector
+        B
+    a_color : InputColor
+        A
+    b_color : InputColor
+        B
+    a_rotation : InputRotation
+        A
+    b_rotation : InputRotation
+        B
+
+    Outputs
+    -------
+    result_float : FloatSocket
+        Result
+    result_vector : VectorSocket
+        Result
+    result_color : ColorSocket
+        Result
+    result_rotation : RotationSocket
+        Result
     """
 
     _bl_idname = "ShaderNodeMix"
     node: bpy.types.ShaderNodeMix
+
+    class Inputs(SocketAccessor):
+        factor_float: Socket
+        factor_vector: Socket
+        a_float: Socket
+        b_float: Socket
+        a_vector: Socket
+        b_vector: Socket
+        a_color: Socket
+        b_color: Socket
+        a_rotation: Socket
+        b_rotation: Socket
+
+    class Outputs(SocketAccessor):
+        result_float: FloatSocket
+        result_vector: VectorSocket
+        result_color: ColorSocket
+        result_rotation: RotationSocket
+
+    @property
+    def i(self) -> "Mix.Inputs":
+        return Mix.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Mix.Outputs":
+        return Mix.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -610,76 +737,6 @@ class Mix(NodeBuilder):
         return cls(
             data_type="RGBA", factor_float=factor, a_color=a_color, b_color=b_color
         )
-
-    @property
-    def i_factor_float(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor_Float")
-
-    @property
-    def i_factor_vector(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Factor_Vector")
-
-    @property
-    def i_a_float(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Float")
-
-    @property
-    def i_b_float(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Float")
-
-    @property
-    def i_a_vector(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Vector")
-
-    @property
-    def i_b_vector(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Vector")
-
-    @property
-    def i_a_color(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Color")
-
-    @property
-    def i_b_color(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Color")
-
-    @property
-    def i_a_rotation(self) -> Socket:
-        """Input socket: A"""
-        return self.inputs._get("A_Rotation")
-
-    @property
-    def i_b_rotation(self) -> Socket:
-        """Input socket: B"""
-        return self.inputs._get("B_Rotation")
-
-    @property
-    def o_result_float(self) -> FloatSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Float")
-
-    @property
-    def o_result_vector(self) -> VectorSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Vector")
-
-    @property
-    def o_result_color(self) -> ColorSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Color")
-
-    @property
-    def o_result_rotation(self) -> RotationSocket:
-        """Output socket: Result"""
-        return self.outputs._get("Result_Rotation")
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
@@ -770,10 +827,34 @@ class Mix(NodeBuilder):
 class RGBToBw(NodeBuilder):
     """
     Convert RGB input into grayscale using luminance
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+
+    Outputs
+    -------
+    val : FloatSocket
+        Val
     """
 
     _bl_idname = "CompositorNodeRGBToBW"
     node: bpy.types.CompositorNodeRGBToBW
+
+    class Inputs(SocketAccessor):
+        image: Socket
+
+    class Outputs(SocketAccessor):
+        val: FloatSocket
+
+    @property
+    def i(self) -> "RGBToBw.Inputs":
+        return RGBToBw.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RGBToBw.Outputs":
+        return RGBToBw.Outputs(self.node.outputs, "output")
 
     def __init__(self, image: InputColor = None):
         super().__init__()
@@ -781,24 +862,47 @@ class RGBToBw(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def o_val(self) -> FloatSocket:
-        """Output socket: Val"""
-        return self.outputs._get("Val")
-
 
 class RelativeToPixel(NodeBuilder):
     """
     Converts values that are relative to the image size to be in terms of pixels
+
+    Parameters
+    ----------
+    vector_value : InputVector
+        Value
+    float_value : InputFloat
+        Value
+    image : InputColor
+        Image
+
+    Outputs
+    -------
+    float_value : FloatSocket
+        Value
+    vector_value : VectorSocket
+        Value
     """
 
     _bl_idname = "CompositorNodeRelativeToPixel"
     node: bpy.types.CompositorNodeRelativeToPixel
+
+    class Inputs(SocketAccessor):
+        vector_value: Socket
+        float_value: Socket
+        image: Socket
+
+    class Outputs(SocketAccessor):
+        float_value: FloatSocket
+        vector_value: VectorSocket
+
+    @property
+    def i(self) -> "RelativeToPixel.Inputs":
+        return RelativeToPixel.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "RelativeToPixel.Outputs":
+        return RelativeToPixel.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -836,31 +940,6 @@ class RelativeToPixel(NodeBuilder):
         return cls(data_type="VECTOR", vector_value=vector_value, image=image)
 
     @property
-    def i_vector_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Vector Value")
-
-    @property
-    def i_float_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Float Value")
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def o_float_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Float Value")
-
-    @property
-    def o_vector_value(self) -> VectorSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Vector Value")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "VECTOR"]:
         return self.node.data_type
 
@@ -885,10 +964,43 @@ class RelativeToPixel(NodeBuilder):
 class SeparateColor(NodeBuilder):
     """
     Split an image into its composite color channels
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+
+    Outputs
+    -------
+    red : FloatSocket
+        Red
+    green : FloatSocket
+        Green
+    blue : FloatSocket
+        Blue
+    alpha : FloatSocket
+        Alpha
     """
 
     _bl_idname = "CompositorNodeSeparateColor"
     node: bpy.types.CompositorNodeSeparateColor
+
+    class Inputs(SocketAccessor):
+        image: Socket
+
+    class Outputs(SocketAccessor):
+        red: FloatSocket
+        green: FloatSocket
+        blue: FloatSocket
+        alpha: FloatSocket
+
+    @property
+    def i(self) -> "SeparateColor.Inputs":
+        return SeparateColor.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SeparateColor.Outputs":
+        return SeparateColor.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -929,31 +1041,6 @@ class SeparateColor(NodeBuilder):
         return cls(mode="YUV", image=image)
 
     @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def o_red(self) -> FloatSocket:
-        """Output socket: Red"""
-        return self.outputs._get("Red")
-
-    @property
-    def o_green(self) -> FloatSocket:
-        """Output socket: Green"""
-        return self.outputs._get("Green")
-
-    @property
-    def o_blue(self) -> FloatSocket:
-        """Output socket: Blue"""
-        return self.outputs._get("Blue")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
-
-    @property
     def mode(self) -> Literal["RGB", "HSV", "HSL", "YCC", "YUV"]:
         return self.node.mode
 
@@ -973,10 +1060,40 @@ class SeparateColor(NodeBuilder):
 class SetAlpha(NodeBuilder):
     """
     Add an alpha channel to an image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    alpha : InputFloat
+        Alpha
+    type : InputMenu | Literal['Apply Mask', 'Replace Alpha']
+        Type
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeSetAlpha"
     node: bpy.types.CompositorNodeSetAlpha
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        alpha: Socket
+        type: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "SetAlpha.Inputs":
+        return SetAlpha.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetAlpha.Outputs":
+        return SetAlpha.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1003,34 +1120,47 @@ class SetAlpha(NodeBuilder):
         """Create Set Alpha node with type 'Replace Alpha'."""
         return cls(image=image, alpha=alpha, type="Replace Alpha")
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_alpha(self) -> Socket:
-        """Input socket: Alpha"""
-        return self.inputs._get("Alpha")
-
-    @property
-    def i_type(self) -> Socket:
-        """Input socket: Type"""
-        return self.inputs._get("Type")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Split(NodeBuilder):
     """
     Combine two images for side-by-side display. Typically used in combination with a Viewer node
+
+    Parameters
+    ----------
+    position : InputVector
+        Position
+    rotation : InputFloat
+        Rotation
+    image : InputColor
+        Image
+    image_001 : InputColor
+        Image
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeSplit"
     node: bpy.types.CompositorNodeSplit
+
+    class Inputs(SocketAccessor):
+        position: Socket
+        rotation: Socket
+        image: Socket
+        image_001: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Split.Inputs":
+        return Split.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Split.Outputs":
+        return Split.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1049,39 +1179,44 @@ class Split(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_image_001(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image_001")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class Switch(NodeBuilder):
     """
     Switch between two images using a checkbox
+
+    Parameters
+    ----------
+    switch : InputBoolean
+        Switch
+    off : InputColor
+        Off
+    on : InputColor
+        On
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeSwitch"
     node: bpy.types.CompositorNodeSwitch
+
+    class Inputs(SocketAccessor):
+        switch: Socket
+        off: Socket
+        on: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "Switch.Inputs":
+        return Switch.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Switch.Outputs":
+        return Switch.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1094,34 +1229,41 @@ class Switch(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_switch(self) -> Socket:
-        """Input socket: Switch"""
-        return self.inputs._get("Switch")
-
-    @property
-    def i_off(self) -> Socket:
-        """Input socket: Off"""
-        return self.inputs._get("Off")
-
-    @property
-    def i_on(self) -> Socket:
-        """Input socket: On"""
-        return self.inputs._get("On")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class SwitchView(NodeBuilder):
     """
     Combine the views (left and right) into a single stereo 3D output
+
+    Parameters
+    ----------
+    left : InputColor
+        left
+    right : InputColor
+        right
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeSwitchView"
     node: bpy.types.CompositorNodeSwitchView
+
+    class Inputs(SocketAccessor):
+        left: Socket
+        right: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "SwitchView.Inputs":
+        return SwitchView.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SwitchView.Outputs":
+        return SwitchView.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1132,18 +1274,3 @@ class SwitchView(NodeBuilder):
         key_args = {"left": left, "right": right}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_left(self) -> Socket:
-        """Input socket: left"""
-        return self.inputs._get("left")
-
-    @property
-    def i_right(self) -> Socket:
-        """Input socket: right"""
-        return self.inputs._get("right")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")

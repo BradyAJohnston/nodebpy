@@ -6,6 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as NodeBuilder,
+    SocketAccessor,
     Socket,
     BooleanSocket,
     FloatSocket,
@@ -29,10 +30,46 @@ from ...types import (
 class AdvectGrid(NodeBuilder):
     """
     Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    velocity : InputVector
+        Velocity
+    time_step : InputFloat
+        Time Step
+    integration_scheme : InputMenu | Literal['Semi-Lagrangian', 'Midpoint', 'Runge-Kutta 3', 'Runge-Kutta 4', 'MacCormack', 'BFECC']
+        Integration Scheme
+    limiter : InputMenu | Literal['None', 'Clamp', 'Revert']
+        Limiter
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeGridAdvect"
     node: bpy.types.GeometryNodeGridAdvect
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        velocity: Socket
+        time_step: Socket
+        integration_scheme: Socket
+        limiter: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "AdvectGrid.Inputs":
+        return AdvectGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "AdvectGrid.Outputs":
+        return AdvectGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -145,36 +182,6 @@ class AdvectGrid(NodeBuilder):
         )
 
     @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_velocity(self) -> Socket:
-        """Input socket: Velocity"""
-        return self.inputs._get("Velocity")
-
-    @property
-    def i_time_step(self) -> Socket:
-        """Input socket: Time Step"""
-        return self.inputs._get("Time Step")
-
-    @property
-    def i_integration_scheme(self) -> Socket:
-        """Input socket: Integration Scheme"""
-        return self.inputs._get("Integration Scheme")
-
-    @property
-    def i_limiter(self) -> Socket:
-        """Input socket: Limiter"""
-        return self.inputs._get("Limiter")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
         return self.node.data_type
 
@@ -186,10 +193,46 @@ class AdvectGrid(NodeBuilder):
 class DistributePointsInGrid(NodeBuilder):
     """
     Generate points inside a volume grid
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    density : InputFloat
+        Density
+    seed : InputInteger
+        Seed
+    spacing : InputVector
+        Spacing
+    threshold : InputFloat
+        Threshold
+
+    Outputs
+    -------
+    points : GeometrySocket
+        Points
     """
 
     _bl_idname = "GeometryNodeDistributePointsInGrid"
     node: bpy.types.GeometryNodeDistributePointsInGrid
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        density: Socket
+        seed: Socket
+        spacing: Socket
+        threshold: Socket
+
+    class Outputs(SocketAccessor):
+        points: GeometrySocket
+
+    @property
+    def i(self) -> "DistributePointsInGrid.Inputs":
+        return DistributePointsInGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DistributePointsInGrid.Outputs":
+        return DistributePointsInGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -230,36 +273,6 @@ class DistributePointsInGrid(NodeBuilder):
         return cls(mode="DENSITY_GRID", grid=grid, spacing=spacing, threshold=threshold)
 
     @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_seed(self) -> Socket:
-        """Input socket: Seed"""
-        return self.inputs._get("Seed")
-
-    @property
-    def i_spacing(self) -> Socket:
-        """Input socket: Spacing"""
-        return self.inputs._get("Spacing")
-
-    @property
-    def i_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Threshold")
-
-    @property
-    def o_points(self) -> GeometrySocket:
-        """Output socket: Points"""
-        return self.outputs._get("Points")
-
-    @property
     def mode(self) -> Literal["DENSITY_RANDOM", "DENSITY_GRID"]:
         return self.node.mode
 
@@ -271,10 +284,49 @@ class DistributePointsInGrid(NodeBuilder):
 class DistributePointsInVolume(NodeBuilder):
     """
     Generate points inside a volume
+
+    Parameters
+    ----------
+    volume : InputGeometry
+        Volume
+    mode : InputMenu | Literal['Random', 'Grid']
+        Mode
+    density : InputFloat
+        Density
+    seed : InputInteger
+        Seed
+    spacing : InputVector
+        Spacing
+    threshold : InputFloat
+        Threshold
+
+    Outputs
+    -------
+    points : GeometrySocket
+        Points
     """
 
     _bl_idname = "GeometryNodeDistributePointsInVolume"
     node: bpy.types.GeometryNodeDistributePointsInVolume
+
+    class Inputs(SocketAccessor):
+        volume: Socket
+        mode: Socket
+        density: Socket
+        seed: Socket
+        spacing: Socket
+        threshold: Socket
+
+    class Outputs(SocketAccessor):
+        points: GeometrySocket
+
+    @property
+    def i(self) -> "DistributePointsInVolume.Inputs":
+        return DistributePointsInVolume.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DistributePointsInVolume.Outputs":
+        return DistributePointsInVolume.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -297,49 +349,47 @@ class DistributePointsInVolume(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_volume(self) -> Socket:
-        """Input socket: Volume"""
-        return self.inputs._get("Volume")
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_seed(self) -> Socket:
-        """Input socket: Seed"""
-        return self.inputs._get("Seed")
-
-    @property
-    def i_spacing(self) -> Socket:
-        """Input socket: Spacing"""
-        return self.inputs._get("Spacing")
-
-    @property
-    def i_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Threshold")
-
-    @property
-    def o_points(self) -> GeometrySocket:
-        """Output socket: Points"""
-        return self.outputs._get("Points")
-
 
 class GetNamedGrid(NodeBuilder):
     """
     Get volume grid from a volume geometry with the specified name
+
+    Parameters
+    ----------
+    volume : InputGeometry
+        Volume
+    name : InputString
+        Name
+    remove : InputBoolean
+        Remove
+
+    Outputs
+    -------
+    volume : GeometrySocket
+        Volume
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeGetNamedGrid"
     node: bpy.types.GeometryNodeGetNamedGrid
+
+    class Inputs(SocketAccessor):
+        volume: Socket
+        name: Socket
+        remove: Socket
+
+    class Outputs(SocketAccessor):
+        volume: GeometrySocket
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "GetNamedGrid.Inputs":
+        return GetNamedGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GetNamedGrid.Outputs":
+        return GetNamedGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -395,31 +445,6 @@ class GetNamedGrid(NodeBuilder):
         return cls(data_type="VECTOR", volume=volume, name=name, remove=remove)
 
     @property
-    def i_volume(self) -> Socket:
-        """Input socket: Volume"""
-        return self.inputs._get("Volume")
-
-    @property
-    def i_name(self) -> Socket:
-        """Input socket: Name"""
-        return self.inputs._get("Name")
-
-    @property
-    def i_remove(self) -> Socket:
-        """Input socket: Remove"""
-        return self.inputs._get("Remove")
-
-    @property
-    def o_volume(self) -> GeometrySocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
@@ -431,35 +456,73 @@ class GetNamedGrid(NodeBuilder):
 class GridCurl(NodeBuilder):
     """
     Calculate the magnitude and direction of circulation of a directional vector grid
+
+    Parameters
+    ----------
+    grid : InputVector
+        Grid
+
+    Outputs
+    -------
+    curl : VectorSocket
+        Curl
     """
 
     _bl_idname = "GeometryNodeGridCurl"
     node: bpy.types.GeometryNodeGridCurl
 
+    class Inputs(SocketAccessor):
+        grid: Socket
+
+    class Outputs(SocketAccessor):
+        curl: VectorSocket
+
+    @property
+    def i(self) -> "GridCurl.Inputs":
+        return GridCurl.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GridCurl.Outputs":
+        return GridCurl.Outputs(self.node.outputs, "output")
+
     def __init__(self, grid: InputVector = None):
         super().__init__()
         key_args = {"Grid": grid}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def o_curl(self) -> VectorSocket:
-        """Output socket: Curl"""
-        return self.outputs._get("Curl")
 
 
 class GridDivergence(NodeBuilder):
     """
     Calculate the flow into and out of each point of a directional vector grid
+
+    Parameters
+    ----------
+    grid : InputVector
+        Grid
+
+    Outputs
+    -------
+    divergence : FloatSocket
+        Divergence
     """
 
     _bl_idname = "GeometryNodeGridDivergence"
     node: bpy.types.GeometryNodeGridDivergence
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+
+    class Outputs(SocketAccessor):
+        divergence: FloatSocket
+
+    @property
+    def i(self) -> "GridDivergence.Inputs":
+        return GridDivergence.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GridDivergence.Outputs":
+        return GridDivergence.Outputs(self.node.outputs, "output")
 
     def __init__(self, grid: InputVector = None):
         super().__init__()
@@ -467,24 +530,38 @@ class GridDivergence(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def o_divergence(self) -> FloatSocket:
-        """Output socket: Divergence"""
-        return self.outputs._get("Divergence")
-
 
 class GridGradient(NodeBuilder):
     """
     Calculate the direction and magnitude of the change in values of a scalar grid
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+
+    Outputs
+    -------
+    gradient : VectorSocket
+        Gradient
     """
 
     _bl_idname = "GeometryNodeGridGradient"
     node: bpy.types.GeometryNodeGridGradient
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+
+    class Outputs(SocketAccessor):
+        gradient: VectorSocket
+
+    @property
+    def i(self) -> "GridGradient.Inputs":
+        return GridGradient.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GridGradient.Outputs":
+        return GridGradient.Outputs(self.node.outputs, "output")
 
     def __init__(self, grid: InputFloat = 0.0):
         super().__init__()
@@ -492,24 +569,41 @@ class GridGradient(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def o_gradient(self) -> VectorSocket:
-        """Output socket: Gradient"""
-        return self.outputs._get("Gradient")
-
 
 class GridInfo(NodeBuilder):
     """
     Retrieve information about a volume grid
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+
+    Outputs
+    -------
+    transform : MatrixSocket
+        Transform
+    background_value : FloatSocket
+        Background Value
     """
 
     _bl_idname = "GeometryNodeGridInfo"
     node: bpy.types.GeometryNodeGridInfo
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+
+    class Outputs(SocketAccessor):
+        transform: MatrixSocket
+        background_value: FloatSocket
+
+    @property
+    def i(self) -> "GridInfo.Inputs":
+        return GridInfo.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GridInfo.Outputs":
+        return GridInfo.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -543,21 +637,6 @@ class GridInfo(NodeBuilder):
         return cls(data_type="VECTOR", grid=grid)
 
     @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def o_transform(self) -> MatrixSocket:
-        """Output socket: Transform"""
-        return self.outputs._get("Transform")
-
-    @property
-    def o_background_value(self) -> FloatSocket:
-        """Output socket: Background Value"""
-        return self.outputs._get("Background Value")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
@@ -569,10 +648,34 @@ class GridInfo(NodeBuilder):
 class GridLaplacian(NodeBuilder):
     """
     Compute the divergence of the gradient of the input grid
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+
+    Outputs
+    -------
+    laplacian : FloatSocket
+        Laplacian
     """
 
     _bl_idname = "GeometryNodeGridLaplacian"
     node: bpy.types.GeometryNodeGridLaplacian
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+
+    class Outputs(SocketAccessor):
+        laplacian: FloatSocket
+
+    @property
+    def i(self) -> "GridLaplacian.Inputs":
+        return GridLaplacian.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GridLaplacian.Outputs":
+        return GridLaplacian.Outputs(self.node.outputs, "output")
 
     def __init__(self, grid: InputFloat = 0.0):
         super().__init__()
@@ -580,24 +683,44 @@ class GridLaplacian(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def o_laplacian(self) -> FloatSocket:
-        """Output socket: Laplacian"""
-        return self.outputs._get("Laplacian")
-
 
 class GridToMesh(NodeBuilder):
     """
     Generate a mesh on the "surface" of a volume grid
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    threshold : InputFloat
+        Threshold
+    adaptivity : InputFloat
+        Adaptivity
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeGridToMesh"
     node: bpy.types.GeometryNodeGridToMesh
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        threshold: Socket
+        adaptivity: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "GridToMesh.Inputs":
+        return GridToMesh.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "GridToMesh.Outputs":
+        return GridToMesh.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -610,34 +733,47 @@ class GridToMesh(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Threshold")
-
-    @property
-    def i_adaptivity(self) -> Socket:
-        """Input socket: Adaptivity"""
-        return self.inputs._get("Adaptivity")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class MeshToDensityGrid(NodeBuilder):
     """
     Create a filled volume grid from a mesh
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    density : InputFloat
+        Density
+    voxel_size : InputFloat
+        Voxel Size
+    gradient_width : InputFloat
+        Gradient Width
+
+    Outputs
+    -------
+    density_grid : FloatSocket
+        Density Grid
     """
 
     _bl_idname = "GeometryNodeMeshToDensityGrid"
     node: bpy.types.GeometryNodeMeshToDensityGrid
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        density: Socket
+        voxel_size: Socket
+        gradient_width: Socket
+
+    class Outputs(SocketAccessor):
+        density_grid: FloatSocket
+
+    @property
+    def i(self) -> "MeshToDensityGrid.Inputs":
+        return MeshToDensityGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshToDensityGrid.Outputs":
+        return MeshToDensityGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -656,39 +792,44 @@ class MeshToDensityGrid(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_voxel_size(self) -> Socket:
-        """Input socket: Voxel Size"""
-        return self.inputs._get("Voxel Size")
-
-    @property
-    def i_gradient_width(self) -> Socket:
-        """Input socket: Gradient Width"""
-        return self.inputs._get("Gradient Width")
-
-    @property
-    def o_density_grid(self) -> FloatSocket:
-        """Output socket: Density Grid"""
-        return self.outputs._get("Density Grid")
-
 
 class MeshToSDFGrid(NodeBuilder):
     """
     Create a signed distance volume grid from a mesh
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    voxel_size : InputFloat
+        Voxel Size
+    band_width : InputInteger
+        Band Width
+
+    Outputs
+    -------
+    sdf_grid : FloatSocket
+        SDF Grid
     """
 
     _bl_idname = "GeometryNodeMeshToSDFGrid"
     node: bpy.types.GeometryNodeMeshToSDFGrid
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        voxel_size: Socket
+        band_width: Socket
+
+    class Outputs(SocketAccessor):
+        sdf_grid: FloatSocket
+
+    @property
+    def i(self) -> "MeshToSDFGrid.Inputs":
+        return MeshToSDFGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshToSDFGrid.Outputs":
+        return MeshToSDFGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -701,34 +842,53 @@ class MeshToSDFGrid(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_voxel_size(self) -> Socket:
-        """Input socket: Voxel Size"""
-        return self.inputs._get("Voxel Size")
-
-    @property
-    def i_band_width(self) -> Socket:
-        """Input socket: Band Width"""
-        return self.inputs._get("Band Width")
-
-    @property
-    def o_sdf_grid(self) -> FloatSocket:
-        """Output socket: SDF Grid"""
-        return self.outputs._get("SDF Grid")
-
 
 class MeshToVolume(NodeBuilder):
     """
     Create a fog volume with the shape of the input mesh's surface
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    density : InputFloat
+        Density
+    resolution_mode : InputMenu | Literal['Amount', 'Size']
+        Resolution Mode
+    voxel_size : InputFloat
+        Voxel Size
+    voxel_amount : InputFloat
+        Voxel Amount
+    interior_band_width : InputFloat
+        Interior Band Width
+
+    Outputs
+    -------
+    volume : GeometrySocket
+        Volume
     """
 
     _bl_idname = "GeometryNodeMeshToVolume"
     node: bpy.types.GeometryNodeMeshToVolume
+
+    class Inputs(SocketAccessor):
+        mesh: Socket
+        density: Socket
+        resolution_mode: Socket
+        voxel_size: Socket
+        voxel_amount: Socket
+        interior_band_width: Socket
+
+    class Outputs(SocketAccessor):
+        volume: GeometrySocket
+
+    @property
+    def i(self) -> "MeshToVolume.Inputs":
+        return MeshToVolume.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "MeshToVolume.Outputs":
+        return MeshToVolume.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -751,49 +911,44 @@ class MeshToVolume(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_mesh(self) -> Socket:
-        """Input socket: Mesh"""
-        return self.inputs._get("Mesh")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_resolution_mode(self) -> Socket:
-        """Input socket: Resolution Mode"""
-        return self.inputs._get("Resolution Mode")
-
-    @property
-    def i_voxel_size(self) -> Socket:
-        """Input socket: Voxel Size"""
-        return self.inputs._get("Voxel Size")
-
-    @property
-    def i_voxel_amount(self) -> Socket:
-        """Input socket: Voxel Amount"""
-        return self.inputs._get("Voxel Amount")
-
-    @property
-    def i_interior_band_width(self) -> Socket:
-        """Input socket: Interior Band Width"""
-        return self.inputs._get("Interior Band Width")
-
-    @property
-    def o_volume(self) -> GeometrySocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
 
 class PointsToSDFGrid(NodeBuilder):
     """
     Create a signed distance volume grid from points
+
+    Parameters
+    ----------
+    points : InputGeometry
+        Points
+    radius : InputFloat
+        Radius
+    voxel_size : InputFloat
+        Voxel Size
+
+    Outputs
+    -------
+    sdf_grid : FloatSocket
+        SDF Grid
     """
 
     _bl_idname = "GeometryNodePointsToSDFGrid"
     node: bpy.types.GeometryNodePointsToSDFGrid
+
+    class Inputs(SocketAccessor):
+        points: Socket
+        radius: Socket
+        voxel_size: Socket
+
+    class Outputs(SocketAccessor):
+        sdf_grid: FloatSocket
+
+    @property
+    def i(self) -> "PointsToSDFGrid.Inputs":
+        return PointsToSDFGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PointsToSDFGrid.Outputs":
+        return PointsToSDFGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -806,34 +961,53 @@ class PointsToSDFGrid(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_points(self) -> Socket:
-        """Input socket: Points"""
-        return self.inputs._get("Points")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def i_voxel_size(self) -> Socket:
-        """Input socket: Voxel Size"""
-        return self.inputs._get("Voxel Size")
-
-    @property
-    def o_sdf_grid(self) -> FloatSocket:
-        """Output socket: SDF Grid"""
-        return self.outputs._get("SDF Grid")
-
 
 class PointsToVolume(NodeBuilder):
     """
     Generate a fog volume sphere around every point
+
+    Parameters
+    ----------
+    points : InputGeometry
+        Points
+    density : InputFloat
+        Density
+    resolution_mode : InputMenu | Literal['Amount', 'Size']
+        Resolution Mode
+    voxel_size : InputFloat
+        Voxel Size
+    voxel_amount : InputFloat
+        Voxel Amount
+    radius : InputFloat
+        Radius
+
+    Outputs
+    -------
+    volume : GeometrySocket
+        Volume
     """
 
     _bl_idname = "GeometryNodePointsToVolume"
     node: bpy.types.GeometryNodePointsToVolume
+
+    class Inputs(SocketAccessor):
+        points: Socket
+        density: Socket
+        resolution_mode: Socket
+        voxel_size: Socket
+        voxel_amount: Socket
+        radius: Socket
+
+    class Outputs(SocketAccessor):
+        volume: GeometrySocket
+
+    @property
+    def i(self) -> "PointsToVolume.Inputs":
+        return PointsToVolume.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PointsToVolume.Outputs":
+        return PointsToVolume.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -856,49 +1030,44 @@ class PointsToVolume(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_points(self) -> Socket:
-        """Input socket: Points"""
-        return self.inputs._get("Points")
-
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_resolution_mode(self) -> Socket:
-        """Input socket: Resolution Mode"""
-        return self.inputs._get("Resolution Mode")
-
-    @property
-    def i_voxel_size(self) -> Socket:
-        """Input socket: Voxel Size"""
-        return self.inputs._get("Voxel Size")
-
-    @property
-    def i_voxel_amount(self) -> Socket:
-        """Input socket: Voxel Amount"""
-        return self.inputs._get("Voxel Amount")
-
-    @property
-    def i_radius(self) -> Socket:
-        """Input socket: Radius"""
-        return self.inputs._get("Radius")
-
-    @property
-    def o_volume(self) -> GeometrySocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
 
 class PruneGrid(NodeBuilder):
     """
     Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    mode : InputMenu | Literal['Inactive', 'Threshold', 'SDF']
+        Mode
+    threshold : InputFloat
+        Threshold
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeGridPrune"
     node: bpy.types.GeometryNodeGridPrune
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        mode: Socket
+        threshold: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "PruneGrid.Inputs":
+        return PruneGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "PruneGrid.Outputs":
+        return PruneGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -953,26 +1122,6 @@ class PruneGrid(NodeBuilder):
         return cls(data_type="VECTOR", grid=grid, mode=mode, threshold=threshold)
 
     @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_mode(self) -> Socket:
-        """Input socket: Mode"""
-        return self.inputs._get("Mode")
-
-    @property
-    def i_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Threshold")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
@@ -984,11 +1133,38 @@ class PruneGrid(NodeBuilder):
 class SDFGridFillet(NodeBuilder):
     """
     Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    iterations : InputInteger
+        Iterations
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeSDFGridFillet"
     node: bpy.types.GeometryNodeSDFGridFillet
 
+    class Inputs(SocketAccessor):
+        grid: Socket
+        iterations: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "SDFGridFillet.Inputs":
+        return SDFGridFillet.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SDFGridFillet.Outputs":
+        return SDFGridFillet.Outputs(self.node.outputs, "output")
+
     def __init__(
         self,
         grid: InputFloat = 0.0,
@@ -998,31 +1174,43 @@ class SDFGridFillet(NodeBuilder):
         key_args = {"Grid": grid, "Iterations": iterations}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_iterations(self) -> Socket:
-        """Input socket: Iterations"""
-        return self.inputs._get("Iterations")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
 
 
 class SDFGridLaplacian(NodeBuilder):
     """
     Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    iterations : InputInteger
+        Iterations
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeSDFGridLaplacian"
     node: bpy.types.GeometryNodeSDFGridLaplacian
 
+    class Inputs(SocketAccessor):
+        grid: Socket
+        iterations: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "SDFGridLaplacian.Inputs":
+        return SDFGridLaplacian.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SDFGridLaplacian.Outputs":
+        return SDFGridLaplacian.Outputs(self.node.outputs, "output")
+
     def __init__(
         self,
         grid: InputFloat = 0.0,
@@ -1032,30 +1220,45 @@ class SDFGridLaplacian(NodeBuilder):
         key_args = {"Grid": grid, "Iterations": iterations}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_iterations(self) -> Socket:
-        """Input socket: Iterations"""
-        return self.inputs._get("Iterations")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
 
 
 class SDFGridMean(NodeBuilder):
     """
     Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    width : InputInteger
+        Width
+    iterations : InputInteger
+        Iterations
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeSDFGridMean"
     node: bpy.types.GeometryNodeSDFGridMean
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        width: Socket
+        iterations: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "SDFGridMean.Inputs":
+        return SDFGridMean.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SDFGridMean.Outputs":
+        return SDFGridMean.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1068,34 +1271,41 @@ class SDFGridMean(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_width(self) -> Socket:
-        """Input socket: Width"""
-        return self.inputs._get("Width")
-
-    @property
-    def i_iterations(self) -> Socket:
-        """Input socket: Iterations"""
-        return self.inputs._get("Iterations")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
 
 class SDFGridMeanCurvature(NodeBuilder):
     """
     Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    iterations : InputInteger
+        Iterations
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeSDFGridMeanCurvature"
     node: bpy.types.GeometryNodeSDFGridMeanCurvature
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        iterations: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "SDFGridMeanCurvature.Inputs":
+        return SDFGridMeanCurvature.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SDFGridMeanCurvature.Outputs":
+        return SDFGridMeanCurvature.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1107,29 +1317,44 @@ class SDFGridMeanCurvature(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_iterations(self) -> Socket:
-        """Input socket: Iterations"""
-        return self.inputs._get("Iterations")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
 
 class SDFGridMedian(NodeBuilder):
     """
     Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    width : InputInteger
+        Width
+    iterations : InputInteger
+        Iterations
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeSDFGridMedian"
     node: bpy.types.GeometryNodeSDFGridMedian
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        width: Socket
+        iterations: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "SDFGridMedian.Inputs":
+        return SDFGridMedian.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SDFGridMedian.Outputs":
+        return SDFGridMedian.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1142,34 +1367,41 @@ class SDFGridMedian(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_width(self) -> Socket:
-        """Input socket: Width"""
-        return self.inputs._get("Width")
-
-    @property
-    def i_iterations(self) -> Socket:
-        """Input socket: Iterations"""
-        return self.inputs._get("Iterations")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
 
 class SDFGridOffset(NodeBuilder):
     """
     Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    distance : InputFloat
+        Distance
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeSDFGridOffset"
     node: bpy.types.GeometryNodeSDFGridOffset
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        distance: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "SDFGridOffset.Inputs":
+        return SDFGridOffset.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SDFGridOffset.Outputs":
+        return SDFGridOffset.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1181,29 +1413,44 @@ class SDFGridOffset(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_distance(self) -> Socket:
-        """Input socket: Distance"""
-        return self.inputs._get("Distance")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
 
 class SampleGrid(NodeBuilder):
     """
     Retrieve values from the specified volume grid
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    position : InputVector
+        Position
+    interpolation : InputMenu | Literal['Nearest Neighbor', 'Trilinear', 'Triquadratic']
+        Interpolation
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "GeometryNodeSampleGrid"
     node: bpy.types.GeometryNodeSampleGrid
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        position: Socket
+        interpolation: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "SampleGrid.Inputs":
+        return SampleGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SampleGrid.Outputs":
+        return SampleGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1278,26 +1525,6 @@ class SampleGrid(NodeBuilder):
         )
 
     @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_interpolation(self) -> Socket:
-        """Input socket: Interpolation"""
-        return self.inputs._get("Interpolation")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
@@ -1309,10 +1536,43 @@ class SampleGrid(NodeBuilder):
 class SampleGridIndex(NodeBuilder):
     """
     Retrieve volume grid values at specific voxels
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    x : InputInteger
+        X
+    y : InputInteger
+        Y
+    z : InputInteger
+        Z
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "GeometryNodeSampleGridIndex"
     node: bpy.types.GeometryNodeSampleGridIndex
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        x: Socket
+        y: Socket
+        z: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "SampleGridIndex.Inputs":
+        return SampleGridIndex.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SampleGridIndex.Outputs":
+        return SampleGridIndex.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1373,31 +1633,6 @@ class SampleGridIndex(NodeBuilder):
         return cls(data_type="VECTOR", grid=grid, x=x, y=y, z=z)
 
     @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_x(self) -> Socket:
-        """Input socket: X"""
-        return self.inputs._get("X")
-
-    @property
-    def i_y(self) -> Socket:
-        """Input socket: Y"""
-        return self.inputs._get("Y")
-
-    @property
-    def i_z(self) -> Socket:
-        """Input socket: Z"""
-        return self.inputs._get("Z")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
@@ -1409,10 +1644,37 @@ class SampleGridIndex(NodeBuilder):
 class SetGridBackground(NodeBuilder):
     """
     Set the background value used for inactive voxels and tiles
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    background : InputFloat
+        Background
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeSetGridBackground"
     node: bpy.types.GeometryNodeSetGridBackground
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        background: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "SetGridBackground.Inputs":
+        return SetGridBackground.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetGridBackground.Outputs":
+        return SetGridBackground.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1455,21 +1717,6 @@ class SetGridBackground(NodeBuilder):
         return cls(data_type="VECTOR", grid=grid, background=background)
 
     @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_background(self) -> Socket:
-        """Input socket: Background"""
-        return self.inputs._get("Background")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
@@ -1481,10 +1728,40 @@ class SetGridBackground(NodeBuilder):
 class SetGridTransform(NodeBuilder):
     """
     Set the transform for the grid from index space into object space.
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    transform : InputMatrix
+        Transform
+
+    Outputs
+    -------
+    is_valid : BooleanSocket
+        Is Valid
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeSetGridTransform"
     node: bpy.types.GeometryNodeSetGridTransform
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+        transform: Socket
+
+    class Outputs(SocketAccessor):
+        is_valid: BooleanSocket
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "SetGridTransform.Inputs":
+        return SetGridTransform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetGridTransform.Outputs":
+        return SetGridTransform.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1527,26 +1804,6 @@ class SetGridTransform(NodeBuilder):
         return cls(data_type="VECTOR", grid=grid, transform=transform)
 
     @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def i_transform(self) -> Socket:
-        """Input socket: Transform"""
-        return self.inputs._get("Transform")
-
-    @property
-    def o_is_valid(self) -> BooleanSocket:
-        """Output socket: Is Valid"""
-        return self.outputs._get("Is Valid")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
-
-    @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
         return self.node.data_type
 
@@ -1558,10 +1815,40 @@ class SetGridTransform(NodeBuilder):
 class StoreNamedGrid(NodeBuilder):
     """
     Store grid data in a volume geometry with the specified name
+
+    Parameters
+    ----------
+    volume : InputGeometry
+        Volume
+    name : InputString
+        Name
+    grid : InputFloat
+        Grid
+
+    Outputs
+    -------
+    volume : GeometrySocket
+        Volume
     """
 
     _bl_idname = "GeometryNodeStoreNamedGrid"
     node: bpy.types.GeometryNodeStoreNamedGrid
+
+    class Inputs(SocketAccessor):
+        volume: Socket
+        name: Socket
+        grid: Socket
+
+    class Outputs(SocketAccessor):
+        volume: GeometrySocket
+
+    @property
+    def i(self) -> "StoreNamedGrid.Inputs":
+        return StoreNamedGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "StoreNamedGrid.Outputs":
+        return StoreNamedGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1617,26 +1904,6 @@ class StoreNamedGrid(NodeBuilder):
         return cls(data_type="VECTOR_FLOAT", volume=volume, name=name, grid=grid)
 
     @property
-    def i_volume(self) -> Socket:
-        """Input socket: Volume"""
-        return self.inputs._get("Volume")
-
-    @property
-    def i_name(self) -> Socket:
-        """Input socket: Name"""
-        return self.inputs._get("Name")
-
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def o_volume(self) -> GeometrySocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
-    @property
     def data_type(self) -> Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]:
         return self.node.data_type
 
@@ -1648,10 +1915,52 @@ class StoreNamedGrid(NodeBuilder):
 class VolumeCube(NodeBuilder):
     """
     Generate a dense volume with a field that controls the density at each grid voxel based on its position
+
+    Parameters
+    ----------
+    density : InputFloat
+        Density
+    background : InputFloat
+        Background
+    min : InputVector
+        Min
+    max : InputVector
+        Max
+    resolution_x : InputInteger
+        Resolution X
+    resolution_y : InputInteger
+        Resolution Y
+    resolution_z : InputInteger
+        Resolution Z
+
+    Outputs
+    -------
+    volume : GeometrySocket
+        Volume
     """
 
     _bl_idname = "GeometryNodeVolumeCube"
     node: bpy.types.GeometryNodeVolumeCube
+
+    class Inputs(SocketAccessor):
+        density: Socket
+        background: Socket
+        min: Socket
+        max: Socket
+        resolution_x: Socket
+        resolution_y: Socket
+        resolution_z: Socket
+
+    class Outputs(SocketAccessor):
+        volume: GeometrySocket
+
+    @property
+    def i(self) -> "VolumeCube.Inputs":
+        return VolumeCube.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VolumeCube.Outputs":
+        return VolumeCube.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1676,54 +1985,53 @@ class VolumeCube(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_density(self) -> Socket:
-        """Input socket: Density"""
-        return self.inputs._get("Density")
-
-    @property
-    def i_background(self) -> Socket:
-        """Input socket: Background"""
-        return self.inputs._get("Background")
-
-    @property
-    def i_min(self) -> Socket:
-        """Input socket: Min"""
-        return self.inputs._get("Min")
-
-    @property
-    def i_max(self) -> Socket:
-        """Input socket: Max"""
-        return self.inputs._get("Max")
-
-    @property
-    def i_resolution_x(self) -> Socket:
-        """Input socket: Resolution X"""
-        return self.inputs._get("Resolution X")
-
-    @property
-    def i_resolution_y(self) -> Socket:
-        """Input socket: Resolution Y"""
-        return self.inputs._get("Resolution Y")
-
-    @property
-    def i_resolution_z(self) -> Socket:
-        """Input socket: Resolution Z"""
-        return self.inputs._get("Resolution Z")
-
-    @property
-    def o_volume(self) -> GeometrySocket:
-        """Output socket: Volume"""
-        return self.outputs._get("Volume")
-
 
 class VolumeToMesh(NodeBuilder):
     """
     Generate a mesh on the "surface" of a volume
+
+    Parameters
+    ----------
+    volume : InputGeometry
+        Volume
+    resolution_mode : InputMenu | Literal['Grid', 'Amount', 'Size']
+        Resolution Mode
+    voxel_size : InputFloat
+        Voxel Size
+    voxel_amount : InputFloat
+        Voxel Amount
+    threshold : InputFloat
+        Threshold
+    adaptivity : InputFloat
+        Adaptivity
+
+    Outputs
+    -------
+    mesh : GeometrySocket
+        Mesh
     """
 
     _bl_idname = "GeometryNodeVolumeToMesh"
     node: bpy.types.GeometryNodeVolumeToMesh
+
+    class Inputs(SocketAccessor):
+        volume: Socket
+        resolution_mode: Socket
+        voxel_size: Socket
+        voxel_amount: Socket
+        threshold: Socket
+        adaptivity: Socket
+
+    class Outputs(SocketAccessor):
+        mesh: GeometrySocket
+
+    @property
+    def i(self) -> "VolumeToMesh.Inputs":
+        return VolumeToMesh.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VolumeToMesh.Outputs":
+        return VolumeToMesh.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1746,49 +2054,38 @@ class VolumeToMesh(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_volume(self) -> Socket:
-        """Input socket: Volume"""
-        return self.inputs._get("Volume")
-
-    @property
-    def i_resolution_mode(self) -> Socket:
-        """Input socket: Resolution Mode"""
-        return self.inputs._get("Resolution Mode")
-
-    @property
-    def i_voxel_size(self) -> Socket:
-        """Input socket: Voxel Size"""
-        return self.inputs._get("Voxel Size")
-
-    @property
-    def i_voxel_amount(self) -> Socket:
-        """Input socket: Voxel Amount"""
-        return self.inputs._get("Voxel Amount")
-
-    @property
-    def i_threshold(self) -> Socket:
-        """Input socket: Threshold"""
-        return self.inputs._get("Threshold")
-
-    @property
-    def i_adaptivity(self) -> Socket:
-        """Input socket: Adaptivity"""
-        return self.inputs._get("Adaptivity")
-
-    @property
-    def o_mesh(self) -> GeometrySocket:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
 
 class VoxelizeGrid(NodeBuilder):
     """
     Remove sparseness from a volume grid by making the active tiles into voxels
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+
+    Outputs
+    -------
+    grid : FloatSocket
+        Grid
     """
 
     _bl_idname = "GeometryNodeGridVoxelize"
     node: bpy.types.GeometryNodeGridVoxelize
+
+    class Inputs(SocketAccessor):
+        grid: Socket
+
+    class Outputs(SocketAccessor):
+        grid: FloatSocket
+
+    @property
+    def i(self) -> "VoxelizeGrid.Inputs":
+        return VoxelizeGrid.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VoxelizeGrid.Outputs":
+        return VoxelizeGrid.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -1820,16 +2117,6 @@ class VoxelizeGrid(NodeBuilder):
     def vector(cls, grid: InputVector = None) -> "VoxelizeGrid":
         """Create Voxelize Grid with operation 'Vector'."""
         return cls(data_type="VECTOR", grid=grid)
-
-    @property
-    def i_grid(self) -> Socket:
-        """Input socket: Grid"""
-        return self.inputs._get("Grid")
-
-    @property
-    def o_grid(self) -> FloatSocket:
-        """Output socket: Grid"""
-        return self.outputs._get("Grid")
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:

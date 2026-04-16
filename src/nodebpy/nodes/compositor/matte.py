@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, ColorSocket, FloatSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    SocketAccessor,
+    Socket,
+    ColorSocket,
+    FloatSocket,
+)
 
 from ...types import (
     InputBoolean,
@@ -19,10 +25,49 @@ from ...types import (
 class BoxMask(NodeBuilder):
     """
     Create rectangular mask suitable for use as a simple matte
+
+    Parameters
+    ----------
+    operation : InputMenu | Literal['Add', 'Subtract', 'Multiply', 'Not']
+        Operation
+    mask : InputFloat
+        Mask
+    value : InputFloat
+        Value
+    position : InputVector
+        Position
+    size : InputVector
+        Size
+    rotation : InputFloat
+        Rotation
+
+    Outputs
+    -------
+    mask : FloatSocket
+        Mask
     """
 
     _bl_idname = "CompositorNodeBoxMask"
     node: bpy.types.CompositorNodeBoxMask
+
+    class Inputs(SocketAccessor):
+        operation: Socket
+        mask: Socket
+        value: Socket
+        position: Socket
+        size: Socket
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        mask: FloatSocket
+
+    @property
+    def i(self) -> "BoxMask.Inputs":
+        return BoxMask.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "BoxMask.Outputs":
+        return BoxMask.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -45,49 +90,77 @@ class BoxMask(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_operation(self) -> Socket:
-        """Input socket: Operation"""
-        return self.inputs._get("Operation")
-
-    @property
-    def i_mask(self) -> Socket:
-        """Input socket: Mask"""
-        return self.inputs._get("Mask")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_mask(self) -> FloatSocket:
-        """Output socket: Mask"""
-        return self.outputs._get("Mask")
-
 
 class ChannelKey(NodeBuilder):
     """
     Create matte based on differences in color channels
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    minimum : InputFloat
+        Minimum
+    maximum : InputFloat
+        Maximum
+    color_space : InputMenu | Literal['RGB', 'HSV', 'YUV', 'YCbCr']
+        Color Space
+    rgb_key_channel : InputMenu | Literal['R', 'G', 'B']
+        RGB Key Channel
+    hsv_key_channel : InputMenu | Literal['H', 'S', 'V']
+        HSV Key Channel
+    yuv_key_channel : InputMenu | Literal['Y', 'U', 'V']
+        YUV Key Channel
+    ycbcr_key_channel : InputMenu | Literal['Y', 'Cb', 'Cr']
+        YCbCr Key Channel
+    limit_method : InputMenu | Literal['Single', 'Max']
+        Limit Method
+    rgb_limit_channel : InputMenu | Literal['R', 'G', 'B']
+        RGB Limit Channel
+    hsv_limit_channel : InputMenu | Literal['H', 'S', 'V']
+        HSV Limit Channel
+    yuv_limit_channel : InputMenu | Literal['Y', 'U', 'V']
+        YUV Limit Channel
+    ycbcr_limit_channel : InputMenu | Literal['Y', 'Cb', 'Cr']
+        YCbCr Limit Channel
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    matte : FloatSocket
+        Matte
     """
 
     _bl_idname = "CompositorNodeChannelMatte"
     node: bpy.types.CompositorNodeChannelMatte
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        minimum: Socket
+        maximum: Socket
+        color_space: Socket
+        rgb_key_channel: Socket
+        hsv_key_channel: Socket
+        yuv_key_channel: Socket
+        ycbcr_key_channel: Socket
+        limit_method: Socket
+        rgb_limit_channel: Socket
+        hsv_limit_channel: Socket
+        yuv_limit_channel: Socket
+        ycbcr_limit_channel: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        matte: FloatSocket
+
+    @property
+    def i(self) -> "ChannelKey.Inputs":
+        return ChannelKey.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ChannelKey.Outputs":
+        return ChannelKey.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -124,89 +197,53 @@ class ChannelKey(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_minimum(self) -> Socket:
-        """Input socket: Minimum"""
-        return self.inputs._get("Minimum")
-
-    @property
-    def i_maximum(self) -> Socket:
-        """Input socket: Maximum"""
-        return self.inputs._get("Maximum")
-
-    @property
-    def i_color_space(self) -> Socket:
-        """Input socket: Color Space"""
-        return self.inputs._get("Color Space")
-
-    @property
-    def i_rgb_key_channel(self) -> Socket:
-        """Input socket: RGB Key Channel"""
-        return self.inputs._get("RGB Key Channel")
-
-    @property
-    def i_hsv_key_channel(self) -> Socket:
-        """Input socket: HSV Key Channel"""
-        return self.inputs._get("HSV Key Channel")
-
-    @property
-    def i_yuv_key_channel(self) -> Socket:
-        """Input socket: YUV Key Channel"""
-        return self.inputs._get("YUV Key Channel")
-
-    @property
-    def i_ycbcr_key_channel(self) -> Socket:
-        """Input socket: YCbCr Key Channel"""
-        return self.inputs._get("YCbCr Key Channel")
-
-    @property
-    def i_limit_method(self) -> Socket:
-        """Input socket: Limit Method"""
-        return self.inputs._get("Limit Method")
-
-    @property
-    def i_rgb_limit_channel(self) -> Socket:
-        """Input socket: RGB Limit Channel"""
-        return self.inputs._get("RGB Limit Channel")
-
-    @property
-    def i_hsv_limit_channel(self) -> Socket:
-        """Input socket: HSV Limit Channel"""
-        return self.inputs._get("HSV Limit Channel")
-
-    @property
-    def i_yuv_limit_channel(self) -> Socket:
-        """Input socket: YUV Limit Channel"""
-        return self.inputs._get("YUV Limit Channel")
-
-    @property
-    def i_ycbcr_limit_channel(self) -> Socket:
-        """Input socket: YCbCr Limit Channel"""
-        return self.inputs._get("YCbCr Limit Channel")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_matte(self) -> FloatSocket:
-        """Output socket: Matte"""
-        return self.outputs._get("Matte")
-
 
 class ChromaKey(NodeBuilder):
     """
     Create matte based on chroma values
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    key_color : InputColor
+        Key Color
+    minimum : InputFloat
+        Minimum
+    maximum : InputFloat
+        Maximum
+    falloff : InputFloat
+        Falloff
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    matte : FloatSocket
+        Matte
     """
 
     _bl_idname = "CompositorNodeChromaMatte"
     node: bpy.types.CompositorNodeChromaMatte
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        key_color: Socket
+        minimum: Socket
+        maximum: Socket
+        falloff: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        matte: FloatSocket
+
+    @property
+    def i(self) -> "ChromaKey.Inputs":
+        return ChromaKey.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ChromaKey.Outputs":
+        return ChromaKey.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -227,49 +264,53 @@ class ChromaKey(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_key_color(self) -> Socket:
-        """Input socket: Key Color"""
-        return self.inputs._get("Key Color")
-
-    @property
-    def i_minimum(self) -> Socket:
-        """Input socket: Minimum"""
-        return self.inputs._get("Minimum")
-
-    @property
-    def i_maximum(self) -> Socket:
-        """Input socket: Maximum"""
-        return self.inputs._get("Maximum")
-
-    @property
-    def i_falloff(self) -> Socket:
-        """Input socket: Falloff"""
-        return self.inputs._get("Falloff")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_matte(self) -> FloatSocket:
-        """Output socket: Matte"""
-        return self.outputs._get("Matte")
-
 
 class ColorKey(NodeBuilder):
     """
     Create matte using a given color, for green or blue screen footage
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    key_color : InputColor
+        Key Color
+    hue : InputFloat
+        Hue
+    saturation : InputFloat
+        Saturation
+    value : InputFloat
+        Value
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    matte : FloatSocket
+        Matte
     """
 
     _bl_idname = "CompositorNodeColorMatte"
     node: bpy.types.CompositorNodeColorMatte
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        key_color: Socket
+        hue: Socket
+        saturation: Socket
+        value: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        matte: FloatSocket
+
+    @property
+    def i(self) -> "ColorKey.Inputs":
+        return ColorKey.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ColorKey.Outputs":
+        return ColorKey.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -290,49 +331,59 @@ class ColorKey(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_key_color(self) -> Socket:
-        """Input socket: Key Color"""
-        return self.inputs._get("Key Color")
-
-    @property
-    def i_hue(self) -> Socket:
-        """Input socket: Hue"""
-        return self.inputs._get("Hue")
-
-    @property
-    def i_saturation(self) -> Socket:
-        """Input socket: Saturation"""
-        return self.inputs._get("Saturation")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_matte(self) -> FloatSocket:
-        """Output socket: Matte"""
-        return self.outputs._get("Matte")
-
 
 class ColorSpill(NodeBuilder):
     """
     Remove colors from a blue or green screen, by reducing one RGB channel compared to the others
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    fac : InputFloat
+        Factor
+    spill_channel : InputMenu | Literal['R', 'G', 'B']
+        Spill Channel
+    limit_method : InputMenu | Literal['Single', 'Average']
+        Limit Method
+    limit_channel : InputMenu | Literal['R', 'G', 'B']
+        Limit Channel
+    limit_strength : InputFloat
+        Limit Strength
+    use_spill_strength : InputBoolean
+        Use Spill Strength
+    spill_strength : InputColor
+        Strength
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeColorSpill"
     node: bpy.types.CompositorNodeColorSpill
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        fac: Socket
+        spill_channel: Socket
+        limit_method: Socket
+        limit_channel: Socket
+        limit_strength: Socket
+        use_spill_strength: Socket
+        spill_strength: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+
+    @property
+    def i(self) -> "ColorSpill.Inputs":
+        return ColorSpill.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "ColorSpill.Outputs":
+        return ColorSpill.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -359,59 +410,50 @@ class ColorSpill(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_fac(self) -> Socket:
-        """Input socket: Factor"""
-        return self.inputs._get("Fac")
-
-    @property
-    def i_spill_channel(self) -> Socket:
-        """Input socket: Spill Channel"""
-        return self.inputs._get("Spill Channel")
-
-    @property
-    def i_limit_method(self) -> Socket:
-        """Input socket: Limit Method"""
-        return self.inputs._get("Limit Method")
-
-    @property
-    def i_limit_channel(self) -> Socket:
-        """Input socket: Limit Channel"""
-        return self.inputs._get("Limit Channel")
-
-    @property
-    def i_limit_strength(self) -> Socket:
-        """Input socket: Limit Strength"""
-        return self.inputs._get("Limit Strength")
-
-    @property
-    def i_use_spill_strength(self) -> Socket:
-        """Input socket: Use Spill Strength"""
-        return self.inputs._get("Use Spill Strength")
-
-    @property
-    def i_spill_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Spill Strength")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
 
 class DifferenceKey(NodeBuilder):
     """
     Produce a matte that isolates foreground content by comparing it with a reference background image
+
+    Parameters
+    ----------
+    image_1 : InputColor
+        Image 1
+    image_2 : InputColor
+        Image 2
+    tolerance : InputFloat
+        Tolerance
+    falloff : InputFloat
+        Falloff
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    matte : FloatSocket
+        Matte
     """
 
     _bl_idname = "CompositorNodeDiffMatte"
     node: bpy.types.CompositorNodeDiffMatte
+
+    class Inputs(SocketAccessor):
+        image_1: Socket
+        image_2: Socket
+        tolerance: Socket
+        falloff: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        matte: FloatSocket
+
+    @property
+    def i(self) -> "DifferenceKey.Inputs":
+        return DifferenceKey.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DifferenceKey.Outputs":
+        return DifferenceKey.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -430,44 +472,53 @@ class DifferenceKey(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image_1(self) -> Socket:
-        """Input socket: Image 1"""
-        return self.inputs._get("Image 1")
-
-    @property
-    def i_image_2(self) -> Socket:
-        """Input socket: Image 2"""
-        return self.inputs._get("Image 2")
-
-    @property
-    def i_tolerance(self) -> Socket:
-        """Input socket: Tolerance"""
-        return self.inputs._get("Tolerance")
-
-    @property
-    def i_falloff(self) -> Socket:
-        """Input socket: Falloff"""
-        return self.inputs._get("Falloff")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_matte(self) -> FloatSocket:
-        """Output socket: Matte"""
-        return self.outputs._get("Matte")
-
 
 class DistanceKey(NodeBuilder):
     """
     Create matte based on 3D distance between colors
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    key_color : InputColor
+        Key Color
+    color_space : InputMenu | Literal['RGB', 'YCC']
+        Color Space
+    tolerance : InputFloat
+        Tolerance
+    falloff : InputFloat
+        Falloff
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    matte : FloatSocket
+        Matte
     """
 
     _bl_idname = "CompositorNodeDistanceMatte"
     node: bpy.types.CompositorNodeDistanceMatte
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        key_color: Socket
+        color_space: Socket
+        tolerance: Socket
+        falloff: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        matte: FloatSocket
+
+    @property
+    def i(self) -> "DistanceKey.Inputs":
+        return DistanceKey.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DistanceKey.Outputs":
+        return DistanceKey.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -488,49 +539,47 @@ class DistanceKey(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_key_color(self) -> Socket:
-        """Input socket: Key Color"""
-        return self.inputs._get("Key Color")
-
-    @property
-    def i_color_space(self) -> Socket:
-        """Input socket: Color Space"""
-        return self.inputs._get("Color Space")
-
-    @property
-    def i_tolerance(self) -> Socket:
-        """Input socket: Tolerance"""
-        return self.inputs._get("Tolerance")
-
-    @property
-    def i_falloff(self) -> Socket:
-        """Input socket: Falloff"""
-        return self.inputs._get("Falloff")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_matte(self) -> FloatSocket:
-        """Output socket: Matte"""
-        return self.outputs._get("Matte")
-
 
 class DoubleEdgeMask(NodeBuilder):
     """
     Create a gradient between two masks
+
+    Parameters
+    ----------
+    outer_mask : InputFloat
+        Outer Mask
+    inner_mask : InputFloat
+        Inner Mask
+    image_edges : InputBoolean
+        Image Edges
+    only_inside_outer : InputBoolean
+        Only Inside Outer
+
+    Outputs
+    -------
+    mask : FloatSocket
+        Mask
     """
 
     _bl_idname = "CompositorNodeDoubleEdgeMask"
     node: bpy.types.CompositorNodeDoubleEdgeMask
+
+    class Inputs(SocketAccessor):
+        outer_mask: Socket
+        inner_mask: Socket
+        image_edges: Socket
+        only_inside_outer: Socket
+
+    class Outputs(SocketAccessor):
+        mask: FloatSocket
+
+    @property
+    def i(self) -> "DoubleEdgeMask.Inputs":
+        return DoubleEdgeMask.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "DoubleEdgeMask.Outputs":
+        return DoubleEdgeMask.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -549,39 +598,53 @@ class DoubleEdgeMask(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_outer_mask(self) -> Socket:
-        """Input socket: Outer Mask"""
-        return self.inputs._get("Outer Mask")
-
-    @property
-    def i_inner_mask(self) -> Socket:
-        """Input socket: Inner Mask"""
-        return self.inputs._get("Inner Mask")
-
-    @property
-    def i_image_edges(self) -> Socket:
-        """Input socket: Image Edges"""
-        return self.inputs._get("Image Edges")
-
-    @property
-    def i_only_inside_outer(self) -> Socket:
-        """Input socket: Only Inside Outer"""
-        return self.inputs._get("Only Inside Outer")
-
-    @property
-    def o_mask(self) -> FloatSocket:
-        """Output socket: Mask"""
-        return self.outputs._get("Mask")
-
 
 class EllipseMask(NodeBuilder):
     """
     Create elliptical mask suitable for use as a simple matte or vignette mask
+
+    Parameters
+    ----------
+    operation : InputMenu | Literal['Add', 'Subtract', 'Multiply', 'Not']
+        Operation
+    mask : InputFloat
+        Mask
+    value : InputFloat
+        Value
+    position : InputVector
+        Position
+    size : InputVector
+        Size
+    rotation : InputFloat
+        Rotation
+
+    Outputs
+    -------
+    mask : FloatSocket
+        Mask
     """
 
     _bl_idname = "CompositorNodeEllipseMask"
     node: bpy.types.CompositorNodeEllipseMask
+
+    class Inputs(SocketAccessor):
+        operation: Socket
+        mask: Socket
+        value: Socket
+        position: Socket
+        size: Socket
+        rotation: Socket
+
+    class Outputs(SocketAccessor):
+        mask: FloatSocket
+
+    @property
+    def i(self) -> "EllipseMask.Inputs":
+        return EllipseMask.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "EllipseMask.Outputs":
+        return EllipseMask.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -604,49 +667,89 @@ class EllipseMask(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_operation(self) -> Socket:
-        """Input socket: Operation"""
-        return self.inputs._get("Operation")
-
-    @property
-    def i_mask(self) -> Socket:
-        """Input socket: Mask"""
-        return self.inputs._get("Mask")
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def i_position(self) -> Socket:
-        """Input socket: Position"""
-        return self.inputs._get("Position")
-
-    @property
-    def i_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Size")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def o_mask(self) -> FloatSocket:
-        """Output socket: Mask"""
-        return self.outputs._get("Mask")
-
 
 class Keying(NodeBuilder):
     """
     Perform both chroma keying (to remove the backdrop) and despill (to correct color cast from the backdrop)
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    key_color : InputColor
+        Key Color
+    preprocess_blur_size : InputInteger
+        Blur Size
+    key_balance : InputFloat
+        Balance
+    black_level : InputFloat
+        Black Level
+    white_level : InputFloat
+        White Level
+    edge_search_size : InputInteger
+        Size
+    edge_tolerance : InputFloat
+        Tolerance
+    garbage_matte : InputFloat
+        Garbage Matte
+    core_matte : InputFloat
+        Core Matte
+    postprocess_blur_size : InputInteger
+        Blur Size
+    postprocess_dilate_size : InputInteger
+        Dilate Size
+    postprocess_feather_size : InputInteger
+        Feather Size
+    feather_falloff : InputMenu | Literal['Smooth', 'Sphere', 'Root', 'Inverse Square', 'Sharp', 'Linear']
+        Feather Falloff
+    despill_strength : InputFloat
+        Strength
+    despill_balance : InputFloat
+        Balance
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    matte : FloatSocket
+        Matte
+    edges : FloatSocket
+        Edges
     """
 
     _bl_idname = "CompositorNodeKeying"
     node: bpy.types.CompositorNodeKeying
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        key_color: Socket
+        preprocess_blur_size: Socket
+        key_balance: Socket
+        black_level: Socket
+        white_level: Socket
+        edge_search_size: Socket
+        edge_tolerance: Socket
+        garbage_matte: Socket
+        core_matte: Socket
+        postprocess_blur_size: Socket
+        postprocess_dilate_size: Socket
+        postprocess_feather_size: Socket
+        feather_falloff: Socket
+        despill_strength: Socket
+        despill_balance: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        matte: FloatSocket
+        edges: FloatSocket
+
+    @property
+    def i(self) -> "Keying.Inputs":
+        return Keying.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Keying.Outputs":
+        return Keying.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -692,109 +795,38 @@ class Keying(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_key_color(self) -> Socket:
-        """Input socket: Key Color"""
-        return self.inputs._get("Key Color")
-
-    @property
-    def i_preprocess_blur_size(self) -> Socket:
-        """Input socket: Blur Size"""
-        return self.inputs._get("Preprocess Blur Size")
-
-    @property
-    def i_key_balance(self) -> Socket:
-        """Input socket: Balance"""
-        return self.inputs._get("Key Balance")
-
-    @property
-    def i_black_level(self) -> Socket:
-        """Input socket: Black Level"""
-        return self.inputs._get("Black Level")
-
-    @property
-    def i_white_level(self) -> Socket:
-        """Input socket: White Level"""
-        return self.inputs._get("White Level")
-
-    @property
-    def i_edge_search_size(self) -> Socket:
-        """Input socket: Size"""
-        return self.inputs._get("Edge Search Size")
-
-    @property
-    def i_edge_tolerance(self) -> Socket:
-        """Input socket: Tolerance"""
-        return self.inputs._get("Edge Tolerance")
-
-    @property
-    def i_garbage_matte(self) -> Socket:
-        """Input socket: Garbage Matte"""
-        return self.inputs._get("Garbage Matte")
-
-    @property
-    def i_core_matte(self) -> Socket:
-        """Input socket: Core Matte"""
-        return self.inputs._get("Core Matte")
-
-    @property
-    def i_postprocess_blur_size(self) -> Socket:
-        """Input socket: Blur Size"""
-        return self.inputs._get("Postprocess Blur Size")
-
-    @property
-    def i_postprocess_dilate_size(self) -> Socket:
-        """Input socket: Dilate Size"""
-        return self.inputs._get("Postprocess Dilate Size")
-
-    @property
-    def i_postprocess_feather_size(self) -> Socket:
-        """Input socket: Feather Size"""
-        return self.inputs._get("Postprocess Feather Size")
-
-    @property
-    def i_feather_falloff(self) -> Socket:
-        """Input socket: Feather Falloff"""
-        return self.inputs._get("Feather Falloff")
-
-    @property
-    def i_despill_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Despill Strength")
-
-    @property
-    def i_despill_balance(self) -> Socket:
-        """Input socket: Balance"""
-        return self.inputs._get("Despill Balance")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_matte(self) -> FloatSocket:
-        """Output socket: Matte"""
-        return self.outputs._get("Matte")
-
-    @property
-    def o_edges(self) -> FloatSocket:
-        """Output socket: Edges"""
-        return self.outputs._get("Edges")
-
 
 class KeyingScreen(NodeBuilder):
     """
     Create plates for use as a color reference for keying nodes
+
+    Parameters
+    ----------
+    smoothness : InputFloat
+        Smoothness
+
+    Outputs
+    -------
+    screen : ColorSocket
+        Screen
     """
 
     _bl_idname = "CompositorNodeKeyingScreen"
     node: bpy.types.CompositorNodeKeyingScreen
+
+    class Inputs(SocketAccessor):
+        smoothness: Socket
+
+    class Outputs(SocketAccessor):
+        screen: ColorSocket
+
+    @property
+    def i(self) -> "KeyingScreen.Inputs":
+        return KeyingScreen.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "KeyingScreen.Outputs":
+        return KeyingScreen.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -808,16 +840,6 @@ class KeyingScreen(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_smoothness(self) -> Socket:
-        """Input socket: Smoothness"""
-        return self.inputs._get("Smoothness")
-
-    @property
-    def o_screen(self) -> ColorSocket:
-        """Output socket: Screen"""
-        return self.outputs._get("Screen")
-
-    @property
     def tracking_object(self) -> str:
         return self.node.tracking_object
 
@@ -829,10 +851,43 @@ class KeyingScreen(NodeBuilder):
 class LuminanceKey(NodeBuilder):
     """
     Create a matte based on luminance (brightness) difference
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    minimum : InputFloat
+        Minimum
+    maximum : InputFloat
+        Maximum
+
+    Outputs
+    -------
+    image : ColorSocket
+        Image
+    matte : FloatSocket
+        Matte
     """
 
     _bl_idname = "CompositorNodeLumaMatte"
     node: bpy.types.CompositorNodeLumaMatte
+
+    class Inputs(SocketAccessor):
+        image: Socket
+        minimum: Socket
+        maximum: Socket
+
+    class Outputs(SocketAccessor):
+        image: ColorSocket
+        matte: FloatSocket
+
+    @property
+    def i(self) -> "LuminanceKey.Inputs":
+        return LuminanceKey.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "LuminanceKey.Outputs":
+        return LuminanceKey.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -844,28 +899,3 @@ class LuminanceKey(NodeBuilder):
         key_args = {"Image": image, "Minimum": minimum, "Maximum": maximum}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_image(self) -> Socket:
-        """Input socket: Image"""
-        return self.inputs._get("Image")
-
-    @property
-    def i_minimum(self) -> Socket:
-        """Input socket: Minimum"""
-        return self.inputs._get("Minimum")
-
-    @property
-    def i_maximum(self) -> Socket:
-        """Input socket: Maximum"""
-        return self.inputs._get("Maximum")
-
-    @property
-    def o_image(self) -> ColorSocket:
-        """Output socket: Image"""
-        return self.outputs._get("Image")
-
-    @property
-    def o_matte(self) -> FloatSocket:
-        """Output socket: Matte"""
-        return self.outputs._get("Matte")

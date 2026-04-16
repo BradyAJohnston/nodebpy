@@ -3,7 +3,7 @@
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, FloatSocket
+from ...builder import BaseNode as NodeBuilder, SocketAccessor, Socket, FloatSocket
 
 from ...types import (
     InputFloat,
@@ -13,23 +13,37 @@ from ...types import (
 class Normalize(NodeBuilder):
     """
     Map values to 0 to 1 range, based on the minimum and maximum pixel values
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+
+    Outputs
+    -------
+    value : FloatSocket
+        Value
     """
 
     _bl_idname = "CompositorNodeNormalize"
     node: bpy.types.CompositorNodeNormalize
+
+    class Inputs(SocketAccessor):
+        value: Socket
+
+    class Outputs(SocketAccessor):
+        value: FloatSocket
+
+    @property
+    def i(self) -> "Normalize.Inputs":
+        return Normalize.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Normalize.Outputs":
+        return Normalize.Outputs(self.node.outputs, "output")
 
     def __init__(self, value: InputFloat = 1.0):
         super().__init__()
         key_args = {"Value": value}
 
         self._establish_links(**key_args)
-
-    @property
-    def i_value(self) -> Socket:
-        """Input socket: Value"""
-        return self.inputs._get("Value")
-
-    @property
-    def o_value(self) -> FloatSocket:
-        """Output socket: Value"""
-        return self.outputs._get("Value")

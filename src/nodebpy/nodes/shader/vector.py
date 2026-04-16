@@ -4,7 +4,13 @@ from typing import Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, Socket, FloatSocket, VectorSocket
+from ...builder import (
+    BaseNode as NodeBuilder,
+    SocketAccessor,
+    Socket,
+    FloatSocket,
+    VectorSocket,
+)
 
 from ...types import (
     InputColor,
@@ -16,10 +22,46 @@ from ...types import (
 class Bump(NodeBuilder):
     """
     Generate a perturbed normal from a height texture for bump mapping. Typically used for faking highly detailed surfaces
+
+    Parameters
+    ----------
+    strength : InputFloat
+        Strength
+    distance : InputFloat
+        Distance
+    filter_width : InputFloat
+        Filter Width
+    height : InputFloat
+        Height
+    normal : InputVector
+        Normal
+
+    Outputs
+    -------
+    normal : VectorSocket
+        Normal
     """
 
     _bl_idname = "ShaderNodeBump"
     node: bpy.types.ShaderNodeBump
+
+    class Inputs(SocketAccessor):
+        strength: Socket
+        distance: Socket
+        filter_width: Socket
+        height: Socket
+        normal: Socket
+
+    class Outputs(SocketAccessor):
+        normal: VectorSocket
+
+    @property
+    def i(self) -> "Bump.Inputs":
+        return Bump.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Bump.Outputs":
+        return Bump.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -43,36 +85,6 @@ class Bump(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Strength")
-
-    @property
-    def i_distance(self) -> Socket:
-        """Input socket: Distance"""
-        return self.inputs._get("Distance")
-
-    @property
-    def i_filter_width(self) -> Socket:
-        """Input socket: Filter Width"""
-        return self.inputs._get("Filter Width")
-
-    @property
-    def i_height(self) -> Socket:
-        """Input socket: Height"""
-        return self.inputs._get("Height")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
     def invert(self) -> bool:
         return self.node.invert
 
@@ -84,10 +96,43 @@ class Bump(NodeBuilder):
 class Displacement(NodeBuilder):
     """
     Displace the surface along the surface normal
+
+    Parameters
+    ----------
+    height : InputFloat
+        Height
+    midlevel : InputFloat
+        Midlevel
+    scale : InputFloat
+        Scale
+    normal : InputVector
+        Normal
+
+    Outputs
+    -------
+    displacement : VectorSocket
+        Displacement
     """
 
     _bl_idname = "ShaderNodeDisplacement"
     node: bpy.types.ShaderNodeDisplacement
+
+    class Inputs(SocketAccessor):
+        height: Socket
+        midlevel: Socket
+        scale: Socket
+        normal: Socket
+
+    class Outputs(SocketAccessor):
+        displacement: VectorSocket
+
+    @property
+    def i(self) -> "Displacement.Inputs":
+        return Displacement.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Displacement.Outputs":
+        return Displacement.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -109,31 +154,6 @@ class Displacement(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_height(self) -> Socket:
-        """Input socket: Height"""
-        return self.inputs._get("Height")
-
-    @property
-    def i_midlevel(self) -> Socket:
-        """Input socket: Midlevel"""
-        return self.inputs._get("Midlevel")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def o_displacement(self) -> VectorSocket:
-        """Output socket: Displacement"""
-        return self.outputs._get("Displacement")
-
-    @property
     def space(self) -> Literal["OBJECT", "WORLD"]:
         return self.node.space
 
@@ -145,10 +165,43 @@ class Displacement(NodeBuilder):
 class Mapping(NodeBuilder):
     """
     Transform the input vector by applying translation, rotation, and scale
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    location : InputVector
+        Location
+    rotation : InputVector
+        Rotation
+    scale : InputVector
+        Scale
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "ShaderNodeMapping"
     node: bpy.types.ShaderNodeMapping
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        location: Socket
+        rotation: Socket
+        scale: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "Mapping.Inputs":
+        return Mapping.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Mapping.Outputs":
+        return Mapping.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -224,31 +277,6 @@ class Mapping(NodeBuilder):
         return cls(vector_type="NORMAL", vector=vector, rotation=rotation, scale=scale)
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_location(self) -> Socket:
-        """Input socket: Location"""
-        return self.inputs._get("Location")
-
-    @property
-    def i_rotation(self) -> Socket:
-        """Input socket: Rotation"""
-        return self.inputs._get("Rotation")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
-
-    @property
     def vector_type(self) -> Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"]:
         return self.node.vector_type
 
@@ -260,10 +288,37 @@ class Mapping(NodeBuilder):
 class Normal(NodeBuilder):
     """
     Generate a normal vector and a dot product
+
+    Parameters
+    ----------
+    normal : InputVector
+        Normal
+
+    Outputs
+    -------
+    normal : VectorSocket
+        Normal
+    dot : FloatSocket
+        Dot
     """
 
     _bl_idname = "ShaderNodeNormal"
     node: bpy.types.ShaderNodeNormal
+
+    class Inputs(SocketAccessor):
+        normal: Socket
+
+    class Outputs(SocketAccessor):
+        normal: VectorSocket
+        dot: FloatSocket
+
+    @property
+    def i(self) -> "Normal.Inputs":
+        return Normal.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "Normal.Outputs":
+        return Normal.Outputs(self.node.outputs, "output")
 
     def __init__(self, normal: InputVector = None):
         super().__init__()
@@ -271,29 +326,41 @@ class Normal(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    @property
-    def i_normal(self) -> Socket:
-        """Input socket: Normal"""
-        return self.inputs._get("Normal")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
-
-    @property
-    def o_dot(self) -> FloatSocket:
-        """Output socket: Dot"""
-        return self.outputs._get("Dot")
-
 
 class NormalMap(NodeBuilder):
     """
     Generate a perturbed normal from an RGB normal map image. Typically used for faking highly detailed surfaces
+
+    Parameters
+    ----------
+    strength : InputFloat
+        Strength
+    color : InputColor
+        Color
+
+    Outputs
+    -------
+    normal : VectorSocket
+        Normal
     """
 
     _bl_idname = "ShaderNodeNormalMap"
     node: bpy.types.ShaderNodeNormalMap
+
+    class Inputs(SocketAccessor):
+        strength: Socket
+        color: Socket
+
+    class Outputs(SocketAccessor):
+        normal: VectorSocket
+
+    @property
+    def i(self) -> "NormalMap.Inputs":
+        return NormalMap.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "NormalMap.Outputs":
+        return NormalMap.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -310,21 +377,6 @@ class NormalMap(NodeBuilder):
         self.space = space
         self.uv_map = uv_map
         self._establish_links(**key_args)
-
-    @property
-    def i_strength(self) -> Socket:
-        """Input socket: Strength"""
-        return self.inputs._get("Strength")
-
-    @property
-    def i_color(self) -> Socket:
-        """Input socket: Color"""
-        return self.inputs._get("Color")
-
-    @property
-    def o_normal(self) -> VectorSocket:
-        """Output socket: Normal"""
-        return self.outputs._get("Normal")
 
     @property
     def space(
@@ -351,10 +403,40 @@ class NormalMap(NodeBuilder):
 class VectorDisplacement(NodeBuilder):
     """
     Displace the surface along an arbitrary direction
+
+    Parameters
+    ----------
+    vector : InputColor
+        Vector
+    midlevel : InputFloat
+        Midlevel
+    scale : InputFloat
+        Scale
+
+    Outputs
+    -------
+    displacement : VectorSocket
+        Displacement
     """
 
     _bl_idname = "ShaderNodeVectorDisplacement"
     node: bpy.types.ShaderNodeVectorDisplacement
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+        midlevel: Socket
+        scale: Socket
+
+    class Outputs(SocketAccessor):
+        displacement: VectorSocket
+
+    @property
+    def i(self) -> "VectorDisplacement.Inputs":
+        return VectorDisplacement.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VectorDisplacement.Outputs":
+        return VectorDisplacement.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -370,26 +452,6 @@ class VectorDisplacement(NodeBuilder):
         self._establish_links(**key_args)
 
     @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def i_midlevel(self) -> Socket:
-        """Input socket: Midlevel"""
-        return self.inputs._get("Midlevel")
-
-    @property
-    def i_scale(self) -> Socket:
-        """Input socket: Scale"""
-        return self.inputs._get("Scale")
-
-    @property
-    def o_displacement(self) -> VectorSocket:
-        """Output socket: Displacement"""
-        return self.outputs._get("Displacement")
-
-    @property
     def space(self) -> Literal["TANGENT", "OBJECT", "WORLD"]:
         return self.node.space
 
@@ -401,10 +463,34 @@ class VectorDisplacement(NodeBuilder):
 class VectorTransform(NodeBuilder):
     """
     Convert a vector, point, or normal between world, camera, and object coordinate space
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+
+    Outputs
+    -------
+    vector : VectorSocket
+        Vector
     """
 
     _bl_idname = "ShaderNodeVectorTransform"
     node: bpy.types.ShaderNodeVectorTransform
+
+    class Inputs(SocketAccessor):
+        vector: Socket
+
+    class Outputs(SocketAccessor):
+        vector: VectorSocket
+
+    @property
+    def i(self) -> "VectorTransform.Inputs":
+        return VectorTransform.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "VectorTransform.Outputs":
+        return VectorTransform.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -435,16 +521,6 @@ class VectorTransform(NodeBuilder):
     def normal(cls, vector: InputVector = None) -> "VectorTransform":
         """Create Vector Transform with operation 'Normal'. Transform a normal vector with unit length"""
         return cls(vector_type="NORMAL", vector=vector)
-
-    @property
-    def i_vector(self) -> Socket:
-        """Input socket: Vector"""
-        return self.inputs._get("Vector")
-
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
 
     @property
     def vector_type(self) -> Literal["POINT", "VECTOR", "NORMAL"]:
