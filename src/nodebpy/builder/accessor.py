@@ -75,7 +75,7 @@ class SocketAccessor:
         # not the Node. Retrieve the node via the first socket instead.
         for s in self._collection:
             return s.node
-        return self._collection.id_data  # empty collection fallback
+        return self._collection.data  # empty collection fallback
 
     @property
     def _ignore_visibility(self) -> bool:

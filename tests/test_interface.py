@@ -480,3 +480,10 @@ def test_compositor_panel_with_socket_methods():
     color = next(i for i in items if getattr(i, "name", None) == "Color")
     assert threshold.parent == panels[0]
     assert color.parent == panels[0]
+
+
+def test_socket_accessort():
+    with g.tree():
+        pos = g.Position()
+
+    assert pos.inputs._node == pos.node
