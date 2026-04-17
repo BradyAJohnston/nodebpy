@@ -762,7 +762,7 @@ class IndexSwitch(NodeBuilder):
         for arg in args:
             if _is_default_value(arg):
                 socket = self._create_socket()
-                socket.default_value = arg
+                socket.default_value = arg  # type: ignore
             else:
                 source = self._source_socket(arg)
                 self.tree.link(source, self.node.inputs["__extend__"])
@@ -826,13 +826,13 @@ class _MenuSwitchBase(NodeBuilder):
         self._link_args(*args, **kwargs)
         self._establish_links(**key_args)
         if self.node.enum_items:
-            self.node.inputs[0].default_value = self.node.enum_items[0].name
+            self.node.inputs[0].default_value = self.node.enum_items[0].name  # type: ignore
 
     def _link_args(self, *args: InputAny, **kwargs: InputAny):
         for arg in args:
             if _is_default_value(arg):
                 socket = self._create_socket(f"Input_{len(self.node.enum_items)}")
-                socket.default_value = arg
+                socket.default_value = arg  # type: ignore
             else:
                 source = self._source_socket(arg)
                 self.tree.link(source, self.node.inputs["__extend__"])
@@ -840,7 +840,7 @@ class _MenuSwitchBase(NodeBuilder):
         for key, value in kwargs.items():
             if _is_default_value(value):
                 socket = self._create_socket(key)
-                socket.default_value = value
+                socket.default_value = value  # type: ignore
             else:
                 source = self._source_socket(value)  # type: ignore
                 self._link(source, self.node.inputs["__extend__"])
@@ -1054,7 +1054,7 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
             name: self.node.outputs[name] for name in self._add_inputs(*args, **kwargs)
         }
 
-        return [SocketLinker(x) for x in outputs._values()]
+        return [SocketLinker(x) for x in outputs.values()]
 
     @classmethod
     def float(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
@@ -1332,7 +1332,12 @@ class EvaluateAtIndex(NodeBuilder):
 
     def __init__(
         self,
-        value: InputFloat = None,
+        value: InputFloat
+        | InputInteger
+        | InputBoolean
+        | InputVector
+        | InputRotation
+        | InputMatrix = None,
         index: InputInteger = 0,
         *,
         domain: _AttributeDomains = "POINT",
@@ -1881,7 +1886,7 @@ class Compare(NodeBuilder):
 
             @staticmethod
             def string(a: InputString = "", b: InputString = "") -> "Compare":
-                return Compare.string(operation=operation, a=a, b=b)
+                return Compare.string(a=a, b=b)
 
         return CompareOperationFactory()
 
@@ -2071,8 +2076,8 @@ class Compare(NodeBuilder):
     @classmethod
     def string(
         cls,
-        a: str = "",
-        b: str = "",
+        a: InputString = "",
+        b: InputString = "",
     ) -> "Compare":
         """Create Compare with operation 'String'."""
         return cls(data_type="STRING", A_STR=a, B_STR=b)
