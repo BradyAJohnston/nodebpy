@@ -33,11 +33,20 @@ class AmbientOcclusion(NodeBuilder):
         normal : InputVector
             Normal
 
+        Inputs
+        ------
+        i.color : ColorSocket
+            Color
+        i.distance : FloatSocket
+            Distance
+        i.normal : VectorSocket
+            Normal
+
         Outputs
         -------
-        color : ColorSocket
+        o.color : ColorSocket
             Color
-        ao : FloatSocket
+        o.ao : FloatSocket
             AO
     """
 
@@ -46,12 +55,17 @@ class AmbientOcclusion(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         distance: FloatSocket
+        """Distance"""
         normal: VectorSocket
+        """Normal"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         ao: FloatSocket
+        """AO"""
 
     if TYPE_CHECKING:
 
@@ -114,9 +128,16 @@ class Bevel(NodeBuilder):
         normal : InputVector
             Normal
 
+        Inputs
+        ------
+        i.radius : FloatSocket
+            Radius
+        i.normal : VectorSocket
+            Normal
+
         Outputs
         -------
-        normal : VectorSocket
+        o.normal : VectorSocket
             Normal
     """
 
@@ -125,10 +146,13 @@ class Bevel(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         radius: FloatSocket
+        """Radius"""
         normal: VectorSocket
+        """Normal"""
 
     class _Outputs(SocketAccessor):
         normal: VectorSocket
+        """Normal"""
 
     if TYPE_CHECKING:
 
@@ -164,11 +188,11 @@ class CameraData(NodeBuilder):
 
     Outputs
     -------
-    view_vector : VectorSocket
+    o.view_vector : VectorSocket
         View Vector
-    view_z_depth : FloatSocket
+    o.view_z_depth : FloatSocket
         View Z Depth
-    view_distance : FloatSocket
+    o.view_distance : FloatSocket
         View Distance
     """
 
@@ -180,8 +204,11 @@ class CameraData(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         view_vector: VectorSocket
+        """View Vector"""
         view_z_depth: FloatSocket
+        """View Z Depth"""
         view_distance: FloatSocket
+        """View Distance"""
 
     if TYPE_CHECKING:
 
@@ -203,7 +230,7 @@ class Color(NodeBuilder):
 
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -215,6 +242,7 @@ class Color(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -236,9 +264,9 @@ class ColorAttribute(NodeBuilder):
 
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
     """
 
@@ -250,7 +278,9 @@ class ColorAttribute(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         alpha: FloatSocket
+        """Alpha"""
 
     if TYPE_CHECKING:
 
@@ -280,17 +310,17 @@ class CurvesInfo(NodeBuilder):
 
     Outputs
     -------
-    is_strand : FloatSocket
+    o.is_strand : FloatSocket
         Is Strand
-    intercept : FloatSocket
+    o.intercept : FloatSocket
         Intercept
-    length : FloatSocket
+    o.length : FloatSocket
         Length
-    thickness : FloatSocket
+    o.thickness : FloatSocket
         Thickness
-    tangent_normal : VectorSocket
+    o.tangent_normal : VectorSocket
         Tangent Normal
-    random : FloatSocket
+    o.random : FloatSocket
         Random
     """
 
@@ -302,11 +332,17 @@ class CurvesInfo(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         is_strand: FloatSocket
+        """Is Strand"""
         intercept: FloatSocket
+        """Intercept"""
         length: FloatSocket
+        """Length"""
         thickness: FloatSocket
+        """Thickness"""
         tangent_normal: VectorSocket
+        """Tangent Normal"""
         random: FloatSocket
+        """Random"""
 
     if TYPE_CHECKING:
 
@@ -334,9 +370,16 @@ class Fresnel(NodeBuilder):
         normal : InputVector
             Normal
 
+        Inputs
+        ------
+        i.ior : FloatSocket
+            IOR
+        i.normal : VectorSocket
+            Normal
+
         Outputs
         -------
-        fac : FloatSocket
+        o.fac : FloatSocket
             Factor
     """
 
@@ -345,10 +388,13 @@ class Fresnel(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         ior: FloatSocket
+        """IOR"""
         normal: VectorSocket
+        """Normal"""
 
     class _Outputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 
@@ -374,23 +420,23 @@ class Geometry(NodeBuilder):
 
     Outputs
     -------
-    position : VectorSocket
+    o.position : VectorSocket
         Position
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
-    tangent : VectorSocket
+    o.tangent : VectorSocket
         Tangent
-    true_normal : VectorSocket
+    o.true_normal : VectorSocket
         True Normal
-    incoming : VectorSocket
+    o.incoming : VectorSocket
         Incoming
-    parametric : VectorSocket
+    o.parametric : VectorSocket
         Parametric
-    backfacing : FloatSocket
+    o.backfacing : FloatSocket
         Backfacing
-    pointiness : FloatSocket
+    o.pointiness : FloatSocket
         Pointiness
-    random_per_island : FloatSocket
+    o.random_per_island : FloatSocket
         Random Per Island
     """
 
@@ -402,14 +448,23 @@ class Geometry(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         position: VectorSocket
+        """Position"""
         normal: VectorSocket
+        """Normal"""
         tangent: VectorSocket
+        """Tangent"""
         true_normal: VectorSocket
+        """True Normal"""
         incoming: VectorSocket
+        """Incoming"""
         parametric: VectorSocket
+        """Parametric"""
         backfacing: FloatSocket
+        """Backfacing"""
         pointiness: FloatSocket
+        """Pointiness"""
         random_per_island: FloatSocket
+        """Random Per Island"""
 
     if TYPE_CHECKING:
 
@@ -437,11 +492,18 @@ class LayerWeight(NodeBuilder):
         normal : InputVector
             Normal
 
+        Inputs
+        ------
+        i.blend : FloatSocket
+            Blend
+        i.normal : VectorSocket
+            Normal
+
         Outputs
         -------
-        fresnel : FloatSocket
+        o.fresnel : FloatSocket
             Fresnel
-        facing : FloatSocket
+        o.facing : FloatSocket
             Facing
     """
 
@@ -450,11 +512,15 @@ class LayerWeight(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         blend: FloatSocket
+        """Blend"""
         normal: VectorSocket
+        """Normal"""
 
     class _Outputs(SocketAccessor):
         fresnel: FloatSocket
+        """Fresnel"""
         facing: FloatSocket
+        """Facing"""
 
     if TYPE_CHECKING:
 
@@ -481,35 +547,35 @@ class LightPath(NodeBuilder):
 
         Outputs
         -------
-        is_camera_ray : FloatSocket
+        o.is_camera_ray : FloatSocket
             Is Camera Ray
-        is_shadow_ray : FloatSocket
+        o.is_shadow_ray : FloatSocket
             Is Shadow Ray
-        is_diffuse_ray : FloatSocket
+        o.is_diffuse_ray : FloatSocket
             Is Diffuse Ray
-        is_glossy_ray : FloatSocket
+        o.is_glossy_ray : FloatSocket
             Is Glossy Ray
-        is_singular_ray : FloatSocket
+        o.is_singular_ray : FloatSocket
             Is Singular Ray
-        is_reflection_ray : FloatSocket
+        o.is_reflection_ray : FloatSocket
             Is Reflection Ray
-        is_transmission_ray : FloatSocket
+        o.is_transmission_ray : FloatSocket
             Is Transmission Ray
-        is_volume_scatter_ray : FloatSocket
+        o.is_volume_scatter_ray : FloatSocket
             Is Volume Scatter Ray
-        ray_length : FloatSocket
+        o.ray_length : FloatSocket
             Ray Length
-        ray_depth : FloatSocket
+        o.ray_depth : FloatSocket
             Ray Depth
-        diffuse_depth : FloatSocket
+        o.diffuse_depth : FloatSocket
             Diffuse Depth
-        glossy_depth : FloatSocket
+        o.glossy_depth : FloatSocket
             Glossy Depth
-        transparent_depth : FloatSocket
+        o.transparent_depth : FloatSocket
             Transparent Depth
-        transmission_depth : FloatSocket
+        o.transmission_depth : FloatSocket
             Transmission Depth
-        portal_depth : FloatSocket
+        o.portal_depth : FloatSocket
             Portal Depth
     """
 
@@ -521,20 +587,35 @@ class LightPath(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         is_camera_ray: FloatSocket
+        """Is Camera Ray"""
         is_shadow_ray: FloatSocket
+        """Is Shadow Ray"""
         is_diffuse_ray: FloatSocket
+        """Is Diffuse Ray"""
         is_glossy_ray: FloatSocket
+        """Is Glossy Ray"""
         is_singular_ray: FloatSocket
+        """Is Singular Ray"""
         is_reflection_ray: FloatSocket
+        """Is Reflection Ray"""
         is_transmission_ray: FloatSocket
+        """Is Transmission Ray"""
         is_volume_scatter_ray: FloatSocket
+        """Is Volume Scatter Ray"""
         ray_length: FloatSocket
+        """Ray Length"""
         ray_depth: FloatSocket
+        """Ray Depth"""
         diffuse_depth: FloatSocket
+        """Diffuse Depth"""
         glossy_depth: FloatSocket
+        """Glossy Depth"""
         transparent_depth: FloatSocket
+        """Transparent Depth"""
         transmission_depth: FloatSocket
+        """Transmission Depth"""
         portal_depth: FloatSocket
+        """Portal Depth"""
 
     if TYPE_CHECKING:
 
@@ -556,17 +637,17 @@ class ObjectInfo(NodeBuilder):
 
     Outputs
     -------
-    location : VectorSocket
+    o.location : VectorSocket
         Location
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
-    object_index : FloatSocket
+    o.object_index : FloatSocket
         Object Index
-    material_index : FloatSocket
+    o.material_index : FloatSocket
         Material Index
-    random : FloatSocket
+    o.random : FloatSocket
         Random
     """
 
@@ -578,11 +659,17 @@ class ObjectInfo(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         location: VectorSocket
+        """Location"""
         color: ColorSocket
+        """Color"""
         alpha: FloatSocket
+        """Alpha"""
         object_index: FloatSocket
+        """Object Index"""
         material_index: FloatSocket
+        """Material Index"""
         random: FloatSocket
+        """Random"""
 
     if TYPE_CHECKING:
 
@@ -604,21 +691,21 @@ class ParticleInfo(NodeBuilder):
 
     Outputs
     -------
-    index : FloatSocket
+    o.index : FloatSocket
         Index
-    random : FloatSocket
+    o.random : FloatSocket
         Random
-    age : FloatSocket
+    o.age : FloatSocket
         Age
-    lifetime : FloatSocket
+    o.lifetime : FloatSocket
         Lifetime
-    location : VectorSocket
+    o.location : VectorSocket
         Location
-    size : FloatSocket
+    o.size : FloatSocket
         Size
-    velocity : VectorSocket
+    o.velocity : VectorSocket
         Velocity
-    angular_velocity : VectorSocket
+    o.angular_velocity : VectorSocket
         Angular Velocity
     """
 
@@ -630,13 +717,21 @@ class ParticleInfo(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         index: FloatSocket
+        """Index"""
         random: FloatSocket
+        """Random"""
         age: FloatSocket
+        """Age"""
         lifetime: FloatSocket
+        """Lifetime"""
         location: VectorSocket
+        """Location"""
         size: FloatSocket
+        """Size"""
         velocity: VectorSocket
+        """Velocity"""
         angular_velocity: VectorSocket
+        """Angular Velocity"""
 
     if TYPE_CHECKING:
 
@@ -658,11 +753,11 @@ class PointInfo(NodeBuilder):
 
     Outputs
     -------
-    position : VectorSocket
+    o.position : VectorSocket
         Position
-    radius : FloatSocket
+    o.radius : FloatSocket
         Radius
-    random : FloatSocket
+    o.random : FloatSocket
         Random
     """
 
@@ -674,8 +769,11 @@ class PointInfo(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         position: VectorSocket
+        """Position"""
         radius: FloatSocket
+        """Radius"""
         random: FloatSocket
+        """Random"""
 
     if TYPE_CHECKING:
 
@@ -697,7 +795,7 @@ class Tangent(NodeBuilder):
 
     Outputs
     -------
-    tangent : VectorSocket
+    o.tangent : VectorSocket
         Tangent
     """
 
@@ -709,6 +807,7 @@ class Tangent(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         tangent: VectorSocket
+        """Tangent"""
 
     if TYPE_CHECKING:
 
@@ -762,19 +861,19 @@ class TextureCoordinate(NodeBuilder):
 
         Outputs
         -------
-        generated : VectorSocket
+        o.generated : VectorSocket
             Generated
-        normal : VectorSocket
+        o.normal : VectorSocket
             Normal
-        uv : VectorSocket
+        o.uv : VectorSocket
             UV
-        object : VectorSocket
+        o.object : VectorSocket
             Object
-        camera : VectorSocket
+        o.camera : VectorSocket
             Camera
-        window : VectorSocket
+        o.window : VectorSocket
             Window
-        reflection : VectorSocket
+        o.reflection : VectorSocket
             Reflection
     """
 
@@ -786,12 +885,19 @@ class TextureCoordinate(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         generated: VectorSocket
+        """Generated"""
         normal: VectorSocket
+        """Normal"""
         uv: VectorSocket
+        """UV"""
         object: VectorSocket
+        """Object"""
         camera: VectorSocket
+        """Camera"""
         window: VectorSocket
+        """Window"""
         reflection: VectorSocket
+        """Reflection"""
 
     if TYPE_CHECKING:
 
@@ -821,7 +927,7 @@ class UVAlongStroke(NodeBuilder):
 
     Outputs
     -------
-    uv : VectorSocket
+    o.uv : VectorSocket
         UV
     """
 
@@ -833,6 +939,7 @@ class UVAlongStroke(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         uv: VectorSocket
+        """UV"""
 
     if TYPE_CHECKING:
 
@@ -862,7 +969,7 @@ class UVMap(NodeBuilder):
 
     Outputs
     -------
-    uv : VectorSocket
+    o.uv : VectorSocket
         UV
     """
 
@@ -874,6 +981,7 @@ class UVMap(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         uv: VectorSocket
+        """UV"""
 
     if TYPE_CHECKING:
 
@@ -920,9 +1028,14 @@ class Wireframe(NodeBuilder):
         size : InputFloat
             Size
 
+        Inputs
+        ------
+        i.size : FloatSocket
+            Size
+
         Outputs
         -------
-        fac : FloatSocket
+        o.fac : FloatSocket
             Factor
     """
 
@@ -931,9 +1044,11 @@ class Wireframe(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         size: FloatSocket
+        """Size"""
 
     class _Outputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 

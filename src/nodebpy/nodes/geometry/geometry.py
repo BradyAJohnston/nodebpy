@@ -62,15 +62,38 @@ class Arc(NodeBuilder):
     invert_arc : InputBoolean
         Invert Arc
 
+    Inputs
+    ------
+    i.resolution : IntegerSocket
+        Resolution
+    i.start : VectorSocket
+        Start
+    i.middle : VectorSocket
+        Middle
+    i.end : VectorSocket
+        End
+    i.radius : FloatSocket
+        Radius
+    i.start_angle : FloatSocket
+        Start Angle
+    i.sweep_angle : FloatSocket
+        Sweep Angle
+    i.offset_angle : FloatSocket
+        Offset Angle
+    i.connect_center : BooleanSocket
+        Connect Center
+    i.invert_arc : BooleanSocket
+        Invert Arc
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
-    center : VectorSocket
+    o.center : VectorSocket
         Center
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
-    radius : FloatSocket
+    o.radius : FloatSocket
         Radius
     """
 
@@ -79,21 +102,35 @@ class Arc(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         resolution: IntegerSocket
+        """Resolution"""
         start: VectorSocket
+        """Start"""
         middle: VectorSocket
+        """Middle"""
         end: VectorSocket
+        """End"""
         radius: FloatSocket
+        """Radius"""
         start_angle: FloatSocket
+        """Start Angle"""
         sweep_angle: FloatSocket
+        """Sweep Angle"""
         offset_angle: FloatSocket
+        """Offset Angle"""
         connect_center: BooleanSocket
+        """Connect Center"""
         invert_arc: BooleanSocket
+        """Invert Arc"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         center: VectorSocket
+        """Center"""
         normal: VectorSocket
+        """Normal"""
         radius: FloatSocket
+        """Radius"""
 
     if TYPE_CHECKING:
 
@@ -197,13 +234,20 @@ class BoundingBox(NodeBuilder):
     use_radius : InputBoolean
         Use Radius
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.use_radius : BooleanSocket
+        Use Radius
+
     Outputs
     -------
-    bounding_box : GeometrySocket
+    o.bounding_box : GeometrySocket
         Bounding Box
-    min : VectorSocket
+    o.min : VectorSocket
         Min
-    max : VectorSocket
+    o.max : VectorSocket
         Max
     """
 
@@ -212,12 +256,17 @@ class BoundingBox(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         use_radius: BooleanSocket
+        """Use Radius"""
 
     class _Outputs(SocketAccessor):
         bounding_box: GeometrySocket
+        """Bounding Box"""
         min: VectorSocket
+        """Min"""
         max: VectorSocket
+        """Max"""
 
     if TYPE_CHECKING:
 
@@ -254,9 +303,22 @@ class BezierSegment(NodeBuilder):
     end : InputVector
         End
 
+    Inputs
+    ------
+    i.resolution : IntegerSocket
+        Resolution
+    i.start : VectorSocket
+        Start
+    i.start_handle : VectorSocket
+        Start Handle
+    i.end_handle : VectorSocket
+        End Handle
+    i.end : VectorSocket
+        End
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -265,13 +327,19 @@ class BezierSegment(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         resolution: IntegerSocket
+        """Resolution"""
         start: VectorSocket
+        """Start"""
         start_handle: VectorSocket
+        """Start Handle"""
         end_handle: VectorSocket
+        """End Handle"""
         end: VectorSocket
+        """End"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -367,17 +435,32 @@ class Cone(NodeBuilder):
     depth : InputFloat
         Depth
 
+    Inputs
+    ------
+    i.vertices : IntegerSocket
+        Vertices
+    i.side_segments : IntegerSocket
+        Side Segments
+    i.fill_segments : IntegerSocket
+        Fill Segments
+    i.radius_top : FloatSocket
+        Radius Top
+    i.radius_bottom : FloatSocket
+        Radius Bottom
+    i.depth : FloatSocket
+        Depth
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    top : BooleanSocket
+    o.top : BooleanSocket
         Top
-    bottom : BooleanSocket
+    o.bottom : BooleanSocket
         Bottom
-    side : BooleanSocket
+    o.side : BooleanSocket
         Side
-    uv_map : VectorSocket
+    o.uv_map : VectorSocket
         UV Map
     """
 
@@ -386,18 +469,29 @@ class Cone(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vertices: IntegerSocket
+        """Vertices"""
         side_segments: IntegerSocket
+        """Side Segments"""
         fill_segments: IntegerSocket
+        """Fill Segments"""
         radius_top: FloatSocket
+        """Radius Top"""
         radius_bottom: FloatSocket
+        """Radius Bottom"""
         depth: FloatSocket
+        """Depth"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         top: BooleanSocket
+        """Top"""
         bottom: BooleanSocket
+        """Bottom"""
         side: BooleanSocket
+        """Side"""
         uv_map: VectorSocket
+        """UV Map"""
 
     if TYPE_CHECKING:
 
@@ -508,9 +602,14 @@ class ConvexHull(NodeBuilder):
     geometry : InputGeometry
         Geometry
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+
     Outputs
     -------
-    convex_hull : GeometrySocket
+    o.convex_hull : GeometrySocket
         Convex Hull
     """
 
@@ -519,9 +618,11 @@ class ConvexHull(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     class _Outputs(SocketAccessor):
         convex_hull: GeometrySocket
+        """Convex Hull"""
 
     if TYPE_CHECKING:
 
@@ -552,11 +653,22 @@ class Cube(NodeBuilder):
     vertices_z : InputInteger
         Vertices Z
 
+    Inputs
+    ------
+    i.size : VectorSocket
+        Size
+    i.vertices_x : IntegerSocket
+        Vertices X
+    i.vertices_y : IntegerSocket
+        Vertices Y
+    i.vertices_z : IntegerSocket
+        Vertices Z
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    uv_map : VectorSocket
+    o.uv_map : VectorSocket
         UV Map
     """
 
@@ -565,13 +677,19 @@ class Cube(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         size: VectorSocket
+        """Size"""
         vertices_x: IntegerSocket
+        """Vertices X"""
         vertices_y: IntegerSocket
+        """Vertices Y"""
         vertices_z: IntegerSocket
+        """Vertices Z"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         uv_map: VectorSocket
+        """UV Map"""
 
     if TYPE_CHECKING:
 
@@ -615,11 +733,24 @@ class CurveCircle(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.resolution : IntegerSocket
+        Resolution
+    i.point_1 : VectorSocket
+        Point 1
+    i.point_2 : VectorSocket
+        Point 2
+    i.point_3 : VectorSocket
+        Point 3
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
-    center : VectorSocket
+    o.center : VectorSocket
         Center
     """
 
@@ -628,14 +759,21 @@ class CurveCircle(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         resolution: IntegerSocket
+        """Resolution"""
         point_1: VectorSocket
+        """Point 1"""
         point_2: VectorSocket
+        """Point 2"""
         point_3: VectorSocket
+        """Point 3"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         center: VectorSocket
+        """Center"""
 
     if TYPE_CHECKING:
 
@@ -707,9 +845,14 @@ class CurveLength(NodeBuilder):
     curve : InputGeometry
         Curve
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+
     Outputs
     -------
-    length : FloatSocket
+    o.length : FloatSocket
         Length
     """
 
@@ -718,9 +861,11 @@ class CurveLength(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     class _Outputs(SocketAccessor):
         length: FloatSocket
+        """Length"""
 
     if TYPE_CHECKING:
 
@@ -751,9 +896,20 @@ class CurveLine(NodeBuilder):
     length : InputFloat
         Length
 
+    Inputs
+    ------
+    i.start : VectorSocket
+        Start
+    i.end : VectorSocket
+        End
+    i.direction : VectorSocket
+        Direction
+    i.length : FloatSocket
+        Length
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -762,12 +918,17 @@ class CurveLine(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         start: VectorSocket
+        """Start"""
         end: VectorSocket
+        """End"""
         direction: VectorSocket
+        """Direction"""
         length: FloatSocket
+        """Length"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -834,9 +995,20 @@ class CurveToMesh(NodeBuilder):
     fill_caps : InputBoolean
         Fill Caps
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.profile_curve : GeometrySocket
+        Profile Curve
+    i.scale : FloatSocket
+        Scale
+    i.fill_caps : BooleanSocket
+        Fill Caps
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -845,12 +1017,17 @@ class CurveToMesh(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         profile_curve: GeometrySocket
+        """Profile Curve"""
         scale: FloatSocket
+        """Scale"""
         fill_caps: BooleanSocket
+        """Fill Caps"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -890,15 +1067,24 @@ class CurveToPoints(NodeBuilder):
     length : InputFloat
         Length
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.count : IntegerSocket
+        Count
+    i.length : FloatSocket
+        Length
+
     Outputs
     -------
-    points : GeometrySocket
+    o.points : GeometrySocket
         Points
-    tangent : VectorSocket
+    o.tangent : VectorSocket
         Tangent
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -907,14 +1093,21 @@ class CurveToPoints(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         count: IntegerSocket
+        """Count"""
         length: FloatSocket
+        """Length"""
 
     class _Outputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
         tangent: VectorSocket
+        """Tangent"""
         normal: VectorSocket
+        """Normal"""
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -977,9 +1170,18 @@ class CurvesToGreasePencil(NodeBuilder):
     instances_as_layers : InputBoolean
         Instances as Layers
 
+    Inputs
+    ------
+    i.curves : GeometrySocket
+        Curves
+    i.selection : BooleanSocket
+        Selection
+    i.instances_as_layers : BooleanSocket
+        Instances as Layers
+
     Outputs
     -------
-    grease_pencil : GeometrySocket
+    o.grease_pencil : GeometrySocket
         Grease Pencil
     """
 
@@ -988,11 +1190,15 @@ class CurvesToGreasePencil(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curves: GeometrySocket
+        """Curves"""
         selection: BooleanSocket
+        """Selection"""
         instances_as_layers: BooleanSocket
+        """Instances as Layers"""
 
     class _Outputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
 
     if TYPE_CHECKING:
 
@@ -1034,17 +1240,30 @@ class Cylinder(NodeBuilder):
     depth : InputFloat
         Depth
 
+    Inputs
+    ------
+    i.vertices : IntegerSocket
+        Vertices
+    i.side_segments : IntegerSocket
+        Side Segments
+    i.fill_segments : IntegerSocket
+        Fill Segments
+    i.radius : FloatSocket
+        Radius
+    i.depth : FloatSocket
+        Depth
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    top : BooleanSocket
+    o.top : BooleanSocket
         Top
-    side : BooleanSocket
+    o.side : BooleanSocket
         Side
-    bottom : BooleanSocket
+    o.bottom : BooleanSocket
         Bottom
-    uv_map : VectorSocket
+    o.uv_map : VectorSocket
         UV Map
     """
 
@@ -1053,17 +1272,27 @@ class Cylinder(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vertices: IntegerSocket
+        """Vertices"""
         side_segments: IntegerSocket
+        """Side Segments"""
         fill_segments: IntegerSocket
+        """Fill Segments"""
         radius: FloatSocket
+        """Radius"""
         depth: FloatSocket
+        """Depth"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         top: BooleanSocket
+        """Top"""
         side: BooleanSocket
+        """Side"""
         bottom: BooleanSocket
+        """Bottom"""
         uv_map: VectorSocket
+        """UV Map"""
 
     if TYPE_CHECKING:
 
@@ -1166,9 +1395,14 @@ class DeformCurvesOnSurface(NodeBuilder):
     curves : InputGeometry
         Curves
 
+    Inputs
+    ------
+    i.curves : GeometrySocket
+        Curves
+
     Outputs
     -------
-    curves : GeometrySocket
+    o.curves : GeometrySocket
         Curves
     """
 
@@ -1177,9 +1411,11 @@ class DeformCurvesOnSurface(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curves: GeometrySocket
+        """Curves"""
 
     class _Outputs(SocketAccessor):
         curves: GeometrySocket
+        """Curves"""
 
     if TYPE_CHECKING:
 
@@ -1206,9 +1442,16 @@ class DeleteGeometry(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -1217,10 +1460,13 @@ class DeleteGeometry(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -1348,13 +1594,30 @@ class DistributePointsOnFaces(NodeBuilder):
     seed : InputInteger
         Seed
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+    i.distance_min : FloatSocket
+        Distance Min
+    i.density_max : FloatSocket
+        Density Max
+    i.density : FloatSocket
+        Density
+    i.density_factor : FloatSocket
+        Density Factor
+    i.seed : IntegerSocket
+        Seed
+
     Outputs
     -------
-    points : GeometrySocket
+    o.points : GeometrySocket
         Points
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -1363,17 +1626,27 @@ class DistributePointsOnFaces(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
         distance_min: FloatSocket
+        """Distance Min"""
         density_max: FloatSocket
+        """Density Max"""
         density: FloatSocket
+        """Density"""
         density_factor: FloatSocket
+        """Density Factor"""
         seed: IntegerSocket
+        """Seed"""
 
     class _Outputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
         normal: VectorSocket
+        """Normal"""
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -1437,9 +1710,16 @@ class DualMesh(NodeBuilder):
     keep_boundaries : InputBoolean
         Keep Boundaries
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.keep_boundaries : BooleanSocket
+        Keep Boundaries
+
     Outputs
     -------
-    dual_mesh : GeometrySocket
+    o.dual_mesh : GeometrySocket
         Dual Mesh
     """
 
@@ -1448,10 +1728,13 @@ class DualMesh(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         keep_boundaries: BooleanSocket
+        """Keep Boundaries"""
 
     class _Outputs(SocketAccessor):
         dual_mesh: GeometrySocket
+        """Dual Mesh"""
 
     if TYPE_CHECKING:
 
@@ -1484,11 +1767,20 @@ class DuplicateElements(NodeBuilder):
     amount : InputInteger
         Amount
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.amount : IntegerSocket
+        Amount
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
-    duplicate_index : IntegerSocket
+    o.duplicate_index : IntegerSocket
         Duplicate Index
     """
 
@@ -1497,12 +1789,17 @@ class DuplicateElements(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         amount: IntegerSocket
+        """Amount"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         duplicate_index: IntegerSocket
+        """Duplicate Index"""
 
     if TYPE_CHECKING:
 
@@ -1618,9 +1915,18 @@ class EdgePathsToCurves(NodeBuilder):
     next_vertex_index : InputInteger
         Next Vertex Index
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.start_vertices : BooleanSocket
+        Start Vertices
+    i.next_vertex_index : IntegerSocket
+        Next Vertex Index
+
     Outputs
     -------
-    curves : GeometrySocket
+    o.curves : GeometrySocket
         Curves
     """
 
@@ -1629,11 +1935,15 @@ class EdgePathsToCurves(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         start_vertices: BooleanSocket
+        """Start Vertices"""
         next_vertex_index: IntegerSocket
+        """Next Vertex Index"""
 
     class _Outputs(SocketAccessor):
         curves: GeometrySocket
+        """Curves"""
 
     if TYPE_CHECKING:
 
@@ -1675,13 +1985,26 @@ class ExtrudeMesh(NodeBuilder):
     individual : InputBoolean
         Individual
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+    i.offset : VectorSocket
+        Offset
+    i.offset_scale : FloatSocket
+        Offset Scale
+    i.individual : BooleanSocket
+        Individual
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    top : BooleanSocket
+    o.top : BooleanSocket
         Top
-    side : BooleanSocket
+    o.side : BooleanSocket
         Side
     """
 
@@ -1690,15 +2013,23 @@ class ExtrudeMesh(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
         offset: VectorSocket
+        """Offset"""
         offset_scale: FloatSocket
+        """Offset Scale"""
         individual: BooleanSocket
+        """Individual"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         top: BooleanSocket
+        """Top"""
         side: BooleanSocket
+        """Side"""
 
     if TYPE_CHECKING:
 
@@ -1803,9 +2134,18 @@ class FillCurve(NodeBuilder):
     mode : InputMenu | Literal['Triangles', 'N-gons']
         Mode
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.group_id : IntegerSocket
+        Group ID
+    i.mode : MenuSocket
+        Mode
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -1814,11 +2154,15 @@ class FillCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         group_id: IntegerSocket
+        """Group ID"""
         mode: MenuSocket
+        """Mode"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -1856,9 +2200,22 @@ class FilletCurve(NodeBuilder):
     count : InputInteger
         Count
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.radius : FloatSocket
+        Radius
+    i.limit_radius : BooleanSocket
+        Limit Radius
+    i.mode : MenuSocket
+        Mode
+    i.count : IntegerSocket
+        Count
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -1867,13 +2224,19 @@ class FilletCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         radius: FloatSocket
+        """Radius"""
         limit_radius: BooleanSocket
+        """Limit Radius"""
         mode: MenuSocket
+        """Mode"""
         count: IntegerSocket
+        """Count"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -1913,9 +2276,16 @@ class FlipFaces(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -1924,10 +2294,13 @@ class FlipFaces(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -1962,13 +2335,24 @@ class GeometryProximity(NodeBuilder):
     sample_group_id : InputInteger
         Sample Group ID
 
+    Inputs
+    ------
+    i.target : GeometrySocket
+        Geometry
+    i.group_id : IntegerSocket
+        Group ID
+    i.source_position : VectorSocket
+        Sample Position
+    i.sample_group_id : IntegerSocket
+        Sample Group ID
+
     Outputs
     -------
-    position : VectorSocket
+    o.position : VectorSocket
         Position
-    distance : FloatSocket
+    o.distance : FloatSocket
         Distance
-    is_valid : BooleanSocket
+    o.is_valid : BooleanSocket
         Is Valid
     """
 
@@ -1977,14 +2361,21 @@ class GeometryProximity(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         target: GeometrySocket
+        """Geometry"""
         group_id: IntegerSocket
+        """Group ID"""
         source_position: VectorSocket
+        """Sample Position"""
         sample_group_id: IntegerSocket
+        """Sample Group ID"""
 
     class _Outputs(SocketAccessor):
         position: VectorSocket
+        """Position"""
         distance: FloatSocket
+        """Distance"""
         is_valid: BooleanSocket
+        """Is Valid"""
 
     if TYPE_CHECKING:
 
@@ -2034,9 +2425,18 @@ class GreasePencilToCurves(NodeBuilder):
     layers_as_instances : InputBoolean
         Layers as Instances
 
+    Inputs
+    ------
+    i.grease_pencil : GeometrySocket
+        Grease Pencil
+    i.selection : BooleanSocket
+        Selection
+    i.layers_as_instances : BooleanSocket
+        Layers as Instances
+
     Outputs
     -------
-    curves : GeometrySocket
+    o.curves : GeometrySocket
         Curves
     """
 
@@ -2045,11 +2445,15 @@ class GreasePencilToCurves(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
         selection: BooleanSocket
+        """Selection"""
         layers_as_instances: BooleanSocket
+        """Layers as Instances"""
 
     class _Outputs(SocketAccessor):
         curves: GeometrySocket
+        """Curves"""
 
     if TYPE_CHECKING:
 
@@ -2089,11 +2493,22 @@ class Grid(NodeBuilder):
     vertices_y : InputInteger
         Vertices Y
 
+    Inputs
+    ------
+    i.size_x : FloatSocket
+        Size X
+    i.size_y : FloatSocket
+        Size Y
+    i.vertices_x : IntegerSocket
+        Vertices X
+    i.vertices_y : IntegerSocket
+        Vertices Y
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    uv_map : VectorSocket
+    o.uv_map : VectorSocket
         UV Map
     """
 
@@ -2102,13 +2517,19 @@ class Grid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         size_x: FloatSocket
+        """Size X"""
         size_y: FloatSocket
+        """Size Y"""
         vertices_x: IntegerSocket
+        """Vertices X"""
         vertices_y: IntegerSocket
+        """Vertices Y"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         uv_map: VectorSocket
+        """UV Map"""
 
     if TYPE_CHECKING:
 
@@ -2146,11 +2567,18 @@ class IcoSphere(NodeBuilder):
     subdivisions : InputInteger
         Subdivisions
 
+    Inputs
+    ------
+    i.radius : FloatSocket
+        Radius
+    i.subdivisions : IntegerSocket
+        Subdivisions
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    uv_map : VectorSocket
+    o.uv_map : VectorSocket
         UV Map
     """
 
@@ -2159,11 +2587,15 @@ class IcoSphere(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         radius: FloatSocket
+        """Radius"""
         subdivisions: IntegerSocket
+        """Subdivisions"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         uv_map: VectorSocket
+        """UV Map"""
 
     if TYPE_CHECKING:
 
@@ -2204,9 +2636,26 @@ class InstanceOnPoints(NodeBuilder):
     scale : InputVector
         Scale
 
+    Inputs
+    ------
+    i.points : GeometrySocket
+        Points
+    i.selection : BooleanSocket
+        Selection
+    i.instance : GeometrySocket
+        Instance
+    i.pick_instance : BooleanSocket
+        Pick Instance
+    i.instance_index : IntegerSocket
+        Instance Index
+    i.rotation : RotationSocket
+        Rotation
+    i.scale : VectorSocket
+        Scale
+
     Outputs
     -------
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
     """
 
@@ -2215,15 +2664,23 @@ class InstanceOnPoints(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
         selection: BooleanSocket
+        """Selection"""
         instance: GeometrySocket
+        """Instance"""
         pick_instance: BooleanSocket
+        """Pick Instance"""
         instance_index: IntegerSocket
+        """Instance Index"""
         rotation: RotationSocket
+        """Rotation"""
         scale: VectorSocket
+        """Scale"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
 
     if TYPE_CHECKING:
 
@@ -2272,9 +2729,20 @@ class InstancesToPoints(NodeBuilder):
         radius : InputFloat
             Radius
 
+        Inputs
+        ------
+        i.instances : GeometrySocket
+            Instances
+        i.selection : BooleanSocket
+            Selection
+        i.position : VectorSocket
+            Position
+        i.radius : FloatSocket
+            Radius
+
         Outputs
         -------
-        points : GeometrySocket
+        o.points : GeometrySocket
             Points
     """
 
@@ -2283,12 +2751,17 @@ class InstancesToPoints(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
         selection: BooleanSocket
+        """Selection"""
         position: VectorSocket
+        """Position"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
 
     if TYPE_CHECKING:
 
@@ -2336,13 +2809,30 @@ class InterpolateCurves(NodeBuilder):
     max_neighbors : InputInteger
         Max Neighbors
 
+    Inputs
+    ------
+    i.guide_curves : GeometrySocket
+        Guide Curves
+    i.guide_up : VectorSocket
+        Guide Up
+    i.guide_group_id : IntegerSocket
+        Guide Group ID
+    i.points : GeometrySocket
+        Points
+    i.point_up : VectorSocket
+        Point Up
+    i.point_group_id : IntegerSocket
+        Point Group ID
+    i.max_neighbors : IntegerSocket
+        Max Neighbors
+
     Outputs
     -------
-    curves : GeometrySocket
+    o.curves : GeometrySocket
         Curves
-    closest_index : IntegerSocket
+    o.closest_index : IntegerSocket
         Closest Index
-    closest_weight : FloatSocket
+    o.closest_weight : FloatSocket
         Closest Weight
     """
 
@@ -2351,17 +2841,27 @@ class InterpolateCurves(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         guide_curves: GeometrySocket
+        """Guide Curves"""
         guide_up: VectorSocket
+        """Guide Up"""
         guide_group_id: IntegerSocket
+        """Guide Group ID"""
         points: GeometrySocket
+        """Points"""
         point_up: VectorSocket
+        """Point Up"""
         point_group_id: IntegerSocket
+        """Point Group ID"""
         max_neighbors: IntegerSocket
+        """Max Neighbors"""
 
     class _Outputs(SocketAccessor):
         curves: GeometrySocket
+        """Curves"""
         closest_index: IntegerSocket
+        """Closest Index"""
         closest_weight: FloatSocket
+        """Closest Weight"""
 
     if TYPE_CHECKING:
 
@@ -2403,9 +2903,14 @@ class MaterialSelection(NodeBuilder):
     material : InputMaterial
         Material
 
+    Inputs
+    ------
+    i.material : MaterialSocket
+        Material
+
     Outputs
     -------
-    selection : BooleanSocket
+    o.selection : BooleanSocket
         Selection
     """
 
@@ -2414,9 +2919,11 @@ class MaterialSelection(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         material: MaterialSocket
+        """Material"""
 
     class _Outputs(SocketAccessor):
         selection: BooleanSocket
+        """Selection"""
 
     if TYPE_CHECKING:
 
@@ -2445,9 +2952,18 @@ class MergeLayers(NodeBuilder):
     group_id : InputInteger
         Group ID
 
+    Inputs
+    ------
+    i.grease_pencil : GeometrySocket
+        Grease Pencil
+    i.selection : BooleanSocket
+        Selection
+    i.group_id : IntegerSocket
+        Group ID
+
     Outputs
     -------
-    grease_pencil : GeometrySocket
+    o.grease_pencil : GeometrySocket
         Grease Pencil
     """
 
@@ -2456,11 +2972,15 @@ class MergeLayers(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
         selection: BooleanSocket
+        """Selection"""
         group_id: IntegerSocket
+        """Group ID"""
 
     class _Outputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
 
     if TYPE_CHECKING:
 
@@ -2534,9 +3054,20 @@ class MergeByDistance(NodeBuilder):
     distance : InputFloat
         Distance
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.mode : MenuSocket
+        Mode
+    i.distance : FloatSocket
+        Distance
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -2545,12 +3076,17 @@ class MergeByDistance(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         mode: MenuSocket
+        """Mode"""
         distance: FloatSocket
+        """Distance"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -2592,11 +3128,22 @@ class MeshBoolean(NodeBuilder):
     hole_tolerant : InputBoolean
         Hole Tolerant
 
+    Inputs
+    ------
+    i.mesh_1 : GeometrySocket
+        Mesh 1
+    i.mesh_2 : GeometrySocket
+        Mesh 2
+    i.self_intersection : BooleanSocket
+        Self Intersection
+    i.hole_tolerant : BooleanSocket
+        Hole Tolerant
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    intersecting_edges : BooleanSocket
+    o.intersecting_edges : BooleanSocket
         Intersecting Edges
     """
 
@@ -2605,13 +3152,19 @@ class MeshBoolean(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh_1: GeometrySocket
+        """Mesh 1"""
         mesh_2: GeometrySocket
+        """Mesh 2"""
         self_intersection: BooleanSocket
+        """Self Intersection"""
         hole_tolerant: BooleanSocket
+        """Hole Tolerant"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         intersecting_edges: BooleanSocket
+        """Intersecting Edges"""
 
     if TYPE_CHECKING:
 
@@ -2686,9 +3239,16 @@ class MeshCircle(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.vertices : IntegerSocket
+        Vertices
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -2697,10 +3257,13 @@ class MeshCircle(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vertices: IntegerSocket
+        """Vertices"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -2766,9 +3329,20 @@ class MeshLine(NodeBuilder):
     offset : InputVector
         Offset
 
+    Inputs
+    ------
+    i.count : IntegerSocket
+        Count
+    i.resolution : FloatSocket
+        Resolution
+    i.start_location : VectorSocket
+        Start Location
+    i.offset : VectorSocket
+        Offset
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -2777,12 +3351,17 @@ class MeshLine(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         count: IntegerSocket
+        """Count"""
         resolution: FloatSocket
+        """Resolution"""
         start_location: VectorSocket
+        """Start Location"""
         offset: VectorSocket
+        """Offset"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -2864,9 +3443,16 @@ class MeshToCurve(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -2875,10 +3461,13 @@ class MeshToCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -2937,9 +3526,20 @@ class MeshToPoints(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+    i.position : VectorSocket
+        Position
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    points : GeometrySocket
+    o.points : GeometrySocket
         Points
     """
 
@@ -2948,12 +3548,17 @@ class MeshToPoints(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
         position: VectorSocket
+        """Position"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
 
     if TYPE_CHECKING:
 
@@ -3071,9 +3676,18 @@ class Points(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.count : IntegerSocket
+        Count
+    i.position : VectorSocket
+        Position
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Points
     """
 
@@ -3082,11 +3696,15 @@ class Points(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         count: IntegerSocket
+        """Count"""
         position: VectorSocket
+        """Position"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Points"""
 
     if TYPE_CHECKING:
 
@@ -3120,9 +3738,18 @@ class PointsToCurves(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.points : GeometrySocket
+        Points
+    i.curve_group_id : IntegerSocket
+        Curve Group ID
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    curves : GeometrySocket
+    o.curves : GeometrySocket
         Curves
     """
 
@@ -3131,11 +3758,15 @@ class PointsToCurves(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
         curve_group_id: IntegerSocket
+        """Curve Group ID"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         curves: GeometrySocket
+        """Curves"""
 
     if TYPE_CHECKING:
 
@@ -3171,9 +3802,16 @@ class PointsToVertices(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.points : GeometrySocket
+        Points
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -3182,10 +3820,13 @@ class PointsToVertices(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -3220,9 +3861,20 @@ class QuadraticBezier(NodeBuilder):
     end : InputVector
         End
 
+    Inputs
+    ------
+    i.resolution : IntegerSocket
+        Resolution
+    i.start : VectorSocket
+        Start
+    i.middle : VectorSocket
+        Middle
+    i.end : VectorSocket
+        End
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -3231,12 +3883,17 @@ class QuadraticBezier(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         resolution: IntegerSocket
+        """Resolution"""
         start: VectorSocket
+        """Start"""
         middle: VectorSocket
+        """Middle"""
         end: VectorSocket
+        """End"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -3292,9 +3949,34 @@ class Quadrilateral(NodeBuilder):
     point_4 : InputVector
         Point 4
 
+    Inputs
+    ------
+    i.width : FloatSocket
+        Width
+    i.height : FloatSocket
+        Height
+    i.bottom_width : FloatSocket
+        Bottom Width
+    i.top_width : FloatSocket
+        Top Width
+    i.offset : FloatSocket
+        Offset
+    i.bottom_height : FloatSocket
+        Bottom Height
+    i.top_height : FloatSocket
+        Top Height
+    i.point_1 : VectorSocket
+        Point 1
+    i.point_2 : VectorSocket
+        Point 2
+    i.point_3 : VectorSocket
+        Point 3
+    i.point_4 : VectorSocket
+        Point 4
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -3303,19 +3985,31 @@ class Quadrilateral(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         width: FloatSocket
+        """Width"""
         height: FloatSocket
+        """Height"""
         bottom_width: FloatSocket
+        """Bottom Width"""
         top_width: FloatSocket
+        """Top Width"""
         offset: FloatSocket
+        """Offset"""
         bottom_height: FloatSocket
+        """Bottom Height"""
         top_height: FloatSocket
+        """Top Height"""
         point_1: VectorSocket
+        """Point 1"""
         point_2: VectorSocket
+        """Point 2"""
         point_3: VectorSocket
+        """Point 3"""
         point_4: VectorSocket
+        """Point 4"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -3452,17 +4146,32 @@ class Raycast(NodeBuilder):
     ray_length : InputFloat
         Ray Length
 
+    Inputs
+    ------
+    i.target_geometry : GeometrySocket
+        Target Geometry
+    i.attribute : FloatSocket
+        Attribute
+    i.interpolation : MenuSocket
+        Interpolation
+    i.source_position : VectorSocket
+        Source Position
+    i.ray_direction : VectorSocket
+        Ray Direction
+    i.ray_length : FloatSocket
+        Ray Length
+
     Outputs
     -------
-    is_hit : BooleanSocket
+    o.is_hit : BooleanSocket
         Is Hit
-    hit_position : VectorSocket
+    o.hit_position : VectorSocket
         Hit Position
-    hit_normal : VectorSocket
+    o.hit_normal : VectorSocket
         Hit Normal
-    hit_distance : FloatSocket
+    o.hit_distance : FloatSocket
         Hit Distance
-    attribute : FloatSocket
+    o.attribute : FloatSocket
         Attribute
     """
 
@@ -3471,18 +4180,29 @@ class Raycast(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         target_geometry: GeometrySocket
+        """Target Geometry"""
         attribute: FloatSocket
+        """Attribute"""
         interpolation: MenuSocket
+        """Interpolation"""
         source_position: VectorSocket
+        """Source Position"""
         ray_direction: VectorSocket
+        """Ray Direction"""
         ray_length: FloatSocket
+        """Ray Length"""
 
     class _Outputs(SocketAccessor):
         is_hit: BooleanSocket
+        """Is Hit"""
         hit_position: VectorSocket
+        """Hit Position"""
         hit_normal: VectorSocket
+        """Hit Normal"""
         hit_distance: FloatSocket
+        """Hit Distance"""
         attribute: FloatSocket
+        """Attribute"""
 
     if TYPE_CHECKING:
 
@@ -3714,9 +4434,20 @@ class RealizeInstances(NodeBuilder):
     depth : InputInteger
         Depth
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.realize_all : BooleanSocket
+        Realize All
+    i.depth : IntegerSocket
+        Depth
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -3725,12 +4456,17 @@ class RealizeInstances(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         realize_all: BooleanSocket
+        """Realize All"""
         depth: IntegerSocket
+        """Depth"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -3770,9 +4506,18 @@ class ReplaceMaterial(NodeBuilder):
     new : InputMaterial
         New
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.old : MaterialSocket
+        Old
+    i.new : MaterialSocket
+        New
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -3781,11 +4526,15 @@ class ReplaceMaterial(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         old: MaterialSocket
+        """Old"""
         new: MaterialSocket
+        """New"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -3823,9 +4572,22 @@ class ResampleCurve(NodeBuilder):
     length : InputFloat
         Length
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+    i.mode : MenuSocket
+        Mode
+    i.count : IntegerSocket
+        Count
+    i.length : FloatSocket
+        Length
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -3834,13 +4596,19 @@ class ResampleCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
         mode: MenuSocket
+        """Mode"""
         count: IntegerSocket
+        """Count"""
         length: FloatSocket
+        """Length"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -3890,9 +4658,16 @@ class ReverseCurve(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -3901,10 +4676,13 @@ class ReverseCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -3941,9 +4719,22 @@ class RotateInstances(NodeBuilder):
     local_space : InputBoolean
         Local Space
 
+    Inputs
+    ------
+    i.instances : GeometrySocket
+        Instances
+    i.selection : BooleanSocket
+        Selection
+    i.rotation : RotationSocket
+        Rotation
+    i.pivot_point : VectorSocket
+        Pivot Point
+    i.local_space : BooleanSocket
+        Local Space
+
     Outputs
     -------
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
     """
 
@@ -3952,13 +4743,19 @@ class RotateInstances(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
         selection: BooleanSocket
+        """Selection"""
         rotation: RotationSocket
+        """Rotation"""
         pivot_point: VectorSocket
+        """Pivot Point"""
         local_space: BooleanSocket
+        """Local Space"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
 
     if TYPE_CHECKING:
 
@@ -4004,15 +4801,28 @@ class SampleCurve(NodeBuilder):
     curve_index : InputInteger
         Curve Index
 
+    Inputs
+    ------
+    i.curves : GeometrySocket
+        Curves
+    i.value : FloatSocket
+        Value
+    i.factor : FloatSocket
+        Factor
+    i.length : FloatSocket
+        Length
+    i.curve_index : IntegerSocket
+        Curve Index
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
-    position : VectorSocket
+    o.position : VectorSocket
         Position
-    tangent : VectorSocket
+    o.tangent : VectorSocket
         Tangent
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
     """
 
@@ -4021,16 +4831,25 @@ class SampleCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curves: GeometrySocket
+        """Curves"""
         value: FloatSocket
+        """Value"""
         factor: FloatSocket
+        """Factor"""
         length: FloatSocket
+        """Length"""
         curve_index: IntegerSocket
+        """Curve Index"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         position: VectorSocket
+        """Position"""
         tangent: VectorSocket
+        """Tangent"""
         normal: VectorSocket
+        """Normal"""
 
     if TYPE_CHECKING:
 
@@ -4284,9 +5103,18 @@ class SampleIndex(NodeBuilder):
     index : InputInteger
         Index
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.value : FloatSocket
+        Value
+    i.index : IntegerSocket
+        Index
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -4295,11 +5123,15 @@ class SampleIndex(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         value: FloatSocket
+        """Value"""
         index: IntegerSocket
+        """Index"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -4539,9 +5371,16 @@ class SampleNearest(NodeBuilder):
     sample_position : InputVector
         Sample Position
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.sample_position : VectorSocket
+        Sample Position
+
     Outputs
     -------
-    index : IntegerSocket
+    o.index : IntegerSocket
         Index
     """
 
@@ -4550,10 +5389,13 @@ class SampleNearest(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         sample_position: VectorSocket
+        """Sample Position"""
 
     class _Outputs(SocketAccessor):
         index: IntegerSocket
+        """Index"""
 
     if TYPE_CHECKING:
 
@@ -4628,11 +5470,24 @@ class SampleNearestSurface(NodeBuilder):
     sample_group_id : InputInteger
         Sample Group ID
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.value : FloatSocket
+        Value
+    i.group_id : IntegerSocket
+        Group ID
+    i.sample_position : VectorSocket
+        Sample Position
+    i.sample_group_id : IntegerSocket
+        Sample Group ID
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
-    is_valid : BooleanSocket
+    o.is_valid : BooleanSocket
         Is Valid
     """
 
@@ -4641,14 +5496,21 @@ class SampleNearestSurface(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         value: FloatSocket
+        """Value"""
         group_id: IntegerSocket
+        """Group ID"""
         sample_position: VectorSocket
+        """Sample Position"""
         sample_group_id: IntegerSocket
+        """Sample Group ID"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         is_valid: BooleanSocket
+        """Is Valid"""
 
     if TYPE_CHECKING:
 
@@ -4864,11 +5726,22 @@ class SampleUVSurface(NodeBuilder):
     sample_uv : InputVector
         Sample UV
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.value : FloatSocket
+        Value
+    i.source_uv_map : VectorSocket
+        UV Map
+    i.sample_uv : VectorSocket
+        Sample UV
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
-    is_valid : BooleanSocket
+    o.is_valid : BooleanSocket
         Is Valid
     """
 
@@ -4877,13 +5750,19 @@ class SampleUVSurface(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         value: FloatSocket
+        """Value"""
         source_uv_map: VectorSocket
+        """UV Map"""
         sample_uv: VectorSocket
+        """Sample UV"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         is_valid: BooleanSocket
+        """Is Valid"""
 
     if TYPE_CHECKING:
 
@@ -5087,9 +5966,24 @@ class ScaleElements(NodeBuilder):
     axis : InputVector
         Axis
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.scale : FloatSocket
+        Scale
+    i.center : VectorSocket
+        Center
+    i.scale_mode : MenuSocket
+        Scale Mode
+    i.axis : VectorSocket
+        Axis
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -5098,14 +5992,21 @@ class ScaleElements(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         scale: FloatSocket
+        """Scale"""
         center: VectorSocket
+        """Center"""
         scale_mode: MenuSocket
+        """Scale Mode"""
         axis: VectorSocket
+        """Axis"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -5201,9 +6102,22 @@ class ScaleInstances(NodeBuilder):
     local_space : InputBoolean
         Local Space
 
+    Inputs
+    ------
+    i.instances : GeometrySocket
+        Instances
+    i.selection : BooleanSocket
+        Selection
+    i.scale : VectorSocket
+        Scale
+    i.center : VectorSocket
+        Center
+    i.local_space : BooleanSocket
+        Local Space
+
     Outputs
     -------
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
     """
 
@@ -5212,13 +6126,19 @@ class ScaleInstances(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
         selection: BooleanSocket
+        """Selection"""
         scale: VectorSocket
+        """Scale"""
         center: VectorSocket
+        """Center"""
         local_space: BooleanSocket
+        """Local Space"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
 
     if TYPE_CHECKING:
 
@@ -5256,19 +6176,24 @@ class SeparateComponents(NodeBuilder):
     geometry : InputGeometry
         Geometry
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
-    grease_pencil : GeometrySocket
+    o.grease_pencil : GeometrySocket
         Grease Pencil
-    point_cloud : GeometrySocket
+    o.point_cloud : GeometrySocket
         Point Cloud
-    volume : GeometrySocket
+    o.volume : GeometrySocket
         Volume
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
     """
 
@@ -5277,14 +6202,21 @@ class SeparateComponents(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         curve: GeometrySocket
+        """Curve"""
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
         point_cloud: GeometrySocket
+        """Point Cloud"""
         volume: GeometrySocket
+        """Volume"""
         instances: GeometrySocket
+        """Instances"""
 
     if TYPE_CHECKING:
 
@@ -5311,11 +6243,18 @@ class SeparateGeometry(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    selection : GeometrySocket
+    o.selection : GeometrySocket
         Selection
-    inverted : GeometrySocket
+    o.inverted : GeometrySocket
         Inverted
     """
 
@@ -5324,11 +6263,15 @@ class SeparateGeometry(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         selection: GeometrySocket
+        """Selection"""
         inverted: GeometrySocket
+        """Inverted"""
 
     if TYPE_CHECKING:
 
@@ -5419,9 +6362,20 @@ class SetCurveNormal(NodeBuilder):
     normal : InputVector
         Normal
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+    i.mode : MenuSocket
+        Mode
+    i.normal : VectorSocket
+        Normal
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -5430,12 +6384,17 @@ class SetCurveNormal(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
         mode: MenuSocket
+        """Mode"""
         normal: VectorSocket
+        """Normal"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -5475,9 +6434,18 @@ class SetCurveRadius(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -5486,11 +6454,15 @@ class SetCurveRadius(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -5524,9 +6496,18 @@ class SetCurveTilt(NodeBuilder):
     tilt : InputFloat
         Tilt
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+    i.tilt : FloatSocket
+        Tilt
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -5535,11 +6516,15 @@ class SetCurveTilt(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
         tilt: FloatSocket
+        """Tilt"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -5573,9 +6558,18 @@ class SetFaceSet(NodeBuilder):
     face_set : InputInteger
         Face Set
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+    i.face_set : IntegerSocket
+        Face Set
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -5584,11 +6578,15 @@ class SetFaceSet(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
         face_set: IntegerSocket
+        """Face Set"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -5620,9 +6618,16 @@ class SetGeometryName(NodeBuilder):
     name : InputString
         Name
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.name : StringSocket
+        Name
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -5631,10 +6636,13 @@ class SetGeometryName(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         name: StringSocket
+        """Name"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -5669,9 +6677,20 @@ class SetGreasePencilColor(NodeBuilder):
     opacity : InputFloat
         Opacity
 
+    Inputs
+    ------
+    i.grease_pencil : GeometrySocket
+        Grease Pencil
+    i.selection : BooleanSocket
+        Selection
+    i.color : ColorSocket
+        Color
+    i.opacity : FloatSocket
+        Opacity
+
     Outputs
     -------
-    grease_pencil : GeometrySocket
+    o.grease_pencil : GeometrySocket
         Grease Pencil
     """
 
@@ -5680,12 +6699,17 @@ class SetGreasePencilColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
         selection: BooleanSocket
+        """Selection"""
         color: ColorSocket
+        """Color"""
         opacity: FloatSocket
+        """Opacity"""
 
     class _Outputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
 
     if TYPE_CHECKING:
 
@@ -5765,9 +6789,14 @@ class SetGreasePencilDepth(NodeBuilder):
     grease_pencil : InputGeometry
         Grease Pencil
 
+    Inputs
+    ------
+    i.grease_pencil : GeometrySocket
+        Grease Pencil
+
     Outputs
     -------
-    grease_pencil : GeometrySocket
+    o.grease_pencil : GeometrySocket
         Grease Pencil
     """
 
@@ -5776,9 +6805,11 @@ class SetGreasePencilDepth(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
 
     class _Outputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
 
     if TYPE_CHECKING:
 
@@ -5820,9 +6851,18 @@ class SetGreasePencilSoftness(NodeBuilder):
     softness : InputFloat
         Softness
 
+    Inputs
+    ------
+    i.grease_pencil : GeometrySocket
+        Grease Pencil
+    i.selection : BooleanSocket
+        Selection
+    i.softness : FloatSocket
+        Softness
+
     Outputs
     -------
-    grease_pencil : GeometrySocket
+    o.grease_pencil : GeometrySocket
         Grease Pencil
     """
 
@@ -5831,11 +6871,15 @@ class SetGreasePencilSoftness(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
         selection: BooleanSocket
+        """Selection"""
         softness: FloatSocket
+        """Softness"""
 
     class _Outputs(SocketAccessor):
         grease_pencil: GeometrySocket
+        """Grease Pencil"""
 
     if TYPE_CHECKING:
 
@@ -5875,9 +6919,20 @@ class SetHandlePositions(NodeBuilder):
     offset : InputVector
         Offset
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+    i.position : VectorSocket
+        Position
+    i.offset : VectorSocket
+        Offset
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -5886,12 +6941,17 @@ class SetHandlePositions(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
         position: VectorSocket
+        """Position"""
         offset: VectorSocket
+        """Offset"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -5975,9 +7035,18 @@ class SetID(NodeBuilder):
     id : InputInteger
         ID
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.id : IntegerSocket
+        ID
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -5986,11 +7055,15 @@ class SetID(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         id: IntegerSocket
+        """ID"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -6024,9 +7097,18 @@ class SetInstanceTransform(NodeBuilder):
     transform : InputMatrix
         Transform
 
+    Inputs
+    ------
+    i.instances : GeometrySocket
+        Instances
+    i.selection : BooleanSocket
+        Selection
+    i.transform : MatrixSocket
+        Transform
+
     Outputs
     -------
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
     """
 
@@ -6035,11 +7117,15 @@ class SetInstanceTransform(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
         selection: BooleanSocket
+        """Selection"""
         transform: MatrixSocket
+        """Transform"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
 
     if TYPE_CHECKING:
 
@@ -6077,9 +7163,18 @@ class SetMaterial(NodeBuilder):
     material : InputMaterial
         Material
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.material : MaterialSocket
+        Material
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -6088,11 +7183,15 @@ class SetMaterial(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         material: MaterialSocket
+        """Material"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -6126,9 +7225,18 @@ class SetMaterialIndex(NodeBuilder):
     material_index : InputInteger
         Material Index
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.material_index : IntegerSocket
+        Material Index
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -6137,11 +7245,15 @@ class SetMaterialIndex(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         material_index: IntegerSocket
+        """Material Index"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -6183,9 +7295,22 @@ class SetMeshNormal(NodeBuilder):
     custom_normal : InputVector
         Custom Normal
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.remove_custom : BooleanSocket
+        Remove Custom
+    i.edge_sharpness : BooleanSocket
+        Edge Sharpness
+    i.face_sharpness : BooleanSocket
+        Face Sharpness
+    i.custom_normal : VectorSocket
+        Custom Normal
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -6194,13 +7319,19 @@ class SetMeshNormal(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         remove_custom: BooleanSocket
+        """Remove Custom"""
         edge_sharpness: BooleanSocket
+        """Edge Sharpness"""
         face_sharpness: BooleanSocket
+        """Face Sharpness"""
         custom_normal: VectorSocket
+        """Custom Normal"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -6346,9 +7477,18 @@ class SetPointRadius(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.points : GeometrySocket
+        Points
+    i.selection : BooleanSocket
+        Selection
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    points : GeometrySocket
+    o.points : GeometrySocket
         Points
     """
 
@@ -6357,11 +7497,15 @@ class SetPointRadius(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
         selection: BooleanSocket
+        """Selection"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
 
     if TYPE_CHECKING:
 
@@ -6397,9 +7541,20 @@ class SetPosition(NodeBuilder):
     offset : InputVector
         Offset
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.position : VectorSocket
+        Position
+    i.offset : VectorSocket
+        Offset
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -6408,12 +7563,17 @@ class SetPosition(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         position: VectorSocket
+        """Position"""
         offset: VectorSocket
+        """Offset"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -6451,9 +7611,16 @@ class SetSelection(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -6462,10 +7629,13 @@ class SetSelection(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -6560,9 +7730,18 @@ class SetShadeSmooth(NodeBuilder):
     shade_smooth : InputBoolean
         Shade Smooth
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+    i.shade_smooth : BooleanSocket
+        Shade Smooth
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Mesh
     """
 
@@ -6571,11 +7750,15 @@ class SetShadeSmooth(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
         shade_smooth: BooleanSocket
+        """Shade Smooth"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -6653,9 +7836,18 @@ class SetSplineCyclic(NodeBuilder):
     cyclic : InputBoolean
         Cyclic
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+    i.cyclic : BooleanSocket
+        Cyclic
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Curve
     """
 
@@ -6664,11 +7856,15 @@ class SetSplineCyclic(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
         cyclic: BooleanSocket
+        """Cyclic"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -6702,9 +7898,18 @@ class SetSplineResolution(NodeBuilder):
     resolution : InputInteger
         Resolution
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+    i.resolution : IntegerSocket
+        Resolution
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Curve
     """
 
@@ -6713,11 +7918,15 @@ class SetSplineResolution(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
         resolution: IntegerSocket
+        """Resolution"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -6753,9 +7962,16 @@ class SetSplineType(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -6764,10 +7980,13 @@ class SetSplineType(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -6840,9 +8059,20 @@ class SortElements(NodeBuilder):
     sort_weight : InputFloat
         Sort Weight
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.group_id : IntegerSocket
+        Group ID
+    i.sort_weight : FloatSocket
+        Sort Weight
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -6851,12 +8081,17 @@ class SortElements(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         group_id: IntegerSocket
+        """Group ID"""
         sort_weight: FloatSocket
+        """Sort Weight"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -6997,9 +8232,24 @@ class Spiral(NodeBuilder):
     reverse : InputBoolean
         Reverse
 
+    Inputs
+    ------
+    i.resolution : IntegerSocket
+        Resolution
+    i.rotations : FloatSocket
+        Rotations
+    i.start_radius : FloatSocket
+        Start Radius
+    i.end_radius : FloatSocket
+        End Radius
+    i.height : FloatSocket
+        Height
+    i.reverse : BooleanSocket
+        Reverse
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -7008,14 +8258,21 @@ class Spiral(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         resolution: IntegerSocket
+        """Resolution"""
         rotations: FloatSocket
+        """Rotations"""
         start_radius: FloatSocket
+        """Start Radius"""
         end_radius: FloatSocket
+        """End Radius"""
         height: FloatSocket
+        """Height"""
         reverse: BooleanSocket
+        """Reverse"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -7057,9 +8314,16 @@ class SplitEdges(NodeBuilder):
     selection : InputBoolean
         Selection
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -7068,10 +8332,13 @@ class SplitEdges(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -7104,11 +8371,20 @@ class SplitToInstances(NodeBuilder):
     group_id : InputInteger
         Group ID
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.group_id : IntegerSocket
+        Group ID
+
     Outputs
     -------
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
-    group_id : IntegerSocket
+    o.group_id : IntegerSocket
         Group ID
     """
 
@@ -7117,12 +8393,17 @@ class SplitToInstances(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         group_id: IntegerSocket
+        """Group ID"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
         group_id: IntegerSocket
+        """Group ID"""
 
     if TYPE_CHECKING:
 
@@ -7244,11 +8525,22 @@ class Star(NodeBuilder):
     twist : InputFloat
         Twist
 
+    Inputs
+    ------
+    i.points : IntegerSocket
+        Points
+    i.inner_radius : FloatSocket
+        Inner Radius
+    i.outer_radius : FloatSocket
+        Outer Radius
+    i.twist : FloatSocket
+        Twist
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
-    outer_points : BooleanSocket
+    o.outer_points : BooleanSocket
         Outer Points
     """
 
@@ -7257,13 +8549,19 @@ class Star(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         points: IntegerSocket
+        """Points"""
         inner_radius: FloatSocket
+        """Inner Radius"""
         outer_radius: FloatSocket
+        """Outer Radius"""
         twist: FloatSocket
+        """Twist"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         outer_points: BooleanSocket
+        """Outer Points"""
 
     if TYPE_CHECKING:
 
@@ -7311,15 +8609,32 @@ class StringToCurves(NodeBuilder):
     text_box_height : InputFloat
         Text Box Height
 
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.size : FloatSocket
+        Size
+    i.character_spacing : FloatSocket
+        Character Spacing
+    i.word_spacing : FloatSocket
+        Word Spacing
+    i.line_spacing : FloatSocket
+        Line Spacing
+    i.text_box_width : FloatSocket
+        Text Box Width
+    i.text_box_height : FloatSocket
+        Text Box Height
+
     Outputs
     -------
-    curve_instances : GeometrySocket
+    o.curve_instances : GeometrySocket
         Curve Instances
-    remainder : StringSocket
+    o.remainder : StringSocket
         Remainder
-    line : IntegerSocket
+    o.line : IntegerSocket
         Line
-    pivot_point : VectorSocket
+    o.pivot_point : VectorSocket
         Pivot Point
     """
 
@@ -7328,18 +8643,29 @@ class StringToCurves(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         string: StringSocket
+        """String"""
         size: FloatSocket
+        """Size"""
         character_spacing: FloatSocket
+        """Character Spacing"""
         word_spacing: FloatSocket
+        """Word Spacing"""
         line_spacing: FloatSocket
+        """Line Spacing"""
         text_box_width: FloatSocket
+        """Text Box Width"""
         text_box_height: FloatSocket
+        """Text Box Height"""
 
     class _Outputs(SocketAccessor):
         curve_instances: GeometrySocket
+        """Curve Instances"""
         remainder: StringSocket
+        """Remainder"""
         line: IntegerSocket
+        """Line"""
         pivot_point: VectorSocket
+        """Pivot Point"""
 
     if TYPE_CHECKING:
 
@@ -7459,9 +8785,16 @@ class SubdivideCurve(NodeBuilder):
     cuts : InputInteger
         Cuts
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.cuts : IntegerSocket
+        Cuts
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -7470,10 +8803,13 @@ class SubdivideCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         cuts: IntegerSocket
+        """Cuts"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -7504,9 +8840,16 @@ class SubdivideMesh(NodeBuilder):
     level : InputInteger
         Level
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.level : IntegerSocket
+        Level
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -7515,10 +8858,13 @@ class SubdivideMesh(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         level: IntegerSocket
+        """Level"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -7559,9 +8905,26 @@ class SubdivisionSurface(NodeBuilder):
     boundary_smooth : InputMenu | Literal['Keep Corners', 'All']
         Boundary Smooth
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.level : IntegerSocket
+        Level
+    i.edge_crease : FloatSocket
+        Edge Crease
+    i.vertex_crease : FloatSocket
+        Vertex Crease
+    i.limit_surface : BooleanSocket
+        Limit Surface
+    i.uv_smooth : MenuSocket
+        UV Smooth
+    i.boundary_smooth : MenuSocket
+        Boundary Smooth
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -7570,15 +8933,23 @@ class SubdivisionSurface(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         level: IntegerSocket
+        """Level"""
         edge_crease: FloatSocket
+        """Edge Crease"""
         vertex_crease: FloatSocket
+        """Vertex Crease"""
         limit_surface: BooleanSocket
+        """Limit Surface"""
         uv_smooth: MenuSocket
+        """UV Smooth"""
         boundary_smooth: MenuSocket
+        """Boundary Smooth"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -7638,9 +9009,24 @@ class TransformGeometry(NodeBuilder):
     transform : InputMatrix
         Transform
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.mode : MenuSocket
+        Mode
+    i.translation : VectorSocket
+        Translation
+    i.rotation : RotationSocket
+        Rotation
+    i.scale : VectorSocket
+        Scale
+    i.transform : MatrixSocket
+        Transform
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -7649,14 +9035,21 @@ class TransformGeometry(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         mode: MenuSocket
+        """Mode"""
         translation: VectorSocket
+        """Translation"""
         rotation: RotationSocket
+        """Rotation"""
         scale: VectorSocket
+        """Scale"""
         transform: MatrixSocket
+        """Transform"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -7702,9 +9095,20 @@ class TranslateInstances(NodeBuilder):
     local_space : InputBoolean
         Local Space
 
+    Inputs
+    ------
+    i.instances : GeometrySocket
+        Instances
+    i.selection : BooleanSocket
+        Selection
+    i.translation : VectorSocket
+        Translation
+    i.local_space : BooleanSocket
+        Local Space
+
     Outputs
     -------
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
     """
 
@@ -7713,12 +9117,17 @@ class TranslateInstances(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
         selection: BooleanSocket
+        """Selection"""
         translation: VectorSocket
+        """Translation"""
         local_space: BooleanSocket
+        """Local Space"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
 
     if TYPE_CHECKING:
 
@@ -7760,9 +9169,20 @@ class Triangulate(NodeBuilder):
     n_gon_method : InputMenu | Literal['Beauty', 'Clip']
         N-gon Method
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+    i.quad_method : MenuSocket
+        Quad Method
+    i.n_gon_method : MenuSocket
+        N-gon Method
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -7771,12 +9191,17 @@ class Triangulate(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         selection: BooleanSocket
+        """Selection"""
         quad_method: MenuSocket
+        """Quad Method"""
         n_gon_method: MenuSocket
+        """N-gon Method"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -7829,9 +9254,24 @@ class TrimCurve(NodeBuilder):
     end_001 : InputFloat
         End
 
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+    i.start : FloatSocket
+        Start
+    i.end : FloatSocket
+        End
+    i.start_001 : FloatSocket
+        Start
+    i.end_001 : FloatSocket
+        End
+
     Outputs
     -------
-    curve : GeometrySocket
+    o.curve : GeometrySocket
         Curve
     """
 
@@ -7840,14 +9280,21 @@ class TrimCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
         selection: BooleanSocket
+        """Selection"""
         start: FloatSocket
+        """Start"""
         end: FloatSocket
+        """End"""
         start_001: FloatSocket
+        """Start"""
         end_001: FloatSocket
+        """End"""
 
     class _Outputs(SocketAccessor):
         curve: GeometrySocket
+        """Curve"""
 
     if TYPE_CHECKING:
 
@@ -7931,11 +9378,20 @@ class UVSphere(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.segments : IntegerSocket
+        Segments
+    i.rings : IntegerSocket
+        Rings
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
-    uv_map : VectorSocket
+    o.uv_map : VectorSocket
         UV Map
     """
 
@@ -7944,12 +9400,17 @@ class UVSphere(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         segments: IntegerSocket
+        """Segments"""
         rings: IntegerSocket
+        """Rings"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         uv_map: VectorSocket
+        """UV Map"""
 
     if TYPE_CHECKING:
 

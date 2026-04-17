@@ -50,11 +50,34 @@ class BrickTexture(NodeBuilder):
     row_height : InputFloat
         Row Height
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.color1 : ColorSocket
+        Color1
+    i.color2 : ColorSocket
+        Color2
+    i.mortar : ColorSocket
+        Mortar
+    i.scale : FloatSocket
+        Scale
+    i.mortar_size : FloatSocket
+        Mortar Size
+    i.mortar_smooth : FloatSocket
+        Mortar Smooth
+    i.bias : FloatSocket
+        Bias
+    i.brick_width : FloatSocket
+        Brick Width
+    i.row_height : FloatSocket
+        Row Height
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    fac : FloatSocket
+    o.fac : FloatSocket
         Factor
     """
 
@@ -63,19 +86,31 @@ class BrickTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         color1: ColorSocket
+        """Color1"""
         color2: ColorSocket
+        """Color2"""
         mortar: ColorSocket
+        """Mortar"""
         scale: FloatSocket
+        """Scale"""
         mortar_size: FloatSocket
+        """Mortar Size"""
         mortar_smooth: FloatSocket
+        """Mortar Smooth"""
         bias: FloatSocket
+        """Bias"""
         brick_width: FloatSocket
+        """Brick Width"""
         row_height: FloatSocket
+        """Row Height"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 
@@ -169,11 +204,22 @@ class CheckerTexture(NodeBuilder):
     scale : InputFloat
         Scale
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.color1 : ColorSocket
+        Color1
+    i.color2 : ColorSocket
+        Color2
+    i.scale : FloatSocket
+        Scale
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    fac : FloatSocket
+    o.fac : FloatSocket
         Factor
     """
 
@@ -182,13 +228,19 @@ class CheckerTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         color1: ColorSocket
+        """Color1"""
         color2: ColorSocket
+        """Color2"""
         scale: FloatSocket
+        """Scale"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 
@@ -234,13 +286,28 @@ class GaborTexture(NodeBuilder):
     orientation_3d : InputVector
         Orientation
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.scale : FloatSocket
+        Scale
+    i.frequency : FloatSocket
+        Frequency
+    i.anisotropy : FloatSocket
+        Anisotropy
+    i.orientation_2d : FloatSocket
+        Orientation
+    i.orientation_3d : VectorSocket
+        Orientation
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
-    phase : FloatSocket
+    o.phase : FloatSocket
         Phase
-    intensity : FloatSocket
+    o.intensity : FloatSocket
         Intensity
     """
 
@@ -249,16 +316,25 @@ class GaborTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         scale: FloatSocket
+        """Scale"""
         frequency: FloatSocket
+        """Frequency"""
         anisotropy: FloatSocket
+        """Anisotropy"""
         orientation_2d: FloatSocket
+        """Orientation"""
         orientation_3d: VectorSocket
+        """Orientation"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         phase: FloatSocket
+        """Phase"""
         intensity: FloatSocket
+        """Intensity"""
 
     if TYPE_CHECKING:
 
@@ -346,11 +422,16 @@ class GradientTexture(NodeBuilder):
     vector : InputVector
         Vector
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    fac : FloatSocket
+    o.fac : FloatSocket
         Factor
     """
 
@@ -359,10 +440,13 @@ class GradientTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 
@@ -468,11 +552,20 @@ class ImageTexture(NodeBuilder):
     frame : InputInteger
         Frame
 
+    Inputs
+    ------
+    i.image : ImageSocket
+        Image
+    i.vector : VectorSocket
+        Vector
+    i.frame : IntegerSocket
+        Frame
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
     """
 
@@ -481,12 +574,17 @@ class ImageTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ImageSocket
+        """Image"""
         vector: VectorSocket
+        """Vector"""
         frame: IntegerSocket
+        """Frame"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         alpha: FloatSocket
+        """Alpha"""
 
     if TYPE_CHECKING:
 
@@ -540,11 +638,20 @@ class MagicTexture(NodeBuilder):
     distortion : InputFloat
         Distortion
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.scale : FloatSocket
+        Scale
+    i.distortion : FloatSocket
+        Distortion
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    fac : FloatSocket
+    o.fac : FloatSocket
         Factor
     """
 
@@ -553,12 +660,17 @@ class MagicTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         scale: FloatSocket
+        """Scale"""
         distortion: FloatSocket
+        """Distortion"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 
@@ -614,11 +726,32 @@ class NoiseTexture(NodeBuilder):
     distortion : InputFloat
         Distortion
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.w : FloatSocket
+        W
+    i.scale : FloatSocket
+        Scale
+    i.detail : FloatSocket
+        Detail
+    i.roughness : FloatSocket
+        Roughness
+    i.lacunarity : FloatSocket
+        Lacunarity
+    i.offset : FloatSocket
+        Offset
+    i.gain : FloatSocket
+        Gain
+    i.distortion : FloatSocket
+        Distortion
+
     Outputs
     -------
-    fac : FloatSocket
+    o.fac : FloatSocket
         Factor
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -627,18 +760,29 @@ class NoiseTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         w: FloatSocket
+        """W"""
         scale: FloatSocket
+        """Scale"""
         detail: FloatSocket
+        """Detail"""
         roughness: FloatSocket
+        """Roughness"""
         lacunarity: FloatSocket
+        """Lacunarity"""
         offset: FloatSocket
+        """Offset"""
         gain: FloatSocket
+        """Gain"""
         distortion: FloatSocket
+        """Distortion"""
 
     class _Outputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -868,17 +1012,38 @@ class VoronoiTexture(NodeBuilder):
     randomness : InputFloat
         Randomness
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.w : FloatSocket
+        W
+    i.scale : FloatSocket
+        Scale
+    i.detail : FloatSocket
+        Detail
+    i.roughness : FloatSocket
+        Roughness
+    i.lacunarity : FloatSocket
+        Lacunarity
+    i.smoothness : FloatSocket
+        Smoothness
+    i.exponent : FloatSocket
+        Exponent
+    i.randomness : FloatSocket
+        Randomness
+
     Outputs
     -------
-    distance : FloatSocket
+    o.distance : FloatSocket
         Distance
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    position : VectorSocket
+    o.position : VectorSocket
         Position
-    w : FloatSocket
+    o.w : FloatSocket
         W
-    radius : FloatSocket
+    o.radius : FloatSocket
         Radius
     """
 
@@ -887,21 +1052,35 @@ class VoronoiTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         w: FloatSocket
+        """W"""
         scale: FloatSocket
+        """Scale"""
         detail: FloatSocket
+        """Detail"""
         roughness: FloatSocket
+        """Roughness"""
         lacunarity: FloatSocket
+        """Lacunarity"""
         smoothness: FloatSocket
+        """Smoothness"""
         exponent: FloatSocket
+        """Exponent"""
         randomness: FloatSocket
+        """Randomness"""
 
     class _Outputs(SocketAccessor):
         distance: FloatSocket
+        """Distance"""
         color: ColorSocket
+        """Color"""
         position: VectorSocket
+        """Position"""
         w: FloatSocket
+        """W"""
         radius: FloatSocket
+        """Radius"""
 
     if TYPE_CHECKING:
 
@@ -1010,11 +1189,28 @@ class WaveTexture(NodeBuilder):
     phase_offset : InputFloat
         Phase Offset
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.scale : FloatSocket
+        Scale
+    i.distortion : FloatSocket
+        Distortion
+    i.detail : FloatSocket
+        Detail
+    i.detail_scale : FloatSocket
+        Detail Scale
+    i.detail_roughness : FloatSocket
+        Detail Roughness
+    i.phase_offset : FloatSocket
+        Phase Offset
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    fac : FloatSocket
+    o.fac : FloatSocket
         Factor
     """
 
@@ -1023,16 +1219,25 @@ class WaveTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         scale: FloatSocket
+        """Scale"""
         distortion: FloatSocket
+        """Distortion"""
         detail: FloatSocket
+        """Detail"""
         detail_scale: FloatSocket
+        """Detail Scale"""
         detail_roughness: FloatSocket
+        """Detail Roughness"""
         phase_offset: FloatSocket
+        """Phase Offset"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 
@@ -1162,11 +1367,18 @@ class WhiteNoiseTexture(NodeBuilder):
     w : InputFloat
         W
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.w : FloatSocket
+        W
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -1175,11 +1387,15 @@ class WhiteNoiseTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         w: FloatSocket
+        """W"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 

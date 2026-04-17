@@ -38,9 +38,22 @@ class AlphaOver(NodeBuilder):
     straight_alpha : InputBoolean
         Straight Alpha
 
+    Inputs
+    ------
+    i.background : ColorSocket
+        Background
+    i.foreground : ColorSocket
+        Foreground
+    i.fac : FloatSocket
+        Factor
+    i.type : MenuSocket
+        Type
+    i.straight_alpha : BooleanSocket
+        Straight Alpha
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -49,13 +62,19 @@ class AlphaOver(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         background: ColorSocket
+        """Background"""
         foreground: ColorSocket
+        """Foreground"""
         fac: FloatSocket
+        """Factor"""
         type: MenuSocket
+        """Type"""
         straight_alpha: BooleanSocket
+        """Straight Alpha"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -148,9 +167,18 @@ class Brightnesscontrast(NodeBuilder):
     contrast : InputFloat
         Contrast
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.bright : FloatSocket
+        Brightness
+    i.contrast : FloatSocket
+        Contrast
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -159,11 +187,15 @@ class Brightnesscontrast(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         bright: FloatSocket
+        """Brightness"""
         contrast: FloatSocket
+        """Contrast"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -229,9 +261,50 @@ class ColorBalance(NodeBuilder):
     output_tint : InputFloat
         Tint
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.fac : FloatSocket
+        Factor
+    i.type : MenuSocket
+        Type
+    i.base_lift : FloatSocket
+        Lift
+    i.color_lift : ColorSocket
+        Lift
+    i.base_gamma : FloatSocket
+        Gamma
+    i.color_gamma : ColorSocket
+        Gamma
+    i.base_gain : FloatSocket
+        Gain
+    i.color_gain : ColorSocket
+        Gain
+    i.base_offset : FloatSocket
+        Offset
+    i.color_offset : ColorSocket
+        Offset
+    i.base_power : FloatSocket
+        Power
+    i.color_power : ColorSocket
+        Power
+    i.base_slope : FloatSocket
+        Slope
+    i.color_slope : ColorSocket
+        Slope
+    i.input_temperature : FloatSocket
+        Temperature
+    i.input_tint : FloatSocket
+        Tint
+    i.output_temperature : FloatSocket
+        Temperature
+    i.output_tint : FloatSocket
+        Tint
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -240,27 +313,47 @@ class ColorBalance(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         fac: FloatSocket
+        """Factor"""
         type: MenuSocket
+        """Type"""
         base_lift: FloatSocket
+        """Lift"""
         color_lift: ColorSocket
+        """Lift"""
         base_gamma: FloatSocket
+        """Gamma"""
         color_gamma: ColorSocket
+        """Gamma"""
         base_gain: FloatSocket
+        """Gain"""
         color_gain: ColorSocket
+        """Gain"""
         base_offset: FloatSocket
+        """Offset"""
         color_offset: ColorSocket
+        """Offset"""
         base_power: FloatSocket
+        """Power"""
         color_power: ColorSocket
+        """Power"""
         base_slope: FloatSocket
+        """Slope"""
         color_slope: ColorSocket
+        """Slope"""
         input_temperature: FloatSocket
+        """Temperature"""
         input_tint: FloatSocket
+        """Tint"""
         output_temperature: FloatSocket
+        """Temperature"""
         output_tint: FloatSocket
+        """Tint"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -472,9 +565,66 @@ class ColorCorrection(NodeBuilder):
     apply_on_blue : InputBoolean
         Blue
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.mask : FloatSocket
+        Mask
+    i.master_saturation : FloatSocket
+        Saturation
+    i.master_contrast : FloatSocket
+        Contrast
+    i.master_gamma : FloatSocket
+        Gamma
+    i.master_gain : FloatSocket
+        Gain
+    i.master_offset : FloatSocket
+        Offset
+    i.highlights_saturation : FloatSocket
+        Saturation
+    i.highlights_contrast : FloatSocket
+        Contrast
+    i.highlights_gamma : FloatSocket
+        Gamma
+    i.highlights_gain : FloatSocket
+        Gain
+    i.highlights_offset : FloatSocket
+        Offset
+    i.midtones_saturation : FloatSocket
+        Saturation
+    i.midtones_contrast : FloatSocket
+        Contrast
+    i.midtones_gamma : FloatSocket
+        Gamma
+    i.midtones_gain : FloatSocket
+        Gain
+    i.midtones_offset : FloatSocket
+        Offset
+    i.shadows_saturation : FloatSocket
+        Saturation
+    i.shadows_contrast : FloatSocket
+        Contrast
+    i.shadows_gamma : FloatSocket
+        Gamma
+    i.shadows_gain : FloatSocket
+        Gain
+    i.shadows_offset : FloatSocket
+        Offset
+    i.midtones_start : FloatSocket
+        Midtones Start
+    i.midtones_end : FloatSocket
+        Midtones End
+    i.apply_on_red : BooleanSocket
+        Red
+    i.apply_on_green : BooleanSocket
+        Green
+    i.apply_on_blue : BooleanSocket
+        Blue
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -483,35 +633,63 @@ class ColorCorrection(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         mask: FloatSocket
+        """Mask"""
         master_saturation: FloatSocket
+        """Saturation"""
         master_contrast: FloatSocket
+        """Contrast"""
         master_gamma: FloatSocket
+        """Gamma"""
         master_gain: FloatSocket
+        """Gain"""
         master_offset: FloatSocket
+        """Offset"""
         highlights_saturation: FloatSocket
+        """Saturation"""
         highlights_contrast: FloatSocket
+        """Contrast"""
         highlights_gamma: FloatSocket
+        """Gamma"""
         highlights_gain: FloatSocket
+        """Gain"""
         highlights_offset: FloatSocket
+        """Offset"""
         midtones_saturation: FloatSocket
+        """Saturation"""
         midtones_contrast: FloatSocket
+        """Contrast"""
         midtones_gamma: FloatSocket
+        """Gamma"""
         midtones_gain: FloatSocket
+        """Gain"""
         midtones_offset: FloatSocket
+        """Offset"""
         shadows_saturation: FloatSocket
+        """Saturation"""
         shadows_contrast: FloatSocket
+        """Contrast"""
         shadows_gamma: FloatSocket
+        """Gamma"""
         shadows_gain: FloatSocket
+        """Gain"""
         shadows_offset: FloatSocket
+        """Offset"""
         midtones_start: FloatSocket
+        """Midtones Start"""
         midtones_end: FloatSocket
+        """Midtones End"""
         apply_on_red: BooleanSocket
+        """Red"""
         apply_on_green: BooleanSocket
+        """Green"""
         apply_on_blue: BooleanSocket
+        """Blue"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -603,11 +781,26 @@ class DepthCombine(NodeBuilder):
     anti_alias : InputBoolean
         Anti-Alias
 
+    Inputs
+    ------
+    i.a : ColorSocket
+        A
+    i.depth_a : FloatSocket
+        Depth A
+    i.b : ColorSocket
+        B
+    i.depth_b : FloatSocket
+        Depth B
+    i.use_alpha : BooleanSocket
+        Use Alpha
+    i.anti_alias : BooleanSocket
+        Anti-Alias
+
     Outputs
     -------
-    result : ColorSocket
+    o.result : ColorSocket
         Result
-    depth : FloatSocket
+    o.depth : FloatSocket
         Depth
     """
 
@@ -616,15 +809,23 @@ class DepthCombine(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         a: ColorSocket
+        """A"""
         depth_a: FloatSocket
+        """Depth A"""
         b: ColorSocket
+        """B"""
         depth_b: FloatSocket
+        """Depth B"""
         use_alpha: BooleanSocket
+        """Use Alpha"""
         anti_alias: BooleanSocket
+        """Anti-Alias"""
 
     class _Outputs(SocketAccessor):
         result: ColorSocket
+        """Result"""
         depth: FloatSocket
+        """Depth"""
 
     if TYPE_CHECKING:
 
@@ -666,9 +867,16 @@ class Exposure(NodeBuilder):
     exposure : InputFloat
         Exposure
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.exposure : FloatSocket
+        Exposure
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -677,10 +885,13 @@ class Exposure(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         exposure: FloatSocket
+        """Exposure"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -711,9 +922,16 @@ class HueCorrect(NodeBuilder):
     fac : InputFloat
         Factor
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.fac : FloatSocket
+        Factor
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -722,10 +940,13 @@ class HueCorrect(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         fac: FloatSocket
+        """Factor"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -762,9 +983,22 @@ class Huesaturationvalue(NodeBuilder):
     fac : InputFloat
         Factor
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.hue : FloatSocket
+        Hue
+    i.saturation : FloatSocket
+        Saturation
+    i.value : FloatSocket
+        Value
+    i.fac : FloatSocket
+        Factor
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -773,13 +1007,19 @@ class Huesaturationvalue(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         hue: FloatSocket
+        """Hue"""
         saturation: FloatSocket
+        """Saturation"""
         value: FloatSocket
+        """Value"""
         fac: FloatSocket
+        """Factor"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -823,9 +1063,20 @@ class InvertColor(NodeBuilder):
     invert_alpha : InputBoolean
         Invert Alpha
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.fac : FloatSocket
+        Factor
+    i.invert_color : BooleanSocket
+        Invert Color
+    i.invert_alpha : BooleanSocket
+        Invert Alpha
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -834,12 +1085,17 @@ class InvertColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         fac: FloatSocket
+        """Factor"""
         invert_color: BooleanSocket
+        """Invert Color"""
         invert_alpha: BooleanSocket
+        """Invert Alpha"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -877,9 +1133,16 @@ class Posterize(NodeBuilder):
     steps : InputFloat
         Steps
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.steps : FloatSocket
+        Steps
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -888,10 +1151,13 @@ class Posterize(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         steps: FloatSocket
+        """Steps"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -926,9 +1192,20 @@ class RGBCurves(NodeBuilder):
     white_level : InputColor
         White Level
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.fac : FloatSocket
+        Factor
+    i.black_level : ColorSocket
+        Black Level
+    i.white_level : ColorSocket
+        White Level
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -937,12 +1214,17 @@ class RGBCurves(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         fac: FloatSocket
+        """Factor"""
         black_level: ColorSocket
+        """Black Level"""
         white_level: ColorSocket
+        """White Level"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -994,9 +1276,30 @@ class Tonemap(NodeBuilder):
     chromatic_adaptation : InputFloat
         Chromatic Adaptation
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.type : MenuSocket
+        Type
+    i.key : FloatSocket
+        Key
+    i.balance : FloatSocket
+        Balance
+    i.gamma : FloatSocket
+        Gamma
+    i.intensity : FloatSocket
+        Intensity
+    i.contrast : FloatSocket
+        Contrast
+    i.light_adaptation : FloatSocket
+        Light Adaptation
+    i.chromatic_adaptation : FloatSocket
+        Chromatic Adaptation
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -1005,17 +1308,27 @@ class Tonemap(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         type: MenuSocket
+        """Type"""
         key: FloatSocket
+        """Key"""
         balance: FloatSocket
+        """Balance"""
         gamma: FloatSocket
+        """Gamma"""
         intensity: FloatSocket
+        """Intensity"""
         contrast: FloatSocket
+        """Contrast"""
         light_adaptation: FloatSocket
+        """Light Adaptation"""
         chromatic_adaptation: FloatSocket
+        """Chromatic Adaptation"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 

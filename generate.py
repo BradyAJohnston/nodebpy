@@ -250,9 +250,10 @@ class SocketInfo:
                 return_type = cls
                 break
 
+        doc = self.description or self.name
         lines = [f"        {attr_name}: {return_type}"]
-        if self.description:
-            lines.append(f'        """{self.description}"""')
+        if doc:
+            lines.append(f'        """{doc}"""')
         return "\n".join(lines)
 
 
@@ -1057,27 +1058,33 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         doc_lines += ["Parameters", "----------"]
         for socket in all_init_sockets:
             param_name = get_socket_param_name(socket, sockets_use_same_name)
-            return_type = "Socket"
-            for key, cls in _OUTPUT_SOCKET_CLASSES.items():
-                if key in socket.bl_socket_type:
-                    return_type = cls
-                    break
             doc_lines.append(f"{param_name} : {socket.type_hint}")
             desc = socket.description if socket.description else socket.name
             doc_lines.append(f"    {desc}")
         doc_lines.append("")
-    if node_info.outputs:
-        doc_lines += ["Outputs", "-------"]
-        for socket in node_info.outputs:
+
+    def _socket_doc_lines(sockets, prefix):
+        lines = []
+        for socket in sockets:
             return_type = "Socket"
             for key, cls in _OUTPUT_SOCKET_CLASSES.items():
                 if key in socket.bl_socket_type:
                     return_type = cls
                     break
             attr_name = normalize_name(socket.identifier)
-            doc_lines.append(f"{attr_name} : {return_type}")
             desc = socket.description if socket.description else socket.name
-            doc_lines.append(f"    {desc}")
+            lines.append(f"{prefix}.{attr_name} : {return_type}")
+            lines.append(f"    {desc}")
+        return lines
+
+    if all_init_sockets:
+        doc_lines += ["Inputs", "------"]
+        doc_lines += _socket_doc_lines(all_init_sockets, "i")
+        doc_lines.append("")
+    if node_info.outputs:
+        doc_lines += ["Outputs", "-------"]
+        doc_lines += _socket_doc_lines(node_info.outputs, "o")
+
     docstring_body = "\n    ".join(doc_lines).rstrip()
 
     # Build Inputs inner class

@@ -88,6 +88,11 @@ class Viewer(NodeBuilder):
     ----------
     image : InputColor
         Image
+
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
     """
 
     _bl_idname = "CompositorNodeViewer"
@@ -95,6 +100,7 @@ class Viewer(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     class _Outputs(SocketAccessor):
         pass

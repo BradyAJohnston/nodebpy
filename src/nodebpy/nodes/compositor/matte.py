@@ -44,9 +44,24 @@ class BoxMask(NodeBuilder):
     rotation : InputFloat
         Rotation
 
+    Inputs
+    ------
+    i.operation : MenuSocket
+        Operation
+    i.mask : FloatSocket
+        Mask
+    i.value : FloatSocket
+        Value
+    i.position : VectorSocket
+        Position
+    i.size : VectorSocket
+        Size
+    i.rotation : FloatSocket
+        Rotation
+
     Outputs
     -------
-    mask : FloatSocket
+    o.mask : FloatSocket
         Mask
     """
 
@@ -55,14 +70,21 @@ class BoxMask(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         operation: MenuSocket
+        """Operation"""
         mask: FloatSocket
+        """Mask"""
         value: FloatSocket
+        """Value"""
         position: VectorSocket
+        """Position"""
         size: VectorSocket
+        """Size"""
         rotation: FloatSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         mask: FloatSocket
+        """Mask"""
 
     if TYPE_CHECKING:
 
@@ -126,11 +148,40 @@ class ChannelKey(NodeBuilder):
     ycbcr_limit_channel : InputMenu | Literal['Y', 'Cb', 'Cr']
         YCbCr Limit Channel
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.minimum : FloatSocket
+        Minimum
+    i.maximum : FloatSocket
+        Maximum
+    i.color_space : MenuSocket
+        Color Space
+    i.rgb_key_channel : MenuSocket
+        RGB Key Channel
+    i.hsv_key_channel : MenuSocket
+        HSV Key Channel
+    i.yuv_key_channel : MenuSocket
+        YUV Key Channel
+    i.ycbcr_key_channel : MenuSocket
+        YCbCr Key Channel
+    i.limit_method : MenuSocket
+        Limit Method
+    i.rgb_limit_channel : MenuSocket
+        RGB Limit Channel
+    i.hsv_limit_channel : MenuSocket
+        HSV Limit Channel
+    i.yuv_limit_channel : MenuSocket
+        YUV Limit Channel
+    i.ycbcr_limit_channel : MenuSocket
+        YCbCr Limit Channel
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    matte : FloatSocket
+    o.matte : FloatSocket
         Matte
     """
 
@@ -139,22 +190,37 @@ class ChannelKey(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         minimum: FloatSocket
+        """Minimum"""
         maximum: FloatSocket
+        """Maximum"""
         color_space: MenuSocket
+        """Color Space"""
         rgb_key_channel: MenuSocket
+        """RGB Key Channel"""
         hsv_key_channel: MenuSocket
+        """HSV Key Channel"""
         yuv_key_channel: MenuSocket
+        """YUV Key Channel"""
         ycbcr_key_channel: MenuSocket
+        """YCbCr Key Channel"""
         limit_method: MenuSocket
+        """Limit Method"""
         rgb_limit_channel: MenuSocket
+        """RGB Limit Channel"""
         hsv_limit_channel: MenuSocket
+        """HSV Limit Channel"""
         yuv_limit_channel: MenuSocket
+        """YUV Limit Channel"""
         ycbcr_limit_channel: MenuSocket
+        """YCbCr Limit Channel"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         matte: FloatSocket
+        """Matte"""
 
     if TYPE_CHECKING:
 
@@ -216,11 +282,24 @@ class ChromaKey(NodeBuilder):
     falloff : InputFloat
         Falloff
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.key_color : ColorSocket
+        Key Color
+    i.minimum : FloatSocket
+        Minimum
+    i.maximum : FloatSocket
+        Maximum
+    i.falloff : FloatSocket
+        Falloff
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    matte : FloatSocket
+    o.matte : FloatSocket
         Matte
     """
 
@@ -229,14 +308,21 @@ class ChromaKey(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         key_color: ColorSocket
+        """Key Color"""
         minimum: FloatSocket
+        """Minimum"""
         maximum: FloatSocket
+        """Maximum"""
         falloff: FloatSocket
+        """Falloff"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         matte: FloatSocket
+        """Matte"""
 
     if TYPE_CHECKING:
 
@@ -282,11 +368,24 @@ class ColorKey(NodeBuilder):
     value : InputFloat
         Value
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.key_color : ColorSocket
+        Key Color
+    i.hue : FloatSocket
+        Hue
+    i.saturation : FloatSocket
+        Saturation
+    i.value : FloatSocket
+        Value
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    matte : FloatSocket
+    o.matte : FloatSocket
         Matte
     """
 
@@ -295,14 +394,21 @@ class ColorKey(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         key_color: ColorSocket
+        """Key Color"""
         hue: FloatSocket
+        """Hue"""
         saturation: FloatSocket
+        """Saturation"""
         value: FloatSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         matte: FloatSocket
+        """Matte"""
 
     if TYPE_CHECKING:
 
@@ -354,9 +460,28 @@ class ColorSpill(NodeBuilder):
     spill_strength : InputColor
         Strength
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.fac : FloatSocket
+        Factor
+    i.spill_channel : MenuSocket
+        Spill Channel
+    i.limit_method : MenuSocket
+        Limit Method
+    i.limit_channel : MenuSocket
+        Limit Channel
+    i.limit_strength : FloatSocket
+        Limit Strength
+    i.use_spill_strength : BooleanSocket
+        Use Spill Strength
+    i.spill_strength : ColorSocket
+        Strength
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -365,16 +490,25 @@ class ColorSpill(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         fac: FloatSocket
+        """Factor"""
         spill_channel: MenuSocket
+        """Spill Channel"""
         limit_method: MenuSocket
+        """Limit Method"""
         limit_channel: MenuSocket
+        """Limit Channel"""
         limit_strength: FloatSocket
+        """Limit Strength"""
         use_spill_strength: BooleanSocket
+        """Use Spill Strength"""
         spill_strength: ColorSocket
+        """Strength"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -424,11 +558,22 @@ class DifferenceKey(NodeBuilder):
     falloff : InputFloat
         Falloff
 
+    Inputs
+    ------
+    i.image_1 : ColorSocket
+        Image 1
+    i.image_2 : ColorSocket
+        Image 2
+    i.tolerance : FloatSocket
+        Tolerance
+    i.falloff : FloatSocket
+        Falloff
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    matte : FloatSocket
+    o.matte : FloatSocket
         Matte
     """
 
@@ -437,13 +582,19 @@ class DifferenceKey(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image_1: ColorSocket
+        """Image 1"""
         image_2: ColorSocket
+        """Image 2"""
         tolerance: FloatSocket
+        """Tolerance"""
         falloff: FloatSocket
+        """Falloff"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         matte: FloatSocket
+        """Matte"""
 
     if TYPE_CHECKING:
 
@@ -487,11 +638,24 @@ class DistanceKey(NodeBuilder):
     falloff : InputFloat
         Falloff
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.key_color : ColorSocket
+        Key Color
+    i.color_space : MenuSocket
+        Color Space
+    i.tolerance : FloatSocket
+        Tolerance
+    i.falloff : FloatSocket
+        Falloff
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    matte : FloatSocket
+    o.matte : FloatSocket
         Matte
     """
 
@@ -500,14 +664,21 @@ class DistanceKey(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         key_color: ColorSocket
+        """Key Color"""
         color_space: MenuSocket
+        """Color Space"""
         tolerance: FloatSocket
+        """Tolerance"""
         falloff: FloatSocket
+        """Falloff"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         matte: FloatSocket
+        """Matte"""
 
     if TYPE_CHECKING:
 
@@ -551,9 +722,20 @@ class DoubleEdgeMask(NodeBuilder):
     only_inside_outer : InputBoolean
         Only Inside Outer
 
+    Inputs
+    ------
+    i.outer_mask : FloatSocket
+        Outer Mask
+    i.inner_mask : FloatSocket
+        Inner Mask
+    i.image_edges : BooleanSocket
+        Image Edges
+    i.only_inside_outer : BooleanSocket
+        Only Inside Outer
+
     Outputs
     -------
-    mask : FloatSocket
+    o.mask : FloatSocket
         Mask
     """
 
@@ -562,12 +744,17 @@ class DoubleEdgeMask(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         outer_mask: FloatSocket
+        """Outer Mask"""
         inner_mask: FloatSocket
+        """Inner Mask"""
         image_edges: BooleanSocket
+        """Image Edges"""
         only_inside_outer: BooleanSocket
+        """Only Inside Outer"""
 
     class _Outputs(SocketAccessor):
         mask: FloatSocket
+        """Mask"""
 
     if TYPE_CHECKING:
 
@@ -613,9 +800,24 @@ class EllipseMask(NodeBuilder):
     rotation : InputFloat
         Rotation
 
+    Inputs
+    ------
+    i.operation : MenuSocket
+        Operation
+    i.mask : FloatSocket
+        Mask
+    i.value : FloatSocket
+        Value
+    i.position : VectorSocket
+        Position
+    i.size : VectorSocket
+        Size
+    i.rotation : FloatSocket
+        Rotation
+
     Outputs
     -------
-    mask : FloatSocket
+    o.mask : FloatSocket
         Mask
     """
 
@@ -624,14 +826,21 @@ class EllipseMask(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         operation: MenuSocket
+        """Operation"""
         mask: FloatSocket
+        """Mask"""
         value: FloatSocket
+        """Value"""
         position: VectorSocket
+        """Position"""
         size: VectorSocket
+        """Size"""
         rotation: FloatSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         mask: FloatSocket
+        """Mask"""
 
     if TYPE_CHECKING:
 
@@ -701,13 +910,48 @@ class Keying(NodeBuilder):
     despill_balance : InputFloat
         Balance
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.key_color : ColorSocket
+        Key Color
+    i.preprocess_blur_size : IntegerSocket
+        Blur Size
+    i.key_balance : FloatSocket
+        Balance
+    i.black_level : FloatSocket
+        Black Level
+    i.white_level : FloatSocket
+        White Level
+    i.edge_search_size : IntegerSocket
+        Size
+    i.edge_tolerance : FloatSocket
+        Tolerance
+    i.garbage_matte : FloatSocket
+        Garbage Matte
+    i.core_matte : FloatSocket
+        Core Matte
+    i.postprocess_blur_size : IntegerSocket
+        Blur Size
+    i.postprocess_dilate_size : IntegerSocket
+        Dilate Size
+    i.postprocess_feather_size : IntegerSocket
+        Feather Size
+    i.feather_falloff : MenuSocket
+        Feather Falloff
+    i.despill_strength : FloatSocket
+        Strength
+    i.despill_balance : FloatSocket
+        Balance
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    matte : FloatSocket
+    o.matte : FloatSocket
         Matte
-    edges : FloatSocket
+    o.edges : FloatSocket
         Edges
     """
 
@@ -716,26 +960,45 @@ class Keying(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         key_color: ColorSocket
+        """Key Color"""
         preprocess_blur_size: IntegerSocket
+        """Blur Size"""
         key_balance: FloatSocket
+        """Balance"""
         black_level: FloatSocket
+        """Black Level"""
         white_level: FloatSocket
+        """White Level"""
         edge_search_size: IntegerSocket
+        """Size"""
         edge_tolerance: FloatSocket
+        """Tolerance"""
         garbage_matte: FloatSocket
+        """Garbage Matte"""
         core_matte: FloatSocket
+        """Core Matte"""
         postprocess_blur_size: IntegerSocket
+        """Blur Size"""
         postprocess_dilate_size: IntegerSocket
+        """Dilate Size"""
         postprocess_feather_size: IntegerSocket
+        """Feather Size"""
         feather_falloff: MenuSocket
+        """Feather Falloff"""
         despill_strength: FloatSocket
+        """Strength"""
         despill_balance: FloatSocket
+        """Balance"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         matte: FloatSocket
+        """Matte"""
         edges: FloatSocket
+        """Edges"""
 
     if TYPE_CHECKING:
 
@@ -798,9 +1061,14 @@ class KeyingScreen(NodeBuilder):
     smoothness : InputFloat
         Smoothness
 
+    Inputs
+    ------
+    i.smoothness : FloatSocket
+        Smoothness
+
     Outputs
     -------
-    screen : ColorSocket
+    o.screen : ColorSocket
         Screen
     """
 
@@ -809,9 +1077,11 @@ class KeyingScreen(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         smoothness: FloatSocket
+        """Smoothness"""
 
     class _Outputs(SocketAccessor):
         screen: ColorSocket
+        """Screen"""
 
     if TYPE_CHECKING:
 
@@ -853,11 +1123,20 @@ class LuminanceKey(NodeBuilder):
     maximum : InputFloat
         Maximum
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.minimum : FloatSocket
+        Minimum
+    i.maximum : FloatSocket
+        Maximum
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    matte : FloatSocket
+    o.matte : FloatSocket
         Matte
     """
 
@@ -866,12 +1145,17 @@ class LuminanceKey(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         minimum: FloatSocket
+        """Minimum"""
         maximum: FloatSocket
+        """Maximum"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         matte: FloatSocket
+        """Matte"""
 
     if TYPE_CHECKING:
 

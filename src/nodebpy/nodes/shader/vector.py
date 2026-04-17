@@ -36,9 +36,22 @@ class Bump(NodeBuilder):
     normal : InputVector
         Normal
 
+    Inputs
+    ------
+    i.strength : FloatSocket
+        Strength
+    i.distance : FloatSocket
+        Distance
+    i.filter_width : FloatSocket
+        Filter Width
+    i.height : FloatSocket
+        Height
+    i.normal : VectorSocket
+        Normal
+
     Outputs
     -------
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
     """
 
@@ -47,13 +60,19 @@ class Bump(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         strength: FloatSocket
+        """Strength"""
         distance: FloatSocket
+        """Distance"""
         filter_width: FloatSocket
+        """Filter Width"""
         height: FloatSocket
+        """Height"""
         normal: VectorSocket
+        """Normal"""
 
     class _Outputs(SocketAccessor):
         normal: VectorSocket
+        """Normal"""
 
     if TYPE_CHECKING:
 
@@ -107,9 +126,20 @@ class Displacement(NodeBuilder):
     normal : InputVector
         Normal
 
+    Inputs
+    ------
+    i.height : FloatSocket
+        Height
+    i.midlevel : FloatSocket
+        Midlevel
+    i.scale : FloatSocket
+        Scale
+    i.normal : VectorSocket
+        Normal
+
     Outputs
     -------
-    displacement : VectorSocket
+    o.displacement : VectorSocket
         Displacement
     """
 
@@ -118,12 +148,17 @@ class Displacement(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         height: FloatSocket
+        """Height"""
         midlevel: FloatSocket
+        """Midlevel"""
         scale: FloatSocket
+        """Scale"""
         normal: VectorSocket
+        """Normal"""
 
     class _Outputs(SocketAccessor):
         displacement: VectorSocket
+        """Displacement"""
 
     if TYPE_CHECKING:
 
@@ -175,9 +210,20 @@ class Mapping(NodeBuilder):
     scale : InputVector
         Scale
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.location : VectorSocket
+        Location
+    i.rotation : VectorSocket
+        Rotation
+    i.scale : VectorSocket
+        Scale
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -186,12 +232,17 @@ class Mapping(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         location: VectorSocket
+        """Location"""
         rotation: VectorSocket
+        """Rotation"""
         scale: VectorSocket
+        """Scale"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 
@@ -291,11 +342,16 @@ class Normal(NodeBuilder):
     normal : InputVector
         Normal
 
+    Inputs
+    ------
+    i.normal : VectorSocket
+        Normal
+
     Outputs
     -------
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
-    dot : FloatSocket
+    o.dot : FloatSocket
         Dot
     """
 
@@ -304,10 +360,13 @@ class Normal(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         normal: VectorSocket
+        """Normal"""
 
     class _Outputs(SocketAccessor):
         normal: VectorSocket
+        """Normal"""
         dot: FloatSocket
+        """Dot"""
 
     if TYPE_CHECKING:
 
@@ -334,9 +393,16 @@ class NormalMap(NodeBuilder):
     color : InputColor
         Color
 
+    Inputs
+    ------
+    i.strength : FloatSocket
+        Strength
+    i.color : ColorSocket
+        Color
+
     Outputs
     -------
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
     """
 
@@ -345,10 +411,13 @@ class NormalMap(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         strength: FloatSocket
+        """Strength"""
         color: ColorSocket
+        """Color"""
 
     class _Outputs(SocketAccessor):
         normal: VectorSocket
+        """Normal"""
 
     if TYPE_CHECKING:
 
@@ -408,9 +477,18 @@ class VectorDisplacement(NodeBuilder):
     scale : InputFloat
         Scale
 
+    Inputs
+    ------
+    i.vector : ColorSocket
+        Vector
+    i.midlevel : FloatSocket
+        Midlevel
+    i.scale : FloatSocket
+        Scale
+
     Outputs
     -------
-    displacement : VectorSocket
+    o.displacement : VectorSocket
         Displacement
     """
 
@@ -419,11 +497,15 @@ class VectorDisplacement(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: ColorSocket
+        """Vector"""
         midlevel: FloatSocket
+        """Midlevel"""
         scale: FloatSocket
+        """Scale"""
 
     class _Outputs(SocketAccessor):
         displacement: VectorSocket
+        """Displacement"""
 
     if TYPE_CHECKING:
 
@@ -463,9 +545,14 @@ class VectorTransform(NodeBuilder):
     vector : InputVector
         Vector
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -474,9 +561,11 @@ class VectorTransform(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 

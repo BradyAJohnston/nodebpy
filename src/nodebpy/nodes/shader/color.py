@@ -30,9 +30,18 @@ class Brightnesscontrast(NodeBuilder):
     contrast : InputFloat
         Contrast
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.bright : FloatSocket
+        Brightness
+    i.contrast : FloatSocket
+        Contrast
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -41,11 +50,15 @@ class Brightnesscontrast(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         bright: FloatSocket
+        """Brightness"""
         contrast: FloatSocket
+        """Contrast"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -83,9 +96,22 @@ class Huesaturationvalue(NodeBuilder):
     color : InputColor
         Color
 
+    Inputs
+    ------
+    i.hue : FloatSocket
+        Hue
+    i.saturation : FloatSocket
+        Saturation
+    i.value : FloatSocket
+        Value
+    i.fac : FloatSocket
+        Factor
+    i.color : ColorSocket
+        Color
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -94,13 +120,19 @@ class Huesaturationvalue(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         hue: FloatSocket
+        """Hue"""
         saturation: FloatSocket
+        """Saturation"""
         value: FloatSocket
+        """Value"""
         fac: FloatSocket
+        """Factor"""
         color: ColorSocket
+        """Color"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -140,9 +172,16 @@ class InvertColor(NodeBuilder):
     color : InputColor
         Color
 
+    Inputs
+    ------
+    i.fac : FloatSocket
+        Factor
+    i.color : ColorSocket
+        Color
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -151,10 +190,13 @@ class InvertColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
         color: ColorSocket
+        """Color"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -185,13 +227,20 @@ class LightFalloff(NodeBuilder):
     smooth : InputFloat
         Smooth
 
+    Inputs
+    ------
+    i.strength : FloatSocket
+        Strength
+    i.smooth : FloatSocket
+        Smooth
+
     Outputs
     -------
-    quadratic : FloatSocket
+    o.quadratic : FloatSocket
         Quadratic
-    linear : FloatSocket
+    o.linear : FloatSocket
         Linear
-    constant : FloatSocket
+    o.constant : FloatSocket
         Constant
     """
 
@@ -200,12 +249,17 @@ class LightFalloff(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         strength: FloatSocket
+        """Strength"""
         smooth: FloatSocket
+        """Smooth"""
 
     class _Outputs(SocketAccessor):
         quadratic: FloatSocket
+        """Quadratic"""
         linear: FloatSocket
+        """Linear"""
         constant: FloatSocket
+        """Constant"""
 
     if TYPE_CHECKING:
 

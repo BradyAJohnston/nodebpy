@@ -32,9 +32,16 @@ class AddShader(NodeBuilder):
     shader_001 : InputShader
         Shader
 
+    Inputs
+    ------
+    i.shader : ShaderSocket
+        Shader
+    i.shader_001 : ShaderSocket
+        Shader
+
     Outputs
     -------
-    shader : ShaderSocket
+    o.shader : ShaderSocket
         Shader
     """
 
@@ -43,10 +50,13 @@ class AddShader(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         shader: ShaderSocket
+        """Shader"""
         shader_001: ShaderSocket
+        """Shader"""
 
     class _Outputs(SocketAccessor):
         shader: ShaderSocket
+        """Shader"""
 
     if TYPE_CHECKING:
 
@@ -80,9 +90,18 @@ class Background(NodeBuilder):
         weight : InputFloat
             Weight
 
+        Inputs
+        ------
+        i.color : ColorSocket
+            Color
+        i.strength : FloatSocket
+            Strength
+        i.weight : FloatSocket
+            Weight
+
         Outputs
         -------
-        background : ShaderSocket
+        o.background : ShaderSocket
             Background
     """
 
@@ -91,11 +110,15 @@ class Background(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         strength: FloatSocket
+        """Strength"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         background: ShaderSocket
+        """Background"""
 
     if TYPE_CHECKING:
 
@@ -131,9 +154,20 @@ class DiffuseBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.roughness : FloatSocket
+        Roughness
+    i.normal : VectorSocket
+        Normal
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -142,12 +176,17 @@ class DiffuseBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         roughness: FloatSocket
+        """Roughness"""
         normal: VectorSocket
+        """Normal"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -187,9 +226,18 @@ class Emission(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.strength : FloatSocket
+        Strength
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    emission : ShaderSocket
+    o.emission : ShaderSocket
         Emission
     """
 
@@ -198,11 +246,15 @@ class Emission(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         strength: FloatSocket
+        """Strength"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         emission: ShaderSocket
+        """Emission"""
 
     if TYPE_CHECKING:
 
@@ -244,9 +296,26 @@ class GlassBSDF(NodeBuilder):
     thin_film_ior : InputFloat
         Thin Film IOR
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.roughness : FloatSocket
+        Roughness
+    i.ior : FloatSocket
+        IOR
+    i.normal : VectorSocket
+        Normal
+    i.weight : FloatSocket
+        Weight
+    i.thin_film_thickness : FloatSocket
+        Thin Film Thickness
+    i.thin_film_ior : FloatSocket
+        Thin Film IOR
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -255,15 +324,23 @@ class GlassBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         roughness: FloatSocket
+        """Roughness"""
         ior: FloatSocket
+        """IOR"""
         normal: VectorSocket
+        """Normal"""
         weight: FloatSocket
+        """Weight"""
         thin_film_thickness: FloatSocket
+        """Thin Film Thickness"""
         thin_film_ior: FloatSocket
+        """Thin Film IOR"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -327,9 +404,26 @@ class GlossyBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.roughness : FloatSocket
+        Roughness
+    i.anisotropy : FloatSocket
+        Anisotropy
+    i.rotation : FloatSocket
+        Rotation
+    i.normal : VectorSocket
+        Normal
+    i.tangent : VectorSocket
+        Tangent
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -338,15 +432,23 @@ class GlossyBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         roughness: FloatSocket
+        """Roughness"""
         anisotropy: FloatSocket
+        """Anisotropy"""
         rotation: FloatSocket
+        """Rotation"""
         normal: VectorSocket
+        """Normal"""
         tangent: VectorSocket
+        """Tangent"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -414,9 +516,24 @@ class HairBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.offset : FloatSocket
+        Offset
+    i.roughnessu : FloatSocket
+        RoughnessU
+    i.roughnessv : FloatSocket
+        RoughnessV
+    i.tangent : VectorSocket
+        Tangent
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -425,14 +542,21 @@ class HairBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         offset: FloatSocket
+        """Offset"""
         roughnessu: FloatSocket
+        """RoughnessU"""
         roughnessv: FloatSocket
+        """RoughnessV"""
         tangent: VectorSocket
+        """Tangent"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -483,9 +607,14 @@ class Holdout(NodeBuilder):
         weight : InputFloat
             Weight
 
+        Inputs
+        ------
+        i.weight : FloatSocket
+            Weight
+
         Outputs
         -------
-        holdout : ShaderSocket
+        o.holdout : ShaderSocket
             Holdout
     """
 
@@ -494,9 +623,11 @@ class Holdout(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         holdout: ShaderSocket
+        """Holdout"""
 
     if TYPE_CHECKING:
 
@@ -543,9 +674,36 @@ class MetallicBSDF(NodeBuilder):
     thin_film_ior : InputFloat
         Thin Film IOR
 
+    Inputs
+    ------
+    i.base_color : ColorSocket
+        Base Color
+    i.edge_tint : ColorSocket
+        Edge Tint
+    i.ior : VectorSocket
+        IOR
+    i.extinction : VectorSocket
+        Extinction
+    i.roughness : FloatSocket
+        Roughness
+    i.anisotropy : FloatSocket
+        Anisotropy
+    i.rotation : FloatSocket
+        Rotation
+    i.normal : VectorSocket
+        Normal
+    i.tangent : VectorSocket
+        Tangent
+    i.weight : FloatSocket
+        Weight
+    i.thin_film_thickness : FloatSocket
+        Thin Film Thickness
+    i.thin_film_ior : FloatSocket
+        Thin Film IOR
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -554,20 +712,33 @@ class MetallicBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         base_color: ColorSocket
+        """Base Color"""
         edge_tint: ColorSocket
+        """Edge Tint"""
         ior: VectorSocket
+        """IOR"""
         extinction: VectorSocket
+        """Extinction"""
         roughness: FloatSocket
+        """Roughness"""
         anisotropy: FloatSocket
+        """Anisotropy"""
         rotation: FloatSocket
+        """Rotation"""
         normal: VectorSocket
+        """Normal"""
         tangent: VectorSocket
+        """Tangent"""
         weight: FloatSocket
+        """Weight"""
         thin_film_thickness: FloatSocket
+        """Thin Film Thickness"""
         thin_film_ior: FloatSocket
+        """Thin Film IOR"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -697,9 +868,18 @@ class MixShader(NodeBuilder):
     shader_001 : InputShader
         Shader
 
+    Inputs
+    ------
+    i.fac : FloatSocket
+        Factor
+    i.shader : ShaderSocket
+        Shader
+    i.shader_001 : ShaderSocket
+        Shader
+
     Outputs
     -------
-    shader : ShaderSocket
+    o.shader : ShaderSocket
         Shader
     """
 
@@ -708,11 +888,15 @@ class MixShader(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
         shader: ShaderSocket
+        """Shader"""
         shader_001: ShaderSocket
+        """Shader"""
 
     class _Outputs(SocketAccessor):
         shader: ShaderSocket
+        """Shader"""
 
     if TYPE_CHECKING:
 
@@ -802,9 +986,74 @@ class PrincipledBSDF(NodeBuilder):
     thin_film_ior : InputFloat
         Thin Film IOR
 
+    Inputs
+    ------
+    i.base_color : ColorSocket
+        Base Color
+    i.metallic : FloatSocket
+        Metallic
+    i.roughness : FloatSocket
+        Roughness
+    i.ior : FloatSocket
+        IOR
+    i.alpha : FloatSocket
+        Alpha
+    i.normal : VectorSocket
+        Normal
+    i.weight : FloatSocket
+        Weight
+    i.diffuse_roughness : FloatSocket
+        Diffuse Roughness
+    i.subsurface_weight : FloatSocket
+        Subsurface Weight
+    i.subsurface_radius : VectorSocket
+        Subsurface Radius
+    i.subsurface_scale : FloatSocket
+        Subsurface Scale
+    i.subsurface_ior : FloatSocket
+        Subsurface IOR
+    i.subsurface_anisotropy : FloatSocket
+        Subsurface Anisotropy
+    i.specular_ior_level : FloatSocket
+        Specular IOR Level
+    i.specular_tint : ColorSocket
+        Specular Tint
+    i.anisotropic : FloatSocket
+        Anisotropic
+    i.anisotropic_rotation : FloatSocket
+        Anisotropic Rotation
+    i.tangent : VectorSocket
+        Tangent
+    i.transmission_weight : FloatSocket
+        Transmission Weight
+    i.coat_weight : FloatSocket
+        Coat Weight
+    i.coat_roughness : FloatSocket
+        Coat Roughness
+    i.coat_ior : FloatSocket
+        Coat IOR
+    i.coat_tint : ColorSocket
+        Coat Tint
+    i.coat_normal : VectorSocket
+        Coat Normal
+    i.sheen_weight : FloatSocket
+        Sheen Weight
+    i.sheen_roughness : FloatSocket
+        Sheen Roughness
+    i.sheen_tint : ColorSocket
+        Sheen Tint
+    i.emission_color : ColorSocket
+        Emission Color
+    i.emission_strength : FloatSocket
+        Emission Strength
+    i.thin_film_thickness : FloatSocket
+        Thin Film Thickness
+    i.thin_film_ior : FloatSocket
+        Thin Film IOR
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -813,39 +1062,71 @@ class PrincipledBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         base_color: ColorSocket
+        """Base Color"""
         metallic: FloatSocket
+        """Metallic"""
         roughness: FloatSocket
+        """Roughness"""
         ior: FloatSocket
+        """IOR"""
         alpha: FloatSocket
+        """Alpha"""
         normal: VectorSocket
+        """Normal"""
         weight: FloatSocket
+        """Weight"""
         diffuse_roughness: FloatSocket
+        """Diffuse Roughness"""
         subsurface_weight: FloatSocket
+        """Subsurface Weight"""
         subsurface_radius: VectorSocket
+        """Subsurface Radius"""
         subsurface_scale: FloatSocket
+        """Subsurface Scale"""
         subsurface_ior: FloatSocket
+        """Subsurface IOR"""
         subsurface_anisotropy: FloatSocket
+        """Subsurface Anisotropy"""
         specular_ior_level: FloatSocket
+        """Specular IOR Level"""
         specular_tint: ColorSocket
+        """Specular Tint"""
         anisotropic: FloatSocket
+        """Anisotropic"""
         anisotropic_rotation: FloatSocket
+        """Anisotropic Rotation"""
         tangent: VectorSocket
+        """Tangent"""
         transmission_weight: FloatSocket
+        """Transmission Weight"""
         coat_weight: FloatSocket
+        """Coat Weight"""
         coat_roughness: FloatSocket
+        """Coat Roughness"""
         coat_ior: FloatSocket
+        """Coat IOR"""
         coat_tint: ColorSocket
+        """Coat Tint"""
         coat_normal: VectorSocket
+        """Coat Normal"""
         sheen_weight: FloatSocket
+        """Sheen Weight"""
         sheen_roughness: FloatSocket
+        """Sheen Roughness"""
         sheen_tint: ColorSocket
+        """Sheen Tint"""
         emission_color: ColorSocket
+        """Emission Color"""
         emission_strength: FloatSocket
+        """Emission Strength"""
         thin_film_thickness: FloatSocket
+        """Thin Film Thickness"""
         thin_film_ior: FloatSocket
+        """Thin Film IOR"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -993,9 +1274,48 @@ class PrincipledHairBSDF(NodeBuilder):
     trt_lobe : InputFloat
         Secondary Reflection
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.melanin : FloatSocket
+        Melanin
+    i.melanin_redness : FloatSocket
+        Melanin Redness
+    i.tint : ColorSocket
+        Tint
+    i.absorption_coefficient : VectorSocket
+        Absorption Coefficient
+    i.aspect_ratio : FloatSocket
+        Aspect Ratio
+    i.roughness : FloatSocket
+        Roughness
+    i.radial_roughness : FloatSocket
+        Radial Roughness
+    i.coat : FloatSocket
+        Coat
+    i.ior : FloatSocket
+        IOR
+    i.offset : FloatSocket
+        Offset
+    i.random_color : FloatSocket
+        Random Color
+    i.random_roughness : FloatSocket
+        Random Roughness
+    i.random : FloatSocket
+        Random
+    i.weight : FloatSocket
+        Weight
+    i.r_lobe : FloatSocket
+        Reflection
+    i.tt_lobe : FloatSocket
+        Transmission
+    i.trt_lobe : FloatSocket
+        Secondary Reflection
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -1004,26 +1324,45 @@ class PrincipledHairBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         melanin: FloatSocket
+        """Melanin"""
         melanin_redness: FloatSocket
+        """Melanin Redness"""
         tint: ColorSocket
+        """Tint"""
         absorption_coefficient: VectorSocket
+        """Absorption Coefficient"""
         aspect_ratio: FloatSocket
+        """Aspect Ratio"""
         roughness: FloatSocket
+        """Roughness"""
         radial_roughness: FloatSocket
+        """Radial Roughness"""
         coat: FloatSocket
+        """Coat"""
         ior: FloatSocket
+        """IOR"""
         offset: FloatSocket
+        """Offset"""
         random_color: FloatSocket
+        """Random Color"""
         random_roughness: FloatSocket
+        """Random Roughness"""
         random: FloatSocket
+        """Random"""
         weight: FloatSocket
+        """Weight"""
         r_lobe: FloatSocket
+        """Reflection"""
         tt_lobe: FloatSocket
+        """Transmission"""
         trt_lobe: FloatSocket
+        """Secondary Reflection"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -1113,9 +1452,20 @@ class RayPortalBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.position : VectorSocket
+        Position
+    i.direction : VectorSocket
+        Direction
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -1124,12 +1474,17 @@ class RayPortalBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         position: VectorSocket
+        """Position"""
         direction: VectorSocket
+        """Direction"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -1173,9 +1528,22 @@ class RefractionBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.roughness : FloatSocket
+        Roughness
+    i.ior : FloatSocket
+        IOR
+    i.normal : VectorSocket
+        Normal
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -1184,13 +1552,19 @@ class RefractionBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         roughness: FloatSocket
+        """Roughness"""
         ior: FloatSocket
+        """IOR"""
         normal: VectorSocket
+        """Normal"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -1245,9 +1619,20 @@ class SheenBSDF(NodeBuilder):
         weight : InputFloat
             Weight
 
+        Inputs
+        ------
+        i.color : ColorSocket
+            Color
+        i.roughness : FloatSocket
+            Roughness
+        i.normal : VectorSocket
+            Normal
+        i.weight : FloatSocket
+            Weight
+
         Outputs
         -------
-        bsdf : ShaderSocket
+        o.bsdf : ShaderSocket
             BSDF
     """
 
@@ -1256,12 +1641,17 @@ class SheenBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         roughness: FloatSocket
+        """Roughness"""
         normal: VectorSocket
+        """Normal"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -1325,9 +1715,32 @@ class SpecularBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.base_color : ColorSocket
+        Base Color
+    i.specular : ColorSocket
+        Specular
+    i.roughness : FloatSocket
+        Roughness
+    i.emissive_color : ColorSocket
+        Emissive Color
+    i.transparency : FloatSocket
+        Transparency
+    i.normal : VectorSocket
+        Normal
+    i.clear_coat : FloatSocket
+        Clear Coat
+    i.clear_coat_roughness : FloatSocket
+        Clear Coat Roughness
+    i.clear_coat_normal : VectorSocket
+        Clear Coat Normal
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -1336,18 +1749,29 @@ class SpecularBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         base_color: ColorSocket
+        """Base Color"""
         specular: ColorSocket
+        """Specular"""
         roughness: FloatSocket
+        """Roughness"""
         emissive_color: ColorSocket
+        """Emissive Color"""
         transparency: FloatSocket
+        """Transparency"""
         normal: VectorSocket
+        """Normal"""
         clear_coat: FloatSocket
+        """Clear Coat"""
         clear_coat_roughness: FloatSocket
+        """Clear Coat Roughness"""
         clear_coat_normal: VectorSocket
+        """Clear Coat Normal"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -1410,9 +1834,28 @@ class SubsurfaceScattering(NodeBuilder):
         weight : InputFloat
             Weight
 
+        Inputs
+        ------
+        i.color : ColorSocket
+            Color
+        i.scale : FloatSocket
+            Scale
+        i.radius : VectorSocket
+            Radius
+        i.ior : FloatSocket
+            IOR
+        i.roughness : FloatSocket
+            Roughness
+        i.anisotropy : FloatSocket
+            Anisotropy
+        i.normal : VectorSocket
+            Normal
+        i.weight : FloatSocket
+            Weight
+
         Outputs
         -------
-        bssrdf : ShaderSocket
+        o.bssrdf : ShaderSocket
             BSSRDF
     """
 
@@ -1421,16 +1864,25 @@ class SubsurfaceScattering(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         scale: FloatSocket
+        """Scale"""
         radius: VectorSocket
+        """Radius"""
         ior: FloatSocket
+        """IOR"""
         roughness: FloatSocket
+        """Roughness"""
         anisotropy: FloatSocket
+        """Anisotropy"""
         normal: VectorSocket
+        """Normal"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bssrdf: ShaderSocket
+        """BSSRDF"""
 
     if TYPE_CHECKING:
 
@@ -1492,9 +1944,22 @@ class ToonBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.size : FloatSocket
+        Size
+    i.smooth : FloatSocket
+        Smooth
+    i.normal : VectorSocket
+        Normal
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -1503,13 +1968,19 @@ class ToonBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         size: FloatSocket
+        """Size"""
         smooth: FloatSocket
+        """Smooth"""
         normal: VectorSocket
+        """Normal"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -1561,9 +2032,18 @@ class TranslucentBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.normal : VectorSocket
+        Normal
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -1572,11 +2052,15 @@ class TranslucentBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         normal: VectorSocket
+        """Normal"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 
@@ -1608,9 +2092,16 @@ class TransparentBSDF(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    bsdf : ShaderSocket
+    o.bsdf : ShaderSocket
         BSDF
     """
 
@@ -1619,10 +2110,13 @@ class TransparentBSDF(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         bsdf: ShaderSocket
+        """BSDF"""
 
     if TYPE_CHECKING:
 

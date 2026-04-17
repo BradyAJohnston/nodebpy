@@ -27,9 +27,14 @@ class EnvironmentTexture(NodeBuilder):
     vector : InputVector
         Vector
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -38,9 +43,11 @@ class EnvironmentTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -90,9 +97,16 @@ class IesTexture(NodeBuilder):
     strength : InputFloat
         Strength
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.strength : FloatSocket
+        Strength
+
     Outputs
     -------
-    fac : FloatSocket
+    o.fac : FloatSocket
         Factor
     """
 
@@ -101,10 +115,13 @@ class IesTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         strength: FloatSocket
+        """Strength"""
 
     class _Outputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 
@@ -167,11 +184,16 @@ class ImageTexture(NodeBuilder):
     vector : InputVector
         Vector
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
     """
 
@@ -180,10 +202,13 @@ class ImageTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         alpha: FloatSocket
+        """Alpha"""
 
     if TYPE_CHECKING:
 
@@ -251,9 +276,14 @@ class SkyTexture(NodeBuilder):
     vector : InputVector
         Vector
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -262,9 +292,11 @@ class SkyTexture(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 

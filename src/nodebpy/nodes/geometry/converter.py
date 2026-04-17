@@ -53,9 +53,18 @@ class AlignRotationToVector(NodeBuilder):
     vector : InputVector
         Vector
 
+    Inputs
+    ------
+    i.rotation : RotationSocket
+        Rotation
+    i.factor : FloatSocket
+        Factor
+    i.vector : VectorSocket
+        Vector
+
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -64,11 +73,15 @@ class AlignRotationToVector(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
         factor: FloatSocket
+        """Factor"""
         vector: VectorSocket
+        """Vector"""
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -120,9 +133,16 @@ class AxesToRotation(NodeBuilder):
     secondary_axis : InputVector
         Secondary Axis
 
+    Inputs
+    ------
+    i.primary_axis : VectorSocket
+        Primary Axis
+    i.secondary_axis : VectorSocket
+        Secondary Axis
+
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -131,10 +151,13 @@ class AxesToRotation(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         primary_axis: VectorSocket
+        """Primary Axis"""
         secondary_axis: VectorSocket
+        """Secondary Axis"""
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -185,9 +208,16 @@ class AxisAngleToRotation(NodeBuilder):
     angle : InputFloat
         Angle
 
+    Inputs
+    ------
+    i.axis : VectorSocket
+        Axis
+    i.angle : FloatSocket
+        Angle
+
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -196,10 +226,13 @@ class AxisAngleToRotation(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         axis: VectorSocket
+        """Axis"""
         angle: FloatSocket
+        """Angle"""
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -232,9 +265,18 @@ class BitMath(NodeBuilder):
     shift : InputInteger
         Shift
 
+    Inputs
+    ------
+    i.a : IntegerSocket
+        A
+    i.b : IntegerSocket
+        B
+    i.shift : IntegerSocket
+        Shift
+
     Outputs
     -------
-    value : IntegerSocket
+    o.value : IntegerSocket
         Value
     """
 
@@ -243,11 +285,15 @@ class BitMath(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         a: IntegerSocket
+        """A"""
         b: IntegerSocket
+        """B"""
         shift: IntegerSocket
+        """Shift"""
 
     class _Outputs(SocketAccessor):
         value: IntegerSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -317,9 +363,14 @@ class Blackbody(NodeBuilder):
     temperature : InputFloat
         Temperature
 
+    Inputs
+    ------
+    i.temperature : FloatSocket
+        Temperature
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -328,9 +379,11 @@ class Blackbody(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         temperature: FloatSocket
+        """Temperature"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -357,9 +410,16 @@ class BooleanMath(NodeBuilder):
     boolean_001 : InputBoolean
         Boolean
 
+    Inputs
+    ------
+    i.boolean : BooleanSocket
+        Boolean
+    i.boolean_001 : BooleanSocket
+        Boolean
+
     Outputs
     -------
-    boolean : BooleanSocket
+    o.boolean : BooleanSocket
         Boolean
     """
 
@@ -368,10 +428,13 @@ class BooleanMath(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         boolean: BooleanSocket
+        """Boolean"""
         boolean_001: BooleanSocket
+        """Boolean"""
 
     class _Outputs(SocketAccessor):
         boolean: BooleanSocket
+        """Boolean"""
 
     if TYPE_CHECKING:
 
@@ -484,9 +547,18 @@ class Clamp(NodeBuilder):
     max : InputFloat
         Max
 
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.min : FloatSocket
+        Min
+    i.max : FloatSocket
+        Max
+
     Outputs
     -------
-    result : FloatSocket
+    o.result : FloatSocket
         Result
     """
 
@@ -495,11 +567,15 @@ class Clamp(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         min: FloatSocket
+        """Min"""
         max: FloatSocket
+        """Max"""
 
     class _Outputs(SocketAccessor):
         result: FloatSocket
+        """Result"""
 
     if TYPE_CHECKING:
 
@@ -553,11 +629,16 @@ class ColorRamp(NodeBuilder):
     fac : InputFloat
         Factor
 
+    Inputs
+    ------
+    i.fac : FloatSocket
+        Factor
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
     """
 
@@ -566,10 +647,13 @@ class ColorRamp(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         alpha: FloatSocket
+        """Alpha"""
 
     if TYPE_CHECKING:
 
@@ -591,7 +675,7 @@ class CombineBundle(NodeBuilder):
 
     Outputs
     -------
-    bundle : BundleSocket
+    o.bundle : BundleSocket
         Bundle
     """
 
@@ -603,6 +687,7 @@ class CombineBundle(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         bundle: BundleSocket
+        """Bundle"""
 
     if TYPE_CHECKING:
 
@@ -641,9 +726,20 @@ class CombineColor(NodeBuilder):
     alpha : InputFloat
         Alpha
 
+    Inputs
+    ------
+    i.red : FloatSocket
+        Red
+    i.green : FloatSocket
+        Green
+    i.blue : FloatSocket
+        Blue
+    i.alpha : FloatSocket
+        Alpha
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -652,12 +748,17 @@ class CombineColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         red: FloatSocket
+        """Red"""
         green: FloatSocket
+        """Green"""
         blue: FloatSocket
+        """Blue"""
         alpha: FloatSocket
+        """Alpha"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -761,9 +862,44 @@ class CombineMatrix(NodeBuilder):
     column_4_row_4 : InputFloat
         Column 4 Row 4
 
+    Inputs
+    ------
+    i.column_1_row_1 : FloatSocket
+        Column 1 Row 1
+    i.column_1_row_2 : FloatSocket
+        Column 1 Row 2
+    i.column_1_row_3 : FloatSocket
+        Column 1 Row 3
+    i.column_1_row_4 : FloatSocket
+        Column 1 Row 4
+    i.column_2_row_1 : FloatSocket
+        Column 2 Row 1
+    i.column_2_row_2 : FloatSocket
+        Column 2 Row 2
+    i.column_2_row_3 : FloatSocket
+        Column 2 Row 3
+    i.column_2_row_4 : FloatSocket
+        Column 2 Row 4
+    i.column_3_row_1 : FloatSocket
+        Column 3 Row 1
+    i.column_3_row_2 : FloatSocket
+        Column 3 Row 2
+    i.column_3_row_3 : FloatSocket
+        Column 3 Row 3
+    i.column_3_row_4 : FloatSocket
+        Column 3 Row 4
+    i.column_4_row_1 : FloatSocket
+        Column 4 Row 1
+    i.column_4_row_2 : FloatSocket
+        Column 4 Row 2
+    i.column_4_row_3 : FloatSocket
+        Column 4 Row 3
+    i.column_4_row_4 : FloatSocket
+        Column 4 Row 4
+
     Outputs
     -------
-    matrix : MatrixSocket
+    o.matrix : MatrixSocket
         Matrix
     """
 
@@ -772,24 +908,41 @@ class CombineMatrix(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         column_1_row_1: FloatSocket
+        """Column 1 Row 1"""
         column_1_row_2: FloatSocket
+        """Column 1 Row 2"""
         column_1_row_3: FloatSocket
+        """Column 1 Row 3"""
         column_1_row_4: FloatSocket
+        """Column 1 Row 4"""
         column_2_row_1: FloatSocket
+        """Column 2 Row 1"""
         column_2_row_2: FloatSocket
+        """Column 2 Row 2"""
         column_2_row_3: FloatSocket
+        """Column 2 Row 3"""
         column_2_row_4: FloatSocket
+        """Column 2 Row 4"""
         column_3_row_1: FloatSocket
+        """Column 3 Row 1"""
         column_3_row_2: FloatSocket
+        """Column 3 Row 2"""
         column_3_row_3: FloatSocket
+        """Column 3 Row 3"""
         column_3_row_4: FloatSocket
+        """Column 3 Row 4"""
         column_4_row_1: FloatSocket
+        """Column 4 Row 1"""
         column_4_row_2: FloatSocket
+        """Column 4 Row 2"""
         column_4_row_3: FloatSocket
+        """Column 4 Row 3"""
         column_4_row_4: FloatSocket
+        """Column 4 Row 4"""
 
     class _Outputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
 
     if TYPE_CHECKING:
 
@@ -853,9 +1006,18 @@ class CombineTransform(NodeBuilder):
     scale : InputVector
         Scale
 
+    Inputs
+    ------
+    i.translation : VectorSocket
+        Translation
+    i.rotation : RotationSocket
+        Rotation
+    i.scale : VectorSocket
+        Scale
+
     Outputs
     -------
-    transform : MatrixSocket
+    o.transform : MatrixSocket
         Transform
     """
 
@@ -864,11 +1026,15 @@ class CombineTransform(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         translation: VectorSocket
+        """Translation"""
         rotation: RotationSocket
+        """Rotation"""
         scale: VectorSocket
+        """Scale"""
 
     class _Outputs(SocketAccessor):
         transform: MatrixSocket
+        """Transform"""
 
     if TYPE_CHECKING:
 
@@ -902,9 +1068,18 @@ class CombineXYZ(NodeBuilder):
     z : InputFloat
         Z
 
+    Inputs
+    ------
+    i.x : FloatSocket
+        X
+    i.y : FloatSocket
+        Y
+    i.z : FloatSocket
+        Z
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -913,11 +1088,15 @@ class CombineXYZ(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         x: FloatSocket
+        """X"""
         y: FloatSocket
+        """Y"""
         z: FloatSocket
+        """Z"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 
@@ -947,9 +1126,14 @@ class EulerToRotation(NodeBuilder):
     euler : InputVector
         Euler
 
+    Inputs
+    ------
+    i.euler : VectorSocket
+        Euler
+
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -958,9 +1142,11 @@ class EulerToRotation(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         euler: VectorSocket
+        """Euler"""
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -987,11 +1173,18 @@ class FindInString(NodeBuilder):
     search : InputString
         Search
 
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.search : StringSocket
+        Search
+
     Outputs
     -------
-    first_found : IntegerSocket
+    o.first_found : IntegerSocket
         First Found
-    count : IntegerSocket
+    o.count : IntegerSocket
         Count
     """
 
@@ -1000,11 +1193,15 @@ class FindInString(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         string: StringSocket
+        """String"""
         search: StringSocket
+        """Search"""
 
     class _Outputs(SocketAccessor):
         first_found: IntegerSocket
+        """First Found"""
         count: IntegerSocket
+        """Count"""
 
     if TYPE_CHECKING:
 
@@ -1035,9 +1232,16 @@ class FloatCurve(NodeBuilder):
     value : InputFloat
         Value
 
+    Inputs
+    ------
+    i.factor : FloatSocket
+        Factor
+    i.value : FloatSocket
+        Value
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -1046,10 +1250,13 @@ class FloatCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         factor: FloatSocket
+        """Factor"""
         value: FloatSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -1078,9 +1285,14 @@ class FloatToInteger(NodeBuilder):
     float : InputFloat
         Float
 
+    Inputs
+    ------
+    i.float : FloatSocket
+        Float
+
     Outputs
     -------
-    integer : IntegerSocket
+    o.integer : IntegerSocket
         Integer
     """
 
@@ -1089,9 +1301,11 @@ class FloatToInteger(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         float: FloatSocket
+        """Float"""
 
     class _Outputs(SocketAccessor):
         integer: IntegerSocket
+        """Integer"""
 
     if TYPE_CHECKING:
 
@@ -1131,9 +1345,16 @@ class HashValue(NodeBuilder):
     seed : InputInteger
         Seed
 
+    Inputs
+    ------
+    i.value : IntegerSocket
+        Value
+    i.seed : IntegerSocket
+        Seed
+
     Outputs
     -------
-    hash : IntegerSocket
+    o.hash : IntegerSocket
         Hash
     """
 
@@ -1142,10 +1363,13 @@ class HashValue(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: IntegerSocket
+        """Value"""
         seed: IntegerSocket
+        """Seed"""
 
     class _Outputs(SocketAccessor):
         hash: IntegerSocket
+        """Hash"""
 
     if TYPE_CHECKING:
 
@@ -1232,11 +1456,18 @@ class IndexOfNearest(NodeBuilder):
     group_id : InputInteger
         Group ID
 
+    Inputs
+    ------
+    i.position : VectorSocket
+        Position
+    i.group_id : IntegerSocket
+        Group ID
+
     Outputs
     -------
-    index : IntegerSocket
+    o.index : IntegerSocket
         Index
-    has_neighbor : BooleanSocket
+    o.has_neighbor : BooleanSocket
         Has Neighbor
     """
 
@@ -1245,11 +1476,15 @@ class IndexOfNearest(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         position: VectorSocket
+        """Position"""
         group_id: IntegerSocket
+        """Group ID"""
 
     class _Outputs(SocketAccessor):
         index: IntegerSocket
+        """Index"""
         has_neighbor: BooleanSocket
+        """Has Neighbor"""
 
     if TYPE_CHECKING:
 
@@ -1282,9 +1517,18 @@ class IntegerMath(NodeBuilder):
     value_002 : InputInteger
         Value
 
+    Inputs
+    ------
+    i.value : IntegerSocket
+        Value
+    i.value_001 : IntegerSocket
+        Value
+    i.value_002 : IntegerSocket
+        Value
+
     Outputs
     -------
-    value : IntegerSocket
+    o.value : IntegerSocket
         Value
     """
 
@@ -1293,11 +1537,15 @@ class IntegerMath(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: IntegerSocket
+        """Value"""
         value_001: IntegerSocket
+        """Value"""
         value_002: IntegerSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         value: IntegerSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -1525,11 +1773,16 @@ class InvertMatrix(NodeBuilder):
     matrix : InputMatrix
         Matrix
 
+    Inputs
+    ------
+    i.matrix : MatrixSocket
+        Matrix
+
     Outputs
     -------
-    matrix : MatrixSocket
+    o.matrix : MatrixSocket
         Matrix
-    invertible : BooleanSocket
+    o.invertible : BooleanSocket
         Invertible
     """
 
@@ -1538,10 +1791,13 @@ class InvertMatrix(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
 
     class _Outputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
         invertible: BooleanSocket
+        """Invertible"""
 
     if TYPE_CHECKING:
 
@@ -1566,9 +1822,14 @@ class InvertRotation(NodeBuilder):
     rotation : InputRotation
         Rotation
 
+    Inputs
+    ------
+    i.rotation : RotationSocket
+        Rotation
+
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -1577,9 +1838,11 @@ class InvertRotation(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -1604,9 +1867,14 @@ class JoinBundle(NodeBuilder):
     bundle : InputBundle
         Bundle
 
+    Inputs
+    ------
+    i.bundle : BundleSocket
+        Bundle
+
     Outputs
     -------
-    bundle : BundleSocket
+    o.bundle : BundleSocket
         Bundle
     """
 
@@ -1615,9 +1883,11 @@ class JoinBundle(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         bundle: BundleSocket
+        """Bundle"""
 
     class _Outputs(SocketAccessor):
         bundle: BundleSocket
+        """Bundle"""
 
     if TYPE_CHECKING:
 
@@ -1664,11 +1934,38 @@ class MapRange(NodeBuilder):
     steps_float3 : InputVector
         Steps
 
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.from_min : FloatSocket
+        From Min
+    i.from_max : FloatSocket
+        From Max
+    i.to_min : FloatSocket
+        To Min
+    i.to_max : FloatSocket
+        To Max
+    i.steps : FloatSocket
+        Steps
+    i.vector : VectorSocket
+        Vector
+    i.from_min_float3 : VectorSocket
+        From Min
+    i.from_max_float3 : VectorSocket
+        From Max
+    i.to_min_float3 : VectorSocket
+        To Min
+    i.to_max_float3 : VectorSocket
+        To Max
+    i.steps_float3 : VectorSocket
+        Steps
+
     Outputs
     -------
-    result : FloatSocket
+    o.result : FloatSocket
         Result
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -1677,21 +1974,35 @@ class MapRange(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         from_min: FloatSocket
+        """From Min"""
         from_max: FloatSocket
+        """From Max"""
         to_min: FloatSocket
+        """To Min"""
         to_max: FloatSocket
+        """To Max"""
         steps: FloatSocket
+        """Steps"""
         vector: VectorSocket
+        """Vector"""
         from_min_float3: VectorSocket
+        """From Min"""
         from_max_float3: VectorSocket
+        """From Max"""
         to_min_float3: VectorSocket
+        """To Min"""
         to_max_float3: VectorSocket
+        """To Max"""
         steps_float3: VectorSocket
+        """Steps"""
 
     class _Outputs(SocketAccessor):
         result: FloatSocket
+        """Result"""
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 
@@ -1899,9 +2210,18 @@ class MatchString(NodeBuilder):
     key : InputString
         Key
 
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.operation : MenuSocket
+        Operation
+    i.key : StringSocket
+        Key
+
     Outputs
     -------
-    result : BooleanSocket
+    o.result : BooleanSocket
         Result
     """
 
@@ -1910,11 +2230,15 @@ class MatchString(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         string: StringSocket
+        """String"""
         operation: MenuSocket
+        """Operation"""
         key: StringSocket
+        """Key"""
 
     class _Outputs(SocketAccessor):
         result: BooleanSocket
+        """Result"""
 
     if TYPE_CHECKING:
 
@@ -1949,9 +2273,18 @@ class Math(NodeBuilder):
     value_002 : InputFloat
         Value
 
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.value_001 : FloatSocket
+        Value
+    i.value_002 : FloatSocket
+        Value
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -1960,11 +2293,15 @@ class Math(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         value_001: FloatSocket
+        """Value"""
         value_002: FloatSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -2400,9 +2737,14 @@ class MatrixDeterminant(NodeBuilder):
     matrix : InputMatrix
         Matrix
 
+    Inputs
+    ------
+    i.matrix : MatrixSocket
+        Matrix
+
     Outputs
     -------
-    determinant : FloatSocket
+    o.determinant : FloatSocket
         Determinant
     """
 
@@ -2411,9 +2753,11 @@ class MatrixDeterminant(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
 
     class _Outputs(SocketAccessor):
         determinant: FloatSocket
+        """Determinant"""
 
     if TYPE_CHECKING:
 
@@ -2456,15 +2800,38 @@ class Mix(NodeBuilder):
     b_rotation : InputRotation
         B
 
+    Inputs
+    ------
+    i.factor_float : FloatSocket
+        Factor
+    i.factor_vector : VectorSocket
+        Factor
+    i.a_float : FloatSocket
+        A
+    i.b_float : FloatSocket
+        B
+    i.a_vector : VectorSocket
+        A
+    i.b_vector : VectorSocket
+        B
+    i.a_color : ColorSocket
+        A
+    i.b_color : ColorSocket
+        B
+    i.a_rotation : RotationSocket
+        A
+    i.b_rotation : RotationSocket
+        B
+
     Outputs
     -------
-    result_float : FloatSocket
+    o.result_float : FloatSocket
         Result
-    result_vector : VectorSocket
+    o.result_vector : VectorSocket
         Result
-    result_color : ColorSocket
+    o.result_color : ColorSocket
         Result
-    result_rotation : RotationSocket
+    o.result_rotation : RotationSocket
         Result
     """
 
@@ -2473,21 +2840,35 @@ class Mix(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         factor_float: FloatSocket
+        """Factor"""
         factor_vector: VectorSocket
+        """Factor"""
         a_float: FloatSocket
+        """A"""
         b_float: FloatSocket
+        """B"""
         a_vector: VectorSocket
+        """A"""
         b_vector: VectorSocket
+        """B"""
         a_color: ColorSocket
+        """A"""
         b_color: ColorSocket
+        """B"""
         a_rotation: RotationSocket
+        """A"""
         b_rotation: RotationSocket
+        """B"""
 
     class _Outputs(SocketAccessor):
         result_float: FloatSocket
+        """Result"""
         result_vector: VectorSocket
+        """Result"""
         result_color: ColorSocket
+        """Result"""
         result_rotation: RotationSocket
+        """Result"""
 
     if TYPE_CHECKING:
 
@@ -2693,9 +3074,16 @@ class MultiplyMatrices(NodeBuilder):
     matrix_001 : InputMatrix
         Matrix
 
+    Inputs
+    ------
+    i.matrix : MatrixSocket
+        Matrix
+    i.matrix_001 : MatrixSocket
+        Matrix
+
     Outputs
     -------
-    matrix : MatrixSocket
+    o.matrix : MatrixSocket
         Matrix
     """
 
@@ -2704,10 +3092,13 @@ class MultiplyMatrices(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
         matrix_001: MatrixSocket
+        """Matrix"""
 
     class _Outputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
 
     if TYPE_CHECKING:
 
@@ -2744,9 +3135,22 @@ class PackUVIslands(NodeBuilder):
     method : InputMenu | Literal['Bounding Box', 'Convex Hull', 'Exact Shape']
         Method
 
+    Inputs
+    ------
+    i.uv : VectorSocket
+        UV
+    i.selection : BooleanSocket
+        Selection
+    i.margin : FloatSocket
+        Margin
+    i.rotate : BooleanSocket
+        Rotate
+    i.method : MenuSocket
+        Method
+
     Outputs
     -------
-    uv : VectorSocket
+    o.uv : VectorSocket
         UV
     """
 
@@ -2755,13 +3159,19 @@ class PackUVIslands(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         uv: VectorSocket
+        """UV"""
         selection: BooleanSocket
+        """Selection"""
         margin: FloatSocket
+        """Margin"""
         rotate: BooleanSocket
+        """Rotate"""
         method: MenuSocket
+        """Method"""
 
     class _Outputs(SocketAccessor):
         uv: VectorSocket
+        """UV"""
 
     if TYPE_CHECKING:
 
@@ -2802,9 +3212,16 @@ class ProjectPoint(NodeBuilder):
     transform : InputMatrix
         Transform
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.transform : MatrixSocket
+        Transform
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -2813,10 +3230,13 @@ class ProjectPoint(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         transform: MatrixSocket
+        """Transform"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 
@@ -2851,9 +3271,20 @@ class QuaternionToRotation(NodeBuilder):
     z : InputFloat
         Z
 
+    Inputs
+    ------
+    i.w : FloatSocket
+        W
+    i.x : FloatSocket
+        X
+    i.y : FloatSocket
+        Y
+    i.z : FloatSocket
+        Z
+
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -2862,12 +3293,17 @@ class QuaternionToRotation(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         w: FloatSocket
+        """W"""
         x: FloatSocket
+        """X"""
         y: FloatSocket
+        """Y"""
         z: FloatSocket
+        """Z"""
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -2914,15 +3350,36 @@ class RandomValue(NodeBuilder):
     seed : InputInteger
         Seed
 
+    Inputs
+    ------
+    i.min : VectorSocket
+        Min
+    i.max : VectorSocket
+        Max
+    i.min_001 : FloatSocket
+        Min
+    i.max_001 : FloatSocket
+        Max
+    i.min_002 : IntegerSocket
+        Min
+    i.max_002 : IntegerSocket
+        Max
+    i.probability : FloatSocket
+        Probability
+    i.id : IntegerSocket
+        ID
+    i.seed : IntegerSocket
+        Seed
+
     Outputs
     -------
-    value : VectorSocket
+    o.value : VectorSocket
         Value
-    value_001 : FloatSocket
+    o.value_001 : FloatSocket
         Value
-    value_002 : IntegerSocket
+    o.value_002 : IntegerSocket
         Value
-    value_003 : BooleanSocket
+    o.value_003 : BooleanSocket
         Value
     """
 
@@ -2931,20 +3388,33 @@ class RandomValue(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         min: VectorSocket
+        """Min"""
         max: VectorSocket
+        """Max"""
         min_001: FloatSocket
+        """Min"""
         max_001: FloatSocket
+        """Max"""
         min_002: IntegerSocket
+        """Min"""
         max_002: IntegerSocket
+        """Max"""
         probability: FloatSocket
+        """Probability"""
         id: IntegerSocket
+        """ID"""
         seed: IntegerSocket
+        """Seed"""
 
     class _Outputs(SocketAccessor):
         value: VectorSocket
+        """Value"""
         value_001: FloatSocket
+        """Value"""
         value_002: IntegerSocket
+        """Value"""
         value_003: BooleanSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -3044,9 +3514,18 @@ class ReplaceString(NodeBuilder):
     replace : InputString
         Replace
 
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.find : StringSocket
+        Find
+    i.replace : StringSocket
+        Replace
+
     Outputs
     -------
-    string : StringSocket
+    o.string : StringSocket
         String
     """
 
@@ -3055,11 +3534,15 @@ class ReplaceString(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         string: StringSocket
+        """String"""
         find: StringSocket
+        """Find"""
         replace: StringSocket
+        """Replace"""
 
     class _Outputs(SocketAccessor):
         string: StringSocket
+        """String"""
 
     if TYPE_CHECKING:
 
@@ -3095,9 +3578,20 @@ class RotateEuler(NodeBuilder):
     angle : InputFloat
         Angle
 
+    Inputs
+    ------
+    i.rotation : VectorSocket
+        Rotation
+    i.rotate_by : VectorSocket
+        Rotate By
+    i.axis : VectorSocket
+        Axis
+    i.angle : FloatSocket
+        Angle
+
     Outputs
     -------
-    rotation : VectorSocket
+    o.rotation : VectorSocket
         Rotation
     """
 
@@ -3106,12 +3600,17 @@ class RotateEuler(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         rotation: VectorSocket
+        """Rotation"""
         rotate_by: VectorSocket
+        """Rotate By"""
         axis: VectorSocket
+        """Axis"""
         angle: FloatSocket
+        """Angle"""
 
     class _Outputs(SocketAccessor):
         rotation: VectorSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -3188,9 +3687,16 @@ class RotateRotation(NodeBuilder):
     rotate_by : InputRotation
         Rotate By
 
+    Inputs
+    ------
+    i.rotation : RotationSocket
+        Rotation
+    i.rotate_by : RotationSocket
+        Rotate By
+
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -3199,10 +3705,13 @@ class RotateRotation(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
         rotate_by: RotationSocket
+        """Rotate By"""
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -3243,9 +3752,16 @@ class RotateVector(NodeBuilder):
     rotation : InputRotation
         Rotation
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.rotation : RotationSocket
+        Rotation
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -3254,10 +3770,13 @@ class RotateVector(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         rotation: RotationSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 
@@ -3286,11 +3805,16 @@ class RotationToAxisAngle(NodeBuilder):
     rotation : InputRotation
         Rotation
 
+    Inputs
+    ------
+    i.rotation : RotationSocket
+        Rotation
+
     Outputs
     -------
-    axis : VectorSocket
+    o.axis : VectorSocket
         Axis
-    angle : FloatSocket
+    o.angle : FloatSocket
         Angle
     """
 
@@ -3299,10 +3823,13 @@ class RotationToAxisAngle(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         axis: VectorSocket
+        """Axis"""
         angle: FloatSocket
+        """Angle"""
 
     if TYPE_CHECKING:
 
@@ -3327,9 +3854,14 @@ class RotationToEuler(NodeBuilder):
     rotation : InputRotation
         Rotation
 
+    Inputs
+    ------
+    i.rotation : RotationSocket
+        Rotation
+
     Outputs
     -------
-    euler : VectorSocket
+    o.euler : VectorSocket
         Euler
     """
 
@@ -3338,9 +3870,11 @@ class RotationToEuler(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         euler: VectorSocket
+        """Euler"""
 
     if TYPE_CHECKING:
 
@@ -3365,15 +3899,20 @@ class RotationToQuaternion(NodeBuilder):
     rotation : InputRotation
         Rotation
 
+    Inputs
+    ------
+    i.rotation : RotationSocket
+        Rotation
+
     Outputs
     -------
-    w : FloatSocket
+    o.w : FloatSocket
         W
-    x : FloatSocket
+    o.x : FloatSocket
         X
-    y : FloatSocket
+    o.y : FloatSocket
         Y
-    z : FloatSocket
+    o.z : FloatSocket
         Z
     """
 
@@ -3382,12 +3921,17 @@ class RotationToQuaternion(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         w: FloatSocket
+        """W"""
         x: FloatSocket
+        """X"""
         y: FloatSocket
+        """Y"""
         z: FloatSocket
+        """Z"""
 
     if TYPE_CHECKING:
 
@@ -3411,6 +3955,11 @@ class SeparateBundle(NodeBuilder):
     ----------
     bundle : InputBundle
         Bundle
+
+    Inputs
+    ------
+    i.bundle : BundleSocket
+        Bundle
     """
 
     _bl_idname = "NodeSeparateBundle"
@@ -3418,6 +3967,7 @@ class SeparateBundle(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         bundle: BundleSocket
+        """Bundle"""
 
     class _Outputs(SocketAccessor):
         pass
@@ -3458,15 +4008,20 @@ class SeparateColor(NodeBuilder):
     color : InputColor
         Color
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+
     Outputs
     -------
-    red : FloatSocket
+    o.red : FloatSocket
         Red
-    green : FloatSocket
+    o.green : FloatSocket
         Green
-    blue : FloatSocket
+    o.blue : FloatSocket
         Blue
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
     """
 
@@ -3475,12 +4030,17 @@ class SeparateColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     class _Outputs(SocketAccessor):
         red: FloatSocket
+        """Red"""
         green: FloatSocket
+        """Green"""
         blue: FloatSocket
+        """Blue"""
         alpha: FloatSocket
+        """Alpha"""
 
     if TYPE_CHECKING:
 
@@ -3533,39 +4093,44 @@ class SeparateMatrix(NodeBuilder):
     matrix : InputMatrix
         Matrix
 
+    Inputs
+    ------
+    i.matrix : MatrixSocket
+        Matrix
+
     Outputs
     -------
-    column_1_row_1 : FloatSocket
+    o.column_1_row_1 : FloatSocket
         Column 1 Row 1
-    column_1_row_2 : FloatSocket
+    o.column_1_row_2 : FloatSocket
         Column 1 Row 2
-    column_1_row_3 : FloatSocket
+    o.column_1_row_3 : FloatSocket
         Column 1 Row 3
-    column_1_row_4 : FloatSocket
+    o.column_1_row_4 : FloatSocket
         Column 1 Row 4
-    column_2_row_1 : FloatSocket
+    o.column_2_row_1 : FloatSocket
         Column 2 Row 1
-    column_2_row_2 : FloatSocket
+    o.column_2_row_2 : FloatSocket
         Column 2 Row 2
-    column_2_row_3 : FloatSocket
+    o.column_2_row_3 : FloatSocket
         Column 2 Row 3
-    column_2_row_4 : FloatSocket
+    o.column_2_row_4 : FloatSocket
         Column 2 Row 4
-    column_3_row_1 : FloatSocket
+    o.column_3_row_1 : FloatSocket
         Column 3 Row 1
-    column_3_row_2 : FloatSocket
+    o.column_3_row_2 : FloatSocket
         Column 3 Row 2
-    column_3_row_3 : FloatSocket
+    o.column_3_row_3 : FloatSocket
         Column 3 Row 3
-    column_3_row_4 : FloatSocket
+    o.column_3_row_4 : FloatSocket
         Column 3 Row 4
-    column_4_row_1 : FloatSocket
+    o.column_4_row_1 : FloatSocket
         Column 4 Row 1
-    column_4_row_2 : FloatSocket
+    o.column_4_row_2 : FloatSocket
         Column 4 Row 2
-    column_4_row_3 : FloatSocket
+    o.column_4_row_3 : FloatSocket
         Column 4 Row 3
-    column_4_row_4 : FloatSocket
+    o.column_4_row_4 : FloatSocket
         Column 4 Row 4
     """
 
@@ -3574,24 +4139,41 @@ class SeparateMatrix(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
 
     class _Outputs(SocketAccessor):
         column_1_row_1: FloatSocket
+        """Column 1 Row 1"""
         column_1_row_2: FloatSocket
+        """Column 1 Row 2"""
         column_1_row_3: FloatSocket
+        """Column 1 Row 3"""
         column_1_row_4: FloatSocket
+        """Column 1 Row 4"""
         column_2_row_1: FloatSocket
+        """Column 2 Row 1"""
         column_2_row_2: FloatSocket
+        """Column 2 Row 2"""
         column_2_row_3: FloatSocket
+        """Column 2 Row 3"""
         column_2_row_4: FloatSocket
+        """Column 2 Row 4"""
         column_3_row_1: FloatSocket
+        """Column 3 Row 1"""
         column_3_row_2: FloatSocket
+        """Column 3 Row 2"""
         column_3_row_3: FloatSocket
+        """Column 3 Row 3"""
         column_3_row_4: FloatSocket
+        """Column 3 Row 4"""
         column_4_row_1: FloatSocket
+        """Column 4 Row 1"""
         column_4_row_2: FloatSocket
+        """Column 4 Row 2"""
         column_4_row_3: FloatSocket
+        """Column 4 Row 3"""
         column_4_row_4: FloatSocket
+        """Column 4 Row 4"""
 
     if TYPE_CHECKING:
 
@@ -3616,13 +4198,18 @@ class SeparateTransform(NodeBuilder):
     transform : InputMatrix
         Transform
 
+    Inputs
+    ------
+    i.transform : MatrixSocket
+        Transform
+
     Outputs
     -------
-    translation : VectorSocket
+    o.translation : VectorSocket
         Translation
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
-    scale : VectorSocket
+    o.scale : VectorSocket
         Scale
     """
 
@@ -3631,11 +4218,15 @@ class SeparateTransform(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         transform: MatrixSocket
+        """Transform"""
 
     class _Outputs(SocketAccessor):
         translation: VectorSocket
+        """Translation"""
         rotation: RotationSocket
+        """Rotation"""
         scale: VectorSocket
+        """Scale"""
 
     if TYPE_CHECKING:
 
@@ -3660,13 +4251,18 @@ class SeparateXYZ(NodeBuilder):
     vector : InputVector
         Vector
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+
     Outputs
     -------
-    x : FloatSocket
+    o.x : FloatSocket
         X
-    y : FloatSocket
+    o.y : FloatSocket
         Y
-    z : FloatSocket
+    o.z : FloatSocket
         Z
     """
 
@@ -3675,11 +4271,15 @@ class SeparateXYZ(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     class _Outputs(SocketAccessor):
         x: FloatSocket
+        """X"""
         y: FloatSocket
+        """Y"""
         z: FloatSocket
+        """Z"""
 
     if TYPE_CHECKING:
 
@@ -3708,9 +4308,18 @@ class SliceString(NodeBuilder):
     length : InputInteger
         Length
 
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.position : IntegerSocket
+        Position
+    i.length : IntegerSocket
+        Length
+
     Outputs
     -------
-    string : StringSocket
+    o.string : StringSocket
         String
     """
 
@@ -3719,11 +4328,15 @@ class SliceString(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         string: StringSocket
+        """String"""
         position: IntegerSocket
+        """Position"""
         length: IntegerSocket
+        """Length"""
 
     class _Outputs(SocketAccessor):
         string: StringSocket
+        """String"""
 
     if TYPE_CHECKING:
 
@@ -3753,9 +4366,14 @@ class StringLength(NodeBuilder):
     string : InputString
         String
 
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+
     Outputs
     -------
-    length : IntegerSocket
+    o.length : IntegerSocket
         Length
     """
 
@@ -3764,9 +4382,11 @@ class StringLength(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         string: StringSocket
+        """String"""
 
     class _Outputs(SocketAccessor):
         length: IntegerSocket
+        """Length"""
 
     if TYPE_CHECKING:
 
@@ -3791,11 +4411,16 @@ class StringToValue(NodeBuilder):
     string : InputString
         String
 
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
-    length : IntegerSocket
+    o.length : IntegerSocket
         Length
     """
 
@@ -3804,10 +4429,13 @@ class StringToValue(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         string: StringSocket
+        """String"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         length: IntegerSocket
+        """Length"""
 
     if TYPE_CHECKING:
 
@@ -3859,9 +4487,18 @@ class Switch(NodeBuilder):
     true : InputGeometry
         True
 
+    Inputs
+    ------
+    i.switch : BooleanSocket
+        Switch
+    i.false : GeometrySocket
+        False
+    i.true : GeometrySocket
+        True
+
     Outputs
     -------
-    output : GeometrySocket
+    o.output : GeometrySocket
         Output
     """
 
@@ -3870,11 +4507,15 @@ class Switch(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         switch: BooleanSocket
+        """Switch"""
         false: GeometrySocket
+        """False"""
         true: GeometrySocket
+        """True"""
 
     class _Outputs(SocketAccessor):
         output: GeometrySocket
+        """Output"""
 
     if TYPE_CHECKING:
 
@@ -4132,9 +4773,16 @@ class TransformDirection(NodeBuilder):
     transform : InputMatrix
         Transform
 
+    Inputs
+    ------
+    i.direction : VectorSocket
+        Direction
+    i.transform : MatrixSocket
+        Transform
+
     Outputs
     -------
-    direction : VectorSocket
+    o.direction : VectorSocket
         Direction
     """
 
@@ -4143,10 +4791,13 @@ class TransformDirection(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         direction: VectorSocket
+        """Direction"""
         transform: MatrixSocket
+        """Transform"""
 
     class _Outputs(SocketAccessor):
         direction: VectorSocket
+        """Direction"""
 
     if TYPE_CHECKING:
 
@@ -4177,9 +4828,16 @@ class TransformPoint(NodeBuilder):
     transform : InputMatrix
         Transform
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.transform : MatrixSocket
+        Transform
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -4188,10 +4846,13 @@ class TransformPoint(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         transform: MatrixSocket
+        """Transform"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 
@@ -4220,9 +4881,14 @@ class TransposeMatrix(NodeBuilder):
     matrix : InputMatrix
         Matrix
 
+    Inputs
+    ------
+    i.matrix : MatrixSocket
+        Matrix
+
     Outputs
     -------
-    matrix : MatrixSocket
+    o.matrix : MatrixSocket
         Matrix
     """
 
@@ -4231,9 +4897,11 @@ class TransposeMatrix(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
 
     class _Outputs(SocketAccessor):
         matrix: MatrixSocket
+        """Matrix"""
 
     if TYPE_CHECKING:
 
@@ -4266,9 +4934,22 @@ class UVUnwrap(NodeBuilder):
     method : InputMenu | Literal['Angle Based', 'Conformal']
         Method
 
+    Inputs
+    ------
+    i.selection : BooleanSocket
+        Selection
+    i.seam : BooleanSocket
+        Seam
+    i.margin : FloatSocket
+        Margin
+    i.fill_holes : BooleanSocket
+        Fill Holes
+    i.method : MenuSocket
+        Method
+
     Outputs
     -------
-    uv : VectorSocket
+    o.uv : VectorSocket
         UV
     """
 
@@ -4277,13 +4958,19 @@ class UVUnwrap(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         selection: BooleanSocket
+        """Selection"""
         seam: BooleanSocket
+        """Seam"""
         margin: FloatSocket
+        """Margin"""
         fill_holes: BooleanSocket
+        """Fill Holes"""
         method: MenuSocket
+        """Method"""
 
     class _Outputs(SocketAccessor):
         uv: VectorSocket
+        """UV"""
 
     if TYPE_CHECKING:
 
@@ -4323,9 +5010,16 @@ class ValueToString(NodeBuilder):
     decimals : InputInteger
         Decimals
 
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.decimals : IntegerSocket
+        Decimals
+
     Outputs
     -------
-    string : StringSocket
+    o.string : StringSocket
         String
     """
 
@@ -4334,10 +5028,13 @@ class ValueToString(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         decimals: IntegerSocket
+        """Decimals"""
 
     class _Outputs(SocketAccessor):
         string: StringSocket
+        """String"""
 
     if TYPE_CHECKING:
 

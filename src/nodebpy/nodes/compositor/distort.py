@@ -48,11 +48,30 @@ class CornerPin(NodeBuilder):
     extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
         Extension Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.upper_left : VectorSocket
+        Upper Left
+    i.upper_right : VectorSocket
+        Upper Right
+    i.lower_left : VectorSocket
+        Lower Left
+    i.lower_right : VectorSocket
+        Lower Right
+    i.interpolation : MenuSocket
+        Interpolation
+    i.extension_x : MenuSocket
+        Extension X
+    i.extension_y : MenuSocket
+        Extension Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    plane : FloatSocket
+    o.plane : FloatSocket
         Plane
     """
 
@@ -61,17 +80,27 @@ class CornerPin(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         upper_left: VectorSocket
+        """Upper Left"""
         upper_right: VectorSocket
+        """Upper Right"""
         lower_left: VectorSocket
+        """Lower Left"""
         lower_right: VectorSocket
+        """Lower Right"""
         interpolation: MenuSocket
+        """Interpolation"""
         extension_x: MenuSocket
+        """Extension X"""
         extension_y: MenuSocket
+        """Extension Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         plane: FloatSocket
+        """Plane"""
 
     if TYPE_CHECKING:
 
@@ -126,9 +155,24 @@ class Crop(NodeBuilder):
     alpha_crop : InputBoolean
         Alpha Crop
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.x : IntegerSocket
+        X
+    i.y : IntegerSocket
+        Y
+    i.width : IntegerSocket
+        Width
+    i.height : IntegerSocket
+        Height
+    i.alpha_crop : BooleanSocket
+        Alpha Crop
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -137,14 +181,21 @@ class Crop(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         x: IntegerSocket
+        """X"""
         y: IntegerSocket
+        """Y"""
         width: IntegerSocket
+        """Width"""
         height: IntegerSocket
+        """Height"""
         alpha_crop: BooleanSocket
+        """Alpha Crop"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -192,9 +243,22 @@ class Displace(NodeBuilder):
     extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
         Extension Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.displacement : VectorSocket
+        Displacement
+    i.interpolation : MenuSocket
+        Interpolation
+    i.extension_x : MenuSocket
+        Extension X
+    i.extension_y : MenuSocket
+        Extension Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -203,13 +267,19 @@ class Displace(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         displacement: VectorSocket
+        """Displacement"""
         interpolation: MenuSocket
+        """Interpolation"""
         extension_x: MenuSocket
+        """Extension X"""
         extension_y: MenuSocket
+        """Extension Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -252,9 +322,18 @@ class Flip(NodeBuilder):
     flip_y : InputBoolean
         Flip Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.flip_x : BooleanSocket
+        Flip X
+    i.flip_y : BooleanSocket
+        Flip Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -263,11 +342,15 @@ class Flip(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         flip_x: BooleanSocket
+        """Flip X"""
         flip_y: BooleanSocket
+        """Flip Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -307,9 +390,24 @@ class LensDistortion(NodeBuilder):
     fit : InputBoolean
         Fit
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.type : MenuSocket
+        Type
+    i.distortion : FloatSocket
+        Distortion
+    i.dispersion : FloatSocket
+        Dispersion
+    i.jitter : BooleanSocket
+        Jitter
+    i.fit : BooleanSocket
+        Fit
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -318,14 +416,21 @@ class LensDistortion(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         type: MenuSocket
+        """Type"""
         distortion: FloatSocket
+        """Distortion"""
         dispersion: FloatSocket
+        """Dispersion"""
         jitter: BooleanSocket
+        """Jitter"""
         fit: BooleanSocket
+        """Fit"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -399,9 +504,22 @@ class MapUV(NodeBuilder):
     extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
         Extension Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.uv : VectorSocket
+        UV
+    i.interpolation : MenuSocket
+        Interpolation
+    i.extension_x : MenuSocket
+        Extension X
+    i.extension_y : MenuSocket
+        Extension Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -410,13 +528,19 @@ class MapUV(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         uv: VectorSocket
+        """UV"""
         interpolation: MenuSocket
+        """Interpolation"""
         extension_x: MenuSocket
+        """Extension X"""
         extension_y: MenuSocket
+        """Extension Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -457,9 +581,16 @@ class MovieDistortion(NodeBuilder):
     type : InputMenu | Literal['Undistort', 'Distort']
         Type
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.type : MenuSocket
+        Type
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -468,10 +599,13 @@ class MovieDistortion(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         type: MenuSocket
+        """Type"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -516,11 +650,22 @@ class PlaneTrackDeform(NodeBuilder):
     motion_blur_shutter : InputFloat
         Shutter
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.motion_blur : BooleanSocket
+        Motion Blur
+    i.motion_blur_samples : IntegerSocket
+        Samples
+    i.motion_blur_shutter : FloatSocket
+        Shutter
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    plane : FloatSocket
+    o.plane : FloatSocket
         Plane
     """
 
@@ -529,13 +674,19 @@ class PlaneTrackDeform(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         motion_blur: BooleanSocket
+        """Motion Blur"""
         motion_blur_samples: IntegerSocket
+        """Samples"""
         motion_blur_shutter: FloatSocket
+        """Shutter"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         plane: FloatSocket
+        """Plane"""
 
     if TYPE_CHECKING:
 
@@ -599,9 +750,22 @@ class Rotate(NodeBuilder):
     extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
         Extension Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.angle : FloatSocket
+        Angle
+    i.interpolation : MenuSocket
+        Interpolation
+    i.extension_x : MenuSocket
+        Extension X
+    i.extension_y : MenuSocket
+        Extension Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -610,13 +774,19 @@ class Rotate(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         angle: FloatSocket
+        """Angle"""
         interpolation: MenuSocket
+        """Interpolation"""
         extension_x: MenuSocket
+        """Extension X"""
         extension_y: MenuSocket
+        """Extension Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -669,9 +839,28 @@ class Scale(NodeBuilder):
     extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
         Extension Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.type : MenuSocket
+        Type
+    i.x : FloatSocket
+        X
+    i.y : FloatSocket
+        Y
+    i.frame_type : MenuSocket
+        Frame Type
+    i.interpolation : MenuSocket
+        Interpolation
+    i.extension_x : MenuSocket
+        Extension X
+    i.extension_y : MenuSocket
+        Extension Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -680,16 +869,25 @@ class Scale(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         type: MenuSocket
+        """Type"""
         x: FloatSocket
+        """X"""
         y: FloatSocket
+        """Y"""
         frame_type: MenuSocket
+        """Frame Type"""
         interpolation: MenuSocket
+        """Interpolation"""
         extension_x: MenuSocket
+        """Extension X"""
         extension_y: MenuSocket
+        """Extension Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -825,9 +1023,22 @@ class Stabilize2D(NodeBuilder):
     extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
         Extension Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.invert : BooleanSocket
+        Invert
+    i.interpolation : MenuSocket
+        Interpolation
+    i.extension_x : MenuSocket
+        Extension X
+    i.extension_y : MenuSocket
+        Extension Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -836,13 +1047,19 @@ class Stabilize2D(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         invert: BooleanSocket
+        """Invert"""
         interpolation: MenuSocket
+        """Interpolation"""
         extension_x: MenuSocket
+        """Extension X"""
         extension_y: MenuSocket
+        """Extension Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -895,9 +1112,28 @@ class Transform(NodeBuilder):
     extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
         Extension Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.x : FloatSocket
+        X
+    i.y : FloatSocket
+        Y
+    i.angle : FloatSocket
+        Angle
+    i.scale : FloatSocket
+        Scale
+    i.interpolation : MenuSocket
+        Interpolation
+    i.extension_x : MenuSocket
+        Extension X
+    i.extension_y : MenuSocket
+        Extension Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -906,16 +1142,25 @@ class Transform(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         x: FloatSocket
+        """X"""
         y: FloatSocket
+        """Y"""
         angle: FloatSocket
+        """Angle"""
         scale: FloatSocket
+        """Scale"""
         interpolation: MenuSocket
+        """Interpolation"""
         extension_x: MenuSocket
+        """Extension X"""
         extension_y: MenuSocket
+        """Extension Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -970,9 +1215,24 @@ class Translate(NodeBuilder):
     extension_y : InputMenu | Literal['Clip', 'Extend', 'Repeat']
         Extension Y
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.x : FloatSocket
+        X
+    i.y : FloatSocket
+        Y
+    i.interpolation : MenuSocket
+        Interpolation
+    i.extension_x : MenuSocket
+        Extension X
+    i.extension_y : MenuSocket
+        Extension Y
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -981,14 +1241,21 @@ class Translate(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         x: FloatSocket
+        """X"""
         y: FloatSocket
+        """Y"""
         interpolation: MenuSocket
+        """Interpolation"""
         extension_x: MenuSocket
+        """Extension X"""
         extension_y: MenuSocket
+        """Extension Y"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 

@@ -41,9 +41,9 @@ class Cursor3D(NodeBuilder):
 
     Outputs
     -------
-    location : VectorSocket
+    o.location : VectorSocket
         Location
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -55,7 +55,9 @@ class Cursor3D(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         location: VectorSocket
+        """Location"""
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -77,7 +79,7 @@ class ActiveCamera(NodeBuilder):
 
     Outputs
     -------
-    active_camera : ObjectSocket
+    o.active_camera : ObjectSocket
         Active Camera
     """
 
@@ -89,6 +91,7 @@ class ActiveCamera(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         active_camera: ObjectSocket
+        """Active Camera"""
 
     if TYPE_CHECKING:
 
@@ -110,9 +113,9 @@ class ActiveElement(NodeBuilder):
 
     Outputs
     -------
-    index : IntegerSocket
+    o.index : IntegerSocket
         Index
-    exists : BooleanSocket
+    o.exists : BooleanSocket
         Exists
     """
 
@@ -124,7 +127,9 @@ class ActiveElement(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         index: IntegerSocket
+        """Index"""
         exists: BooleanSocket
+        """Exists"""
 
     if TYPE_CHECKING:
 
@@ -174,7 +179,7 @@ class Boolean(NodeBuilder):
 
     Outputs
     -------
-    boolean : BooleanSocket
+    o.boolean : BooleanSocket
         Boolean
     """
 
@@ -186,6 +191,7 @@ class Boolean(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         boolean: BooleanSocket
+        """Boolean"""
 
     if TYPE_CHECKING:
 
@@ -218,25 +224,30 @@ class CameraInfo(NodeBuilder):
     camera : InputObject
         Camera
 
+    Inputs
+    ------
+    i.camera : ObjectSocket
+        Camera
+
     Outputs
     -------
-    projection_matrix : MatrixSocket
+    o.projection_matrix : MatrixSocket
         Projection Matrix
-    focal_length : FloatSocket
+    o.focal_length : FloatSocket
         Focal Length
-    sensor : VectorSocket
+    o.sensor : VectorSocket
         Sensor
-    shift : VectorSocket
+    o.shift : VectorSocket
         Shift
-    clip_start : FloatSocket
+    o.clip_start : FloatSocket
         Clip Start
-    clip_end : FloatSocket
+    o.clip_end : FloatSocket
         Clip End
-    focus_distance : FloatSocket
+    o.focus_distance : FloatSocket
         Focus Distance
-    is_orthographic : BooleanSocket
+    o.is_orthographic : BooleanSocket
         Is Orthographic
-    orthographic_scale : FloatSocket
+    o.orthographic_scale : FloatSocket
         Orthographic Scale
     """
 
@@ -245,17 +256,27 @@ class CameraInfo(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         camera: ObjectSocket
+        """Camera"""
 
     class _Outputs(SocketAccessor):
         projection_matrix: MatrixSocket
+        """Projection Matrix"""
         focal_length: FloatSocket
+        """Focal Length"""
         sensor: VectorSocket
+        """Sensor"""
         shift: VectorSocket
+        """Shift"""
         clip_start: FloatSocket
+        """Clip Start"""
         clip_end: FloatSocket
+        """Clip End"""
         focus_distance: FloatSocket
+        """Focus Distance"""
         is_orthographic: BooleanSocket
+        """Is Orthographic"""
         orthographic_scale: FloatSocket
+        """Orthographic Scale"""
 
     if TYPE_CHECKING:
 
@@ -284,9 +305,18 @@ class CollectionInfo(NodeBuilder):
     reset_children : InputBoolean
         Reset Children
 
+    Inputs
+    ------
+    i.collection : CollectionSocket
+        Collection
+    i.separate_children : BooleanSocket
+        Separate Children
+    i.reset_children : BooleanSocket
+        Reset Children
+
     Outputs
     -------
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
     """
 
@@ -295,11 +325,15 @@ class CollectionInfo(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         collection: CollectionSocket
+        """Collection"""
         separate_children: BooleanSocket
+        """Separate Children"""
         reset_children: BooleanSocket
+        """Reset Children"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
 
     if TYPE_CHECKING:
 
@@ -340,7 +374,7 @@ class Color(NodeBuilder):
 
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -352,6 +386,7 @@ class Color(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -390,11 +425,20 @@ class CornersOfEdge(NodeBuilder):
     sort_index : InputInteger
         Sort Index
 
+    Inputs
+    ------
+    i.edge_index : IntegerSocket
+        Edge Index
+    i.weights : FloatSocket
+        Weights
+    i.sort_index : IntegerSocket
+        Sort Index
+
     Outputs
     -------
-    corner_index : IntegerSocket
+    o.corner_index : IntegerSocket
         Corner Index
-    total : IntegerSocket
+    o.total : IntegerSocket
         Total
     """
 
@@ -403,12 +447,17 @@ class CornersOfEdge(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         edge_index: IntegerSocket
+        """Edge Index"""
         weights: FloatSocket
+        """Weights"""
         sort_index: IntegerSocket
+        """Sort Index"""
 
     class _Outputs(SocketAccessor):
         corner_index: IntegerSocket
+        """Corner Index"""
         total: IntegerSocket
+        """Total"""
 
     if TYPE_CHECKING:
 
@@ -446,11 +495,20 @@ class CornersOfFace(NodeBuilder):
     sort_index : InputInteger
         Sort Index
 
+    Inputs
+    ------
+    i.face_index : IntegerSocket
+        Face Index
+    i.weights : FloatSocket
+        Weights
+    i.sort_index : IntegerSocket
+        Sort Index
+
     Outputs
     -------
-    corner_index : IntegerSocket
+    o.corner_index : IntegerSocket
         Corner Index
-    total : IntegerSocket
+    o.total : IntegerSocket
         Total
     """
 
@@ -459,12 +517,17 @@ class CornersOfFace(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         face_index: IntegerSocket
+        """Face Index"""
         weights: FloatSocket
+        """Weights"""
         sort_index: IntegerSocket
+        """Sort Index"""
 
     class _Outputs(SocketAccessor):
         corner_index: IntegerSocket
+        """Corner Index"""
         total: IntegerSocket
+        """Total"""
 
     if TYPE_CHECKING:
 
@@ -502,11 +565,20 @@ class CornersOfVertex(NodeBuilder):
     sort_index : InputInteger
         Sort Index
 
+    Inputs
+    ------
+    i.vertex_index : IntegerSocket
+        Vertex Index
+    i.weights : FloatSocket
+        Weights
+    i.sort_index : IntegerSocket
+        Sort Index
+
     Outputs
     -------
-    corner_index : IntegerSocket
+    o.corner_index : IntegerSocket
         Corner Index
-    total : IntegerSocket
+    o.total : IntegerSocket
         Total
     """
 
@@ -515,12 +587,17 @@ class CornersOfVertex(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vertex_index: IntegerSocket
+        """Vertex Index"""
         weights: FloatSocket
+        """Weights"""
         sort_index: IntegerSocket
+        """Sort Index"""
 
     class _Outputs(SocketAccessor):
         corner_index: IntegerSocket
+        """Corner Index"""
         total: IntegerSocket
+        """Total"""
 
     if TYPE_CHECKING:
 
@@ -554,11 +631,16 @@ class CurveHandlePositions(NodeBuilder):
     relative : InputBoolean
         Relative
 
+    Inputs
+    ------
+    i.relative : BooleanSocket
+        Relative
+
     Outputs
     -------
-    left : VectorSocket
+    o.left : VectorSocket
         Left
-    right : VectorSocket
+    o.right : VectorSocket
         Right
     """
 
@@ -567,10 +649,13 @@ class CurveHandlePositions(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         relative: BooleanSocket
+        """Relative"""
 
     class _Outputs(SocketAccessor):
         left: VectorSocket
+        """Left"""
         right: VectorSocket
+        """Right"""
 
     if TYPE_CHECKING:
 
@@ -592,7 +677,7 @@ class CurveTangent(NodeBuilder):
 
     Outputs
     -------
-    tangent : VectorSocket
+    o.tangent : VectorSocket
         Tangent
     """
 
@@ -604,6 +689,7 @@ class CurveTangent(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         tangent: VectorSocket
+        """Tangent"""
 
     if TYPE_CHECKING:
 
@@ -625,7 +711,7 @@ class CurveTilt(NodeBuilder):
 
     Outputs
     -------
-    tilt : FloatSocket
+    o.tilt : FloatSocket
         Tilt
     """
 
@@ -637,6 +723,7 @@ class CurveTilt(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         tilt: FloatSocket
+        """Tilt"""
 
     if TYPE_CHECKING:
 
@@ -661,11 +748,16 @@ class CurveOfPoint(NodeBuilder):
     point_index : InputInteger
         Point Index
 
+    Inputs
+    ------
+    i.point_index : IntegerSocket
+        Point Index
+
     Outputs
     -------
-    curve_index : IntegerSocket
+    o.curve_index : IntegerSocket
         Curve Index
-    index_in_curve : IntegerSocket
+    o.index_in_curve : IntegerSocket
         Index in Curve
     """
 
@@ -674,10 +766,13 @@ class CurveOfPoint(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         point_index: IntegerSocket
+        """Point Index"""
 
     class _Outputs(SocketAccessor):
         curve_index: IntegerSocket
+        """Curve Index"""
         index_in_curve: IntegerSocket
+        """Index in Curve"""
 
     if TYPE_CHECKING:
 
@@ -699,9 +794,9 @@ class EdgeAngle(NodeBuilder):
 
     Outputs
     -------
-    unsigned_angle : FloatSocket
+    o.unsigned_angle : FloatSocket
         Unsigned Angle
-    signed_angle : FloatSocket
+    o.signed_angle : FloatSocket
         Signed Angle
     """
 
@@ -713,7 +808,9 @@ class EdgeAngle(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         unsigned_angle: FloatSocket
+        """Unsigned Angle"""
         signed_angle: FloatSocket
+        """Signed Angle"""
 
     if TYPE_CHECKING:
 
@@ -735,7 +832,7 @@ class EdgeNeighbors(NodeBuilder):
 
     Outputs
     -------
-    face_count : IntegerSocket
+    o.face_count : IntegerSocket
         Face Count
     """
 
@@ -747,6 +844,7 @@ class EdgeNeighbors(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         face_count: IntegerSocket
+        """Face Count"""
 
     if TYPE_CHECKING:
 
@@ -773,9 +871,16 @@ class EdgePathsToSelection(NodeBuilder):
     next_vertex_index : InputInteger
         Next Vertex Index
 
+    Inputs
+    ------
+    i.start_vertices : BooleanSocket
+        Start Vertices
+    i.next_vertex_index : IntegerSocket
+        Next Vertex Index
+
     Outputs
     -------
-    selection : BooleanSocket
+    o.selection : BooleanSocket
         Selection
     """
 
@@ -784,10 +889,13 @@ class EdgePathsToSelection(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         start_vertices: BooleanSocket
+        """Start Vertices"""
         next_vertex_index: IntegerSocket
+        """Next Vertex Index"""
 
     class _Outputs(SocketAccessor):
         selection: BooleanSocket
+        """Selection"""
 
     if TYPE_CHECKING:
 
@@ -816,13 +924,13 @@ class EdgeVertices(NodeBuilder):
 
     Outputs
     -------
-    vertex_index_1 : IntegerSocket
+    o.vertex_index_1 : IntegerSocket
         Vertex Index 1
-    vertex_index_2 : IntegerSocket
+    o.vertex_index_2 : IntegerSocket
         Vertex Index 2
-    position_1 : VectorSocket
+    o.position_1 : VectorSocket
         Position 1
-    position_2 : VectorSocket
+    o.position_2 : VectorSocket
         Position 2
     """
 
@@ -834,9 +942,13 @@ class EdgeVertices(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         vertex_index_1: IntegerSocket
+        """Vertex Index 1"""
         vertex_index_2: IntegerSocket
+        """Vertex Index 2"""
         position_1: VectorSocket
+        """Position 1"""
         position_2: VectorSocket
+        """Position 2"""
 
     if TYPE_CHECKING:
 
@@ -861,11 +973,16 @@ class EdgesOfCorner(NodeBuilder):
     corner_index : InputInteger
         Corner Index
 
+    Inputs
+    ------
+    i.corner_index : IntegerSocket
+        Corner Index
+
     Outputs
     -------
-    next_edge_index : IntegerSocket
+    o.next_edge_index : IntegerSocket
         Next Edge Index
-    previous_edge_index : IntegerSocket
+    o.previous_edge_index : IntegerSocket
         Previous Edge Index
     """
 
@@ -874,10 +991,13 @@ class EdgesOfCorner(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         corner_index: IntegerSocket
+        """Corner Index"""
 
     class _Outputs(SocketAccessor):
         next_edge_index: IntegerSocket
+        """Next Edge Index"""
         previous_edge_index: IntegerSocket
+        """Previous Edge Index"""
 
     if TYPE_CHECKING:
 
@@ -906,11 +1026,20 @@ class EdgesOfVertex(NodeBuilder):
     sort_index : InputInteger
         Sort Index
 
+    Inputs
+    ------
+    i.vertex_index : IntegerSocket
+        Vertex Index
+    i.weights : FloatSocket
+        Weights
+    i.sort_index : IntegerSocket
+        Sort Index
+
     Outputs
     -------
-    edge_index : IntegerSocket
+    o.edge_index : IntegerSocket
         Edge Index
-    total : IntegerSocket
+    o.total : IntegerSocket
         Total
     """
 
@@ -919,12 +1048,17 @@ class EdgesOfVertex(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vertex_index: IntegerSocket
+        """Vertex Index"""
         weights: FloatSocket
+        """Weights"""
         sort_index: IntegerSocket
+        """Sort Index"""
 
     class _Outputs(SocketAccessor):
         edge_index: IntegerSocket
+        """Edge Index"""
         total: IntegerSocket
+        """Total"""
 
     if TYPE_CHECKING:
 
@@ -958,9 +1092,14 @@ class EdgesToFaceGroups(NodeBuilder):
     boundary_edges : InputBoolean
         Boundary Edges
 
+    Inputs
+    ------
+    i.boundary_edges : BooleanSocket
+        Boundary Edges
+
     Outputs
     -------
-    face_group_id : IntegerSocket
+    o.face_group_id : IntegerSocket
         Face Group ID
     """
 
@@ -969,9 +1108,11 @@ class EdgesToFaceGroups(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         boundary_edges: BooleanSocket
+        """Boundary Edges"""
 
     class _Outputs(SocketAccessor):
         face_group_id: IntegerSocket
+        """Face Group ID"""
 
     if TYPE_CHECKING:
 
@@ -998,9 +1139,16 @@ class EndpointSelection(NodeBuilder):
     end_size : InputInteger
         End Size
 
+    Inputs
+    ------
+    i.start_size : IntegerSocket
+        Start Size
+    i.end_size : IntegerSocket
+        End Size
+
     Outputs
     -------
-    selection : BooleanSocket
+    o.selection : BooleanSocket
         Selection
     """
 
@@ -1009,10 +1157,13 @@ class EndpointSelection(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         start_size: IntegerSocket
+        """Start Size"""
         end_size: IntegerSocket
+        """End Size"""
 
     class _Outputs(SocketAccessor):
         selection: BooleanSocket
+        """Selection"""
 
     if TYPE_CHECKING:
 
@@ -1038,7 +1189,7 @@ class FaceArea(NodeBuilder):
 
     Outputs
     -------
-    area : FloatSocket
+    o.area : FloatSocket
         Area
     """
 
@@ -1050,6 +1201,7 @@ class FaceArea(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         area: FloatSocket
+        """Area"""
 
     if TYPE_CHECKING:
 
@@ -1074,9 +1226,14 @@ class FaceGroupBoundaries(NodeBuilder):
     face_set : InputInteger
         Face Group ID
 
+    Inputs
+    ------
+    i.face_set : IntegerSocket
+        Face Group ID
+
     Outputs
     -------
-    boundary_edges : BooleanSocket
+    o.boundary_edges : BooleanSocket
         Boundary Edges
     """
 
@@ -1085,9 +1242,11 @@ class FaceGroupBoundaries(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         face_set: IntegerSocket
+        """Face Group ID"""
 
     class _Outputs(SocketAccessor):
         boundary_edges: BooleanSocket
+        """Boundary Edges"""
 
     if TYPE_CHECKING:
 
@@ -1109,9 +1268,9 @@ class FaceNeighbors(NodeBuilder):
 
     Outputs
     -------
-    vertex_count : IntegerSocket
+    o.vertex_count : IntegerSocket
         Vertex Count
-    face_count : IntegerSocket
+    o.face_count : IntegerSocket
         Face Count
     """
 
@@ -1123,7 +1282,9 @@ class FaceNeighbors(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         vertex_count: IntegerSocket
+        """Vertex Count"""
         face_count: IntegerSocket
+        """Face Count"""
 
     if TYPE_CHECKING:
 
@@ -1145,9 +1306,9 @@ class FaceSet(NodeBuilder):
 
     Outputs
     -------
-    face_set : IntegerSocket
+    o.face_set : IntegerSocket
         Face Set
-    exists : BooleanSocket
+    o.exists : BooleanSocket
         Exists
     """
 
@@ -1159,7 +1320,9 @@ class FaceSet(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         face_set: IntegerSocket
+        """Face Set"""
         exists: BooleanSocket
+        """Exists"""
 
     if TYPE_CHECKING:
 
@@ -1184,11 +1347,16 @@ class FaceOfCorner(NodeBuilder):
     corner_index : InputInteger
         Corner Index
 
+    Inputs
+    ------
+    i.corner_index : IntegerSocket
+        Corner Index
+
     Outputs
     -------
-    face_index : IntegerSocket
+    o.face_index : IntegerSocket
         Face Index
-    index_in_face : IntegerSocket
+    o.index_in_face : IntegerSocket
         Index in Face
     """
 
@@ -1197,10 +1365,13 @@ class FaceOfCorner(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         corner_index: IntegerSocket
+        """Corner Index"""
 
     class _Outputs(SocketAccessor):
         face_index: IntegerSocket
+        """Face Index"""
         index_in_face: IntegerSocket
+        """Index in Face"""
 
     if TYPE_CHECKING:
 
@@ -1222,7 +1393,7 @@ class ID(NodeBuilder):
 
     Outputs
     -------
-    id : IntegerSocket
+    o.id : IntegerSocket
         ID
     """
 
@@ -1234,6 +1405,7 @@ class ID(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         id: IntegerSocket
+        """ID"""
 
     if TYPE_CHECKING:
 
@@ -1255,7 +1427,7 @@ class Image(NodeBuilder):
 
     Outputs
     -------
-    image : ImageSocket
+    o.image : ImageSocket
         Image
     """
 
@@ -1267,6 +1439,7 @@ class Image(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         image: ImageSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -1293,17 +1466,24 @@ class ImageInfo(NodeBuilder):
     frame : InputInteger
         Frame
 
+    Inputs
+    ------
+    i.image : ImageSocket
+        Image
+    i.frame : IntegerSocket
+        Frame
+
     Outputs
     -------
-    width : IntegerSocket
+    o.width : IntegerSocket
         Width
-    height : IntegerSocket
+    o.height : IntegerSocket
         Height
-    has_alpha : BooleanSocket
+    o.has_alpha : BooleanSocket
         Has Alpha
-    frame_count : IntegerSocket
+    o.frame_count : IntegerSocket
         Frame Count
-    fps : FloatSocket
+    o.fps : FloatSocket
         FPS
     """
 
@@ -1312,14 +1492,21 @@ class ImageInfo(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ImageSocket
+        """Image"""
         frame: IntegerSocket
+        """Frame"""
 
     class _Outputs(SocketAccessor):
         width: IntegerSocket
+        """Width"""
         height: IntegerSocket
+        """Height"""
         has_alpha: BooleanSocket
+        """Has Alpha"""
         frame_count: IntegerSocket
+        """Frame Count"""
         fps: FloatSocket
+        """FPS"""
 
     if TYPE_CHECKING:
 
@@ -1350,9 +1537,16 @@ class ImportCSV(NodeBuilder):
     delimiter : InputString
         Delimiter
 
+    Inputs
+    ------
+    i.path : StringSocket
+        Path
+    i.delimiter : StringSocket
+        Delimiter
+
     Outputs
     -------
-    point_cloud : GeometrySocket
+    o.point_cloud : GeometrySocket
         Point Cloud
     """
 
@@ -1361,10 +1555,13 @@ class ImportCSV(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         path: StringSocket
+        """Path"""
         delimiter: StringSocket
+        """Delimiter"""
 
     class _Outputs(SocketAccessor):
         point_cloud: GeometrySocket
+        """Point Cloud"""
 
     if TYPE_CHECKING:
 
@@ -1393,9 +1590,14 @@ class ImportOBJ(NodeBuilder):
     path : InputString
         Path
 
+    Inputs
+    ------
+    i.path : StringSocket
+        Path
+
     Outputs
     -------
-    instances : GeometrySocket
+    o.instances : GeometrySocket
         Instances
     """
 
@@ -1404,9 +1606,11 @@ class ImportOBJ(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         path: StringSocket
+        """Path"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
+        """Instances"""
 
     if TYPE_CHECKING:
 
@@ -1431,9 +1635,14 @@ class ImportPLY(NodeBuilder):
     path : InputString
         Path
 
+    Inputs
+    ------
+    i.path : StringSocket
+        Path
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -1442,9 +1651,11 @@ class ImportPLY(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         path: StringSocket
+        """Path"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -1469,9 +1680,14 @@ class ImportSTL(NodeBuilder):
     path : InputString
         Path
 
+    Inputs
+    ------
+    i.path : StringSocket
+        Path
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -1480,9 +1696,11 @@ class ImportSTL(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         path: StringSocket
+        """Path"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -1507,9 +1725,14 @@ class ImportText(NodeBuilder):
     path : InputString
         Path
 
+    Inputs
+    ------
+    i.path : StringSocket
+        Path
+
     Outputs
     -------
-    string : StringSocket
+    o.string : StringSocket
         String
     """
 
@@ -1518,9 +1741,11 @@ class ImportText(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         path: StringSocket
+        """Path"""
 
     class _Outputs(SocketAccessor):
         string: StringSocket
+        """String"""
 
     if TYPE_CHECKING:
 
@@ -1545,9 +1770,14 @@ class ImportVDB(NodeBuilder):
     path : InputString
         Path
 
+    Inputs
+    ------
+    i.path : StringSocket
+        Path
+
     Outputs
     -------
-    volume : GeometrySocket
+    o.volume : GeometrySocket
         Volume
     """
 
@@ -1556,9 +1786,11 @@ class ImportVDB(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         path: StringSocket
+        """Path"""
 
     class _Outputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
 
     if TYPE_CHECKING:
 
@@ -1580,7 +1812,7 @@ class Index(NodeBuilder):
 
     Outputs
     -------
-    index : IntegerSocket
+    o.index : IntegerSocket
         Index
     """
 
@@ -1592,6 +1824,7 @@ class Index(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         index: IntegerSocket
+        """Index"""
 
     if TYPE_CHECKING:
 
@@ -1616,11 +1849,16 @@ class InstanceBounds(NodeBuilder):
     use_radius : InputBoolean
         Use Radius
 
+    Inputs
+    ------
+    i.use_radius : BooleanSocket
+        Use Radius
+
     Outputs
     -------
-    min : VectorSocket
+    o.min : VectorSocket
         Min
-    max : VectorSocket
+    o.max : VectorSocket
         Max
     """
 
@@ -1629,10 +1867,13 @@ class InstanceBounds(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         use_radius: BooleanSocket
+        """Use Radius"""
 
     class _Outputs(SocketAccessor):
         min: VectorSocket
+        """Min"""
         max: VectorSocket
+        """Max"""
 
     if TYPE_CHECKING:
 
@@ -1654,7 +1895,7 @@ class InstanceRotation(NodeBuilder):
 
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -1666,6 +1907,7 @@ class InstanceRotation(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -1687,7 +1929,7 @@ class InstanceScale(NodeBuilder):
 
     Outputs
     -------
-    scale : VectorSocket
+    o.scale : VectorSocket
         Scale
     """
 
@@ -1699,6 +1941,7 @@ class InstanceScale(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         scale: VectorSocket
+        """Scale"""
 
     if TYPE_CHECKING:
 
@@ -1720,7 +1963,7 @@ class InstanceTransform(NodeBuilder):
 
     Outputs
     -------
-    transform : MatrixSocket
+    o.transform : MatrixSocket
         Transform
     """
 
@@ -1732,6 +1975,7 @@ class InstanceTransform(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         transform: MatrixSocket
+        """Transform"""
 
     if TYPE_CHECKING:
 
@@ -1753,7 +1997,7 @@ class Integer(NodeBuilder):
 
     Outputs
     -------
-    integer : IntegerSocket
+    o.integer : IntegerSocket
         Integer
     """
 
@@ -1765,6 +2009,7 @@ class Integer(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         integer: IntegerSocket
+        """Integer"""
 
     if TYPE_CHECKING:
 
@@ -1794,7 +2039,7 @@ class IsEdgeSmooth(NodeBuilder):
 
     Outputs
     -------
-    smooth : BooleanSocket
+    o.smooth : BooleanSocket
         Smooth
     """
 
@@ -1806,6 +2051,7 @@ class IsEdgeSmooth(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         smooth: BooleanSocket
+        """Smooth"""
 
     if TYPE_CHECKING:
 
@@ -1830,9 +2076,14 @@ class IsFacePlanar(NodeBuilder):
     threshold : InputFloat
         Threshold
 
+    Inputs
+    ------
+    i.threshold : FloatSocket
+        Threshold
+
     Outputs
     -------
-    planar : BooleanSocket
+    o.planar : BooleanSocket
         Planar
     """
 
@@ -1841,9 +2092,11 @@ class IsFacePlanar(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         threshold: FloatSocket
+        """Threshold"""
 
     class _Outputs(SocketAccessor):
         planar: BooleanSocket
+        """Planar"""
 
     if TYPE_CHECKING:
 
@@ -1865,7 +2118,7 @@ class IsFaceSmooth(NodeBuilder):
 
     Outputs
     -------
-    smooth : BooleanSocket
+    o.smooth : BooleanSocket
         Smooth
     """
 
@@ -1877,6 +2130,7 @@ class IsFaceSmooth(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         smooth: BooleanSocket
+        """Smooth"""
 
     if TYPE_CHECKING:
 
@@ -1898,7 +2152,7 @@ class IsSplineCyclic(NodeBuilder):
 
     Outputs
     -------
-    cyclic : BooleanSocket
+    o.cyclic : BooleanSocket
         Cyclic
     """
 
@@ -1910,6 +2164,7 @@ class IsSplineCyclic(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         cyclic: BooleanSocket
+        """Cyclic"""
 
     if TYPE_CHECKING:
 
@@ -1931,7 +2186,7 @@ class IsViewport(NodeBuilder):
 
     Outputs
     -------
-    is_viewport : BooleanSocket
+    o.is_viewport : BooleanSocket
         Is Viewport
     """
 
@@ -1943,6 +2198,7 @@ class IsViewport(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         is_viewport: BooleanSocket
+        """Is Viewport"""
 
     if TYPE_CHECKING:
 
@@ -1964,7 +2220,7 @@ class MaterialIndex(NodeBuilder):
 
     Outputs
     -------
-    material_index : IntegerSocket
+    o.material_index : IntegerSocket
         Material Index
     """
 
@@ -1976,6 +2232,7 @@ class MaterialIndex(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         material_index: IntegerSocket
+        """Material Index"""
 
     if TYPE_CHECKING:
 
@@ -1997,9 +2254,9 @@ class MeshIsland(NodeBuilder):
 
     Outputs
     -------
-    island_index : IntegerSocket
+    o.island_index : IntegerSocket
         Island Index
-    island_count : IntegerSocket
+    o.island_count : IntegerSocket
         Island Count
     """
 
@@ -2011,7 +2268,9 @@ class MeshIsland(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         island_index: IntegerSocket
+        """Island Index"""
         island_count: IntegerSocket
+        """Island Count"""
 
     if TYPE_CHECKING:
 
@@ -2033,13 +2292,13 @@ class MousePosition(NodeBuilder):
 
     Outputs
     -------
-    mouse_x : IntegerSocket
+    o.mouse_x : IntegerSocket
         Mouse X
-    mouse_y : IntegerSocket
+    o.mouse_y : IntegerSocket
         Mouse Y
-    region_width : IntegerSocket
+    o.region_width : IntegerSocket
         Region Width
-    region_height : IntegerSocket
+    o.region_height : IntegerSocket
         Region Height
     """
 
@@ -2051,9 +2310,13 @@ class MousePosition(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         mouse_x: IntegerSocket
+        """Mouse X"""
         mouse_y: IntegerSocket
+        """Mouse Y"""
         region_width: IntegerSocket
+        """Region Width"""
         region_height: IntegerSocket
+        """Region Height"""
 
     if TYPE_CHECKING:
 
@@ -2078,11 +2341,16 @@ class NamedAttribute(NodeBuilder):
     name : InputString
         Name
 
+    Inputs
+    ------
+    i.name : StringSocket
+        Name
+
     Outputs
     -------
-    attribute : FloatSocket
+    o.attribute : FloatSocket
         Attribute
-    exists : BooleanSocket
+    o.exists : BooleanSocket
         Exists
     """
 
@@ -2091,10 +2359,13 @@ class NamedAttribute(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         name: StringSocket
+        """Name"""
 
     class _Outputs(SocketAccessor):
         attribute: FloatSocket
+        """Attribute"""
         exists: BooleanSocket
+        """Exists"""
 
     if TYPE_CHECKING:
 
@@ -2196,9 +2467,14 @@ class NamedLayerSelection(NodeBuilder):
     name : InputString
         Name
 
+    Inputs
+    ------
+    i.name : StringSocket
+        Name
+
     Outputs
     -------
-    selection : BooleanSocket
+    o.selection : BooleanSocket
         Selection
     """
 
@@ -2207,9 +2483,11 @@ class NamedLayerSelection(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         name: StringSocket
+        """Name"""
 
     class _Outputs(SocketAccessor):
         selection: BooleanSocket
+        """Selection"""
 
     if TYPE_CHECKING:
 
@@ -2231,9 +2509,9 @@ class Normal(NodeBuilder):
 
     Outputs
     -------
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
-    true_normal : VectorSocket
+    o.true_normal : VectorSocket
         True Normal
     """
 
@@ -2245,7 +2523,9 @@ class Normal(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         normal: VectorSocket
+        """Normal"""
         true_normal: VectorSocket
+        """True Normal"""
 
     if TYPE_CHECKING:
 
@@ -2280,17 +2560,24 @@ class ObjectInfo(NodeBuilder):
     as_instance : InputBoolean
         As Instance
 
+    Inputs
+    ------
+    i.object : ObjectSocket
+        Object
+    i.as_instance : BooleanSocket
+        As Instance
+
     Outputs
     -------
-    transform : MatrixSocket
+    o.transform : MatrixSocket
         Transform
-    location : VectorSocket
+    o.location : VectorSocket
         Location
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
-    scale : VectorSocket
+    o.scale : VectorSocket
         Scale
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -2299,14 +2586,21 @@ class ObjectInfo(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         object: ObjectSocket
+        """Object"""
         as_instance: BooleanSocket
+        """As Instance"""
 
     class _Outputs(SocketAccessor):
         transform: MatrixSocket
+        """Transform"""
         location: VectorSocket
+        """Location"""
         rotation: RotationSocket
+        """Rotation"""
         scale: VectorSocket
+        """Scale"""
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -2347,9 +2641,16 @@ class OffsetCornerInFace(NodeBuilder):
     offset : InputInteger
         Offset
 
+    Inputs
+    ------
+    i.corner_index : IntegerSocket
+        Corner Index
+    i.offset : IntegerSocket
+        Offset
+
     Outputs
     -------
-    corner_index : IntegerSocket
+    o.corner_index : IntegerSocket
         Corner Index
     """
 
@@ -2358,10 +2659,13 @@ class OffsetCornerInFace(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         corner_index: IntegerSocket
+        """Corner Index"""
         offset: IntegerSocket
+        """Offset"""
 
     class _Outputs(SocketAccessor):
         corner_index: IntegerSocket
+        """Corner Index"""
 
     if TYPE_CHECKING:
 
@@ -2392,11 +2696,18 @@ class OffsetPointInCurve(NodeBuilder):
     offset : InputInteger
         Offset
 
+    Inputs
+    ------
+    i.point_index : IntegerSocket
+        Point Index
+    i.offset : IntegerSocket
+        Offset
+
     Outputs
     -------
-    is_valid_offset : BooleanSocket
+    o.is_valid_offset : BooleanSocket
         Is Valid Offset
-    point_index : IntegerSocket
+    o.point_index : IntegerSocket
         Point Index
     """
 
@@ -2405,11 +2716,15 @@ class OffsetPointInCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         point_index: IntegerSocket
+        """Point Index"""
         offset: IntegerSocket
+        """Offset"""
 
     class _Outputs(SocketAccessor):
         is_valid_offset: BooleanSocket
+        """Is Valid Offset"""
         point_index: IntegerSocket
+        """Point Index"""
 
     if TYPE_CHECKING:
 
@@ -2442,11 +2757,20 @@ class PointsOfCurve(NodeBuilder):
     sort_index : InputInteger
         Sort Index
 
+    Inputs
+    ------
+    i.curve_index : IntegerSocket
+        Curve Index
+    i.weights : FloatSocket
+        Weights
+    i.sort_index : IntegerSocket
+        Sort Index
+
     Outputs
     -------
-    point_index : IntegerSocket
+    o.point_index : IntegerSocket
         Point Index
-    total : IntegerSocket
+    o.total : IntegerSocket
         Total
     """
 
@@ -2455,12 +2779,17 @@ class PointsOfCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         curve_index: IntegerSocket
+        """Curve Index"""
         weights: FloatSocket
+        """Weights"""
         sort_index: IntegerSocket
+        """Sort Index"""
 
     class _Outputs(SocketAccessor):
         point_index: IntegerSocket
+        """Point Index"""
         total: IntegerSocket
+        """Total"""
 
     if TYPE_CHECKING:
 
@@ -2491,7 +2820,7 @@ class Position(NodeBuilder):
 
     Outputs
     -------
-    position : VectorSocket
+    o.position : VectorSocket
         Position
     """
 
@@ -2503,6 +2832,7 @@ class Position(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         position: VectorSocket
+        """Position"""
 
     if TYPE_CHECKING:
 
@@ -2524,7 +2854,7 @@ class Radius(NodeBuilder):
 
     Outputs
     -------
-    radius : FloatSocket
+    o.radius : FloatSocket
         Radius
     """
 
@@ -2536,6 +2866,7 @@ class Radius(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         radius: FloatSocket
+        """Radius"""
 
     if TYPE_CHECKING:
 
@@ -2557,7 +2888,7 @@ class Rotation(NodeBuilder):
 
     Outputs
     -------
-    rotation : RotationSocket
+    o.rotation : RotationSocket
         Rotation
     """
 
@@ -2569,6 +2900,7 @@ class Rotation(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         rotation: RotationSocket
+        """Rotation"""
 
     if TYPE_CHECKING:
 
@@ -2598,9 +2930,9 @@ class SceneTime(NodeBuilder):
 
     Outputs
     -------
-    seconds : FloatSocket
+    o.seconds : FloatSocket
         Seconds
-    frame : FloatSocket
+    o.frame : FloatSocket
         Frame
     """
 
@@ -2612,7 +2944,9 @@ class SceneTime(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         seconds: FloatSocket
+        """Seconds"""
         frame: FloatSocket
+        """Frame"""
 
     if TYPE_CHECKING:
 
@@ -2634,9 +2968,9 @@ class Selection(NodeBuilder):
 
     Outputs
     -------
-    selection : BooleanSocket
+    o.selection : BooleanSocket
         Boolean
-    float : FloatSocket
+    o.float : FloatSocket
         Float
     """
 
@@ -2648,7 +2982,9 @@ class Selection(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         selection: BooleanSocket
+        """Boolean"""
         float: FloatSocket
+        """Float"""
 
     if TYPE_CHECKING:
 
@@ -2670,7 +3006,7 @@ class SelfObject(NodeBuilder):
 
     Outputs
     -------
-    self_object : ObjectSocket
+    o.self_object : ObjectSocket
         Self Object
     """
 
@@ -2682,6 +3018,7 @@ class SelfObject(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         self_object: ObjectSocket
+        """Self Object"""
 
     if TYPE_CHECKING:
 
@@ -2708,11 +3045,18 @@ class ShortestEdgePaths(NodeBuilder):
     edge_cost : InputFloat
         Edge Cost
 
+    Inputs
+    ------
+    i.end_vertex : BooleanSocket
+        End Vertex
+    i.edge_cost : FloatSocket
+        Edge Cost
+
     Outputs
     -------
-    next_vertex_index : IntegerSocket
+    o.next_vertex_index : IntegerSocket
         Next Vertex Index
-    total_cost : FloatSocket
+    o.total_cost : FloatSocket
         Total Cost
     """
 
@@ -2721,11 +3065,15 @@ class ShortestEdgePaths(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         end_vertex: BooleanSocket
+        """End Vertex"""
         edge_cost: FloatSocket
+        """Edge Cost"""
 
     class _Outputs(SocketAccessor):
         next_vertex_index: IntegerSocket
+        """Next Vertex Index"""
         total_cost: FloatSocket
+        """Total Cost"""
 
     if TYPE_CHECKING:
 
@@ -2751,9 +3099,9 @@ class SpecialCharacters(NodeBuilder):
 
     Outputs
     -------
-    line_break : StringSocket
+    o.line_break : StringSocket
         Line Break
-    tab : StringSocket
+    o.tab : StringSocket
         Tab
     """
 
@@ -2765,7 +3113,9 @@ class SpecialCharacters(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         line_break: StringSocket
+        """Line Break"""
         tab: StringSocket
+        """Tab"""
 
     if TYPE_CHECKING:
 
@@ -2787,9 +3137,9 @@ class SplineLength(NodeBuilder):
 
     Outputs
     -------
-    length : FloatSocket
+    o.length : FloatSocket
         Length
-    point_count : IntegerSocket
+    o.point_count : IntegerSocket
         Point Count
     """
 
@@ -2801,7 +3151,9 @@ class SplineLength(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         length: FloatSocket
+        """Length"""
         point_count: IntegerSocket
+        """Point Count"""
 
     if TYPE_CHECKING:
 
@@ -2823,11 +3175,11 @@ class SplineParameter(NodeBuilder):
 
     Outputs
     -------
-    factor : FloatSocket
+    o.factor : FloatSocket
         Factor
-    length : FloatSocket
+    o.length : FloatSocket
         Length
-    index : IntegerSocket
+    o.index : IntegerSocket
         Index
     """
 
@@ -2839,8 +3191,11 @@ class SplineParameter(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         factor: FloatSocket
+        """Factor"""
         length: FloatSocket
+        """Length"""
         index: IntegerSocket
+        """Index"""
 
     if TYPE_CHECKING:
 
@@ -2862,7 +3217,7 @@ class SplineResolution(NodeBuilder):
 
     Outputs
     -------
-    resolution : IntegerSocket
+    o.resolution : IntegerSocket
         Resolution
     """
 
@@ -2874,6 +3229,7 @@ class SplineResolution(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         resolution: IntegerSocket
+        """Resolution"""
 
     if TYPE_CHECKING:
 
@@ -2895,7 +3251,7 @@ class String(NodeBuilder):
 
     Outputs
     -------
-    string : StringSocket
+    o.string : StringSocket
         String
     """
 
@@ -2907,6 +3263,7 @@ class String(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         string: StringSocket
+        """String"""
 
     if TYPE_CHECKING:
 
@@ -2941,9 +3298,16 @@ class UVTangent(NodeBuilder):
     uv : InputVector
         UV
 
+    Inputs
+    ------
+    i.method : MenuSocket
+        Method
+    i.uv : VectorSocket
+        UV
+
     Outputs
     -------
-    tangent : VectorSocket
+    o.tangent : VectorSocket
         Tangent
     """
 
@@ -2952,10 +3316,13 @@ class UVTangent(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         method: MenuSocket
+        """Method"""
         uv: VectorSocket
+        """UV"""
 
     class _Outputs(SocketAccessor):
         tangent: VectorSocket
+        """Tangent"""
 
     if TYPE_CHECKING:
 
@@ -2981,7 +3348,7 @@ class Vector(NodeBuilder):
 
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -2993,6 +3360,7 @@ class Vector(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 
@@ -3022,9 +3390,9 @@ class VertexNeighbors(NodeBuilder):
 
     Outputs
     -------
-    vertex_count : IntegerSocket
+    o.vertex_count : IntegerSocket
         Vertex Count
-    face_count : IntegerSocket
+    o.face_count : IntegerSocket
         Face Count
     """
 
@@ -3036,7 +3404,9 @@ class VertexNeighbors(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         vertex_count: IntegerSocket
+        """Vertex Count"""
         face_count: IntegerSocket
+        """Face Count"""
 
     if TYPE_CHECKING:
 
@@ -3061,9 +3431,14 @@ class VertexOfCorner(NodeBuilder):
     corner_index : InputInteger
         Corner Index
 
+    Inputs
+    ------
+    i.corner_index : IntegerSocket
+        Corner Index
+
     Outputs
     -------
-    vertex_index : IntegerSocket
+    o.vertex_index : IntegerSocket
         Vertex Index
     """
 
@@ -3072,9 +3447,11 @@ class VertexOfCorner(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         corner_index: IntegerSocket
+        """Corner Index"""
 
     class _Outputs(SocketAccessor):
         vertex_index: IntegerSocket
+        """Vertex Index"""
 
     if TYPE_CHECKING:
 
@@ -3096,11 +3473,11 @@ class ViewportTransform(NodeBuilder):
 
     Outputs
     -------
-    projection : MatrixSocket
+    o.projection : MatrixSocket
         Projection
-    view : MatrixSocket
+    o.view : MatrixSocket
         View
-    is_orthographic : BooleanSocket
+    o.is_orthographic : BooleanSocket
         Is Orthographic
     """
 
@@ -3112,8 +3489,11 @@ class ViewportTransform(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         projection: MatrixSocket
+        """Projection"""
         view: MatrixSocket
+        """View"""
         is_orthographic: BooleanSocket
+        """Is Orthographic"""
 
     if TYPE_CHECKING:
 
@@ -3135,19 +3515,19 @@ class VoxelIndex(NodeBuilder):
 
     Outputs
     -------
-    x : IntegerSocket
+    o.x : IntegerSocket
         X
-    y : IntegerSocket
+    o.y : IntegerSocket
         Y
-    z : IntegerSocket
+    o.z : IntegerSocket
         Z
-    is_tile : BooleanSocket
+    o.is_tile : BooleanSocket
         Is Tile
-    extent_x : IntegerSocket
+    o.extent_x : IntegerSocket
         Extent X
-    extent_y : IntegerSocket
+    o.extent_y : IntegerSocket
         Extent Y
-    extent_z : IntegerSocket
+    o.extent_z : IntegerSocket
         Extent Z
     """
 
@@ -3159,12 +3539,19 @@ class VoxelIndex(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         x: IntegerSocket
+        """X"""
         y: IntegerSocket
+        """Y"""
         z: IntegerSocket
+        """Z"""
         is_tile: BooleanSocket
+        """Is Tile"""
         extent_x: IntegerSocket
+        """Extent X"""
         extent_y: IntegerSocket
+        """Extent Y"""
         extent_z: IntegerSocket
+        """Extent Z"""
 
     if TYPE_CHECKING:
 

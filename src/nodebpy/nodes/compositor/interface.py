@@ -33,9 +33,16 @@ class EnableOutput(NodeBuilder):
     value : InputFloat
         Value
 
+    Inputs
+    ------
+    i.enable : BooleanSocket
+        Enable
+    i.value : FloatSocket
+        Value
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -44,10 +51,13 @@ class EnableOutput(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         enable: BooleanSocket
+        """Enable"""
         value: FloatSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 

@@ -30,15 +30,24 @@ class RadialTiling(NodeBuilder):
     roundness : InputFloat
         Roundness
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.sides : FloatSocket
+        Sides
+    i.roundness : FloatSocket
+        Roundness
+
     Outputs
     -------
-    segment_coordinates : VectorSocket
+    o.segment_coordinates : VectorSocket
         Segment Coordinates
-    segment_id : FloatSocket
+    o.segment_id : FloatSocket
         Segment ID
-    segment_width : FloatSocket
+    o.segment_width : FloatSocket
         Segment Width
-    segment_rotation : FloatSocket
+    o.segment_rotation : FloatSocket
         Segment Rotation
     """
 
@@ -47,14 +56,21 @@ class RadialTiling(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         sides: FloatSocket
+        """Sides"""
         roundness: FloatSocket
+        """Roundness"""
 
     class _Outputs(SocketAccessor):
         segment_coordinates: VectorSocket
+        """Segment Coordinates"""
         segment_id: FloatSocket
+        """Segment ID"""
         segment_width: FloatSocket
+        """Segment Width"""
         segment_rotation: FloatSocket
+        """Segment Rotation"""
 
     if TYPE_CHECKING:
 
@@ -96,9 +112,16 @@ class VectorCurves(NodeBuilder):
     vector : InputVector
         Vector
 
+    Inputs
+    ------
+    i.fac : FloatSocket
+        Factor
+    i.vector : VectorSocket
+        Vector
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -107,10 +130,13 @@ class VectorCurves(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
         vector: VectorSocket
+        """Vector"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 
@@ -145,11 +171,22 @@ class VectorMath(NodeBuilder):
     scale : InputFloat
         Scale
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.vector_001 : VectorSocket
+        Vector
+    i.vector_002 : VectorSocket
+        Vector
+    i.scale : FloatSocket
+        Scale
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -158,13 +195,19 @@ class VectorMath(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         vector_001: VectorSocket
+        """Vector"""
         vector_002: VectorSocket
+        """Vector"""
         scale: FloatSocket
+        """Scale"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -523,9 +566,22 @@ class VectorRotate(NodeBuilder):
     rotation : InputVector
         Rotation
 
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.center : VectorSocket
+        Center
+    i.axis : VectorSocket
+        Axis
+    i.angle : FloatSocket
+        Angle
+    i.rotation : VectorSocket
+        Rotation
+
     Outputs
     -------
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
     """
 
@@ -534,13 +590,19 @@ class VectorRotate(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
         center: VectorSocket
+        """Center"""
         axis: VectorSocket
+        """Axis"""
         angle: FloatSocket
+        """Angle"""
         rotation: VectorSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
+        """Vector"""
 
     if TYPE_CHECKING:
 

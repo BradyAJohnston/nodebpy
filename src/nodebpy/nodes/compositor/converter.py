@@ -38,9 +38,16 @@ class AlphaConvert(NodeBuilder):
     type : InputMenu | Literal['To Premultiplied', 'To Straight']
         Type
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.type : MenuSocket
+        Type
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -49,10 +56,13 @@ class AlphaConvert(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         type: MenuSocket
+        """Type"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -98,9 +108,20 @@ class CombineColor(NodeBuilder):
     alpha : InputFloat
         Alpha
 
+    Inputs
+    ------
+    i.red : FloatSocket
+        Red
+    i.green : FloatSocket
+        Green
+    i.blue : FloatSocket
+        Blue
+    i.alpha : FloatSocket
+        Alpha
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -109,12 +130,17 @@ class CombineColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         red: FloatSocket
+        """Red"""
         green: FloatSocket
+        """Green"""
         blue: FloatSocket
+        """Blue"""
         alpha: FloatSocket
+        """Alpha"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -220,9 +246,14 @@ class ConvertColorspace(NodeBuilder):
     image : InputColor
         Image
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -231,9 +262,11 @@ class ConvertColorspace(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -449,9 +482,16 @@ class ConvertToDisplay(NodeBuilder):
     invert : InputBoolean
         Invert
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.invert : BooleanSocket
+        Invert
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -460,10 +500,13 @@ class ConvertToDisplay(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         invert: BooleanSocket
+        """Invert"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -496,9 +539,18 @@ class IDMask(NodeBuilder):
     anti_alias : InputBoolean
         Anti-Alias
 
+    Inputs
+    ------
+    i.id_value : FloatSocket
+        ID value
+    i.index : IntegerSocket
+        Index
+    i.anti_alias : BooleanSocket
+        Anti-Alias
+
     Outputs
     -------
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
     """
 
@@ -507,11 +559,15 @@ class IDMask(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         id_value: FloatSocket
+        """ID value"""
         index: IntegerSocket
+        """Index"""
         anti_alias: BooleanSocket
+        """Anti-Alias"""
 
     class _Outputs(SocketAccessor):
         alpha: FloatSocket
+        """Alpha"""
 
     if TYPE_CHECKING:
 
@@ -543,11 +599,18 @@ class Levels(NodeBuilder):
     channel : InputMenu | Literal['Combined', 'Red', 'Green', 'Blue', 'Luminance']
         Channel
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.channel : MenuSocket
+        Channel
+
     Outputs
     -------
-    mean : FloatSocket
+    o.mean : FloatSocket
         Mean
-    standard_deviation : FloatSocket
+    o.standard_deviation : FloatSocket
         Standard Deviation
     """
 
@@ -556,11 +619,15 @@ class Levels(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         channel: MenuSocket
+        """Channel"""
 
     class _Outputs(SocketAccessor):
         mean: FloatSocket
+        """Mean"""
         standard_deviation: FloatSocket
+        """Standard Deviation"""
 
     if TYPE_CHECKING:
 
@@ -608,15 +675,38 @@ class Mix(NodeBuilder):
     b_rotation : InputRotation
         B
 
+    Inputs
+    ------
+    i.factor_float : FloatSocket
+        Factor
+    i.factor_vector : VectorSocket
+        Factor
+    i.a_float : FloatSocket
+        A
+    i.b_float : FloatSocket
+        B
+    i.a_vector : VectorSocket
+        A
+    i.b_vector : VectorSocket
+        B
+    i.a_color : ColorSocket
+        A
+    i.b_color : ColorSocket
+        B
+    i.a_rotation : RotationSocket
+        A
+    i.b_rotation : RotationSocket
+        B
+
     Outputs
     -------
-    result_float : FloatSocket
+    o.result_float : FloatSocket
         Result
-    result_vector : VectorSocket
+    o.result_vector : VectorSocket
         Result
-    result_color : ColorSocket
+    o.result_color : ColorSocket
         Result
-    result_rotation : RotationSocket
+    o.result_rotation : RotationSocket
         Result
     """
 
@@ -625,21 +715,35 @@ class Mix(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         factor_float: FloatSocket
+        """Factor"""
         factor_vector: VectorSocket
+        """Factor"""
         a_float: FloatSocket
+        """A"""
         b_float: FloatSocket
+        """B"""
         a_vector: VectorSocket
+        """A"""
         b_vector: VectorSocket
+        """B"""
         a_color: ColorSocket
+        """A"""
         b_color: ColorSocket
+        """B"""
         a_rotation: RotationSocket
+        """A"""
         b_rotation: RotationSocket
+        """B"""
 
     class _Outputs(SocketAccessor):
         result_float: FloatSocket
+        """Result"""
         result_vector: VectorSocket
+        """Result"""
         result_color: ColorSocket
+        """Result"""
         result_rotation: RotationSocket
+        """Result"""
 
     if TYPE_CHECKING:
 
@@ -828,9 +932,14 @@ class RGBToBw(NodeBuilder):
     image : InputColor
         Image
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+
     Outputs
     -------
-    val : FloatSocket
+    o.val : FloatSocket
         Val
     """
 
@@ -839,9 +948,11 @@ class RGBToBw(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     class _Outputs(SocketAccessor):
         val: FloatSocket
+        """Val"""
 
     if TYPE_CHECKING:
 
@@ -870,11 +981,20 @@ class RelativeToPixel(NodeBuilder):
     image : InputColor
         Image
 
+    Inputs
+    ------
+    i.vector_value : VectorSocket
+        Value
+    i.float_value : FloatSocket
+        Value
+    i.image : ColorSocket
+        Image
+
     Outputs
     -------
-    float_value : FloatSocket
+    o.float_value : FloatSocket
         Value
-    vector_value : VectorSocket
+    o.vector_value : VectorSocket
         Value
     """
 
@@ -883,12 +1003,17 @@ class RelativeToPixel(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         vector_value: VectorSocket
+        """Value"""
         float_value: FloatSocket
+        """Value"""
         image: ColorSocket
+        """Image"""
 
     class _Outputs(SocketAccessor):
         float_value: FloatSocket
+        """Value"""
         vector_value: VectorSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -963,15 +1088,20 @@ class SeparateColor(NodeBuilder):
     image : InputColor
         Image
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+
     Outputs
     -------
-    red : FloatSocket
+    o.red : FloatSocket
         Red
-    green : FloatSocket
+    o.green : FloatSocket
         Green
-    blue : FloatSocket
+    o.blue : FloatSocket
         Blue
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
     """
 
@@ -980,12 +1110,17 @@ class SeparateColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     class _Outputs(SocketAccessor):
         red: FloatSocket
+        """Red"""
         green: FloatSocket
+        """Green"""
         blue: FloatSocket
+        """Blue"""
         alpha: FloatSocket
+        """Alpha"""
 
     if TYPE_CHECKING:
 
@@ -1062,9 +1197,18 @@ class SetAlpha(NodeBuilder):
     type : InputMenu | Literal['Apply Mask', 'Replace Alpha']
         Type
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.alpha : FloatSocket
+        Alpha
+    i.type : MenuSocket
+        Type
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -1073,11 +1217,15 @@ class SetAlpha(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         alpha: FloatSocket
+        """Alpha"""
         type: MenuSocket
+        """Type"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -1127,9 +1275,20 @@ class Split(NodeBuilder):
     image_001 : InputColor
         Image
 
+    Inputs
+    ------
+    i.position : VectorSocket
+        Position
+    i.rotation : FloatSocket
+        Rotation
+    i.image : ColorSocket
+        Image
+    i.image_001 : ColorSocket
+        Image
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -1138,12 +1297,17 @@ class Split(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         position: VectorSocket
+        """Position"""
         rotation: FloatSocket
+        """Rotation"""
         image: ColorSocket
+        """Image"""
         image_001: ColorSocket
+        """Image"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -1183,9 +1347,18 @@ class Switch(NodeBuilder):
     on : InputColor
         On
 
+    Inputs
+    ------
+    i.switch : BooleanSocket
+        Switch
+    i.off : ColorSocket
+        Off
+    i.on : ColorSocket
+        On
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -1194,11 +1367,15 @@ class Switch(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         switch: BooleanSocket
+        """Switch"""
         off: ColorSocket
+        """Off"""
         on: ColorSocket
+        """On"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -1230,9 +1407,16 @@ class SwitchView(NodeBuilder):
     right : InputColor
         right
 
+    Inputs
+    ------
+    i.left : ColorSocket
+        left
+    i.right : ColorSocket
+        right
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -1241,10 +1425,13 @@ class SwitchView(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         left: ColorSocket
+        """left"""
         right: ColorSocket
+        """right"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 

@@ -20,9 +20,14 @@ class Normalize(NodeBuilder):
     value : InputFloat
         Value
 
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -31,9 +36,11 @@ class Normalize(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 

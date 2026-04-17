@@ -46,9 +46,22 @@ class AdvectGrid(NodeBuilder):
     limiter : InputMenu | Literal['None', 'Clamp', 'Revert']
         Limiter
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.velocity : VectorSocket
+        Velocity
+    i.time_step : FloatSocket
+        Time Step
+    i.integration_scheme : MenuSocket
+        Integration Scheme
+    i.limiter : MenuSocket
+        Limiter
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -57,13 +70,19 @@ class AdvectGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         velocity: VectorSocket
+        """Velocity"""
         time_step: FloatSocket
+        """Time Step"""
         integration_scheme: MenuSocket
+        """Integration Scheme"""
         limiter: MenuSocket
+        """Limiter"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -208,9 +227,22 @@ class DistributePointsInGrid(NodeBuilder):
     threshold : InputFloat
         Threshold
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.density : FloatSocket
+        Density
+    i.seed : IntegerSocket
+        Seed
+    i.spacing : VectorSocket
+        Spacing
+    i.threshold : FloatSocket
+        Threshold
+
     Outputs
     -------
-    points : GeometrySocket
+    o.points : GeometrySocket
         Points
     """
 
@@ -219,13 +251,19 @@ class DistributePointsInGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         density: FloatSocket
+        """Density"""
         seed: IntegerSocket
+        """Seed"""
         spacing: VectorSocket
+        """Spacing"""
         threshold: FloatSocket
+        """Threshold"""
 
     class _Outputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
 
     if TYPE_CHECKING:
 
@@ -300,9 +338,24 @@ class DistributePointsInVolume(NodeBuilder):
     threshold : InputFloat
         Threshold
 
+    Inputs
+    ------
+    i.volume : GeometrySocket
+        Volume
+    i.mode : MenuSocket
+        Mode
+    i.density : FloatSocket
+        Density
+    i.seed : IntegerSocket
+        Seed
+    i.spacing : VectorSocket
+        Spacing
+    i.threshold : FloatSocket
+        Threshold
+
     Outputs
     -------
-    points : GeometrySocket
+    o.points : GeometrySocket
         Points
     """
 
@@ -311,14 +364,21 @@ class DistributePointsInVolume(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
         mode: MenuSocket
+        """Mode"""
         density: FloatSocket
+        """Density"""
         seed: IntegerSocket
+        """Seed"""
         spacing: VectorSocket
+        """Spacing"""
         threshold: FloatSocket
+        """Threshold"""
 
     class _Outputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
 
     if TYPE_CHECKING:
 
@@ -362,11 +422,20 @@ class GetNamedGrid(NodeBuilder):
     remove : InputBoolean
         Remove
 
+    Inputs
+    ------
+    i.volume : GeometrySocket
+        Volume
+    i.name : StringSocket
+        Name
+    i.remove : BooleanSocket
+        Remove
+
     Outputs
     -------
-    volume : GeometrySocket
+    o.volume : GeometrySocket
         Volume
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -375,12 +444,17 @@ class GetNamedGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
         name: StringSocket
+        """Name"""
         remove: BooleanSocket
+        """Remove"""
 
     class _Outputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -460,9 +534,14 @@ class GridCurl(NodeBuilder):
     grid : InputVector
         Grid
 
+    Inputs
+    ------
+    i.grid : VectorSocket
+        Grid
+
     Outputs
     -------
-    curl : VectorSocket
+    o.curl : VectorSocket
         Curl
     """
 
@@ -471,9 +550,11 @@ class GridCurl(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: VectorSocket
+        """Grid"""
 
     class _Outputs(SocketAccessor):
         curl: VectorSocket
+        """Curl"""
 
     if TYPE_CHECKING:
 
@@ -498,9 +579,14 @@ class GridDivergence(NodeBuilder):
     grid : InputVector
         Grid
 
+    Inputs
+    ------
+    i.grid : VectorSocket
+        Grid
+
     Outputs
     -------
-    divergence : FloatSocket
+    o.divergence : FloatSocket
         Divergence
     """
 
@@ -509,9 +595,11 @@ class GridDivergence(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: VectorSocket
+        """Grid"""
 
     class _Outputs(SocketAccessor):
         divergence: FloatSocket
+        """Divergence"""
 
     if TYPE_CHECKING:
 
@@ -536,9 +624,14 @@ class GridGradient(NodeBuilder):
     grid : InputFloat
         Grid
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+
     Outputs
     -------
-    gradient : VectorSocket
+    o.gradient : VectorSocket
         Gradient
     """
 
@@ -547,9 +640,11 @@ class GridGradient(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     class _Outputs(SocketAccessor):
         gradient: VectorSocket
+        """Gradient"""
 
     if TYPE_CHECKING:
 
@@ -574,11 +669,16 @@ class GridInfo(NodeBuilder):
     grid : InputFloat
         Grid
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+
     Outputs
     -------
-    transform : MatrixSocket
+    o.transform : MatrixSocket
         Transform
-    background_value : FloatSocket
+    o.background_value : FloatSocket
         Background Value
     """
 
@@ -587,10 +687,13 @@ class GridInfo(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     class _Outputs(SocketAccessor):
         transform: MatrixSocket
+        """Transform"""
         background_value: FloatSocket
+        """Background Value"""
 
     if TYPE_CHECKING:
 
@@ -648,9 +751,14 @@ class GridLaplacian(NodeBuilder):
     grid : InputFloat
         Grid
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+
     Outputs
     -------
-    laplacian : FloatSocket
+    o.laplacian : FloatSocket
         Laplacian
     """
 
@@ -659,9 +767,11 @@ class GridLaplacian(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     class _Outputs(SocketAccessor):
         laplacian: FloatSocket
+        """Laplacian"""
 
     if TYPE_CHECKING:
 
@@ -690,9 +800,18 @@ class GridToMesh(NodeBuilder):
     adaptivity : InputFloat
         Adaptivity
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.threshold : FloatSocket
+        Threshold
+    i.adaptivity : FloatSocket
+        Adaptivity
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -701,11 +820,15 @@ class GridToMesh(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         threshold: FloatSocket
+        """Threshold"""
         adaptivity: FloatSocket
+        """Adaptivity"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -741,9 +864,20 @@ class MeshToDensityGrid(NodeBuilder):
     gradient_width : InputFloat
         Gradient Width
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.density : FloatSocket
+        Density
+    i.voxel_size : FloatSocket
+        Voxel Size
+    i.gradient_width : FloatSocket
+        Gradient Width
+
     Outputs
     -------
-    density_grid : FloatSocket
+    o.density_grid : FloatSocket
         Density Grid
     """
 
@@ -752,12 +886,17 @@ class MeshToDensityGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         density: FloatSocket
+        """Density"""
         voxel_size: FloatSocket
+        """Voxel Size"""
         gradient_width: FloatSocket
+        """Gradient Width"""
 
     class _Outputs(SocketAccessor):
         density_grid: FloatSocket
+        """Density Grid"""
 
     if TYPE_CHECKING:
 
@@ -797,9 +936,18 @@ class MeshToSDFGrid(NodeBuilder):
     band_width : InputInteger
         Band Width
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.voxel_size : FloatSocket
+        Voxel Size
+    i.band_width : IntegerSocket
+        Band Width
+
     Outputs
     -------
-    sdf_grid : FloatSocket
+    o.sdf_grid : FloatSocket
         SDF Grid
     """
 
@@ -808,11 +956,15 @@ class MeshToSDFGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         voxel_size: FloatSocket
+        """Voxel Size"""
         band_width: IntegerSocket
+        """Band Width"""
 
     class _Outputs(SocketAccessor):
         sdf_grid: FloatSocket
+        """SDF Grid"""
 
     if TYPE_CHECKING:
 
@@ -852,9 +1004,24 @@ class MeshToVolume(NodeBuilder):
     interior_band_width : InputFloat
         Interior Band Width
 
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.density : FloatSocket
+        Density
+    i.resolution_mode : MenuSocket
+        Resolution Mode
+    i.voxel_size : FloatSocket
+        Voxel Size
+    i.voxel_amount : FloatSocket
+        Voxel Amount
+    i.interior_band_width : FloatSocket
+        Interior Band Width
+
     Outputs
     -------
-    volume : GeometrySocket
+    o.volume : GeometrySocket
         Volume
     """
 
@@ -863,14 +1030,21 @@ class MeshToVolume(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
         density: FloatSocket
+        """Density"""
         resolution_mode: MenuSocket
+        """Resolution Mode"""
         voxel_size: FloatSocket
+        """Voxel Size"""
         voxel_amount: FloatSocket
+        """Voxel Amount"""
         interior_band_width: FloatSocket
+        """Interior Band Width"""
 
     class _Outputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
 
     if TYPE_CHECKING:
 
@@ -914,9 +1088,18 @@ class PointsToSDFGrid(NodeBuilder):
     voxel_size : InputFloat
         Voxel Size
 
+    Inputs
+    ------
+    i.points : GeometrySocket
+        Points
+    i.radius : FloatSocket
+        Radius
+    i.voxel_size : FloatSocket
+        Voxel Size
+
     Outputs
     -------
-    sdf_grid : FloatSocket
+    o.sdf_grid : FloatSocket
         SDF Grid
     """
 
@@ -925,11 +1108,15 @@ class PointsToSDFGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
         radius: FloatSocket
+        """Radius"""
         voxel_size: FloatSocket
+        """Voxel Size"""
 
     class _Outputs(SocketAccessor):
         sdf_grid: FloatSocket
+        """SDF Grid"""
 
     if TYPE_CHECKING:
 
@@ -969,9 +1156,24 @@ class PointsToVolume(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.points : GeometrySocket
+        Points
+    i.density : FloatSocket
+        Density
+    i.resolution_mode : MenuSocket
+        Resolution Mode
+    i.voxel_size : FloatSocket
+        Voxel Size
+    i.voxel_amount : FloatSocket
+        Voxel Amount
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    volume : GeometrySocket
+    o.volume : GeometrySocket
         Volume
     """
 
@@ -980,14 +1182,21 @@ class PointsToVolume(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         points: GeometrySocket
+        """Points"""
         density: FloatSocket
+        """Density"""
         resolution_mode: MenuSocket
+        """Resolution Mode"""
         voxel_size: FloatSocket
+        """Voxel Size"""
         voxel_amount: FloatSocket
+        """Voxel Amount"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
 
     if TYPE_CHECKING:
 
@@ -1031,9 +1240,18 @@ class PruneGrid(NodeBuilder):
     threshold : InputFloat
         Threshold
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.mode : MenuSocket
+        Mode
+    i.threshold : FloatSocket
+        Threshold
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1042,11 +1260,15 @@ class PruneGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         mode: MenuSocket
+        """Mode"""
         threshold: FloatSocket
+        """Threshold"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1127,9 +1349,16 @@ class SDFGridFillet(NodeBuilder):
     iterations : InputInteger
         Iterations
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.iterations : IntegerSocket
+        Iterations
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1138,10 +1367,13 @@ class SDFGridFillet(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         iterations: IntegerSocket
+        """Iterations"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1172,9 +1404,16 @@ class SDFGridLaplacian(NodeBuilder):
     iterations : InputInteger
         Iterations
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.iterations : IntegerSocket
+        Iterations
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1183,10 +1422,13 @@ class SDFGridLaplacian(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         iterations: IntegerSocket
+        """Iterations"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1219,9 +1461,18 @@ class SDFGridMean(NodeBuilder):
     iterations : InputInteger
         Iterations
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.width : IntegerSocket
+        Width
+    i.iterations : IntegerSocket
+        Iterations
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1230,11 +1481,15 @@ class SDFGridMean(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         width: IntegerSocket
+        """Width"""
         iterations: IntegerSocket
+        """Iterations"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1266,9 +1521,16 @@ class SDFGridMeanCurvature(NodeBuilder):
     iterations : InputInteger
         Iterations
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.iterations : IntegerSocket
+        Iterations
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1277,10 +1539,13 @@ class SDFGridMeanCurvature(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         iterations: IntegerSocket
+        """Iterations"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1313,9 +1578,18 @@ class SDFGridMedian(NodeBuilder):
     iterations : InputInteger
         Iterations
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.width : IntegerSocket
+        Width
+    i.iterations : IntegerSocket
+        Iterations
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1324,11 +1598,15 @@ class SDFGridMedian(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         width: IntegerSocket
+        """Width"""
         iterations: IntegerSocket
+        """Iterations"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1360,9 +1638,16 @@ class SDFGridOffset(NodeBuilder):
     distance : InputFloat
         Distance
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.distance : FloatSocket
+        Distance
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1371,10 +1656,13 @@ class SDFGridOffset(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         distance: FloatSocket
+        """Distance"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1407,9 +1695,18 @@ class SampleGrid(NodeBuilder):
     interpolation : InputMenu | Literal['Nearest Neighbor', 'Trilinear', 'Triquadratic']
         Interpolation
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.position : VectorSocket
+        Position
+    i.interpolation : MenuSocket
+        Interpolation
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -1418,11 +1715,15 @@ class SampleGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         position: VectorSocket
+        """Position"""
         interpolation: MenuSocket
+        """Interpolation"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -1527,9 +1828,20 @@ class SampleGridIndex(NodeBuilder):
     z : InputInteger
         Z
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.x : IntegerSocket
+        X
+    i.y : IntegerSocket
+        Y
+    i.z : IntegerSocket
+        Z
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -1538,12 +1850,17 @@ class SampleGridIndex(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         x: IntegerSocket
+        """X"""
         y: IntegerSocket
+        """Y"""
         z: IntegerSocket
+        """Z"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -1630,9 +1947,16 @@ class SetGridBackground(NodeBuilder):
     background : InputFloat
         Background
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.background : FloatSocket
+        Background
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1641,10 +1965,13 @@ class SetGridBackground(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         background: FloatSocket
+        """Background"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1713,11 +2040,18 @@ class SetGridTransform(NodeBuilder):
     transform : InputMatrix
         Transform
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.transform : MatrixSocket
+        Transform
+
     Outputs
     -------
-    is_valid : BooleanSocket
+    o.is_valid : BooleanSocket
         Is Valid
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -1726,11 +2060,15 @@ class SetGridTransform(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
         transform: MatrixSocket
+        """Transform"""
 
     class _Outputs(SocketAccessor):
         is_valid: BooleanSocket
+        """Is Valid"""
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 
@@ -1801,9 +2139,18 @@ class StoreNamedGrid(NodeBuilder):
     grid : InputFloat
         Grid
 
+    Inputs
+    ------
+    i.volume : GeometrySocket
+        Volume
+    i.name : StringSocket
+        Name
+    i.grid : FloatSocket
+        Grid
+
     Outputs
     -------
-    volume : GeometrySocket
+    o.volume : GeometrySocket
         Volume
     """
 
@@ -1812,11 +2159,15 @@ class StoreNamedGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
         name: StringSocket
+        """Name"""
         grid: FloatSocket
+        """Grid"""
 
     class _Outputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
 
     if TYPE_CHECKING:
 
@@ -1908,9 +2259,26 @@ class VolumeCube(NodeBuilder):
     resolution_z : InputInteger
         Resolution Z
 
+    Inputs
+    ------
+    i.density : FloatSocket
+        Density
+    i.background : FloatSocket
+        Background
+    i.min : VectorSocket
+        Min
+    i.max : VectorSocket
+        Max
+    i.resolution_x : IntegerSocket
+        Resolution X
+    i.resolution_y : IntegerSocket
+        Resolution Y
+    i.resolution_z : IntegerSocket
+        Resolution Z
+
     Outputs
     -------
-    volume : GeometrySocket
+    o.volume : GeometrySocket
         Volume
     """
 
@@ -1919,15 +2287,23 @@ class VolumeCube(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         density: FloatSocket
+        """Density"""
         background: FloatSocket
+        """Background"""
         min: VectorSocket
+        """Min"""
         max: VectorSocket
+        """Max"""
         resolution_x: IntegerSocket
+        """Resolution X"""
         resolution_y: IntegerSocket
+        """Resolution Y"""
         resolution_z: IntegerSocket
+        """Resolution Z"""
 
     class _Outputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
 
     if TYPE_CHECKING:
 
@@ -1979,9 +2355,24 @@ class VolumeToMesh(NodeBuilder):
     adaptivity : InputFloat
         Adaptivity
 
+    Inputs
+    ------
+    i.volume : GeometrySocket
+        Volume
+    i.resolution_mode : MenuSocket
+        Resolution Mode
+    i.voxel_size : FloatSocket
+        Voxel Size
+    i.voxel_amount : FloatSocket
+        Voxel Amount
+    i.threshold : FloatSocket
+        Threshold
+    i.adaptivity : FloatSocket
+        Adaptivity
+
     Outputs
     -------
-    mesh : GeometrySocket
+    o.mesh : GeometrySocket
         Mesh
     """
 
@@ -1990,14 +2381,21 @@ class VolumeToMesh(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         volume: GeometrySocket
+        """Volume"""
         resolution_mode: MenuSocket
+        """Resolution Mode"""
         voxel_size: FloatSocket
+        """Voxel Size"""
         voxel_amount: FloatSocket
+        """Voxel Amount"""
         threshold: FloatSocket
+        """Threshold"""
         adaptivity: FloatSocket
+        """Adaptivity"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
+        """Mesh"""
 
     if TYPE_CHECKING:
 
@@ -2037,9 +2435,14 @@ class VoxelizeGrid(NodeBuilder):
     grid : InputFloat
         Grid
 
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+
     Outputs
     -------
-    grid : FloatSocket
+    o.grid : FloatSocket
         Grid
     """
 
@@ -2048,9 +2451,11 @@ class VoxelizeGrid(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
+        """Grid"""
 
     if TYPE_CHECKING:
 

@@ -42,9 +42,18 @@ class BlurAttribute(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.iterations : IntegerSocket
+        Iterations
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -53,11 +62,15 @@ class BlurAttribute(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         iterations: IntegerSocket
+        """Iterations"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -141,21 +154,26 @@ class DomainSize(NodeBuilder):
     geometry : InputGeometry
         Geometry
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+
     Outputs
     -------
-    point_count : IntegerSocket
+    o.point_count : IntegerSocket
         Point Count
-    edge_count : IntegerSocket
+    o.edge_count : IntegerSocket
         Edge Count
-    face_count : IntegerSocket
+    o.face_count : IntegerSocket
         Face Count
-    face_corner_count : IntegerSocket
+    o.face_corner_count : IntegerSocket
         Face Corner Count
-    spline_count : IntegerSocket
+    o.spline_count : IntegerSocket
         Spline Count
-    instance_count : IntegerSocket
+    o.instance_count : IntegerSocket
         Instance Count
-    layer_count : IntegerSocket
+    o.layer_count : IntegerSocket
         Layer Count
     """
 
@@ -164,15 +182,23 @@ class DomainSize(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     class _Outputs(SocketAccessor):
         point_count: IntegerSocket
+        """Point Count"""
         edge_count: IntegerSocket
+        """Edge Count"""
         face_count: IntegerSocket
+        """Face Count"""
         face_corner_count: IntegerSocket
+        """Face Corner Count"""
         spline_count: IntegerSocket
+        """Spline Count"""
         instance_count: IntegerSocket
+        """Instance Count"""
         layer_count: IntegerSocket
+        """Layer Count"""
 
     if TYPE_CHECKING:
 
@@ -220,9 +246,18 @@ class RemoveNamedAttribute(NodeBuilder):
     name : InputString
         Name
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.pattern_mode : MenuSocket
+        Pattern Mode
+    i.name : StringSocket
+        Name
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -231,11 +266,15 @@ class RemoveNamedAttribute(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         pattern_mode: MenuSocket
+        """Pattern Mode"""
         name: StringSocket
+        """Name"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 
@@ -271,9 +310,20 @@ class StoreNamedAttribute(NodeBuilder):
     value : InputFloat
         Value
 
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.name : StringSocket
+        Name
+    i.value : FloatSocket
+        Value
+
     Outputs
     -------
-    geometry : GeometrySocket
+    o.geometry : GeometrySocket
         Geometry
     """
 
@@ -282,12 +332,17 @@ class StoreNamedAttribute(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
         selection: BooleanSocket
+        """Selection"""
         name: StringSocket
+        """Name"""
         value: FloatSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
+        """Geometry"""
 
     if TYPE_CHECKING:
 

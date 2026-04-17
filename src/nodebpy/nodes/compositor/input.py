@@ -29,7 +29,7 @@ class Color(NodeBuilder):
 
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -41,6 +41,7 @@ class Color(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -77,9 +78,26 @@ class Mask(NodeBuilder):
     motion_blur_shutter : InputFloat
         Shutter
 
+    Inputs
+    ------
+    i.size_source : MenuSocket
+        Size Source
+    i.size_x : IntegerSocket
+        Size X
+    i.size_y : IntegerSocket
+        Size Y
+    i.feather : BooleanSocket
+        Feather
+    i.motion_blur : BooleanSocket
+        Motion Blur
+    i.motion_blur_samples : IntegerSocket
+        Samples
+    i.motion_blur_shutter : FloatSocket
+        Shutter
+
     Outputs
     -------
-    mask : FloatSocket
+    o.mask : FloatSocket
         Mask
     """
 
@@ -88,15 +106,23 @@ class Mask(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         size_source: MenuSocket
+        """Size Source"""
         size_x: IntegerSocket
+        """Size X"""
         size_y: IntegerSocket
+        """Size Y"""
         feather: BooleanSocket
+        """Feather"""
         motion_blur: BooleanSocket
+        """Motion Blur"""
         motion_blur_samples: IntegerSocket
+        """Samples"""
         motion_blur_shutter: FloatSocket
+        """Shutter"""
 
     class _Outputs(SocketAccessor):
         mask: FloatSocket
+        """Mask"""
 
     if TYPE_CHECKING:
 
@@ -136,17 +162,17 @@ class MovieClip(NodeBuilder):
 
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
-    offset_x : FloatSocket
+    o.offset_x : FloatSocket
         Offset X
-    offset_y : FloatSocket
+    o.offset_y : FloatSocket
         Offset Y
-    scale : FloatSocket
+    o.scale : FloatSocket
         Scale
-    angle : FloatSocket
+    o.angle : FloatSocket
         Angle
     """
 
@@ -158,11 +184,17 @@ class MovieClip(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         alpha: FloatSocket
+        """Alpha"""
         offset_x: FloatSocket
+        """Offset X"""
         offset_y: FloatSocket
+        """Offset Y"""
         scale: FloatSocket
+        """Scale"""
         angle: FloatSocket
+        """Angle"""
 
     if TYPE_CHECKING:
 
@@ -184,7 +216,7 @@ class Normal(NodeBuilder):
 
     Outputs
     -------
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
     """
 
@@ -196,6 +228,7 @@ class Normal(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         normal: VectorSocket
+        """Normal"""
 
     if TYPE_CHECKING:
 
@@ -217,67 +250,67 @@ class RenderLayers(NodeBuilder):
 
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    alpha : FloatSocket
+    o.alpha : FloatSocket
         Alpha
-    depth : FloatSocket
+    o.depth : FloatSocket
         Depth
-    normal : VectorSocket
+    o.normal : VectorSocket
         Normal
-    uv : VectorSocket
+    o.uv : VectorSocket
         UV
-    vector : VectorSocket
+    o.vector : VectorSocket
         Vector
-    position : VectorSocket
+    o.position : VectorSocket
         Position
-    deprecated : ColorSocket
+    o.deprecated : ColorSocket
         Deprecated
-    deprecated_001 : ColorSocket
+    o.deprecated_001 : ColorSocket
         Deprecated
-    shadow : ColorSocket
+    o.shadow : ColorSocket
         Shadow
-    ambient_occlusion : ColorSocket
+    o.ambient_occlusion : ColorSocket
         Ambient Occlusion
-    deprecated_002 : ColorSocket
+    o.deprecated_002 : ColorSocket
         Deprecated
-    deprecated_003 : ColorSocket
+    o.deprecated_003 : ColorSocket
         Deprecated
-    deprecated_004 : ColorSocket
+    o.deprecated_004 : ColorSocket
         Deprecated
-    object_index : FloatSocket
+    o.object_index : FloatSocket
         Object Index
-    material_index : FloatSocket
+    o.material_index : FloatSocket
         Material Index
-    mist : FloatSocket
+    o.mist : FloatSocket
         Mist
-    emission : ColorSocket
+    o.emission : ColorSocket
         Emission
-    environment : ColorSocket
+    o.environment : ColorSocket
         Environment
-    diffuse_direct : ColorSocket
+    o.diffuse_direct : ColorSocket
         Diffuse Direct
-    diffuse_indirect : ColorSocket
+    o.diffuse_indirect : ColorSocket
         Diffuse Indirect
-    diffuse_color : ColorSocket
+    o.diffuse_color : ColorSocket
         Diffuse Color
-    glossy_direct : ColorSocket
+    o.glossy_direct : ColorSocket
         Glossy Direct
-    glossy_indirect : ColorSocket
+    o.glossy_indirect : ColorSocket
         Glossy Indirect
-    glossy_color : ColorSocket
+    o.glossy_color : ColorSocket
         Glossy Color
-    transmission_direct : ColorSocket
+    o.transmission_direct : ColorSocket
         Transmission Direct
-    transmission_indirect : ColorSocket
+    o.transmission_indirect : ColorSocket
         Transmission Indirect
-    transmission_color : ColorSocket
+    o.transmission_color : ColorSocket
         Transmission Color
-    subsurface_direct : ColorSocket
+    o.subsurface_direct : ColorSocket
         Subsurface Direct
-    subsurface_indirect : ColorSocket
+    o.subsurface_indirect : ColorSocket
         Subsurface Indirect
-    subsurface_color : ColorSocket
+    o.subsurface_color : ColorSocket
         Subsurface Color
     """
 
@@ -289,36 +322,67 @@ class RenderLayers(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         alpha: FloatSocket
+        """Alpha"""
         depth: FloatSocket
+        """Depth"""
         normal: VectorSocket
+        """Normal"""
         uv: VectorSocket
+        """UV"""
         vector: VectorSocket
+        """Vector"""
         position: VectorSocket
+        """Position"""
         deprecated: ColorSocket
+        """Deprecated"""
         deprecated_001: ColorSocket
+        """Deprecated"""
         shadow: ColorSocket
+        """Shadow"""
         ambient_occlusion: ColorSocket
+        """Ambient Occlusion"""
         deprecated_002: ColorSocket
+        """Deprecated"""
         deprecated_003: ColorSocket
+        """Deprecated"""
         deprecated_004: ColorSocket
+        """Deprecated"""
         object_index: FloatSocket
+        """Object Index"""
         material_index: FloatSocket
+        """Material Index"""
         mist: FloatSocket
+        """Mist"""
         emission: ColorSocket
+        """Emission"""
         environment: ColorSocket
+        """Environment"""
         diffuse_direct: ColorSocket
+        """Diffuse Direct"""
         diffuse_indirect: ColorSocket
+        """Diffuse Indirect"""
         diffuse_color: ColorSocket
+        """Diffuse Color"""
         glossy_direct: ColorSocket
+        """Glossy Direct"""
         glossy_indirect: ColorSocket
+        """Glossy Indirect"""
         glossy_color: ColorSocket
+        """Glossy Color"""
         transmission_direct: ColorSocket
+        """Transmission Direct"""
         transmission_indirect: ColorSocket
+        """Transmission Indirect"""
         transmission_color: ColorSocket
+        """Transmission Color"""
         subsurface_direct: ColorSocket
+        """Subsurface Direct"""
         subsurface_indirect: ColorSocket
+        """Subsurface Indirect"""
         subsurface_color: ColorSocket
+        """Subsurface Color"""
 
     if TYPE_CHECKING:
 
@@ -348,9 +412,9 @@ class SceneTime(NodeBuilder):
 
     Outputs
     -------
-    seconds : FloatSocket
+    o.seconds : FloatSocket
         Seconds
-    frame : FloatSocket
+    o.frame : FloatSocket
         Frame
     """
 
@@ -362,7 +426,9 @@ class SceneTime(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         seconds: FloatSocket
+        """Seconds"""
         frame: FloatSocket
+        """Frame"""
 
     if TYPE_CHECKING:
 
@@ -389,9 +455,16 @@ class TimeCurve(NodeBuilder):
     end_frame : InputInteger
         End Frame
 
+    Inputs
+    ------
+    i.start_frame : IntegerSocket
+        Start Frame
+    i.end_frame : IntegerSocket
+        End Frame
+
     Outputs
     -------
-    fac : FloatSocket
+    o.fac : FloatSocket
         Factor
     """
 
@@ -400,10 +473,13 @@ class TimeCurve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         start_frame: IntegerSocket
+        """Start Frame"""
         end_frame: IntegerSocket
+        """End Frame"""
 
     class _Outputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
 
     if TYPE_CHECKING:
 
@@ -434,13 +510,20 @@ class TrackPosition(NodeBuilder):
     frame : InputInteger
         Frame
 
+    Inputs
+    ------
+    i.mode : MenuSocket
+        Mode
+    i.frame : IntegerSocket
+        Frame
+
     Outputs
     -------
-    x : FloatSocket
+    o.x : FloatSocket
         X
-    y : FloatSocket
+    o.y : FloatSocket
         Y
-    speed : VectorSocket
+    o.speed : VectorSocket
         Speed
     """
 
@@ -449,12 +532,17 @@ class TrackPosition(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mode: MenuSocket
+        """Mode"""
         frame: IntegerSocket
+        """Frame"""
 
     class _Outputs(SocketAccessor):
         x: FloatSocket
+        """X"""
         y: FloatSocket
+        """Y"""
         speed: VectorSocket
+        """Speed"""
 
     if TYPE_CHECKING:
 

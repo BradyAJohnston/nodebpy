@@ -55,9 +55,38 @@ class PrincipledVolume(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.color_attribute : StringSocket
+        Color Attribute
+    i.density : FloatSocket
+        Density
+    i.density_attribute : StringSocket
+        Density Attribute
+    i.anisotropy : FloatSocket
+        Anisotropy
+    i.absorption_color : ColorSocket
+        Absorption Color
+    i.emission_strength : FloatSocket
+        Emission Strength
+    i.emission_color : ColorSocket
+        Emission Color
+    i.blackbody_intensity : FloatSocket
+        Blackbody Intensity
+    i.blackbody_tint : ColorSocket
+        Blackbody Tint
+    i.temperature : FloatSocket
+        Temperature
+    i.temperature_attribute : StringSocket
+        Temperature Attribute
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    volume : ShaderSocket
+    o.volume : ShaderSocket
         Volume
     """
 
@@ -66,21 +95,35 @@ class PrincipledVolume(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         color_attribute: StringSocket
+        """Color Attribute"""
         density: FloatSocket
+        """Density"""
         density_attribute: StringSocket
+        """Density Attribute"""
         anisotropy: FloatSocket
+        """Anisotropy"""
         absorption_color: ColorSocket
+        """Absorption Color"""
         emission_strength: FloatSocket
+        """Emission Strength"""
         emission_color: ColorSocket
+        """Emission Color"""
         blackbody_intensity: FloatSocket
+        """Blackbody Intensity"""
         blackbody_tint: ColorSocket
+        """Blackbody Tint"""
         temperature: FloatSocket
+        """Temperature"""
         temperature_attribute: StringSocket
+        """Temperature Attribute"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         volume: ShaderSocket
+        """Volume"""
 
     if TYPE_CHECKING:
 
@@ -138,9 +181,18 @@ class VolumeAbsorption(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.density : FloatSocket
+        Density
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    volume : ShaderSocket
+    o.volume : ShaderSocket
         Volume
     """
 
@@ -149,11 +201,15 @@ class VolumeAbsorption(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         density: FloatSocket
+        """Density"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         volume: ShaderSocket
+        """Volume"""
 
     if TYPE_CHECKING:
 
@@ -199,9 +255,30 @@ class VolumeCoefficients(NodeBuilder):
     emission_coefficients : InputVector
         Emission Coefficients
 
+    Inputs
+    ------
+    i.weight : FloatSocket
+        Weight
+    i.absorption_coefficients : VectorSocket
+        Absorption Coefficients
+    i.scatter_coefficients : VectorSocket
+        Scatter Coefficients
+    i.anisotropy : FloatSocket
+        Anisotropy
+    i.ior : FloatSocket
+        IOR
+    i.backscatter : FloatSocket
+        Backscatter
+    i.alpha : FloatSocket
+        Alpha
+    i.diameter : FloatSocket
+        Diameter
+    i.emission_coefficients : VectorSocket
+        Emission Coefficients
+
     Outputs
     -------
-    volume : ShaderSocket
+    o.volume : ShaderSocket
         Volume
     """
 
@@ -210,17 +287,27 @@ class VolumeCoefficients(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         weight: FloatSocket
+        """Weight"""
         absorption_coefficients: VectorSocket
+        """Absorption Coefficients"""
         scatter_coefficients: VectorSocket
+        """Scatter Coefficients"""
         anisotropy: FloatSocket
+        """Anisotropy"""
         ior: FloatSocket
+        """IOR"""
         backscatter: FloatSocket
+        """Backscatter"""
         alpha: FloatSocket
+        """Alpha"""
         diameter: FloatSocket
+        """Diameter"""
         emission_coefficients: VectorSocket
+        """Emission Coefficients"""
 
     class _Outputs(SocketAccessor):
         volume: ShaderSocket
+        """Volume"""
 
     if TYPE_CHECKING:
 
@@ -282,13 +369,13 @@ class VolumeInfo(NodeBuilder):
 
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
-    density : FloatSocket
+    o.density : FloatSocket
         Density
-    flame : FloatSocket
+    o.flame : FloatSocket
         Flame
-    temperature : FloatSocket
+    o.temperature : FloatSocket
         Temperature
     """
 
@@ -300,9 +387,13 @@ class VolumeInfo(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         density: FloatSocket
+        """Density"""
         flame: FloatSocket
+        """Flame"""
         temperature: FloatSocket
+        """Temperature"""
 
     if TYPE_CHECKING:
 
@@ -341,9 +432,28 @@ class VolumeScatter(NodeBuilder):
     weight : InputFloat
         Weight
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.density : FloatSocket
+        Density
+    i.anisotropy : FloatSocket
+        Anisotropy
+    i.ior : FloatSocket
+        IOR
+    i.backscatter : FloatSocket
+        Backscatter
+    i.alpha : FloatSocket
+        Alpha
+    i.diameter : FloatSocket
+        Diameter
+    i.weight : FloatSocket
+        Weight
+
     Outputs
     -------
-    volume : ShaderSocket
+    o.volume : ShaderSocket
         Volume
     """
 
@@ -352,16 +462,25 @@ class VolumeScatter(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         density: FloatSocket
+        """Density"""
         anisotropy: FloatSocket
+        """Anisotropy"""
         ior: FloatSocket
+        """IOR"""
         backscatter: FloatSocket
+        """Backscatter"""
         alpha: FloatSocket
+        """Alpha"""
         diameter: FloatSocket
+        """Diameter"""
         weight: FloatSocket
+        """Weight"""
 
     class _Outputs(SocketAccessor):
         volume: ShaderSocket
+        """Volume"""
 
     if TYPE_CHECKING:
 

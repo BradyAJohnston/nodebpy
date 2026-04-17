@@ -28,9 +28,16 @@ class Gamma(NodeBuilder):
     gamma : InputFloat
         Gamma
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.gamma : FloatSocket
+        Gamma
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -39,10 +46,13 @@ class Gamma(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         gamma: FloatSocket
+        """Gamma"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -73,9 +83,16 @@ class RGBCurves(NodeBuilder):
     color : InputColor
         Color
 
+    Inputs
+    ------
+    i.fac : FloatSocket
+        Factor
+    i.color : ColorSocket
+        Color
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -84,10 +101,13 @@ class RGBCurves(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         fac: FloatSocket
+        """Factor"""
         color: ColorSocket
+        """Color"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 

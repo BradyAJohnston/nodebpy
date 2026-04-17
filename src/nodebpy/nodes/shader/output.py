@@ -32,6 +32,13 @@ class AovOutput(NodeBuilder):
             Color
         value : InputFloat
             Value
+
+        Inputs
+        ------
+        i.color : ColorSocket
+            Color
+        i.value : FloatSocket
+            Value
     """
 
     _bl_idname = "ShaderNodeOutputAOV"
@@ -39,7 +46,9 @@ class AovOutput(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         value: FloatSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         pass
@@ -80,6 +89,11 @@ class LightOutput(NodeBuilder):
     ----------
     surface : InputShader
         Surface
+
+    Inputs
+    ------
+    i.surface : ShaderSocket
+        Surface
     """
 
     _bl_idname = "ShaderNodeOutputLight"
@@ -87,6 +101,7 @@ class LightOutput(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         surface: ShaderSocket
+        """Surface"""
 
     class _Outputs(SocketAccessor):
         pass
@@ -142,6 +157,17 @@ class LineStyleOutput(NodeBuilder):
         Alpha
     alpha_fac : InputFloat
         Alpha Fac
+
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.color_fac : FloatSocket
+        Color Fac
+    i.alpha : FloatSocket
+        Alpha
+    i.alpha_fac : FloatSocket
+        Alpha Fac
     """
 
     _bl_idname = "ShaderNodeOutputLineStyle"
@@ -149,9 +175,13 @@ class LineStyleOutput(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         color_fac: FloatSocket
+        """Color Fac"""
         alpha: FloatSocket
+        """Alpha"""
         alpha_fac: FloatSocket
+        """Alpha Fac"""
 
     class _Outputs(SocketAccessor):
         pass
@@ -310,6 +340,17 @@ class MaterialOutput(NodeBuilder):
         Displacement
     thickness : InputFloat
         Thickness
+
+    Inputs
+    ------
+    i.surface : ShaderSocket
+        Surface
+    i.volume : ShaderSocket
+        Volume
+    i.displacement : VectorSocket
+        Displacement
+    i.thickness : FloatSocket
+        Thickness
     """
 
     _bl_idname = "ShaderNodeOutputMaterial"
@@ -317,9 +358,13 @@ class MaterialOutput(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         surface: ShaderSocket
+        """Surface"""
         volume: ShaderSocket
+        """Volume"""
         displacement: VectorSocket
+        """Displacement"""
         thickness: FloatSocket
+        """Thickness"""
 
     class _Outputs(SocketAccessor):
         pass
@@ -379,6 +424,13 @@ class WorldOutput(NodeBuilder):
         Surface
     volume : InputShader
         Volume
+
+    Inputs
+    ------
+    i.surface : ShaderSocket
+        Surface
+    i.volume : ShaderSocket
+        Volume
     """
 
     _bl_idname = "ShaderNodeOutputWorld"
@@ -386,7 +438,9 @@ class WorldOutput(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         surface: ShaderSocket
+        """Surface"""
         volume: ShaderSocket
+        """Volume"""
 
     class _Outputs(SocketAccessor):
         pass

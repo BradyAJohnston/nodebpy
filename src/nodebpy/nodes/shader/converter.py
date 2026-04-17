@@ -38,9 +38,18 @@ class CombineColor(NodeBuilder):
     blue : InputFloat
         Blue
 
+    Inputs
+    ------
+    i.red : FloatSocket
+        Red
+    i.green : FloatSocket
+        Green
+    i.blue : FloatSocket
+        Blue
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -49,11 +58,15 @@ class CombineColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         red: FloatSocket
+        """Red"""
         green: FloatSocket
+        """Green"""
         blue: FloatSocket
+        """Blue"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -113,6 +126,11 @@ class EvaluateClosure(NodeBuilder):
     ----------
     closure : InputClosure
         Closure
+
+    Inputs
+    ------
+    i.closure : ClosureSocket
+        Closure
     """
 
     _bl_idname = "NodeEvaluateClosure"
@@ -120,6 +138,7 @@ class EvaluateClosure(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         closure: ClosureSocket
+        """Closure"""
 
     class _Outputs(SocketAccessor):
         pass
@@ -198,15 +217,38 @@ class Mix(NodeBuilder):
     b_rotation : InputRotation
         B
 
+    Inputs
+    ------
+    i.factor_float : FloatSocket
+        Factor
+    i.factor_vector : VectorSocket
+        Factor
+    i.a_float : FloatSocket
+        A
+    i.b_float : FloatSocket
+        B
+    i.a_vector : VectorSocket
+        A
+    i.b_vector : VectorSocket
+        B
+    i.a_color : ColorSocket
+        A
+    i.b_color : ColorSocket
+        B
+    i.a_rotation : RotationSocket
+        A
+    i.b_rotation : RotationSocket
+        B
+
     Outputs
     -------
-    result_float : FloatSocket
+    o.result_float : FloatSocket
         Result
-    result_vector : VectorSocket
+    o.result_vector : VectorSocket
         Result
-    result_color : ColorSocket
+    o.result_color : ColorSocket
         Result
-    result_rotation : RotationSocket
+    o.result_rotation : RotationSocket
         Result
     """
 
@@ -215,21 +257,35 @@ class Mix(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         factor_float: FloatSocket
+        """Factor"""
         factor_vector: VectorSocket
+        """Factor"""
         a_float: FloatSocket
+        """A"""
         b_float: FloatSocket
+        """B"""
         a_vector: VectorSocket
+        """A"""
         b_vector: VectorSocket
+        """B"""
         a_color: ColorSocket
+        """A"""
         b_color: ColorSocket
+        """B"""
         a_rotation: RotationSocket
+        """A"""
         b_rotation: RotationSocket
+        """B"""
 
     class _Outputs(SocketAccessor):
         result_float: FloatSocket
+        """Result"""
         result_vector: VectorSocket
+        """Result"""
         result_color: ColorSocket
+        """Result"""
         result_rotation: RotationSocket
+        """Result"""
 
     if TYPE_CHECKING:
 
@@ -418,9 +474,14 @@ class RGBToBw(NodeBuilder):
     color : InputColor
         Color
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+
     Outputs
     -------
-    val : FloatSocket
+    o.val : FloatSocket
         Val
     """
 
@@ -429,9 +490,11 @@ class RGBToBw(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     class _Outputs(SocketAccessor):
         val: FloatSocket
+        """Val"""
 
     if TYPE_CHECKING:
 
@@ -456,13 +519,18 @@ class SeparateColor(NodeBuilder):
     color : InputColor
         Color
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+
     Outputs
     -------
-    red : FloatSocket
+    o.red : FloatSocket
         Red
-    green : FloatSocket
+    o.green : FloatSocket
         Green
-    blue : FloatSocket
+    o.blue : FloatSocket
         Blue
     """
 
@@ -471,11 +539,15 @@ class SeparateColor(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     class _Outputs(SocketAccessor):
         red: FloatSocket
+        """Red"""
         green: FloatSocket
+        """Green"""
         blue: FloatSocket
+        """Blue"""
 
     if TYPE_CHECKING:
 
@@ -529,11 +601,16 @@ class ShaderToRGB(NodeBuilder):
         shader : InputShader
             Shader
 
+        Inputs
+        ------
+        i.shader : ShaderSocket
+            Shader
+
         Outputs
         -------
-        color : ColorSocket
+        o.color : ColorSocket
             Color
-        alpha : FloatSocket
+        o.alpha : FloatSocket
             Alpha
     """
 
@@ -542,10 +619,13 @@ class ShaderToRGB(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         shader: ShaderSocket
+        """Shader"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         alpha: FloatSocket
+        """Alpha"""
 
     if TYPE_CHECKING:
 
@@ -570,9 +650,14 @@ class Wavelength(NodeBuilder):
     wavelength : InputFloat
         Wavelength
 
+    Inputs
+    ------
+    i.wavelength : FloatSocket
+        Wavelength
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -581,9 +666,11 @@ class Wavelength(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         wavelength: FloatSocket
+        """Wavelength"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 

@@ -53,9 +53,22 @@ class DialGizmo(NodeBuilder):
     radius : InputFloat
         Radius
 
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.position : VectorSocket
+        Position
+    i.up : VectorSocket
+        Up
+    i.screen_space : BooleanSocket
+        Screen Space
+    i.radius : FloatSocket
+        Radius
+
     Outputs
     -------
-    transform : GeometrySocket
+    o.transform : GeometrySocket
         Transform
     """
 
@@ -64,13 +77,19 @@ class DialGizmo(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         position: VectorSocket
+        """Position"""
         up: VectorSocket
+        """Up"""
         screen_space: BooleanSocket
+        """Screen Space"""
         radius: FloatSocket
+        """Radius"""
 
     class _Outputs(SocketAccessor):
         transform: GeometrySocket
+        """Transform"""
 
     if TYPE_CHECKING:
 
@@ -120,9 +139,16 @@ class EnableOutput(NodeBuilder):
     value : InputFloat
         Value
 
+    Inputs
+    ------
+    i.enable : BooleanSocket
+        Enable
+    i.value : FloatSocket
+        Value
+
     Outputs
     -------
-    value : FloatSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -131,10 +157,13 @@ class EnableOutput(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         enable: BooleanSocket
+        """Enable"""
         value: FloatSocket
+        """Value"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
 
     if TYPE_CHECKING:
 
@@ -409,9 +438,18 @@ class LinearGizmo(NodeBuilder):
     direction : InputVector
         Direction
 
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.position : VectorSocket
+        Position
+    i.direction : VectorSocket
+        Direction
+
     Outputs
     -------
-    transform : GeometrySocket
+    o.transform : GeometrySocket
         Transform
     """
 
@@ -420,11 +458,15 @@ class LinearGizmo(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: FloatSocket
+        """Value"""
         position: VectorSocket
+        """Position"""
         direction: VectorSocket
+        """Direction"""
 
     class _Outputs(SocketAccessor):
         transform: GeometrySocket
+        """Transform"""
 
     if TYPE_CHECKING:
 
@@ -478,9 +520,18 @@ class TransformGizmo(NodeBuilder):
     rotation : InputRotation
         Rotation
 
+    Inputs
+    ------
+    i.value : MatrixSocket
+        Value
+    i.position : VectorSocket
+        Position
+    i.rotation : RotationSocket
+        Rotation
+
     Outputs
     -------
-    transform : GeometrySocket
+    o.transform : GeometrySocket
         Transform
     """
 
@@ -489,11 +540,15 @@ class TransformGizmo(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         value: MatrixSocket
+        """Value"""
         position: VectorSocket
+        """Position"""
         rotation: RotationSocket
+        """Rotation"""
 
     class _Outputs(SocketAccessor):
         transform: GeometrySocket
+        """Transform"""
 
     if TYPE_CHECKING:
 
@@ -615,9 +670,16 @@ class Warning(NodeBuilder):
     message : InputString
         Message
 
+    Inputs
+    ------
+    i.show : BooleanSocket
+        Show
+    i.message : StringSocket
+        Message
+
     Outputs
     -------
-    show : BooleanSocket
+    o.show : BooleanSocket
         Show
     """
 
@@ -626,10 +688,13 @@ class Warning(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         show: BooleanSocket
+        """Show"""
         message: StringSocket
+        """Message"""
 
     class _Outputs(SocketAccessor):
         show: BooleanSocket
+        """Show"""
 
     if TYPE_CHECKING:
 

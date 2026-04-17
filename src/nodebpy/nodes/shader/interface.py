@@ -42,7 +42,7 @@ class ClosureOutput(NodeBuilder):
 
     Outputs
     -------
-    closure : ClosureSocket
+    o.closure : ClosureSocket
         Closure
     """
 
@@ -54,6 +54,7 @@ class ClosureOutput(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         closure: ClosureSocket
+        """Closure"""
 
     if TYPE_CHECKING:
 

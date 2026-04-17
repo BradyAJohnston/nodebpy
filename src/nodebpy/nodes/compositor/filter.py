@@ -40,9 +40,20 @@ class AntiAliasing(NodeBuilder):
     corner_rounding : InputFloat
         Corner Rounding
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.threshold : FloatSocket
+        Threshold
+    i.contrast_limit : FloatSocket
+        Contrast Limit
+    i.corner_rounding : FloatSocket
+        Corner Rounding
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -51,12 +62,17 @@ class AntiAliasing(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         threshold: FloatSocket
+        """Threshold"""
         contrast_limit: FloatSocket
+        """Contrast Limit"""
         corner_rounding: FloatSocket
+        """Corner Rounding"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -98,9 +114,20 @@ class BilateralBlur(NodeBuilder):
     threshold : InputFloat
         Threshold
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.determinator : ColorSocket
+        Determinator
+    i.size : IntegerSocket
+        Size
+    i.threshold : FloatSocket
+        Threshold
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -109,12 +136,17 @@ class BilateralBlur(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         determinator: ColorSocket
+        """Determinator"""
         size: IntegerSocket
+        """Size"""
         threshold: FloatSocket
+        """Threshold"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -158,9 +190,22 @@ class Blur(NodeBuilder):
     separable : InputBoolean
         Separable
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.size : VectorSocket
+        Size
+    i.type : MenuSocket
+        Type
+    i.extend_bounds : BooleanSocket
+        Extend Bounds
+    i.separable : BooleanSocket
+        Separable
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -169,13 +214,19 @@ class Blur(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         size: VectorSocket
+        """Size"""
         type: MenuSocket
+        """Type"""
         extend_bounds: BooleanSocket
+        """Extend Bounds"""
         separable: BooleanSocket
+        """Separable"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -367,9 +418,22 @@ class BokehBlur(NodeBuilder):
     extend_bounds : InputBoolean
         Extend Bounds
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.bokeh : ColorSocket
+        Bokeh
+    i.size : FloatSocket
+        Size
+    i.mask : FloatSocket
+        Mask
+    i.extend_bounds : BooleanSocket
+        Extend Bounds
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -378,13 +442,19 @@ class BokehBlur(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         bokeh: ColorSocket
+        """Bokeh"""
         size: FloatSocket
+        """Size"""
         mask: FloatSocket
+        """Mask"""
         extend_bounds: BooleanSocket
+        """Extend Bounds"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -430,9 +500,22 @@ class Convolve(NodeBuilder):
     normalize_kernel : InputBoolean
         Normalize Kernel
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.kernel_data_type : MenuSocket
+        Kernel Data Type
+    i.float_kernel : FloatSocket
+        Kernel
+    i.color_kernel : ColorSocket
+        Kernel
+    i.normalize_kernel : BooleanSocket
+        Normalize Kernel
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -441,13 +524,19 @@ class Convolve(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         kernel_data_type: MenuSocket
+        """Kernel Data Type"""
         float_kernel: FloatSocket
+        """Kernel"""
         color_kernel: ColorSocket
+        """Kernel"""
         normalize_kernel: BooleanSocket
+        """Normalize Kernel"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -487,9 +576,16 @@ class Defocus(NodeBuilder):
     z : InputFloat
         Z
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.z : FloatSocket
+        Z
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -498,10 +594,13 @@ class Defocus(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         z: FloatSocket
+        """Z"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -611,9 +710,24 @@ class Denoise(NodeBuilder):
     quality : InputMenu | Literal['Follow Scene', 'High', 'Balanced', 'Fast']
         Quality
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.albedo : ColorSocket
+        Albedo
+    i.normal : VectorSocket
+        Normal
+    i.hdr : BooleanSocket
+        HDR
+    i.prefilter : MenuSocket
+        Prefilter
+    i.quality : MenuSocket
+        Quality
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -622,14 +736,21 @@ class Denoise(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         albedo: ColorSocket
+        """Albedo"""
         normal: VectorSocket
+        """Normal"""
         hdr: BooleanSocket
+        """HDR"""
         prefilter: MenuSocket
+        """Prefilter"""
         quality: MenuSocket
+        """Quality"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -676,9 +797,20 @@ class Despeckle(NodeBuilder):
     neighbor_threshold : InputFloat
         Neighbor Threshold
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.fac : FloatSocket
+        Factor
+    i.color_threshold : FloatSocket
+        Color Threshold
+    i.neighbor_threshold : FloatSocket
+        Neighbor Threshold
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -687,12 +819,17 @@ class Despeckle(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         fac: FloatSocket
+        """Factor"""
         color_threshold: FloatSocket
+        """Color Threshold"""
         neighbor_threshold: FloatSocket
+        """Neighbor Threshold"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -736,9 +873,22 @@ class Dilateerode(NodeBuilder):
     falloff : InputMenu | Literal['Smooth', 'Sphere', 'Root', 'Inverse Square', 'Sharp', 'Linear']
         Falloff
 
+    Inputs
+    ------
+    i.mask : FloatSocket
+        Mask
+    i.size : IntegerSocket
+        Size
+    i.type : MenuSocket
+        Type
+    i.falloff_size : FloatSocket
+        Falloff Size
+    i.falloff : MenuSocket
+        Falloff
+
     Outputs
     -------
-    mask : FloatSocket
+    o.mask : FloatSocket
         Mask
     """
 
@@ -747,13 +897,19 @@ class Dilateerode(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         mask: FloatSocket
+        """Mask"""
         size: IntegerSocket
+        """Size"""
         type: MenuSocket
+        """Type"""
         falloff_size: FloatSocket
+        """Falloff Size"""
         falloff: MenuSocket
+        """Falloff"""
 
     class _Outputs(SocketAccessor):
         mask: FloatSocket
+        """Mask"""
 
     if TYPE_CHECKING:
 
@@ -840,9 +996,26 @@ class DirectionalBlur(NodeBuilder):
     translation_direction : InputFloat
         Direction
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.samples : IntegerSocket
+        Samples
+    i.center : VectorSocket
+        Center
+    i.rotation : FloatSocket
+        Rotation
+    i.scale : FloatSocket
+        Scale
+    i.translation_amount : FloatSocket
+        Amount
+    i.translation_direction : FloatSocket
+        Direction
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -851,15 +1024,23 @@ class DirectionalBlur(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         samples: IntegerSocket
+        """Samples"""
         center: VectorSocket
+        """Center"""
         rotation: FloatSocket
+        """Rotation"""
         scale: FloatSocket
+        """Scale"""
         translation_amount: FloatSocket
+        """Amount"""
         translation_direction: FloatSocket
+        """Direction"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -905,9 +1086,18 @@ class Filter(NodeBuilder):
     type : InputMenu | Literal['Soften', 'Box Sharpen', 'Diamond Sharpen', 'Laplace', 'Sobel', 'Prewitt', 'Kirsch', 'Shadow']
         Type
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.fac : FloatSocket
+        Factor
+    i.type : MenuSocket
+        Type
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -916,11 +1106,15 @@ class Filter(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         fac: FloatSocket
+        """Factor"""
         type: MenuSocket
+        """Type"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -1044,13 +1238,60 @@ class Glare(NodeBuilder):
     color_kernel : InputColor
         Kernel
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.type : MenuSocket
+        Type
+    i.quality : MenuSocket
+        Quality
+    i.highlights_threshold : FloatSocket
+        Threshold
+    i.highlights_smoothness : FloatSocket
+        Smoothness
+    i.clamp_highlights : BooleanSocket
+        Clamp
+    i.maximum_highlights : FloatSocket
+        Maximum
+    i.strength : FloatSocket
+        Strength
+    i.saturation : FloatSocket
+        Saturation
+    i.tint : ColorSocket
+        Tint
+    i.size : FloatSocket
+        Size
+    i.streaks : IntegerSocket
+        Streaks
+    i.streaks_angle : FloatSocket
+        Streaks Angle
+    i.iterations : IntegerSocket
+        Iterations
+    i.fade : FloatSocket
+        Fade
+    i.color_modulation : FloatSocket
+        Color Modulation
+    i.diagonal_star : BooleanSocket
+        Diagonal
+    i.sun_position : VectorSocket
+        Sun Position
+    i.jitter : FloatSocket
+        Jitter
+    i.kernel_data_type : MenuSocket
+        Kernel Data Type
+    i.float_kernel : FloatSocket
+        Kernel
+    i.color_kernel : ColorSocket
+        Kernel
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
-    glare : ColorSocket
+    o.glare : ColorSocket
         Glare
-    highlights : ColorSocket
+    o.highlights : ColorSocket
         Highlights
     """
 
@@ -1059,32 +1300,57 @@ class Glare(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         type: MenuSocket
+        """Type"""
         quality: MenuSocket
+        """Quality"""
         highlights_threshold: FloatSocket
+        """Threshold"""
         highlights_smoothness: FloatSocket
+        """Smoothness"""
         clamp_highlights: BooleanSocket
+        """Clamp"""
         maximum_highlights: FloatSocket
+        """Maximum"""
         strength: FloatSocket
+        """Strength"""
         saturation: FloatSocket
+        """Saturation"""
         tint: ColorSocket
+        """Tint"""
         size: FloatSocket
+        """Size"""
         streaks: IntegerSocket
+        """Streaks"""
         streaks_angle: FloatSocket
+        """Streaks Angle"""
         iterations: IntegerSocket
+        """Iterations"""
         fade: FloatSocket
+        """Fade"""
         color_modulation: FloatSocket
+        """Color Modulation"""
         diagonal_star: BooleanSocket
+        """Diagonal"""
         sun_position: VectorSocket
+        """Sun Position"""
         jitter: FloatSocket
+        """Jitter"""
         kernel_data_type: MenuSocket
+        """Kernel Data Type"""
         float_kernel: FloatSocket
+        """Kernel"""
         color_kernel: ColorSocket
+        """Kernel"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         glare: ColorSocket
+        """Glare"""
         highlights: ColorSocket
+        """Highlights"""
 
     if TYPE_CHECKING:
 
@@ -1390,9 +1656,16 @@ class Inpaint(NodeBuilder):
     size : InputInteger
         Size
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.size : IntegerSocket
+        Size
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -1401,10 +1674,13 @@ class Inpaint(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         size: IntegerSocket
+        """Size"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -1445,9 +1721,26 @@ class Kuwahara(NodeBuilder):
     high_precision : InputBoolean
         High Precision
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.size : FloatSocket
+        Size
+    i.type : MenuSocket
+        Type
+    i.uniformity : IntegerSocket
+        Uniformity
+    i.sharpness : FloatSocket
+        Sharpness
+    i.eccentricity : FloatSocket
+        Eccentricity
+    i.high_precision : BooleanSocket
+        High Precision
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -1456,15 +1749,23 @@ class Kuwahara(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         size: FloatSocket
+        """Size"""
         type: MenuSocket
+        """Type"""
         uniformity: IntegerSocket
+        """Uniformity"""
         sharpness: FloatSocket
+        """Sharpness"""
         eccentricity: FloatSocket
+        """Eccentricity"""
         high_precision: BooleanSocket
+        """High Precision"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
@@ -1539,9 +1840,16 @@ class Pixelate(NodeBuilder):
     size : InputInteger
         Size
 
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.size : IntegerSocket
+        Size
+
     Outputs
     -------
-    color : ColorSocket
+    o.color : ColorSocket
         Color
     """
 
@@ -1550,10 +1858,13 @@ class Pixelate(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
         size: IntegerSocket
+        """Size"""
 
     class _Outputs(SocketAccessor):
         color: ColorSocket
+        """Color"""
 
     if TYPE_CHECKING:
 
@@ -1590,9 +1901,22 @@ class VectorBlur(NodeBuilder):
     shutter : InputFloat
         Shutter
 
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.speed : VectorSocket
+        Speed
+    i.z : FloatSocket
+        Z
+    i.samples : IntegerSocket
+        Samples
+    i.shutter : FloatSocket
+        Shutter
+
     Outputs
     -------
-    image : ColorSocket
+    o.image : ColorSocket
         Image
     """
 
@@ -1601,13 +1925,19 @@ class VectorBlur(NodeBuilder):
 
     class _Inputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
         speed: VectorSocket
+        """Speed"""
         z: FloatSocket
+        """Z"""
         samples: IntegerSocket
+        """Samples"""
         shutter: FloatSocket
+        """Shutter"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
+        """Image"""
 
     if TYPE_CHECKING:
 
