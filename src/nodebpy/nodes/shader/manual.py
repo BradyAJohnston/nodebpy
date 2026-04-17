@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from bpy.types import ShaderNodeAttribute
 
@@ -10,6 +10,7 @@ from ...builder import (
     TreeBuilder,
     VectorSocket,
 )
+from ...builder.accessor import SocketAccessor
 from ..geometry import RepeatInput, RepeatOutput, RepeatZone
 from ..geometry.manual import _MenuSwitchBase
 
@@ -103,25 +104,20 @@ class Attribute(NodeBuilder):
         """Create Attribute with operation 'View Layer'."""
         return cls(attribute_type="VIEW_LAYER", attribute_name=attribute_name)
 
-    @property
-    def o_color(self) -> ColorSocket:
-        """Output socket: Color"""
-        return self.outputs._get("Color")
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """The attribute value as a color."""
+        vector: VectorSocket
+        """The attribute value as a vector."""
+        fac: FloatSocket
+        """The attribute value as a scalar factor."""
+        alpha: FloatSocket
+        """The attribute value as an alpha (scalar)."""
 
-    @property
-    def o_vector(self) -> VectorSocket:
-        """Output socket: Vector"""
-        return self.outputs._get("Vector")
+    if TYPE_CHECKING:
 
-    @property
-    def o_fac(self) -> FloatSocket:
-        """Output socket: Factor"""
-        return self.outputs._get("Fac")
-
-    @property
-    def o_alpha(self) -> FloatSocket:
-        """Output socket: Alpha"""
-        return self.outputs._get("Alpha")
+        @property
+        def o(self) -> _Outputs: ...
 
     @property
     def attribute_type(

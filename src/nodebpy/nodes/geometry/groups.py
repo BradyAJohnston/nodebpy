@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from ...builder import (
     IntegerSocket,
     NodeGroupBuilder,
@@ -17,15 +19,23 @@ class OtherVertex(NodeGroupBuilder):
     _name = "Other Vertex"
     _color_tag = "INPUT"
 
-    class Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor):
         vertex_index: IntegerSocket
         """The vertex to start from."""
         edge_number: IntegerSocket
         """Which edge of that vertex to traverse."""
 
-    class Outputs(SocketAccessor):
+    class _Outputs(SocketAccessor):
         other_vertex: IntegerSocket
         """The vertex at the other end of the selected edge."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
 
     def __init__(
         self, vertex_index: InputInteger = None, edge_number: InputInteger = 0
@@ -55,7 +65,7 @@ class OffsetVector(NodeGroupBuilder):
     _name = "Offset Vector"
     _color_tag = "INPUT"
 
-    class Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor):
         index: IntegerSocket
         """The base index to evaluate at."""
         vector: VectorSocket
@@ -63,9 +73,17 @@ class OffsetVector(NodeGroupBuilder):
         offset: IntegerSocket
         """Integer offset added to the index before sampling."""
 
-    class Outputs(SocketAccessor):
+    class _Outputs(SocketAccessor):
         vector: VectorSocket
         """The vector value at ``index + offset``."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
 
     def __init__(
         self,

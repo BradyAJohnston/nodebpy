@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     """Base class for all node wrappers."""
 
-    node: bpy.types.Node
     _bl_idname: str
     _tree: TreeBuilder
     _default_input_id: str | None = None
@@ -40,7 +39,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
         self._tree = tree
         self._placeholder_inputs = []
-        self.node = self._tree.add(self.__class__._bl_idname)
+        self.node: bpy.types.Node = self._tree.add(self.__class__._bl_idname)
 
     @property
     def tree(self) -> TreeBuilder:
@@ -128,21 +127,15 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     def inputs(self) -> SocketAccessor:
         return SocketAccessor(self.node.inputs, "input")
 
-    class Outputs(SocketAccessor):
-        pass
-
-    class Inputs(SocketAccessor):
-        pass
-
     @property
     def o(self) -> SocketAccessor:
-        """Output socket accessor. Typed subclasses override this on generated nodes."""
-        return self.__class__.Outputs(self.node.outputs, "output")
+        """Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
+        return SocketAccessor(self.node.outputs, "output")
 
     @property
     def i(self) -> SocketAccessor:
-        """Input socket accessor. Typed subclasses override this on generated nodes."""
-        return self.__class__.Inputs(self.node.inputs, "input")
+        """Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
+        return SocketAccessor(self.node.inputs, "input")
 
 
 class DynamicInputsMixin:
@@ -215,13 +208,6 @@ class NodeGroupBuilder(BaseNode, ABC):
         "VECTOR",
     ] = "NONE"
     node: bpy.types.GeometryNodeGroup
-
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        if "Inputs" in cls.__dict__:
-            cls.i = property(lambda self, c=cls: c.Inputs(self.node.inputs, "input"))
-        if "Outputs" in cls.__dict__:
-            cls.o = property(lambda self, c=cls: c.Outputs(self.node.outputs, "output"))
 
     def __init__(self, **kwargs):
         super().__init__()
