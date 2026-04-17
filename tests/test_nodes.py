@@ -162,7 +162,7 @@ def test_geometry_to_instance():
 
 def test_get_named_grid(snapshot_tree):
     with TreeBuilder() as tree:
-        (
+        _ = (
             g.VolumeCube()
             >> g.GetNamedGrid(name="density")
             >> g.FieldToGrid(g.Position(), g.Position() * 2 + 10)
@@ -603,3 +603,20 @@ def test_inputs():
         coll.i.collection.links[0].from_node.collection
         == bpy.data.collections["Collection"]
     )
+
+
+def test_has_inputs_registered():
+    with g.tree():
+        sp = g.SetPosition()
+        assert hasattr(sp.i, "geometry")
+        assert hasattr(sp.i, "offset")
+        assert hasattr(sp.i, "position")
+        assert hasattr(sp.i, "selection")
+        assert hasattr(sp.o, "geometry")
+
+
+# @g.tree("SomeTreeName")
+# def tree_builder(size: InputVector = None):
+#     cube = g.Cube(size=size)
+#     cube = cube >> g.SetPosition(offset=g.NoiseTexture().o.color * 0.1)
+#     return cube.o.mesh

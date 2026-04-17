@@ -596,7 +596,9 @@ for _mod, _tree_type in [
 def test_add_all_nodes(module, tree_type, class_names):
     def _test_node_property_access(node: NodeBuilder):
         assert node.node is not None
-        for output in [getattr(node, o) for o in dir(node) if o.startswith("o_")]:
+        for output in [
+            getattr(node.o, name) for name in dir(node.o) if not name.startswith("_")
+        ]:
             if NodeSocketVector.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
@@ -653,11 +655,11 @@ def test_add_all_nodes(module, tree_type, class_names):
                 assert result.node is not None
                 assert result.node.bl_idname == g.TransformPoint._bl_idname
                 assert result.node.inputs[0].links[0].from_node == output.node
-        for prop in dir(node):
-            if not prop.startswith("i_"):
+        for prop in dir(node.i):
+            if prop.startswith("_"):
                 continue
             try:
-                input = getattr(node, prop)
+                input = getattr(node.i, prop)
             except RuntimeError as e:
                 print(f"Failed to get input {prop} due to error: {e}")
                 continue
