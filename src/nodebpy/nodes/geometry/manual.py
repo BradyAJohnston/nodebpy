@@ -1,14 +1,26 @@
 from typing import Any, Literal
 
 import bpy
-from bpy.types import NodeSocket
+from bpy.types import NodeSocket, Scopes
+
+from nodebpy.builder.accessor import SocketAccessor
+from nodebpy.builder.interface import SocketGeometry
 
 from ...builder import (
     BaseNode as NodeBuilder,
 )
 from ...builder import (
     DynamicInputsMixin,
+    Socket,
+    SocketBoolean,
+    SocketCollection,
     SocketError,
+    SocketFloat,
+    SocketInteger,
+    SocketMaterial,
+    SocketMenu,
+    SocketObject,
+    SocketString,
     TreeBuilder,
 )
 from ...builder import (
@@ -117,21 +129,22 @@ class Bake(NodeBuilder, DynamicInputsMixin):
         item = self.node.bake_items.new(socket_type=type, name=name)
         return self.node.inputs[item.name]
 
-    @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self.inputs._get("__extend__")
-
-    @property
-    def o_input_socket(self) -> SocketLinker:
-        """Output socket:"""
-        return self.outputs._get("__extend__")
-
 
 class GeometryToInstance(NodeBuilder):
     """
     Convert each input geometry into an instance, which can be much faster
     than the Join Geometry node when the inputs are large
+
+    Inputs
+    ------
+    geometry : GeometrySocket
+        Multi-input socket; geometry that will be converted into an instance
+
+    Outputs
+    -------
+    instances : GeometrySocket
+        Single geometry output with each input linked geometry as a separate instance
+
     """
 
     _bl_idname = "GeometryNodeGeometryToInstance"
@@ -143,14 +156,18 @@ class GeometryToInstance(NodeBuilder):
             self._link_from(arg, "Geometry")
 
     @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
+    def i(self) -> "GeometryToInstance.Inputs":
+        return GeometryToInstance.Inputs(self.node.inputs, "input")
 
     @property
-    def o_instances(self) -> SocketLinker:
-        """Output socket: Instances"""
-        return self.outputs._get("Instances")
+    def o(self) -> "GeometryToInstance.Outputs":
+        return GeometryToInstance.Outputs(self.node.outputs, "output")
+
+    class Inputs(SocketAccessor):
+        geometry: SocketGeometry
+
+    class Outputs(SocketAccessor):
+        instances: SocketGeometry
 
 
 ### === ###
@@ -179,10 +196,8 @@ class Collection(NodeBuilder):
     def collection(self, value: bpy.types.Collection | None):
         self.node.collection = value
 
-    @property
-    def o_collection(self) -> SocketLinker:
-        """Output socket: Collection"""
-        return self.outputs._get("Collection")
+    class Outputs(SocketAccessor):
+        collection: SocketCollection
 
 
 class Material(NodeBuilder):
@@ -206,10 +221,12 @@ class Material(NodeBuilder):
     def material(self, value: bpy.types.Material | None):
         self.node.material = value
 
+    class Outputs(SocketAccessor):
+        material: SocketMaterial
+
     @property
-    def o_material(self) -> SocketLinker:
-        """Output socket: Material"""
-        return self.outputs._get("Material")
+    def o(self) -> "Material.Outputs":
+        return self.__class__.Outputs(self.node.outputs, "output")
 
 
 class Object(NodeBuilder):
@@ -233,10 +250,11 @@ class Object(NodeBuilder):
     def object(self, value: bpy.types.Object | None):
         self.node.object = value
 
-    @property
-    def o_object(self) -> SocketLinker:
-        """Output socket: Object"""
-        return self.outputs._get("Object")
+    class Outputs(SocketAccessor):
+        object: SocketObject
+
+    def o(self) -> "Object.Outputs":
+        return self.__class__.Outputs(self.node.outputs, "output")
 
 
 ### === ###
@@ -249,6 +267,9 @@ class Value(NodeBuilder):
 
     _bl_idname = "ShaderNodeValue"
     node: bpy.types.ShaderNodeValue
+
+    class Outputs(SocketAccessor):
+        value: SocketFloat
 
     def __init__(self, value: float = 0.0):
         super().__init__()
@@ -264,10 +285,8 @@ class Value(NodeBuilder):
     def value(self, value: float):
         self.node.outputs[0].default_value = value  # type: ignore
 
-    @property
-    def o_value(self) -> SocketLinker:
-        """Output socket: Value"""
-        return self.outputs._get("Value")
+    def o(self) -> "Value.Outputs":
+        return self.__class__.Outputs(self.node.outputs, "output")
 
 
 ### === ###
@@ -282,6 +301,13 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
     _type_map = {
         "VALUE": "FLOAT",
     }
+
+    class Inputs(SocketAccessor):
+        format: SocketString
+        input_socket: SocketLinker
+
+    class Outputs(SocketAccessor):
+        string: SocketString
 
     def __init__(
         self,
@@ -311,14 +337,12 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
         return self.node.inputs[item.name]
 
     @property
-    def i_format(self) -> SocketLinker:
-        """Input socket: Format"""
-        return self.inputs._get("Format")
+    def o(self) -> "FormatString.Outputs":
+        return FormatString.Outputs(self.node.outputs, "output")
 
     @property
-    def i_input_socket(self) -> SocketLinker:
-        """Input socket:"""
-        return self.inputs._get("__extend__")
+    def i(self) -> "FormatString.Inputs":
+        return FormatString.Inputs(self.node.inputs, "input")
 
     @property
     def items(self) -> dict[str, SocketLinker]:
@@ -327,17 +351,27 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
             socket.name: self.inputs._get(socket.name) for socket in self.node.inputs
         }
 
-    @property
-    def o_string(self) -> SocketLinker:
-        """Output socket: String"""
-        return self.outputs._get("String")
-
 
 class JoinStrings(NodeBuilder):
     """Combine any number of input strings"""
 
     _bl_idname = "GeometryNodeStringJoin"
     node: bpy.types.GeometryNodeStringJoin
+
+    class Outputs(SocketAccessor):
+        string: SocketString
+
+    class Inputs(SocketAccessor):
+        delimiter: SocketString
+        strings: SocketString
+
+    @property
+    def o(self) -> "JoinStrings.Outputs":
+        return JoinStrings.Outputs(self.node.outputs, "output")
+
+    @property
+    def i(self) -> "JoinStrings.Inputs":
+        return JoinStrings.Inputs(self.node.inputs, "input")
 
     def __init__(self, *args: InputLinkable, delimiter: InputString = ""):
         super().__init__()
@@ -346,27 +380,26 @@ class JoinStrings(NodeBuilder):
         for arg in args:
             self._link_from(arg, "Strings")
 
-    @property
-    def i_delimiter(self) -> SocketLinker:
-        """Input socket: Delimiter"""
-        return self.inputs._get("Delimiter")
-
-    @property
-    def i_strings(self) -> SocketLinker:
-        """Input socket: Strings"""
-        return self.inputs._get("Strings")
-
-    @property
-    def o_string(self) -> SocketLinker:
-        """Output socket: String"""
-        return self.outputs._get("String")
-
 
 class MeshBoolean(NodeBuilder):
     """Cut, subtract, or join multiple mesh inputs"""
 
     _bl_idname = "GeometryNodeMeshBoolean"
     node: bpy.types.GeometryNodeMeshBoolean
+
+    class Inputs(SocketAccessor):
+        mesh_1: SocketGeometry
+        mesh_2: SocketGeometry
+
+    class Outputs(SocketAccessor):
+        geometry: SocketGeometry
+
+        @property
+        def intersecting_edges(self) -> SocketLinker:
+            """Output socket: Mesh"""
+            if self.solver == "FLOAT":
+                raise ValueError("Intersecting Edges is not supported for FLOAT solver")
+            return self._get("Intersecting Edges")
 
     def __init__(
         self,
@@ -458,28 +491,6 @@ class MeshBoolean(NodeBuilder):
         return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
 
     @property
-    def i_mesh_1(self) -> SocketLinker:
-        """Input socket: Mesh 1"""
-        return self.inputs._get("Mesh 1")
-
-    @property
-    def i_mesh_2(self) -> SocketLinker:
-        """Input socket: Mesh 2"""
-        return self.inputs._get("Mesh 2")
-
-    @property
-    def o_mesh(self) -> SocketLinker:
-        """Output socket: Mesh"""
-        return self.outputs._get("Mesh")
-
-    @property
-    def o_intersecting_edges(self) -> SocketLinker:
-        """Output socket: Mesh"""
-        if self.solver == "FLOAT":
-            raise ValueError("Intersecting Edges is not supported for FLOAT solver")
-        return self.outputs._get("Intersecting Edges")
-
-    @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
         return self.node.operation
 
@@ -502,6 +513,20 @@ class JoinGeometry(NodeBuilder):
     _bl_idname = "GeometryNodeJoinGeometry"
     node: bpy.types.GeometryNodeJoinGeometry
 
+    class Inputs(SocketAccessor):
+        geometry: SocketGeometry
+
+    class Outputs(SocketAccessor):
+        geometry: SocketGeometry
+
+    @property
+    def i(self) -> "JoinGeometry.Inputs":
+        return JoinGeometry.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "JoinGeometry.Outputs":
+        return JoinGeometry.Outputs(self.node.outputs, "output")
+
     def __init__(self, *args: InputLinkable):
         super().__init__()
         for source in reversed(args):
@@ -510,22 +535,27 @@ class JoinGeometry(NodeBuilder):
             except SocketError:
                 self._link(*source._find_best_socket_pair(source, self))
 
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self.inputs._get("Geometry")
-
-    @property
-    def o_geometry(self) -> SocketLinker:
-        """Output socket: Geometry"""
-        return self.outputs._get("Geometry")
-
 
 class SetHandleType(NodeBuilder):
     """Set the handle type for the control points of a Bézier curve"""
 
     _bl_idname = "GeometryNodeCurveSetHandles"
     node: bpy.types.GeometryNodeCurveSetHandles
+
+    class Inputs(SocketAccessor):
+        curve: SocketGeometry
+        selection: SocketBoolean
+
+    class Outputs(SocketAccessor):
+        curve: SocketGeometry
+
+    @property
+    def i(self) -> "SetHandleType.Inputs":
+        return SetHandleType.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "SetHandleType.Outputs":
+        return SetHandleType.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -542,21 +572,6 @@ class SetHandleType(NodeBuilder):
         self.left = left
         self.right = right
         self._establish_links(**key_args)
-
-    @property
-    def i_curve(self) -> SocketLinker:
-        """Input socket: Curve"""
-        return self.inputs._get("Curve")
-
-    @property
-    def i_selection(self) -> SocketLinker:
-        """Input socket: Selection"""
-        return self.inputs._get("Selection")
-
-    @property
-    def o_curve(self) -> SocketLinker:
-        """Output socket: Curve"""
-        return self.outputs._get("Curve")
 
     @property
     def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
@@ -605,6 +620,13 @@ class HandleTypeSelection(NodeBuilder):
     _bl_idname = "GeometryNodeCurveHandleTypeSelection"
     node: bpy.types.GeometryNodeCurveHandleTypeSelection
 
+    class Outputs(SocketAccessor):
+        selection: SocketBoolean
+
+    @property
+    def o(self) -> "HandleTypeSelection.Outputs":
+        return HandleTypeSelection.Outputs(self.node.outputs, "output")
+
     def __init__(
         self,
         handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
@@ -615,11 +637,6 @@ class HandleTypeSelection(NodeBuilder):
         self.handle_type = handle_type
         self.left = left
         self.right = right
-
-    @property
-    def o_selection(self) -> SocketLinker:
-        """Output socket: Selection"""
-        return self.outputs._get("Selection")
 
     @property
     def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
@@ -702,6 +719,20 @@ class IndexSwitch(NodeBuilder):
     bundle = _typed("BUNDLE")
     closure = _typed("CLOSURE")
 
+    class Inputs(SocketAccessor):
+        index: SocketInteger
+
+    class Outputs(SocketAccessor):
+        output: Socket
+
+    @property
+    def i(self) -> "IndexSwitch.Inputs":
+        return IndexSwitch.Inputs(self.node.inputs, "input")
+
+    @property
+    def o(self) -> "IndexSwitch.Outputs":
+        return IndexSwitch.Outputs(self.node.outputs, "output")
+
     def __init__(
         self,
         *args: InputAny,
@@ -728,16 +759,6 @@ class IndexSwitch(NodeBuilder):
             else:
                 source = self._source_socket(arg)
                 self.tree.link(source, self.node.inputs["__extend__"])
-
-    @property
-    def i_index(self) -> SocketLinker:
-        """Input socket: Index"""
-        return self.inputs._get("Index")
-
-    @property
-    def o_output(self) -> SocketLinker:
-        """Output socket: Output"""
-        return self.outputs._get("Output")
 
     @property
     def data_type(self) -> SOCKET_TYPES:
@@ -769,6 +790,20 @@ class _MenuSwitchBase(NodeBuilder):
             return cls(*args, menu=menu, data_type=data_type, **kwargs)
 
         return method
+
+    class Inputs(SocketAccessor):
+        menu: SocketMenu
+
+    @property
+    def i(self) -> "MenuSwitch.Inputs":
+        return MenuSwitch.Inputs(self.node.inputs, "input")
+
+    class Outputs(SocketAccessor):
+        output: Socket
+
+    @property
+    def o(self) -> "MenuSwitch.Outputs":
+        return MenuSwitch.Outputs(self.node.outputs, "output")
 
     def __init__(
         self,
@@ -808,16 +843,6 @@ class _MenuSwitchBase(NodeBuilder):
         self.node.enum_items.new(name)
         # -1 is the last item (__extent__ socket) and -2 is the socket for the item we just added
         return self.node.inputs[-2]
-
-    @property
-    def i_menu(self) -> SocketLinker:
-        """Input socket: Menu"""
-        return self.inputs._get("Menu")
-
-    @property
-    def o_output(self) -> SocketLinker:
-        """Output socket: Output"""
-        return self.outputs._get("Output")
 
     @property
     def data_type(self) -> SOCKET_TYPES:
@@ -898,6 +923,15 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
     curve = _domain_factory("CURVE")
     instance = _domain_factory("INSTANCE")
     layer = _domain_factory("LAYER")
+
+    # class Inputs(SocketAccessor):
+    #     geometry: SocketGeometry
+
+    # class Outputs(SocketAccessor):
+    #     output: Socket
+
+    # @property
+    # def i(self) -> "CaptureAttribute.Inputs"
 
     def __init__(
         self,

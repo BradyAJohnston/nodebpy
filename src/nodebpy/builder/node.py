@@ -128,15 +128,21 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     def inputs(self) -> SocketAccessor:
         return SocketAccessor(self.node.inputs, "input")
 
+    class Outputs(SocketAccessor):
+        pass
+
+    class Inputs(SocketAccessor):
+        pass
+
     @property
     def o(self) -> SocketAccessor:
         """Output socket accessor. Typed subclasses override this on generated nodes."""
-        return self.outputs
+        return self.__class__.Outputs(self.node.outputs, "output")
 
     @property
     def i(self) -> SocketAccessor:
         """Input socket accessor. Typed subclasses override this on generated nodes."""
-        return self.inputs
+        return self.__class__.Inputs(self.node.inputs, "input")
 
 
 class DynamicInputsMixin:

@@ -615,6 +615,12 @@ def test_has_inputs_registered():
         assert hasattr(sp.o, "geometry")
 
 
+# def test_string():
+#     join = g.JoinStrings()
+#     fmt = g.FormatString()
+#     b = g.MeshBoolean()
+
+
 # @g.tree("SomeTreeName")
 # def tree_builder(size: InputVector = None):
 #     cube = g.Cube(size=size)
