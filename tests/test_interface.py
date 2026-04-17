@@ -487,3 +487,13 @@ def test_socket_accessort():
         pos = g.Position()
 
     assert pos.inputs._node == pos.node
+
+    with g.tree() as tree:
+        cube = g.Cube()
+        sim = g.SimulationZone()
+        (
+            sim.input.capture(cube)
+            >> g.TransformGeometry(translation=g.CombineXYZ(y=sim.delta_time))
+            >> sim.output
+            >> tree.outputs.geometry("MovedCube")
+        )

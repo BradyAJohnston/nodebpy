@@ -53,7 +53,7 @@ class BaseZoneInput(BaseZone, NodeBuilder, ABC):
     node: bpy.types.GeometryNodeSimulationInput | bpy.types.GeometryNodeRepeatInput
 
     @property
-    def _items_node(self):  # type: ignore
+    def _items_node(self):
         return self.node.paired_output
 
     @property
@@ -152,6 +152,7 @@ class SimulationZone:
         for name, source in socket_lookup.items():
             self.input._link_from(source, name)
 
+    @property
     def delta_time(self) -> SocketLinker:
         return self.input.o.delta_time
 

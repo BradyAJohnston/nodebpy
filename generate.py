@@ -564,60 +564,59 @@ class NodeInfo:
         # Uses per-value socket snapshots collected during introspection so that methods
         # only expose the sockets that are actually visible for that type value.
         type_param_name = "type"
-        if self.type_socket_enums:
-            for enum in self.type_socket_enums:
-                item_value = enum.identifier
-                method_name = normalize_name(item_value)
-                if method_name == "and":
-                    method_name = "l_and"
-                elif method_name == "or":
-                    method_name = "l_or"
-                elif method_name == "not":
-                    method_name = "l_not"
 
-                input_params = ["cls"]
-                call_params = []
+        if not self.type_socket_enums:
+            return "".join(methods)
 
-                all_identifiers = [s.identifier for s in enum.sockets]
-                sockets_use_same_name = (
-                    all(ident == all_identifiers[0] for ident in all_identifiers)
-                    if all_identifiers
-                    else False
-                )
+        for enum in self.type_socket_enums:
+            item_value = enum.identifier
+            method_name = normalize_name(item_value)
+            if method_name == "and":
+                method_name = "l_and"
+            elif method_name == "or":
+                method_name = "l_or"
+            elif method_name == "not":
+                method_name = "l_not"
 
-                for socket in enum.sockets:
-                    socket_name = get_socket_param_name(socket, sockets_use_same_name)
-                    if socket_name.startswith("min"):
-                        param_name = "min"
-                    elif socket_name.startswith("max"):
-                        param_name = "max"
-                    else:
-                        param_name = socket_name
-                    param_name = param_name.replace("_float", "").replace("_vector", "")
+            input_params = ["cls"]
+            call_params = []
 
-                    if (
-                        param_name
-                        and param_name != ""
-                        and param_name != type_param_name
-                    ):
-                        input_params.append(
-                            f"{param_name}: {socket.type_hint} = {format_python_value(socket.default_value)}"
-                        )
-                        call_params.append(f"{socket_name}={param_name}")
+            all_identifiers = [s.identifier for s in enum.sockets]
+            sockets_use_same_name = (
+                all(ident == all_identifiers[0] for ident in all_identifiers)
+                if all_identifiers
+                else False
+            )
 
-                params_str = ",\n        ".join(input_params)
-                call_params_str = ", ".join(call_params)
-                type_call_param = f'{type_param_name}="{item_value}"'
-                if call_params_str:
-                    call_params_str = f"{call_params_str}, {type_call_param}"
+            for socket in enum.sockets:
+                socket_name = get_socket_param_name(socket, sockets_use_same_name)
+                if socket_name.startswith("min"):
+                    param_name = "min"
+                elif socket_name.startswith("max"):
+                    param_name = "max"
                 else:
-                    call_params_str = type_call_param
+                    param_name = socket_name
+                param_name = param_name.replace("_float", "").replace("_vector", "")
 
-                docstring = f"Create {self.name} node with type '{item_value}'."
-                if enum.description:
-                    docstring += f" {enum.description}"
+                if param_name and param_name != "" and param_name != type_param_name:
+                    input_params.append(
+                        f"{param_name}: {socket.type_hint} = {format_python_value(socket.default_value)}"
+                    )
+                    call_params.append(f"{socket_name}={param_name}")
 
-                method = f'''
+            params_str = ",\n        ".join(input_params)
+            call_params_str = ", ".join(call_params)
+            type_call_param = f'{type_param_name}="{item_value}"'
+            if call_params_str:
+                call_params_str = f"{call_params_str}, {type_call_param}"
+            else:
+                call_params_str = type_call_param
+
+            docstring = f"Create {self.name} node with type '{item_value}'."
+            if enum.description:
+                docstring += f" {enum.description}"
+
+            method = f'''
     @classmethod
     def {method_name}(
         {params_str}
@@ -625,7 +624,7 @@ class NodeInfo:
         """{docstring}"""
         return cls({call_params_str})'''
 
-                methods.append(method)
+            methods.append(method)
 
         return "".join(methods)
 
