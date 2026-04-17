@@ -38,7 +38,8 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
     @property
     def links(self) -> bpy.types.NodeLinks:
         links = self.socket.links
-        assert links
+        assert links is not None
+        assert len(links) > 0
         return links
 
     @property

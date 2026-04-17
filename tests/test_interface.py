@@ -486,6 +486,9 @@ def test_socket_accessort():
     with g.tree():
         pos = g.Position()
 
+        with pytest.raises(AttributeError, match="_some_name"):
+            pos.o._some_name
+
     assert pos.inputs._node == pos.node
 
     with g.tree() as tree:

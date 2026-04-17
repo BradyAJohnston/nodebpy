@@ -615,10 +615,13 @@ def test_has_inputs_registered():
         assert hasattr(sp.o, "geometry")
 
 
-# def test_string():
-#     join = g.JoinStrings()
-#     fmt = g.FormatString()
-#     b = g.MeshBoolean()
+def test_join_string():
+    with g.tree():
+        string = "abcdefg"
+        letters = [g.String(x) for x in string]
+        join = g.JoinStrings(*letters)
+
+    assert len(letters) == len(join.i.strings.links)
 
 
 # @g.tree("SomeTreeName")
