@@ -1,0 +1,60 @@
+---
+title: Node API Design
+---
+
+The design approach for interfacing with the nodes takes several aspects into consideration.
+
+## Class Methods
+
+For nodes that have `Data Type`, `mode` and `operation` as potential enum values, convenience class methods are provided. 
+
+Because sockets are the only positional for the node constructors, enum values like `data_typ` have to be specified with as key word arguments to the constructor.
+All enum options are type-hinted with `Literal[]` so IDE auto-complete and type hinting will work, but the convenience class methods enable a cleaner way of writing the nodes.
+For the example below both methods do work, but the second is cleaner to write and flows better with what the node is doing; 'On the edge domain, evaluate a float attribute'.
+
+```py
+g.EvaluateOnDomain(domain="EDGE", data_type="FLOAT") # domain and data_type require kwargs
+
+g.EvaluateOnDomain.edge.float() # better IDE type-hinting and auto-complete
+```
+
+A similar approach is taken for the `Compare` node, with the first being data type and then secondarily the comparison operation.
+
+If the items being compared are nodes or sockets, regular boolean comparison with operators will also work. 
+All 3 different approaches have the same result.
+
+```py
+a = g.Integer(0)
+b = g.Integer(2)
+
+g.Compare(A_INT = a, A_INT = b, data_type = "INT", operation="EQUAL")
+
+g.Compare.integer.equal(a, b)
+
+a == b
+```
+
+::: {.callout-warning}
+
+The code will be evaluated at runtime.
+
+```py
+a = g.Integer(0)
+b = g.Integer(2)
+
+comp = a == b
+```
+
+The result of this will mean `comp` is a `g.Compare` node setup accordingly.
+The result inside of the node graph in theory then has the potential to change as inputs & values in the node tree change.
+
+```py
+a = 0
+b = 0
+
+comp = a == b
+```
+
+If the comparison was of just regular python values, then the result at runtime will just be boolean `True` and _not_ a `Compare` node. This means the value _won't_ change during node tree evaluation, and will only be evaluated a single time in node tree construction.
+
+:::
