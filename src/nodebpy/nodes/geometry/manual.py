@@ -938,7 +938,7 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         super().__init__()
         key_args = {"Geometry": geometry}
         self.domain = domain
-        key_args.update(self._add_inputs(*args, **kwargs))  # type: ignore
+        key_args.update(self._add_inputs(*args, **kwargs))
         self._establish_links(**key_args)
 
     def _add_socket(self, name: str, type: _AttributeDataTypes):
@@ -1011,10 +1011,10 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
         key_args = {
             "Topology": topology,
         }
-        key_args.update(self._add_inputs(*args, **kwargs))  # type: ignore
+        key_args.update(self._add_inputs(*args, **kwargs))
         self._establish_links(**key_args)
 
-    def _add_socket(  # type: ignore
+    def _add_socket(
         self,
         name: str,
         type: _GridDataTypes = "FLOAT",
@@ -1023,7 +1023,7 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
         item = self.node.grid_items.new(socket_type=type, name=name)
         if default_value is not None:
             try:
-                self.node.inputs[item.name].default_value = default_value  # type: ignore
+                self.node.inputs[item.name].default_value = default_value
             except TypeError as e:
                 raise ValueError(
                     f"Invalid default value for {type}: {default_value}"
