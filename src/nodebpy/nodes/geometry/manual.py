@@ -1839,13 +1839,17 @@ class Compare(NodeBuilder):
         def equal(
             a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.0001
         ) -> "Compare":
-            return Compare(operation="EQUAL", data_type="FLOAT", A=a, B=b, Epsilon=epsilon)
+            return Compare(
+                operation="EQUAL", data_type="FLOAT", A=a, B=b, Epsilon=epsilon
+            )
 
         @staticmethod
         def not_equal(
             a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.0001
         ) -> "Compare":
-            return Compare(operation="NOT_EQUAL", data_type="FLOAT", A=a, B=b, Epsilon=epsilon)
+            return Compare(
+                operation="NOT_EQUAL", data_type="FLOAT", A=a, B=b, Epsilon=epsilon
+            )
 
     class _IntegerFactory:
         @staticmethod
@@ -1918,7 +1922,9 @@ class Compare(NodeBuilder):
             c: InputFloat = None,
             angle: InputFloat = None,
         ) -> "Compare":
-            return Compare._VectorFactory._make("LESS_EQUAL", a, b, mode, c, angle, None)
+            return Compare._VectorFactory._make(
+                "LESS_EQUAL", a, b, mode, c, angle, None
+            )
 
         @staticmethod
         def greater_than(
@@ -1929,7 +1935,9 @@ class Compare(NodeBuilder):
             c: InputFloat = None,
             angle: InputFloat = None,
         ) -> "Compare":
-            return Compare._VectorFactory._make("GREATER_THAN", a, b, mode, c, angle, None)
+            return Compare._VectorFactory._make(
+                "GREATER_THAN", a, b, mode, c, angle, None
+            )
 
         @staticmethod
         def greater_equal(
@@ -1940,7 +1948,9 @@ class Compare(NodeBuilder):
             c: InputFloat = None,
             angle: InputFloat = None,
         ) -> "Compare":
-            return Compare._VectorFactory._make("GREATER_EQUAL", a, b, mode, c, angle, None)
+            return Compare._VectorFactory._make(
+                "GREATER_EQUAL", a, b, mode, c, angle, None
+            )
 
         @staticmethod
         def equal(
@@ -1964,7 +1974,9 @@ class Compare(NodeBuilder):
             angle: InputFloat = None,
             epsilon: InputFloat = 0.0001,
         ) -> "Compare":
-            return Compare._VectorFactory._make("NOT_EQUAL", a, b, mode, c, angle, epsilon)
+            return Compare._VectorFactory._make(
+                "NOT_EQUAL", a, b, mode, c, angle, epsilon
+            )
 
     class _ColorFactory:
         @staticmethod
@@ -1988,7 +2000,11 @@ class Compare(NodeBuilder):
             a: InputColor = None, b: InputColor = None, epsilon: InputFloat = 0.0001
         ) -> "Compare":
             return Compare(
-                operation="NOT_EQUAL", data_type="RGBA", A_COL=a, B_COL=b, Epsilon=epsilon
+                operation="NOT_EQUAL",
+                data_type="RGBA",
+                A_COL=a,
+                B_COL=b,
+                Epsilon=epsilon,
             )
 
     class _StringFactory:
@@ -2018,6 +2034,10 @@ class Compare(NodeBuilder):
         def b(self) -> SocketFloat | SocketVector | SocketColor:
             """Input socket: B"""
             return self._get("B{}".format(Compare._suffix(self._bpy_node.data_type)))  # ty: ignore[invalid-return-type]
+
+        c: SocketFloat
+        epsilon: SocketFloat
+        angle: SocketFloat
 
     class _Outputs(SocketAccessor):
         result: SocketBoolean

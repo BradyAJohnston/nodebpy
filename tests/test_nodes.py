@@ -789,6 +789,14 @@ def test_compare_node_data_types():
         assert comp.operation == "EQUAL"
         assert comp.mode == "AVERAGE"
 
+        comp = g.Compare.vector.equal(mode="DIRECTION", angle=0.5, epsilon=0.3)
+        assert comp.i.epsilon.socket.default_value == pytest.approx(0.3)
+        assert comp.i.angle.socket.default_value == pytest.approx(0.5)
+
+        comp = g.Compare.vector.equal(mode="DOT_PRODUCT", c=0.5, epsilon=0.2)
+        assert comp.i.c.socket.default_value == pytest.approx(0.5)
+        assert comp.i.epsilon.socket.default_value == pytest.approx(0.2)
+
         comp = g.Compare.vector.not_equal()
         assert comp.operation == "NOT_EQUAL"
 
