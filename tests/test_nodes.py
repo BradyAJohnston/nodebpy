@@ -126,7 +126,11 @@ def test_field_to_grid():
         ftg = g.FieldToGrid(*inputs, test=g.Value())
         _ = ftg.outputs["test"] >> math
 
-    assert len(tree) == 8
+        ftg2 = g.FieldToGrid(test_value=0.3)
+        assert ftg2.inputs["test_value"].socket.default_value == pytest.approx(0.3)
+
+
+    assert len(tree) == 9
     assert len(ftg.node.grid_items) == 6
     assert ftg.node.grid_items[5].name == "test"
     assert ftg.outputs["test"].socket.links[0].to_socket.node == math.node
@@ -142,11 +146,14 @@ def test_field_to_grid():
         grid = g.VolumeCube(g.NoiseTexture()) >> g.GetNamedGrid(name="density")
         ftg = g.FieldToGrid.vector(g.NoiseTexture().o.color, topology=grid)
 
+
     assert ftg.data_type == "VECTOR"
     assert len(ftg.node.grid_items) == 1
     assert ftg.i.topology.socket.links[0].from_node == grid.node
     assert ftg.i.topology.socket.links[0].from_socket == grid.o.grid.socket
     assert ftg.inputs["Color"].socket.links[0].from_node.name == "Noise Texture.001"
+
+
 
 
 def test_geometry_to_instance():
@@ -656,6 +663,18 @@ def test_mesh_boolean():
     assert len(bool2.i.mesh_2.links) == 2
     assert len(bool2.i.mesh_1.links) == 1
 
+
+def set_handle_type_and_selection():
+    with g.tree() as tree:
+        sel = g.HandleTypeSelection(handle_type="VECTOR", right=False)
+        assert sel.handle_type == "VECTOR"
+        sel.handle_type = "ALIGN"
+        assert sel.handle_type == "ALIGN"
+        assert not sel.right
+        assert sel.left
+        sel.left = False
+        sel.right = True
+        assert not sel.left and sel.right
 
 # @g.tree("SomeTreeName")
 # def tree_builder(size: InputVector = None):

@@ -1006,10 +1006,15 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
     ):
         super().__init__()
         self.data_type = data_type
-        key_args = {
-            "Topology": topology,
-        }
-        key_args.update(self._add_inputs(*args, **kwargs))
+        key_args = {"Topology": topology}
+
+        linkable = {k: v for k, v in kwargs.items() if not _is_default_value(v)}
+        defaults = {k: v for k, v in kwargs.items() if _is_default_value(v)}
+
+        key_args.update(self._add_inputs(*args, **linkable))
+        for name, value in defaults.items():
+            self._add_socket(name=name, default_value=value)
+
         self._establish_links(**key_args)
 
     def _add_socket(
@@ -1020,12 +1025,7 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
     ):
         item = self.node.grid_items.new(socket_type=type, name=name)
         if default_value is not None:
-            try:
-                self.node.inputs[item.name].default_value = default_value
-            except TypeError as e:
-                raise ValueError(
-                    f"Invalid default value for {type}: {default_value}"
-                ) from e
+            self.node.inputs[item.name].default_value = default_value  # ty: ignore[unresolved-attribute]
         return self.node.inputs[item.name]
 
     def capture(self, *args, **kwargs) -> list[SocketLinker]:
