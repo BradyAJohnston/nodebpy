@@ -129,7 +129,6 @@ def test_field_to_grid():
         ftg2 = g.FieldToGrid(test_value=0.3)
         assert ftg2.inputs["test_value"].socket.default_value == pytest.approx(0.3)
 
-
     assert len(tree) == 9
     assert len(ftg.node.grid_items) == 6
     assert ftg.node.grid_items[5].name == "test"
@@ -146,7 +145,6 @@ def test_field_to_grid():
         grid = g.VolumeCube(g.NoiseTexture()) >> g.GetNamedGrid(name="density")
         ftg = g.FieldToGrid.vector(g.NoiseTexture().o.color, topology=grid)
 
-
     assert ftg.data_type == "VECTOR"
     assert len(ftg.node.grid_items) == 1
     assert ftg.i.topology.socket.links[0].from_node == grid.node
@@ -154,6 +152,15 @@ def test_field_to_grid():
     assert ftg.inputs["Color"].socket.links[0].from_node.name == "Noise Texture.001"
 
 
+def test_field_variance():
+    with g.tree():
+        var = g.FieldVariance.edge.float(
+            g.SplineParameter().o.length, g.CurveOfPoint().o.curve_index
+        )
+        assert var.data_type == "FLOAT"
+        assert var.domain == "EDGE"
+        var.domain = "POINT"
+        assert var.domain == "POINT"
 
 
 def test_geometry_to_instance():
@@ -492,7 +499,7 @@ def test_foreachgeometryelement_zone():
             cube,
             selection=g.Normal()
             >> g.VectorMath.dot_product(..., (0, 0, 1))
-            >> g.Compare.greater_than.float(..., -0.1),
+            >> g.Compare.float.greater_than(..., -0.1),
             domain="FACE",
         )
         pos = zone.input.capture(g.Position())
@@ -670,7 +677,7 @@ def test_mesh_boolean():
 
 
 def set_handle_type_and_selection():
-    with g.tree() as tree:
+    with g.tree():
         sel = g.HandleTypeSelection(handle_type="VECTOR", right=False)
         assert sel.handle_type == "VECTOR"
         sel.handle_type = "ALIGN"
@@ -689,6 +696,19 @@ def set_handle_type_and_selection():
         sht.left = True
         sht.right = False
         assert sht.left and not sht.right
+
+
+def test_compare_node_data_types():
+
+    with g.tree():
+        comp = g.Compare.string.equal("A", "B")
+        assert comp.data_type == "STRING"
+        assert comp.i.a.socket.default_value == "A"
+        assert comp.i.b.socket.default_value == "B"
+        comp.data_type = "INT"
+        assert comp.data_type == "INT"
+        assert comp.inputs[0].socket.default_value == 0
+        assert comp.inputs[1].socket.default_value == 0
 
 
 # @g.tree("SomeTreeName")

@@ -107,7 +107,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
-            return getattr(Compare, operation).float(self.socket, other)
+            return getattr(Compare.float, operation)(self.socket, other)
         else:
             from ..nodes.geometry.converter import Math
 
@@ -225,7 +225,7 @@ class _VectorMixin:
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
-            return getattr(Compare, operation).vector(self.socket, other)
+            return getattr(Compare.vector, operation)(self.socket, other)
         else:
             return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
 
@@ -330,7 +330,7 @@ class _IntegerMixin:
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
-            return getattr(Compare, operation).integer(self.socket, other)
+            return getattr(Compare.integer, operation)(self.socket, other)
         return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
 
 

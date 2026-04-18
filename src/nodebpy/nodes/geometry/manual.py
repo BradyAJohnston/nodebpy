@@ -15,7 +15,6 @@ from ...builder import (
     SocketBoolean,
     SocketCollection,
     SocketColor,
-    SocketError,
     SocketFloat,
     SocketInteger,
     SocketMaterial,
@@ -1704,8 +1703,8 @@ class FieldVariance(NodeBuilder):
         class FieldVarianceDomainFactory:
             @staticmethod
             def float(
-                value: InputFloat = 1.0,
-                group_index: InputInteger = 0,
+                value: InputFloat = None,
+                group_index: InputInteger = None,
             ) -> "FieldVariance":
                 """Create FieldVariance for the "FLOAT" data type"""
                 return FieldVariance(
@@ -1714,8 +1713,8 @@ class FieldVariance(NodeBuilder):
 
             @staticmethod
             def vector(
-                value: InputVector = (1.0, 1.0, 1.0),
-                group_index: InputInteger = 0,
+                value: InputVector = None,
+                group_index: InputInteger = None,
             ) -> "FieldVariance":
                 """Create FieldVariance for the "FLOAT_VECTOR" data type"""
                 return FieldVariance(
@@ -1819,70 +1818,206 @@ class Compare(NodeBuilder):
     _bl_idname = "FunctionNodeCompare"
     node: bpy.types.FunctionNodeCompare
 
-    @staticmethod
-    def _operation_factory(operation: _CompareOperations):
-        class CompareOperationFactory:
-            @staticmethod
-            def float(
-                a: InputFloat = 0.0,
-                b: InputFloat = 0.0,
-                *,
-                epsilon: InputFloat = 0.0001,
-            ) -> "Compare":
-                return Compare.float(operation=operation, a=a, b=b, epsilon=epsilon)
+    class _FloatFactory:
+        @staticmethod
+        def less_than(a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare":
+            return Compare(operation="LESS_THAN", data_type="FLOAT", A=a, B=b)
 
-            @staticmethod
-            def integer(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
-                return Compare.integer(operation=operation, a=a, b=b)
+        @staticmethod
+        def less_equal(a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare":
+            return Compare(operation="LESS_EQUAL", data_type="FLOAT", A=a, B=b)
 
-            @staticmethod
-            def vector(
-                a: InputVector = (0.0, 0.0, 0.0),
-                b: InputVector = (0.0, 0.0, 0.0),
-                *,
-                mode: _CompareVectorModes = "ELEMENT",
-                c: InputFloat = None,
-                angle: InputFloat = None,
-                epsilon: InputFloat = None,
-            ) -> "Compare":
-                return Compare.vector(
-                    operation=operation,
-                    a=a,
-                    b=b,
-                    mode=mode,
-                    c=c,
-                    angle=angle,
-                    epsilon=epsilon,
-                )
+        @staticmethod
+        def greater_than(a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare":
+            return Compare(operation="GREATER_THAN", data_type="FLOAT", A=a, B=b)
 
-            @staticmethod
-            def color(
-                a: InputColor = None,
-                b: InputColor = None,
-                epsilon: InputFloat = None,
-            ) -> "Compare":
-                return Compare.color(operation=operation, a=a, b=b, epsilon=epsilon)
+        @staticmethod
+        def greater_equal(a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare":
+            return Compare(operation="GREATER_EQUAL", data_type="FLOAT", A=a, B=b)
 
-            @staticmethod
-            def string(a: InputString = "", b: InputString = "") -> "Compare":
-                return Compare.string(a=a, b=b)
+        @staticmethod
+        def equal(
+            a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.0001
+        ) -> "Compare":
+            return Compare(operation="EQUAL", data_type="FLOAT", A=a, B=b, Epsilon=epsilon)
 
-        return CompareOperationFactory()
+        @staticmethod
+        def not_equal(
+            a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.0001
+        ) -> "Compare":
+            return Compare(operation="NOT_EQUAL", data_type="FLOAT", A=a, B=b, Epsilon=epsilon)
 
-    less_than = _operation_factory("LESS_THAN")
-    less_equal = _operation_factory("LESS_EQUAL")
-    greater_than = _operation_factory("GREATER_THAN")
-    greater_equal = _operation_factory("GREATER_EQUAL")
-    equal = _operation_factory("EQUAL")
-    not_equal = _operation_factory("NOT_EQUAL")
-    brighter = _operation_factory("BRIGHTER")
-    darker = _operation_factory("DARKER")
+    class _IntegerFactory:
+        @staticmethod
+        def less_than(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+            return Compare(operation="LESS_THAN", data_type="INT", A_INT=a, B_INT=b)
+
+        @staticmethod
+        def less_equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+            return Compare(operation="LESS_EQUAL", data_type="INT", A_INT=a, B_INT=b)
+
+        @staticmethod
+        def greater_than(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+            return Compare(operation="GREATER_THAN", data_type="INT", A_INT=a, B_INT=b)
+
+        @staticmethod
+        def greater_equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+            return Compare(operation="GREATER_EQUAL", data_type="INT", A_INT=a, B_INT=b)
+
+        @staticmethod
+        def equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+            return Compare(operation="EQUAL", data_type="INT", A_INT=a, B_INT=b)
+
+        @staticmethod
+        def not_equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+            return Compare(operation="NOT_EQUAL", data_type="INT", A_INT=a, B_INT=b)
+
+    class _VectorFactory:
+        @staticmethod
+        def _make(
+            operation: _CompareOperations,
+            a: InputVector,
+            b: InputVector,
+            mode: _CompareVectorModes,
+            c: InputFloat,
+            angle: InputFloat,
+            epsilon: InputFloat,
+        ) -> "Compare":
+            kwargs: dict = {
+                "operation": operation,
+                "data_type": "VECTOR",
+                "mode": mode,
+                "A_VEC3": a,
+                "B_VEC3": b,
+            }
+            if operation in ("EQUAL", "NOT_EQUAL") and epsilon is not None:
+                kwargs["Epsilon"] = epsilon
+            if mode == "DIRECTION" and angle is not None:
+                kwargs["Angle"] = angle
+            elif mode == "DOT_PRODUCT" and c is not None:
+                kwargs["C"] = c
+            return Compare(**kwargs)
+
+        @staticmethod
+        def less_than(
+            a: InputVector = (0.0, 0.0, 0.0),
+            b: InputVector = (0.0, 0.0, 0.0),
+            *,
+            mode: _CompareVectorModes = "ELEMENT",
+            c: InputFloat = None,
+            angle: InputFloat = None,
+        ) -> "Compare":
+            return Compare._VectorFactory._make("LESS_THAN", a, b, mode, c, angle, None)
+
+        @staticmethod
+        def less_equal(
+            a: InputVector = (0.0, 0.0, 0.0),
+            b: InputVector = (0.0, 0.0, 0.0),
+            *,
+            mode: _CompareVectorModes = "ELEMENT",
+            c: InputFloat = None,
+            angle: InputFloat = None,
+        ) -> "Compare":
+            return Compare._VectorFactory._make("LESS_EQUAL", a, b, mode, c, angle, None)
+
+        @staticmethod
+        def greater_than(
+            a: InputVector = (0.0, 0.0, 0.0),
+            b: InputVector = (0.0, 0.0, 0.0),
+            *,
+            mode: _CompareVectorModes = "ELEMENT",
+            c: InputFloat = None,
+            angle: InputFloat = None,
+        ) -> "Compare":
+            return Compare._VectorFactory._make("GREATER_THAN", a, b, mode, c, angle, None)
+
+        @staticmethod
+        def greater_equal(
+            a: InputVector = (0.0, 0.0, 0.0),
+            b: InputVector = (0.0, 0.0, 0.0),
+            *,
+            mode: _CompareVectorModes = "ELEMENT",
+            c: InputFloat = None,
+            angle: InputFloat = None,
+        ) -> "Compare":
+            return Compare._VectorFactory._make("GREATER_EQUAL", a, b, mode, c, angle, None)
+
+        @staticmethod
+        def equal(
+            a: InputVector = (0.0, 0.0, 0.0),
+            b: InputVector = (0.0, 0.0, 0.0),
+            *,
+            mode: _CompareVectorModes = "ELEMENT",
+            c: InputFloat = None,
+            angle: InputFloat = None,
+            epsilon: InputFloat = 0.0001,
+        ) -> "Compare":
+            return Compare._VectorFactory._make("EQUAL", a, b, mode, c, angle, epsilon)
+
+        @staticmethod
+        def not_equal(
+            a: InputVector = (0.0, 0.0, 0.0),
+            b: InputVector = (0.0, 0.0, 0.0),
+            *,
+            mode: _CompareVectorModes = "ELEMENT",
+            c: InputFloat = None,
+            angle: InputFloat = None,
+            epsilon: InputFloat = 0.0001,
+        ) -> "Compare":
+            return Compare._VectorFactory._make("NOT_EQUAL", a, b, mode, c, angle, epsilon)
+
+    class _ColorFactory:
+        @staticmethod
+        def brighter(a: InputColor = None, b: InputColor = None) -> "Compare":
+            return Compare(operation="BRIGHTER", data_type="RGBA", A_COL=a, B_COL=b)
+
+        @staticmethod
+        def darker(a: InputColor = None, b: InputColor = None) -> "Compare":
+            return Compare(operation="DARKER", data_type="RGBA", A_COL=a, B_COL=b)
+
+        @staticmethod
+        def equal(
+            a: InputColor = None, b: InputColor = None, epsilon: InputFloat = 0.0001
+        ) -> "Compare":
+            return Compare(
+                operation="EQUAL", data_type="RGBA", A_COL=a, B_COL=b, Epsilon=epsilon
+            )
+
+        @staticmethod
+        def not_equal(
+            a: InputColor = None, b: InputColor = None, epsilon: InputFloat = 0.0001
+        ) -> "Compare":
+            return Compare(
+                operation="NOT_EQUAL", data_type="RGBA", A_COL=a, B_COL=b, Epsilon=epsilon
+            )
+
+    class _StringFactory:
+        @staticmethod
+        def equal(a: InputString = "", b: InputString = "") -> "Compare":
+            return Compare(operation="EQUAL", data_type="STRING", A_STR=a, B_STR=b)
+
+        @staticmethod
+        def not_equal(a: InputString = "", b: InputString = "") -> "Compare":
+            return Compare(operation="NOT_EQUAL", data_type="STRING", A_STR=a, B_STR=b)
+
+    float = _FloatFactory()
+    integer = _IntegerFactory()
+    vector = _VectorFactory()
+    color = _ColorFactory()
+    string = _StringFactory()
 
     class _Inputs(SocketAccessor):
-        a: SocketFloat | SocketVector | SocketColor
-        """Input socket: A"""
-        b: SocketFloat | SocketVector | SocketColor
-        """Input socket: B"""
+        @property
+        def a(self) -> SocketFloat | SocketVector | SocketColor:
+            """Input socket: A"""
+            name = "A{}".format(Compare._suffix(self.node.data_type))
+            return self._get(name)  # ty: ignore[invalid-return-type]
+
+        @property
+        def b(self) -> SocketFloat | SocketVector | SocketColor:
+            """Input socket: B"""
+            name = "B{}".format(Compare._suffix(self.node.data_type))
+            return self._get(name)  # ty: ignore[invalid-return-type]
 
     class _Outputs(SocketAccessor):
         result: SocketBoolean
@@ -1903,8 +2038,8 @@ class Compare(NodeBuilder):
         **kwargs,
     ):
         super().__init__()
-        self.operation = operation
         self.data_type = data_type
+        self.operation = operation
         if self.data_type == "VECTOR":
             self.mode = kwargs.pop("mode")
         self._establish_links(**kwargs)
@@ -1977,90 +2112,7 @@ class Compare(NodeBuilder):
             method = "integer"
         return getattr(Switch, method)(switch=self, false=false, true=true)
 
-    @classmethod
-    def float(
-        cls,
-        a: InputFloat = 0.0,
-        b: InputFloat = 0.0,
-        operation: _CompareOperations = "LESS_THAN",
-        *,
-        epsilon: InputFloat = 0.0001,
-    ):
-        kwargs = {"operation": operation, "data_type": "FLOAT", "A": a, "B": b}
-        if operation in ("EQUAL", "NOT_EQUAL"):
-            kwargs["Epsilon"] = epsilon
-        return cls(**kwargs)
-
-    @classmethod
-    def integer(
-        cls,
-        a: InputInteger = 0,
-        b: InputInteger = 0,
-        operation: _CompareOperations = "LESS_THAN",
-    ) -> "Compare":
-        return cls(operation=operation, data_type="INT", A_INT=a, B_INT=b)
-
-    @classmethod
-    def vector(
-        cls,
-        a: InputVector = (0.0, 0.0, 0.0),
-        b: InputVector = (0.0, 0.0, 0.0),
-        operation: _CompareOperations = "LESS_THAN",
-        *,
-        mode: _CompareVectorModes = "ELEMENT",
-        c: InputFloat = None,
-        angle: InputFloat = None,
-        epsilon: InputFloat = None,
-    ) -> "Compare":
-        kwargs = {
-            "operation": operation,
-            "data_type": "VECTOR",
-            "mode": mode,
-            "A_VEC3": a,
-            "B_VEC3": b,
-        }
-        if operation in ("EQUAL", "NOT_EQUAL"):
-            kwargs["Epsilon"] = epsilon
-
-        match mode:
-            case "DIRECTION":
-                kwargs["Angle"] = angle
-            case "DOT_PRODUCT":
-                kwargs["C"] = c
-            case _:
-                pass
-
-        return cls(**kwargs)
-
-    @classmethod
-    def color(
-        cls,
-        a: InputColor = None,
-        b: InputColor = None,
-        operation: _CompareOperations = "EQUAL",
-        *,
-        epsilon: InputFloat = None,
-    ) -> "Compare":
-        """Create Compare with operation 'Color'."""
-        kwargs = {
-            "operation": operation,
-            "data_type": "RGBA",
-            "A_COL": a,
-            "B_COL": b,
-        }
-        if operation in ("EQUAL", "NOT_EQUAL"):
-            kwargs["Epsilon"] = epsilon
-        return cls(**kwargs)
-
-    @classmethod
-    def string(
-        cls,
-        a: InputString = "",
-        b: InputString = "",
-    ) -> "Compare":
-        """Create Compare with operation 'String'."""
-        return cls(data_type="STRING", A_STR=a, B_STR=b)
-
+    @staticmethod
     def _suffix(self) -> str:
         suffix_lookup = {
             "FLOAT": "",
