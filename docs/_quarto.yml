@@ -9,42 +9,43 @@ website:
 
   navbar:
     left:
-    - href: index.qmd
-      text: Home
-    - text: Documentation
-      menu:
-      - introduction.qmd
-      - operators.qmd
-      - custom-node-groups.qmd
-    - href: reference/
-      text: Reference
+      - href: index.qmd
+        text: Home
+      - text: Documentation
+        menu:
+          - introduction.qmd
+          - operators.qmd
+          - custom-node-groups.qmd
+      - href: reference/
+        text: Reference
     right:
-    - icon: github
-      href: https://github.com/BradyAJohnston/nodebpy
+      - icon: github
+        href: https://github.com/BradyAJohnston/nodebpy
 
   sidebar:
-  - id: docs
-    style: floating
-    contents:
-    - introduction.qmd
-    - operators.qmd
-    - custom-node-groups.qmd
+    - id: docs
+      style: floating
+      contents:
+        - introduction.qmd
+        - operators.qmd
+        - custom-node-groups.qmd
+        - node-api.qmd
 
 # tell quarto to read the generated sidebar
 metadata-files:
-- reference/_sidebar.yml
+  - reference/_sidebar.yml
 
 format:
   html:
     toc: true
     theme:
-    - darkly
-    - nodebpy.scss
+      - darkly
+      - nodebpy.scss
     # highlight-style:
     #   dark: dracula.theme
 
 filters:
-- interlinks
+  - interlinks
 
 interlinks:
   sources:
@@ -71,62 +72,62 @@ quartodoc:
     signature_name: short
 
   sections:
-  - title: Geometry Nodes
-    desc: Nodes use in Geometry Nodes trees.
-    contents:
-    - nodes.geometry.input
-    - nodes.geometry.attribute
-    - nodes.geometry.color
-    - nodes.geometry.converter
-    - nodes.geometry.texture
-    - nodes.geometry.grid
-    - nodes.geometry.groups
-    - nodes.geometry.geometry
-    - nodes.geometry.attribute
-    ####################
-    - nodes.geometry.vector
-    - nodes.geometry.manual
-  - subtitle: Zones in GN
-    contents:
-    - nodes.geometry.zone
+    - title: Geometry Nodes
+      desc: Nodes use in Geometry Nodes trees.
+      contents:
+        - nodes.geometry.input
+        - nodes.geometry.attribute
+        - nodes.geometry.color
+        - nodes.geometry.converter
+        - nodes.geometry.texture
+        - nodes.geometry.grid
+        - nodes.geometry.groups
+        - nodes.geometry.geometry
+        - nodes.geometry.attribute
+        ####################
+        - nodes.geometry.vector
+        - nodes.geometry.manual
+    - subtitle: Zones in GN
+      contents:
+        - nodes.geometry.zone
 
-  - title: Shader Nodes
-    desc: Nodes use in Material / Shader node trees
-    contents:
-    - nodes.shader.color
-    - nodes.shader.converter
-    - nodes.shader.grid
-    - nodes.shader.group
-    - nodes.shader.input
-    - nodes.shader.interface
-    - nodes.shader.manual
-    - nodes.shader.output
-    - nodes.shader.script
-    - nodes.shader.shader
-    - nodes.shader.texture
-    - nodes.shader.vector
-  - title: Compositor Nodes
-    desc: Nodes for use in the compositor
-    contents:
-    - nodes.compositor.color
-    - nodes.compositor.converter
-    - nodes.compositor.distort
-    - nodes.compositor.filter
-    - nodes.compositor.group
-    - nodes.compositor.input
-    - nodes.compositor.interface
-    - nodes.compositor.manual
-    - nodes.compositor.matte
-    - nodes.compositor.output
-    - nodes.compositor.vector
+    - title: Shader Nodes
+      desc: Nodes use in Material / Shader node trees
+      contents:
+        - nodes.shader.color
+        - nodes.shader.converter
+        - nodes.shader.grid
+        - nodes.shader.group
+        - nodes.shader.input
+        - nodes.shader.interface
+        - nodes.shader.manual
+        - nodes.shader.output
+        - nodes.shader.script
+        - nodes.shader.shader
+        - nodes.shader.texture
+        - nodes.shader.vector
+    - title: Compositor Nodes
+      desc: Nodes for use in the compositor
+      contents:
+        - nodes.compositor.color
+        - nodes.compositor.converter
+        - nodes.compositor.distort
+        - nodes.compositor.filter
+        - nodes.compositor.group
+        - nodes.compositor.input
+        - nodes.compositor.interface
+        - nodes.compositor.manual
+        - nodes.compositor.matte
+        - nodes.compositor.output
+        - nodes.compositor.vector
 
-  - title: Interface
-    contents:
-    - builder.interface
-    - builder.tree
+    - title: Interface
+      contents:
+        - builder.interface
+        - builder.tree
 
-  - title: Internals
-    desc: Internal nodes used by nodebpy
-    contents:
-    - TreeBuilder
-    - builder.NodeBuilder
+    - title: Internals
+      desc: Internal nodes used by nodebpy
+      contents:
+        - TreeBuilder
+        - builder.NodeBuilder
