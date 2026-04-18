@@ -639,7 +639,7 @@ def test_mesh_boolean():
         bool2.operation = "INTERSECT"
         assert bool2.operation == "INTERSECT"
         bool3 = g.MeshBoolean.intersect(
-            *meshes, solver="EXACT", hole_tolerant=g.Boolean(), self_intersection=False
+            *meshes, hole_tolerant=g.Boolean(), self_intersection=False, solver="EXACT"
         )
         assert len(bool3.i.mesh_2.links) == 2
         assert bool3.solver == "EXACT"
@@ -647,6 +647,10 @@ def test_mesh_boolean():
         assert (
             bool3.i.hole_tolerant.links[0].from_node.bl_idname == g.Boolean._bl_idname
         )
+        bool4 = g.MeshBoolean.union(*meshes, self_intersection=True, solver="EXACT")
+        assert len(bool4.i.mesh_2.links) == 2
+        assert bool4.solver == "EXACT"
+        assert bool4.i.self_intersection.socket.default_value is True
 
     assert len(boolean.i.mesh_2.links) == 2
     assert len(bool2.i.mesh_2.links) == 2

@@ -431,8 +431,8 @@ class MeshBoolean(NodeBuilder):
     ) -> "MeshBoolean":
         key_args = {}
         if solver == "EXACT":
-            key_args["Self Intersection"] = self_intersection
-            key_args["Hole Tolerant"] = hole_tolerant
+            key_args["self_intersection"] = self_intersection
+            key_args["hole_tolerant"] = hole_tolerant
         return cls(
             *args,
             **key_args,
@@ -450,8 +450,8 @@ class MeshBoolean(NodeBuilder):
     ) -> "MeshBoolean":
         key_args = {}
         if solver == "EXACT":
-            key_args["Self Intersection"] = self_intersection
-            key_args["Hole Tolerant"] = hole_tolerant
+            key_args["self_intersection"] = self_intersection
+            key_args["hole_tolerant"] = hole_tolerant
         return cls(
             *args,
             **key_args,
@@ -471,8 +471,8 @@ class MeshBoolean(NodeBuilder):
         key_args = {}
         key_args["Mesh 1"] = mesh_1
         if solver == "EXACT":
-            key_args["Self Intersection"] = self_intersection
-            key_args["Hole Tolerant"] = hole_tolerant
+            key_args["self_intersection"] = self_intersection
+            key_args["hole_tolerant"] = hole_tolerant
         return cls(
             *args,
             **key_args,
@@ -519,10 +519,8 @@ class JoinGeometry(NodeBuilder):
     def __init__(self, *args: InputLinkable):
         super().__init__()
         for source in reversed(args):
-            try:
-                self._link(*self._find_best_socket_pair(source, self))
-            except SocketError:
-                self._link(*source._find_best_socket_pair(source, self))
+            assert source
+            self._link(*self._find_best_socket_pair(source, self))
 
 
 class SetHandleType(NodeBuilder):
