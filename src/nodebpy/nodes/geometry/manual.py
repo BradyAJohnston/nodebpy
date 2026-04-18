@@ -741,7 +741,7 @@ class IndexSwitch(NodeBuilder):
         for arg in args:
             if _is_default_value(arg):
                 socket = self._create_socket()
-                socket.default_value = arg  # type: ignore
+                socket.default_value = arg  # ty: ignore[unresolved-attribute]
             else:
                 source = self._source_socket(arg)
                 self.tree.link(source, self.node.inputs["__extend__"])

@@ -318,9 +318,14 @@ def test_index_switch(snapshot_tree):
         items = (g.Cube(), g.UVSphere(), g.Cube(), g.Cube())
         index = g.IndexSwitch.geometry(*items, index=5)
 
+        index2 = g.IndexSwitch.float(*range(10))
+
     assert len(index.node.index_switch_items) == 4
-    assert len(tree) == 5
+    assert len(tree) == 6
     assert index.i.index.socket.default_value == 5
+    assert index2.node.inputs[1].default_value == pytest.approx(0.0)
+    assert index2.node.inputs[2].default_value == pytest.approx(1.0)
+    assert index2.node.inputs[3].default_value == pytest.approx(2.0)
 
 
 def test_menu_switch():
@@ -684,6 +689,7 @@ def set_handle_type_and_selection():
         sht.left = True
         sht.right = False
         assert sht.left and not sht.right
+
 
 # @g.tree("SomeTreeName")
 # def tree_builder(size: InputVector = None):
