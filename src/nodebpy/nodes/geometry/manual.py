@@ -2007,26 +2007,29 @@ class Compare(NodeBuilder):
     string = _StringFactory()
 
     class _Inputs(SocketAccessor):
+        _bpy_node: "bpy.types.FunctionNodeCompare"
+
         @property
         def a(self) -> SocketFloat | SocketVector | SocketColor:
             """Input socket: A"""
-            name = "A{}".format(Compare._suffix(self.node.data_type))
-            return self._get(name)  # ty: ignore[invalid-return-type]
+            return self._get("A{}".format(Compare._suffix(self._bpy_node.data_type)))  # ty: ignore[invalid-return-type]
 
         @property
         def b(self) -> SocketFloat | SocketVector | SocketColor:
             """Input socket: B"""
-            name = "B{}".format(Compare._suffix(self.node.data_type))
-            return self._get(name)  # ty: ignore[invalid-return-type]
+            return self._get("B{}".format(Compare._suffix(self._bpy_node.data_type)))  # ty: ignore[invalid-return-type]
 
     class _Outputs(SocketAccessor):
         result: SocketBoolean
         """Boolean result of the comparison."""
 
-    if TYPE_CHECKING:
+    @property
+    def i(self) -> _Inputs:  # type: ignore[override]
+        accessor = Compare._Inputs(self.node.inputs, "input")
+        accessor._bpy_node = self.node
+        return accessor
 
-        @property
-        def i(self) -> _Inputs: ...
+    if TYPE_CHECKING:
 
         @property
         def o(self) -> _Outputs: ...

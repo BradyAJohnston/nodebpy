@@ -699,16 +699,112 @@ def set_handle_type_and_selection():
 
 
 def test_compare_node_data_types():
-
     with g.tree():
+        # --- string ---
         comp = g.Compare.string.equal("A", "B")
         assert comp.data_type == "STRING"
+        assert comp.operation == "EQUAL"
         assert comp.i.a.socket.default_value == "A"
         assert comp.i.b.socket.default_value == "B"
-        comp.data_type = "INT"
+
+        comp = g.Compare.string.not_equal("X", "Y")
+        assert comp.data_type == "STRING"
+        assert comp.operation == "NOT_EQUAL"
+        assert comp.i.a.socket.default_value == "X"
+        assert comp.i.b.socket.default_value == "Y"
+
+        # --- float ---
+        comp = g.Compare.float.less_than(1.0, 2.0)
+        assert comp.data_type == "FLOAT"
+        assert comp.operation == "LESS_THAN"
+        assert comp.i.a.socket.default_value == pytest.approx(1.0)
+        assert comp.i.b.socket.default_value == pytest.approx(2.0)
+
+        comp = g.Compare.float.less_equal()
+        assert comp.data_type == "FLOAT"
+        assert comp.operation == "LESS_EQUAL"
+
+        comp = g.Compare.float.greater_than()
+        assert comp.operation == "GREATER_THAN"
+
+        comp = g.Compare.float.greater_equal()
+        assert comp.operation == "GREATER_EQUAL"
+
+        comp = g.Compare.float.equal(1.0, 0.0)
+        assert comp.operation == "EQUAL"
+        assert comp.i.a.socket.default_value == pytest.approx(1.0)
+
+        comp = g.Compare.float.not_equal(3.0, 4.0)
+        assert comp.operation == "NOT_EQUAL"
+        assert comp.i.a.socket.default_value == pytest.approx(3.0)
+        assert comp.i.b.socket.default_value == pytest.approx(4.0)
+
+        # output socket
+        assert comp.o.result.socket.type == "BOOLEAN"
+
+        # --- integer ---
+        comp = g.Compare.integer.less_than(1, 2)
         assert comp.data_type == "INT"
-        assert comp.inputs[0].socket.default_value == 0
-        assert comp.inputs[1].socket.default_value == 0
+        assert comp.operation == "LESS_THAN"
+        assert comp.i.a.socket.default_value == 1
+        assert comp.i.b.socket.default_value == 2
+
+        comp = g.Compare.integer.less_equal()
+        assert comp.operation == "LESS_EQUAL"
+
+        comp = g.Compare.integer.greater_than()
+        assert comp.operation == "GREATER_THAN"
+
+        comp = g.Compare.integer.greater_equal()
+        assert comp.operation == "GREATER_EQUAL"
+
+        comp = g.Compare.integer.equal(5, 5)
+        assert comp.operation == "EQUAL"
+        assert comp.i.a.socket.default_value == 5
+
+        comp = g.Compare.integer.not_equal()
+        assert comp.operation == "NOT_EQUAL"
+
+        # mutating data_type re-routes i.a / i.b
+        comp.data_type = "FLOAT"
+        assert comp.i.a.socket.default_value == pytest.approx(0.0)
+        comp.i.a.socket.default_value = 7.0
+        assert comp.i.a.socket.default_value == pytest.approx(7.0)
+
+        # --- vector ---
+        comp = g.Compare.vector.less_than((1, 0, 0), (0, 1, 0))
+        assert comp.data_type == "VECTOR"
+        assert comp.operation == "LESS_THAN"
+
+        comp = g.Compare.vector.less_equal()
+        assert comp.operation == "LESS_EQUAL"
+
+        comp = g.Compare.vector.greater_than()
+        assert comp.operation == "GREATER_THAN"
+
+        comp = g.Compare.vector.greater_equal()
+        assert comp.operation == "GREATER_EQUAL"
+
+        comp = g.Compare.vector.equal(mode="AVERAGE")
+        assert comp.operation == "EQUAL"
+        assert comp.mode == "AVERAGE"
+
+        comp = g.Compare.vector.not_equal()
+        assert comp.operation == "NOT_EQUAL"
+
+        # --- color ---
+        comp = g.Compare.color.brighter()
+        assert comp.data_type == "RGBA"
+        assert comp.operation == "BRIGHTER"
+
+        comp = g.Compare.color.darker()
+        assert comp.operation == "DARKER"
+
+        comp = g.Compare.color.equal()
+        assert comp.operation == "EQUAL"
+
+        comp = g.Compare.color.not_equal()
+        assert comp.operation == "NOT_EQUAL"
 
 
 # @g.tree("SomeTreeName")
