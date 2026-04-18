@@ -676,6 +676,15 @@ def set_handle_type_and_selection():
         sel.right = True
         assert not sel.left and sel.right
 
+        sht = g.SetHandleType(left=False, handle_type="VECTOR")
+        assert sht.handle_type == "VECTOR"
+        assert not sht.left and sht.right
+        sht.handle_type = "ALIGN"
+        assert sht.handle_type == "ALIGN"
+        sht.left = True
+        sht.right = False
+        assert sht.left and not sht.right
+
 # @g.tree("SomeTreeName")
 # def tree_builder(size: InputVector = None):
 #     cube = g.Cube(size=size)
