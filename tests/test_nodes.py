@@ -629,8 +629,19 @@ def test_mesh_boolean():
         meshes = [g.Cube(), g.IcoSphere() >> g.TransformGeometry(translation=0.2)]
 
         boolean = g.MeshBoolean.intersect(*meshes)
+        assert boolean.solver == "FLOAT"
+        assert boolean.operation == "INTERSECT"
+        boolean.solver = "EXACT"
+        assert boolean.solver == "EXACT"
+        bool2 = g.MeshBoolean.difference(*meshes, mesh_1=g.Cone(), solver="EXACT")
+        assert bool2.operation == "DIFFERENCE"
+        assert bool2.solver == "EXACT"
+        bool2.operation = "INTERSECT"
+        assert bool2.operation == "INTERSECT"
 
     assert len(boolean.i.mesh_2.links) == 2
+    assert len(bool2.i.mesh_2.links) == 2
+    assert len(bool2.i.mesh_1.links) == 1
 
 
 # @g.tree("SomeTreeName")

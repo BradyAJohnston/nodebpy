@@ -428,7 +428,7 @@ class MeshBoolean(NodeBuilder):
         self_intersection: InputBoolean = False,
         hole_tolerant: InputBoolean = False,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
-    ):
+    ) -> "MeshBoolean":
         key_args = {}
         if solver == "EXACT":
             key_args["Self Intersection"] = self_intersection
@@ -447,7 +447,7 @@ class MeshBoolean(NodeBuilder):
         hole_tolerant: InputBoolean = False,
         self_intersection: InputBoolean = False,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
-    ):
+    ) -> "MeshBoolean":
         key_args = {}
         if solver == "EXACT":
             key_args["Self Intersection"] = self_intersection
@@ -467,7 +467,7 @@ class MeshBoolean(NodeBuilder):
         hole_tolerant: InputBoolean = False,
         self_intersection: InputBoolean = False,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
-    ):
+    ) -> "MeshBoolean":
         key_args = {}
         key_args["Mesh 1"] = mesh_1
         if solver == "EXACT":
