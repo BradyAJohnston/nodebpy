@@ -624,6 +624,15 @@ def test_join_string():
     assert len(letters) == len(join.i.strings.links)
 
 
+def test_mesh_boolean():
+    with g.tree():
+        meshes = [g.Cube(), g.IcoSphere() >> g.TransformGeometry(translation=0.2)]
+
+        boolean = g.MeshBoolean.intersect(*meshes)
+
+    assert len(boolean.i.mesh_2.links) == 2
+
+
 # @g.tree("SomeTreeName")
 # def tree_builder(size: InputVector = None):
 #     cube = g.Cube(size=size)

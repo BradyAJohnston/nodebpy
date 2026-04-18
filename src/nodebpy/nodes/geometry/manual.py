@@ -82,6 +82,7 @@ __all__ = (
     "HandleTypeSelection",
     "IndexSwitch",
     "MenuSwitch",
+    "MeshBoolean",
     "CaptureAttribute",
     "FieldToGrid",
     "JoinGeometry",
@@ -402,13 +403,7 @@ class MeshBoolean(NodeBuilder):
 
     class _Outputs(SocketAccessor):
         geometry: SocketGeometry
-
-        @property
-        def intersecting_edges(self) -> SocketLinker:
-            """Output socket: Mesh"""
-            if self.solver == "FLOAT":
-                raise ValueError("Intersecting Edges is not supported for FLOAT solver")
-            return self._get("Intersecting Edges")
+        intersecting_edges: SocketGeometry
 
     def __init__(
         self,
@@ -446,7 +441,7 @@ class MeshBoolean(NodeBuilder):
         )
 
     @classmethod
-    def m_union(
+    def union(
         cls,
         *args: InputGeometry,
         hole_tolerant: InputBoolean = False,
@@ -465,7 +460,7 @@ class MeshBoolean(NodeBuilder):
         )
 
     @classmethod
-    def m_difference(
+    def difference(
         cls,
         *args: InputGeometry,
         mesh_1: InputGeometry = None,
@@ -484,20 +479,6 @@ class MeshBoolean(NodeBuilder):
             solver=solver,
             operation="DIFFERENCE",
         )
-
-    @classmethod
-    def union(
-        cls, mesh_1: InputLinkable = None, mesh_2: InputLinkable = None
-    ) -> "MeshBoolean":
-        """Create Mesh Boolean with operation 'Union'."""
-        return cls(operation="UNION", mesh_1=mesh_1, mesh_2=mesh_2)
-
-    @classmethod
-    def difference(
-        cls, mesh_1: InputLinkable = None, mesh_2: InputLinkable = None
-    ) -> "MeshBoolean":
-        """Create Mesh Boolean with operation 'Difference'."""
-        return cls(operation="DIFFERENCE", mesh_1=mesh_1, mesh_2=mesh_2)
 
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:

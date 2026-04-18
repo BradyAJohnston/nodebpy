@@ -563,7 +563,7 @@ class TestComparisonEqualNotEqual:
             with TreeBuilder("TestCompareInt"):
                 _ = (g.Integer(5) == 4).switch(list, int)
 
-    def test_comparison_into_switch(self):
+    def test_comparison_into_switch_node(self):
         """Test using a comparison result as a switch condition."""
         with TreeBuilder("TestCompareSwitch"):
             val = g.Integer(5)
@@ -693,8 +693,7 @@ class TestComparisonChaining:
     def test_comparison_into_switch(self):
         """Use a comparison as a switch condition."""
         with TreeBuilder("TestCompareSwitch"):
-            val = g.Value(5.0)
-            condition = val > 0.0
+            condition = g.SplineParameter().o.length > 0.5
             switch = g.Switch.float(condition, 1.0, 2.0)
 
         assert switch.node.inputs["Switch"].links[0].from_node == condition.node

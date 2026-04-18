@@ -109,6 +109,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Material",
         "Object",
         "Value",
+        "MeshBoolean",
         "AccumulateField",
         "EvaluateAtIndex",
         "FieldAverage",
