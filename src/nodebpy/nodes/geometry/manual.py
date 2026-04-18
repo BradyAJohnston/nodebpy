@@ -2113,7 +2113,7 @@ class Compare(NodeBuilder):
         return getattr(Switch, method)(switch=self, false=false, true=true)
 
     @staticmethod
-    def _suffix(self) -> str:
+    def _suffix(data_type: str) -> str:
         suffix_lookup = {
             "FLOAT": "",
             "INT": "_INT",
@@ -2121,7 +2121,7 @@ class Compare(NodeBuilder):
             "RGBA": "_COL",
             "STRING": "_STR",
         }
-        return suffix_lookup[self.data_type]
+        return suffix_lookup[data_type]
 
     @property
     def operation(
