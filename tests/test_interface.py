@@ -480,3 +480,23 @@ def test_compositor_panel_with_socket_methods():
     color = next(i for i in items if getattr(i, "name", None) == "Color")
     assert threshold.parent == panels[0]
     assert color.parent == panels[0]
+
+
+def test_socket_accessort():
+    with g.tree():
+        pos = g.Position()
+
+        with pytest.raises(AttributeError, match="_some_name"):
+            pos.o._some_name
+
+    assert pos.inputs._node == pos.node
+
+    with g.tree() as tree:
+        cube = g.Cube()
+        sim = g.SimulationZone()
+        (
+            sim.input.capture(cube)
+            >> g.TransformGeometry(translation=g.CombineXYZ(y=sim.delta_time))
+            >> sim.output
+            >> tree.outputs.geometry("MovedCube")
+        )

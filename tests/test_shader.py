@@ -15,7 +15,7 @@ def test_simple_shader():
 
 def test_shader_math():
     with s.tree() as tree:
-        comp = s.Geometry().o_random_per_island >= 10.0
+        comp = s.Geometry().o.random_per_island >= 10.0
         prin = s.PrincipledBSDF(ior=comp)
         with tree.outputs:
             _ = prin >> sockets.SocketShader()
@@ -47,7 +47,7 @@ def test_shader_menu_switch():
             _ = menu >> sockets.SocketFloat()
 
     assert len(menu.node.enum_items) == 10
-    for i, input in enumerate([x for x in menu.inputs.values() if x.type == "VALUE"]):
+    for i, input in enumerate([x for x in menu.inputs._values() if x.type == "VALUE"]):
         assert f"Input_{i}" == input.name
         assert float(i) == input.socket.default_value
 
@@ -59,8 +59,8 @@ def test_shader_menu_switch():
             _ = menu >> sockets.SocketFloat()
 
     assert len(menu.node.enum_items) == 10
-    print(list(menu.inputs.items()))
-    for i, input in enumerate([x for x in menu.inputs.values() if x.type == "VALUE"]):
+    print(list(menu.inputs._items()))
+    for i, input in enumerate([x for x in menu.inputs._values() if x.type == "VALUE"]):
         assert input.socket.links[0].from_node.bl_idname == s.Value._bl_idname
         # we have to check the output defeault value here because that is how the Value
         # node is defined which is truly cursed but hey it is what it is
@@ -81,7 +81,7 @@ def test_color_shader():
 def test_material_node_cartoon():
     with s.material("Cartoon", fake_user=True) as mat:
         mat.nodes.clear()
-        output = s.MaterialOutput(surface=s.Attribute.geometry("Color").o_color)
+        output = s.MaterialOutput(surface=s.Attribute.geometry("Color").o.color)
         attr = s.Attribute.geometry("sec_struct")
         aov = s.AovOutput(value=attr, aov_name="sec_struct")
 

@@ -150,11 +150,9 @@ class TestTopologicalSort:
 
     def test_all_nodes_present(self):
         """All layoutable nodes should appear in the sorted output."""
-        with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
+        with g.tree(arrange=None) as tree:
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> out
 
         graph, _ = build_dependency_graph(tree.tree)
@@ -167,12 +165,13 @@ class TestOrganizeIntoColumns:
 
     def test_linear_chain_columns(self):
         """A linear chain of N nodes should produce N columns of 1 node each."""
-        with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
-            _ = geo >> g.SetPosition() >> g.RealizeInstances() >> out
+        with g.tree(arrange=None) as tree:
+            _ = (
+                tree.inputs.geometry()
+                >> g.SetPosition()
+                >> g.RealizeInstances()
+                >> tree.outputs.geometry()
+            )
 
         graph, _ = build_dependency_graph(tree.tree)
         sorted_nodes = topological_sort(graph)

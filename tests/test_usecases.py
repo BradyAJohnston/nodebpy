@@ -1,19 +1,18 @@
-from nodebpy import TreeBuilder
+import bpy
+
 from nodebpy import geometry as g
-from nodebpy import sockets as s
 
 
-def import_channel():
+def import_channel() -> bpy.types.GeometryNodeTree:
     string_to_format = "{base_path}/{scale}/x0y0z0/x0y0z0c0t{time:04}.vdb"
 
-    with TreeBuilder("Channel Import", arrange="simple") as tree:
-        with tree.inputs:
-            base_path = s.SocketString("base_path", subtype="FILE_PATH")
-            time = s.SocketInteger("Time")
-            channel_number = s.SocketInteger("Channel Number")
-            channel_name = s.SocketString("Channel Name")
-            min_value = s.SocketFloat("Minimum Value")
-            max_value = s.SocketFloat("Maximum Value")
+    with g.tree("Channel Import", arrange="simple") as tree:
+        base_path = tree.inputs.string("base_path", subtype="FILE_PATH")
+        time = tree.inputs.integer("Time")
+        channel_number = tree.inputs.integer("Channel Number")
+        channel_name = tree.inputs.string("Channel Name")
+        min_value = tree.inputs.float("Minimum Value")
+        max_value = tree.inputs.float("Maximum Value")
 
         volume = g.ImportVDB(
             g.FormatString(
@@ -28,10 +27,9 @@ def import_channel():
         sng = g.StoreNamedGrid.float(
             gng,
             name=channel_name,
-            grid=(gng.o_grid - min_value) / (max_value - min_value),
+            grid=(gng.o.grid - min_value) / (max_value - min_value),
         )
-        with tree.outputs:
-            _ = sng >> s.SocketGeometry("Volume")
+        _ = sng >> tree.outputs.geometry("Volume")
 
     return tree.tree
 

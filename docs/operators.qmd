@@ -78,7 +78,7 @@ with g.tree("CompareDemo") as tree:
     out = tree.outputs.geometry()
 
     pos = g.Position()
-    z = g.SeparateXYZ(pos).o_z
+    z = pos.o.position.z
 
     above_ground = z > 0.0  # Compare.float.greater_than
     below_ceiling = z <= 5.0  # Compare.float.less_equal
@@ -100,7 +100,7 @@ This saves us some time having to directly use `g.Switch.float(pos.z > v, ...)`
 ```{python}
 with g.tree("SwitchDemo") as tree:
     v = g.Value(5.0)
-    pos = g.Position().o_position
+    pos = g.Position().o.position
     result = (pos.z > v).switch(g.RandomValue.float(), 5.0 ** g.Value(10.0))
 
 tree
@@ -114,7 +114,7 @@ Python's bitwise operators `&` (and), `|` (or), `^` (xor), and `~` (not) map to 
 with g.tree("BooleanDemo") as tree:
     out = tree.outputs.geometry()
 
-    z = g.SeparateXYZ(g.Position()).o_z
+    z = g.SeparateXYZ(g.Position()).o.z
 
     # Combine conditions: select points in a vertical band
     selection = (z > -2.0) & (z < 2.0)
@@ -191,8 +191,8 @@ Divide space into layers using floor division, then select specific layers:
 
 ```{python}
 with g.tree("Layers") as tree:
-    z = g.SeparateXYZ(g.Position()).o_z
-    layer = g.SeparateXYZ(g.Position() // (1, 1, 1)).o_z
+    z = g.SeparateXYZ(g.Position()).o.z
+    layer = g.SeparateXYZ(g.Position() // (1, 1, 1)).o.z
 
     selection = (layer > 0) & (layer < 3) & ~(layer > 1)
 
@@ -212,14 +212,14 @@ Use power and modulo to create a spiral-like displacement pattern:
 
 ```{python}
 with g.tree("Spiral") as tree:
-    pos = g.Position()
-    angle = g.SeparateXYZ(pos).o_x * 3.14
-    radius = abs(g.SeparateXYZ(pos).o_y) ** 0.5
+    pos = g.Position().o.position
+    angle = pos.x * 3.14
+    radius = abs(pos.y) ** 0.5
 
     spiral_offset = g.CombineXYZ(
         x=g.Math.cosine(angle) * radius,
         y=g.Math.sine(angle) * radius,
-        z=g.SeparateXYZ(pos).o_z,
+        z=pos.z,
     )
 
     _ = (

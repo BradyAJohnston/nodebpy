@@ -38,7 +38,8 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
     @property
     def links(self) -> bpy.types.NodeLinks:
         links = self.socket.links
-        assert links
+        assert links is not None
+        assert len(links) > 0
         return links
 
     @property
@@ -51,11 +52,11 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
 
     @property
     def outputs(self) -> SocketAccessor:
-        return SocketAccessor([self.socket], "output", self.node)
+        return SocketAccessor([self.socket], "output")
 
     @property
     def inputs(self) -> SocketAccessor:
-        return SocketAccessor([self.socket], "input", self.node)
+        return SocketAccessor([self.socket], "input")
 
     @property
     def type(self) -> SOCKET_TYPES:
@@ -106,7 +107,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
-            return getattr(Compare, operation).float(self.socket, other)
+            return getattr(Compare.float, operation)(self.socket, other)
         else:
             from ..nodes.geometry.converter import Math
 
@@ -141,7 +142,7 @@ class _VectorMixin:
             if link.to_node.bl_idname == "ShaderNodeSeparateXYZ":
                 return Socket(link.to_node.outputs[value])
 
-        return getattr(SeparateXYZ(self), f"o_{value.lower()}")
+        return SeparateXYZ(self).o._get(value.lower())
 
     @property
     def x(self) -> Socket:
@@ -224,7 +225,7 @@ class _VectorMixin:
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
-            return getattr(Compare, operation).vector(self.socket, other)
+            return getattr(Compare.vector, operation)(self.socket, other)
         else:
             return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
 
@@ -258,7 +259,7 @@ class _ColorMixin:
                 return Socket(link.to_node.outputs[channel])
 
         SeparateColor = self._get_separate_color_cls()
-        return getattr(SeparateColor(self), f"o_{channel.lower()}")
+        return SeparateColor(self).o._get(channel.lower())
 
     @property
     def r(self) -> Socket:
@@ -329,7 +330,7 @@ class _IntegerMixin:
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
-            return getattr(Compare, operation).integer(self.socket, other)
+            return getattr(Compare.integer, operation)(self.socket, other)
         return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
 
 
@@ -366,7 +367,7 @@ class _RotationMixin:
         for link in self.socket.links:
             if link.to_node.bl_idname == "FunctionNodeRotationToQuaternion":
                 return _get_socket_linker(link.to_node.outputs[component])
-        return RotationToQuaternion(self).outputs.get(component)
+        return RotationToQuaternion(self).outputs._get(component)
 
     @property
     def w(self) -> Socket:
@@ -397,7 +398,7 @@ class _MatrixMixin:
         for link in self.socket.links:
             if link.to_node.bl_idname == "FunctionNodeSeparateTransform":
                 return _get_socket_linker(link.to_node.outputs[output])
-        return SeparateTransform(self).outputs.get(output)
+        return SeparateTransform(self).outputs._get(output)
 
     @property
     def translation(self) -> "VectorSocket":
