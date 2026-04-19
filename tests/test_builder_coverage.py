@@ -134,7 +134,7 @@ def test_link_unwraps_socket_wrappers():
     with TreeBuilder("LinkWrapTest") as tree:
         pos = g.Position()
         set_pos = g.SetPosition()
-        tree.link(pos.outputs.get("Position"), set_pos.inputs.get("Position"))
+        tree.link(pos.outputs._get("Position"), set_pos.inputs._get("Position"))
     assert len(tree.tree.links) > 0
 
 
@@ -270,7 +270,7 @@ def test_vector_compare_non_geo_tree_fallback():
     from nodebpy import shader as s
 
     with TreeBuilder.shader():
-        vec_sock = s.CombineXYZ().outputs.get("Vector")
+        vec_sock = s.CombineXYZ().outputs._get("Vector")
         result = vec_sock._dispatch_compare(0.5, "less_than")
     assert result is not None
 
@@ -315,14 +315,14 @@ def test_color_separate_in_compositor_tree():
 def test_rotation_socket_properties(component):
     """_RotationMixin .w/.x/.y/.z via RotationToQuaternion."""
     with TreeBuilder("RotProp"):
-        rot_sock = g.AxisAngleToRotation(angle=1.0).outputs.get("Rotation")
+        rot_sock = g.AxisAngleToRotation(angle=1.0).outputs._get("Rotation")
         assert getattr(rot_sock, component) is not None
 
 
 def test_rotation_socket_cached_link():
     """_RotationMixin second access reuses existing RotationToQuaternion node."""
     with TreeBuilder("RotCached"):
-        rot_sock = g.AxisAngleToRotation(angle=1.0).outputs.get("Rotation")
+        rot_sock = g.AxisAngleToRotation(angle=1.0).outputs._get("Rotation")
         x1 = rot_sock.x
         x2 = rot_sock.x
     assert x1 is not None and x2 is not None
@@ -332,14 +332,14 @@ def test_rotation_socket_cached_link():
 def test_matrix_socket_properties(component):
     """_MatrixMixin .translation/.rotation/.scale via SeparateTransform."""
     with TreeBuilder("MatProp"):
-        mat_sock = g.CombineTransform().outputs.get("Transform")
+        mat_sock = g.CombineTransform().outputs._get("Transform")
         assert getattr(mat_sock, component) is not None
 
 
 def test_matrix_socket_cached_link():
     """_MatrixMixin second access reuses existing SeparateTransform node."""
     with TreeBuilder("MatCached"):
-        mat_sock = g.CombineTransform().outputs.get("Transform")
+        mat_sock = g.CombineTransform().outputs._get("Transform")
         t1 = mat_sock.translation
         t2 = mat_sock.translation
     assert t1 is not None and t2 is not None

@@ -13,13 +13,12 @@ from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
 
 if TYPE_CHECKING:
-    from .socket import Socket
+    pass
 
 
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     """Base class for all node wrappers."""
 
-    node: bpy.types.Node
     _bl_idname: str
     _tree: TreeBuilder
     _default_input_id: str | None = None
@@ -40,7 +39,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
         self._tree = tree
         self._placeholder_inputs = []
-        self.node = self._tree.add(self.__class__._bl_idname)
+        self.node: bpy.types.Node = self._tree.add(self.__class__._bl_idname)
 
     @property
     def tree(self) -> TreeBuilder:
@@ -57,13 +56,13 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     @property
     def _default_input_socket(self) -> NodeSocket:
         if self._default_input_id is not None:
-            return self.node.inputs[self.inputs.index(self._default_input_id)]
+            return self.node.inputs[self.inputs._index(self._default_input_id)]
         return self.node.inputs[0]
 
     @property
     def _default_output_socket(self) -> NodeSocket:
         if self._default_output_id is not None:
-            return self.node.outputs[self.outputs.index(self._default_output_id)]
+            return self.node.outputs[self.outputs._index(self._default_output_id)]
 
         counter = 0
         socket = self.node.outputs[counter]
@@ -107,7 +106,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
                 self._link_from(
-                    value.outputs.best_match(self.inputs.get(name).type), name
+                    value.outputs._best_match(self.inputs._get(name).type), name
                 )
             else:
                 if name in input_ids:
@@ -122,11 +121,21 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
     @property
     def outputs(self) -> SocketAccessor:
-        return SocketAccessor(self.node.outputs, "output", self.node)
+        return SocketAccessor(self.node.outputs, "output")
 
     @property
     def inputs(self) -> SocketAccessor:
-        return SocketAccessor(self.node.inputs, "input", self.node)
+        return SocketAccessor(self.node.inputs, "input")
+
+    @property
+    def o(self) -> SocketAccessor:
+        """Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
+        return SocketAccessor(self.node.outputs, "output")
+
+    @property
+    def i(self) -> SocketAccessor:
+        """Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
+        return SocketAccessor(self.node.inputs, "input")
 
 
 class DynamicInputsMixin:
@@ -167,7 +176,7 @@ class DynamicInputsMixin:
             items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
-            socket_source, type = self._match_compatible_data(source.outputs.available)
+            socket_source, type = self._match_compatible_data(source.outputs._available)
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)
@@ -217,19 +226,6 @@ class NodeGroupBuilder(BaseNode, ABC):
             tree.tree.color_tag = self._color_tag
 
         return tree.tree
-
-    def __getattr__(self, name: str) -> "Socket":
-        """Allow ``i_*`` / ``o_*`` attribute access to resolve to input/output sockets.
-
-        ``node.i_vertex_index`` is equivalent to ``node.inputs["vertex_index"]``.
-        ``node.o_other_vertex`` is equivalent to ``node.outputs["other_vertex"]``.
-        The suffix is denormalized (snake_case → Title Case) via :func:`denormalize_name`.
-        """
-        if name.startswith("i_"):
-            return self.inputs.get(name[2:])
-        if name.startswith("o_"):
-            return self.outputs.get(name[2:])
-        raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
 
     @classmethod
     @abstractmethod

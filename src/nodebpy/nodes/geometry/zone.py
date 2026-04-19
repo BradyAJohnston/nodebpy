@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Iterable
+from typing import TYPE_CHECKING, Iterable
 
 import bpy
 
 from nodebpy.builder import BaseNode as NodeBuilder
 from nodebpy.builder import DynamicInputsMixin
 from nodebpy.builder import Socket as SocketLinker
+from nodebpy.builder.accessor import SocketAccessor
 
 from ...types import (
     InputBoolean,
@@ -52,7 +53,7 @@ class BaseZoneInput(BaseZone, NodeBuilder, ABC):
     node: bpy.types.GeometryNodeSimulationInput | bpy.types.GeometryNodeRepeatInput
 
     @property
-    def _items_node(self):  # type: ignore
+    def _items_node(self):
         return self.node.paired_output
 
     @property
@@ -114,10 +115,14 @@ class SimulationInput(BaseSimulationZone, BaseZoneInput):
     _bl_idname = "GeometryNodeSimulationInput"
     node: bpy.types.GeometryNodeSimulationInput
 
-    @property
-    def o_delta_time(self) -> SocketLinker:
-        """Output socket: Delta Time"""
-        return self.outputs.get("Delta Time")
+    class _Outputs(SocketAccessor):
+        delta_time: SocketLinker
+        """Time elapsed since the previous simulation frame."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def o(self) -> _Outputs: ...
 
 
 class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
@@ -126,10 +131,14 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
     _bl_idname = "GeometryNodeSimulationOutput"
     node: bpy.types.GeometryNodeSimulationOutput
 
-    @property
-    def i_skip(self) -> SocketLinker:
-        """Input socket: Skip simluation frame"""
-        return self.inputs.get("Skip")
+    class _Inputs(SocketAccessor):
+        skip: SocketLinker
+        """Skip the simulation for this frame."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
 
 
 class SimulationZone:
@@ -143,8 +152,9 @@ class SimulationZone:
         for name, source in socket_lookup.items():
             self.input._link_from(source, name)
 
+    @property
     def delta_time(self) -> SocketLinker:
-        return self.input.o_delta_time
+        return self.input.o.delta_time
 
     def __getitem__(self, index: int):
         match index:
@@ -186,15 +196,19 @@ class RepeatInput(BaseRepeatZone, BaseZoneInput):
     _bl_idname = "GeometryNodeRepeatInput"
     node: bpy.types.GeometryNodeRepeatInput
 
+    class _Outputs(SocketAccessor):
+        iteration: SocketLinker
+        """The current iteration index."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def o(self) -> _Outputs: ...
+
     def __init__(self, iterations: InputInteger = 1):
         super().__init__()
         key_args = {"Iterations": iterations}
         self._establish_links(**key_args)
-
-    @property
-    def o_iteration(self) -> SocketLinker:
-        """Output socket: Iteration"""
-        return self.outputs.get("Iteration")
 
 
 class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
@@ -222,8 +236,8 @@ class RepeatZone:
 
     @property
     def i(self) -> SocketLinker:
-        """Input socket: Skip simluation frame"""
-        return self.input.o_iteration
+        """The current iteration index."""
+        return self.input.o.iteration
 
     def __iter__(self):
         """Support for loop: for i, input, output in RepeatZone(...)"""
@@ -254,7 +268,7 @@ class ForEachGeometryElementZone:
 
     @property
     def index(self) -> SocketLinker:
-        return self.input.o_index
+        return self.input.o.index
 
     def __getitem__(self, index: int):
         match index:
@@ -298,9 +312,7 @@ class ForEachGeometryElementInput(BaseZoneInput):
         new_output_idx = [o.identifier for o in self.node.outputs].index(
             "__extend__"
         ) - 1
-        print(f"{new_output_idx=}")
         output = self.node.outputs[new_output_idx]
-        print(f"{output=} {output.type=}")
 
         return SocketLinker(output)
 
@@ -308,20 +320,23 @@ class ForEachGeometryElementInput(BaseZoneInput):
     def items(self) -> bpy.types.NodeGeometryForeachGeometryElementInputItems:
         return self.output.input_items
 
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self.inputs.get("Geometry")
+    class _Inputs(SocketAccessor):
+        geometry: SocketLinker
+        """The geometry to iterate over."""
+        selection: SocketLinker
+        """Limits which elements are iterated over."""
 
-    @property
-    def i_selection(self) -> SocketLinker:
-        """Input socket: Selection"""
-        return self.inputs.get("Selection")
+    class _Outputs(SocketAccessor):
+        index: SocketLinker
+        """The index of the current element."""
 
-    @property
-    def o_index(self) -> SocketLinker:
-        """Output socket: Index"""
-        return self.outputs.get("Index")
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
 
 
 class ForEachGeometryElementOutput(BaseZoneOutput):
@@ -397,20 +412,23 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         _ = self.items_generated.new(type, name)
         return self._latest("generation", self.node.inputs)
 
-    @property
-    def i_geometry(self) -> SocketLinker:
-        """Input socket: Geometry"""
-        return self.inputs.get("Generation_0")
+    class _Inputs(SocketAccessor):
+        generation_0: SocketLinker
+        """The geometry to generate elements from."""
 
-    @property
-    def o_geometry(self) -> SocketLinker:
-        """Output socket: Geometry"""
-        return self.outputs.get("Geometry")
+    class _Outputs(SocketAccessor):
+        geometry: SocketLinker
+        """The output geometry after processing all elements."""
+        generation_0: SocketLinker
+        """The generated geometry output."""
 
-    @property
-    def o_generation(self) -> SocketLinker:
-        """Output socket: Geometry"""
-        return self.outputs.get("Generation_0")
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
 
     @property
     def domain(

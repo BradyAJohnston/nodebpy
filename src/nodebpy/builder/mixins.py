@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from types import EllipsisType
 from typing import TYPE_CHECKING, Any
 
 from bpy.types import NodeLink, NodeSocket
@@ -213,22 +214,22 @@ class LinkingMixin:
 
     def _find_best_socket_pair(
         self,
-        source: "BaseNode | Socket | NodeSocket",
-        target: "BaseNode | Socket | NodeSocket",
+        source: "BaseNode | Socket | NodeSocket | EllipsisType | LinkingMixin",
+        target: "BaseNode | Socket | NodeSocket | EllipsisType | LinkingMixin",
     ) -> tuple[NodeSocket, NodeSocket]:
         """Find the best compatible pair of sockets between two nodes/sockets."""
         from ..types import SOCKET_COMPATIBILITY
 
         possible_combos = []
         if hasattr(source, "outputs"):
-            outputs = source.outputs.available  # type: ignore[union-attr]
+            outputs = source.outputs._available  # type: ignore[union-attr]
         elif isinstance(source, NodeSocket):
             outputs = [source]
         else:
             raise TypeError(f"Cannot get outputs from {type(source)}")
 
         if hasattr(target, "inputs"):
-            inputs = target.inputs.available  # type: ignore[union-attr]
+            inputs = target.inputs._available  # type: ignore[union-attr]
         else:
             inputs = [target]
 
@@ -268,7 +269,7 @@ class LinkingMixin:
             try:
                 self._link(source, self.node.inputs[input])  # type: ignore[attr-defined]
             except KeyError:
-                self._link(source, self.node.inputs[self.inputs.index(input)])  # type: ignore[attr-defined]
+                self._link(source, self.node.inputs[self.inputs._index(input)])  # type: ignore[attr-defined]
         else:
             self._link(source, input)
 
@@ -285,20 +286,20 @@ class LinkingMixin:
         Returns the right-hand node to enable continued chaining.
         """
         if isinstance(other, _SocketLike):
-            source = self._default_output_socket  # type: ignore[attr-defined]
-            target = other.socket  # type: ignore[attr-defined]
+            source = self._default_output_socket
+            target = other.socket
         elif getattr(other, "_placeholder_inputs", None):
             name = other._placeholder_inputs.pop(0)
             try:
-                target = other.node.inputs[name]  # type: ignore[union-attr]
+                target = other.node.inputs[name]
             except KeyError:
-                target = other.node.inputs[other.inputs.index(name)]  # type: ignore[union-attr]
-            source = self.outputs.best_match(target.type)  # type: ignore[attr-defined]
+                target = other.node.inputs[other.inputs._index(name)]
+            source = self.outputs._best_match(target.type)
         else:
             try:
-                source, target = self._find_best_socket_pair(self, other)  # type: ignore[arg-type]
+                source, target = self._find_best_socket_pair(self, other)
             except SocketError:
-                source, target = other._find_best_socket_pair(self, other)  # type: ignore[union-attr]
+                source, target = other._find_best_socket_pair(self, other)
 
-        self.tree.link(source, target)  # type: ignore[attr-defined]
+        self.tree.link(source, target)
         return other

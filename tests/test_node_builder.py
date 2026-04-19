@@ -270,14 +270,14 @@ class TestGeneratedNodes:
             bbox = g.BoundingBox()
 
             # Test output property accessors
-            assert hasattr(bbox, "o_bounding_box")
-            assert hasattr(bbox, "o_min")
-            assert hasattr(bbox, "o_max")
+            assert hasattr(bbox.o, "bounding_box")
+            assert hasattr(bbox.o, "min")
+            assert hasattr(bbox.o, "max")
 
             # They should return sockets
-            assert bbox.o_bounding_box is not None
-            assert bbox.o_min is not None
-            assert bbox.o_max is not None
+            assert bbox.o.bounding_box is not None
+            assert bbox.o.min is not None
+            assert bbox.o.max is not None
 
 
 class TestComplexWorkflow:
@@ -596,7 +596,9 @@ for _mod, _tree_type in [
 def test_add_all_nodes(module, tree_type, class_names):
     def _test_node_property_access(node: NodeBuilder):
         assert node.node is not None
-        for output in [getattr(node, o) for o in dir(node) if o.startswith("o_")]:
+        for output in [
+            getattr(node.o, name) for name in dir(node.o) if not name.startswith("_")
+        ]:
             if NodeSocketVector.bl_rna.identifier in output.socket.bl_idname:
                 result = -output
                 assert result.node is not None
@@ -653,11 +655,11 @@ def test_add_all_nodes(module, tree_type, class_names):
                 assert result.node is not None
                 assert result.node.bl_idname == g.TransformPoint._bl_idname
                 assert result.node.inputs[0].links[0].from_node == output.node
-        for prop in dir(node):
-            if not prop.startswith("i_"):
+        for prop in dir(node.i):
+            if prop.startswith("_"):
                 continue
             try:
-                input = getattr(node, prop)
+                input = getattr(node.i, prop)
             except RuntimeError as e:
                 print(f"Failed to get input {prop} due to error: {e}")
                 continue
@@ -714,29 +716,29 @@ def test_add_all_nodes(module, tree_type, class_names):
 
 def test_iter_outputs():
     with TreeBuilder("IndexSwitch"):
-        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).outputs.values())
+        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).outputs._values())
 
     assert len(switch.node.outputs) == 1
     # 1 input for the index, another for the dynamic socket
     assert len(switch.node.inputs) == 5
 
     with TreeBuilder("MultipleOutputs") as tree:
-        for name, output in g.SeparateXYZ(g.Position()).outputs.items():
+        for name, output in g.SeparateXYZ(g.Position()).outputs._items():
             with tree.outputs:
                 _ = output >> socket.SocketFloat(name)
 
     with TreeBuilder("MenuSwitch") as tree:
-        switch = g.MenuSwitch.float(**g.SeparateXYZ(g.Position()).outputs)
+        switch = g.MenuSwitch.float(**dict(g.SeparateXYZ().outputs._items()))
 
     assert len(switch.inputs) == 5
 
 
 def test_vector_socket_linker():
     with TreeBuilder("SeparateXYZ_z"):
-        pos = g.Position().o_position
+        pos = g.Position().o.position
 
         result = g.SetPosition(position=pos.x * g.Position())
-        pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i_offset
+        pos.y * 0.5 * g.Normal() + g.CombineXYZ(z=pos.z) >> result.i.offset
 
     assert result.node
     assert result.node.inputs["Position"].links[0].from_node.operation == "SCALE"
@@ -745,7 +747,7 @@ def test_vector_socket_linker():
 
 def test_color_socket_linker():
     with TreeBuilder("ColorChannels"):
-        color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
+        color = g.Color((1.0, 0.5, 0.25, 1.0)).o.color
 
         assert isinstance(color, ColorSocketLinker)
 
@@ -767,7 +769,7 @@ def test_color_socket_linker():
 
 def test_color_socket_linker_in_shader_tree():
     with TreeBuilder.shader():
-        color = s.CombineColor(red=1.0, green=0.5, blue=0.25).o_color
+        color = s.CombineColor(red=1.0, green=0.5, blue=0.25).o.color
 
         assert isinstance(color, ColorSocketLinker)
 
@@ -781,7 +783,7 @@ def test_color_socket_linker_in_shader_tree():
 
 def test_color_socket_linker_channel_into_math():
     with TreeBuilder("ColorMath"):
-        color = g.Color((1.0, 0.5, 0.25, 1.0)).o_color
+        color = g.Color((1.0, 0.5, 0.25, 1.0)).o.color
 
         # Use a color channel in a math expression
         result = color.r * 2.0 + color.g
@@ -808,16 +810,16 @@ class TestSocketAccessor:
 
         with TreeBuilder("IterTest"):
             pos = g.Position()
-            _assert_equal(dict(**pos.outputs), {"Position": pos.o_position})
+            _assert_equal(dict(pos.outputs._items()), {"Position": pos.o.position})
 
             setpos = g.SetPosition()
             _assert_equal(
-                dict(**setpos.inputs),
+                dict(setpos.inputs._items()),
                 {
-                    "Geometry": setpos.i_geometry,
-                    "Selection": setpos.i_selection,
-                    "Position": setpos.i_position,
-                    "Offset": setpos.i_offset,
+                    "Geometry": setpos.i.geometry,
+                    "Selection": setpos.i.selection,
+                    "Position": setpos.i.position,
+                    "Offset": setpos.i.offset,
                 },
             )
 
@@ -862,13 +864,13 @@ class TestSocketAccessor:
         """
         with TreeBuilder("NormalVis", arrange=None) as _:
             node_normal = g.SeparateXYZ(g.Position())
-            normal_values = node_normal.outputs.values()
-            normal_keys = node_normal.outputs.keys()
+            normal_values = node_normal.outputs._values()
+            normal_keys = node_normal.outputs._keys()
 
         with TreeBuilder("IgnoreVis", arrange=None, ignore_visibility=True) as _:
             node_ignore = g.SeparateXYZ(g.Position())
-            ignore_values = node_ignore.outputs.values()
-            ignore_keys = node_ignore.outputs.keys()
+            ignore_values = node_ignore.outputs._values()
+            ignore_keys = node_ignore.outputs._keys()
 
         # SeparateXYZ has three visible outputs (X, Y, Z) regardless of the flag.
         assert len(normal_values) == len(ignore_values)
@@ -881,11 +883,11 @@ class TestSocketAccessor:
         # accessor should expose more (or equal) sockets than without it.
         with TreeBuilder("NormalAvail", arrange=None):
             mix = g.Mix()
-            normal_available = len(mix.inputs.available)
+            normal_available = len(mix.inputs._available)
 
         with TreeBuilder("IgnoreAvail", arrange=None, ignore_visibility=True):
             mix = g.Mix()
-            ignore_available = len(mix.inputs.available)
+            ignore_available = len(mix.inputs._available)
 
         assert ignore_available >= normal_available
 
@@ -897,20 +899,20 @@ class TestSocketAccessor:
             def __init__(self, identifier, name):
                 self.identifier = identifier
                 self.name = name
+                self.node = g.Value().node
 
         with TreeBuilder("AmbiguousName", arrange=None):
-            pos = g.Position()
             fake_sockets = [
                 _FakeSocket("unique_id_1", "Value"),
                 _FakeSocket("unique_id_2", "Value"),  # same name, different identifier
             ]
-            accessor = SocketAccessor(fake_sockets, "input", pos.node)
+            accessor = SocketAccessor(fake_sockets, "input")
 
             # Unique identifier lookup is fine.
-            assert accessor.index("unique_id_1") == 0
+            assert accessor._index("unique_id_1") == 0
             # Duplicate name lookup must raise with a clear message.
             with pytest.raises(RuntimeError, match="ambiguous"):
-                accessor.index("Value")
+                accessor._index("Value")
 
 
 class TestIntegerSocketLinker:
@@ -925,9 +927,9 @@ class TestIntegerSocketLinker:
         with TreeBuilder("IntPlusIntSocket"):
             a = g.Integer(1)
             b = g.Integer(2)
-            # b.o_integer is an IntegerSocketLinker; adding it to another integer
+            # b.o.integer is an IntegerSocketLinker; adding it to another integer
             # socket linker should use IntegerMath.add, not Math.add
-            result = a.o_integer + b.o_integer
+            result = a.o.integer + b.o.integer
 
         assert isinstance(result, g.IntegerMath)
         assert result.node.operation == "ADD"
@@ -942,7 +944,7 @@ class TestIntegerSocketLinker:
             a = g.Integer(1)
             b = g.Integer(2)
             # Use the NodeBuilder directly (not its output socket linker)
-            result = a.o_integer + b
+            result = a.o.integer + b
 
         assert isinstance(result, g.IntegerMath)
         assert result.node.operation == "ADD"
@@ -955,7 +957,7 @@ class TestIntegerSocketLinker:
         """
         with TreeBuilder("IntFloorDivFloat"):
             n = g.Integer(10)
-            result = n.o_integer // 2.5
+            result = n.o.integer // 2.5
 
         # Should be the Math.floor wrapping a Math.divide — not IntegerMath
         assert isinstance(result, g.Math)

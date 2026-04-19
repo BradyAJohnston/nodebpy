@@ -1,6 +1,9 @@
+from typing import TYPE_CHECKING
+
 from ...builder import (
     IntegerSocket,
     NodeGroupBuilder,
+    SocketAccessor,
     VectorSocket,
 )
 from ...types import InputInteger, InputVector
@@ -16,9 +19,23 @@ class OtherVertex(NodeGroupBuilder):
     _name = "Other Vertex"
     _color_tag = "INPUT"
 
-    i_vertex_index: IntegerSocket
-    i_edge_number: IntegerSocket
-    o_other_vertex: IntegerSocket
+    class _Inputs(SocketAccessor):
+        vertex_index: IntegerSocket
+        """The vertex to start from."""
+        edge_number: IntegerSocket
+        """Which edge of that vertex to traverse."""
+
+    class _Outputs(SocketAccessor):
+        other_vertex: IntegerSocket
+        """The vertex at the other end of the selected edge."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
 
     def __init__(
         self, vertex_index: InputInteger = None, edge_number: InputInteger = 0
@@ -33,8 +50,8 @@ class OtherVertex(NodeGroupBuilder):
 
         eov = EdgesOfVertex(vertex_index, sort_index=edge_number)
         ev = EdgeVertices()
-        vert_1 = EvaluateAtIndex.edge.integer(ev.o_vertex_index_1, eov)
-        vert_2 = EvaluateAtIndex.edge.integer(ev.o_vertex_index_2, eov)
+        vert_1 = EvaluateAtIndex.edge.integer(ev.o.vertex_index_1, eov)
+        vert_2 = EvaluateAtIndex.edge.integer(ev.o.vertex_index_2, eov)
         switch = (vert_1 != vertex_index) >> Switch.integer(..., vert_1, vert_2)
 
         _ = switch >> tree.outputs.integer("Other Vertex")
@@ -42,16 +59,31 @@ class OtherVertex(NodeGroupBuilder):
 
 class OffsetVector(NodeGroupBuilder):
     """
-    Evaluate a given vector field at an offset to the current `Index`.
+    Evaluate a given vector field at an offset to the current ``Index``.
     """
 
     _name = "Offset Vector"
     _color_tag = "INPUT"
 
-    i_index: IntegerSocket
-    i_vector: VectorSocket
-    i_offset: IntegerSocket
-    o_vector: VectorSocket
+    class _Inputs(SocketAccessor):
+        index: IntegerSocket
+        """The base index to evaluate at."""
+        vector: VectorSocket
+        """The vector field to sample."""
+        offset: IntegerSocket
+        """Integer offset added to the index before sampling."""
+
+    class _Outputs(SocketAccessor):
+        vector: VectorSocket
+        """The vector value at ``index + offset``."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
 
     def __init__(
         self,
