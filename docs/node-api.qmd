@@ -9,8 +9,8 @@ from nodebpy import geometry as g
 ```
 
 
-## Socket Inputs
-
+## Sockets
+### Inputs
 Input sockets are exposed in two different ways, they are positional arguments in the class `__init__` signature and are available behind the `inputs / i` accessor on the nodes.
 
 ```py
@@ -36,7 +36,7 @@ with g.tree() as tree:
 tree
 ```
 
-## Socket Outputs
+### Outputs
 
 Selection of outputs is done automatically to best match the data types of the inputs.
 You can be specific with the output though, with outputs available behind the `outputs` / `o` accessor.
@@ -54,7 +54,7 @@ with g.tree() as tree:
 tree
 ```
 
-### Vector Outputs
+#### Vector Outputs
 
 Some output attributes have convenience methods for simpler chaining.
 Vector outputs can access the `x/y/z/` components quickly, which internally adds the `SeparateXYZ` required.
@@ -69,11 +69,11 @@ with g.tree() as tree:
 tree
 ```
 
-### Other Accessors
+#### Other Accessors
 
 Similar methods also exist for `SocketColor`, `SocketMatrix`
 
-#### Matrix
+##### Matrix
 
 Matrix sockets have access to the `translation`, `rotation` and `scale` from the transform.
 
@@ -88,7 +88,7 @@ tree
 ```
 
 
-#### Color
+##### Color
 Color sockets have `r` `g` `b` `a` properties.
 ```{python}
 with g.tree() as tree:
@@ -102,13 +102,40 @@ tree
 
 ## Enum Options
 
-Many 
+Many options aren't available as sockets. These are exposed on the node class itself.
+The non-socket options are always keyword arguments, requiring them to be explicitly stated.
+
+```py
+class EvaluateAtIndex(NodeBuilder):
+    def __init__(
+        self,
+        value: InputFloat
+        | InputInteger
+        | InputBoolean
+        | InputVector
+        | InputRotation
+        | InputMatrix = None,
+        index: InputInteger = 0,
+        *,
+        domain: _AttributeDomains = "POINT",
+        data_type: _EvaluateAtIndexDataTypes = "FLOAT",
+    ):
+```
+
+They are set during the class construction, but can also be set and changed afterwards.
+
+```{python}
+with g.tree() as tree:
+    eai = g.EvaluateAtIndex(data_type="FLOAT_VECTOR")
+    eai.data_type = "QUATERNION"
+    eai.domain = "FACE"
+```
 
 ## Class Methods
 
-For nodes that have `Data Type`, `mode` and `operation` as potential enum values, convenience class methods are provided. 
+For nodes that have `mode`, `domain`, `data_type` and `operation` as potential enum values, convenience class methods are provided. 
 
-> The order that these methods will appear are: `domain` > `data_type` > `operation`, but should only ever be 1 or 2 deep.
+> The order that these methods will appear are: `mode` > `domain` > `data_type` > `operation`, but should only ever be 1 or 2 deep.
 > ```py
 > g.EvaluateAtIndex.face.vector()   # .domain.data_type
 > g.Compare.float.less_than()       # .data_type.operation

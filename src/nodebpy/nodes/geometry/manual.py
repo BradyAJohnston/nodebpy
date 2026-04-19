@@ -1320,11 +1320,9 @@ class EvaluateAtIndex(NodeBuilder):
         *,
         domain: _AttributeDomains = "POINT",
         data_type: _EvaluateAtIndexDataTypes = "FLOAT",
-        **kwargs,
     ):
         super().__init__()
         key_args = {"Value": value, "Index": index}
-        key_args.update(kwargs)
         self.domain = domain
         self.data_type = data_type
         self._establish_links(**key_args)
