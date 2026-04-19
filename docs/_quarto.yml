@@ -16,6 +16,7 @@ website:
           - introduction.qmd
           - operators.qmd
           - custom-node-groups.qmd
+          - node-api.qmd
       - href: reference/
         text: Reference
     right:
