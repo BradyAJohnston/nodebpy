@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -559,6 +563,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AovOutput(color<span class="op">=</span><span class="va">None</span>, value<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, aov_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Arbitrary Output Variables.</code></pre>
 <p>Provide custom render passes for arbitrary shader node outputs</p>
+<section id="parameters" class="level4 doc-section doc-section-----parameters">
+<h4 class="doc-section doc-section-----parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<pre><code>color : InputColor
+    Color
+value : InputFloat
+    Value</code></pre>
+</section>
+<section id="inputs" class="level4 doc-section doc-section-----inputs">
+<h4 class="doc-section doc-section-----inputs anchored" data-anchor-id="inputs">Inputs</h4>
+<pre><code>i.color : ColorSocket
+    Color
+i.value : FloatSocket
+    Value</code></pre>
+</section>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -570,39 +588,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.aov_name">aov_name</a></td>
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.aov_name"><code>aov_name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.i_color"><code>i_color</code></a></td>
-<td>Input socket: Color</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.name">name</a></td>
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.node">node</a></td>
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.type">type</a></td>
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.output.AovOutput.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -611,8 +629,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.output.LightOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.output.LightOutput">LightOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>LightOutput(surface<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, is_active_output<span class="op">=</span><span class="va">False</span>, target<span class="op">=</span><span class="st">'ALL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>LightOutput(surface<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, is_active_output<span class="op">=</span><span class="va">False</span>, target<span class="op">=</span><span class="st">'ALL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output light information to a light object</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>surface</td>
+<td>InputShader</td>
+<td>Surface</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -624,40 +663,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.i_surface"><code>i_surface</code></a></td>
-<td>Input socket: Surface</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.is_active_output">is_active_output</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.name">name</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.node">node</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.is_active_output"><code>is_active_output</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.target">target</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.type">type</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.outputs"><code>outputs</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.target"><code>target</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.output.LightOutput.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.surface</code></td>
+<td><code>ShaderSocket</code></td>
+<td>Surface</td>
 </tr>
 </tbody>
 </table>
@@ -665,19 +725,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.output.LineStyleOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.output.LineStyleOutput">LineStyleOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>LineStyleOutput(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    color_fac<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    alpha_fac<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ALL'</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    use_alpha<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    use_clamp<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>LineStyleOutput(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    color_fac<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    alpha_fac<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ALL'</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    blend_type<span class="op">=</span><span class="st">'MIX'</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    use_alpha<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    use_clamp<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Control the mixing of texture information into the base color of line styles</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>color</td>
+<td>InputColor</td>
+<td>Color</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>color_fac</td>
+<td>InputFloat</td>
+<td>Color Fac</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>alpha</td>
+<td>InputFloat</td>
+<td>Alpha</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>alpha_fac</td>
+<td>InputFloat</td>
+<td>Alpha Fac</td>
+<td><code>1.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
@@ -689,64 +788,88 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.blend_type">blend_type</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.blend_type"><code>blend_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.i_alpha"><code>i_alpha</code></a></td>
-<td>Input socket: Alpha</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.i_alpha_fac"><code>i_alpha_fac</code></a></td>
-<td>Input socket: Alpha Fac</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.i_color"><code>i_color</code></a></td>
-<td>Input socket: Color</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.i_color_fac"><code>i_color_fac</code></a></td>
-<td>Input socket: Color Fac</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.is_active_output">is_active_output</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.name">name</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.is_active_output"><code>is_active_output</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.node">node</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.target">target</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.type">type</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.target"><code>target</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.use_alpha">use_alpha</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.use_clamp">use_clamp</a></td>
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.type"><code>type</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.use_alpha"><code>use_alpha</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.use_clamp"><code>use_clamp</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Color</td>
+</tr>
+<tr class="even">
+<td><code>i.color_fac</code></td>
+<td><code>FloatSocket</code></td>
+<td>Color Fac</td>
+</tr>
+<tr class="odd">
+<td><code>i.alpha</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha</td>
+</tr>
+<tr class="even">
+<td><code>i.alpha_fac</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha Fac</td>
 </tr>
 </tbody>
 </table>
@@ -754,16 +877,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.output.MaterialOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.output.MaterialOutput">MaterialOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>MaterialOutput(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    surface<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    displacement<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ALL'</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>MaterialOutput(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    surface<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    displacement<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ALL'</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output surface material information for use in rendering</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>surface</td>
+<td>InputShader</td>
+<td>Surface</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>InputShader</td>
+<td>Volume</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>displacement</td>
+<td>InputVector</td>
+<td>Displacement</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>thickness</td>
+<td>InputFloat</td>
+<td>Thickness</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
@@ -775,52 +937,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.i_displacement"><code>i_displacement</code></a></td>
-<td>Input socket: Displacement</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.i_surface"><code>i_surface</code></a></td>
-<td>Input socket: Surface</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.i_thickness"><code>i_thickness</code></a></td>
-<td>Input socket: Thickness</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.i_volume"><code>i_volume</code></a></td>
-<td>Input socket: Volume</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.is_active_output">is_active_output</a></td>
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.name">name</a></td>
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.is_active_output"><code>is_active_output</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.node">node</a></td>
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.target">target</a></td>
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.type">type</a></td>
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.target"><code>target</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.surface</code></td>
+<td><code>ShaderSocket</code></td>
+<td>Surface</td>
+</tr>
+<tr class="even">
+<td><code>i.volume</code></td>
+<td><code>ShaderSocket</code></td>
+<td>Volume</td>
+</tr>
+<tr class="odd">
+<td><code>i.displacement</code></td>
+<td><code>VectorSocket</code></td>
+<td>Displacement</td>
+</tr>
+<tr class="even">
+<td><code>i.thickness</code></td>
+<td><code>FloatSocket</code></td>
+<td>Thickness</td>
 </tr>
 </tbody>
 </table>
@@ -828,8 +1014,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.shader.output.WorldOutput" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.output.WorldOutput">WorldOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>WorldOutput(surface<span class="op">=</span><span class="va">None</span>, volume<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, is_active_output<span class="op">=</span><span class="va">False</span>, target<span class="op">=</span><span class="st">'ALL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>WorldOutput(surface<span class="op">=</span><span class="va">None</span>, volume<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, is_active_output<span class="op">=</span><span class="va">False</span>, target<span class="op">=</span><span class="st">'ALL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output light color information to the scene’s World</p>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>surface</td>
+<td>InputShader</td>
+<td>Surface</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>volume</td>
+<td>InputShader</td>
+<td>Volume</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
@@ -841,44 +1054,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.i_surface"><code>i_surface</code></a></td>
-<td>Input socket: Surface</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.i_volume"><code>i_volume</code></a></td>
-<td>Input socket: Volume</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.is_active_output">is_active_output</a></td>
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.name">name</a></td>
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.is_active_output"><code>is_active_output</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.node">node</a></td>
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.target">target</a></td>
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.type">type</a></td>
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.target"><code>target</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.shader.output.WorldOutput.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.surface</code></td>
+<td><code>ShaderSocket</code></td>
+<td>Surface</td>
+</tr>
+<tr class="even">
+<td><code>i.volume</code></td>
+<td><code>ShaderSocket</code></td>
+<td>Volume</td>
 </tr>
 </tbody>
 </table>

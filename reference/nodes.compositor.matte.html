@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -600,6 +604,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create rectangular mask suitable for use as a simple matte</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 65%">
+<col style="width: 14%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>operation</td>
+<td>InputMenu | Literal['Add', 'Subtract', 'Multiply', 'Not']</td>
+<td>Operation</td>
+<td><code>'Add'</code></td>
+</tr>
+<tr class="even">
+<td>mask</td>
+<td>InputFloat</td>
+<td>Mask</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>value</td>
+<td>InputFloat</td>
+<td>Value</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>position</td>
+<td>InputVector</td>
+<td>Position</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>size</td>
+<td>InputVector</td>
+<td>Size</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>rotation</td>
+<td>InputFloat</td>
+<td>Rotation</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -611,56 +672,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.i_mask"><code>i_mask</code></a></td>
-<td>Input socket: Mask</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.i_operation"><code>i_operation</code></a></td>
-<td>Input socket: Operation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.i_position"><code>i_position</code></a></td>
-<td>Input socket: Position</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.i_rotation"><code>i_rotation</code></a></td>
-<td>Input socket: Rotation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.i_size"><code>i_size</code></a></td>
-<td>Input socket: Size</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.o_mask"><code>o_mask</code></a></td>
-<td>Output socket: Mask</td>
+<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.operation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Operation</td>
+</tr>
+<tr class="even">
+<td><code>i.mask</code></td>
+<td><code>FloatSocket</code></td>
+<td>Mask</td>
+</tr>
+<tr class="odd">
+<td><code>i.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+<tr class="even">
+<td><code>i.position</code></td>
+<td><code>VectorSocket</code></td>
+<td>Position</td>
+</tr>
+<tr class="odd">
+<td><code>i.size</code></td>
+<td><code>VectorSocket</code></td>
+<td>Size</td>
+</tr>
+<tr class="even">
+<td><code>i.rotation</code></td>
+<td><code>FloatSocket</code></td>
+<td>Rotation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.mask</code></td>
+<td><code>FloatSocket</code></td>
+<td>Mask</td>
 </tr>
 </tbody>
 </table>
@@ -684,6 +784,105 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    ycbcr_limit_channel<span class="op">=</span><span class="st">'Cb'</span>,</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create matte based on differences in color channels</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 53%">
+<col style="width: 18%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>minimum</td>
+<td>InputFloat</td>
+<td>Minimum</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>maximum</td>
+<td>InputFloat</td>
+<td>Maximum</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>color_space</td>
+<td>InputMenu | Literal['RGB', 'HSV', 'YUV', 'YCbCr']</td>
+<td>Color Space</td>
+<td><code>'RGB'</code></td>
+</tr>
+<tr class="odd">
+<td>rgb_key_channel</td>
+<td>InputMenu | Literal['R', 'G', 'B']</td>
+<td>RGB Key Channel</td>
+<td><code>'G'</code></td>
+</tr>
+<tr class="even">
+<td>hsv_key_channel</td>
+<td>InputMenu | Literal['H', 'S', 'V']</td>
+<td>HSV Key Channel</td>
+<td><code>'H'</code></td>
+</tr>
+<tr class="odd">
+<td>yuv_key_channel</td>
+<td>InputMenu | Literal['Y', 'U', 'V']</td>
+<td>YUV Key Channel</td>
+<td><code>'V'</code></td>
+</tr>
+<tr class="even">
+<td>ycbcr_key_channel</td>
+<td>InputMenu | Literal['Y', 'Cb', 'Cr']</td>
+<td>YCbCr Key Channel</td>
+<td><code>'Cr'</code></td>
+</tr>
+<tr class="odd">
+<td>limit_method</td>
+<td>InputMenu | Literal['Single', 'Max']</td>
+<td>Limit Method</td>
+<td><code>'Max'</code></td>
+</tr>
+<tr class="even">
+<td>rgb_limit_channel</td>
+<td>InputMenu | Literal['R', 'G', 'B']</td>
+<td>RGB Limit Channel</td>
+<td><code>'R'</code></td>
+</tr>
+<tr class="odd">
+<td>hsv_limit_channel</td>
+<td>InputMenu | Literal['H', 'S', 'V']</td>
+<td>HSV Limit Channel</td>
+<td><code>'S'</code></td>
+</tr>
+<tr class="even">
+<td>yuv_limit_channel</td>
+<td>InputMenu | Literal['Y', 'U', 'V']</td>
+<td>YUV Limit Channel</td>
+<td><code>'U'</code></td>
+</tr>
+<tr class="odd">
+<td>ycbcr_limit_channel</td>
+<td>InputMenu | Literal['Y', 'Cb', 'Cr']</td>
+<td>YCbCr Limit Channel</td>
+<td><code>'Cb'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -695,88 +894,135 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_color_space"><code>i_color_space</code></a></td>
-<td>Input socket: Color Space</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_hsv_key_channel"><code>i_hsv_key_channel</code></a></td>
-<td>Input socket: HSV Key Channel</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_hsv_limit_channel"><code>i_hsv_limit_channel</code></a></td>
-<td>Input socket: HSV Limit Channel</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_limit_method"><code>i_limit_method</code></a></td>
-<td>Input socket: Limit Method</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_maximum"><code>i_maximum</code></a></td>
-<td>Input socket: Maximum</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_minimum"><code>i_minimum</code></a></td>
-<td>Input socket: Minimum</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_rgb_key_channel"><code>i_rgb_key_channel</code></a></td>
-<td>Input socket: RGB Key Channel</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_rgb_limit_channel"><code>i_rgb_limit_channel</code></a></td>
-<td>Input socket: RGB Limit Channel</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_ycbcr_key_channel"><code>i_ycbcr_key_channel</code></a></td>
-<td>Input socket: YCbCr Key Channel</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_ycbcr_limit_channel"><code>i_ycbcr_limit_channel</code></a></td>
-<td>Input socket: YCbCr Limit Channel</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_yuv_key_channel"><code>i_yuv_key_channel</code></a></td>
-<td>Input socket: YUV Key Channel</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i_yuv_limit_channel"><code>i_yuv_limit_channel</code></a></td>
-<td>Input socket: YUV Limit Channel</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.o_matte"><code>o_matte</code></a></td>
-<td>Output socket: Matte</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.o"><code>o</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.minimum</code></td>
+<td><code>FloatSocket</code></td>
+<td>Minimum</td>
+</tr>
+<tr class="odd">
+<td><code>i.maximum</code></td>
+<td><code>FloatSocket</code></td>
+<td>Maximum</td>
+</tr>
+<tr class="even">
+<td><code>i.color_space</code></td>
+<td><code>MenuSocket</code></td>
+<td>Color Space</td>
+</tr>
+<tr class="odd">
+<td><code>i.rgb_key_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>RGB Key Channel</td>
+</tr>
+<tr class="even">
+<td><code>i.hsv_key_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>HSV Key Channel</td>
+</tr>
+<tr class="odd">
+<td><code>i.yuv_key_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>YUV Key Channel</td>
+</tr>
+<tr class="even">
+<td><code>i.ycbcr_key_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>YCbCr Key Channel</td>
+</tr>
+<tr class="odd">
+<td><code>i.limit_method</code></td>
+<td><code>MenuSocket</code></td>
+<td>Limit Method</td>
+</tr>
+<tr class="even">
+<td><code>i.rgb_limit_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>RGB Limit Channel</td>
+</tr>
+<tr class="odd">
+<td><code>i.hsv_limit_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>HSV Limit Channel</td>
+</tr>
+<tr class="even">
+<td><code>i.yuv_limit_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>YUV Limit Channel</td>
+</tr>
+<tr class="odd">
+<td><code>i.ycbcr_limit_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>YCbCr Limit Channel</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Matte</td>
 </tr>
 </tbody>
 </table>
@@ -792,6 +1038,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    falloff<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create matte based on chroma values</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>key_color</td>
+<td>InputColor</td>
+<td>Key Color</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>minimum</td>
+<td>InputFloat</td>
+<td>Minimum</td>
+<td><code>0.1745</code></td>
+</tr>
+<tr class="even">
+<td>maximum</td>
+<td>InputFloat</td>
+<td>Maximum</td>
+<td><code>0.5236</code></td>
+</tr>
+<tr class="odd">
+<td>falloff</td>
+<td>InputFloat</td>
+<td>Falloff</td>
+<td><code>1.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
@@ -803,56 +1094,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.i_falloff"><code>i_falloff</code></a></td>
-<td>Input socket: Falloff</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.i_key_color"><code>i_key_color</code></a></td>
-<td>Input socket: Key Color</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.i_maximum"><code>i_maximum</code></a></td>
-<td>Input socket: Maximum</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.i_minimum"><code>i_minimum</code></a></td>
-<td>Input socket: Minimum</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.o_matte"><code>o_matte</code></a></td>
-<td>Output socket: Matte</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.o"><code>o</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.key_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Key Color</td>
+</tr>
+<tr class="odd">
+<td><code>i.minimum</code></td>
+<td><code>FloatSocket</code></td>
+<td>Minimum</td>
+</tr>
+<tr class="even">
+<td><code>i.maximum</code></td>
+<td><code>FloatSocket</code></td>
+<td>Maximum</td>
+</tr>
+<tr class="odd">
+<td><code>i.falloff</code></td>
+<td><code>FloatSocket</code></td>
+<td>Falloff</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Matte</td>
 </tr>
 </tbody>
 </table>
@@ -862,6 +1192,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.ColorKey">ColorKey</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ColorKey(image<span class="op">=</span><span class="va">None</span>, key_color<span class="op">=</span><span class="va">None</span>, hue<span class="op">=</span><span class="fl">0.01</span>, saturation<span class="op">=</span><span class="fl">0.1</span>, value<span class="op">=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create matte using a given color, for green or blue screen footage</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>key_color</td>
+<td>InputColor</td>
+<td>Key Color</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>hue</td>
+<td>InputFloat</td>
+<td>Hue</td>
+<td><code>0.01</code></td>
+</tr>
+<tr class="even">
+<td>saturation</td>
+<td>InputFloat</td>
+<td>Saturation</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="odd">
+<td>value</td>
+<td>InputFloat</td>
+<td>Value</td>
+<td><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
@@ -873,56 +1248,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.i_hue"><code>i_hue</code></a></td>
-<td>Input socket: Hue</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.i_key_color"><code>i_key_color</code></a></td>
-<td>Input socket: Key Color</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.i_saturation"><code>i_saturation</code></a></td>
-<td>Input socket: Saturation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.o_matte"><code>o_matte</code></a></td>
-<td>Output socket: Matte</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.o"><code>o</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.key_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Key Color</td>
+</tr>
+<tr class="odd">
+<td><code>i.hue</code></td>
+<td><code>FloatSocket</code></td>
+<td>Hue</td>
+</tr>
+<tr class="even">
+<td><code>i.saturation</code></td>
+<td><code>FloatSocket</code></td>
+<td>Saturation</td>
+</tr>
+<tr class="odd">
+<td><code>i.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Matte</td>
 </tr>
 </tbody>
 </table>
@@ -941,6 +1355,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    spill_strength<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Remove colors from a blue or green screen, by reducing one RGB channel compared to the others</p>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 48%">
+<col style="width: 19%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>fac</td>
+<td>InputFloat</td>
+<td>Factor</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>spill_channel</td>
+<td>InputMenu | Literal['R', 'G', 'B']</td>
+<td>Spill Channel</td>
+<td><code>'G'</code></td>
+</tr>
+<tr class="even">
+<td>limit_method</td>
+<td>InputMenu | Literal['Single', 'Average']</td>
+<td>Limit Method</td>
+<td><code>'Single'</code></td>
+</tr>
+<tr class="odd">
+<td>limit_channel</td>
+<td>InputMenu | Literal['R', 'G', 'B']</td>
+<td>Limit Channel</td>
+<td><code>'R'</code></td>
+</tr>
+<tr class="even">
+<td>limit_strength</td>
+<td>InputFloat</td>
+<td>Limit Strength</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>use_spill_strength</td>
+<td>InputBoolean</td>
+<td>Use Spill Strength</td>
+<td><code>False</code></td>
+</tr>
+<tr class="even">
+<td>spill_strength</td>
+<td>InputColor</td>
+<td>Strength</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
@@ -952,64 +1435,105 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i_fac"><code>i_fac</code></a></td>
-<td>Input socket: Factor</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i_limit_channel"><code>i_limit_channel</code></a></td>
-<td>Input socket: Limit Channel</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i_limit_method"><code>i_limit_method</code></a></td>
-<td>Input socket: Limit Method</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i_limit_strength"><code>i_limit_strength</code></a></td>
-<td>Input socket: Limit Strength</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i_spill_channel"><code>i_spill_channel</code></a></td>
-<td>Input socket: Spill Channel</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i_spill_strength"><code>i_spill_strength</code></a></td>
-<td>Input socket: Strength</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i_use_spill_strength"><code>i_use_spill_strength</code></a></td>
-<td>Input socket: Use Spill Strength</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.fac</code></td>
+<td><code>FloatSocket</code></td>
+<td>Factor</td>
+</tr>
+<tr class="odd">
+<td><code>i.spill_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>Spill Channel</td>
+</tr>
+<tr class="even">
+<td><code>i.limit_method</code></td>
+<td><code>MenuSocket</code></td>
+<td>Limit Method</td>
+</tr>
+<tr class="odd">
+<td><code>i.limit_channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>Limit Channel</td>
+</tr>
+<tr class="even">
+<td><code>i.limit_strength</code></td>
+<td><code>FloatSocket</code></td>
+<td>Limit Strength</td>
+</tr>
+<tr class="odd">
+<td><code>i.use_spill_strength</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Use Spill Strength</td>
+</tr>
+<tr class="even">
+<td><code>i.spill_strength</code></td>
+<td><code>ColorSocket</code></td>
+<td>Strength</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -1019,6 +1543,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.DifferenceKey">DifferenceKey</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>DifferenceKey(image_1<span class="op">=</span><span class="va">None</span>, image_2<span class="op">=</span><span class="va">None</span>, tolerance<span class="op">=</span><span class="fl">0.1</span>, falloff<span class="op">=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Produce a matte that isolates foreground content by comparing it with a reference background image</p>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image_1</td>
+<td>InputColor</td>
+<td>Image 1</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>image_2</td>
+<td>InputColor</td>
+<td>Image 2</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>tolerance</td>
+<td>InputFloat</td>
+<td>Tolerance</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="even">
+<td>falloff</td>
+<td>InputFloat</td>
+<td>Falloff</td>
+<td><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
@@ -1030,52 +1593,90 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.i_falloff"><code>i_falloff</code></a></td>
-<td>Input socket: Falloff</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.i_image_1"><code>i_image_1</code></a></td>
-<td>Input socket: Image 1</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.i_image_2"><code>i_image_2</code></a></td>
-<td>Input socket: Image 2</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.i_tolerance"><code>i_tolerance</code></a></td>
-<td>Input socket: Tolerance</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.o_matte"><code>o_matte</code></a></td>
-<td>Output socket: Matte</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.outputs"><code>outputs</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image_1</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image 1</td>
+</tr>
+<tr class="even">
+<td><code>i.image_2</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image 2</td>
+</tr>
+<tr class="odd">
+<td><code>i.tolerance</code></td>
+<td><code>FloatSocket</code></td>
+<td>Tolerance</td>
+</tr>
+<tr class="even">
+<td><code>i.falloff</code></td>
+<td><code>FloatSocket</code></td>
+<td>Falloff</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Matte</td>
 </tr>
 </tbody>
 </table>
@@ -1091,6 +1692,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    falloff<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create matte based on 3D distance between colors</p>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 51%">
+<col style="width: 18%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>key_color</td>
+<td>InputColor</td>
+<td>Key Color</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>color_space</td>
+<td>InputMenu | Literal['RGB', 'YCC']</td>
+<td>Color Space</td>
+<td><code>'RGB'</code></td>
+</tr>
+<tr class="even">
+<td>tolerance</td>
+<td>InputFloat</td>
+<td>Tolerance</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="odd">
+<td>falloff</td>
+<td>InputFloat</td>
+<td>Falloff</td>
+<td><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
@@ -1102,56 +1754,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.i_color_space"><code>i_color_space</code></a></td>
-<td>Input socket: Color Space</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.i_falloff"><code>i_falloff</code></a></td>
-<td>Input socket: Falloff</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.i_key_color"><code>i_key_color</code></a></td>
-<td>Input socket: Key Color</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.i_tolerance"><code>i_tolerance</code></a></td>
-<td>Input socket: Tolerance</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.o_matte"><code>o_matte</code></a></td>
-<td>Output socket: Matte</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.o"><code>o</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.key_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Key Color</td>
+</tr>
+<tr class="odd">
+<td><code>i.color_space</code></td>
+<td><code>MenuSocket</code></td>
+<td>Color Space</td>
+</tr>
+<tr class="even">
+<td><code>i.tolerance</code></td>
+<td><code>FloatSocket</code></td>
+<td>Tolerance</td>
+</tr>
+<tr class="odd">
+<td><code>i.falloff</code></td>
+<td><code>FloatSocket</code></td>
+<td>Falloff</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Matte</td>
 </tr>
 </tbody>
 </table>
@@ -1166,6 +1857,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    only_inside_outer<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a gradient between two masks</p>
+<section id="parameters-7" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>outer_mask</td>
+<td>InputFloat</td>
+<td>Outer Mask</td>
+<td><code>0.8</code></td>
+</tr>
+<tr class="even">
+<td>inner_mask</td>
+<td>InputFloat</td>
+<td>Inner Mask</td>
+<td><code>0.8</code></td>
+</tr>
+<tr class="odd">
+<td>image_edges</td>
+<td>InputBoolean</td>
+<td>Image Edges</td>
+<td><code>False</code></td>
+</tr>
+<tr class="even">
+<td>only_inside_outer</td>
+<td>InputBoolean</td>
+<td>Only Inside Outer</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-7" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
 <table class="caption-top table">
@@ -1177,48 +1907,85 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.i_image_edges"><code>i_image_edges</code></a></td>
-<td>Input socket: Image Edges</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.i_inner_mask"><code>i_inner_mask</code></a></td>
-<td>Input socket: Inner Mask</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.i_only_inside_outer"><code>i_only_inside_outer</code></a></td>
-<td>Input socket: Only Inside Outer</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.i_outer_mask"><code>i_outer_mask</code></a></td>
-<td>Input socket: Outer Mask</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.o_mask"><code>o_mask</code></a></td>
-<td>Output socket: Mask</td>
+<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.outer_mask</code></td>
+<td><code>FloatSocket</code></td>
+<td>Outer Mask</td>
+</tr>
+<tr class="even">
+<td><code>i.inner_mask</code></td>
+<td><code>FloatSocket</code></td>
+<td>Inner Mask</td>
+</tr>
+<tr class="odd">
+<td><code>i.image_edges</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Image Edges</td>
+</tr>
+<tr class="even">
+<td><code>i.only_inside_outer</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Only Inside Outer</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.mask</code></td>
+<td><code>FloatSocket</code></td>
+<td>Mask</td>
 </tr>
 </tbody>
 </table>
@@ -1235,6 +2002,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create elliptical mask suitable for use as a simple matte or vignette mask</p>
+<section id="parameters-8" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 65%">
+<col style="width: 14%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>operation</td>
+<td>InputMenu | Literal['Add', 'Subtract', 'Multiply', 'Not']</td>
+<td>Operation</td>
+<td><code>'Add'</code></td>
+</tr>
+<tr class="even">
+<td>mask</td>
+<td>InputFloat</td>
+<td>Mask</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>value</td>
+<td>InputFloat</td>
+<td>Value</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>position</td>
+<td>InputVector</td>
+<td>Position</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>size</td>
+<td>InputVector</td>
+<td>Size</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>rotation</td>
+<td>InputFloat</td>
+<td>Rotation</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-8" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
@@ -1246,56 +2070,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.i_mask"><code>i_mask</code></a></td>
-<td>Input socket: Mask</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.i_operation"><code>i_operation</code></a></td>
-<td>Input socket: Operation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.i_position"><code>i_position</code></a></td>
-<td>Input socket: Position</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.i_rotation"><code>i_rotation</code></a></td>
-<td>Input socket: Rotation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.i_size"><code>i_size</code></a></td>
-<td>Input socket: Size</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.o_mask"><code>o_mask</code></a></td>
-<td>Output socket: Mask</td>
+<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.operation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Operation</td>
+</tr>
+<tr class="even">
+<td><code>i.mask</code></td>
+<td><code>FloatSocket</code></td>
+<td>Mask</td>
+</tr>
+<tr class="odd">
+<td><code>i.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+<tr class="even">
+<td><code>i.position</code></td>
+<td><code>VectorSocket</code></td>
+<td>Position</td>
+</tr>
+<tr class="odd">
+<td><code>i.size</code></td>
+<td><code>VectorSocket</code></td>
+<td>Size</td>
+</tr>
+<tr class="even">
+<td><code>i.rotation</code></td>
+<td><code>FloatSocket</code></td>
+<td>Rotation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.mask</code></td>
+<td><code>FloatSocket</code></td>
+<td>Mask</td>
 </tr>
 </tbody>
 </table>
@@ -1322,6 +2185,123 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    despill_balance<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Perform both chroma keying (to remove the backdrop) and despill (to correct color cast from the backdrop)</p>
+<section id="parameters-9" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 64%">
+<col style="width: 10%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>key_color</td>
+<td>InputColor</td>
+<td>Key Color</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>preprocess_blur_size</td>
+<td>InputInteger</td>
+<td>Blur Size</td>
+<td><code>0</code></td>
+</tr>
+<tr class="even">
+<td>key_balance</td>
+<td>InputFloat</td>
+<td>Balance</td>
+<td><code>0.5</code></td>
+</tr>
+<tr class="odd">
+<td>black_level</td>
+<td>InputFloat</td>
+<td>Black Level</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>white_level</td>
+<td>InputFloat</td>
+<td>White Level</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>edge_search_size</td>
+<td>InputInteger</td>
+<td>Size</td>
+<td><code>3</code></td>
+</tr>
+<tr class="even">
+<td>edge_tolerance</td>
+<td>InputFloat</td>
+<td>Tolerance</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="odd">
+<td>garbage_matte</td>
+<td>InputFloat</td>
+<td>Garbage Matte</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>core_matte</td>
+<td>InputFloat</td>
+<td>Core Matte</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>postprocess_blur_size</td>
+<td>InputInteger</td>
+<td>Blur Size</td>
+<td><code>0</code></td>
+</tr>
+<tr class="even">
+<td>postprocess_dilate_size</td>
+<td>InputInteger</td>
+<td>Dilate Size</td>
+<td><code>0</code></td>
+</tr>
+<tr class="odd">
+<td>postprocess_feather_size</td>
+<td>InputInteger</td>
+<td>Feather Size</td>
+<td><code>0</code></td>
+</tr>
+<tr class="even">
+<td>feather_falloff</td>
+<td>InputMenu | Literal['Smooth', 'Sphere', 'Root', 'Inverse Square', 'Sharp', 'Linear']</td>
+<td>Feather Falloff</td>
+<td><code>'Smooth'</code></td>
+</tr>
+<tr class="odd">
+<td>despill_strength</td>
+<td>InputFloat</td>
+<td>Strength</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>despill_balance</td>
+<td>InputFloat</td>
+<td>Balance</td>
+<td><code>0.5</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-9" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
 <table class="caption-top table">
@@ -1333,104 +2313,155 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_black_level"><code>i_black_level</code></a></td>
-<td>Input socket: Black Level</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_core_matte"><code>i_core_matte</code></a></td>
-<td>Input socket: Core Matte</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_despill_balance"><code>i_despill_balance</code></a></td>
-<td>Input socket: Balance</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_despill_strength"><code>i_despill_strength</code></a></td>
-<td>Input socket: Strength</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_edge_search_size"><code>i_edge_search_size</code></a></td>
-<td>Input socket: Size</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_edge_tolerance"><code>i_edge_tolerance</code></a></td>
-<td>Input socket: Tolerance</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_feather_falloff"><code>i_feather_falloff</code></a></td>
-<td>Input socket: Feather Falloff</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_garbage_matte"><code>i_garbage_matte</code></a></td>
-<td>Input socket: Garbage Matte</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_key_balance"><code>i_key_balance</code></a></td>
-<td>Input socket: Balance</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_key_color"><code>i_key_color</code></a></td>
-<td>Input socket: Key Color</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_postprocess_blur_size"><code>i_postprocess_blur_size</code></a></td>
-<td>Input socket: Blur Size</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_postprocess_dilate_size"><code>i_postprocess_dilate_size</code></a></td>
-<td>Input socket: Dilate Size</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_postprocess_feather_size"><code>i_postprocess_feather_size</code></a></td>
-<td>Input socket: Feather Size</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_preprocess_blur_size"><code>i_preprocess_blur_size</code></a></td>
-<td>Input socket: Blur Size</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.i_white_level"><code>i_white_level</code></a></td>
-<td>Input socket: White Level</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.Keying.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.Keying.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.Keying.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.o_edges"><code>o_edges</code></a></td>
-<td>Output socket: Edges</td>
+<td><a href="#nodebpy.nodes.compositor.matte.Keying.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.o_matte"><code>o_matte</code></a></td>
-<td>Output socket: Matte</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.Keying.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.Keying.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.Keying.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.Keying.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.key_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Key Color</td>
+</tr>
+<tr class="odd">
+<td><code>i.preprocess_blur_size</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Blur Size</td>
+</tr>
+<tr class="even">
+<td><code>i.key_balance</code></td>
+<td><code>FloatSocket</code></td>
+<td>Balance</td>
+</tr>
+<tr class="odd">
+<td><code>i.black_level</code></td>
+<td><code>FloatSocket</code></td>
+<td>Black Level</td>
+</tr>
+<tr class="even">
+<td><code>i.white_level</code></td>
+<td><code>FloatSocket</code></td>
+<td>White Level</td>
+</tr>
+<tr class="odd">
+<td><code>i.edge_search_size</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Size</td>
+</tr>
+<tr class="even">
+<td><code>i.edge_tolerance</code></td>
+<td><code>FloatSocket</code></td>
+<td>Tolerance</td>
+</tr>
+<tr class="odd">
+<td><code>i.garbage_matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Garbage Matte</td>
+</tr>
+<tr class="even">
+<td><code>i.core_matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Core Matte</td>
+</tr>
+<tr class="odd">
+<td><code>i.postprocess_blur_size</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Blur Size</td>
+</tr>
+<tr class="even">
+<td><code>i.postprocess_dilate_size</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Dilate Size</td>
+</tr>
+<tr class="odd">
+<td><code>i.postprocess_feather_size</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Feather Size</td>
+</tr>
+<tr class="even">
+<td><code>i.feather_falloff</code></td>
+<td><code>MenuSocket</code></td>
+<td>Feather Falloff</td>
+</tr>
+<tr class="odd">
+<td><code>i.despill_strength</code></td>
+<td><code>FloatSocket</code></td>
+<td>Strength</td>
+</tr>
+<tr class="even">
+<td><code>i.despill_balance</code></td>
+<td><code>FloatSocket</code></td>
+<td>Balance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Matte</td>
+</tr>
+<tr class="odd">
+<td><code>o.edges</code></td>
+<td><code>FloatSocket</code></td>
+<td>Edges</td>
 </tr>
 </tbody>
 </table>
@@ -1440,6 +2471,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.KeyingScreen">KeyingScreen</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>KeyingScreen(smoothness<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, tracking_object<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create plates for use as a color reference for keying nodes</p>
+<section id="parameters-10" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>smoothness</td>
+<td>InputFloat</td>
+<td>Smoothness</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-10" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
@@ -1451,40 +2503,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.i_smoothness"><code>i_smoothness</code></a></td>
-<td>Input socket: Smoothness</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.o_screen"><code>o_screen</code></a></td>
-<td>Output socket: Screen</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.tracking_object">tracking_object</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.o"><code>o</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.tracking_object"><code>tracking_object</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.smoothness</code></td>
+<td><code>FloatSocket</code></td>
+<td>Smoothness</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.screen</code></td>
+<td><code>ColorSocket</code></td>
+<td>Screen</td>
 </tr>
 </tbody>
 </table>
@@ -1494,6 +2580,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.LuminanceKey">LuminanceKey</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>LuminanceKey(image<span class="op">=</span><span class="va">None</span>, minimum<span class="op">=</span><span class="fl">0.0</span>, maximum<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a matte based on luminance (brightness) difference</p>
+<section id="parameters-11" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>minimum</td>
+<td>InputFloat</td>
+<td>Minimum</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>maximum</td>
+<td>InputFloat</td>
+<td>Maximum</td>
+<td><code>1.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-11" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
@@ -1505,48 +2624,85 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.i_maximum"><code>i_maximum</code></a></td>
-<td>Input socket: Maximum</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.i_minimum"><code>i_minimum</code></a></td>
-<td>Input socket: Minimum</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.o_matte"><code>o_matte</code></a></td>
-<td>Output socket: Matte</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.o"><code>o</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.minimum</code></td>
+<td><code>FloatSocket</code></td>
+<td>Minimum</td>
+</tr>
+<tr class="odd">
+<td><code>i.maximum</code></td>
+<td><code>FloatSocket</code></td>
+<td>Maximum</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.matte</code></td>
+<td><code>FloatSocket</code></td>
+<td>Matte</td>
 </tr>
 </tbody>
 </table>

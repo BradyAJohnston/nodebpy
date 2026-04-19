@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -559,43 +563,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.active_item_index">active_item_index</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.active_item_index"><code>active_item_index</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.directory">directory</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.directory"><code>directory</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.file_name">file_name</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.file_name"><code>file_name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.save_as_render">save_as_render</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.FileOutput.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.save_as_render"><code>save_as_render</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.output.FileOutput.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -606,6 +618,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.output.Viewer">Viewer</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Viewer(image<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, ui_shortcut<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Visualize data from inside a node graph, in the image editor or as a backdrop</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -617,36 +650,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.Viewer.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.Viewer.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.Viewer.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.Viewer.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.Viewer.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.Viewer.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.output.Viewer.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.output.Viewer.ui_shortcut">ui_shortcut</a></td>
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.type"><code>type</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.output.Viewer.ui_shortcut"><code>ui_shortcut</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>

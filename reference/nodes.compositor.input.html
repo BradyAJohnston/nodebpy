@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -584,32 +588,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Color.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Color.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Color.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Color.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Color.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Color.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Color.o_color"><code>o_color</code></a></td>
-<td>Output socket: Color</td>
+<td><a href="#nodebpy.nodes.compositor.input.Color.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Color.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Color.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Color.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Color.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Color.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Color.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.Color.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Color</td>
 </tr>
 </tbody>
 </table>
@@ -627,6 +652,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    motion_blur_shutter<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input mask from a mask data-block, created in the image editor</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 56%">
+<col style="width: 12%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>size_source</td>
+<td>InputMenu | Literal['Scene Size', 'Fixed', 'Fixed/Scene']</td>
+<td>Size Source</td>
+<td><code>'Scene Size'</code></td>
+</tr>
+<tr class="even">
+<td>size_x</td>
+<td>InputInteger</td>
+<td>Size X</td>
+<td><code>256</code></td>
+</tr>
+<tr class="odd">
+<td>size_y</td>
+<td>InputInteger</td>
+<td>Size Y</td>
+<td><code>256</code></td>
+</tr>
+<tr class="even">
+<td>feather</td>
+<td>InputBoolean</td>
+<td>Feather</td>
+<td><code>True</code></td>
+</tr>
+<tr class="odd">
+<td>motion_blur</td>
+<td>InputBoolean</td>
+<td>Motion Blur</td>
+<td><code>False</code></td>
+</tr>
+<tr class="even">
+<td>motion_blur_samples</td>
+<td>InputInteger</td>
+<td>Samples</td>
+<td><code>16</code></td>
+</tr>
+<tr class="odd">
+<td>motion_blur_shutter</td>
+<td>InputFloat</td>
+<td>Shutter</td>
+<td><code>0.5</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -638,60 +726,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.i_feather"><code>i_feather</code></a></td>
-<td>Input socket: Feather</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.i_motion_blur"><code>i_motion_blur</code></a></td>
-<td>Input socket: Motion Blur</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.i_motion_blur_samples"><code>i_motion_blur_samples</code></a></td>
-<td>Input socket: Samples</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.i_motion_blur_shutter"><code>i_motion_blur_shutter</code></a></td>
-<td>Input socket: Shutter</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.i_size_source"><code>i_size_source</code></a></td>
-<td>Input socket: Size Source</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.i_size_x"><code>i_size_x</code></a></td>
-<td>Input socket: Size X</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.i_size_y"><code>i_size_y</code></a></td>
-<td>Input socket: Size Y</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Mask.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Mask.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.o_mask"><code>o_mask</code></a></td>
-<td>Output socket: Mask</td>
+<td><a href="#nodebpy.nodes.compositor.input.Mask.name"><code>name</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Mask.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Mask.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Mask.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Mask.outputs"><code>outputs</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.Mask.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.Mask.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.size_source</code></td>
+<td><code>MenuSocket</code></td>
+<td>Size Source</td>
+</tr>
+<tr class="even">
+<td><code>i.size_x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Size X</td>
+</tr>
+<tr class="odd">
+<td><code>i.size_y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Size Y</td>
+</tr>
+<tr class="even">
+<td><code>i.feather</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Feather</td>
+</tr>
+<tr class="odd">
+<td><code>i.motion_blur</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Motion Blur</td>
+</tr>
+<tr class="even">
+<td><code>i.motion_blur_samples</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Samples</td>
+</tr>
+<tr class="odd">
+<td><code>i.motion_blur_shutter</code></td>
+<td><code>FloatSocket</code></td>
+<td>Shutter</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.mask</code></td>
+<td><code>FloatSocket</code></td>
+<td>Mask</td>
 </tr>
 </tbody>
 </table>
@@ -712,52 +840,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.MovieClip.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.name">name</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.node">node</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.o_alpha"><code>o_alpha</code></a></td>
-<td>Output socket: Alpha</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.o_angle"><code>o_angle</code></a></td>
-<td>Output socket: Angle</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.o_offset_x"><code>o_offset_x</code></a></td>
-<td>Output socket: Offset X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.o_offset_y"><code>o_offset_y</code></a></td>
-<td>Output socket: Offset Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.o_scale"><code>o_scale</code></a></td>
-<td>Output socket: Scale</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.MovieClip.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.MovieClip.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.MovieClip.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.MovieClip.node"><code>node</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.MovieClip.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.MovieClip.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.MovieClip.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.MovieClip.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.alpha</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha</td>
+</tr>
+<tr class="odd">
+<td><code>o.offset_x</code></td>
+<td><code>FloatSocket</code></td>
+<td>Offset X</td>
+</tr>
+<tr class="even">
+<td><code>o.offset_y</code></td>
+<td><code>FloatSocket</code></td>
+<td>Offset Y</td>
+</tr>
+<tr class="odd">
+<td><code>o.scale</code></td>
+<td><code>FloatSocket</code></td>
+<td>Scale</td>
+</tr>
+<tr class="even">
+<td><code>o.angle</code></td>
+<td><code>FloatSocket</code></td>
+<td>Angle</td>
 </tr>
 </tbody>
 </table>
@@ -778,32 +932,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Normal.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Normal.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Normal.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Normal.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Normal.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Normal.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Normal.o_normal"><code>o_normal</code></a></td>
-<td>Output socket: Normal</td>
+<td><a href="#nodebpy.nodes.compositor.input.Normal.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Normal.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Normal.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.Normal.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Normal.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.Normal.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.Normal.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.Normal.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.normal</code></td>
+<td><code>VectorSocket</code></td>
+<td>Normal</td>
 </tr>
 </tbody>
 </table>
@@ -824,156 +999,207 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_alpha"><code>o_alpha</code></a></td>
-<td>Output socket: Alpha</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_ambient_occlusion"><code>o_ambient_occlusion</code></a></td>
-<td>Output socket: Ambient Occlusion</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_deprecated"><code>o_deprecated</code></a></td>
-<td>Output socket: Deprecated</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_deprecated_001"><code>o_deprecated_001</code></a></td>
-<td>Output socket: Deprecated</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_deprecated_002"><code>o_deprecated_002</code></a></td>
-<td>Output socket: Deprecated</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_deprecated_003"><code>o_deprecated_003</code></a></td>
-<td>Output socket: Deprecated</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_deprecated_004"><code>o_deprecated_004</code></a></td>
-<td>Output socket: Deprecated</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_depth"><code>o_depth</code></a></td>
-<td>Output socket: Depth</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_diffuse_color"><code>o_diffuse_color</code></a></td>
-<td>Output socket: Diffuse Color</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_diffuse_direct"><code>o_diffuse_direct</code></a></td>
-<td>Output socket: Diffuse Direct</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_diffuse_indirect"><code>o_diffuse_indirect</code></a></td>
-<td>Output socket: Diffuse Indirect</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_emission"><code>o_emission</code></a></td>
-<td>Output socket: Emission</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_environment"><code>o_environment</code></a></td>
-<td>Output socket: Environment</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_glossy_color"><code>o_glossy_color</code></a></td>
-<td>Output socket: Glossy Color</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_glossy_direct"><code>o_glossy_direct</code></a></td>
-<td>Output socket: Glossy Direct</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_glossy_indirect"><code>o_glossy_indirect</code></a></td>
-<td>Output socket: Glossy Indirect</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_material_index"><code>o_material_index</code></a></td>
-<td>Output socket: Material Index</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_mist"><code>o_mist</code></a></td>
-<td>Output socket: Mist</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_normal"><code>o_normal</code></a></td>
-<td>Output socket: Normal</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_object_index"><code>o_object_index</code></a></td>
-<td>Output socket: Object Index</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_position"><code>o_position</code></a></td>
-<td>Output socket: Position</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_shadow"><code>o_shadow</code></a></td>
-<td>Output socket: Shadow</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_subsurface_color"><code>o_subsurface_color</code></a></td>
-<td>Output socket: Subsurface Color</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_subsurface_direct"><code>o_subsurface_direct</code></a></td>
-<td>Output socket: Subsurface Direct</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_subsurface_indirect"><code>o_subsurface_indirect</code></a></td>
-<td>Output socket: Subsurface Indirect</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_transmission_color"><code>o_transmission_color</code></a></td>
-<td>Output socket: Transmission Color</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_transmission_direct"><code>o_transmission_direct</code></a></td>
-<td>Output socket: Transmission Direct</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_transmission_indirect"><code>o_transmission_indirect</code></a></td>
-<td>Output socket: Transmission Indirect</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_uv"><code>o_uv</code></a></td>
-<td>Output socket: UV</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o_vector"><code>o_vector</code></a></td>
-<td>Output socket: Vector</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.o"><code>o</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.RenderLayers.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.alpha</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha</td>
+</tr>
+<tr class="odd">
+<td><code>o.depth</code></td>
+<td><code>FloatSocket</code></td>
+<td>Depth</td>
+</tr>
+<tr class="even">
+<td><code>o.normal</code></td>
+<td><code>VectorSocket</code></td>
+<td>Normal</td>
+</tr>
+<tr class="odd">
+<td><code>o.uv</code></td>
+<td><code>VectorSocket</code></td>
+<td>UV</td>
+</tr>
+<tr class="even">
+<td><code>o.vector</code></td>
+<td><code>VectorSocket</code></td>
+<td>Vector</td>
+</tr>
+<tr class="odd">
+<td><code>o.position</code></td>
+<td><code>VectorSocket</code></td>
+<td>Position</td>
+</tr>
+<tr class="even">
+<td><code>o.deprecated</code></td>
+<td><code>ColorSocket</code></td>
+<td>Deprecated</td>
+</tr>
+<tr class="odd">
+<td><code>o.deprecated_001</code></td>
+<td><code>ColorSocket</code></td>
+<td>Deprecated</td>
+</tr>
+<tr class="even">
+<td><code>o.shadow</code></td>
+<td><code>ColorSocket</code></td>
+<td>Shadow</td>
+</tr>
+<tr class="odd">
+<td><code>o.ambient_occlusion</code></td>
+<td><code>ColorSocket</code></td>
+<td>Ambient Occlusion</td>
+</tr>
+<tr class="even">
+<td><code>o.deprecated_002</code></td>
+<td><code>ColorSocket</code></td>
+<td>Deprecated</td>
+</tr>
+<tr class="odd">
+<td><code>o.deprecated_003</code></td>
+<td><code>ColorSocket</code></td>
+<td>Deprecated</td>
+</tr>
+<tr class="even">
+<td><code>o.deprecated_004</code></td>
+<td><code>ColorSocket</code></td>
+<td>Deprecated</td>
+</tr>
+<tr class="odd">
+<td><code>o.object_index</code></td>
+<td><code>FloatSocket</code></td>
+<td>Object Index</td>
+</tr>
+<tr class="even">
+<td><code>o.material_index</code></td>
+<td><code>FloatSocket</code></td>
+<td>Material Index</td>
+</tr>
+<tr class="odd">
+<td><code>o.mist</code></td>
+<td><code>FloatSocket</code></td>
+<td>Mist</td>
+</tr>
+<tr class="even">
+<td><code>o.emission</code></td>
+<td><code>ColorSocket</code></td>
+<td>Emission</td>
+</tr>
+<tr class="odd">
+<td><code>o.environment</code></td>
+<td><code>ColorSocket</code></td>
+<td>Environment</td>
+</tr>
+<tr class="even">
+<td><code>o.diffuse_direct</code></td>
+<td><code>ColorSocket</code></td>
+<td>Diffuse Direct</td>
+</tr>
+<tr class="odd">
+<td><code>o.diffuse_indirect</code></td>
+<td><code>ColorSocket</code></td>
+<td>Diffuse Indirect</td>
+</tr>
+<tr class="even">
+<td><code>o.diffuse_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Diffuse Color</td>
+</tr>
+<tr class="odd">
+<td><code>o.glossy_direct</code></td>
+<td><code>ColorSocket</code></td>
+<td>Glossy Direct</td>
+</tr>
+<tr class="even">
+<td><code>o.glossy_indirect</code></td>
+<td><code>ColorSocket</code></td>
+<td>Glossy Indirect</td>
+</tr>
+<tr class="odd">
+<td><code>o.glossy_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Glossy Color</td>
+</tr>
+<tr class="even">
+<td><code>o.transmission_direct</code></td>
+<td><code>ColorSocket</code></td>
+<td>Transmission Direct</td>
+</tr>
+<tr class="odd">
+<td><code>o.transmission_indirect</code></td>
+<td><code>ColorSocket</code></td>
+<td>Transmission Indirect</td>
+</tr>
+<tr class="even">
+<td><code>o.transmission_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Transmission Color</td>
+</tr>
+<tr class="odd">
+<td><code>o.subsurface_direct</code></td>
+<td><code>ColorSocket</code></td>
+<td>Subsurface Direct</td>
+</tr>
+<tr class="even">
+<td><code>o.subsurface_indirect</code></td>
+<td><code>ColorSocket</code></td>
+<td>Subsurface Indirect</td>
+</tr>
+<tr class="odd">
+<td><code>o.subsurface_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Subsurface Color</td>
 </tr>
 </tbody>
 </table>
@@ -994,36 +1220,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.SceneTime.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.SceneTime.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.SceneTime.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.SceneTime.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.SceneTime.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.SceneTime.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.SceneTime.o_frame"><code>o_frame</code></a></td>
-<td>Output socket: Frame</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.SceneTime.o_seconds"><code>o_seconds</code></a></td>
-<td>Output socket: Seconds</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.SceneTime.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.SceneTime.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.SceneTime.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.SceneTime.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.SceneTime.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.SceneTime.outputs"><code>outputs</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.SceneTime.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.SceneTime.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.seconds</code></td>
+<td><code>FloatSocket</code></td>
+<td>Seconds</td>
+</tr>
+<tr class="even">
+<td><code>o.frame</code></td>
+<td><code>FloatSocket</code></td>
+<td>Frame</td>
 </tr>
 </tbody>
 </table>
@@ -1033,6 +1281,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.TimeCurve">TimeCurve</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>TimeCurve(start_frame<span class="op">=</span><span class="dv">1</span>, end_frame<span class="op">=</span><span class="dv">250</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a factor value (from 0.0 to 1.0) between scene start and end time, using a curve mapping</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>start_frame</td>
+<td>InputInteger</td>
+<td>Start Frame</td>
+<td><code>1</code></td>
+</tr>
+<tr class="even">
+<td>end_frame</td>
+<td>InputInteger</td>
+<td>End Frame</td>
+<td><code>250</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
@@ -1044,40 +1319,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.i_end_frame"><code>i_end_frame</code></a></td>
-<td>Input socket: End Frame</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.i_start_frame"><code>i_start_frame</code></a></td>
-<td>Input socket: Start Frame</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.o_fac"><code>o_fac</code></a></td>
-<td>Output socket: Factor</td>
+<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.TimeCurve.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.start_frame</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Start Frame</td>
+</tr>
+<tr class="even">
+<td><code>i.end_frame</code></td>
+<td><code>IntegerSocket</code></td>
+<td>End Frame</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.fac</code></td>
+<td><code>FloatSocket</code></td>
+<td>Factor</td>
 </tr>
 </tbody>
 </table>
@@ -1087,6 +1397,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.TrackPosition">TrackPosition</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>TrackPosition(mode<span class="op">=</span><span class="st">'Absolute'</span>, frame<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, tracking_object<span class="op">=</span><span class="st">''</span>, track_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide information about motion tracking points, such as x and y values</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 72%">
+<col style="width: 11%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mode</td>
+<td>InputMenu | Literal['Absolute', 'Relative Start', 'Relative Frame', 'Absolute Frame']</td>
+<td>Mode</td>
+<td><code>'Absolute'</code></td>
+</tr>
+<tr class="even">
+<td>frame</td>
+<td>InputInteger</td>
+<td>Frame</td>
+<td><code>0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-7" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
 <table class="caption-top table">
@@ -1098,56 +1441,93 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.i_frame"><code>i_frame</code></a></td>
-<td>Input socket: Frame</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.i_mode"><code>i_mode</code></a></td>
-<td>Input socket: Mode</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.o_speed"><code>o_speed</code></a></td>
-<td>Output socket: Speed</td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.o_x"><code>o_x</code></a></td>
-<td>Output socket: X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.o_y"><code>o_y</code></a></td>
-<td>Output socket: Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.track_name">track_name</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.tracking_object">tracking_object</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.track_name"><code>track_name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.tracking_object"><code>tracking_object</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.TrackPosition.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.mode</code></td>
+<td><code>MenuSocket</code></td>
+<td>Mode</td>
+</tr>
+<tr class="even">
+<td><code>i.frame</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Frame</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.x</code></td>
+<td><code>FloatSocket</code></td>
+<td>X</td>
+</tr>
+<tr class="even">
+<td><code>o.y</code></td>
+<td><code>FloatSocket</code></td>
+<td>Y</td>
+</tr>
+<tr class="odd">
+<td><code>o.speed</code></td>
+<td><code>VectorSocket</code></td>
+<td>Speed</td>
 </tr>
 </tbody>
 </table>

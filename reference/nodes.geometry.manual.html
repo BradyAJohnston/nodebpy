@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -521,6 +525,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.manual.JoinGeometry" id="toc-nodebpy.nodes.geometry.manual.JoinGeometry" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.JoinGeometry">JoinGeometry</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.JoinStrings" id="toc-nodebpy.nodes.geometry.manual.JoinStrings" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.JoinStrings">JoinStrings</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.MenuSwitch" id="toc-nodebpy.nodes.geometry.manual.MenuSwitch" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.MenuSwitch">MenuSwitch</a></li>
+  <li><a href="#nodebpy.nodes.geometry.manual.MeshBoolean" id="toc-nodebpy.nodes.geometry.manual.MeshBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.MeshBoolean">MeshBoolean</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean" id="toc-nodebpy.nodes.geometry.manual.SDFGridBoolean" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.SDFGridBoolean">SDFGridBoolean</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.SetHandleType" id="toc-nodebpy.nodes.geometry.manual.SetHandleType" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.SetHandleType">SetHandleType</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.Value" id="toc-nodebpy.nodes.geometry.manual.Value" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.Value">Value</a></li>
@@ -621,14 +626,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Node builder for the Menu Switch node</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean">MeshBoolean</a></td>
+<td>Cut, subtract, or join multiple mesh inputs</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean">SDFGridBoolean</a></td>
 <td>Cut, subtract, or join multiple SDF volume grid inputs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.SetHandleType">SetHandleType</a></td>
 <td>Set the handle type for the control points of a Bézier curve</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.Value">Value</a></td>
 <td>Input numerical values to other nodes in the tree</td>
 </tr>
@@ -656,83 +665,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.corner">corner</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.corner"><code>corner</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.edge">edge</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.edge"><code>edge</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.face">face</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.face"><code>face</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.i_group_id"><code>i_group_id</code></a></td>
-<td>Input socket: Group ID</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.instance">instance</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.instance"><code>instance</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.o_leading"><code>o_leading</code></a></td>
-<td>Output socket: Leading</td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.o_total"><code>o_total</code></a></td>
-<td>Output socket: Total</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.o_trailing"><code>o_trailing</code></a></td>
-<td>Output socket: Trailing</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.point">point</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.spline">spline</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.point"><code>point</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.spline"><code>spline</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.AccumulateField.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -762,79 +759,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.i_attribute"><code>i_attribute</code></a></td>
-<td>Input socket: Attribute</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.i_geometry"><code>i_geometry</code></a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.i_selection"><code>i_selection</code></a></td>
-<td>Input socket: Selection</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o_max"><code>o_max</code></a></td>
-<td>Output socket: Max</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o_mean"><code>o_mean</code></a></td>
-<td>Output socket: Mean</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o_median"><code>o_median</code></a></td>
-<td>Output socket: Median</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o_min"><code>o_min</code></a></td>
-<td>Output socket: Min</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o_range"><code>o_range</code></a></td>
-<td>Output socket: Range</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o_standard_deviation"><code>o_standard_deviation</code></a></td>
-<td>Output socket: Standard Deviation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o_sum"><code>o_sum</code></a></td>
-<td>Output socket: Sum</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o_variance"><code>o_variance</code></a></td>
-<td>Output socket: Variance</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.AttributeStatistic.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -857,35 +818,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Bake.i_input_socket"><code>i_input_socket</code></a></td>
-<td>Input socket:</td>
+<td><a href="#nodebpy.nodes.geometry.manual.Bake.i"><code>i</code></a></td>
+<td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Bake.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Bake.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Bake.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Bake.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Bake.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Bake.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Bake.o_input_socket"><code>o_input_socket</code></a></td>
-<td>Output socket:</td>
+<td><a href="#nodebpy.nodes.geometry.manual.Bake.o"><code>o</code></a></td>
+<td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Bake.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Bake.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Bake.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Bake.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Bake.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Bake.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -907,67 +868,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.corner">corner</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.corner"><code>corner</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.curve">curve</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.curve"><code>curve</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.edge">edge</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.edge"><code>edge</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.face">face</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.face"><code>face</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.i_geometry"><code>i_geometry</code></a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.instance">instance</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.instance"><code>instance</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.o_geometry"><code>o_geometry</code></a></td>
-<td>Output socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.point">point</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.point"><code>point</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1012,83 +973,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.brighter">brighter</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.color"><code>color</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.darker">darker</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.float"><code>float</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.equal">equal</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.greater_equal">greater_equal</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.greater_than">greater_than</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.integer"><code>integer</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.i_a"><code>i_a</code></a></td>
-<td>Input socket: A</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.i_b"><code>i_b</code></a></td>
-<td>Input socket: B</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.mode"><code>mode</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.less_equal">less_equal</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.less_than">less_than</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.mode">mode</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.operation"><code>operation</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.not_equal">not_equal</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.string"><code>string</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.o_result"><code>o_result</code></a></td>
-<td>Output socket: Result</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.operation">operation</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.type"><code>type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.Compare.vector"><code>vector</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1105,78 +1050,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.color">color</a></td>
-<td>Create Compare with operation ‘Color’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.float">float</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.integer">integer</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.string">string</a></td>
-<td>Create Compare with operation ‘String’.</td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.Compare.switch">switch</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Compare.vector">vector</a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.geometry.manual.Compare.color" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Compare.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>color(a<span class="op">=</span><span class="va">None</span>, b<span class="op">=</span><span class="va">None</span>, operation<span class="op">=</span><span class="st">'EQUAL'</span>, <span class="op">*</span>, epsilon<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Compare with operation ‘Color’.</p>
-</section>
-<section id="nodebpy.nodes.geometry.manual.Compare.float" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Compare.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(a<span class="op">=</span><span class="fl">0.0</span>, b<span class="op">=</span><span class="fl">0.0</span>, operation<span class="op">=</span><span class="st">'LESS_THAN'</span>, <span class="op">*</span>, epsilon<span class="op">=</span><span class="fl">0.0001</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.geometry.manual.Compare.integer" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Compare.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>integer(a<span class="op">=</span><span class="dv">0</span>, b<span class="op">=</span><span class="dv">0</span>, operation<span class="op">=</span><span class="st">'LESS_THAN'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.geometry.manual.Compare.string" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Compare.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>string(a<span class="op">=</span><span class="st">''</span>, b<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Compare with operation ‘String’.</p>
-</section>
 <section id="nodebpy.nodes.geometry.manual.Compare.switch" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Compare.switch">switch</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>switch(false, true)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.geometry.manual.Compare.vector" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Compare.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>vector(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    a<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    b<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'LESS_THAN'</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'ELEMENT'</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    c<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    angle<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    epsilon<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>switch(false, true)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.manual.EvaluateAtIndex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.EvaluateAtIndex">EvaluateAtIndex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>EvaluateAtIndex(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>EvaluateAtIndex(value<span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, domain<span class="op">=</span><span class="st">'POINT'</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve data of other elements in the context’s geometry</p>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
@@ -1189,75 +1076,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.corner">corner</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.corner"><code>corner</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.edge">edge</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.edge"><code>edge</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.face">face</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.face"><code>face</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.i_index"><code>i_index</code></a></td>
-<td>Input socket: Index</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.instance">instance</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.instance"><code>instance</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.o_value"><code>o_value</code></a></td>
-<td>Output socket: Value</td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.point">point</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.spline">spline</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.point"><code>point</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.spline"><code>spline</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateAtIndex.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1266,7 +1149,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.EvaluateOnDomain" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.EvaluateOnDomain">EvaluateOnDomain</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>EvaluateOnDomain(value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, domain<span class="op">=</span><span class="st">'POINT'</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>EvaluateOnDomain(value<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, domain<span class="op">=</span><span class="st">'POINT'</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve values from a field on a different domain besides the domain from the context</p>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
@@ -1279,71 +1162,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.corner">corner</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.corner"><code>corner</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.edge">edge</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.edge"><code>edge</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.face">face</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.face"><code>face</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.instance">instance</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.instance"><code>instance</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.o_value"><code>o_value</code></a></td>
-<td>Output socket: Value</td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.point">point</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.point"><code>point</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.spline">spline</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.spline"><code>spline</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateOnDomain.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1352,7 +1235,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldAverage" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldAverage">FieldAverage</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>FieldAverage(value<span class="op">=</span><span class="va">None</span>, group_index<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>FieldAverage(value<span class="op">=</span><span class="va">None</span>, group_index<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the mean and median of a given field</p>
 <section id="attributes-7" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
@@ -1365,79 +1248,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.corner">corner</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.corner"><code>corner</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.edge">edge</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.edge"><code>edge</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.face">face</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.face"><code>face</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.i_group_id"><code>i_group_id</code></a></td>
-<td>Input socket: Group ID</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.instance">instance</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.instance"><code>instance</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.o_mean"><code>o_mean</code></a></td>
-<td>Output socket: Mean</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.o_median"><code>o_median</code></a></td>
-<td>Output socket: Median</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.point">point</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.spline">spline</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.point"><code>point</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.spline"><code>spline</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldAverage.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1446,7 +1321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldMinAndMax" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldMinAndMax">FieldMinAndMax</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>FieldMinAndMax(value<span class="op">=</span><span class="fl">1.0</span>, group_index<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>FieldMinAndMax(value<span class="op">=</span><span class="fl">1.0</span>, group_index<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, domain<span class="op">=</span><span class="st">'POINT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the minimum and maximum of a given field</p>
 <section id="attributes-8" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
@@ -1459,79 +1334,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.corner">corner</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.corner"><code>corner</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.edge">edge</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.edge"><code>edge</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.face">face</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.face"><code>face</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.i_group_id"><code>i_group_id</code></a></td>
-<td>Input socket: Group ID</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.instance">instance</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.instance"><code>instance</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.o_max"><code>o_max</code></a></td>
-<td>Output socket: Max</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.o_min"><code>o_min</code></a></td>
-<td>Output socket: Min</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.point">point</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.spline">spline</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.point"><code>point</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.spline"><code>spline</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1540,7 +1407,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid">FieldToGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>FieldToGrid(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>FieldToGrid(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create new grids by evaluating new values on an existing volume grid topology</p>
 <p>New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.</p>
 <p>Data types are inferred automatically from the closest compatible data type.</p>
@@ -1559,35 +1426,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.i_topology"><code>i_topology</code></a></td>
-<td>Input socket: Topology</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.o"><code>o</code></a></td>
+<td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1627,35 +1498,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.capture">capture</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>capture(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>capture(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>vector(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>vector(<span class="op">*</span>args, topology<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldVariance" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldVariance">FieldVariance</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>FieldVariance(</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>FieldVariance(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the standard deviation and variance of a given field</p>
 <section id="attributes-10" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
@@ -1668,79 +1539,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.corner">corner</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.corner"><code>corner</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.edge">edge</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.edge"><code>edge</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.face">face</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.face"><code>face</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.i_group_id"><code>i_group_id</code></a></td>
-<td>Input socket: Group ID</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.instance">instance</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.layer">layer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.instance"><code>instance</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.o_standard_deviation"><code>o_standard_deviation</code></a></td>
-<td>Output socket: Standard Deviation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.o_variance"><code>o_variance</code></a></td>
-<td>Output socket: Variance</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.point">point</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.spline">spline</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.point"><code>point</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.spline"><code>spline</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldVariance.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1749,7 +1612,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.FormatString" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FormatString">FormatString</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>FormatString(<span class="op">*</span>args, <span class="bu">format</span><span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>FormatString(<span class="op">*</span>args, <span class="bu">format</span><span class="op">=</span><span class="st">''</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Insert values into a string using a Python and path template compatible formatting syntax</p>
 <section id="attributes-11" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
@@ -1762,43 +1625,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.i_format"><code>i_format</code></a></td>
-<td>Input socket: Format</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.i_input_socket"><code>i_input_socket</code></a></td>
-<td>Input socket:</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.items">items</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.items"><code>items</code></a></td>
 <td>Input sockets:</td>
 </tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.name">name</a></td>
-<td></td>
-</tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.o_string"><code>o_string</code></a></td>
-<td>Output socket: String</td>
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FormatString.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FormatString.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1807,7 +1666,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.GeometryToInstance" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.GeometryToInstance">GeometryToInstance</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>GeometryToInstance(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>GeometryToInstance(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large</p>
 <section id="attributes-12" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
@@ -1820,36 +1679,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.i_geometry"><code>i_geometry</code></a></td>
-<td>Input socket: Geometry</td>
+<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.o_instances"><code>o_instances</code></a></td>
-<td>Output socket: Instances</td>
+<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 20%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>geometry</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Multi-input socket; geometry that will be converted into an instance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 20%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>instances</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Single geometry output with each input linked geometry as a separate instance</td>
 </tr>
 </tbody>
 </table>
@@ -1857,7 +1760,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.HandleTypeSelection" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.HandleTypeSelection">HandleTypeSelection</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>HandleTypeSelection(handle_type<span class="op">=</span><span class="st">'AUTO'</span>, left<span class="op">=</span><span class="va">True</span>, right<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>HandleTypeSelection(handle_type<span class="op">=</span><span class="st">'AUTO'</span>, left<span class="op">=</span><span class="va">True</span>, right<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide a selection based on the handle types of Bézier control points</p>
 <section id="attributes-13" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
@@ -1870,47 +1773,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.handle_type">handle_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.handle_type"><code>handle_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.inputs">inputs</a></td>
-<td></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.i"><code>i</code></a></td>
+<td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.left">left</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.mode">mode</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.left"><code>left</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.mode"><code>mode</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.o_selection"><code>o_selection</code></a></td>
-<td>Output socket: Selection</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.right">right</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.right"><code>right</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1919,7 +1826,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch">IndexSwitch</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>IndexSwitch(<span class="op">*</span>args, index<span class="op">=</span><span class="dv">0</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>IndexSwitch(<span class="op">*</span>args, index<span class="op">=</span><span class="dv">0</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Node builder for the Index Switch node</p>
 <section id="attributes-14" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
@@ -1932,103 +1839,103 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.boolean">boolean</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.boolean"><code>boolean</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.bundle">bundle</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.bundle"><code>bundle</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.closure">closure</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.closure"><code>closure</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.collection">collection</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.collection"><code>collection</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.color">color</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.color"><code>color</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.data_type"><code>data_type</code></a></td>
 <td>Input socket: Data Type</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.float">float</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.float"><code>float</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.geometry">geometry</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.geometry"><code>geometry</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.i_index"><code>i_index</code></a></td>
-<td>Input socket: Index</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.image">image</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.integer">integer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.image"><code>image</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.material">material</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.matrix">matrix</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.integer"><code>integer</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.menu">menu</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.material"><code>material</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.matrix"><code>matrix</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.menu"><code>menu</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.o_output"><code>o_output</code></a></td>
-<td>Output socket: Output</td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.name"><code>name</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.object">object</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.rotation">rotation</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.object"><code>object</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.string">string</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.rotation"><code>rotation</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.string"><code>string</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.vector">vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.type"><code>type</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch.vector"><code>vector</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2037,7 +1944,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.JoinGeometry" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.JoinGeometry">JoinGeometry</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>JoinGeometry(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>JoinGeometry(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Merge separately generated geometries into a single one</p>
 <section id="attributes-15" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
@@ -2050,35 +1957,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.i_geometry"><code>i_geometry</code></a></td>
-<td>Input socket: Geometry</td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.o_geometry"><code>o_geometry</code></a></td>
-<td>Output socket: Geometry</td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2087,7 +1994,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.JoinStrings" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.JoinStrings">JoinStrings</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>JoinStrings(<span class="op">*</span>args, delimiter<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>JoinStrings(<span class="op">*</span>args, delimiter<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Combine any number of input strings</p>
 <section id="attributes-16" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
@@ -2100,39 +2007,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.i_delimiter"><code>i_delimiter</code></a></td>
-<td>Input socket: Delimiter</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.i_strings"><code>i_strings</code></a></td>
-<td>Input socket: Strings</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.o_string"><code>o_string</code></a></td>
-<td>Output socket: String</td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.JoinStrings.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2141,7 +2044,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch">MenuSwitch</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>MenuSwitch(<span class="op">*</span>args, menu<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>MenuSwitch(<span class="op">*</span>args, menu<span class="op">=</span><span class="va">None</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Node builder for the Menu Switch node</p>
 <section id="attributes-17" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
@@ -2154,113 +2057,113 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.boolean">boolean</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.boolean"><code>boolean</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.bundle">bundle</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.bundle"><code>bundle</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.closure">closure</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.closure"><code>closure</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.collection">collection</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.collection"><code>collection</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.color">color</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.color"><code>color</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.data_type"><code>data_type</code></a></td>
 <td>Input socket: Data Type</td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.float">float</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.float"><code>float</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.geometry">geometry</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.geometry"><code>geometry</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.i_menu"><code>i_menu</code></a></td>
-<td>Input socket: Menu</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.image">image</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.integer">integer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.image"><code>image</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.material">material</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.matrix">matrix</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.integer"><code>integer</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.menu">menu</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.material"><code>material</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.matrix"><code>matrix</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.menu"><code>menu</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.o_output"><code>o_output</code></a></td>
-<td>Output socket: Output</td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.name"><code>name</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.object">object</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.rotation">rotation</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.object"><code>object</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.string">string</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.rotation"><code>rotation</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.string"><code>string</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.vector">vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.type"><code>type</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch.vector"><code>vector</code></a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.manual.SDFGridBoolean" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean">SDFGridBoolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Cut, subtract, or join multiple SDF volume grid inputs</p>
+<section id="nodebpy.nodes.geometry.manual.MeshBoolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MeshBoolean">MeshBoolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>MeshBoolean(<span class="op">*</span>args, operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>, solver<span class="op">=</span><span class="st">'FLOAT'</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cut, subtract, or join multiple mesh inputs</p>
 <section id="attributes-18" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
 <table class="caption-top table">
@@ -2272,43 +2175,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.i_grid_1"><code>i_grid_1</code></a></td>
-<td>Input socket: Grid 1</td>
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.i"><code>i</code></a></td>
+<td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.i_grid_2"><code>i_grid_2</code></a></td>
-<td>Input socket: Grid 2</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.operation">operation</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.o"><code>o</code></a></td>
+<td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.operation"><code>operation</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.solver"><code>solver</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2316,6 +2219,103 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="methods-3" class="level4">
 <h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.difference">difference</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.intersect">intersect</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean.union">union</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.manual.MeshBoolean.difference" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MeshBoolean.difference">difference</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>difference(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>args,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    mesh_1<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.MeshBoolean.intersect" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MeshBoolean.intersect">intersect</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>intersect(<span class="op">*</span>args, self_intersection<span class="op">=</span><span class="va">False</span>, hole_tolerant<span class="op">=</span><span class="va">False</span>, solver<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.MeshBoolean.union" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MeshBoolean.union">union</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>union(<span class="op">*</span>args, hole_tolerant<span class="op">=</span><span class="va">False</span>, self_intersection<span class="op">=</span><span class="va">False</span>, solver<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.manual.SDFGridBoolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean">SDFGridBoolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cut, subtract, or join multiple SDF volume grid inputs</p>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.operation"><code>operation</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-4" class="level4">
+<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2340,96 +2340,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean.difference" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean.difference">difference</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>difference(<span class="op">*</span>args, grid_1<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>difference(<span class="op">*</span>args, grid_1<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create SDF Grid Boolean with operation ‘Difference’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect">intersect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>intersect(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>intersect(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean.union" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean.union">union</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>union(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>union(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.manual.SetHandleType" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SetHandleType">SetHandleType</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>SetHandleType(</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    curve<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    left<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    right<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    handle_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>SetHandleType(</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    curve<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    left<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    right<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    handle_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set the handle type for the control points of a Bézier curve</p>
-<section id="attributes-19" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.handle_type">handle_type</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.i_curve"><code>i_curve</code></a></td>
-<td>Input socket: Curve</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.i_selection"><code>i_selection</code></a></td>
-<td>Input socket: Selection</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.left">left</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.name">name</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.node">node</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.o_curve"><code>o_curve</code></a></td>
-<td>Output socket: Curve</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.right">right</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.tree">tree</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.type">type</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="nodebpy.nodes.geometry.manual.Value" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Value">Value</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Input numerical values to other nodes in the tree</p>
 <section id="attributes-20" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
 <table class="caption-top table">
@@ -2441,35 +2375,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Value.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.handle_type"><code>handle_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Value.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Value.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Value.o_value"><code>o_value</code></a></td>
-<td>Output socket: Value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Value.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Value.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.left"><code>left</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.Value.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.Value.value">value</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.right"><code>right</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.SetHandleType.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.manual.Value" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Value">Value</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Input numerical values to other nodes in the tree</p>
+<section id="attributes-21" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.i"><code>i</code></a></td>
+<td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.type"><code>type</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.Value.value"><code>value</code></a></td>
 <td>Input socket: Value</td>
 </tr>
 </tbody>

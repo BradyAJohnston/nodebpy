@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -607,6 +611,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Plane warp transformation using explicit corner values</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 64%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>upper_left</td>
+<td>InputVector</td>
+<td>Upper Left</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>upper_right</td>
+<td>InputVector</td>
+<td>Upper Right</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>lower_left</td>
+<td>InputVector</td>
+<td>Lower Left</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>lower_right</td>
+<td>InputVector</td>
+<td>Lower Right</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']</td>
+<td>Interpolation</td>
+<td><code>'Bilinear'</code></td>
+</tr>
+<tr class="odd">
+<td>extension_x</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension X</td>
+<td><code>'Clip'</code></td>
+</tr>
+<tr class="even">
+<td>extension_y</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension Y</td>
+<td><code>'Clip'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -618,68 +691,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i_extension_x"><code>i_extension_x</code></a></td>
-<td>Input socket: Extension X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i_extension_y"><code>i_extension_y</code></a></td>
-<td>Input socket: Extension Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i_lower_left"><code>i_lower_left</code></a></td>
-<td>Input socket: Lower Left</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i_lower_right"><code>i_lower_right</code></a></td>
-<td>Input socket: Lower Right</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i_upper_left"><code>i_upper_left</code></a></td>
-<td>Input socket: Upper Left</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i_upper_right"><code>i_upper_right</code></a></td>
-<td>Input socket: Upper Right</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.o_plane"><code>o_plane</code></a></td>
-<td>Output socket: Plane</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.outputs"><code>outputs</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.distort.CornerPin.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.upper_left</code></td>
+<td><code>VectorSocket</code></td>
+<td>Upper Left</td>
+</tr>
+<tr class="odd">
+<td><code>i.upper_right</code></td>
+<td><code>VectorSocket</code></td>
+<td>Upper Right</td>
+</tr>
+<tr class="even">
+<td><code>i.lower_left</code></td>
+<td><code>VectorSocket</code></td>
+<td>Lower Left</td>
+</tr>
+<tr class="odd">
+<td><code>i.lower_right</code></td>
+<td><code>VectorSocket</code></td>
+<td>Lower Right</td>
+</tr>
+<tr class="even">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+<tr class="odd">
+<td><code>i.extension_x</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension X</td>
+</tr>
+<tr class="even">
+<td><code>i.extension_y</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.plane</code></td>
+<td><code>FloatSocket</code></td>
+<td>Plane</td>
 </tr>
 </tbody>
 </table>
@@ -689,6 +804,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.distort.Crop">Crop</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Crop(image<span class="op">=</span><span class="va">None</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, width<span class="op">=</span><span class="dv">1920</span>, height<span class="op">=</span><span class="dv">1080</span>, alpha_crop<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Crops image to a smaller region, either making the cropped area transparent or resizing the image</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>InputInteger</td>
+<td>X</td>
+<td><code>0</code></td>
+</tr>
+<tr class="odd">
+<td>y</td>
+<td>InputInteger</td>
+<td>Y</td>
+<td><code>0</code></td>
+</tr>
+<tr class="even">
+<td>width</td>
+<td>InputInteger</td>
+<td>Width</td>
+<td><code>1920</code></td>
+</tr>
+<tr class="odd">
+<td>height</td>
+<td>InputInteger</td>
+<td>Height</td>
+<td><code>1080</code></td>
+</tr>
+<tr class="even">
+<td>alpha_crop</td>
+<td>InputBoolean</td>
+<td>Alpha Crop</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -700,56 +866,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.i_alpha_crop"><code>i_alpha_crop</code></a></td>
-<td>Input socket: Alpha Crop</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.i_height"><code>i_height</code></a></td>
-<td>Input socket: Height</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.i_width"><code>i_width</code></a></td>
-<td>Input socket: Width</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.i_x"><code>i_x</code></a></td>
-<td>Input socket: X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.i_y"><code>i_y</code></a></td>
-<td>Input socket: Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Crop.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Crop.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Crop.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Crop.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Crop.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Crop.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Crop.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Crop.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.distort.Crop.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>X</td>
+</tr>
+<tr class="odd">
+<td><code>i.y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Y</td>
+</tr>
+<tr class="even">
+<td><code>i.width</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Width</td>
+</tr>
+<tr class="odd">
+<td><code>i.height</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Height</td>
+</tr>
+<tr class="even">
+<td><code>i.alpha_crop</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Alpha Crop</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -765,6 +970,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Displace pixel position using an offset vector</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 64%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>displacement</td>
+<td>InputVector</td>
+<td>Displacement</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']</td>
+<td>Interpolation</td>
+<td><code>'Bilinear'</code></td>
+</tr>
+<tr class="even">
+<td>extension_x</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension X</td>
+<td><code>'Clip'</code></td>
+</tr>
+<tr class="odd">
+<td>extension_y</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension Y</td>
+<td><code>'Clip'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
@@ -776,52 +1032,90 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.i_displacement"><code>i_displacement</code></a></td>
-<td>Input socket: Displacement</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Displace.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.i_extension_x"><code>i_extension_x</code></a></td>
-<td>Input socket: Extension X</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.i_extension_y"><code>i_extension_y</code></a></td>
-<td>Input socket: Extension Y</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Displace.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Displace.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Displace.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Displace.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Displace.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Displace.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Displace.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Displace.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.displacement</code></td>
+<td><code>VectorSocket</code></td>
+<td>Displacement</td>
+</tr>
+<tr class="odd">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+<tr class="even">
+<td><code>i.extension_x</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension X</td>
+</tr>
+<tr class="odd">
+<td><code>i.extension_y</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -831,6 +1125,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.distort.Flip">Flip</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Flip(image<span class="op">=</span><span class="va">None</span>, flip_x<span class="op">=</span><span class="va">False</span>, flip_y<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Flip an image along a defined axis</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>flip_x</td>
+<td>InputBoolean</td>
+<td>Flip X</td>
+<td><code>False</code></td>
+</tr>
+<tr class="odd">
+<td>flip_y</td>
+<td>InputBoolean</td>
+<td>Flip Y</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
@@ -842,44 +1169,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.i_flip_x"><code>i_flip_x</code></a></td>
-<td>Input socket: Flip X</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Flip.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.i_flip_y"><code>i_flip_y</code></a></td>
-<td>Input socket: Flip Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Flip.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Flip.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Flip.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Flip.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Flip.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Flip.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Flip.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Flip.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.flip_x</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Flip X</td>
+</tr>
+<tr class="odd">
+<td><code>i.flip_y</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Flip Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -896,6 +1259,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    fit<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Simulate distortion and dispersion from camera lenses</p>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 57%">
+<col style="width: 16%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>type</td>
+<td>InputMenu | Literal['Radial', 'Horizontal']</td>
+<td>Type</td>
+<td><code>'Radial'</code></td>
+</tr>
+<tr class="odd">
+<td>distortion</td>
+<td>InputFloat</td>
+<td>Distortion</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>dispersion</td>
+<td>InputFloat</td>
+<td>Dispersion</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>jitter</td>
+<td>InputBoolean</td>
+<td>Jitter</td>
+<td><code>False</code></td>
+</tr>
+<tr class="even">
+<td>fit</td>
+<td>InputBoolean</td>
+<td>Fit</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
@@ -907,55 +1327,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.i_dispersion"><code>i_dispersion</code></a></td>
-<td>Input socket: Dispersion</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.i_distortion"><code>i_distortion</code></a></td>
-<td>Input socket: Distortion</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.i_fit"><code>i_fit</code></a></td>
-<td>Input socket: Fit</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.i_jitter"><code>i_jitter</code></a></td>
-<td>Input socket: Jitter</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.i_type"><code>i_type</code></a></td>
-<td>Input socket: Type</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.distort.LensDistortion.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -990,6 +1390,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.distort.LensDistortion.radial">radial</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>radial(image<span class="op">=</span><span class="va">None</span>, distortion<span class="op">=</span><span class="fl">0.0</span>, dispersion<span class="op">=</span><span class="fl">0.0</span>, jitter<span class="op">=</span><span class="va">False</span>, fit<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Lens Distortion node with type ‘Radial’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.type</code></td>
+<td><code>MenuSocket</code></td>
+<td>Type</td>
+</tr>
+<tr class="odd">
+<td><code>i.distortion</code></td>
+<td><code>FloatSocket</code></td>
+<td>Distortion</td>
+</tr>
+<tr class="even">
+<td><code>i.dispersion</code></td>
+<td><code>FloatSocket</code></td>
+<td>Dispersion</td>
+</tr>
+<tr class="odd">
+<td><code>i.jitter</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Jitter</td>
+</tr>
+<tr class="even">
+<td><code>i.fit</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Fit</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1003,6 +1462,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Map a texture using UV coordinates, to apply a texture to objects in compositing</p>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 64%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>uv</td>
+<td>InputVector</td>
+<td>UV</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']</td>
+<td>Interpolation</td>
+<td><code>'Bilinear'</code></td>
+</tr>
+<tr class="even">
+<td>extension_x</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension X</td>
+<td><code>'Clip'</code></td>
+</tr>
+<tr class="odd">
+<td>extension_y</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension Y</td>
+<td><code>'Clip'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
@@ -1014,52 +1524,90 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.i_extension_x"><code>i_extension_x</code></a></td>
-<td>Input socket: Extension X</td>
+<td><a href="#nodebpy.nodes.compositor.distort.MapUV.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.i_extension_y"><code>i_extension_y</code></a></td>
-<td>Input socket: Extension Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.i_uv"><code>i_uv</code></a></td>
-<td>Input socket: UV</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MapUV.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MapUV.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MapUV.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.MapUV.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MapUV.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MapUV.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MapUV.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MapUV.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.uv</code></td>
+<td><code>VectorSocket</code></td>
+<td>UV</td>
+</tr>
+<tr class="odd">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+<tr class="even">
+<td><code>i.extension_x</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension X</td>
+</tr>
+<tr class="odd">
+<td><code>i.extension_y</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -1069,6 +1617,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.distort.MovieDistortion">MovieDistortion</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>MovieDistortion(image<span class="op">=</span><span class="va">None</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'Undistort'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Remove lens distortion from footage, using motion tracking camera lens settings</p>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 57%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>type</td>
+<td>InputMenu | Literal['Undistort', 'Distort']</td>
+<td>Type</td>
+<td><code>'Undistort'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
@@ -1080,39 +1661,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.i_type"><code>i_type</code></a></td>
-<td>Input socket: Type</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.distort.MovieDistortion.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1147,6 +1724,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.distort.MovieDistortion.undistort">undistort</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>undistort(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Movie Distortion node with type ‘Undistort’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.type</code></td>
+<td><code>MenuSocket</code></td>
+<td>Type</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1162,6 +1778,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    plane_track_name<span class="op">=</span><span class="st">''</span>,</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Replace flat planes in footage by another image, detected by plane tracks from motion tracking</p>
+<section id="parameters-7" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>motion_blur</td>
+<td>InputBoolean</td>
+<td>Motion Blur</td>
+<td><code>False</code></td>
+</tr>
+<tr class="odd">
+<td>motion_blur_samples</td>
+<td>InputInteger</td>
+<td>Samples</td>
+<td><code>16</code></td>
+</tr>
+<tr class="even">
+<td>motion_blur_shutter</td>
+<td>InputFloat</td>
+<td>Shutter</td>
+<td><code>0.5</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-7" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
 <table class="caption-top table">
@@ -1173,60 +1828,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i_motion_blur"><code>i_motion_blur</code></a></td>
-<td>Input socket: Motion Blur</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i_motion_blur_samples"><code>i_motion_blur_samples</code></a></td>
-<td>Input socket: Samples</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i_motion_blur_shutter"><code>i_motion_blur_shutter</code></a></td>
-<td>Input socket: Shutter</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.o_plane"><code>o_plane</code></a></td>
-<td>Output socket: Plane</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.plane_track_name">plane_track_name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tracking_object">tracking_object</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.plane_track_name"><code>plane_track_name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tracking_object"><code>tracking_object</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.distort.PlaneTrackDeform.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.motion_blur</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Motion Blur</td>
+</tr>
+<tr class="odd">
+<td><code>i.motion_blur_samples</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Samples</td>
+</tr>
+<tr class="even">
+<td><code>i.motion_blur_shutter</code></td>
+<td><code>FloatSocket</code></td>
+<td>Shutter</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>o.plane</code></td>
+<td><code>FloatSocket</code></td>
+<td>Plane</td>
 </tr>
 </tbody>
 </table>
@@ -1242,6 +1935,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Rotate image by specified angle</p>
+<section id="parameters-8" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 64%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>angle</td>
+<td>InputFloat</td>
+<td>Angle</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']</td>
+<td>Interpolation</td>
+<td><code>'Bilinear'</code></td>
+</tr>
+<tr class="even">
+<td>extension_x</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension X</td>
+<td><code>'Clip'</code></td>
+</tr>
+<tr class="odd">
+<td>extension_y</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension Y</td>
+<td><code>'Clip'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-8" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
@@ -1253,52 +1997,90 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.i_angle"><code>i_angle</code></a></td>
-<td>Input socket: Angle</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Rotate.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.i_extension_x"><code>i_extension_x</code></a></td>
-<td>Input socket: Extension X</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.i_extension_y"><code>i_extension_y</code></a></td>
-<td>Input socket: Extension Y</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Rotate.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Rotate.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Rotate.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Rotate.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Rotate.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Rotate.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Rotate.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Rotate.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.angle</code></td>
+<td><code>FloatSocket</code></td>
+<td>Angle</td>
+</tr>
+<tr class="odd">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+<tr class="even">
+<td><code>i.extension_x</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension X</td>
+</tr>
+<tr class="odd">
+<td><code>i.extension_y</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -1317,6 +2099,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Change the size of the image</p>
+<section id="parameters-9" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 65%">
+<col style="width: 11%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>type</td>
+<td>InputMenu | Literal['Relative', 'Absolute', 'Scene Size', 'Render Size']</td>
+<td>Type</td>
+<td><code>'Relative'</code></td>
+</tr>
+<tr class="odd">
+<td>x</td>
+<td>InputFloat</td>
+<td>X</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>y</td>
+<td>InputFloat</td>
+<td>Y</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>frame_type</td>
+<td>InputMenu | Literal['Stretch', 'Fit', 'Crop']</td>
+<td>Frame Type</td>
+<td><code>'Stretch'</code></td>
+</tr>
+<tr class="even">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']</td>
+<td>Interpolation</td>
+<td><code>'Bilinear'</code></td>
+</tr>
+<tr class="odd">
+<td>extension_x</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension X</td>
+<td><code>'Clip'</code></td>
+</tr>
+<tr class="even">
+<td>extension_y</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension Y</td>
+<td><code>'Clip'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-9" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
 <table class="caption-top table">
@@ -1328,63 +2179,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.i_extension_x"><code>i_extension_x</code></a></td>
-<td>Input socket: Extension X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.i_extension_y"><code>i_extension_y</code></a></td>
-<td>Input socket: Extension Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.i_frame_type"><code>i_frame_type</code></a></td>
-<td>Input socket: Frame Type</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.i_type"><code>i_type</code></a></td>
-<td>Input socket: Type</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.i_x"><code>i_x</code></a></td>
-<td>Input socket: X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.i_y"><code>i_y</code></a></td>
-<td>Input socket: Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Scale.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Scale.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Scale.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Scale.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Scale.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Scale.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Scale.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Scale.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.distort.Scale.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1462,6 +2285,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Scale node with type ‘Scene Size’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.type</code></td>
+<td><code>MenuSocket</code></td>
+<td>Type</td>
+</tr>
+<tr class="odd">
+<td><code>i.x</code></td>
+<td><code>FloatSocket</code></td>
+<td>X</td>
+</tr>
+<tr class="even">
+<td><code>i.y</code></td>
+<td><code>FloatSocket</code></td>
+<td>Y</td>
+</tr>
+<tr class="odd">
+<td><code>i.frame_type</code></td>
+<td><code>MenuSocket</code></td>
+<td>Frame Type</td>
+</tr>
+<tr class="even">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+<tr class="odd">
+<td><code>i.extension_x</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension X</td>
+</tr>
+<tr class="even">
+<td><code>i.extension_y</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1475,6 +2367,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Stabilize footage using 2D stabilization motion tracking settings</p>
+<section id="parameters-10" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 64%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>invert</td>
+<td>InputBoolean</td>
+<td>Invert</td>
+<td><code>False</code></td>
+</tr>
+<tr class="odd">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']</td>
+<td>Interpolation</td>
+<td><code>'Bilinear'</code></td>
+</tr>
+<tr class="even">
+<td>extension_x</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension X</td>
+<td><code>'Clip'</code></td>
+</tr>
+<tr class="odd">
+<td>extension_y</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension Y</td>
+<td><code>'Clip'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-10" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
@@ -1486,52 +2429,90 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.i_extension_x"><code>i_extension_x</code></a></td>
-<td>Input socket: Extension X</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.i_extension_y"><code>i_extension_y</code></a></td>
-<td>Input socket: Extension Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.i_invert"><code>i_invert</code></a></td>
-<td>Input socket: Invert</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Stabilize2D.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.invert</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Invert</td>
+</tr>
+<tr class="odd">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+<tr class="even">
+<td><code>i.extension_x</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension X</td>
+</tr>
+<tr class="odd">
+<td><code>i.extension_y</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -1550,6 +2531,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Scale, translate and rotate an image</p>
+<section id="parameters-11" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 64%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>InputFloat</td>
+<td>X</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>y</td>
+<td>InputFloat</td>
+<td>Y</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>angle</td>
+<td>InputFloat</td>
+<td>Angle</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>scale</td>
+<td>InputFloat</td>
+<td>Scale</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']</td>
+<td>Interpolation</td>
+<td><code>'Bilinear'</code></td>
+</tr>
+<tr class="odd">
+<td>extension_x</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension X</td>
+<td><code>'Clip'</code></td>
+</tr>
+<tr class="even">
+<td>extension_y</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension Y</td>
+<td><code>'Clip'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-11" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
@@ -1561,64 +2611,105 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.i_angle"><code>i_angle</code></a></td>
-<td>Input socket: Angle</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.i_extension_x"><code>i_extension_x</code></a></td>
-<td>Input socket: Extension X</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.i_extension_y"><code>i_extension_y</code></a></td>
-<td>Input socket: Extension Y</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.i_scale"><code>i_scale</code></a></td>
-<td>Input socket: Scale</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.i_x"><code>i_x</code></a></td>
-<td>Input socket: X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.i_y"><code>i_y</code></a></td>
-<td>Input socket: Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Transform.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Transform.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Transform.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Transform.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Transform.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Transform.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Transform.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Transform.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.distort.Transform.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.x</code></td>
+<td><code>FloatSocket</code></td>
+<td>X</td>
+</tr>
+<tr class="odd">
+<td><code>i.y</code></td>
+<td><code>FloatSocket</code></td>
+<td>Y</td>
+</tr>
+<tr class="even">
+<td><code>i.angle</code></td>
+<td><code>FloatSocket</code></td>
+<td>Angle</td>
+</tr>
+<tr class="odd">
+<td><code>i.scale</code></td>
+<td><code>FloatSocket</code></td>
+<td>Scale</td>
+</tr>
+<tr class="even">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+<tr class="odd">
+<td><code>i.extension_x</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension X</td>
+</tr>
+<tr class="even">
+<td><code>i.extension_y</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -1635,6 +2726,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    extension_y<span class="op">=</span><span class="st">'Clip'</span>,</span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Offset an image</p>
+<section id="parameters-12" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 64%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>InputFloat</td>
+<td>X</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>y</td>
+<td>InputFloat</td>
+<td>Y</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']</td>
+<td>Interpolation</td>
+<td><code>'Bilinear'</code></td>
+</tr>
+<tr class="odd">
+<td>extension_x</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension X</td>
+<td><code>'Clip'</code></td>
+</tr>
+<tr class="even">
+<td>extension_y</td>
+<td>InputMenu | Literal['Clip', 'Extend', 'Repeat']</td>
+<td>Extension Y</td>
+<td><code>'Clip'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-12" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
 <table class="caption-top table">
@@ -1646,56 +2794,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.i_extension_x"><code>i_extension_x</code></a></td>
-<td>Input socket: Extension X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.i_extension_y"><code>i_extension_y</code></a></td>
-<td>Input socket: Extension Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.i_x"><code>i_x</code></a></td>
-<td>Input socket: X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.i_y"><code>i_y</code></a></td>
-<td>Input socket: Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Translate.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Translate.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Translate.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.distort.Translate.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Translate.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Translate.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.distort.Translate.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.distort.Translate.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.distort.Translate.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.x</code></td>
+<td><code>FloatSocket</code></td>
+<td>X</td>
+</tr>
+<tr class="odd">
+<td><code>i.y</code></td>
+<td><code>FloatSocket</code></td>
+<td>Y</td>
+</tr>
+<tr class="even">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+<tr class="odd">
+<td><code>i.extension_x</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension X</td>
+</tr>
+<tr class="even">
+<td><code>i.extension_y</code></td>
+<td><code>MenuSocket</code></td>
+<td>Extension Y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>

@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -603,6 +607,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.AlphaConvert">AlphaConvert</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AlphaConvert(image<span class="op">=</span><span class="va">None</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'To Premultiplied'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert to and from premultiplied (associated) alpha</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 58%">
+<col style="width: 13%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>type</td>
+<td>InputMenu | Literal['To Premultiplied', 'To Straight']</td>
+<td>Type</td>
+<td><code>'To Premultiplied'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -614,39 +651,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.i_type"><code>i_type</code></a></td>
-<td>Input socket: Type</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -681,6 +714,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.AlphaConvert.to_straight">to_straight</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>to_straight(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Alpha Convert node with type ‘To Straight’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.type</code></td>
+<td><code>MenuSocket</code></td>
+<td>Type</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -696,6 +768,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>,</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Combine an image from its composite color channels</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>red</td>
+<td>InputFloat</td>
+<td>Red</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>green</td>
+<td>InputFloat</td>
+<td>Green</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>blue</td>
+<td>InputFloat</td>
+<td>Blue</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>alpha</td>
+<td>InputFloat</td>
+<td>Alpha</td>
+<td><code>1.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -707,55 +818,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.i_alpha"><code>i_alpha</code></a></td>
-<td>Input socket: Alpha</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.i_blue"><code>i_blue</code></a></td>
-<td>Input socket: Blue</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.i_green"><code>i_green</code></a></td>
-<td>Input socket: Green</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.i_red"><code>i_red</code></a></td>
-<td>Input socket: Red</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.mode">mode</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.mode"><code>mode</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.ycc_mode">ycc_mode</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.type"><code>type</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.ycc_mode"><code>ycc_mode</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -817,6 +916,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.CombineColor.yuv">yuv</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>yuv(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Combine Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) color processing</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.red</code></td>
+<td><code>FloatSocket</code></td>
+<td>Red</td>
+</tr>
+<tr class="even">
+<td><code>i.green</code></td>
+<td><code>FloatSocket</code></td>
+<td>Green</td>
+</tr>
+<tr class="odd">
+<td><code>i.blue</code></td>
+<td><code>FloatSocket</code></td>
+<td>Blue</td>
+</tr>
+<tr class="even">
+<td><code>i.alpha</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -829,6 +977,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    to_color_space<span class="op">=</span><span class="st">'scene_linear'</span>,</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert between color spaces</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
@@ -840,44 +1009,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.from_color_space">from_color_space</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.from_color_space"><code>from_color_space</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.to_color_space">to_color_space</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.o"><code>o</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.to_color_space"><code>to_color_space</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertColorspace.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -887,6 +1090,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.ConvertToDisplay">ConvertToDisplay</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ConvertToDisplay(image<span class="op">=</span><span class="va">None</span>, invert<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert from scene linear to display color space, with a view transform and look for tone mapping</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>invert</td>
+<td>InputBoolean</td>
+<td>Invert</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
@@ -898,40 +1128,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.i_invert"><code>i_invert</code></a></td>
-<td>Input socket: Invert</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.invert</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Invert</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -941,6 +1206,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.IDMask">IDMask</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>IDMask(id_value<span class="op">=</span><span class="fl">1.0</span>, index<span class="op">=</span><span class="dv">0</span>, anti_alias<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a matte from an object or material index pass</p>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id_value</td>
+<td>InputFloat</td>
+<td>ID value</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>index</td>
+<td>InputInteger</td>
+<td>Index</td>
+<td><code>0</code></td>
+</tr>
+<tr class="odd">
+<td>anti_alias</td>
+<td>InputBoolean</td>
+<td>Anti-Alias</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
@@ -952,44 +1250,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.i_anti_alias"><code>i_anti_alias</code></a></td>
-<td>Input socket: Anti-Alias</td>
+<td><a href="#nodebpy.nodes.compositor.converter.IDMask.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.i_id_value"><code>i_id_value</code></a></td>
-<td>Input socket: ID value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.i_index"><code>i_index</code></a></td>
-<td>Input socket: Index</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.IDMask.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.IDMask.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.IDMask.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.o_alpha"><code>o_alpha</code></a></td>
-<td>Output socket: Alpha</td>
+<td><a href="#nodebpy.nodes.compositor.converter.IDMask.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.IDMask.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.IDMask.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.IDMask.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.id_value</code></td>
+<td><code>FloatSocket</code></td>
+<td>ID value</td>
+</tr>
+<tr class="even">
+<td><code>i.index</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Index</td>
+</tr>
+<tr class="odd">
+<td><code>i.anti_alias</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Anti-Alias</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.alpha</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha</td>
 </tr>
 </tbody>
 </table>
@@ -999,6 +1333,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.Levels">Levels</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Levels(image<span class="op">=</span><span class="va">None</span>, channel<span class="op">=</span><span class="st">'Combined'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Compute average and standard deviation of pixel values</p>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 68%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>channel</td>
+<td>InputMenu | Literal['Combined', 'Red', 'Green', 'Blue', 'Luminance']</td>
+<td>Channel</td>
+<td><code>'Combined'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
@@ -1010,44 +1377,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.i_channel"><code>i_channel</code></a></td>
-<td>Input socket: Channel</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Levels.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Levels.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Levels.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.o_mean"><code>o_mean</code></a></td>
-<td>Output socket: Mean</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.o_standard_deviation"><code>o_standard_deviation</code></a></td>
-<td>Output socket: Standard Deviation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Levels.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Levels.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Levels.outputs"><code>outputs</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.converter.Levels.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.Levels.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.channel</code></td>
+<td><code>MenuSocket</code></td>
+<td>Channel</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.mean</code></td>
+<td><code>FloatSocket</code></td>
+<td>Mean</td>
+</tr>
+<tr class="even">
+<td><code>o.standard_deviation</code></td>
+<td><code>FloatSocket</code></td>
+<td>Standard Deviation</td>
 </tr>
 </tbody>
 </table>
@@ -1074,6 +1477,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    clamp_result<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Mix values by a factor</p>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>factor_float</td>
+<td>InputFloat</td>
+<td>Factor</td>
+<td><code>0.5</code></td>
+</tr>
+<tr class="even">
+<td>factor_vector</td>
+<td>InputVector</td>
+<td>Factor</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>a_float</td>
+<td>InputFloat</td>
+<td>A</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>b_float</td>
+<td>InputFloat</td>
+<td>B</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>a_vector</td>
+<td>InputVector</td>
+<td>A</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>b_vector</td>
+<td>InputVector</td>
+<td>B</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>a_color</td>
+<td>InputColor</td>
+<td>A</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>b_color</td>
+<td>InputColor</td>
+<td>B</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>a_rotation</td>
+<td>InputRotation</td>
+<td>A</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>b_rotation</td>
+<td>InputRotation</td>
+<td>B</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
@@ -1085,103 +1563,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.blend_type">blend_type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.blend_type"><code>blend_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.clamp_factor">clamp_factor</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.clamp_factor"><code>clamp_factor</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.clamp_result">clamp_result</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.clamp_result"><code>clamp_result</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.factor_mode">factor_mode</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.factor_mode"><code>factor_mode</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_a_color"><code>i_a_color</code></a></td>
-<td>Input socket: A</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_a_float"><code>i_a_float</code></a></td>
-<td>Input socket: A</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_a_rotation"><code>i_a_rotation</code></a></td>
-<td>Input socket: A</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_a_vector"><code>i_a_vector</code></a></td>
-<td>Input socket: A</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_b_color"><code>i_b_color</code></a></td>
-<td>Input socket: B</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_b_float"><code>i_b_float</code></a></td>
-<td>Input socket: B</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_b_rotation"><code>i_b_rotation</code></a></td>
-<td>Input socket: B</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_b_vector"><code>i_b_vector</code></a></td>
-<td>Input socket: B</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_factor_float"><code>i_factor_float</code></a></td>
-<td>Input socket: Factor</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.i_factor_vector"><code>i_factor_vector</code></a></td>
-<td>Input socket: Factor</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.o_result_color"><code>o_result_color</code></a></td>
-<td>Output socket: Result</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.o_result_float"><code>o_result_float</code></a></td>
-<td>Output socket: Result</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.o_result_rotation"><code>o_result_rotation</code></a></td>
-<td>Output socket: Result</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.o_result_vector"><code>o_result_vector</code></a></td>
-<td>Output socket: Result</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Mix.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.converter.Mix.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1225,6 +1655,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.Mix.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>vector(factor<span class="op">=</span><span class="fl">0.5</span>, a<span class="op">=</span><span class="va">None</span>, b<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Mix with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.factor_float</code></td>
+<td><code>FloatSocket</code></td>
+<td>Factor</td>
+</tr>
+<tr class="even">
+<td><code>i.factor_vector</code></td>
+<td><code>VectorSocket</code></td>
+<td>Factor</td>
+</tr>
+<tr class="odd">
+<td><code>i.a_float</code></td>
+<td><code>FloatSocket</code></td>
+<td>A</td>
+</tr>
+<tr class="even">
+<td><code>i.b_float</code></td>
+<td><code>FloatSocket</code></td>
+<td>B</td>
+</tr>
+<tr class="odd">
+<td><code>i.a_vector</code></td>
+<td><code>VectorSocket</code></td>
+<td>A</td>
+</tr>
+<tr class="even">
+<td><code>i.b_vector</code></td>
+<td><code>VectorSocket</code></td>
+<td>B</td>
+</tr>
+<tr class="odd">
+<td><code>i.a_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>A</td>
+</tr>
+<tr class="even">
+<td><code>i.b_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>B</td>
+</tr>
+<tr class="odd">
+<td><code>i.a_rotation</code></td>
+<td><code>RotationSocket</code></td>
+<td>A</td>
+</tr>
+<tr class="even">
+<td><code>i.b_rotation</code></td>
+<td><code>RotationSocket</code></td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.result_float</code></td>
+<td><code>FloatSocket</code></td>
+<td>Result</td>
+</tr>
+<tr class="even">
+<td><code>o.result_vector</code></td>
+<td><code>VectorSocket</code></td>
+<td>Result</td>
+</tr>
+<tr class="odd">
+<td><code>o.result_color</code></td>
+<td><code>ColorSocket</code></td>
+<td>Result</td>
+</tr>
+<tr class="even">
+<td><code>o.result_rotation</code></td>
+<td><code>RotationSocket</code></td>
+<td>Result</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1232,6 +1756,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.RGBToBw">RGBToBw</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>RGBToBw(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert RGB input into grayscale using luminance</p>
+<section id="parameters-7" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-7" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
 <table class="caption-top table">
@@ -1243,36 +1788,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.o_val"><code>o_val</code></a></td>
-<td>Output socket: Val</td>
+<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RGBToBw.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.val</code></td>
+<td><code>FloatSocket</code></td>
+<td>Val</td>
 </tr>
 </tbody>
 </table>
@@ -1289,6 +1868,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    reference_dimension<span class="op">=</span><span class="st">'X'</span>,</span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Converts values that are relative to the image size to be in terms of pixels</p>
+<section id="parameters-8" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>vector_value</td>
+<td>InputVector</td>
+<td>Value</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>float_value</td>
+<td>InputFloat</td>
+<td>Value</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-8" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
@@ -1300,55 +1912,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.i_float_value"><code>i_float_value</code></a></td>
-<td>Input socket: Value</td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.i_vector_value"><code>i_vector_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.o_float_value"><code>o_float_value</code></a></td>
-<td>Output socket: Value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.o_vector_value"><code>o_vector_value</code></a></td>
-<td>Output socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.reference_dimension">reference_dimension</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.reference_dimension"><code>reference_dimension</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1383,6 +1983,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.RelativeToPixel.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>vector(vector_value<span class="op">=</span><span class="va">None</span>, image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Relative To Pixel with operation ‘Vector’. Vector value</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.vector_value</code></td>
+<td><code>VectorSocket</code></td>
+<td>Value</td>
+</tr>
+<tr class="even">
+<td><code>i.float_value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.float_value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+<tr class="even">
+<td><code>o.vector_value</code></td>
+<td><code>VectorSocket</code></td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1390,6 +2039,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SeparateColor">SeparateColor</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>SeparateColor(image<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, mode<span class="op">=</span><span class="st">'RGB'</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Split an image into its composite color channels</p>
+<section id="parameters-9" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-9" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
 <table class="caption-top table">
@@ -1401,55 +2071,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.mode">mode</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.node">node</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.o_alpha"><code>o_alpha</code></a></td>
-<td>Output socket: Alpha</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.o_blue"><code>o_blue</code></a></td>
-<td>Output socket: Blue</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.o_green"><code>o_green</code></a></td>
-<td>Output socket: Green</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.o_red"><code>o_red</code></a></td>
-<td>Output socket: Red</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.mode"><code>mode</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.ycc_mode">ycc_mode</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.type"><code>type</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.ycc_mode"><code>ycc_mode</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1511,6 +2169,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SeparateColor.yuv">yuv</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>yuv(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Separate Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) color processing</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.red</code></td>
+<td><code>FloatSocket</code></td>
+<td>Red</td>
+</tr>
+<tr class="even">
+<td><code>o.green</code></td>
+<td><code>FloatSocket</code></td>
+<td>Green</td>
+</tr>
+<tr class="odd">
+<td><code>o.blue</code></td>
+<td><code>FloatSocket</code></td>
+<td>Blue</td>
+</tr>
+<tr class="even">
+<td><code>o.alpha</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1518,6 +2225,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SetAlpha">SetAlpha</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>SetAlpha(image<span class="op">=</span><span class="va">None</span>, alpha<span class="op">=</span><span class="fl">1.0</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'Apply Mask'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Add an alpha channel to an image</p>
+<section id="parameters-10" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 60%">
+<col style="width: 15%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>alpha</td>
+<td>InputFloat</td>
+<td>Alpha</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>type</td>
+<td>InputMenu | Literal['Apply Mask', 'Replace Alpha']</td>
+<td>Type</td>
+<td><code>'Apply Mask'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-10" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
@@ -1529,43 +2275,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.i_alpha"><code>i_alpha</code></a></td>
-<td>Input socket: Alpha</td>
+<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.i_type"><code>i_type</code></a></td>
-<td>Input socket: Type</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1600,6 +2338,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SetAlpha.replace_alpha">replace_alpha</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>replace_alpha(image<span class="op">=</span><span class="va">None</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Alpha node with type ‘Replace Alpha’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.alpha</code></td>
+<td><code>FloatSocket</code></td>
+<td>Alpha</td>
+</tr>
+<tr class="odd">
+<td><code>i.type</code></td>
+<td><code>MenuSocket</code></td>
+<td>Type</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1607,6 +2389,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.Split">Split</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>Split(position<span class="op">=</span><span class="va">None</span>, rotation<span class="op">=</span><span class="fl">0.7854</span>, image<span class="op">=</span><span class="va">None</span>, image_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Combine two images for side-by-side display. Typically used in combination with a Viewer node</p>
+<section id="parameters-11" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>position</td>
+<td>InputVector</td>
+<td>Position</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>rotation</td>
+<td>InputFloat</td>
+<td>Rotation</td>
+<td><code>0.7854</code></td>
+</tr>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>image_001</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-11" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
@@ -1618,48 +2439,85 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.i_image"><code>i_image</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.i_image_001"><code>i_image_001</code></a></td>
-<td>Input socket: Image</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.i_position"><code>i_position</code></a></td>
-<td>Input socket: Position</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.i_rotation"><code>i_rotation</code></a></td>
-<td>Input socket: Rotation</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Split.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Split.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Split.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.converter.Split.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Split.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Split.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Split.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.Split.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.position</code></td>
+<td><code>VectorSocket</code></td>
+<td>Position</td>
+</tr>
+<tr class="even">
+<td><code>i.rotation</code></td>
+<td><code>FloatSocket</code></td>
+<td>Rotation</td>
+</tr>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+<tr class="even">
+<td><code>i.image_001</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -1669,6 +2527,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.Switch">Switch</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>Switch(switch<span class="op">=</span><span class="va">False</span>, off<span class="op">=</span><span class="va">None</span>, on<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Switch between two images using a checkbox</p>
+<section id="parameters-12" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>switch</td>
+<td>InputBoolean</td>
+<td>Switch</td>
+<td><code>False</code></td>
+</tr>
+<tr class="even">
+<td>off</td>
+<td>InputColor</td>
+<td>Off</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>on</td>
+<td>InputColor</td>
+<td>On</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-12" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
 <table class="caption-top table">
@@ -1680,44 +2571,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.i_off"><code>i_off</code></a></td>
-<td>Input socket: Off</td>
+<td><a href="#nodebpy.nodes.compositor.converter.Switch.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.i_on"><code>i_on</code></a></td>
-<td>Input socket: On</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.i_switch"><code>i_switch</code></a></td>
-<td>Input socket: Switch</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Switch.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Switch.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Switch.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.converter.Switch.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Switch.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Switch.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.Switch.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.switch</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Switch</td>
+</tr>
+<tr class="even">
+<td><code>i.off</code></td>
+<td><code>ColorSocket</code></td>
+<td>Off</td>
+</tr>
+<tr class="odd">
+<td><code>i.on</code></td>
+<td><code>ColorSocket</code></td>
+<td>On</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>
@@ -1727,6 +2654,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SwitchView">SwitchView</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>SwitchView(left<span class="op">=</span><span class="va">None</span>, right<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Combine the views (left and right) into a single stereo 3D output</p>
+<section id="parameters-13" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>left</td>
+<td>InputColor</td>
+<td>left</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>right</td>
+<td>InputColor</td>
+<td>right</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-13" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
 <table class="caption-top table">
@@ -1738,40 +2692,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.i_left"><code>i_left</code></a></td>
-<td>Input socket: left</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.i_right"><code>i_right</code></a></td>
-<td>Input socket: right</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.name">name</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.node">node</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.o_image"><code>o_image</code></a></td>
-<td>Output socket: Image</td>
+<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.type">type</a></td>
+<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.left</code></td>
+<td><code>ColorSocket</code></td>
+<td>left</td>
+</tr>
+<tr class="even">
+<td><code>i.right</code></td>
+<td><code>ColorSocket</code></td>
+<td>right</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
 </tr>
 </tbody>
 </table>

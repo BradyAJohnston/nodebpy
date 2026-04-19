@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -691,6 +695,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 67%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>velocity</td>
+<td>InputVector</td>
+<td>Velocity</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>time_step</td>
+<td>InputFloat</td>
+<td>Time Step</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>integration_scheme</td>
+<td>InputMenu | Literal['Semi-Lagrangian', 'Midpoint', 'Runge-Kutta 3', 'Runge-Kutta 4', 'MacCormack', 'BFECC']</td>
+<td>Integration Scheme</td>
+<td><code>'Runge-Kutta 3'</code></td>
+</tr>
+<tr class="odd">
+<td>limiter</td>
+<td>InputMenu | Literal['None', 'Clamp', 'Revert']</td>
+<td>Limiter</td>
+<td><code>'Clamp'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -702,55 +757,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.i_integration_scheme"><code>i_integration_scheme</code></a></td>
-<td>Input socket: Integration Scheme</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.i_limiter"><code>i_limiter</code></a></td>
-<td>Input socket: Limiter</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.i_time_step"><code>i_time_step</code></a></td>
-<td>Input socket: Time Step</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.i_velocity"><code>i_velocity</code></a></td>
-<td>Input socket: Velocity</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.name"><code>name</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.AdvectGrid.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -812,6 +851,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    limiter<span class="op">=</span><span class="st">'Clamp'</span>,</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Advect Grid with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.velocity</code></td>
+<td><code>VectorSocket</code></td>
+<td>Velocity</td>
+</tr>
+<tr class="odd">
+<td><code>i.time_step</code></td>
+<td><code>FloatSocket</code></td>
+<td>Time Step</td>
+</tr>
+<tr class="even">
+<td><code>i.integration_scheme</code></td>
+<td><code>MenuSocket</code></td>
+<td>Integration Scheme</td>
+</tr>
+<tr class="odd">
+<td><code>i.limiter</code></td>
+<td><code>MenuSocket</code></td>
+<td>Limiter</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -827,6 +920,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'DENSITY_RANDOM'</span>,</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate points inside a volume grid</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>density</td>
+<td>InputFloat</td>
+<td>Density</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>seed</td>
+<td>InputInteger</td>
+<td>Seed</td>
+<td><code>0</code></td>
+</tr>
+<tr class="even">
+<td>spacing</td>
+<td>InputVector</td>
+<td>Spacing</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>threshold</td>
+<td>InputFloat</td>
+<td>Threshold</td>
+<td><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -838,55 +976,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.i_density"><code>i_density</code></a></td>
-<td>Input socket: Density</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.i_seed"><code>i_seed</code></a></td>
-<td>Input socket: Seed</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.i_spacing"><code>i_spacing</code></a></td>
-<td>Input socket: Spacing</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.i_threshold"><code>i_threshold</code></a></td>
-<td>Input socket: Threshold</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.mode">mode</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.mode"><code>mode</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.o_points"><code>o_points</code></a></td>
-<td>Output socket: Points</td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.name"><code>name</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -921,6 +1043,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.DistributePointsInGrid.random">random</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>random(grid<span class="op">=</span><span class="fl">0.0</span>, density<span class="op">=</span><span class="fl">1.0</span>, seed<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Distribute Points in Grid with operation ‘Random’. Distribute points randomly inside of the volume</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.density</code></td>
+<td><code>FloatSocket</code></td>
+<td>Density</td>
+</tr>
+<tr class="odd">
+<td><code>i.seed</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Seed</td>
+</tr>
+<tr class="even">
+<td><code>i.spacing</code></td>
+<td><code>VectorSocket</code></td>
+<td>Spacing</td>
+</tr>
+<tr class="odd">
+<td><code>i.threshold</code></td>
+<td><code>FloatSocket</code></td>
+<td>Threshold</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.points</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Points</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -935,6 +1111,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate points inside a volume</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 54%">
+<col style="width: 17%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>volume</td>
+<td>InputGeometry</td>
+<td>Volume</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>mode</td>
+<td>InputMenu | Literal['Random', 'Grid']</td>
+<td>Mode</td>
+<td><code>'Random'</code></td>
+</tr>
+<tr class="odd">
+<td>density</td>
+<td>InputFloat</td>
+<td>Density</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>seed</td>
+<td>InputInteger</td>
+<td>Seed</td>
+<td><code>0</code></td>
+</tr>
+<tr class="odd">
+<td>spacing</td>
+<td>InputVector</td>
+<td>Spacing</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>threshold</td>
+<td>InputFloat</td>
+<td>Threshold</td>
+<td><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
@@ -946,56 +1179,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.i_density"><code>i_density</code></a></td>
-<td>Input socket: Density</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.i_mode"><code>i_mode</code></a></td>
-<td>Input socket: Mode</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.i_seed"><code>i_seed</code></a></td>
-<td>Input socket: Seed</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.i_spacing"><code>i_spacing</code></a></td>
-<td>Input socket: Spacing</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.i_threshold"><code>i_threshold</code></a></td>
-<td>Input socket: Threshold</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.i_volume"><code>i_volume</code></a></td>
-<td>Input socket: Volume</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.o_points"><code>o_points</code></a></td>
-<td>Output socket: Points</td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
+</tr>
+<tr class="even">
+<td><code>i.mode</code></td>
+<td><code>MenuSocket</code></td>
+<td>Mode</td>
+</tr>
+<tr class="odd">
+<td><code>i.density</code></td>
+<td><code>FloatSocket</code></td>
+<td>Density</td>
+</tr>
+<tr class="even">
+<td><code>i.seed</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Seed</td>
+</tr>
+<tr class="odd">
+<td><code>i.spacing</code></td>
+<td><code>VectorSocket</code></td>
+<td>Spacing</td>
+</tr>
+<tr class="even">
+<td><code>i.threshold</code></td>
+<td><code>FloatSocket</code></td>
+<td>Threshold</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.points</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Points</td>
 </tr>
 </tbody>
 </table>
@@ -1005,6 +1277,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GetNamedGrid">GetNamedGrid</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>GetNamedGrid(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get volume grid from a volume geometry with the specified name</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>volume</td>
+<td>InputGeometry</td>
+<td>Volume</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>name</td>
+<td>InputString</td>
+<td>Name</td>
+<td><code>''</code></td>
+</tr>
+<tr class="odd">
+<td>remove</td>
+<td>InputBoolean</td>
+<td>Remove</td>
+<td><code>True</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
@@ -1016,51 +1321,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.i_name"><code>i_name</code></a></td>
-<td>Input socket: Name</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.i_remove"><code>i_remove</code></a></td>
-<td>Input socket: Remove</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.i_volume"><code>i_volume</code></a></td>
-<td>Input socket: Volume</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.o_volume"><code>o_volume</code></a></td>
-<td>Output socket: Volume</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1113,6 +1406,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GetNamedGrid.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>vector(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get Named Grid with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
+</tr>
+<tr class="even">
+<td><code>i.name</code></td>
+<td><code>StringSocket</code></td>
+<td>Name</td>
+</tr>
+<tr class="odd">
+<td><code>i.remove</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Remove</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
+</tr>
+<tr class="even">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1120,6 +1462,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridCurl">GridCurl</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>GridCurl(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the magnitude and direction of circulation of a directional vector grid</p>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputVector</td>
+<td>Grid</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-4" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
@@ -1131,36 +1494,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.o_curl"><code>o_curl</code></a></td>
-<td>Output socket: Curl</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridCurl.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>VectorSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.curl</code></td>
+<td><code>VectorSocket</code></td>
+<td>Curl</td>
 </tr>
 </tbody>
 </table>
@@ -1170,6 +1567,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridDivergence">GridDivergence</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>GridDivergence(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the flow into and out of each point of a directional vector grid</p>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputVector</td>
+<td>Grid</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-5" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
@@ -1181,36 +1599,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.o_divergence"><code>o_divergence</code></a></td>
-<td>Output socket: Divergence</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridDivergence.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>VectorSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.divergence</code></td>
+<td><code>FloatSocket</code></td>
+<td>Divergence</td>
 </tr>
 </tbody>
 </table>
@@ -1220,6 +1672,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridGradient">GridGradient</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>GridGradient(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the direction and magnitude of the change in values of a scalar grid</p>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-6" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
@@ -1231,36 +1704,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.o_gradient"><code>o_gradient</code></a></td>
-<td>Output socket: Gradient</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridGradient.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.gradient</code></td>
+<td><code>VectorSocket</code></td>
+<td>Gradient</td>
 </tr>
 </tbody>
 </table>
@@ -1270,6 +1777,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridInfo">GridInfo</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>GridInfo(grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information about a volume grid</p>
+<section id="parameters-7" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-7" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
 <table class="caption-top table">
@@ -1281,43 +1809,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.o_background_value"><code>o_background_value</code></a></td>
-<td>Output socket: Background Value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.o_transform"><code>o_transform</code></a></td>
-<td>Output socket: Transform</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridInfo.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1370,6 +1894,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridInfo.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Grid Info with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.transform</code></td>
+<td><code>MatrixSocket</code></td>
+<td>Transform</td>
+</tr>
+<tr class="even">
+<td><code>o.background_value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Background Value</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1377,6 +1940,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridLaplacian">GridLaplacian</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>GridLaplacian(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Compute the divergence of the gradient of the input grid</p>
+<section id="parameters-8" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-8" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
@@ -1388,36 +1972,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.o_laplacian"><code>o_laplacian</code></a></td>
-<td>Output socket: Laplacian</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.laplacian</code></td>
+<td><code>FloatSocket</code></td>
+<td>Laplacian</td>
 </tr>
 </tbody>
 </table>
@@ -1427,6 +2045,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridToMesh">GridToMesh</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>GridToMesh(grid<span class="op">=</span><span class="fl">0.0</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, adaptivity<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a mesh on the “surface” of a volume grid</p>
+<section id="parameters-9" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>threshold</td>
+<td>InputFloat</td>
+<td>Threshold</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="odd">
+<td>adaptivity</td>
+<td>InputFloat</td>
+<td>Adaptivity</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-9" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
 <table class="caption-top table">
@@ -1438,44 +2089,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.i_adaptivity"><code>i_adaptivity</code></a></td>
-<td>Input socket: Adaptivity</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.i_threshold"><code>i_threshold</code></a></td>
-<td>Input socket: Threshold</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.o_mesh"><code>o_mesh</code></a></td>
-<td>Output socket: Mesh</td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.GridToMesh.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.threshold</code></td>
+<td><code>FloatSocket</code></td>
+<td>Threshold</td>
+</tr>
+<tr class="odd">
+<td><code>i.adaptivity</code></td>
+<td><code>FloatSocket</code></td>
+<td>Adaptivity</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.mesh</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Mesh</td>
 </tr>
 </tbody>
 </table>
@@ -1485,6 +2172,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.MeshToDensityGrid">MeshToDensityGrid</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>MeshToDensityGrid(mesh<span class="op">=</span><span class="va">None</span>, density<span class="op">=</span><span class="fl">1.0</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>, gradient_width<span class="op">=</span><span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a filled volume grid from a mesh</p>
+<section id="parameters-10" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mesh</td>
+<td>InputGeometry</td>
+<td>Mesh</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>density</td>
+<td>InputFloat</td>
+<td>Density</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>voxel_size</td>
+<td>InputFloat</td>
+<td>Voxel Size</td>
+<td><code>0.3</code></td>
+</tr>
+<tr class="even">
+<td>gradient_width</td>
+<td>InputFloat</td>
+<td>Gradient Width</td>
+<td><code>0.2</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-10" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
@@ -1496,48 +2222,85 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.i_density"><code>i_density</code></a></td>
-<td>Input socket: Density</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.i_gradient_width"><code>i_gradient_width</code></a></td>
-<td>Input socket: Gradient Width</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.i_mesh"><code>i_mesh</code></a></td>
-<td>Input socket: Mesh</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.i_voxel_size"><code>i_voxel_size</code></a></td>
-<td>Input socket: Voxel Size</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.o_density_grid"><code>o_density_grid</code></a></td>
-<td>Output socket: Density Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.mesh</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Mesh</td>
+</tr>
+<tr class="even">
+<td><code>i.density</code></td>
+<td><code>FloatSocket</code></td>
+<td>Density</td>
+</tr>
+<tr class="odd">
+<td><code>i.voxel_size</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Size</td>
+</tr>
+<tr class="even">
+<td><code>i.gradient_width</code></td>
+<td><code>FloatSocket</code></td>
+<td>Gradient Width</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.density_grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Density Grid</td>
 </tr>
 </tbody>
 </table>
@@ -1547,6 +2310,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.MeshToSDFGrid">MeshToSDFGrid</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>MeshToSDFGrid(mesh<span class="op">=</span><span class="va">None</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>, band_width<span class="op">=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a signed distance volume grid from a mesh</p>
+<section id="parameters-11" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mesh</td>
+<td>InputGeometry</td>
+<td>Mesh</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>voxel_size</td>
+<td>InputFloat</td>
+<td>Voxel Size</td>
+<td><code>0.3</code></td>
+</tr>
+<tr class="odd">
+<td>band_width</td>
+<td>InputInteger</td>
+<td>Band Width</td>
+<td><code>3</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-11" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
@@ -1558,44 +2354,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.i_band_width"><code>i_band_width</code></a></td>
-<td>Input socket: Band Width</td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.i_mesh"><code>i_mesh</code></a></td>
-<td>Input socket: Mesh</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.i_voxel_size"><code>i_voxel_size</code></a></td>
-<td>Input socket: Voxel Size</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.o_sdf_grid"><code>o_sdf_grid</code></a></td>
-<td>Output socket: SDF Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.mesh</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Mesh</td>
+</tr>
+<tr class="even">
+<td><code>i.voxel_size</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Size</td>
+</tr>
+<tr class="odd">
+<td><code>i.band_width</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Band Width</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.sdf_grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>SDF Grid</td>
 </tr>
 </tbody>
 </table>
@@ -1612,6 +2444,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    interior_band_width<span class="op">=</span><span class="fl">0.2</span>,</span>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a fog volume with the shape of the input mesh’s surface</p>
+<section id="parameters-12" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 46%">
+<col style="width: 21%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mesh</td>
+<td>InputGeometry</td>
+<td>Mesh</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>density</td>
+<td>InputFloat</td>
+<td>Density</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>resolution_mode</td>
+<td>InputMenu | Literal['Amount', 'Size']</td>
+<td>Resolution Mode</td>
+<td><code>'Amount'</code></td>
+</tr>
+<tr class="even">
+<td>voxel_size</td>
+<td>InputFloat</td>
+<td>Voxel Size</td>
+<td><code>0.3</code></td>
+</tr>
+<tr class="odd">
+<td>voxel_amount</td>
+<td>InputFloat</td>
+<td>Voxel Amount</td>
+<td><code>64.0</code></td>
+</tr>
+<tr class="even">
+<td>interior_band_width</td>
+<td>InputFloat</td>
+<td>Interior Band Width</td>
+<td><code>0.2</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-12" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
 <table class="caption-top table">
@@ -1623,56 +2512,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.i_density"><code>i_density</code></a></td>
-<td>Input socket: Density</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.i_interior_band_width"><code>i_interior_band_width</code></a></td>
-<td>Input socket: Interior Band Width</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.i_mesh"><code>i_mesh</code></a></td>
-<td>Input socket: Mesh</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.i_resolution_mode"><code>i_resolution_mode</code></a></td>
-<td>Input socket: Resolution Mode</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.i_voxel_amount"><code>i_voxel_amount</code></a></td>
-<td>Input socket: Voxel Amount</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.i_voxel_size"><code>i_voxel_size</code></a></td>
-<td>Input socket: Voxel Size</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.o_volume"><code>o_volume</code></a></td>
-<td>Output socket: Volume</td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.MeshToVolume.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.mesh</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Mesh</td>
+</tr>
+<tr class="even">
+<td><code>i.density</code></td>
+<td><code>FloatSocket</code></td>
+<td>Density</td>
+</tr>
+<tr class="odd">
+<td><code>i.resolution_mode</code></td>
+<td><code>MenuSocket</code></td>
+<td>Resolution Mode</td>
+</tr>
+<tr class="even">
+<td><code>i.voxel_size</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Size</td>
+</tr>
+<tr class="odd">
+<td><code>i.voxel_amount</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Amount</td>
+</tr>
+<tr class="even">
+<td><code>i.interior_band_width</code></td>
+<td><code>FloatSocket</code></td>
+<td>Interior Band Width</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
 </tr>
 </tbody>
 </table>
@@ -1682,6 +2610,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PointsToSDFGrid">PointsToSDFGrid</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>PointsToSDFGrid(points<span class="op">=</span><span class="va">None</span>, radius<span class="op">=</span><span class="fl">0.5</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a signed distance volume grid from points</p>
+<section id="parameters-13" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>points</td>
+<td>InputGeometry</td>
+<td>Points</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>radius</td>
+<td>InputFloat</td>
+<td>Radius</td>
+<td><code>0.5</code></td>
+</tr>
+<tr class="odd">
+<td>voxel_size</td>
+<td>InputFloat</td>
+<td>Voxel Size</td>
+<td><code>0.3</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-13" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
 <table class="caption-top table">
@@ -1693,44 +2654,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.i_points"><code>i_points</code></a></td>
-<td>Input socket: Points</td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.i_radius"><code>i_radius</code></a></td>
-<td>Input socket: Radius</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.i_voxel_size"><code>i_voxel_size</code></a></td>
-<td>Input socket: Voxel Size</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.o_sdf_grid"><code>o_sdf_grid</code></a></td>
-<td>Output socket: SDF Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToSDFGrid.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.points</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Points</td>
+</tr>
+<tr class="even">
+<td><code>i.radius</code></td>
+<td><code>FloatSocket</code></td>
+<td>Radius</td>
+</tr>
+<tr class="odd">
+<td><code>i.voxel_size</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Size</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.sdf_grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>SDF Grid</td>
 </tr>
 </tbody>
 </table>
@@ -1747,6 +2744,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    radius<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a fog volume sphere around every point</p>
+<section id="parameters-14" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 50%">
+<col style="width: 18%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>points</td>
+<td>InputGeometry</td>
+<td>Points</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>density</td>
+<td>InputFloat</td>
+<td>Density</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td>resolution_mode</td>
+<td>InputMenu | Literal['Amount', 'Size']</td>
+<td>Resolution Mode</td>
+<td><code>'Amount'</code></td>
+</tr>
+<tr class="even">
+<td>voxel_size</td>
+<td>InputFloat</td>
+<td>Voxel Size</td>
+<td><code>0.3</code></td>
+</tr>
+<tr class="odd">
+<td>voxel_amount</td>
+<td>InputFloat</td>
+<td>Voxel Amount</td>
+<td><code>64.0</code></td>
+</tr>
+<tr class="even">
+<td>radius</td>
+<td>InputFloat</td>
+<td>Radius</td>
+<td><code>0.5</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-14" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
 <table class="caption-top table">
@@ -1758,56 +2812,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.i_density"><code>i_density</code></a></td>
-<td>Input socket: Density</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.i_points"><code>i_points</code></a></td>
-<td>Input socket: Points</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.i_radius"><code>i_radius</code></a></td>
-<td>Input socket: Radius</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.i_resolution_mode"><code>i_resolution_mode</code></a></td>
-<td>Input socket: Resolution Mode</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.i_voxel_amount"><code>i_voxel_amount</code></a></td>
-<td>Input socket: Voxel Amount</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.i_voxel_size"><code>i_voxel_size</code></a></td>
-<td>Input socket: Voxel Size</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.o_volume"><code>o_volume</code></a></td>
-<td>Output socket: Volume</td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.PointsToVolume.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.points</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Points</td>
+</tr>
+<tr class="even">
+<td><code>i.density</code></td>
+<td><code>FloatSocket</code></td>
+<td>Density</td>
+</tr>
+<tr class="odd">
+<td><code>i.resolution_mode</code></td>
+<td><code>MenuSocket</code></td>
+<td>Resolution Mode</td>
+</tr>
+<tr class="even">
+<td><code>i.voxel_size</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Size</td>
+</tr>
+<tr class="odd">
+<td><code>i.voxel_amount</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Amount</td>
+</tr>
+<tr class="even">
+<td><code>i.radius</code></td>
+<td><code>FloatSocket</code></td>
+<td>Radius</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
 </tr>
 </tbody>
 </table>
@@ -1817,6 +2910,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PruneGrid">PruneGrid</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>PruneGrid(grid<span class="op">=</span><span class="fl">0.0</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="fl">0.01</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes</p>
+<section id="parameters-15" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 60%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>mode</td>
+<td>InputMenu | Literal['Inactive', 'Threshold', 'SDF']</td>
+<td>Mode</td>
+<td><code>'Threshold'</code></td>
+</tr>
+<tr class="odd">
+<td>threshold</td>
+<td>InputFloat</td>
+<td>Threshold</td>
+<td><code>0.01</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-15" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
 <table class="caption-top table">
@@ -1828,47 +2960,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.i_mode"><code>i_mode</code></a></td>
-<td>Input socket: Mode</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.i_threshold"><code>i_threshold</code></a></td>
-<td>Input socket: Threshold</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.PruneGrid.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1921,6 +3045,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PruneGrid.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Prune Grid with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.mode</code></td>
+<td><code>MenuSocket</code></td>
+<td>Mode</td>
+</tr>
+<tr class="odd">
+<td><code>i.threshold</code></td>
+<td><code>FloatSocket</code></td>
+<td>Threshold</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -1928,6 +3096,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridFillet">SDFGridFillet</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>SDFGridFillet(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces</p>
+<section id="parameters-16" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-16">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>iterations</td>
+<td>InputInteger</td>
+<td>Iterations</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-16" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
 <table class="caption-top table">
@@ -1939,40 +3134,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.i_iterations"><code>i_iterations</code></a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridFillet.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.iterations</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
 </tr>
 </tbody>
 </table>
@@ -1982,6 +3212,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridLaplacian">SDFGridLaplacian</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>SDFGridLaplacian(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization</p>
+<section id="parameters-17" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-17">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>iterations</td>
+<td>InputInteger</td>
+<td>Iterations</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-17" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
 <table class="caption-top table">
@@ -1993,40 +3250,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.i_iterations"><code>i_iterations</code></a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridLaplacian.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.iterations</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
 </tr>
 </tbody>
 </table>
@@ -2036,6 +3328,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridMean">SDFGridMean</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>SDFGridMean(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field</p>
+<section id="parameters-18" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>width</td>
+<td>InputInteger</td>
+<td>Width</td>
+<td><code>1</code></td>
+</tr>
+<tr class="odd">
+<td>iterations</td>
+<td>InputInteger</td>
+<td>Iterations</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-18" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
 <table class="caption-top table">
@@ -2047,44 +3372,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.i_iterations"><code>i_iterations</code></a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.i_width"><code>i_width</code></a></td>
-<td>Input socket: Width</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMean.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.width</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Width</td>
+</tr>
+<tr class="odd">
+<td><code>i.iterations</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
 </tr>
 </tbody>
 </table>
@@ -2094,6 +3455,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridMeanCurvature">SDFGridMeanCurvature</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>SDFGridMeanCurvature(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas</p>
+<section id="parameters-19" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-19">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>iterations</td>
+<td>InputInteger</td>
+<td>Iterations</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-19" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
 <table class="caption-top table">
@@ -2105,40 +3493,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.i_iterations"><code>i_iterations</code></a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.iterations</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
 </tr>
 </tbody>
 </table>
@@ -2148,6 +3571,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridMedian">SDFGridMedian</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>SDFGridMedian(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field</p>
+<section id="parameters-20" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-20">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>width</td>
+<td>InputInteger</td>
+<td>Width</td>
+<td><code>1</code></td>
+</tr>
+<tr class="odd">
+<td>iterations</td>
+<td>InputInteger</td>
+<td>Iterations</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-20" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
 <table class="caption-top table">
@@ -2159,44 +3615,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.i_iterations"><code>i_iterations</code></a></td>
-<td>Input socket: Iterations</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.i_width"><code>i_width</code></a></td>
-<td>Input socket: Width</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridMedian.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.width</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Width</td>
+</tr>
+<tr class="odd">
+<td><code>i.iterations</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
 </tr>
 </tbody>
 </table>
@@ -2206,6 +3698,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridOffset">SDFGridOffset</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>SDFGridOffset(grid<span class="op">=</span><span class="fl">0.0</span>, distance<span class="op">=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property</p>
+<section id="parameters-21" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-21">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>distance</td>
+<td>InputFloat</td>
+<td>Distance</td>
+<td><code>0.1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-21" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
 <table class="caption-top table">
@@ -2217,40 +3736,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.i_distance"><code>i_distance</code></a></td>
-<td>Input socket: Distance</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.SDFGridOffset.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.distance</code></td>
+<td><code>FloatSocket</code></td>
+<td>Distance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
 </tr>
 </tbody>
 </table>
@@ -2266,6 +3820,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
 <span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve values from the specified volume grid</p>
+<section id="parameters-22" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-22">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 63%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>position</td>
+<td>InputVector</td>
+<td>Position</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>interpolation</td>
+<td>InputMenu | Literal['Nearest Neighbor', 'Trilinear', 'Triquadratic']</td>
+<td>Interpolation</td>
+<td><code>'Trilinear'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-22" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
 <table class="caption-top table">
@@ -2277,47 +3870,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.i_interpolation"><code>i_interpolation</code></a></td>
-<td>Input socket: Interpolation</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.i_position"><code>i_position</code></a></td>
-<td>Input socket: Position</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.o_value"><code>o_value</code></a></td>
-<td>Output socket: Value</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGrid.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2370,6 +3955,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGrid.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.position</code></td>
+<td><code>VectorSocket</code></td>
+<td>Position</td>
+</tr>
+<tr class="odd">
+<td><code>i.interpolation</code></td>
+<td><code>MenuSocket</code></td>
+<td>Interpolation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -2377,6 +4006,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGridIndex">SampleGridIndex</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>SampleGridIndex(grid<span class="op">=</span><span class="fl">0.0</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve volume grid values at specific voxels</p>
+<section id="parameters-23" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-23">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>InputInteger</td>
+<td>X</td>
+<td><code>0</code></td>
+</tr>
+<tr class="odd">
+<td>y</td>
+<td>InputInteger</td>
+<td>Y</td>
+<td><code>0</code></td>
+</tr>
+<tr class="even">
+<td>z</td>
+<td>InputInteger</td>
+<td>Z</td>
+<td><code>0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-23" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
 <table class="caption-top table">
@@ -2388,51 +4056,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.i_x"><code>i_x</code></a></td>
-<td>Input socket: X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.i_y"><code>i_y</code></a></td>
-<td>Input socket: Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.i_z"><code>i_z</code></a></td>
-<td>Input socket: Z</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.o_value"><code>o_value</code></a></td>
-<td>Output socket: Value</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.SampleGridIndex.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2485,6 +4141,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGridIndex.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid Index with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>X</td>
+</tr>
+<tr class="odd">
+<td><code>i.y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Y</td>
+</tr>
+<tr class="even">
+<td><code>i.z</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Z</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -2492,6 +4197,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridBackground">SetGridBackground</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>SetGridBackground(grid<span class="op">=</span><span class="fl">0.0</span>, background<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set the background value used for inactive voxels and tiles</p>
+<section id="parameters-24" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-24">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>background</td>
+<td>InputFloat</td>
+<td>Background</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-24" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
 <table class="caption-top table">
@@ -2503,43 +4235,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.i_background"><code>i_background</code></a></td>
-<td>Input socket: Background</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridBackground.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2592,6 +4320,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridBackground.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, background<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Background with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.background</code></td>
+<td><code>FloatSocket</code></td>
+<td>Background</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -2599,6 +4366,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridTransform">SetGridTransform</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>SetGridTransform(grid<span class="op">=</span><span class="fl">0.0</span>, transform<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set the transform for the grid from index space into object space.</p>
+<section id="parameters-25" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-25">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>transform</td>
+<td>InputMatrix</td>
+<td>Transform</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-25" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
 <table class="caption-top table">
@@ -2610,47 +4404,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.i_transform"><code>i_transform</code></a></td>
-<td>Input socket: Transform</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.o_is_valid"><code>o_is_valid</code></a></td>
-<td>Output socket: Is Valid</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.SetGridTransform.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2703,6 +4489,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridTransform.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Transform with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.transform</code></td>
+<td><code>MatrixSocket</code></td>
+<td>Transform</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.is_valid</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Is Valid</td>
+</tr>
+<tr class="even">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -2710,6 +4540,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.StoreNamedGrid">StoreNamedGrid</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>StoreNamedGrid(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store grid data in a volume geometry with the specified name</p>
+<section id="parameters-26" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-26">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>volume</td>
+<td>InputGeometry</td>
+<td>Volume</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>name</td>
+<td>InputString</td>
+<td>Name</td>
+<td><code>''</code></td>
+</tr>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-26" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
 <table class="caption-top table">
@@ -2721,47 +4584,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.i_name"><code>i_name</code></a></td>
-<td>Input socket: Name</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.i_volume"><code>i_volume</code></a></td>
-<td>Input socket: Volume</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.o_volume"><code>o_volume</code></a></td>
-<td>Output socket: Volume</td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.StoreNamedGrid.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -2814,6 +4669,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.StoreNamedGrid.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>vector(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Store Named Grid with operation ‘Vector’. 3D float vector</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
+</tr>
+<tr class="even">
+<td><code>i.name</code></td>
+<td><code>StringSocket</code></td>
+<td>Name</td>
+</tr>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -2829,6 +4728,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>    resolution_z<span class="op">=</span><span class="dv">32</span>,</span>
 <span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a dense volume with a field that controls the density at each grid voxel based on its position</p>
+<section id="parameters-27" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-27">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>density</td>
+<td>InputFloat</td>
+<td>Density</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="even">
+<td>background</td>
+<td>InputFloat</td>
+<td>Background</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>min</td>
+<td>InputVector</td>
+<td>Min</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>max</td>
+<td>InputVector</td>
+<td>Max</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>resolution_x</td>
+<td>InputInteger</td>
+<td>Resolution X</td>
+<td><code>32</code></td>
+</tr>
+<tr class="even">
+<td>resolution_y</td>
+<td>InputInteger</td>
+<td>Resolution Y</td>
+<td><code>32</code></td>
+</tr>
+<tr class="odd">
+<td>resolution_z</td>
+<td>InputInteger</td>
+<td>Resolution Z</td>
+<td><code>32</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-27" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
 <table class="caption-top table">
@@ -2840,60 +4796,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.i_background"><code>i_background</code></a></td>
-<td>Input socket: Background</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.i_density"><code>i_density</code></a></td>
-<td>Input socket: Density</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.i_max"><code>i_max</code></a></td>
-<td>Input socket: Max</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.i_min"><code>i_min</code></a></td>
-<td>Input socket: Min</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.i_resolution_x"><code>i_resolution_x</code></a></td>
-<td>Input socket: Resolution X</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.i_resolution_y"><code>i_resolution_y</code></a></td>
-<td>Input socket: Resolution Y</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.i_resolution_z"><code>i_resolution_z</code></a></td>
-<td>Input socket: Resolution Z</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.o_volume"><code>o_volume</code></a></td>
-<td>Output socket: Volume</td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.name"><code>name</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.outputs"><code>outputs</code></a></td>
 <td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeCube.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.density</code></td>
+<td><code>FloatSocket</code></td>
+<td>Density</td>
+</tr>
+<tr class="even">
+<td><code>i.background</code></td>
+<td><code>FloatSocket</code></td>
+<td>Background</td>
+</tr>
+<tr class="odd">
+<td><code>i.min</code></td>
+<td><code>VectorSocket</code></td>
+<td>Min</td>
+</tr>
+<tr class="even">
+<td><code>i.max</code></td>
+<td><code>VectorSocket</code></td>
+<td>Max</td>
+</tr>
+<tr class="odd">
+<td><code>i.resolution_x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Resolution X</td>
+</tr>
+<tr class="even">
+<td><code>i.resolution_y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Resolution Y</td>
+</tr>
+<tr class="odd">
+<td><code>i.resolution_z</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Resolution Z</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
 </tr>
 </tbody>
 </table>
@@ -2910,6 +4906,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>    adaptivity<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a mesh on the “surface” of a volume</p>
+<section id="parameters-28" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-28">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 55%">
+<col style="width: 16%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>volume</td>
+<td>InputGeometry</td>
+<td>Volume</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>resolution_mode</td>
+<td>InputMenu | Literal['Grid', 'Amount', 'Size']</td>
+<td>Resolution Mode</td>
+<td><code>'Grid'</code></td>
+</tr>
+<tr class="odd">
+<td>voxel_size</td>
+<td>InputFloat</td>
+<td>Voxel Size</td>
+<td><code>0.3</code></td>
+</tr>
+<tr class="even">
+<td>voxel_amount</td>
+<td>InputFloat</td>
+<td>Voxel Amount</td>
+<td><code>64.0</code></td>
+</tr>
+<tr class="odd">
+<td>threshold</td>
+<td>InputFloat</td>
+<td>Threshold</td>
+<td><code>0.1</code></td>
+</tr>
+<tr class="even">
+<td>adaptivity</td>
+<td>InputFloat</td>
+<td>Adaptivity</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-28" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
 <table class="caption-top table">
@@ -2921,56 +4974,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.i_adaptivity"><code>i_adaptivity</code></a></td>
-<td>Input socket: Adaptivity</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.i_resolution_mode"><code>i_resolution_mode</code></a></td>
-<td>Input socket: Resolution Mode</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.i_threshold"><code>i_threshold</code></a></td>
-<td>Input socket: Threshold</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.i_volume"><code>i_volume</code></a></td>
-<td>Input socket: Volume</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.i_voxel_amount"><code>i_voxel_amount</code></a></td>
-<td>Input socket: Voxel Amount</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.i_voxel_size"><code>i_voxel_size</code></a></td>
-<td>Input socket: Voxel Size</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.o_mesh"><code>o_mesh</code></a></td>
-<td>Output socket: Mesh</td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.tree"><code>tree</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.VolumeToMesh.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.volume</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Volume</td>
+</tr>
+<tr class="even">
+<td><code>i.resolution_mode</code></td>
+<td><code>MenuSocket</code></td>
+<td>Resolution Mode</td>
+</tr>
+<tr class="odd">
+<td><code>i.voxel_size</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Size</td>
+</tr>
+<tr class="even">
+<td><code>i.voxel_amount</code></td>
+<td><code>FloatSocket</code></td>
+<td>Voxel Amount</td>
+</tr>
+<tr class="odd">
+<td><code>i.threshold</code></td>
+<td><code>FloatSocket</code></td>
+<td>Threshold</td>
+</tr>
+<tr class="even">
+<td><code>i.adaptivity</code></td>
+<td><code>FloatSocket</code></td>
+<td>Adaptivity</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.mesh</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Mesh</td>
 </tr>
 </tbody>
 </table>
@@ -2980,6 +5072,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VoxelizeGrid">VoxelizeGrid</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>VoxelizeGrid(grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Remove sparseness from a volume grid by making the active tiles into voxels</p>
+<section id="parameters-29" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-29">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-29" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
 <table class="caption-top table">
@@ -2991,39 +5104,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.i_grid"><code>i_grid</code></a></td>
-<td>Input socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.o_grid"><code>o_grid</code></a></td>
-<td>Output socket: Grid</td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.grid.VoxelizeGrid.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -3076,6 +5189,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VoxelizeGrid.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Voxelize Grid with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
 
 
 </section>

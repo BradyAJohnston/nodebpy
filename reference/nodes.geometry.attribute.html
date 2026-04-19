@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -553,6 +557,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.attribute.BlurAttribute">BlurAttribute</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>BlurAttribute(value<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>, weight<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Mix attribute values of neighboring elements</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>value</td>
+<td>InputFloat</td>
+<td>Value</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>iterations</td>
+<td>InputInteger</td>
+<td>Iterations</td>
+<td><code>1</code></td>
+</tr>
+<tr class="odd">
+<td>weight</td>
+<td>InputFloat</td>
+<td>Weight</td>
+<td><code>1.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
@@ -564,47 +601,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.i_iterations"><code>i_iterations</code></a></td>
-<td>Input socket: Iterations</td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.i_weight"><code>i_weight</code></a></td>
-<td>Input socket: Weight</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.o_value"><code>o_value</code></a></td>
-<td>Output socket: Value</td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.BlurAttribute.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -657,6 +686,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.attribute.BlurAttribute.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vector(value<span class="op">=</span><span class="va">None</span>, iterations<span class="op">=</span><span class="dv">1</span>, weight<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur Attribute with operation ‘Vector’. 3D vector with floating-point values</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+<tr class="even">
+<td><code>i.iterations</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Iterations</td>
+</tr>
+<tr class="odd">
+<td><code>i.weight</code></td>
+<td><code>FloatSocket</code></td>
+<td>Weight</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
@@ -664,6 +737,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.attribute.DomainSize">DomainSize</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>DomainSize(geometry<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, component<span class="op">=</span><span class="st">'MESH'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the number of elements in a geometry for each attribute domain</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>geometry</td>
+<td>InputGeometry</td>
+<td>Geometry</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-1" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
@@ -675,64 +769,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.component">component</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.component"><code>component</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.i_geometry"><code>i_geometry</code></a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.inputs">inputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.o_edge_count"><code>o_edge_count</code></a></td>
-<td>Output socket: Edge Count</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.o_face_corner_count"><code>o_face_corner_count</code></a></td>
-<td>Output socket: Face Corner Count</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.o_face_count"><code>o_face_count</code></a></td>
-<td>Output socket: Face Count</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.o_instance_count"><code>o_instance_count</code></a></td>
-<td>Output socket: Instance Count</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.o_layer_count"><code>o_layer_count</code></a></td>
-<td>Output socket: Layer Count</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.o_point_count"><code>o_point_count</code></a></td>
-<td>Output socket: Point Count</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.o_spline_count"><code>o_spline_count</code></a></td>
-<td>Output socket: Spline Count</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.outputs">outputs</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.node"><code>node</code></a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.attribute.DomainSize.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.geometry</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Geometry</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.point_count</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Point Count</td>
+</tr>
+<tr class="even">
+<td><code>o.edge_count</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Edge Count</td>
+</tr>
+<tr class="odd">
+<td><code>o.face_count</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Face Count</td>
+</tr>
+<tr class="even">
+<td><code>o.face_corner_count</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Face Corner Count</td>
+</tr>
+<tr class="odd">
+<td><code>o.spline_count</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Spline Count</td>
+</tr>
+<tr class="even">
+<td><code>o.instance_count</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Instance Count</td>
+</tr>
+<tr class="odd">
+<td><code>o.layer_count</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Layer Count</td>
 </tr>
 </tbody>
 </table>
@@ -742,6 +876,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.attribute.RemoveNamedAttribute">RemoveNamedAttribute</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>RemoveNamedAttribute(geometry<span class="op">=</span><span class="va">None</span>, pattern_mode<span class="op">=</span><span class="st">'Exact'</span>, name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Delete an attribute with a specified name from a geometry. Typically used to optimize performance</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 55%">
+<col style="width: 16%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>geometry</td>
+<td>InputGeometry</td>
+<td>Geometry</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>pattern_mode</td>
+<td>InputMenu | Literal['Exact', 'Wildcard']</td>
+<td>Pattern Mode</td>
+<td><code>'Exact'</code></td>
+</tr>
+<tr class="odd">
+<td>name</td>
+<td>InputString</td>
+<td>Name</td>
+<td><code>''</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
@@ -753,44 +926,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.i_geometry"><code>i_geometry</code></a></td>
-<td>Input socket: Geometry</td>
+<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.i"><code>i</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.i_name"><code>i_name</code></a></td>
-<td>Input socket: Name</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.i_pattern_mode"><code>i_pattern_mode</code></a></td>
-<td>Input socket: Pattern Mode</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.o_geometry"><code>o_geometry</code></a></td>
-<td>Output socket: Geometry</td>
+<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.o"><code>o</code></a></td>
+<td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.type"><code>type</code></a></td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.geometry</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Geometry</td>
+</tr>
+<tr class="even">
+<td><code>i.pattern_mode</code></td>
+<td><code>MenuSocket</code></td>
+<td>Pattern Mode</td>
+</tr>
+<tr class="odd">
+<td><code>i.name</code></td>
+<td><code>StringSocket</code></td>
+<td>Name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.geometry</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Geometry</td>
 </tr>
 </tbody>
 </table>
@@ -808,6 +1017,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store the result of a field on a geometry as an attribute with the specified name</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>geometry</td>
+<td>InputGeometry</td>
+<td>Geometry</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>selection</td>
+<td>InputBoolean</td>
+<td>Selection</td>
+<td><code>True</code></td>
+</tr>
+<tr class="odd">
+<td>name</td>
+<td>InputString</td>
+<td>Name</td>
+<td><code>''</code></td>
+</tr>
+<tr class="even">
+<td>value</td>
+<td>InputFloat</td>
+<td>Value</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-3" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
@@ -819,55 +1067,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.data_type">data_type</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.data_type"><code>data_type</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.domain">domain</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.domain"><code>domain</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.i_geometry"><code>i_geometry</code></a></td>
-<td>Input socket: Geometry</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.i_name"><code>i_name</code></a></td>
-<td>Input socket: Name</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.i_selection"><code>i_selection</code></a></td>
-<td>Input socket: Selection</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.i_value"><code>i_value</code></a></td>
-<td>Input socket: Value</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.inputs">inputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.i"><code>i</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.name">name</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.inputs"><code>inputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.node">node</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.o_geometry"><code>o_geometry</code></a></td>
-<td>Output socket: Geometry</td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.node"><code>node</code></a></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.outputs">outputs</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.o"><code>o</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.tree">tree</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.type">type</a></td>
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1037,6 +1273,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.attribute.StoreNamedAttribute.vector">vector</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>vector(geometry<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, name<span class="op">=</span><span class="st">''</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Store Named Attribute with operation ‘Vector’. 3D vector with floating-point values</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.geometry</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Geometry</td>
+</tr>
+<tr class="even">
+<td><code>i.selection</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Selection</td>
+</tr>
+<tr class="odd">
+<td><code>i.name</code></td>
+<td><code>StringSocket</code></td>
+<td>Name</td>
+</tr>
+<tr class="even">
+<td><code>i.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.geometry</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Geometry</td>
+</tr>
+</tbody>
+</table>
 
 
 </section>
