@@ -950,6 +950,7 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         # the _add_inputs returns a dictionary but we only want the first key
         # because we are adding a single input
         input_dict = self._add_inputs(value)
+        self._establish_links(**input_dict)
         return SocketLinker(self.node.outputs[next(iter(input_dict))])
 
     @property
