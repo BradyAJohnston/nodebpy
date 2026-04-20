@@ -6,6 +6,7 @@ project:
 website:
   title: "nodebpy {{< var version >}}"
   page-navigation: true
+  llms-txt: true
 
   navbar:
     left:
@@ -19,6 +20,8 @@ website:
           - node-api.qmd
       - href: reference/
         text: Reference
+      - href: changelog.qmd
+        text: Changelog
     right:
       - icon: github
         href: https://github.com/BradyAJohnston/nodebpy
