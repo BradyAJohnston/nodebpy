@@ -581,18 +581,81 @@
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "nodebpy",
+    "objectID": "changelog.html",
+    "href": "changelog.html",
+    "title": "Changelog",
     "section": "",
-    "text": "A package to help build node trees in blender more elegantly with python code."
+    "text": "Added changelog to the documentation to better track and explain changes in the project."
   },
   {
-    "objectID": "index.html#the-design-idea",
-    "href": "index.html#the-design-idea",
-    "title": "nodebpy",
-    "section": "The Design Idea",
-    "text": "The Design Idea\nOther projects have attempted similar but none quite handled the API how I felt it should be done. Notable existing projects are geometry-script, geonodes, NodeToPython.\nOther projects implement chaining of nodes mostly as dot methos of nodes to chain them (InstanceOnPoints().set_position()). This has the potential to crowd the API for individual nodes and easy chaining is instead approached via overriding the &gt;&gt; operator.\n\nChain Nodes with &gt;&gt;\nBy default the operator attempts to link the first output of the previous node with the first input of the next. You can override this behaviour by being explicit with the socket you are passing out (AccumulateField().o_total) or using the ... for the inputs into the next node. The dots can appear at multiple locations and each input will be linked to the previous node via the inferred or specified socket."
+    "objectID": "changelog.html#unreleased",
+    "href": "changelog.html#unreleased",
+    "title": "Changelog",
+    "section": "",
+    "text": "Added changelog to the documentation to better track and explain changes in the project."
+  },
+  {
+    "objectID": "changelog.html#v0.10.1-2026-04-20",
+    "href": "changelog.html#v0.10.1-2026-04-20",
+    "title": "Changelog",
+    "section": "v0.10.1 — 2026-04-20",
+    "text": "v0.10.1 — 2026-04-20\n\nBug fixes\n\nFixed CaptureAttribute.capture() not correctly linking the captured input socket. (#41)"
+  },
+  {
+    "objectID": "changelog.html#v0.10.0-2026-04-19",
+    "href": "changelog.html#v0.10.0-2026-04-19",
+    "title": "Changelog",
+    "section": "v0.10.0 — 2026-04-19",
+    "text": "v0.10.0 — 2026-04-19\nThe biggest release yet. The headline change is a new typed socket accessor API — node.i.x / node.o.x — that replaces the old node.o_position-style properties and brings full IDE auto-complete and type narrowing to socket access.\n\nEnhancements\n\nnode.i / node.o socket accessors (#39)\nSockets are now accessed through .i (inputs) and .o (outputs) accessor objects. Attribute names are the normalised socket identifier, so spaces become underscores and the first letter is lowercased.\nnode.o.position &gt;&gt; node.i.offset   # pipe position into offset\nnode.o.position.y * 0.2            # operate on the y component\nIn node definitions, _Inputs / _Outputs inner classes declare the available sockets and their types so IDEs can provide auto-complete:\nclass SetPosition(NodeBuilder):\n    class _Inputs(SocketAccessor):\n        geometry: GeometrySocket\n        position: VectorSocket\n        offset:   VectorSocket\n\n    class _Outputs(SocketAccessor):\n        geometry: GeometrySocket\n\n\nNodeGroupBuilder — custom node groups as Python classes (#31)\nDefine reusable node groups as plain Python classes. The group tree is built once and cached; subsequent uses insert a Group node pointing at that tree.\nclass Jitter(NodeGroupBuilder):\n    _name = \"Jitter\"\n    _color_tag = \"geometry\"\n\n    def __init__(self, geometry=None, amount=0.2, seed=0):\n        super().__init__(Geometry=geometry, Amount=amount, Seed=seed)\n\n    @classmethod\n    def _build_group(cls, tree):\n        geom   = tree.inputs.geometry(\"Geometry\")\n        amount = tree.inputs.float(\"Amount\", 0.2)\n        seed   = tree.inputs.integer(\"Seed\", 0)\n\n        offset = g.RandomValue.vector(min=-1, seed=seed) * amount\n        _ = g.SetPosition(geom, offset=offset) &gt;&gt; tree.outputs.geometry()\n\n# Composes identically with built-in nodes\ng.IcoSphere(subdivisions=4) &gt;&gt; Jitter(amount=0.15) &gt;&gt; out\n\n\ng.tree() module-level helper (#36)\nEliminates the need to import TreeBuilder directly when working with a single editor type.\n# Before\nfrom nodebpy import TreeBuilder\nwith TreeBuilder.geometry(\"My Group\") as tree: ...\n\n# After\nfrom nodebpy import geometry as g\nwith g.tree(\"My Group\") as tree: ...\n\n\nSimplified interface socket definition (#37)\nInterface sockets can now be defined directly on the tree object without a context manager:\nwith g.tree() as tree:\n    geo = tree.inputs.geometry(\"Points\")\n    g.SetPosition(geo)\nThe previous context-manager form still works.\n\n\n\nOther changes\n\nAuto-detection of nodes requiring data-type class methods (e.g. .float(), .vector()) is now more robust. (#38)\nbuilder.py was split into a builder/ package for maintainability; VectorSocketLinker was renamed to VectorSocket. (#35)\nInternal type aliases cleaned up — InputFloat replaces TYPE_INPUT_VALUE etc. (#34)"
+  },
+  {
+    "objectID": "changelog.html#v0.9.1-2026-03-27",
+    "href": "changelog.html#v0.9.1-2026-03-27",
+    "title": "Changelog",
+    "section": "v0.9.1 — 2026-03-27",
+    "text": "v0.9.1 — 2026-03-27\n\nEnhancements\n\n== / != comparison operators (#28)\nNodeBuilder objects now support Python equality operators, returning a Compare node. Chain .switch() to immediately branch on the result:\n# Creates a Compare node then routes into a Switch\n(g.Value(5.0) &gt; 2.0).switch(false=g.Cube(), true=g.IcoSphere())\n\n\nData-type-specific socket linkers (#29)\nVectorSocket, ColorSocket, FloatSocket, and IntegerSocket carry type-specific operations (e.g. .x, .y, .z on vectors) so arithmetic stays typed all the way through a chain.\n\n\n\nOther changes\n\nDocumentation styling improvements. (#27)"
+  },
+  {
+    "objectID": "changelog.html#v0.8.0-2026-03-16",
+    "href": "changelog.html#v0.8.0-2026-03-16",
+    "title": "Changelog",
+    "section": "v0.8.0 — 2026-03-16",
+    "text": "v0.8.0 — 2026-03-16\n\nEnhancements\n\nnetworkx is now an optional dependency (#24)\nnodebpy now has no hard dependencies outside of bpy, making it easier to vendor into add-ons. A built-in simple arranger is used when networkx is absent; the Sugiyama layout remains the default when it is installed."
+  },
+  {
+    "objectID": "changelog.html#v0.7.2-2026-03-15",
+    "href": "changelog.html#v0.7.2-2026-03-15",
+    "title": "Changelog",
+    "section": "v0.7.2 — 2026-03-15",
+    "text": "v0.7.2 — 2026-03-15\n\nEnhancements\n\nmatrix @ vector creates a TransformPoint node (#22)\nmatrix @ g.Position()  # → TransformPoint node\n\n\n\nBug fixes\n\nFixed ... (ellipsis) handling in &gt;&gt; chains — type-aware output selection now works correctly when skipping intermediate nodes. (#23)"
+  },
+  {
+    "objectID": "changelog.html#v0.7.1-2026-03-14",
+    "href": "changelog.html#v0.7.1-2026-03-14",
+    "title": "Changelog",
+    "section": "v0.7.1 — 2026-03-14",
+    "text": "v0.7.1 — 2026-03-14\n\nEnhancements\n\nColor &gt;&gt; Shader linking (#21)\nPiping a color socket into a shader input is now handled automatically, matching the way Blender promotes color connections in the node editor."
+  },
+  {
+    "objectID": "changelog.html#v0.7.0-2026-03-13",
+    "href": "changelog.html#v0.7.0-2026-03-13",
+    "title": "Changelog",
+    "section": "v0.7.0 — 2026-03-13",
+    "text": "v0.7.0 — 2026-03-13\n\nEnhancements\n\nPanels for tree interfaces (#20)\nGroup interface sockets can be organised into named panels:\nwith tree.inputs.panel(\"Settings\"):\n    s.SocketFloat(\"Amount\", 0.2)\n    s.SocketInt(\"Seed\", 0)\nInteger math is now handled correctly in Shader and Compositor editors (mapped to float math, as Blender does not expose integer math there)."
+  },
+  {
+    "objectID": "changelog.html#v0.6.0-2026-03-13",
+    "href": "changelog.html#v0.6.0-2026-03-13",
+    "title": "Changelog",
+    "section": "v0.6.0 — 2026-03-13",
+    "text": "v0.6.0 — 2026-03-13\n\nBug fixes\n\nFixed MenuSwitch node creation and socket wiring. (#18)\n\n\n\nOther changes\n\nMermaid diagram generation improvements: math node operators are now shown, and socket connections use -&gt; instead of &gt;&gt;. (#19)"
+  },
+  {
+    "objectID": "changelog.html#v0.5.0-2026-03-13",
+    "href": "changelog.html#v0.5.0-2026-03-13",
+    "title": "Changelog",
+    "section": "v0.5.0 — 2026-03-13",
+    "text": "v0.5.0 — 2026-03-13\n\nEnhancements\n\nCompositor and Material (Shader) node editors (#12)\nnodebpy now supports building Compositor and Shader/Material node trees in addition to Geometry Nodes.\n\n\nRemaining Python math operators (#15, #16)\n** (power), % (modulo), // (floor divide), abs(), and unary - are all wired up. Operator order for vector math was also corrected.\n\n\nLiteral type hints for menu sockets (#17)\nEnum choices on menu sockets are exposed as Literal type hints, giving IDE auto-complete on string arguments like data_type=\"FLOAT\"."
   },
   {
     "objectID": "node-api.html",
@@ -629,10 +692,24 @@
     "href": "node-api.html#class-methods",
     "title": "Node API Design",
     "section": "Class Methods",
-    "text": "Class Methods\nFor nodes that have mode, domain, data_type and operation as potential enum values, convenience class methods are provided.\n\nThe order that these methods will appear are: mode &gt; domain &gt; data_type &gt; operation, but should only ever be 1 or 2 deep.\ng.EvaluateAtIndex.face.vector()   # .domain.data_type\ng.Compare.float.less_than()       # .data_type.operation\n\nBecause sockets are the only positional for the node constructors, enum values like data_typa have to be specified with as key word arguments to the constructor. All enum options are type-hinted with Literal[] so IDE auto-complete and type hinting will work, but the convenience class methods enable a cleaner way of writing the nodes. For the example below both methods do work, but the second is cleaner to write and flows better with what the node is doing; ‘On the edge domain, evaluate a float attribute’.\n\nwith g.tree():\n    # domain and data_type require kwargs\n    eod1 = g.EvaluateOnDomain(domain=\"EDGE\", data_type=\"FLOAT\")\n\n    # better IDE type-hinting and auto-complete\n    eod2 = g.EvaluateOnDomain.edge.float()\n\nassert eod1.data_type == eod2.data_type\nassert eod1.domain == eod2.domain\n\nA similar approach is taken for the Compare node, with the first being data type and then secondarily the comparison operation.\nIf the items being compared are nodes or sockets, regular boolean comparison with operators will also work. All 3 different approaches have the same result.\na = g.Integer(0)\nb = g.Integer(2)\n\ng.Compare(A_INT = a, A_INT = b, data_type = \"INT\", operation=\"EQUAL\")\n\ng.Compare.integer.equal(a, b)\n\na == b\n\n\n\n\n\n\nWarningThe code will be evaluated at runtime.\n\n\n\n\nComparing Node Objects\nIn this instance comp will be a g.Compare node, set with the operation=\"GREATER_THAN\" and data_type=\"INT\".\nAs this is a node within the node graph, the inputs have the potential to change during node tree evaluation meaning the result of the comparison could change. During playback on an animation the output will be Cube at frames &lt;=50 and Cone when above that value.\n\nwith g.tree():\n    a = g.SceneTime().o.frame\n    b = g.Integer(50)\n\n    comp = a &gt; b\n    geo = g.Switch.geometry(comp, g.Cube(), g.Cone())\n\ncomp\n\n&lt;nodebpy.nodes.geometry.manual.Compare at 0x127ea74d0&gt;\n\n\n\n\nComparing Python Objects\nIf the comparison was of just regular python values, then the result at runtime will just be boolean True and not a Compare node. This means the value won’t change during node tree evaluation, and will only be evaluated a single time in node tree construction.\nThe result below will always output a Cone geoemtry because the input will always be True.\n\nwith g.tree():\n    a = 0\n    b = 0\n\n    comp = a == b\n    geo = g.Switch.geometry(comp, g.Cube(), g.Cone())\n\ncomp\n\nTrue",
+    "text": "Class Methods\nFor nodes that have mode, domain, data_type and operation as potential enum values, convenience class methods are provided.\n\nThe order that these methods will appear are: mode &gt; domain &gt; data_type &gt; operation, but should only ever be 1 or 2 deep.\ng.EvaluateAtIndex.face.vector()   # .domain.data_type\ng.Compare.float.less_than()       # .data_type.operation\n\nBecause sockets are the only positional for the node constructors, enum values like data_typa have to be specified with as key word arguments to the constructor. All enum options are type-hinted with Literal[] so IDE auto-complete and type hinting will work, but the convenience class methods enable a cleaner way of writing the nodes. For the example below both methods do work, but the second is cleaner to write and flows better with what the node is doing; ‘On the edge domain, evaluate a float attribute’.\n\nwith g.tree():\n    # domain and data_type require kwargs\n    eod1 = g.EvaluateOnDomain(domain=\"EDGE\", data_type=\"FLOAT\")\n\n    # better IDE type-hinting and auto-complete\n    eod2 = g.EvaluateOnDomain.edge.float()\n\nassert eod1.data_type == eod2.data_type\nassert eod1.domain == eod2.domain\n\nA similar approach is taken for the Compare node, with the first being data type and then secondarily the comparison operation.\nIf the items being compared are nodes or sockets, regular boolean comparison with operators will also work. All 3 different approaches have the same result.\na = g.Integer(0)\nb = g.Integer(2)\n\ng.Compare(A_INT = a, A_INT = b, data_type = \"INT\", operation=\"EQUAL\")\n\ng.Compare.integer.equal(a, b)\n\na == b\n\n\n\n\n\n\nWarningThe code will be evaluated at runtime.\n\n\n\n\nComparing Node Objects\nIn this instance comp will be a g.Compare node, set with the operation=\"GREATER_THAN\" and data_type=\"INT\".\nAs this is a node within the node graph, the inputs have the potential to change during node tree evaluation meaning the result of the comparison could change. During playback on an animation the output will be Cube at frames &lt;=50 and Cone when above that value.\n\nwith g.tree():\n    a = g.SceneTime().o.frame\n    b = g.Integer(50)\n\n    comp = a &gt; b\n    geo = g.Switch.geometry(comp, g.Cube(), g.Cone())\n\ncomp\n\n&lt;nodebpy.nodes.geometry.manual.Compare at 0x13019d450&gt;\n\n\n\n\nComparing Python Objects\nIf the comparison was of just regular python values, then the result at runtime will just be boolean True and not a Compare node. This means the value won’t change during node tree evaluation, and will only be evaluated a single time in node tree construction.\nThe result below will always output a Cone geoemtry because the input will always be True.\n\nwith g.tree():\n    a = 0\n    b = 0\n\n    comp = a == b\n    geo = g.Switch.geometry(comp, g.Cube(), g.Cone())\n\ncomp\n\nTrue",
     "crumbs": [
       "Node API Design"
     ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "nodebpy",
+    "section": "",
+    "text": "A package to help build node trees in blender more elegantly with python code."
+  },
+  {
+    "objectID": "index.html#the-design-idea",
+    "href": "index.html#the-design-idea",
+    "title": "nodebpy",
+    "section": "The Design Idea",
+    "text": "The Design Idea\nOther projects have attempted similar but none quite handled the API how I felt it should be done. Notable existing projects are geometry-script, geonodes, NodeToPython.\nOther projects implement chaining of nodes mostly as dot methos of nodes to chain them (InstanceOnPoints().set_position()). This has the potential to crowd the API for individual nodes and easy chaining is instead approached via overriding the &gt;&gt; operator.\n\nChain Nodes with &gt;&gt;\nBy default the operator attempts to link the first output of the previous node with the first input of the next. You can override this behaviour by being explicit with the socket you are passing out (AccumulateField().o_total) or using the ... for the inputs into the next node. The dots can appear at multiple locations and each input will be linked to the previous node via the inferred or specified socket."
   },
   {
     "objectID": "introduction.html",
