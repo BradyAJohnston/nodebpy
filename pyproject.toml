@@ -7,7 +7,6 @@ authors = [
     { name = "Brady Johnston", email = "brady.johnston@me.com" }
 ]
 requires-python = ">=3.11"
-dependencies = []
 
 [project.scripts]
 nodebpy = "nodebpy:main"
@@ -28,12 +27,11 @@ build-backend = "uv_build"
 dev = [
     "ipython>=8.0.0",
     "networkx>=3.6.1",
-    "numpy<2.0",
     "fake-bpy-module>=20260113",
     "jsondiff>=2.2.1",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
-    "quarto-cli>=1.8.26",
+    "quarto-cli>=1.9",
     "quartodoc>=0.11.1",
     "ruff>=0.14.11",
     "syrupy>=5.0.0",
