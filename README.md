@@ -119,9 +119,9 @@ We should know as much ahead of time as possible if our network will actually bu
   - `RandomValue` creates a random value node
     - `RandomValue.vector()` creates it set to `"VECTOR"` data type and
       provides arguments for IDE auto-complete
-- Inputs and outputs from a node are prefixed with `i_*` and `o_`:
-  - `AccumulateField().o_total` returns the output `Total` socket
-  - `AccumulateField().i_value` returns the input `Value` socket
+- Inputs and outputs from a node are prefixed with `i.*` and `o.*`:
+  - `AccumulateField().o.total` returns the output `Total` socket
+  - `AccumulateField().i.value` returns the input `Value` socket
 - If inputs are subject to change depending on enums, provide separate
   constructor methods that provide related inputs as arguments. There
   should be no guessing involved and IDEs should provide documentation
