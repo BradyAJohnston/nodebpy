@@ -140,6 +140,7 @@ Two previous projects have made similar approaches to authoring node trees. `geo
 The other project `geonodes` uses a similar context system for creating and authoring node trees, but doesn't use the same method of exposing each individual node as it's own class that `nodebpy` does.
 
 I personally found both of their APIs to _not quite_ fit how I wanted to work, leading to the creation of `nodebpy`.
+In comparison, this project is also the only one that is also distributed on `PyPi` and insallable via `pip` for easier use in other projects.
 
   - [geometry-script](https://github.com/carson-katri/geometry-script),
   - [geonodes](https://github.com/al1brn/geonodes)
