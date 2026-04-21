@@ -65,6 +65,19 @@ $signature-border-color: tint-color($primary, 25%);
   font-size: 0.95rem;
 }
 
+// Mermaid node diagram colour coding — mirrors the color_tag values from Blender.
+// !important is required because Quarto's mermaid-init.js injects themeCSS scoped with
+// the SVG's ID (e.g. #mermaid-1 .node path), giving those rules (1,1,1) specificity
+// which beats any class-only selector.
+.node.geometry-node  .label-container path { fill: #e8f5f1 !important; stroke: #3a7c49 !important; stroke-width: 2px !important; }
+.node.converter-node .label-container path { fill: #e6f1f7 !important; stroke: #246283 !important; stroke-width: 2px !important; }
+.node.vector-node    .label-container path { fill: #e9e9f5 !important; stroke: #3C3C83 !important; stroke-width: 2px !important; }
+.node.texture-node   .label-container path { fill: #fef3e6 !important; stroke: #E66800 !important; stroke-width: 2px !important; }
+.node.shader-node    .label-container path { fill: #fef0eb !important; stroke: #e67c52 !important; stroke-width: 2px !important; }
+.node.input-node     .label-container path { fill: #f1f8ed !important; stroke: #7fb069 !important; stroke-width: 2px !important; }
+.node.output-node    .label-container path { fill: #faf0ed !important; stroke: #c97659 !important; stroke-width: 2px !important; }
+.node.default-node   .label-container path { fill: #f0f0f0 !important; stroke: #5a5a5a !important; stroke-width: 2px !important; }
+
 /*-- scss:functions --*/
 
 /*-- scss:uses --*/

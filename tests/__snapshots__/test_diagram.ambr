@@ -1,0 +1,339 @@
+# serializer version: 1
+# name: test_diagram_bit_decoder
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Boolean Math<br/><small>(NOT)</small>"):::converter-node
+      N2("Boolean Math<br/><small>(NOT)</small>"):::converter-node
+      N3("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N4("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N5("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N6("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N7("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N8("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N9("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N10("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N11("Boolean Math<br/><small>(NOT)</small>"):::converter-node
+      N12("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N13("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N14("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N15("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N16("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N17("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N18("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N19("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N20("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N21("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N22("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N23("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N24("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N25("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N26("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N27("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N28("Boolean Math<br/><small>(NOT)</small>"):::converter-node
+      N29("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N30("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N31("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N32("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N33("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N34("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N35("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N36("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N37("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N38("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N39("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N40("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N41("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N42("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N43("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N44("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N45("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N46("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N47("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N48("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N49("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N50("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N51("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N52("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N53("Group Output"):::default-node
+      N0 -->|"Bit 0->Boolean"| N1
+      N0 -->|"Bit 1->Boolean"| N2
+      N0 -->|"Bit 2->Boolean"| N11
+      N0 -->|"Bit 3->Boolean"| N28
+      N1 -->|"Boolean->Boolean"| N3
+      N2 -->|"Boolean->Boolean"| N3
+      N3 -->|"Boolean->Boolean"| N20
+      N11 -->|"Boolean->Boolean"| N20
+      N20 -->|"Boolean->Boolean"| N37
+      N28 -->|"Boolean->Boolean"| N37
+      N37 -->|"Boolean->Out 0"| N53
+      N1 -->|"Boolean->Boolean"| N4
+      N2 -->|"Boolean->Boolean"| N4
+      N4 -->|"Boolean->Boolean"| N21
+      N11 -->|"Boolean->Boolean"| N21
+      N21 -->|"Boolean->Boolean"| N38
+      N0 -->|"Bit 3->Boolean"| N38
+      N38 -->|"Boolean->Out 1"| N53
+      N1 -->|"Boolean->Boolean"| N5
+      N2 -->|"Boolean->Boolean"| N5
+      N5 -->|"Boolean->Boolean"| N22
+      N0 -->|"Bit 2->Boolean"| N22
+      N22 -->|"Boolean->Boolean"| N39
+      N28 -->|"Boolean->Boolean"| N39
+      N39 -->|"Boolean->Out 2"| N53
+      N1 -->|"Boolean->Boolean"| N6
+      N2 -->|"Boolean->Boolean"| N6
+      N6 -->|"Boolean->Boolean"| N23
+      N0 -->|"Bit 2->Boolean"| N23
+      N23 -->|"Boolean->Boolean"| N40
+      N0 -->|"Bit 3->Boolean"| N40
+      N40 -->|"Boolean->Out 3"| N53
+      N1 -->|"Boolean->Boolean"| N7
+      N0 -->|"Bit 1->Boolean"| N7
+      N7 -->|"Boolean->Boolean"| N24
+      N11 -->|"Boolean->Boolean"| N24
+      N24 -->|"Boolean->Boolean"| N41
+      N28 -->|"Boolean->Boolean"| N41
+      N41 -->|"Boolean->Out 4"| N53
+      N1 -->|"Boolean->Boolean"| N8
+      N0 -->|"Bit 1->Boolean"| N8
+      N8 -->|"Boolean->Boolean"| N25
+      N11 -->|"Boolean->Boolean"| N25
+      N25 -->|"Boolean->Boolean"| N42
+      N0 -->|"Bit 3->Boolean"| N42
+      N42 -->|"Boolean->Out 5"| N53
+      N1 -->|"Boolean->Boolean"| N9
+      N0 -->|"Bit 1->Boolean"| N9
+      N9 -->|"Boolean->Boolean"| N26
+      N0 -->|"Bit 2->Boolean"| N26
+      N26 -->|"Boolean->Boolean"| N43
+      N28 -->|"Boolean->Boolean"| N43
+      N43 -->|"Boolean->Out 6"| N53
+      N1 -->|"Boolean->Boolean"| N10
+      N0 -->|"Bit 1->Boolean"| N10
+      N10 -->|"Boolean->Boolean"| N27
+      N0 -->|"Bit 2->Boolean"| N27
+      N27 -->|"Boolean->Boolean"| N44
+      N0 -->|"Bit 3->Boolean"| N44
+      N44 -->|"Boolean->Out 7"| N53
+      N0 -->|"Bit 0->Boolean"| N12
+      N2 -->|"Boolean->Boolean"| N12
+      N12 -->|"Boolean->Boolean"| N29
+      N11 -->|"Boolean->Boolean"| N29
+      N29 -->|"Boolean->Boolean"| N45
+      N28 -->|"Boolean->Boolean"| N45
+      N45 -->|"Boolean->Out 8"| N53
+      N0 -->|"Bit 0->Boolean"| N13
+      N2 -->|"Boolean->Boolean"| N13
+      N13 -->|"Boolean->Boolean"| N30
+      N11 -->|"Boolean->Boolean"| N30
+      N30 -->|"Boolean->Boolean"| N46
+      N0 -->|"Bit 3->Boolean"| N46
+      N46 -->|"Boolean->Out 9"| N53
+      N0 -->|"Bit 0->Boolean"| N14
+      N2 -->|"Boolean->Boolean"| N14
+      N14 -->|"Boolean->Boolean"| N31
+      N0 -->|"Bit 2->Boolean"| N31
+      N31 -->|"Boolean->Boolean"| N47
+      N28 -->|"Boolean->Boolean"| N47
+      N47 -->|"Boolean->Out 10"| N53
+      N0 -->|"Bit 0->Boolean"| N15
+      N2 -->|"Boolean->Boolean"| N15
+      N15 -->|"Boolean->Boolean"| N32
+      N0 -->|"Bit 2->Boolean"| N32
+      N32 -->|"Boolean->Boolean"| N48
+      N0 -->|"Bit 3->Boolean"| N48
+      N48 -->|"Boolean->Out 11"| N53
+      N0 -->|"Bit 0->Boolean"| N16
+      N0 -->|"Bit 1->Boolean"| N16
+      N16 -->|"Boolean->Boolean"| N33
+      N11 -->|"Boolean->Boolean"| N33
+      N33 -->|"Boolean->Boolean"| N49
+      N28 -->|"Boolean->Boolean"| N49
+      N49 -->|"Boolean->Out 12"| N53
+      N0 -->|"Bit 0->Boolean"| N17
+      N0 -->|"Bit 1->Boolean"| N17
+      N17 -->|"Boolean->Boolean"| N34
+      N11 -->|"Boolean->Boolean"| N34
+      N34 -->|"Boolean->Boolean"| N50
+      N0 -->|"Bit 3->Boolean"| N50
+      N50 -->|"Boolean->Out 13"| N53
+      N0 -->|"Bit 0->Boolean"| N18
+      N0 -->|"Bit 1->Boolean"| N18
+      N18 -->|"Boolean->Boolean"| N35
+      N0 -->|"Bit 2->Boolean"| N35
+      N35 -->|"Boolean->Boolean"| N51
+      N28 -->|"Boolean->Boolean"| N51
+      N51 -->|"Boolean->Out 14"| N53
+      N0 -->|"Bit 0->Boolean"| N19
+      N0 -->|"Bit 1->Boolean"| N19
+      N19 -->|"Boolean->Boolean"| N36
+      N0 -->|"Bit 2->Boolean"| N36
+      N36 -->|"Boolean->Boolean"| N52
+      N0 -->|"Bit 3->Boolean"| N52
+      N52 -->|"Boolean->Out 15"| N53
+  ```
+  '''
+# ---
+# name: test_diagram_custom_node_group
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Other Vertex"):::input-node
+      N1("Other Vertex"):::input-node
+      N2("Other Vertex"):::input-node
+      N3("Other Vertex"):::input-node
+      N4("Other Vertex"):::input-node
+      N5("Other Vertex"):::input-node
+      N6("Other Vertex"):::input-node
+      N7("Other Vertex"):::input-node
+      N8("Other Vertex"):::input-node
+      N9("Other Vertex"):::input-node
+      N10("Index Switch"):::converter-node
+      N11("Offset Vector"):::input-node
+      N12("Group Output"):::default-node
+      N0 -->|"Other Vertex->0"| N10
+      N1 -->|"Other Vertex->1"| N10
+      N2 -->|"Other Vertex->2"| N10
+      N3 -->|"Other Vertex->3"| N10
+      N4 -->|"Other Vertex->4"| N10
+      N5 -->|"Other Vertex->5"| N10
+      N6 -->|"Other Vertex->6"| N10
+      N7 -->|"Other Vertex->7"| N10
+      N8 -->|"Other Vertex->8"| N10
+      N9 -->|"Other Vertex->9"| N10
+      N10 -->|"Output->Index"| N11
+      N11 -->|"Vector->Vector"| N12
+  ```
+  '''
+# ---
+# name: test_diagram_join_geometry
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Subdivision Surface"):::geometry-node
+      N2("Join Geometry"):::geometry-node
+      N3("Group Output"):::default-node
+      N0 -->|"Geometry->Mesh"| N1
+      N1 -->|"Mesh->Geometry"| N2
+      N2 -->|"Geometry->Geometry"| N3
+      N0 -->|"Geometry->Geometry"| N2
+  ```
+  '''
+# ---
+# name: test_diagram_math_operation
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N2("Math<br/><small>(ADD)</small>"):::converter-node
+      N3("Group Output"):::default-node
+      N0 -->|"Value->Value"| N1
+      N1 -->|"Value->Value"| N2
+      N2 -->|"Value->Result"| N3
+  ```
+  '''
+# ---
+# name: test_diagram_node_label_params
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Set Position<br/><small>+(1,0,0.5)</small>"):::geometry-node
+      N2("Distribute Points on Faces<br/><small>seed:7</small>"):::geometry-node
+      N3("Noise Texture<br/><small>×3</small>"):::texture-node
+      N4("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N1 -->|"Geometry->Geometry"| N4
+  ```
+  '''
+# ---
+# name: test_diagram_other_vertex
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Edge Vertices"):::input-node
+      N2("Edges of Vertex"):::input-node
+      N3("Evaluate at Index"):::converter-node
+      N4("Evaluate at Index"):::converter-node
+      N5("Compare<br/><small>(NOT_EQUAL)</small>"):::converter-node
+      N6("Switch"):::converter-node
+      N7("Group Output"):::default-node
+      N0 -->|"Vertex Index->Vertex Index"| N2
+      N0 -->|"Edge Number->Sort Index"| N2
+      N1 -->|"Vertex Index 1->Value"| N3
+      N2 -->|"Edge Index->Index"| N3
+      N1 -->|"Vertex Index 2->Value"| N4
+      N2 -->|"Edge Index->Index"| N4
+      N3 -->|"Value->A"| N5
+      N0 -->|"Vertex Index->B"| N5
+      N3 -->|"Value->False"| N6
+      N5 -->|"Result->Switch"| N6
+      N6 -->|"Output->Other Vertex"| N7
+      N4 -->|"Value->True"| N6
+  ```
+  '''
+# ---
+# name: test_diagram_reroute_dedup
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Set Position"):::geometry-node
+      N2("Join Geometry"):::geometry-node
+      N3("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N2 -->|"Geometry->Geometry"| N3
+      N1 -->|"Geometry->Geometry"| N2
+  ```
+  '''
+# ---
+# name: test_diagram_reroute_no_input
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Set Position"):::geometry-node
+      N2("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N1 -->|"Geometry->Geometry"| N2
+  ```
+  '''
+# ---
+# name: test_diagram_shared_input
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Transform Geometry"):::geometry-node
+      N2("Transform Geometry"):::geometry-node
+      N3("Join Geometry"):::geometry-node
+      N4("Group Output"):::default-node
+      N0 -->|"Scale->Scale"| N1
+      N0 -->|"Scale->Scale"| N2
+      N0 -->|"Geometry->Geometry"| N1
+      N0 -->|"Geometry->Geometry"| N2
+      N2 -->|"Geometry->Geometry"| N3
+      N1 -->|"Geometry->Geometry"| N3
+      N3 -->|"Geometry->Geometry"| N4
+  ```
+  '''
+# ---
+# name: test_diagram_simple_chain
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Set Position"):::geometry-node
+      N2("Transform Geometry"):::geometry-node
+      N3("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N1 -->|"Geometry->Geometry"| N2
+      N2 -->|"Geometry->Geometry"| N3
+  ```
+  '''
+# ---
