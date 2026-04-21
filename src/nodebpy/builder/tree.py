@@ -595,6 +595,15 @@ class SocketContext:
         SocketContext._direction = None
         SocketContext._active_context = None
 
+    def __len__(self) -> int:
+        return len(
+            list(
+                item
+                for item in self.tree.interface.items_tree
+                if item.in_out == self._direction
+            )
+        )
+
 
 class DirectionalContext(SocketContext):
     """Base class for directional socket contexts"""
