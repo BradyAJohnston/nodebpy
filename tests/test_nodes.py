@@ -1,4 +1,7 @@
 import itertools
+from functools import reduce
+from itertools import product
+from operator import and_
 
 import bpy
 import pytest
@@ -818,8 +821,24 @@ def test_compare_node_data_types():
         assert comp.operation == "NOT_EQUAL"
 
 
-# @g.tree("SomeTreeName")
-# def tree_builder(size: InputVector = None):
-#     cube = g.Cube(size=size)
-#     cube = cube >> g.SetPosition(offset=g.NoiseTexture().o.color * 0.1)
-#     return cube.o.mesh
+def test_decoder_8bit():
+    # this should actually be 8 bits but it takes a bit longer to run through
+    # (~20 seconds) so for testing we can keep it much smaller. It's a nice
+    # clean implementation and good example of the code in action.
+    N_BITS = 4
+    with g.tree("8-Bit Decoder", arrange="simple") as tree:
+        bits = [tree.inputs.boolean(f"Bit {i}") for i in range(N_BITS)]
+        not_bits = [g.BooleanMath.l_not(b) for b in bits]
+
+        for i, combo in enumerate(product((False, True), repeat=N_BITS)):
+            terms = [b if on else nb for b, nb, on in zip(bits, not_bits, combo)]
+            reduce(and_, terms) >> tree.outputs.boolean(f"Out {i}")
+
+    assert len(tree) == 54
+    assert len(tree.inputs) == 4
+    assert len(tree.outputs) == 16
+    assert all(
+        i.links[0].from_node.operation == "AND"
+        for i in tree.nodes["Group Output"].inputs
+        if i.identifier != "__extend__"
+    )
