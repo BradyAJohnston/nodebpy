@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Snapshot tests for Mermaid diagram generation."""
 
+import bpy
 from functools import reduce
 from itertools import product
 from operator import and_
@@ -65,10 +66,68 @@ def test_diagram_custom_node_group(snapshot):
 
 
 def test_diagram_other_vertex(snapshot):
-    with g.tree() as tree:
+    with g.tree():
         other = OtherVertex()
 
     assert snapshot == to_mermaid(other.node.node_tree)
+
+
+def test_diagram_node_label_params(snapshot):
+    """Non-default seed, scalar scale, and offset values appear in node labels."""
+    with TreeBuilder("DiagramLabelParams") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_out = tree.outputs.geometry()
+
+        distribute = g.DistributePointsOnFaces()
+        distribute.node.inputs["Seed"].default_value = 7
+
+        noise = g.NoiseTexture()
+        noise.node.inputs["Scale"].default_value = 3.0
+
+        set_pos = g.SetPosition()
+        set_pos.node.inputs["Offset"].default_value = (1.0, 0.0, 0.5)
+        geo_in >> set_pos >> geo_out
+
+    assert snapshot == to_mermaid(tree)
+
+
+def test_diagram_reroute_no_input(snapshot):
+    """Reroute with no incoming link is skipped without error."""
+    with TreeBuilder("DiagramRerouteNoInput") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_out = tree.outputs.geometry()
+        set_pos = g.SetPosition()
+        geo_in >> set_pos >> geo_out
+
+        nt = tree.tree
+        reroute = nt.nodes.new("NodeReroute")
+        nt.links.new(reroute.outputs[0], set_pos.node.inputs["Position"])
+
+        # TreeBuilder.__exit__ prunes disconnected reroutes, so capture here
+        result = to_mermaid(tree)
+
+    assert snapshot == result
+
+
+def test_diagram_reroute_dedup(snapshot):
+    """Two reroute paths from the same source produce only one edge."""
+    with TreeBuilder("DiagramRerouteDedup") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_out = tree.outputs.geometry()
+        set_pos = g.SetPosition()
+        join = g.JoinGeometry()
+        geo_in >> set_pos
+        join >> geo_out
+
+        nt = tree.tree
+        r1 = nt.nodes.new("NodeReroute")
+        r2 = nt.nodes.new("NodeReroute")
+        nt.links.new(set_pos.node.outputs["Geometry"], r1.inputs[0])
+        nt.links.new(set_pos.node.outputs["Geometry"], r2.inputs[0])
+        nt.links.new(r1.outputs[0], join.node.inputs["Geometry"])
+        nt.links.new(r2.outputs[0], join.node.inputs["Geometry"])
+
+    assert snapshot == to_mermaid(tree)
 
 
 def test_diagram_bit_decoder(snapshot):

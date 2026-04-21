@@ -237,6 +237,20 @@
   ```
   '''
 # ---
+# name: test_diagram_node_label_params
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Set Position<br/><small>+(1,0,0.5)</small>"):::geometry-node
+      N2("Distribute Points on Faces<br/><small>seed:7</small>"):::geometry-node
+      N3("Noise Texture<br/><small>×3</small>"):::texture-node
+      N4("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N1 -->|"Geometry->Geometry"| N4
+  ```
+  '''
+# ---
 # name: test_diagram_other_vertex
   '''
   ```{mermaid}
@@ -261,6 +275,32 @@
       N5 -->|"Result->Switch"| N6
       N6 -->|"Output->Other Vertex"| N7
       N4 -->|"Value->True"| N6
+  ```
+  '''
+# ---
+# name: test_diagram_reroute_dedup
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Set Position"):::geometry-node
+      N2("Join Geometry"):::geometry-node
+      N3("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N2 -->|"Geometry->Geometry"| N3
+      N1 -->|"Geometry->Geometry"| N2
+  ```
+  '''
+# ---
+# name: test_diagram_reroute_no_input
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Set Position"):::geometry-node
+      N2("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N1 -->|"Geometry->Geometry"| N2
   ```
   '''
 # ---

@@ -130,13 +130,7 @@ def to_mermaid(tree) -> str:
             continue
         seen_edges.add(edge_key)
 
-        from_name = from_socket.name if hasattr(from_socket, "name") else ""
-        to_name = link.to_socket.name if hasattr(link.to_socket, "name") else ""
-
-        if from_name and to_name:
-            lines.append(f'    {from_id} -->|"{from_name}->{to_name}"| {to_id}')
-        else:
-            lines.append(f"    {from_id} --> {to_id}")
+        lines.append(f'    {from_id} -->|"{from_socket.name}->{link.to_socket.name}"| {to_id}')
 
     lines.append("```")
 
