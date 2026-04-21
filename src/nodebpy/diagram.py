@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+from bpy.types import Node
+
 _COLOR_CLASS_MAP = {
     "GEOMETRY": "geometry-node",
     "CONVERTER": "converter-node",
@@ -14,17 +16,13 @@ _COLOR_CLASS_MAP = {
 }
 
 
-def _node_css_class(node) -> str:
+def _node_css_class(node: Node) -> str:
     color_tag = getattr(node, "color_tag", "GEOMETRY")
     return _COLOR_CLASS_MAP.get(color_tag, "default-node")
 
 
-def _node_label(node) -> str:
-    if (
-        node.bl_idname == "GeometryNodeGroup"
-        and hasattr(node, "node_tree")
-        and node.node_tree
-    ):
+def _node_label(node: Node) -> str:
+    if hasattr(node, "node_tree") and node.node_tree:
         label = node.node_tree.name.replace('"', "'")
     else:
         label = node.bl_label.replace('"', "'")
@@ -143,20 +141,3 @@ def to_mermaid(tree) -> str:
     lines.append("```")
 
     return "\n".join(lines)
-
-
-def save_diagram(filepath: str, tree) -> None:
-    """Save a Mermaid diagram of the node tree to a markdown file.
-
-    Args:
-        filepath: Path to save the diagram
-        tree: TreeBuilder or Blender node tree
-    """
-    node_tree = tree.tree if hasattr(tree, "tree") else tree
-
-    with open(filepath, "w") as f:
-        f.write(f"# Node Tree: {node_tree.name}\n\n")
-        f.write(
-            f"**{len(node_tree.nodes)} nodes, {len(node_tree.links)} connections**\n\n"
-        )
-        f.write(to_mermaid(tree))

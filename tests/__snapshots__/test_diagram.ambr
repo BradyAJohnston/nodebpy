@@ -176,6 +176,36 @@
   ```
   '''
 # ---
+# name: test_diagram_custom_node_group
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Other Vertex"):::input-node
+      N1("Other Vertex"):::input-node
+      N2("Other Vertex"):::input-node
+      N3("Other Vertex"):::input-node
+      N4("Other Vertex"):::input-node
+      N5("Other Vertex"):::input-node
+      N6("Other Vertex"):::input-node
+      N7("Other Vertex"):::input-node
+      N8("Other Vertex"):::input-node
+      N9("Other Vertex"):::input-node
+      N10("Offset Vector"):::input-node
+      N11("Group Output"):::default-node
+      N0 -->|"Other Vertex->Vertex Index"| N1
+      N1 -->|"Other Vertex->Vertex Index"| N2
+      N2 -->|"Other Vertex->Vertex Index"| N3
+      N3 -->|"Other Vertex->Vertex Index"| N4
+      N4 -->|"Other Vertex->Vertex Index"| N5
+      N5 -->|"Other Vertex->Vertex Index"| N6
+      N6 -->|"Other Vertex->Vertex Index"| N7
+      N7 -->|"Other Vertex->Vertex Index"| N8
+      N8 -->|"Other Vertex->Vertex Index"| N9
+      N9 -->|"Other Vertex->Index"| N10
+      N10 -->|"Vector->Vector"| N11
+  ```
+  '''
+# ---
 # name: test_diagram_join_geometry
   '''
   ```{mermaid}

@@ -8,6 +8,7 @@ from operator import and_
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.diagram import to_mermaid
+from nodebpy.nodes.geometry.groups import OffsetVector, OtherVertex
 
 
 def test_diagram_simple_chain(snapshot):
@@ -50,6 +51,15 @@ def test_diagram_shared_input(snapshot):
         geo_in >> t1
         geo_in >> t2
         g.JoinGeometry(t1, t2) >> tree.outputs.geometry()
+
+    assert snapshot == to_mermaid(tree)
+
+
+def test_diagram_custom_node_group(snapshot):
+    with g.tree() as tree:
+        items = [OtherVertex() for _ in range(10)]
+        final = reduce(lambda a, b: a >> b, items)
+        final >> OffsetVector() >> tree.outputs.vector("Vector")
 
     assert snapshot == to_mermaid(tree)
 
