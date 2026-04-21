@@ -1,4 +1,4 @@
-from . import nodes, screenshot, sockets
+from . import nodes, diagram, sockets
 from .builder import TreeBuilder, NodeGroupBuilder
 from .nodes import compositor, geometry, shader
 
@@ -8,7 +8,7 @@ __all__ = [
     "geometry",
     "shader",
     "sockets",
-    "screenshot",
+    "diagram",
     "TreeBuilder",
     "NodeGroupBuilder",
 ]
