@@ -326,16 +326,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>RandomValue.vector()</code> creates it set to <code>"VECTOR"</code> data type and provides arguments for IDE auto-complete</li>
 </ul></li>
 </ul></li>
-<li>Inputs and outputs from a node are prefixed with <code>i_*</code> and <code>o_</code>:
+<li>Inputs and outputs from a node are prefixed with <code>i.*</code> and <code>o.*</code>:
 <ul>
-<li><code>AccumulateField().o_total</code> returns the output <code>Total</code> socket</li>
-<li><code>AccumulateField().i_value</code> returns the input <code>Value</code> socket</li>
+<li><code>AccumulateField().o.total</code> returns the output <code>Total</code> socket</li>
+<li><code>AccumulateField().i.value</code> returns the input <code>Value</code> socket</li>
 </ul></li>
 <li>If inputs are subject to change depending on enums, provide separate constructor methods that provide related inputs as arguments. There should be no guessing involved and IDEs should provide documentation for what is required:
 <ul>
-<li><code>TransformGeometry.matrix(CombineTrasnsform(translation=(0, 0, 1))</code></li>
-<li><code>TransformGeoemtry.components(translation=(0, 0, 1))</code></li>
-<li><code>TransformGeometry(translation=(0, 0, 1))</code></li>
+<li><code>EvaluateOnDomain.edge.vector()</code></li>
+<li><code>EvaluateOnDomain.face.float()</code></li>
+<li><code>EvalauteOnDomain(domain="SPLINE", data_type="FLOAT4X4")</code></li>
 </ul></li>
 </ul>
 

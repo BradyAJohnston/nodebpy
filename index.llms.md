@@ -102,10 +102,10 @@ Whenever possible, support IDE auto-complete and have useful types. We should kn
 - Stick as closely to Geometry Nodes naming as possible
   - `RandomValue` creates a random value node
     - `RandomValue.vector()` creates it set to `"VECTOR"` data type and provides arguments for IDE auto-complete
-- Inputs and outputs from a node are prefixed with `i_*` and `o_`:
-  - `AccumulateField().o_total` returns the output `Total` socket
-  - `AccumulateField().i_value` returns the input `Value` socket
+- Inputs and outputs from a node are prefixed with `i.*` and `o.*`:
+  - `AccumulateField().o.total` returns the output `Total` socket
+  - `AccumulateField().i.value` returns the input `Value` socket
 - If inputs are subject to change depending on enums, provide separate constructor methods that provide related inputs as arguments. There should be no guessing involved and IDEs should provide documentation for what is required:
-  - `TransformGeometry.matrix(CombineTrasnsform(translation=(0, 0, 1))`
-  - `TransformGeoemtry.components(translation=(0, 0, 1))`
-  - `TransformGeometry(translation=(0, 0, 1))`
+  - `EvaluateOnDomain.edge.vector()`
+  - `EvaluateOnDomain.face.float()`
+  - `EvalauteOnDomain(domain="SPLINE", data_type="FLOAT4X4")`
