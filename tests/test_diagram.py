@@ -58,10 +58,17 @@ def test_diagram_shared_input(snapshot):
 def test_diagram_custom_node_group(snapshot):
     with g.tree() as tree:
         items = [OtherVertex() for _ in range(10)]
-        final = reduce(lambda a, b: a >> b, items)
-        final >> OffsetVector() >> tree.outputs.vector("Vector")
+        switch = g.IndexSwitch.integer(*items)
+        switch >> OffsetVector() >> tree.outputs.vector("Vector")
 
     assert snapshot == to_mermaid(tree)
+
+
+def test_diagram_other_vertex(snapshot):
+    with g.tree() as tree:
+        other = OtherVertex()
+
+    assert snapshot == to_mermaid(other.node.node_tree)
 
 
 def test_diagram_bit_decoder(snapshot):

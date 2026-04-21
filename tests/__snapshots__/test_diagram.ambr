@@ -190,19 +190,21 @@
       N7("Other Vertex"):::input-node
       N8("Other Vertex"):::input-node
       N9("Other Vertex"):::input-node
-      N10("Offset Vector"):::input-node
-      N11("Group Output"):::default-node
-      N0 -->|"Other Vertex->Vertex Index"| N1
-      N1 -->|"Other Vertex->Vertex Index"| N2
-      N2 -->|"Other Vertex->Vertex Index"| N3
-      N3 -->|"Other Vertex->Vertex Index"| N4
-      N4 -->|"Other Vertex->Vertex Index"| N5
-      N5 -->|"Other Vertex->Vertex Index"| N6
-      N6 -->|"Other Vertex->Vertex Index"| N7
-      N7 -->|"Other Vertex->Vertex Index"| N8
-      N8 -->|"Other Vertex->Vertex Index"| N9
-      N9 -->|"Other Vertex->Index"| N10
-      N10 -->|"Vector->Vector"| N11
+      N10("Index Switch"):::converter-node
+      N11("Offset Vector"):::input-node
+      N12("Group Output"):::default-node
+      N0 -->|"Other Vertex->0"| N10
+      N1 -->|"Other Vertex->1"| N10
+      N2 -->|"Other Vertex->2"| N10
+      N3 -->|"Other Vertex->3"| N10
+      N4 -->|"Other Vertex->4"| N10
+      N5 -->|"Other Vertex->5"| N10
+      N6 -->|"Other Vertex->6"| N10
+      N7 -->|"Other Vertex->7"| N10
+      N8 -->|"Other Vertex->8"| N10
+      N9 -->|"Other Vertex->9"| N10
+      N10 -->|"Output->Index"| N11
+      N11 -->|"Vector->Vector"| N12
   ```
   '''
 # ---
@@ -232,6 +234,33 @@
       N0 -->|"Value->Value"| N1
       N1 -->|"Value->Value"| N2
       N2 -->|"Value->Result"| N3
+  ```
+  '''
+# ---
+# name: test_diagram_other_vertex
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Edge Vertices"):::input-node
+      N2("Edges of Vertex"):::input-node
+      N3("Evaluate at Index"):::converter-node
+      N4("Evaluate at Index"):::converter-node
+      N5("Compare<br/><small>(NOT_EQUAL)</small>"):::converter-node
+      N6("Switch"):::converter-node
+      N7("Group Output"):::default-node
+      N0 -->|"Vertex Index->Vertex Index"| N2
+      N0 -->|"Edge Number->Sort Index"| N2
+      N1 -->|"Vertex Index 1->Value"| N3
+      N2 -->|"Edge Index->Index"| N3
+      N1 -->|"Vertex Index 2->Value"| N4
+      N2 -->|"Edge Index->Index"| N4
+      N3 -->|"Value->A"| N5
+      N0 -->|"Vertex Index->B"| N5
+      N3 -->|"Value->False"| N6
+      N5 -->|"Result->Switch"| N6
+      N6 -->|"Output->Other Vertex"| N7
+      N4 -->|"Value->True"| N6
   ```
   '''
 # ---
