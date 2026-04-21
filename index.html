@@ -105,9 +105,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -187,12 +184,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-design-idea" id="toc-the-design-idea" class="nav-link active" data-scroll-target="#the-design-idea">The Design Idea</a>
+  <li><a href="#creating-nodes-with-code" id="toc-creating-nodes-with-code" class="nav-link active" data-scroll-target="#creating-nodes-with-code">Creating Nodes With Code</a>
   <ul class="collapse">
-  <li><a href="#chain-nodes-with" id="toc-chain-nodes-with" class="nav-link" data-scroll-target="#chain-nodes-with">Chain Nodes with <code>&gt;&gt;</code></a></li>
+  <li><a href="#nodebpy-and-the-operator" id="toc-nodebpy-and-the-operator" class="nav-link" data-scroll-target="#nodebpy-and-the-operator"><code>nodebpy</code> and the <code>&gt;&gt;</code> operator</a></li>
+  <li><a href="#contexts" id="toc-contexts" class="nav-link" data-scroll-target="#contexts">Contexts</a></li>
   </ul></li>
-  <li><a href="#example-node-tree" id="toc-example-node-tree" class="nav-link" data-scroll-target="#example-node-tree">Example Node Tree</a></li>
-  <li><a href="#design-considerations" id="toc-design-considerations" class="nav-link" data-scroll-target="#design-considerations">Design Considerations</a></li>
+  <li><a href="#nodes" id="toc-nodes" class="nav-link" data-scroll-target="#nodes">Nodes</a></li>
+  <li><a href="#design-considerations" id="toc-design-considerations" class="nav-link" data-scroll-target="#design-considerations">Design Considerations</a>
+  <ul class="collapse">
+  <li><a href="#building" id="toc-building" class="nav-link" data-scroll-target="#building">Building</a></li>
+  <li><a href="#other-projects" id="toc-other-projects" class="nav-link" data-scroll-target="#other-projects">Other Projects</a>
+  <ul class="collapse">
+  <li><a href="#storing-node-trees-as-code" id="toc-storing-node-trees-as-code" class="nav-link" data-scroll-target="#storing-node-trees-as-code">Storing node trees as code:</a></li>
+  <li><a href="#authoring-node-trees-with-code" id="toc-authoring-node-trees-with-code" class="nav-link" data-scroll-target="#authoring-node-trees-with-code">Authoring node trees with code:</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -219,127 +225,129 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><a href="https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml"><img src="https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg" class="img-fluid" alt="Run Tests"></a> <a href="https://codecov.io/gh/BradyAJohnston/nodebpy"><img src="https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED" class="img-fluid"></a></p>
-<p>A package to help build node trees in blender more elegantly with python code.</p>
-<section id="the-design-idea" class="level2">
-<h2 class="anchored" data-anchor-id="the-design-idea">The Design Idea</h2>
-<p>Other projects have attempted similar but none quite handled the API how I felt it should be done. Notable existing projects are <a href="https://github.com/carson-katri/geometry-script">geometry-script</a>, <a href="https://github.com/al1brn/geonodes">geonodes</a>, <a href="https://github.com/BrendanParmer/NodeToPython">NodeToPython</a>.</p>
-<p>Other projects implement chaining of nodes mostly as dot methos of nodes to chain them (<code>InstanceOnPoints().set_position()</code>). This has the potential to crowd the API for individual nodes and easy chaining is instead approached via overriding the <code>&gt;&gt;</code> operator.</p>
-<section id="chain-nodes-with" class="level3">
-<h3 class="anchored" data-anchor-id="chain-nodes-with">Chain Nodes with <code>&gt;&gt;</code></h3>
-<p>By default the operator attempts to link the first output of the previous node with the first input of the next. You can override this behaviour by being explicit with the socket you are passing out (<code>AccumulateField().o_total</code>) or using the <code>...</code> for the inputs into the next node. The dots can appear at multiple locations and each input will be linked to the previous node via the inferred or specified socket.</p>
-</section>
-</section>
-<section id="example-node-tree" class="level1">
-<h1>Example Node Tree</h1>
+<p>A package to build node trees in blender more elegantly with python code. Geometry Nodes, Shader Nodes and Compositor nodes are all fully supported.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><video src="images/example.mp4" class="img-fluid" controls=""><a href="images/example.mp4">Video</a></video></p>
+<figcaption>A screen-recording of nodebpy in action. Live-editing geometry, shader and compostior node trees while each updates in the Blender GUI</figcaption>
+</figure>
+</div>
+<section id="creating-nodes-with-code" class="level2">
+<h2 class="anchored" data-anchor-id="creating-nodes-with-code">Creating Nodes With Code</h2>
+<blockquote class="blockquote">
+<p>A text-based version of nodes should bring the convenience of writing code with IDE auto-completion, type hinting, with overall compactness and readability, while staying as close as possible to what building a node tree via the GUI feels like.</p>
+</blockquote>
+<div id="a0e5b903" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"AnotherTree"</span>) <span class="im">as</span> tree:</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    count <span class="op">=</span> tree.inputs.integer(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    instances <span class="op">=</span> tree.outputs.geometry(<span class="st">"Instances"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    rotation <span class="op">=</span> (</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        g.RandomValue.vector(<span class="bu">min</span><span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>), seed<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.AlignRotationToVector()</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.RotateRotation(</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>            rotate_by<span class="op">=</span>g.AxisAngleToRotation(angle<span class="op">=</span><span class="fl">0.3</span>), rotation_space<span class="op">=</span><span class="st">"LOCAL"</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        count</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.Points(position<span class="op">=</span>g.RandomValue.vector(<span class="bu">min</span><span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>)))</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(instance<span class="op">=</span>g.Cube(), rotation<span class="op">=</span>rotation)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            position<span class="op">=</span>g.Position() <span class="op">*</span> <span class="fl">2.0</span> <span class="op">+</span> (<span class="dv">0</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>            offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.1</span>),</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.RealizeInstances()</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(g.Cube(), instance<span class="op">=</span>...)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> instances</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Group Input"):::default-node
-    N1("Random Value&lt;br/&gt;&lt;small&gt;(-1,-1,-1) seed:2&lt;/small&gt;"):::converter-node
-    N2("Random Value&lt;br/&gt;&lt;small&gt;(-1,-1,-1)&lt;/small&gt;"):::converter-node
-    N3("Align Rotation to Vector"):::converter-node
-    N4("Axis Angle to Rotation&lt;br/&gt;&lt;small&gt;(0,0,1)&lt;/small&gt;"):::converter-node
-    N5("Position"):::input-node
-    N6("Points"):::geometry-node
-    N7("Cube"):::geometry-node
-    N8("Rotate Rotation"):::converter-node
-    N9("Vector Math&lt;br/&gt;&lt;small&gt;(SCALE)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;×2&lt;/small&gt;"):::vector-node
-    N10("Instance on Points"):::geometry-node
-    N11("Vector Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;&lt;br/&gt;&lt;small&gt;(0,0.2,0.3)&lt;/small&gt;"):::vector-node
-    N12("Set Position&lt;br/&gt;&lt;small&gt;+(0,0,0.1)&lt;/small&gt;"):::geometry-node
-    N13("Cube"):::geometry-node
-    N14("Realize Instances"):::geometry-node
-    N15("Instance on Points"):::geometry-node
-    N16("Group Output"):::default-node
-    N1 --&gt;|"Value-&gt;Vector"| N3
-    N4 --&gt;|"Rotation-&gt;Rotate By"| N8
-    N3 --&gt;|"Rotation-&gt;Rotation"| N8
-    N2 --&gt;|"Value-&gt;Position"| N6
-    N0 --&gt;|"Count-&gt;Count"| N6
-    N7 --&gt;|"Mesh-&gt;Instance"| N10
-    N8 --&gt;|"Rotation-&gt;Rotation"| N10
-    N6 --&gt;|"Points-&gt;Points"| N10
-    N5 --&gt;|"Position-&gt;Vector"| N9
-    N9 --&gt;|"Vector-&gt;Vector"| N11
-    N11 --&gt;|"Vector-&gt;Position"| N12
-    N10 --&gt;|"Instances-&gt;Geometry"| N12
-    N12 --&gt;|"Geometry-&gt;Geometry"| N14
-    N13 --&gt;|"Mesh-&gt;Points"| N15
-    N14 --&gt;|"Geometry-&gt;Instance"| N15
-    N15 --&gt;|"Instances-&gt;Instances"| N16
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"AnotherTree"</span>, collapse<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> tree:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    rotation <span class="op">=</span> (</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>, seed<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.AlignRotationToVector()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.RotateRotation(rotate_by<span class="op">=</span>g.AxisAngleToRotation(angle<span class="op">=</span><span class="fl">0.3</span>))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        tree.inputs.integer(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.Points(position<span class="op">=</span>g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(instance<span class="op">=</span>g.Cube(), rotation<span class="op">=</span>rotation)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.SetPosition(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            position<span class="op">=</span>g.Position() <span class="op">*</span> <span class="fl">2.0</span> <span class="op">+</span> (<span class="dv">0</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>            offset<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.1</span>),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.RealizeInstances()</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(g.Cube(), instance<span class="op">=</span>...)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Instances"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><img src="images/paste-1.png" class="img-fluid"></p>
+<p>Nodes are created by instantiating their classes. The node tree they are added to is determined by the context the code is executed in (while inside <code>with g.tree():</code>). The interface for the node tree is created with <code>tree.inputs</code> and <code>tree.inputs</code>, adding the sockets and returning the input or output socket for linking with other nodes.</p>
+<p>Nodes are linked by overloading the <code>&gt;&gt;</code> operator, to link from the previous node on the left to the input on the right. Suitable socket pairs are automatically selected or explicitly supplied.</p>
+<p>The layout / arrangement of the node tree is not important to Blender’s evaluation of it - but an automatic layout algorithm is potentially applied upon exiting the node tree context.</p>
+<section id="nodebpy-and-the-operator" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy-and-the-operator"><code>nodebpy</code> and the <code>&gt;&gt;</code> operator</h3>
+<p>In <code>nodebpy</code> we use the <code>&gt;&gt;</code> operator to link from one node or socket into another. This should feel and behave much like the <kbd>Alt</kbd> + <kbd>Right Click</kbd> drag between nodes in <a href="https://docs.blender.org/manual/en/latest/addons/node/node_wrangler.html">Node Wrangler</a>. It will use some smart logic to match the most compatible sockets between the nodes, but if you ever want to be explicit you do so. The input and output sockets of a node are accessible as properties via the <code>i.*</code> and <code>o.*</code> prefixes, or you can use the <code>...</code> placeholder to specify the particular input to be user, or pass in the previous node as a named argument.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vector output will be linked into the first vector input (position)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>g.Vector() <span class="op">&gt;&gt;</span> g.SetPosition()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># vector output will be linked into the offset input</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>g.Vector() <span class="op">&gt;&gt;</span> g.SetPosition(offset<span class="op">=</span>...)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>g.SetPosition(offset<span class="op">=</span>g.Vector())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>&gt;&gt;</code> operator will always look for the <em>most</em> compatible sockets first (matching data types) before looking for other compatible but not identical socket data types to link. If a compatible match can’t be found an error <em>will</em> be thrown.</p>
+</section>
+<section id="contexts" class="level3">
+<h3 class="anchored" data-anchor-id="contexts">Contexts</h3>
+<p>What node tree or node tree interface we are currently editing is determined based on contexts. Instantiating a node class outside of a tree context will throw an error. The easiest way to enter and exit a tree context is to use the <code>with</code> statement.</p>
+<p>Each time you instantiate a node class, a new node will be created and added to the current tree. If these nodes are given as arguments to other nodes or used with the <code>&gt;&gt;</code> operator, they will be automatically linked to the appropriate sockets.</p>
+</section>
+</section>
+<section id="nodes" class="level2">
+<h2 class="anchored" data-anchor-id="nodes">Nodes</h2>
+<p>Documentation for all of the nodes can be found in the <a href="https://bradyajohnston.github.io/nodebpy/reference/">API Reference</a>. This is mostly built automatically from the existing Blender node classes.</p>
+<p>Every node has all of it’s input sockets and enum options exposed as arguments to the class constructor. Input sockets are prefixed with <code>.i.*</code> and output sockets are prefixed with <code>.o.*</code>. Properties that aren’t exposed as sockets are available as class properties. Many properties are also available as class methods for convenience when constructing.</p>
+<p>The basic math operators also automatically add relevant nodes with their operations and values set.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># operation is exposed as a property</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>math <span class="op">=</span> g.Math(<span class="fl">1.0</span>, <span class="fl">2.0</span>, operation<span class="op">=</span><span class="st">'ADD'</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>math.operation <span class="op">=</span> <span class="st">"SUBTRACT"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># operation can be chose as a class method</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>math <span class="op">=</span> g.Math.subtract(<span class="fl">1.0</span>, <span class="fl">2.0</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>math <span class="op">=</span> g.Value(<span class="fl">1.0</span>) <span class="op">-</span> <span class="fl">2.0</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>math <span class="op">=</span> g.Math.add(<span class="fl">1.0</span>, <span class="fl">2.0</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>math <span class="op">=</span> g.Value(<span class="fl">1.0</span>) <span class="op">+</span> <span class="fl">2.0</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># the 3.0 + 2.0 is evaluated as regular python code first,</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># so the result with be a Math.add(g.Value(1.0), 5.0)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>math <span class="op">=</span> g.Value(<span class="fl">1.0</span>) <span class="fl">3.0</span> <span class="op">+</span> <span class="fl">2.0</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># these are equivalent, the g.Math.multiply is automatically added</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>g.Value(<span class="fl">1.0</span>) <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>g.Math.multiply(g.Value(<span class="fl">1.0</span>), <span class="fl">2.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="design-considerations" class="level1">
 <h1>Design Considerations</h1>
-<p>Whenever possible, support IDE auto-complete and have useful types. We should know as much ahead of time as possible if our network will actually build.</p>
+<p>The top priority of <code>nodebpy</code> has been type hinting and IDE auto-complete. Typical tooling that supports autoring regular python code should also support the authoring of node trees. Much like <a href="https://github.com/BradyAJohnston/databpy"><code>databpy</code></a>, this started as an internal tool used inside of <a href="https://github.com/BradyAJohnston/molecularnodes"><code>molecularnodes</code></a> but has since been broken out into it’s own separate project. This projects is robustly typed and tested, with the intent that it can be used internally for multiple other add-ons and projects.</p>
 <ul>
-<li>Stick as closely to Geometry Nodes naming as possible
+<li>Node classes are named after nodes ‘Random Value’ -&gt; <code>RandomValue()</code></li>
+<li>Node ‘subtypes’ and methods should be accessible via dot (<code>.</code>) for easier IDE auto-complete and authoring:
 <ul>
-<li><code>RandomValue</code> creates a random value node
-<ul>
-<li><code>RandomValue.vector()</code> creates it set to <code>"VECTOR"</code> data type and provides arguments for IDE auto-complete</li>
+<li><code>RandomValue(data_type="FLOAT_VECTOR")</code> -&gt; <code>RandomValue.vector()</code></li>
 </ul></li>
-</ul></li>
+<li>Node properties are available on the top level, with inputs and outputs available behind <code>.i.*</code> and <code>.o.*</code> accessors</li>
 <li>Inputs and outputs from a node are prefixed with <code>i.*</code> and <code>o.*</code>:
 <ul>
 <li><code>AccumulateField().o.total</code> returns the output <code>Total</code> socket</li>
 <li><code>AccumulateField().i.value</code> returns the input <code>Value</code> socket</li>
 </ul></li>
-<li>If inputs are subject to change depending on enums, provide separate constructor methods that provide related inputs as arguments. There should be no guessing involved and IDEs should provide documentation for what is required:
+</ul>
+<section id="building" class="level2">
+<h2 class="anchored" data-anchor-id="building">Building</h2>
+<p>Most of the code for classes are generated automatically with the <code>generate.py</code> script. Some nodes are manually specified in the <code>src/nodebpy/nodes/geometry/manual.py</code> if they require special handling.</p>
+<p>Run the build &amp; format script as such:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run generate.py <span class="kw">&amp;&amp;</span> <span class="ex">uvx</span> ruff format <span class="kw">&amp;&amp;</span> <span class="ex">uvx</span> ruff check <span class="at">--fix</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="other-projects" class="level2">
+<h2 class="anchored" data-anchor-id="other-projects">Other Projects</h2>
+<p>There are several other notable projects which have also attempted interfacing with node trees via code. They mostly fit into two categories of either storing &amp; retrieving node trees via code (<code>.json</code> or the <code>bpy</code> API), or authoring of node trees with custom API and syntax. This project mostly fits in to the latter category.</p>
+<section id="storing-node-trees-as-code" class="level3">
+<h3 class="anchored" data-anchor-id="storing-node-trees-as-code">Storing node trees as code:</h3>
+<p>Converting node trees to the python API calls or <code>.json</code> is great to have a robust storage method, but this approach falls down in human authorability / readability. These projects are great for storage but less useful when wanting to write / generate node trees froms scratch.</p>
 <ul>
-<li><code>EvaluateOnDomain.edge.vector()</code></li>
-<li><code>EvaluateOnDomain.face.float()</code></li>
-<li><code>EvalauteOnDomain(domain="SPLINE", data_type="FLOAT4X4")</code></li>
-</ul></li>
+<li><a href="https://github.com/BrendanParmer/NodeToPython">NodeToPython</a></li>
+<li><a href="https://github.com/Algebraic-UG/tree_clipper">TreeClipper</a> (used by this project for running tests &amp; snapshots)</li>
+</ul>
+</section>
+<section id="authoring-node-trees-with-code" class="level3">
+<h3 class="anchored" data-anchor-id="authoring-node-trees-with-code">Authoring node trees with code:</h3>
+<p>Two previous projects have made similar approaches to authoring node trees. <code>geometry-script</code> also auto-generated most of it’s type hinting, code and docs. It uses the approach of method chaining with the <code>.</code> operator, but obfuscates some of the non-linear way of building node trees.</p>
+<p>The other project <code>geonodes</code> uses a similar context system for creating and authoring node trees, but doesn’t use the same method of exposing each individual node as it’s own class that <code>nodebpy</code> does.</p>
+<p>I personally found both of their APIs to <em>not quite</em> fit how I wanted to work, leading to the creation of <code>nodebpy</code>.</p>
+<ul>
+<li><a href="https://github.com/carson-katri/geometry-script">geometry-script</a>,</li>
+<li><a href="https://github.com/al1brn/geonodes">geonodes</a></li>
 </ul>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
