@@ -301,7 +301,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.nodes.geometry.manual.Compare at 0x13fc926d0>
+>     <nodebpy.nodes.geometry.manual.Compare at 0x14ba9c190>
 >
 > ### Comparing Python Objects
 >

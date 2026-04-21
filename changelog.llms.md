@@ -5,6 +5,7 @@
 ### Enhancements
 
 - Added changelog to the documentation to better track and explain changes in the project.
+- Support `len(tree.inputs)` and `len(tree.outputs)` to get the number of inputs and outputs in the tree. ([\#43](https://github.com/BradyAJohnston/nodebpy/pull/43))
 
 ## v0.10.1 — 2026-04-20
 
