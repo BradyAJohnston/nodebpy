@@ -237,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>A text-based version of nodes should bring the convenience of writing code with IDE auto-completion, type hinting, with overall compactness and readability, while staying as close as possible to what building a node tree via the GUI feels like.</p>
 </blockquote>
-<div id="a0e5b903" class="cell" data-execution_count="1">
+<div id="29732347" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"AnotherTree"</span>, collapse<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> tree:</span>
@@ -339,7 +339,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="authoring-node-trees-with-code">Authoring node trees with code:</h3>
 <p>Two previous projects have made similar approaches to authoring node trees. <code>geometry-script</code> also auto-generated most of it’s type hinting, code and docs. It uses the approach of method chaining with the <code>.</code> operator, but obfuscates some of the non-linear way of building node trees.</p>
 <p>The other project <code>geonodes</code> uses a similar context system for creating and authoring node trees, but doesn’t use the same method of exposing each individual node as it’s own class that <code>nodebpy</code> does.</p>
-<p>I personally found both of their APIs to <em>not quite</em> fit how I wanted to work, leading to the creation of <code>nodebpy</code>.</p>
+<p>I personally found both of their APIs to <em>not quite</em> fit how I wanted to work, leading to the creation of <code>nodebpy</code>. In comparison, this project is also the only one that is also distributed on <code>PyPi</code> and insallable via <code>pip</code> for easier use in other projects.</p>
 <ul>
 <li><a href="https://github.com/carson-katri/geometry-script">geometry-script</a>,</li>
 <li><a href="https://github.com/al1brn/geonodes">geonodes</a></li>
