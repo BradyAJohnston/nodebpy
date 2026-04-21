@@ -81,15 +81,6 @@ tree
 ``` mermaid
 graph LR
     N0("Jitter"):::geometry-node
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 Now use it like any built-in node – apply it to an ico sphere:
@@ -109,15 +100,6 @@ graph LR
     N2("Group Output"):::default-node
     N0 -->|"Mesh->Geometry"| N1
     N1 -->|"Geometry->Geometry"| N2
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Radial Array
@@ -175,15 +157,6 @@ tree
 ``` mermaid
 graph LR
     N0("Radial Array"):::geometry-node
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ``` python
@@ -208,15 +181,6 @@ graph LR
     N0 -->|"Mesh->Geometry"| N1
     N1 -->|"Geometry->Geometry"| N2
     N2 -->|"Geometry->Geometry"| N3
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Composing Groups: Jittered Flower
@@ -270,15 +234,6 @@ graph LR
     N7 -->|"Geometry->Geometry"| N8
     N8 -->|"Geometry->Geometry"| N9
     N0 -->|"Jitter->Amount"| N4
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 Each custom group appears as a single, named node in the tree – keeping the graph readable even as the logic grows.

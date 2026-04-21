@@ -47,15 +47,6 @@ graph LR
     N8 -->|"Vector->Offset"| N9
     N7 -->|"Points->Geometry"| N9
     N9 -->|"Geometry->Geometry"| N10
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 All operators automatically select the right node type. With integers you get `IntegerMath`, with vectors you get `VectorMath`, and scalars are broadcast when mixed with vectors:
@@ -97,15 +88,6 @@ graph LR
     N3 -->|"Vector->Offset"| N4
     N1 -->|"Mesh->Geometry"| N4
     N4 -->|"Geometry->Geometry"| N8
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ### Negation and Absolute Value
@@ -136,15 +118,6 @@ graph LR
     N3 -->|"Vector->Offset"| N4
     N2 -->|"Mesh->Geometry"| N4
     N4 -->|"Geometry->Geometry"| N5
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Comparison Operators
@@ -185,15 +158,6 @@ graph LR
     N4 -->|"Result->Selection"| N5
     N2 -->|"Mesh->Geometry"| N5
     N5 -->|"Geometry->Geometry"| N6
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Comparison into a Switch
@@ -226,15 +190,6 @@ graph LR
     N4 -->|"Result->Switch"| N7
     N5 -->|"Value->False"| N7
     N6 -->|"Value->True"| N7
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Boolean Operators
@@ -280,15 +235,6 @@ graph LR
     N6 -->|"Boolean->Selection"| N7
     N5 -->|"Points->Geometry"| N7
     N7 -->|"Geometry->Geometry"| N8
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 The `~` operator inverts a boolean:
@@ -325,15 +271,6 @@ graph LR
     N5 -->|"Boolean->Selection"| N6
     N4 -->|"Points->Geometry"| N6
     N6 -->|"Geometry->Geometry"| N7
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Matrix Multiplication
@@ -365,15 +302,6 @@ graph LR
     N3 -->|"Matrix->Transform"| N5
     N5 -->|"Vector->Position"| N6
     N4 -->|"Mesh->Geometry"| N6
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Putting It All Together
@@ -420,15 +348,6 @@ graph LR
     N6 -->|"Result->Selection"| N7
     N5 -->|"Mesh->Geometry"| N7
     N7 -->|"Geometry->Geometry"| N8
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ### Layered Selection
@@ -486,15 +405,6 @@ graph LR
     N11 -->|"Boolean->Selection"| N13
     N10 -->|"Points->Geometry"| N13
     N13 -->|"Geometry->Geometry"| N15
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ### Spiral Point Distribution
@@ -555,15 +465,6 @@ graph LR
     N10 -->|"Points->Geometry"| N12
     N12 -->|"Geometry->Geometry"| N13
     N1 -->|"Z->Z"| N11
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Operator Reference

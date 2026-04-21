@@ -22,15 +22,6 @@ graph LR
     N0("Set Position"):::geometry-node
     N1("Transform Geometry"):::geometry-node
     N0 -->|"Geometry->Geometry"| N1
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 These nodes can be saved as variables for re-use later in the node tree as well. After instantiating a class you can specify the input and output sockets using the `i_*` and `o_*` properties on the class.
@@ -66,15 +57,6 @@ graph LR
     N0 -->|"Position->Vector"| N1
     N1 -->|"Vector->Position"| N3
     N2 -->|"Vector->Offset"| N3
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Node Input Sockets
@@ -102,15 +84,6 @@ graph LR
     N0 -->|"Geometry_1->Geometry"| N1
     N0 -->|"Geometry_0->Geometry"| N1
     N1 -->|"Geometry->The Output Socket"| N2
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ``` python
@@ -133,15 +106,6 @@ graph LR
     N1 -->|"Value->Position"| N2
     N0 -->|"Count->Count"| N2
     N2 -->|"Points->Geometry"| N3
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ``` python
@@ -173,15 +137,6 @@ graph LR
     N4 -->|"Vector->Position"| N5
     N0 -->|"Count->Count"| N5
     N5 -->|"Points->Geometry"| N6
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Zones
@@ -221,15 +176,6 @@ graph LR
     N0 -->|"Iteration->Count"| N5
     N4 -->|"Value->Position"| N5
     N5 -->|"Points->Geometry"| N2
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ``` python
@@ -262,13 +208,4 @@ graph LR
     N4 -->|"Value->Value"| N3
     N2 -->|"Vector->Vector"| N5
     N5 -->|"Vector->Vector"| N3
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```

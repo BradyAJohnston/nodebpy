@@ -48,15 +48,6 @@ graph LR
     N4 -->|"Value->Offset"| N5
     N0 -->|"Position->Vector"| N3
     N3 -->|"Vector->Position"| N5
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ### Outputs
@@ -89,15 +80,6 @@ graph LR
     N3 -->|"Value->Offset"| N4
     N2 -->|"Mesh->Geometry"| N4
     N4 -->|"Geometry->Geometry"| N5
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 #### Vector Outputs
@@ -123,15 +105,6 @@ graph LR
     N1 -->|"Mesh->Geometry"| N3
     N2 -->|"X->Position"| N3
     N2 -->|"Y->Offset"| N3
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 #### Other Accessors
@@ -163,15 +136,6 @@ graph LR
     N1 -->|"Translation->Vector"| N2
     N1 -->|"Rotation->Rotation"| N3
     N1 -->|"Scale->Vector"| N4
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ##### Color
@@ -201,15 +165,6 @@ graph LR
     N1 -->|"Green->Value"| N3
     N1 -->|"Blue->Value"| N4
     N1 -->|"Alpha->Value"| N5
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 ```
 
 ## Enum Options
@@ -301,7 +256,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.nodes.geometry.manual.Compare at 0x10e8b3010>
+>     <nodebpy.nodes.geometry.manual.Compare at 0x125b0ee50>
 >
 > ### Comparing Python Objects
 >

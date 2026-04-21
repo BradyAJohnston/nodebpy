@@ -4,8 +4,15 @@
 
 ### Enhancements
 
+- Refactor the mermaid diagram generation. Change `screenshot.py` -\> `diagram.py` and added test coverage
+
+## v0.10.2 - 2026-04-21
+
+### Enhancements
+
 - Added changelog to the documentation to better track and explain changes in the project.
 - Support `len(tree.inputs)` and `len(tree.outputs)` to get the number of inputs and outputs in the tree. ([\#43](https://github.com/BradyAJohnston/nodebpy/pull/43))
+- Added the GPLv3 license to the project.
 
 ## v0.10.1 — 2026-04-20
 

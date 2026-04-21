@@ -79,7 +79,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-6f67c9118e82a697b029b25185627e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-da754bb905dfff91d967e43b5e6004aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -274,7 +274,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="arithmetic-operators" class="level2">
 <h2 class="anchored" data-anchor-id="arithmetic-operators">Arithmetic Operators</h2>
 <p>The standard arithmetic operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> are joined by <code>**</code> (power), <code>%</code> (modulo), <code>//</code> (floor division), unary <code>-</code> (negate), and <code>abs()</code>.</p>
-<div id="5cb80698" class="cell" data-execution_count="2">
+<div id="60c0e4b5" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"ArithmeticDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -318,15 +318,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N8 --&gt;|"Vector-&gt;Offset"| N9
     N7 --&gt;|"Points-&gt;Geometry"| N9
     N9 --&gt;|"Geometry-&gt;Geometry"| N10
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -336,7 +327,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>All operators automatically select the right node type. With integers you get <code>IntegerMath</code>, with vectors you get <code>VectorMath</code>, and scalars are broadcast when mixed with vectors:</p>
-<div id="b51fbeaa" class="cell" data-execution_count="3">
+<div id="8124f9be" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"TypeDispatch"</span>) <span class="im">as</span> tree:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -376,15 +367,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N3 --&gt;|"Vector-&gt;Offset"| N4
     N1 --&gt;|"Mesh-&gt;Geometry"| N4
     N4 --&gt;|"Geometry-&gt;Geometry"| N8
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -396,7 +378,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="negation-and-absolute-value" class="level3">
 <h3 class="anchored" data-anchor-id="negation-and-absolute-value">Negation and Absolute Value</h3>
 <p>The unary <code>-</code> and <code>abs()</code> operators work with all numeric types:</p>
-<div id="d7ece433" class="cell" data-results="false" data-execution_count="4">
+<div id="98c0b298" class="cell" data-results="false" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"UnaryOps"</span>) <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        g.Cube()</span>
@@ -423,15 +405,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N3 --&gt;|"Vector-&gt;Offset"| N4
     N2 --&gt;|"Mesh-&gt;Geometry"| N4
     N4 --&gt;|"Geometry-&gt;Geometry"| N5
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -445,7 +418,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="comparison-operators" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-operators">Comparison Operators</h2>
 <p>The <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> operators create <code>Compare</code> nodes that output boolean sockets. The correct data type (float, integer, or vector) is inferred from the left-hand operand.</p>
-<div id="38528b42" class="cell" data-execution_count="5">
+<div id="57f97b53" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"CompareDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -482,15 +455,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N4 --&gt;|"Result-&gt;Selection"| N5
     N2 --&gt;|"Mesh-&gt;Geometry"| N5
     N5 --&gt;|"Geometry-&gt;Geometry"| N6
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -503,7 +467,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="comparison-into-a-switch" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-into-a-switch">Comparison into a Switch</h2>
 <p>The result of a comparison is a <code>Compare</code> node, which can be used to directly chain into a <code>Switch</code> node when in a Geometry node tree. This saves us some time having to directly use <code>g.Switch.float(pos.z &gt; v, ...)</code></p>
-<div id="1152e466" class="cell" data-execution_count="6">
+<div id="ad4b0b2f" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"SwitchDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    v <span class="op">=</span> g.Value(<span class="fl">5.0</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position().o.position</span>
@@ -532,15 +496,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N4 --&gt;|"Result-&gt;Switch"| N7
     N5 --&gt;|"Value-&gt;False"| N7
     N6 --&gt;|"Value-&gt;True"| N7
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -553,7 +508,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="boolean-operators" class="level2">
 <h2 class="anchored" data-anchor-id="boolean-operators">Boolean Operators</h2>
 <p>Python’s bitwise operators <code>&amp;</code> (and), <code>|</code> (or), <code>^</code> (xor), and <code>~</code> (not) map to <code>BooleanMath</code> nodes. These are especially useful for combining comparison results into complex selections.</p>
-<div id="bd443ee8" class="cell" data-execution_count="7">
+<div id="af756d42" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"BooleanDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -595,15 +550,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N6 --&gt;|"Boolean-&gt;Selection"| N7
     N5 --&gt;|"Points-&gt;Geometry"| N7
     N7 --&gt;|"Geometry-&gt;Geometry"| N8
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -613,7 +559,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The <code>~</code> operator inverts a boolean:</p>
-<div id="5c5c6a12" class="cell" data-execution_count="8">
+<div id="bd305b31" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"InvertDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    is_even <span class="op">=</span> (g.Index() <span class="op">%</span> <span class="dv">2</span>) <span class="op">&gt;</span> <span class="dv">0</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    is_odd <span class="op">=</span> <span class="op">~</span>is_even</span>
@@ -648,15 +594,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N5 --&gt;|"Boolean-&gt;Selection"| N6
     N4 --&gt;|"Points-&gt;Geometry"| N6
     N6 --&gt;|"Geometry-&gt;Geometry"| N7
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -669,7 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="matrix-multiplication" class="level2">
 <h2 class="anchored" data-anchor-id="matrix-multiplication">Matrix Multiplication</h2>
 <p>The <code>@</code> operator maps to <code>MultiplyMatrices</code>, composing two 4x4 transformation matrices. You can also multiply a matrix by a vector using <code>@</code> and a <code>TransformPoint</code> will automatically be added.</p>
-<div id="25db5751" class="cell" data-execution_count="9">
+<div id="13bbff0e" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"MatmulDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    rotate <span class="op">=</span> g.CombineTransform(rotation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">45</span>, <span class="dv">0</span>))</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    translate <span class="op">=</span> g.CombineTransform(translation<span class="op">=</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
@@ -697,15 +634,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N3 --&gt;|"Matrix-&gt;Transform"| N5
     N5 --&gt;|"Vector-&gt;Position"| N6
     N4 --&gt;|"Mesh-&gt;Geometry"| N6
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -721,7 +649,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="checkerboard-selection" class="level3">
 <h3 class="anchored" data-anchor-id="checkerboard-selection">Checkerboard Selection</h3>
 <p>Select alternating faces on a grid using integer modulo and comparisons:</p>
-<div id="300f7e2e" class="cell" data-execution_count="10">
+<div id="246937cb" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Checkerboard"</span>) <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> g.Index()</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> idx <span class="op">//</span> <span class="dv">10</span></span>
@@ -760,15 +688,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N6 --&gt;|"Result-&gt;Selection"| N7
     N5 --&gt;|"Mesh-&gt;Geometry"| N7
     N7 --&gt;|"Geometry-&gt;Geometry"| N8
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -781,7 +700,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="layered-selection" class="level3">
 <h3 class="anchored" data-anchor-id="layered-selection">Layered Selection</h3>
 <p>Divide space into layers using floor division, then select specific layers:</p>
-<div id="1e07f3d4" class="cell" data-execution_count="11">
+<div id="3b7f3bad" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Layers"</span>) <span class="im">as</span> tree:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> g.SeparateXYZ(g.Position()).o.z</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    layer <span class="op">=</span> g.SeparateXYZ(g.Position() <span class="op">//</span> (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)).o.z</span>
@@ -835,15 +754,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N11 --&gt;|"Boolean-&gt;Selection"| N13
     N10 --&gt;|"Points-&gt;Geometry"| N13
     N13 --&gt;|"Geometry-&gt;Geometry"| N15
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -856,7 +766,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="spiral-point-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="spiral-point-distribution">Spiral Point Distribution</h3>
 <p>Use power and modulo to create a spiral-like displacement pattern:</p>
-<div id="842dbd41" class="cell" data-execution_count="12">
+<div id="60c2041f" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Spiral"</span>) <span class="im">as</span> tree:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position().o.position</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    angle <span class="op">=</span> pos.x <span class="op">*</span> <span class="fl">3.14</span></span>
@@ -913,15 +823,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N10 --&gt;|"Points-&gt;Geometry"| N12
     N12 --&gt;|"Geometry-&gt;Geometry"| N13
     N1 --&gt;|"Z-&gt;Z"| N11
-
-    classDef geometry-node fill:#e8f5f1,stroke:#3a7c49,stroke-width:2px
-    classDef converter-node fill:#e6f1f7,stroke:#246283,stroke-width:2px
-    classDef vector-node fill:#e9e9f5,stroke:#3C3C83,stroke-width:2px
-    classDef texture-node fill:#fef3e6,stroke:#E66800,stroke-width:2px
-    classDef shader-node fill:#fef0eb,stroke:#e67c52,stroke-width:2px
-    classDef input-node fill:#f1f8ed,stroke:#7fb069,stroke-width:2px
-    classDef output-node fill:#faf0ed,stroke:#c97659,stroke-width:2px
-    classDef default-node fill:#f0f0f0,stroke:#5a5a5a,stroke-width:2px
 </pre>
 </div>
 <p></p></figure><p></p>
