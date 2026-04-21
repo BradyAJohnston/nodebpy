@@ -65,6 +65,16 @@ $signature-border-color: tint-color($primary, 25%);
   font-size: 0.95rem;
 }
 
+// Mermaid node diagram colour coding — mirrors the color_tag values from Blender
+.node.geometry-node  rect { fill: #e8f5f1; stroke: #3a7c49; stroke-width: 2px; }
+.node.converter-node rect { fill: #e6f1f7; stroke: #246283; stroke-width: 2px; }
+.node.vector-node    rect { fill: #e9e9f5; stroke: #3C3C83; stroke-width: 2px; }
+.node.texture-node   rect { fill: #fef3e6; stroke: #E66800; stroke-width: 2px; }
+.node.shader-node    rect { fill: #fef0eb; stroke: #e67c52; stroke-width: 2px; }
+.node.input-node     rect { fill: #f1f8ed; stroke: #7fb069; stroke-width: 2px; }
+.node.output-node    rect { fill: #faf0ed; stroke: #c97659; stroke-width: 2px; }
+.node.default-node   rect { fill: #f0f0f0; stroke: #5a5a5a; stroke-width: 2px; }
+
 /*-- scss:functions --*/
 
 /*-- scss:uses --*/

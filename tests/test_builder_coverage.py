@@ -148,11 +148,11 @@ def test_repr_markdown_returns_str_or_none():
 
 def test_repr_markdown_exception_path(monkeypatch):
     """exception path when diagram generation raises."""
-    import nodebpy.screenshot as screenshot_mod
+    import nodebpy.diagram as diagram_mod
 
     monkeypatch.setattr(
-        screenshot_mod,
-        "generate_mermaid_diagram",
+        diagram_mod,
+        "to_mermaid",
         lambda t: (_ for _ in ()).throw(RuntimeError("fail")),
     )
 

@@ -778,9 +778,9 @@ class TreeBuilder:
         when it's the return value of a cell.
         """
         try:
-            from ..screenshot import generate_mermaid_diagram
+            from ..diagram import to_mermaid
 
-            return generate_mermaid_diagram(self)
+            return to_mermaid(self)
         except Exception as e:
             print(f"Mermaid diagram generation failed: {e}")
             return None
