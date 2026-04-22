@@ -1,0 +1,71 @@
+# serializer version: 1
+# name: test_snapshot_chain_simple
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("ChainSnap") as tree:
+      geometry = tree.inputs.geometry("Geometry")
+      geometry_1 = tree.outputs.geometry("Geometry")
+  
+      geometry >> g.SetPosition() >> g.TransformGeometry() >> geometry_1
+  '''
+# ---
+# name: test_snapshot_chain_with_extra_kwargs
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("ChainKwargs") as tree:
+      geometry = tree.inputs.geometry("Geometry")
+      geometry_1 = tree.outputs.geometry("Geometry")
+  
+      position = g.Position()
+      geometry >> g.SetPosition(offset=position) >> g.TransformGeometry() >> geometry_1
+  '''
+# ---
+# name: test_snapshot_fanout
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("SnapshotFanOut") as tree:
+      geometry = tree.inputs.geometry("Geometry")
+      out1 = tree.outputs.geometry("Out1")
+      out2 = tree.outputs.geometry("Out2")
+  
+      noise_texture = g.NoiseTexture()
+      set_position = g.SetPosition(geometry=geometry, offset=noise_texture.o.color)
+      set_position_1 = g.SetPosition(geometry=geometry, offset=noise_texture.o.color)
+  
+      set_position >> out1
+      set_position_1 >> out2
+  '''
+# ---
+# name: test_snapshot_simple
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("SnapshotSimple") as tree:
+      geometry = tree.inputs.geometry("Geometry")
+      geometry_1 = tree.outputs.geometry("Geometry")
+  
+      geometry >> g.SetPosition() >> geometry_1
+  '''
+# ---
+# name: test_snapshot_single_node
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("SnapshotSingle") as tree:
+      position = g.Position()
+  '''
+# ---
+# name: test_snapshot_with_properties
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("SnapshotProps") as tree:
+      value = tree.inputs.float("Value", 1.0)
+      result = tree.outputs.float("Result")
+  
+      value >> g.Math(value_001=2.0, operation="MULTIPLY") >> result
+  '''
+# ---
