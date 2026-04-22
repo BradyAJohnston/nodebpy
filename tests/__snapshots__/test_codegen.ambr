@@ -39,6 +39,40 @@
       set_position_1 >> out2
   '''
 # ---
+# name: test_snapshot_math_chain
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("MathChain") as tree:
+      value = tree.inputs.float("Value", 1.0)
+      result = tree.outputs.float("Result")
+  
+      ((value * 2.0) + 1.0) >> result
+  '''
+# ---
+# name: test_snapshot_math_offset
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("MathOffset") as tree:
+      geometry = tree.inputs.geometry("Geometry")
+      scale = tree.inputs.float("Scale", 1.0)
+      geometry_1 = tree.outputs.geometry("Geometry")
+  
+      geometry >> g.SetPosition(offset=scale * 2.0) >> geometry_1
+  '''
+# ---
+# name: test_snapshot_math_single
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("MathSingle") as tree:
+      value = tree.inputs.float("Value", 1.0)
+      result = tree.outputs.float("Result")
+  
+      (value * 2.0) >> result
+  '''
+# ---
 # name: test_snapshot_simple
   '''
   from nodebpy import geometry as g, TreeBuilder
@@ -66,6 +100,6 @@
       value = tree.inputs.float("Value", 1.0)
       result = tree.outputs.float("Result")
   
-      value >> g.Math(value_001=2.0, operation="MULTIPLY") >> result
+      (value * 2.0) >> result
   '''
 # ---

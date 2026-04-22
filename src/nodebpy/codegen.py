@@ -45,6 +45,104 @@ _NO_DEFAULT_VALUE_TYPES = frozenset(
 
 _SKIP_BL_IDNAMES = frozenset({"NodeGroupInput", "NodeGroupOutput", "NodeReroute"})
 
+# ---------------------------------------------------------------------------
+# Phase 3: operator lifting
+# ---------------------------------------------------------------------------
+
+_OP_PREC: dict[str, int] = {"+": 1, "-": 1, "*": 2, "/": 2, "%": 2, "**": 3}
+
+
+def _maybe_parens(expr: str, expr_op: str | None, ctx_op: str, is_rhs: bool = False) -> str:
+    """Wrap expr in parentheses only when strictly required by operator precedence.
+
+    is_rhs: True when expr is the right-hand operand.  Right operands at equal
+    precedence need parens for non-commutative operators (-, /, **).
+    """
+    if expr_op is None:
+        return expr  # atomic — never needs parens
+    ip = _OP_PREC.get(expr_op, 0)
+    cp = _OP_PREC.get(ctx_op, 0)
+    if cp > ip:
+        return f"({expr})"
+    if cp == ip:
+        # Right side of non-commutative / right-associative ops
+        if is_rhs and ctx_op in ("-", "/", "%"):
+            return f"({expr})"
+        # Left side of right-associative ** (a**b)**c → always needs parens)
+        if not is_rhs and ctx_op == "**":
+            return f"({expr})"
+    return expr
+
+
+_LIFTABLE_BINARY: dict[str, dict[str, str]] = {
+    "ShaderNodeMath": {
+        "ADD": "+",
+        "SUBTRACT": "-",
+        "MULTIPLY": "*",
+        "DIVIDE": "/",
+        "POWER": "**",
+        "MODULO": "%",
+    },
+    "ShaderNodeVectorMath": {
+        "ADD": "+",
+        "SUBTRACT": "-",
+        "MULTIPLY": "*",
+        "DIVIDE": "/",
+        "SCALE": "*",
+    },
+}
+
+
+def _lift_op(node) -> str | None:
+    """Return the Python binary operator for this node's operation, or None."""
+    m = _LIFTABLE_BINARY.get(node.bl_idname)
+    return m.get(getattr(node, "operation", "")) if m else None
+
+
+def _lift_pair(node):
+    """Return (lhs_socket, rhs_socket) for the two operand sockets, or None."""
+    if node.bl_idname == "ShaderNodeVectorMath" and getattr(node, "operation", "") == "SCALE":
+        if len(node.inputs) > 3:
+            return node.inputs[0], node.inputs[3]
+        return None
+    if len(node.inputs) >= 2:
+        return node.inputs[0], node.inputs[1]
+    return None
+
+
+def _operand_ref(socket, node, node_tree, var_map) -> str | None:
+    """Expression for a socket: upstream var/expr reference or formatted literal."""
+    if socket.is_linked:
+        for link in node_tree.links:
+            if link.to_node.name == node.name and link.to_socket.identifier == socket.identifier:
+                return _upstream_ref(link.from_node, link.from_socket, node_tree, var_map)
+        return None
+    if hasattr(socket, "default_value"):
+        return _fmt(socket.default_value)
+    return None
+
+
+def _try_lift_node(node, node_tree, var_map) -> str | None:
+    """Try to build a lifted operator expression for a liftable node.
+
+    Only lifts when at least one input socket is linked (pure-literal nodes
+    stay as function calls). Returns the expression string or None.
+    """
+    op = _lift_op(node)
+    if op is None:
+        return None
+    pair = _lift_pair(node)
+    if pair is None:
+        return None
+    lhs_s, rhs_s = pair
+    if not (lhs_s.is_linked or rhs_s.is_linked):
+        return None
+    lhs = _operand_ref(lhs_s, node, node_tree, var_map)
+    rhs = _operand_ref(rhs_s, node, node_tree, var_map)
+    if lhs is None or rhs is None:
+        return None
+    return f"{lhs} {op} {rhs}"
+
 _BLENDER_SOCKET_DEFAULTS: dict[str, dict[str, object]] = {}
 
 
@@ -445,6 +543,21 @@ def _get_props(node, cls) -> dict:
     return result
 
 
+def _strip_outer_parens(s: str) -> str:
+    """Remove one layer of surrounding parentheses if they span the whole string."""
+    if not (s.startswith("(") and s.endswith(")")):
+        return s
+    depth = 0
+    for i, c in enumerate(s):
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+        if depth == 0 and i < len(s) - 1:
+            return s  # parens close before end — they don't wrap the whole expression
+    return s[1:-1]
+
+
 def _upstream_ref(from_node, from_socket, node_tree, var_map: dict) -> str | None:
     """Return Python expression referencing an upstream output socket."""
     from_node, from_socket = _trace_reroute(from_node, from_socket, node_tree)
@@ -481,7 +594,9 @@ def _node_kwargs(node, node_tree, var_map, skip_input_id: str | None = None) -> 
         if ref is None:
             continue
         kwarg_name = _normalize(link.to_socket.identifier)
-        kwargs[kwarg_name] = ref
+        # Keyword argument values don't need outer parens — Python's parser
+        # handles operator precedence inside `key=expr` unambiguously.
+        kwargs[kwarg_name] = _strip_outer_parens(ref)
 
     try:
         sig = inspect.signature(cls.__init__)
@@ -594,36 +709,44 @@ def _emit_chain(
     nodes_by_name = {n.name: n for n in node_tree.nodes}
     start_key = chain[0]
 
-    # Build the >> expression parts
-    parts: list[str] = []
+    start_ref = var_map.get(start_key, "# missing")
+    parts: list[str] = [start_ref]
 
-    # Starting reference
-    if start_key.startswith("_iface_inputs_"):
-        start_ref = var_map.get(start_key, "# missing_iface_input")
-    else:
-        start_ref = var_map.get(start_key, "# missing_var")
-    parts.append(start_ref)
-
-    # Determine which regular nodes are chain members (emitted inline)
     regular_nodes = [k for k in chain if not k.startswith("_iface_")]
     if start_key.startswith("_iface_inputs_"):
-        chain_members = regular_nodes  # All regular nodes are part of the >>-chain
+        chain_members = regular_nodes
     else:
-        chain_members = regular_nodes[1:]  # Skip the head (already a variable)
+        chain_members = regular_nodes[1:]
 
-    # Emit each chain member as a constructor call (no variable)
     for node_name in chain_members:
         node = nodes_by_name.get(node_name)
         if node is None:
             parts.append(f"# missing_node:{node_name}")
             continue
-        # The chain input for this node is the socket we should skip
         prev_entry = chain_prev.get(node_name)
         skip_input_id = prev_entry[1] if prev_entry else None
+
+        op = _lift_op(node)
+        if op is not None:
+            pair = _lift_pair(node)
+            if pair is not None:
+                lhs_s, rhs_s = pair
+                if skip_input_id == lhs_s.identifier:
+                    rhs = _operand_ref(rhs_s, node, node_tree, var_map)
+                    if rhs is not None:
+                        lhs = parts.pop()
+                        parts.append(f"({lhs} {op} {rhs})")
+                        continue
+                elif skip_input_id == rhs_s.identifier:
+                    lhs_ref = _operand_ref(lhs_s, node, node_tree, var_map)
+                    if lhs_ref is not None:
+                        accumulated = parts.pop()
+                        parts.append(f"({lhs_ref} {op} {accumulated})")
+                        continue
+
         call = _node_call_str(node, node_tree, var_map, skip_input_id=skip_input_id)
         parts.append(call)
 
-    # Append interface output reference if the chain ends there
     last_key = chain[-1]
     if last_key.startswith("_iface_outputs_"):
         iface_ref = var_map.get(last_key, "# missing_iface_output")
@@ -631,9 +754,7 @@ def _emit_chain(
 
     expr = " >> ".join(parts)
 
-    # Does the tail node need a variable (referenced by non-chain links)?
     tail_needs_var = tail_node.name not in inline_nodes
-
     if tail_needs_var:
         var = _make_var(tail_node.bl_label, counter)
         var_map[tail_node.name] = var
@@ -739,6 +860,19 @@ def to_python(tree, min_chain_length: int = 3) -> str:
                         and f"_iface_outputs_{link.to_socket.identifier}" == last_key
                     ):
                         handled_output_links.add((node.name, link.to_socket.identifier))
+            continue
+
+        # Phase 3: operator lifting for non-chain nodes
+        lift_expr = _try_lift_node(node, node_tree, var_map)
+        if lift_expr is not None:
+            if node.name in inline_nodes:
+                # Used exactly once — inline the expression (with parens) as a ref
+                var_map[node.name] = f"({lift_expr})"
+            else:
+                # Fan-out — assign to a named variable
+                var = _make_var(node.bl_label, counter)
+                var_map[node.name] = var
+                lines.append(f"    {var} = {lift_expr}")
             continue
 
         lines.extend(_emit_node(node, var_map, counter, node_tree))

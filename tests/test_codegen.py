@@ -221,6 +221,81 @@ def test_chain_output_is_valid_python():
 
 
 # ---------------------------------------------------------------------------
+# Phase 3: operator lifting tests
+# ---------------------------------------------------------------------------
+
+
+def test_math_add_lifts_to_operator():
+    """Math ADD with a linked input is emitted as + instead of g.Math()."""
+    with TreeBuilder("MathAdd") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        (val + 2.0) >> tree.outputs.float("Result")
+    code = to_python(tree)
+    assert "+ 2.0" in code
+    assert "g.Math(" not in code
+
+
+def test_math_multiply_lifts_to_operator():
+    """Math MULTIPLY with a linked input is emitted as *."""
+    with TreeBuilder("MathMul") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        (val * 2.0) >> tree.outputs.float("Result")
+    code = to_python(tree)
+    assert "* 2.0" in code
+    assert "g.Math(" not in code
+
+
+def test_math_no_lift_when_unlinked():
+    """Math with no linked inputs stays as a function call."""
+    with TreeBuilder("MathUnlinked") as tree:
+        g.Math(operation="MULTIPLY")
+    code = to_python(tree)
+    assert "g.Math(" in code
+    assert 'operation="MULTIPLY"' in code
+
+
+def test_math_non_liftable_stays_as_call():
+    """Non-liftable operation (SINE) stays as g.Math()."""
+    with TreeBuilder("MathSine") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        g.Math(val, operation="SINE") >> tree.outputs.float("Result")
+    code = to_python(tree)
+    assert "g.Math(" in code
+
+
+def test_math_fanout_assigns_variable():
+    """A Math node whose output feeds multiple consumers gets a variable."""
+    with TreeBuilder("MathFanOut") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        m = val * 2.0
+        m >> tree.outputs.float("Out1")
+        m >> tree.outputs.float("Out2")
+    code = to_python(tree)
+    assert "= value * 2.0" in code
+
+
+def test_nested_math_lifts():
+    """Chained Math nodes collapse to a single operator expression."""
+    with TreeBuilder("NestedMath") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        (val * 2.0 + 1.0) >> tree.outputs.float("Result")
+    code = to_python(tree)
+    assert "value * 2.0" in code
+    assert "+ 1.0" in code
+    assert "g.Math(" not in code
+
+
+def test_operator_output_is_valid_python():
+    """Lifted operator expressions produce syntactically valid Python."""
+    import ast
+
+    with TreeBuilder("OpValid") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        (val * 2.0 + 1.0) >> tree.outputs.float("Result")
+    ast.parse(to_python(tree))
+
+
+# ---------------------------------------------------------------------------
 # Snapshot tests — stabilise the full string output
 # ---------------------------------------------------------------------------
 
@@ -269,4 +344,29 @@ def test_snapshot_chain_with_extra_kwargs(snapshot):
         geo_in = tree.inputs.geometry()
         pos = g.Position()
         geo_in >> g.SetPosition(offset=pos) >> g.TransformGeometry() >> tree.outputs.geometry()
+    assert snapshot == to_python(tree)
+
+
+def test_snapshot_math_single(snapshot):
+    """Single Math MULTIPLY with one linked input lifts to operator."""
+    with TreeBuilder("MathSingle") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        g.Math(val, 2.0, operation="MULTIPLY") >> tree.outputs.float("Result")
+    assert snapshot == to_python(tree)
+
+
+def test_snapshot_math_chain(snapshot):
+    """Nested Math: val * 2 + 1 collapses to a single expression."""
+    with TreeBuilder("MathChain") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        (val * 2.0 + 1.0) >> tree.outputs.float("Result")
+    assert snapshot == to_python(tree)
+
+
+def test_snapshot_math_offset(snapshot):
+    """Math expression fed into a geometry node kwarg."""
+    with TreeBuilder("MathOffset") as tree:
+        geo_in = tree.inputs.geometry()
+        val = tree.inputs.float("Scale", 1.0)
+        geo_in >> g.SetPosition(offset=val * 2.0) >> tree.outputs.geometry()
     assert snapshot == to_python(tree)
