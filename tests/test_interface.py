@@ -535,17 +535,17 @@ def test_accessor_slice_matrix():
 
     assert all(input.links for input in comb.i[:])
     assert all(
-        (input.links[0].from_node.bl_idname == g.SeparateMatrix._bl_idname)
+        (input.links[0].from_node.bl_idname == g.SeparateMatrix._bl_idname)  # ty: ignore[unresolved-attribute]
         for input in comb.i[:]
     )
     assert all(input.links for input in vec_comb.i[:])
     assert all(
-        (input.links[0].from_node.bl_idname == g.SeparateXYZ._bl_idname)
+        (input.links[0].from_node.bl_idname == g.SeparateXYZ._bl_idname)  # ty: ignore[unresolved-attribute]
         for input in vec_comb.i[:]
     )
     assert all(input.links for input in col_comb.i[:])
     assert all(
-        (input.links[0].from_node.bl_idname == g.SeparateColor._bl_idname)
+        (input.links[0].from_node.bl_idname == g.SeparateColor._bl_idname)  # ty: ignore[unresolved-attribute]
         for input in col_comb.i[:]
     )
 
@@ -560,6 +560,7 @@ def test_vector_socket_input_indexing():
     pos_input = set_pos.node.inputs["Position"]
     assert pos_input.links, "CombineXYZ output should be linked to Position"
     combine_node = pos_input.links[0].from_node
+    assert combine_node
     assert combine_node.bl_idname == g.CombineXYZ._bl_idname
     y_input = combine_node.inputs[1]
     assert y_input.links, "Value should be linked to CombineXYZ Y input"
@@ -575,11 +576,21 @@ def test_vector_socket_input_indexing_reuse():
         a >> set_pos.i.position[0]
         b >> set_pos.i.position[2]
 
+        set_pos2 = g.SetPosition()
+        for axis in set_pos2.i.position:
+            a >> axis
+
     pos_input = set_pos.node.inputs["Position"]
+    assert pos_input
+    assert pos_input.links
     assert len(pos_input.links) == 1, "Only one CombineXYZ should be wired"
     combine_node = pos_input.links[0].from_node
+    assert combine_node
+    assert combine_node.inputs[0].links
     assert combine_node.inputs[0].links[0].from_node == a.node
+    assert combine_node.inputs[2].links
     assert combine_node.inputs[2].links[0].from_node == b.node
+    assert set_pos2.i.position.links[0].from_node.bl_idname == g.CombineXYZ._bl_idname  # ty: ignore[unresolved-attribute]
 
 
 def test_vector_socket_output_iteration():
@@ -590,6 +601,7 @@ def test_vector_socket_output_iteration():
 
     assert len(components) == 3
     sep_node = components[0].socket.node
+    assert sep_node
     assert sep_node.bl_idname == g.SeparateXYZ._bl_idname
     assert all(c.socket.node == sep_node for c in components)
 
@@ -610,8 +622,20 @@ def test_color_socket_input_indexing():
     a_input = sgpc.node.inputs["Color"]
     assert a_input.links
     combine_node = a_input.links[0].from_node
+    assert combine_node
     assert combine_node.bl_idname == g.CombineColor._bl_idname
+    assert combine_node.inputs[2].links
     assert combine_node.inputs[2].links[0].from_node == val.node
+
+
+def test_color_socket_input_shader():
+    with s.tree() as tree:
+        sep = s.SeparateColor()
+
+        for i, axis in enumerate(sep.i.color):
+            s.Value(i) >> axis
+
+    assert sep.i.color.links[0].from_node.bl_idname == s.CombineColor._bl_idname  # ty: ignore[unresolved-attribute]
 
 
 def test_color_socket_output_iteration():
@@ -622,6 +646,7 @@ def test_color_socket_output_iteration():
 
     assert len(components) == 4
     sep_node = components[0].socket.node
+    assert sep_node
     assert sep_node.bl_idname == g.SeparateColor._bl_idname
     assert all(c.socket.node == sep_node for c in components)
 
@@ -642,7 +667,9 @@ def test_matrix_socket_input_indexing():
     transform_input = transform.node.inputs["Transform"]
     assert transform_input.links
     combine_node = transform_input.links[0].from_node
+    assert combine_node
     assert combine_node.bl_idname == g.CombineMatrix._bl_idname
+    assert combine_node.inputs[0].links
     assert combine_node.inputs[0].links[0].from_node == val.node
 
 
@@ -653,7 +680,8 @@ def test_matrix_socket_input_slice():
         components = transform.i.transform[0:3]
 
     assert len(components) == 3
-    combine_node = transform.node.inputs["Transform"].links[0].from_node
+    combine_node = transform.node.inputs["Transform"].links[0].from_node  # ty: ignore[not-subscriptable]
+    assert combine_node
     assert combine_node.bl_idname == g.CombineMatrix._bl_idname
 
 
@@ -665,6 +693,7 @@ def test_matrix_socket_output_iteration():
 
     assert len(components) == 16
     sep_node = components[0].socket.node
+    assert sep_node
     assert sep_node.bl_idname == g.SeparateMatrix._bl_idname
     assert all(c.socket.node == sep_node for c in components)
 

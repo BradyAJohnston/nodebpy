@@ -3,7 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Iterator, overload
 
 import bpy
-from bpy.types import GeometryNodeTree, NodeSocket
+from bpy.types import (
+    FunctionNodeCombineMatrix,
+    FunctionNodeSeparateMatrix,
+    GeometryNodeTree,
+    NodeSocket,
+)
 
 from ..types import SOCKET_TYPES
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
@@ -183,8 +188,8 @@ class _VectorMixin:
             yield self.z
         else:
             node = self._get_or_create_combine_xyz()
-            for i in range(3):
-                yield _get_socket_linker(node.inputs[i])
+            for i in node.inputs:
+                yield _get_socket_linker(i)
 
     def __len__(self) -> int:
         return 3
@@ -353,8 +358,8 @@ class _ColorMixin:
             yield self.a
         else:
             node = self._get_or_create_combine_color()
-            for i in range(4):
-                yield _get_socket_linker(node.inputs[i])
+            for input in node.inputs:
+                yield _get_socket_linker(input)
 
     def __len__(self) -> int:
         return 4
@@ -494,20 +499,23 @@ class _MatrixMixin:
     def scale(self) -> "VectorSocket":
         return self._separate_transform("Scale")  # type: ignore[return-value]
 
-    def _get_or_create_separate_matrix(self) -> "bpy.types.Node":
+    def _get_or_create_separate_matrix(self) -> FunctionNodeSeparateMatrix:
         from ..nodes.geometry.converter import SeparateMatrix
 
-        for link in self.socket.links:
-            if link.to_node.bl_idname == "FunctionNodeSeparateMatrix":
-                return link.to_node
+        if self.socket.links:
+            for link in self.socket.links:
+                if isinstance(link.to_node, FunctionNodeSeparateMatrix):
+                    return link.to_node
         return SeparateMatrix(self).node
 
-    def _get_or_create_combine_matrix(self) -> "bpy.types.Node":
+    def _get_or_create_combine_matrix(self) -> FunctionNodeCombineMatrix:
         from ..nodes.geometry.converter import CombineMatrix
 
-        for link in self.socket.links:
-            if link.from_node.bl_idname == "FunctionNodeCombineMatrix":
-                return link.from_node
+        if self.socket.links:
+            for link in self.socket.links:
+                if isinstance(link.from_node, FunctionNodeCombineMatrix):
+                    return link.from_node
+
         combine = CombineMatrix()
         self._tree.link(combine.node.outputs[0], self.socket)
         return combine.node
@@ -537,11 +545,9 @@ class _MatrixMixin:
     def __iter__(self) -> Iterator["Socket"]:
         if self.socket.is_output:
             node = self._get_or_create_separate_matrix()
-            return iter(
-                _get_socket_linker(node.outputs[i]) for i in range(len(node.outputs))
-            )
+            return iter(_get_socket_linker(o) for o in node.outputs)
         node = self._get_or_create_combine_matrix()
-        return iter(_get_socket_linker(node.inputs[i]) for i in range(len(node.inputs)))
+        return iter(_get_socket_linker(i) for i in node.inputs)
 
     def __len__(self) -> int:
         return 16
