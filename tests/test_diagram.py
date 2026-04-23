@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Snapshot tests for Mermaid diagram generation."""
 
-import bpy
 from functools import reduce
 from itertools import product
 from operator import and_

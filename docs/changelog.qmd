@@ -7,6 +7,15 @@ title: Changelog
 ### Enhancements
 
 - Refactor the mermaid diagram generation. Change `screenshot.py` -> `diagram.py` and added test coverage
+- Enable slicing and iterating of certain socket types (Vector, Color, etc.). ([#48](https://github.com/BradyAJohnston/nodebpy/pull/48))
+```python
+for i, axis in enumerate(g.Position().o.position):
+    math = axis * float(i)
+
+mat = g.InstanceTransform().o.transform
+
+vec = g.CombineXYZ(*mat[:3])
+```
 
 ## v0.10.2 - 2026-04-21
 

@@ -54,6 +54,37 @@ with g.tree() as tree:
 tree
 ```
 
+### Slicing Inputs and Outputs
+
+You can use slicing to access individual or multiple components of input and output sockets.
+
+```{python}
+with g.tree() as tree:
+    sep = g.SeparateXYZ(g.Position())
+    comb = g.CombineXYZ(*sep.o[:])
+    comb2 = g.CombineXYZ()
+
+    sep.o[1] >> comb2.i[2]
+
+tree
+```
+
+We can replicate part of a PCA analysis, getting the mean difference of the position field, scaling and combining into a matrix.
+```{python}
+with g.tree() as tree:
+    pos = g.Position()
+    diff = g.FieldAverage.point.vector(pos).o.mean - pos
+    matrix = g.CombineMatrix()
+
+    for i, axis1 in enumerate(diff.o.vector[:]):
+        sep = g.FieldAverage.point.vector(diff * axis1)
+        for j, axis2 in enumerate(sep.o.mean[:]):
+            axis2 >> matrix.i[int(i * 4 + j)]
+
+tree
+```
+
+
 #### Vector Outputs
 
 Some output attributes have convenience methods for simpler chaining.
@@ -133,7 +164,7 @@ with g.tree() as tree:
 
 ## Class Methods
 
-For nodes that have `mode`, `domain`, `data_type` and `operation` as potential enum values, convenience class methods are provided. 
+For nodes that have `mode`, `domain`, `data_type` and `operation` as potential enum values, convenience class methods are provided.
 
 > The order that these methods will appear are: `mode` > `domain` > `data_type` > `operation`, but should only ever be 1 or 2 deep.
 > ```py
@@ -159,7 +190,7 @@ assert eod1.domain == eod2.domain
 
 A similar approach is taken for the `Compare` node, with the first being data type and then secondarily the comparison operation.
 
-If the items being compared are nodes or sockets, regular boolean comparison with operators will also work. 
+If the items being compared are nodes or sockets, regular boolean comparison with operators will also work.
 All 3 different approaches have the same result.
 
 ```py

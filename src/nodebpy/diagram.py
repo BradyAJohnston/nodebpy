@@ -130,7 +130,9 @@ def to_mermaid(tree) -> str:
             continue
         seen_edges.add(edge_key)
 
-        lines.append(f'    {from_id} -->|"{from_socket.name}->{link.to_socket.name}"| {to_id}')
+        lines.append(
+            f'    {from_id} -->|"{from_socket.name}->{link.to_socket.name}"| {to_id}'
+        )
 
     lines.append("```")
 
