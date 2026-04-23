@@ -702,9 +702,14 @@ def test_matrix_socket_output_iteration():
     with g.tree():
         mat = g.InstanceTransform()
         components = list(mat.o.transform)
+        comb = g.CombineMatrix(*components)
 
     assert len(components) == 16
     sep_node = components[0].socket.node
+    assert all(
+        input.links[0].from_node.bl_idname == g.SeparateMatrix._bl_idname  # ty: ignore[unresolved-attribute]
+        for input in comb.i[:]
+    )
     assert sep_node
     assert sep_node.bl_idname == g.SeparateMatrix._bl_idname
     assert all(c.socket.node == sep_node for c in components)
