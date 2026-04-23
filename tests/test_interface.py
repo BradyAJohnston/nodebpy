@@ -754,7 +754,7 @@ def test_accessor_rotation():
 
         eul = rot.o.rotation.euler
         assert isinstance(eul, VectorSocket)
-        assert eul.node == rot.o.rotation.node
+        assert eul.node == rot.o.rotation.euler.node
 
 
 def test_matrix_socket_output_len():
