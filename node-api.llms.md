@@ -82,93 +82,6 @@ graph LR
     N4 -->|"Geometry->Geometry"| N5
 ```
 
-### Slicing Inputs and Outputs
-
-You can use slicing to access individual or multiple components of input and output sockets.
-
-``` python
-with g.tree() as tree:
-    sep = g.SeparateXYZ(g.Position())
-    comb = g.CombineXYZ(*sep.o[:])
-    comb2 = g.CombineXYZ()
-
-    sep.o[1] >> comb2.i[2]
-
-tree
-```
-
-``` mermaid
-graph LR
-    N0("Position"):::input-node
-    N1("Separate XYZ"):::converter-node
-    N2("Combine XYZ"):::converter-node
-    N3("Combine XYZ"):::converter-node
-    N0 -->|"Position->Vector"| N1
-    N1 -->|"X->X"| N3
-    N1 -->|"Y->Y"| N3
-    N1 -->|"Z->Z"| N3
-    N1 -->|"Y->Z"| N2
-```
-
-We can replicate part of a PCA analysis, getting the mean difference of the position field, scaling and combining into a matrix.
-
-``` python
-with g.tree() as tree:
-    pos = g.Position()
-    diff = g.FieldAverage.point.vector(pos).o.mean - pos
-    matrix = g.CombineMatrix()
-
-    for i, axis1 in enumerate(diff.o.vector[:]):
-        sep = g.FieldAverage.point.vector(diff * axis1)
-        for j, axis2 in enumerate(sep.o.mean[:]):
-            axis2 >> matrix.i[int(i * 4 + j)]
-
-tree
-```
-
-``` mermaid
-graph LR
-    N0("Position"):::input-node
-    N1("Field Average"):::converter-node
-    N2("Vector Math<br/><small>(SUBTRACT)</small>"):::vector-node
-    N3("Separate XYZ"):::converter-node
-    N4("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-    N5("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-    N6("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-    N7("Field Average"):::converter-node
-    N8("Field Average"):::converter-node
-    N9("Field Average"):::converter-node
-    N10("Separate XYZ"):::converter-node
-    N11("Separate XYZ"):::converter-node
-    N12("Separate XYZ"):::converter-node
-    N13("Combine Matrix"):::converter-node
-    N0 -->|"Position->Value"| N1
-    N1 -->|"Mean->Vector"| N2
-    N0 -->|"Position->Vector"| N2
-    N2 -->|"Vector->Vector"| N3
-    N3 -->|"X->Scale"| N4
-    N4 -->|"Vector->Value"| N7
-    N7 -->|"Mean->Vector"| N10
-    N10 -->|"X->Column 1 Row 1"| N13
-    N10 -->|"Y->Column 1 Row 2"| N13
-    N10 -->|"Z->Column 1 Row 3"| N13
-    N3 -->|"Y->Scale"| N5
-    N5 -->|"Vector->Value"| N8
-    N8 -->|"Mean->Vector"| N11
-    N11 -->|"X->Column 2 Row 1"| N13
-    N11 -->|"Y->Column 2 Row 2"| N13
-    N11 -->|"Z->Column 2 Row 3"| N13
-    N3 -->|"Z->Scale"| N6
-    N6 -->|"Vector->Value"| N9
-    N9 -->|"Mean->Vector"| N12
-    N12 -->|"X->Column 3 Row 1"| N13
-    N12 -->|"Y->Column 3 Row 2"| N13
-    N12 -->|"Z->Column 3 Row 3"| N13
-    N2 -->|"Vector->Vector"| N6
-    N2 -->|"Vector->Vector"| N4
-    N2 -->|"Vector->Vector"| N5
-```
-
 #### Vector Outputs
 
 Some output attributes have convenience methods for simpler chaining. Vector outputs can access the `x/y/z/` components quickly, which internally adds the `SeparateXYZ` required. The same SeparateXYZ node is re-used across different outputs.
@@ -343,7 +256,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.nodes.geometry.manual.Compare at 0x10eb1c7d0>
+>     <nodebpy.nodes.geometry.manual.Compare at 0x11d5efd50>
 >
 > ### Comparing Python Objects
 >
