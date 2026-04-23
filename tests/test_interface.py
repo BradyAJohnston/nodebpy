@@ -548,3 +548,128 @@ def test_accessor_slice_matrix():
         (input.links[0].from_node.bl_idname == g.SeparateColor._bl_idname)
         for input in col_comb.i[:]
     )
+
+
+def test_vector_socket_input_indexing():
+    """Indexing an input VectorSocket auto-wires a CombineXYZ and returns its component input."""
+    with g.tree():
+        val = g.Value(5.0)
+        set_pos = g.SetPosition()
+        val >> set_pos.i.position[1]
+
+    pos_input = set_pos.node.inputs["Position"]
+    assert pos_input.links, "CombineXYZ output should be linked to Position"
+    combine_node = pos_input.links[0].from_node
+    assert combine_node.bl_idname == g.CombineXYZ._bl_idname
+    y_input = combine_node.inputs[1]
+    assert y_input.links, "Value should be linked to CombineXYZ Y input"
+    assert y_input.links[0].from_node == val.node
+
+
+def test_vector_socket_input_indexing_reuse():
+    """Multiple index accesses on the same input socket reuse the same CombineXYZ."""
+    with g.tree():
+        a = g.Value(1.0)
+        b = g.Value(2.0)
+        set_pos = g.SetPosition()
+        a >> set_pos.i.position[0]
+        b >> set_pos.i.position[2]
+
+    pos_input = set_pos.node.inputs["Position"]
+    assert len(pos_input.links) == 1, "Only one CombineXYZ should be wired"
+    combine_node = pos_input.links[0].from_node
+    assert combine_node.inputs[0].links[0].from_node == a.node
+    assert combine_node.inputs[2].links[0].from_node == b.node
+
+
+def test_vector_socket_output_iteration():
+    """Iterating an output VectorSocket yields X, Y, Z via a single SeparateXYZ."""
+    with g.tree():
+        vec = g.Position()
+        components = list(vec.o.position)
+
+    assert len(components) == 3
+    sep_node = components[0].socket.node
+    assert sep_node.bl_idname == g.SeparateXYZ._bl_idname
+    assert all(c.socket.node == sep_node for c in components)
+
+
+def test_vector_socket_output_len():
+    with g.tree():
+        vec = g.Position()
+        assert len(vec.o.position) == 3
+
+
+def test_color_socket_input_indexing():
+    """Indexing an input ColorSocket auto-wires a CombineColor and returns its component input."""
+    with g.tree():
+        val = g.Value(0.5)
+        sgpc = g.SetGreasePencilColor()
+        val >> sgpc.i.color[2]
+
+    a_input = sgpc.node.inputs["Color"]
+    assert a_input.links
+    combine_node = a_input.links[0].from_node
+    assert combine_node.bl_idname == g.CombineColor._bl_idname
+    assert combine_node.inputs[2].links[0].from_node == val.node
+
+
+def test_color_socket_output_iteration():
+    """Iterating an output ColorSocket yields R, G, B, A via a single SeparateColor."""
+    with g.tree():
+        col = g.Color()
+        components = list(col.o.color)
+
+    assert len(components) == 4
+    sep_node = components[0].socket.node
+    assert sep_node.bl_idname == g.SeparateColor._bl_idname
+    assert all(c.socket.node == sep_node for c in components)
+
+
+def test_color_socket_output_len():
+    with g.tree():
+        col = g.Color()
+        assert len(col.o.color) == 4
+
+
+def test_matrix_socket_input_indexing():
+    """Indexing an input MatrixSocket auto-wires a CombineMatrix and returns its component input."""
+    with g.tree():
+        val = g.Value(1.0)
+        transform = g.SetInstanceTransform()
+        val >> transform.i.transform[0]
+
+    transform_input = transform.node.inputs["Transform"]
+    assert transform_input.links
+    combine_node = transform_input.links[0].from_node
+    assert combine_node.bl_idname == g.CombineMatrix._bl_idname
+    assert combine_node.inputs[0].links[0].from_node == val.node
+
+
+def test_matrix_socket_input_slice():
+    """Slicing an input MatrixSocket returns component inputs for that range."""
+    with g.tree():
+        transform = g.SetInstanceTransform()
+        components = transform.i.transform[0:3]
+
+    assert len(components) == 3
+    combine_node = transform.node.inputs["Transform"].links[0].from_node
+    assert combine_node.bl_idname == g.CombineMatrix._bl_idname
+
+
+def test_matrix_socket_output_iteration():
+    """Iterating an output MatrixSocket yields all 16 elements via a single SeparateMatrix."""
+    with g.tree():
+        mat = g.InstanceTransform()
+        components = list(mat.o.transform)
+
+    assert len(components) == 16
+    sep_node = components[0].socket.node
+    assert sep_node.bl_idname == g.SeparateMatrix._bl_idname
+    assert all(c.socket.node == sep_node for c in components)
+
+
+def test_matrix_socket_output_len():
+    with g.tree():
+        mat = g.InstanceTransform()
+        assert len(mat.o.transform) == 16

@@ -156,17 +156,35 @@ class _VectorMixin:
     def z(self) -> Socket:
         return self._separated_value("Z")
 
+    def _get_or_create_combine_xyz(self) -> "bpy.types.Node":
+        from ..nodes.geometry.converter import CombineXYZ
+
+        for link in self.socket.links:
+            if link.from_node.bl_idname == "ShaderNodeCombineXYZ":
+                return link.from_node
+        combine = CombineXYZ()
+        self._tree.link(combine.node.outputs[0], self.socket)
+        return combine.node
+
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
     @overload
     def __getitem__(self, key: int) -> "Socket": ...
     def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
-        return [self.x, self.y, self.z][key]
+        if self.socket.is_output:
+            return [self.x, self.y, self.z][key]
+        node = self._get_or_create_combine_xyz()
+        return [_get_socket_linker(node.inputs[i]) for i in range(3)][key]
 
     def __iter__(self) -> Iterator["Socket"]:
-        yield self.x
-        yield self.y
-        yield self.z
+        if self.socket.is_output:
+            yield self.x
+            yield self.y
+            yield self.z
+        else:
+            node = self._get_or_create_combine_xyz()
+            for i in range(3):
+                yield _get_socket_linker(node.inputs[i])
 
     def __len__(self) -> int:
         return 3
@@ -292,18 +310,51 @@ class _ColorMixin:
     def a(self) -> Socket:
         return self._separated_channel("Alpha")
 
+    _COMBINE_COLOR_IDNAMES = (
+        "FunctionNodeCombineColor",
+        "ShaderNodeCombineColor",
+        "CompositorNodeCombineColor",
+    )
+
+    def _get_combine_color_cls(self):
+        tree_type = self._tree.tree.bl_idname
+        if tree_type == "ShaderNodeTree":
+            from ..nodes.shader.converter import CombineColor
+        elif tree_type == "CompositorNodeTree":
+            from ..nodes.compositor.converter import CombineColor
+        else:
+            from ..nodes.geometry.converter import CombineColor
+        return CombineColor
+
+    def _get_or_create_combine_color(self) -> "bpy.types.Node":
+        for link in self.socket.links:
+            if link.from_node.bl_idname in self._COMBINE_COLOR_IDNAMES:
+                return link.from_node
+        CombineColor = self._get_combine_color_cls()
+        combine = CombineColor()
+        self._tree.link(combine.node.outputs[0], self.socket)
+        return combine.node
+
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
     @overload
     def __getitem__(self, key: int) -> "Socket": ...
     def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
-        return [self.r, self.g, self.b, self.a][key]
+        if self.socket.is_output:
+            return [self.r, self.g, self.b, self.a][key]
+        node = self._get_or_create_combine_color()
+        return [_get_socket_linker(node.inputs[i]) for i in range(4)][key]
 
     def __iter__(self) -> Iterator["Socket"]:
-        yield self.r
-        yield self.g
-        yield self.b
-        yield self.a
+        if self.socket.is_output:
+            yield self.r
+            yield self.g
+            yield self.b
+            yield self.a
+        else:
+            node = self._get_or_create_combine_color()
+            for i in range(4):
+                yield _get_socket_linker(node.inputs[i])
 
     def __len__(self) -> int:
         return 4
@@ -451,19 +502,39 @@ class _MatrixMixin:
                 return link.to_node
         return SeparateMatrix(self).node
 
+    def _get_or_create_combine_matrix(self) -> "bpy.types.Node":
+        from ..nodes.geometry.converter import CombineMatrix
+
+        for link in self.socket.links:
+            if link.from_node.bl_idname == "FunctionNodeCombineMatrix":
+                return link.from_node
+        combine = CombineMatrix()
+        self._tree.link(combine.node.outputs[0], self.socket)
+        return combine.node
+
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
     @overload
     def __getitem__(self, key: int) -> "Socket": ...
     def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
-        node = self._get_or_create_separate_matrix()
+        if self.socket.is_output:
+            node = self._get_or_create_separate_matrix()
+            outputs = node.outputs
+            if isinstance(key, slice):
+                return [_get_socket_linker(outputs[i]) for i in range(*key.indices(len(outputs)))]
+            return _get_socket_linker(outputs[key])
+        node = self._get_or_create_combine_matrix()
+        inputs = node.inputs
         if isinstance(key, slice):
-            return [_get_socket_linker(node.outputs[i]) for i in range(*key.indices(len(node.outputs)))]
-        return _get_socket_linker(node.outputs[key])
+            return [_get_socket_linker(inputs[i]) for i in range(*key.indices(len(inputs)))]
+        return _get_socket_linker(inputs[key])
 
     def __iter__(self) -> Iterator["Socket"]:
-        node = self._get_or_create_separate_matrix()
-        return iter(_get_socket_linker(node.outputs[i]) for i in range(len(node.outputs)))
+        if self.socket.is_output:
+            node = self._get_or_create_separate_matrix()
+            return iter(_get_socket_linker(node.outputs[i]) for i in range(len(node.outputs)))
+        node = self._get_or_create_combine_matrix()
+        return iter(_get_socket_linker(node.inputs[i]) for i in range(len(node.inputs)))
 
     def __len__(self) -> int:
         return 16
