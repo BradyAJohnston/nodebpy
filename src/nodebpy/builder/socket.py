@@ -4,7 +4,10 @@ from typing import TYPE_CHECKING, Any, Iterator, overload
 
 import bpy
 from bpy.types import (
+    FunctionNodeAlignRotationToVector,
     FunctionNodeCombineMatrix,
+    FunctionNodeRotationToEuler,
+    FunctionNodeRotationToQuaternion,
     FunctionNodeSeparateMatrix,
     GeometryNodeTree,
     NodeLinks,
@@ -448,29 +451,40 @@ class _RotationMixin:
     socket: NodeSocket
     _tree: TreeBuilder
 
-    def _quaternion_component(self, component: str) -> Socket:
+    def _quaternion_component(self, component: str) -> FloatSocket:
         from ..nodes.geometry.converter import RotationToQuaternion
 
-        for link in self.socket.links:
-            if link.to_node.bl_idname == "FunctionNodeRotationToQuaternion":
-                return _get_socket_linker(link.to_node.outputs[component])
-        return RotationToQuaternion(self).outputs._get(component)
+        if self.socket.links:
+            for link in self.socket.links:
+                if isinstance(link.to_node, FunctionNodeRotationToQuaternion):
+                    return _get_socket_linker(link.to_node.outputs[component])
+        return RotationToQuaternion(self.socket).o[component]
 
     @property
-    def w(self) -> Socket:
+    def w(self) -> FloatSocket:
         return self._quaternion_component("W")
 
     @property
-    def x(self) -> Socket:
+    def x(self) -> FloatSocket:
         return self._quaternion_component("X")
 
     @property
-    def y(self) -> Socket:
+    def y(self) -> FloatSocket:
         return self._quaternion_component("Y")
 
     @property
-    def z(self) -> Socket:
+    def z(self) -> FloatSocket:
         return self._quaternion_component("Z")
+
+    @property
+    def euler(self) -> "VectorSocket":
+        from ..nodes.geometry.converter import RotationToEuler
+
+        if self.socket.links:
+            for link in self.socket.links:
+                if isinstance(link.to_node, FunctionNodeRotationToEuler):
+                    return _get_socket_linker(link.to_node.outputs["Euler"])
+        return RotationToEuler(self.socket).o.euler
 
 
 class _MatrixMixin:

@@ -1,10 +1,10 @@
-
 import bpy
 import pytest
 
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
+from nodebpy.builder import VectorSocket
 from nodebpy.builder.interface import InterfaceSocket
 
 # ---------------------------------------------------------------------------
@@ -739,6 +739,21 @@ def test_matrix_socket_output_iteration():
     assert sep_node.bl_idname == g.SeparateMatrix._bl_idname
     assert all(c.socket.node == sep_node for c in components)
     assert math.i[0].links[0].from_node == comb.i[0].links[0].from_node
+
+
+def test_accessor_rotation():
+    with g.tree():
+        rot = g.AlignRotationToVector()
+        quat = g.RotationToQuaternion(rot.o.rotation)
+        assert quat.inputs[0].links
+        rot_to_quat = quat.inputs[0].links[0].from_node
+        assert quat.o.w.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
+        assert quat.o.x.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
+        assert quat.o.y.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
+        assert quat.o.z.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
+
+        eul = rot.o.rotation.euler
+        assert isinstance(eul, VectorSocket)
 
 
 def test_matrix_socket_output_len():
