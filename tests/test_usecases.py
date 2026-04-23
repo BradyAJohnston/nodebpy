@@ -71,4 +71,4 @@ def test_PCA_asset():
     with g.tree():
         pca = PrincipalComponents()
 
-    assert len(pca.node.node_tree.nodes) == 31
+    assert len(pca.node.node_tree.nodes) == 32

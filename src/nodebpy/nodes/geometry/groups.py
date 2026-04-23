@@ -6,6 +6,7 @@ from nodebpy.types import InputInteger, InputVector
 from ...builder import (
     IntegerSocket,
     NodeGroupBuilder,
+    RotationSocket,
     SocketAccessor,
     SocketRotation,
     VectorSocket,
@@ -133,7 +134,7 @@ class PrincipalComponents(NodeGroupBuilder):
 
     class _Outputs(SocketAccessor):
         center: VectorSocket
-        rotation: SocketRotation
+        rotation: RotationSocket
         principal_components: VectorSocket
         longest_axis: VectorSocket
         intermediate_axis: VectorSocket
@@ -184,19 +185,17 @@ class PrincipalComponents(NodeGroupBuilder):
         diff = position - centroid
         matrix = CombineMatrix()
 
-        for i, axis in enumerate(SeparateXYZ(diff).o[:]):
-            mean_diff = FieldAverage.point.vector(diff * axis, group_id)
-            for j, axis in enumerate(SeparateXYZ(mean_diff).o[:]):
-                axis >> matrix.i[int(i * 4 + j)]
+        for i, axis1 in enumerate(diff.o.vector):
+            mean = FieldAverage.point.vector(diff * axis1, group_id)
+            for j, axis2 in enumerate(mean.o.mean):
+                axis2 >> matrix.i[int(i * 4 + j)]
 
         svd = MatrixSVD(matrix)
         svd.o.s >> out_princ
-        sep = SeparateMatrix(svd.o.u)
-        long_axis = CombineXYZ(*sep.o[:3])
-        long_axis >> out_long_axis
-        shortest_axis = CombineXYZ(*sep.o[8:11])
-        shortest_axis >> out_shortest_axis
-        AxesToRotation(long_axis, shortest_axis) >> out_rotation
-        (
-            CombineXYZ(*sep.o[4:7]) * Math.sign(MatrixDeterminant(svd.o.u))
-        ) >> out_intermediate_axis
+        short, inter, long = [
+            CombineXYZ(*svd.o.u[i * 4 : (i * 4) + 3]) for i in range(3)
+        ]
+        long >> out_long_axis
+        short >> out_shortest_axis
+        AxesToRotation(long, short) >> out_rotation
+        (inter * Math.sign(MatrixDeterminant(svd.o.u))) >> out_intermediate_axis
