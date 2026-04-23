@@ -629,13 +629,25 @@ def test_color_socket_input_indexing():
 
 
 def test_color_socket_input_shader():
-    with s.tree() as tree:
+    with s.tree():
         sep = s.SeparateColor()
 
         for i, axis in enumerate(sep.i.color):
             s.Value(i) >> axis
 
-    assert sep.i.color.links[0].from_node.bl_idname == s.CombineColor._bl_idname  # ty: ignore[unresolved-attribute]
+    assert sep.i.color.links[0].from_node
+    assert sep.i.color.links[0].from_node.bl_idname == s.CombineColor._bl_idname
+
+
+def test_color_socket_input_compositor():
+    with c.tree():
+        sep = c.SeparateColor()
+
+        for i, axis in enumerate(sep.i.image):
+            c.Value(i) >> axis
+
+    assert sep.i.image.links[0].from_node
+    assert sep.i.image.links[0].from_node.bl_idname == c.CombineColor._bl_idname
 
 
 def test_color_socket_output_iteration():
