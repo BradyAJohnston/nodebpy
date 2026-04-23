@@ -332,9 +332,11 @@ class _ColorMixin:
         return CombineColor
 
     def _get_or_create_combine_color(self) -> "bpy.types.Node":
-        for link in self.socket.links:
-            if link.from_node.bl_idname in self._COMBINE_COLOR_IDNAMES:
-                return link.from_node
+        if self.socket.links:
+            for link in self.socket.links:
+                assert link.from_node
+                if link.from_node.bl_idname in self._COMBINE_COLOR_IDNAMES:
+                    return link.from_node
         CombineColor = self._get_combine_color_cls()
         combine = CombineColor()
         self._tree.link(combine.node.outputs[0], self.socket)

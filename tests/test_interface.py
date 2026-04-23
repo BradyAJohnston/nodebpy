@@ -1,3 +1,5 @@
+from functools import reduce
+
 import bpy
 import pytest
 
@@ -240,6 +242,7 @@ def test_geometry_socket_links_to_node():
         set_pos >> out
 
     assert set_pos.node.inputs[0].links
+    assert set_pos.node.inputs[0].links[0].from_node
     assert set_pos.node.inputs[0].links[0].from_node.name == "Group Input"
 
 
@@ -482,7 +485,7 @@ def test_compositor_panel_with_socket_methods():
     assert color.parent == panels[0]
 
 
-def test_socket_accessort():
+def test_socket_accessor():
     with g.tree():
         pos = g.Position()
 
@@ -618,14 +621,21 @@ def test_color_socket_input_indexing():
         val = g.Value(0.5)
         sgpc = g.SetGreasePencilColor()
         val >> sgpc.i.color[2]
+        val >> sgpc.i.color[1]
 
     a_input = sgpc.node.inputs["Color"]
     assert a_input.links
     combine_node = a_input.links[0].from_node
     assert combine_node
     assert combine_node.bl_idname == g.CombineColor._bl_idname
+    assert combine_node.inputs[1].links
+    assert combine_node.inputs[1].links[0].from_node == val.node
     assert combine_node.inputs[2].links
     assert combine_node.inputs[2].links[0].from_node == val.node
+    assert (
+        combine_node.inputs[1].links[0].from_node
+        == combine_node.inputs[2].links[0].from_node
+    )
 
 
 def test_color_socket_input_shader():
@@ -675,6 +685,7 @@ def test_matrix_socket_input_indexing():
         val = g.Value(1.0)
         transform = g.SetInstanceTransform()
         val >> transform.i.transform[0]
+        val >> transform.i.transform[1]
 
     transform_input = transform.node.inputs["Transform"]
     assert transform_input.links
@@ -683,6 +694,11 @@ def test_matrix_socket_input_indexing():
     assert combine_node.bl_idname == g.CombineMatrix._bl_idname
     assert combine_node.inputs[0].links
     assert combine_node.inputs[0].links[0].from_node == val.node
+    assert combine_node.inputs[1].links
+    assert (
+        combine_node.inputs[1].links[0].from_node
+        == combine_node.inputs[0].links[0].from_node
+    )
 
 
 def test_matrix_socket_input_slice():
@@ -703,6 +719,7 @@ def test_matrix_socket_output_iteration():
         mat = g.InstanceTransform()
         components = list(mat.o.transform)
         comb = g.CombineMatrix(*components)
+        math = mat.o.transform[3] + 3
 
     assert len(components) == 16
     sep_node = components[0].socket.node
@@ -713,6 +730,7 @@ def test_matrix_socket_output_iteration():
     assert sep_node
     assert sep_node.bl_idname == g.SeparateMatrix._bl_idname
     assert all(c.socket.node == sep_node for c in components)
+    assert math.i[0].links[0].from_node == comb.i[0].links[0].from_node
 
 
 def test_matrix_socket_output_len():
