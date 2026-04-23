@@ -17,6 +17,11 @@ from ..geometry.converter import (
     Math,
     SeparateXYZ,
 )
+from ..geometry.input import (
+    Boolean,
+    Integer,
+    Vector,
+)
 from ..geometry.interface import (
     GroupInput,
     GroupOutput,
@@ -36,6 +41,7 @@ from ..geometry.texture import (
     WhiteNoiseTexture,
 )
 from ..geometry.vector import (
+    RadialTiling,
     VectorCurves,
     VectorMath,
     VectorRotate,
@@ -69,6 +75,7 @@ from .filter import (
     Glare,
     Inpaint,
     Kuwahara,
+    MaskToSDF,
     Pixelate,
     VectorBlur,
 )
@@ -92,6 +99,7 @@ from .converter import (
     ConvertColorspace,
     ConvertToDisplay,
     IDMask,
+    IndexSwitch,
     Levels,
     Mix,
     RGBToBw,
@@ -127,6 +135,7 @@ from .input import (
     Normal,
     RenderLayers,
     SceneTime,
+    SequencerStripInfo,
     TimeCurve,
     TrackPosition,
 )
@@ -149,6 +158,7 @@ __all__ = (
     "Blackbody",
     "Blur",
     "BokehBlur",
+    "Boolean",
     "BoxMask",
     "BrickTexture",
     "Brightnesscontrast",
@@ -196,7 +206,9 @@ __all__ = (
     "HueCorrect",
     "Huesaturationvalue",
     "IDMask",
+    "IndexSwitch",
     "Inpaint",
+    "Integer",
     "InvertColor",
     "Keying",
     "KeyingScreen",
@@ -208,6 +220,7 @@ __all__ = (
     "MapRange",
     "MapUV",
     "Mask",
+    "MaskToSDF",
     "Math",
     "MenuSwitch",
     "Mix",
@@ -221,6 +234,7 @@ __all__ = (
     "Posterize",
     "RGBCurves",
     "RGBToBw",
+    "RadialTiling",
     "RelativeToPixel",
     "RenderLayers",
     "Rotate",
@@ -228,6 +242,7 @@ __all__ = (
     "SceneTime",
     "SeparateColor",
     "SeparateXYZ",
+    "SequencerStripInfo",
     "SetAlpha",
     "Split",
     "Stabilize2D",
@@ -239,6 +254,7 @@ __all__ = (
     "Transform",
     "Translate",
     "Value",
+    "Vector",
     "VectorBlur",
     "VectorCurves",
     "VectorMath",

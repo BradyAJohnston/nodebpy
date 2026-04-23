@@ -489,6 +489,10 @@ class ShaderSocket(Socket):
     """Runtime shader socket wrapper."""
 
 
+class FontSocket(Socket):
+    """Runtime font socket wrapper."""
+
+
 _SOCKET_LINKER_REGISTRY["NodeSocketFloat"] = FloatSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketVector"] = VectorSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketColor"] = ColorSocket
@@ -502,6 +506,7 @@ _SOCKET_LINKER_REGISTRY["NodeSocketGeometry"] = GeometrySocket
 _SOCKET_LINKER_REGISTRY["NodeSocketObject"] = ObjectSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketMaterial"] = MaterialSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketImage"] = ImageSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketFont"] = FontSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketCollection"] = CollectionSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketBundle"] = BundleSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketClosure"] = ClosureSocket

@@ -1,13 +1,28 @@
 from typing import TYPE_CHECKING
 
+from nodebpy.nodes.compositor import CombineXYZ, SeparateXYZ
+from nodebpy.types import InputInteger, InputVector
+
 from ...builder import (
     IntegerSocket,
     NodeGroupBuilder,
     SocketAccessor,
+    SocketRotation,
     VectorSocket,
 )
-from ...types import InputInteger, InputVector
-from . import EdgesOfVertex, EdgeVertices, EvaluateAtIndex, Switch
+from . import (
+    AxesToRotation,
+    CombineMatrix,
+    EdgesOfVertex,
+    EdgeVertices,
+    EvaluateAtIndex,
+    FieldAverage,
+    Math,
+    MatrixDeterminant,
+    MatrixSVD,
+    SeparateMatrix,
+    Switch,
+)
 
 
 class OtherVertex(NodeGroupBuilder):
@@ -102,3 +117,86 @@ class OffsetVector(NodeGroupBuilder):
         value = EvaluateAtIndex.point.vector(vector, index + offset)
 
         _ = value >> tree.outputs.vector("Vector")
+
+
+class PrincipalComponents(NodeGroupBuilder):
+    """
+    Compute PCA on a given vector field.
+    """
+
+    _name = "Principal Components"
+    _color_tag = "INPUT"
+
+    class _Inputs(SocketAccessor):
+        position: VectorSocket
+        group_id: IntegerSocket
+
+    class _Outputs(SocketAccessor):
+        center: VectorSocket
+        rotation: SocketRotation
+        principal_components: VectorSocket
+        longest_axis: VectorSocket
+        intermediate_axis: VectorSocket
+        shortest_axis: VectorSocket
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        position: InputVector = None,
+        group_id: InputInteger = None,
+    ):
+        kwargs = {
+            "Position": position,
+            "Group ID": group_id,
+        }
+        super().__init__(**kwargs)
+
+    def _build_group(self, tree):
+        position = tree.inputs.vector("Position", default_input="POSITION")
+        group_id = tree.inputs.integer(
+            "Group ID",
+            description="An index used to group values together for multiple separate operations",
+            hide_value=True,
+        )
+        out_centroid = tree.outputs.vector("Centroid")
+        out_princ = tree.outputs.vector(
+            "Principal Components",
+            description="Variance of the data along each principal axis",
+        )
+        out_rotation = tree.outputs.rotation(
+            "Rotation",
+            description="Rotation that defines the principal component basis",
+        )
+        with tree.outputs.panel("Principal Axes", default_closed=True):
+            out_long_axis = tree.outputs.vector("Longest Axis")
+            out_intermediate_axis = tree.outputs.vector("Intermediate Axis")
+            out_shortest_axis = tree.outputs.vector("Shortest Axis")
+
+        centroid = FieldAverage.point.vector(position, group_id)
+        centroid >> out_centroid
+        diff = position - centroid
+        matrix = CombineMatrix()
+
+        for i, axis in enumerate(SeparateXYZ(diff).o[:]):
+            mean_diff = FieldAverage.point.vector(diff * axis, group_id)
+            for j, axis in enumerate(SeparateXYZ(mean_diff).o[:]):
+                axis >> matrix.i[int(i * 4 + j)]
+
+        svd = MatrixSVD(matrix)
+        svd.o.s >> out_princ
+        sep = SeparateMatrix(svd.o.u)
+        long_axis = CombineXYZ(*sep.o[:3])
+        long_axis >> out_long_axis
+        shortest_axis = CombineXYZ(*sep.o[8:11])
+        shortest_axis >> out_shortest_axis
+        AxesToRotation(long_axis, shortest_axis) >> out_rotation
+        (
+            CombineXYZ(*sep.o[4:7]) * Math.sign(MatrixDeterminant(svd.o.u))
+        ) >> out_intermediate_axis

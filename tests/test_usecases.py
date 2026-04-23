@@ -1,6 +1,7 @@
 import bpy
 
 from nodebpy import geometry as g
+from nodebpy.nodes.geometry.groups import PrincipalComponents
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
@@ -37,3 +38,10 @@ def import_channel() -> bpy.types.GeometryNodeTree:
 def test_import_channel():
     tree = import_channel()
     assert len(tree.nodes) == 10
+
+
+def test_PCA_asset():
+    with g.tree():
+        pca = PrincipalComponents()
+
+    assert len(pca.node.node_tree.nodes) == 31

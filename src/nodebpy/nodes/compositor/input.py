@@ -254,64 +254,6 @@ class RenderLayers(NodeBuilder):
         Image
     o.alpha : FloatSocket
         Alpha
-    o.depth : FloatSocket
-        Depth
-    o.normal : VectorSocket
-        Normal
-    o.uv : VectorSocket
-        UV
-    o.vector : VectorSocket
-        Vector
-    o.position : VectorSocket
-        Position
-    o.deprecated : ColorSocket
-        Deprecated
-    o.deprecated_001 : ColorSocket
-        Deprecated
-    o.shadow : ColorSocket
-        Shadow
-    o.ambient_occlusion : ColorSocket
-        Ambient Occlusion
-    o.deprecated_002 : ColorSocket
-        Deprecated
-    o.deprecated_003 : ColorSocket
-        Deprecated
-    o.deprecated_004 : ColorSocket
-        Deprecated
-    o.object_index : FloatSocket
-        Object Index
-    o.material_index : FloatSocket
-        Material Index
-    o.mist : FloatSocket
-        Mist
-    o.emission : ColorSocket
-        Emission
-    o.environment : ColorSocket
-        Environment
-    o.diffuse_direct : ColorSocket
-        Diffuse Direct
-    o.diffuse_indirect : ColorSocket
-        Diffuse Indirect
-    o.diffuse_color : ColorSocket
-        Diffuse Color
-    o.glossy_direct : ColorSocket
-        Glossy Direct
-    o.glossy_indirect : ColorSocket
-        Glossy Indirect
-    o.glossy_color : ColorSocket
-        Glossy Color
-    o.transmission_direct : ColorSocket
-        Transmission Direct
-    o.transmission_indirect : ColorSocket
-        Transmission Indirect
-    o.transmission_color : ColorSocket
-        Transmission Color
-    o.subsurface_direct : ColorSocket
-        Subsurface Direct
-    o.subsurface_indirect : ColorSocket
-        Subsurface Indirect
-    o.subsurface_color : ColorSocket
-        Subsurface Color
     """
 
     _bl_idname = "CompositorNodeRLayers"
@@ -325,64 +267,6 @@ class RenderLayers(NodeBuilder):
         """Image"""
         alpha: FloatSocket
         """Alpha"""
-        depth: FloatSocket
-        """Depth"""
-        normal: VectorSocket
-        """Normal"""
-        uv: VectorSocket
-        """UV"""
-        vector: VectorSocket
-        """Vector"""
-        position: VectorSocket
-        """Position"""
-        deprecated: ColorSocket
-        """Deprecated"""
-        deprecated_001: ColorSocket
-        """Deprecated"""
-        shadow: ColorSocket
-        """Shadow"""
-        ambient_occlusion: ColorSocket
-        """Ambient Occlusion"""
-        deprecated_002: ColorSocket
-        """Deprecated"""
-        deprecated_003: ColorSocket
-        """Deprecated"""
-        deprecated_004: ColorSocket
-        """Deprecated"""
-        object_index: FloatSocket
-        """Object Index"""
-        material_index: FloatSocket
-        """Material Index"""
-        mist: FloatSocket
-        """Mist"""
-        emission: ColorSocket
-        """Emission"""
-        environment: ColorSocket
-        """Environment"""
-        diffuse_direct: ColorSocket
-        """Diffuse Direct"""
-        diffuse_indirect: ColorSocket
-        """Diffuse Indirect"""
-        diffuse_color: ColorSocket
-        """Diffuse Color"""
-        glossy_direct: ColorSocket
-        """Glossy Direct"""
-        glossy_indirect: ColorSocket
-        """Glossy Indirect"""
-        glossy_color: ColorSocket
-        """Glossy Color"""
-        transmission_direct: ColorSocket
-        """Transmission Direct"""
-        transmission_indirect: ColorSocket
-        """Transmission Indirect"""
-        transmission_color: ColorSocket
-        """Transmission Color"""
-        subsurface_direct: ColorSocket
-        """Subsurface Direct"""
-        subsurface_indirect: ColorSocket
-        """Subsurface Indirect"""
-        subsurface_color: ColorSocket
-        """Subsurface Color"""
 
     if TYPE_CHECKING:
 
@@ -429,6 +313,56 @@ class SceneTime(NodeBuilder):
         """Seconds"""
         frame: FloatSocket
         """Frame"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class SequencerStripInfo(NodeBuilder):
+    """
+    Returns information about the active strip of the modifier
+
+    Outputs
+    -------
+    o.start_frame : IntegerSocket
+        Start Frame
+    o.end_frame : IntegerSocket
+        End Frame
+    o.location : VectorSocket
+        Location
+    o.rotation : FloatSocket
+        Rotation
+    o.scale : VectorSocket
+        Scale
+    """
+
+    _bl_idname = "CompositorNodeSequencerStripInfo"
+    node: bpy.types.CompositorNodeSequencerStripInfo
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        start_frame: IntegerSocket
+        """Start Frame"""
+        end_frame: IntegerSocket
+        """End Frame"""
+        location: VectorSocket
+        """Location"""
+        rotation: FloatSocket
+        """Rotation"""
+        scale: VectorSocket
+        """Scale"""
 
     if TYPE_CHECKING:
 

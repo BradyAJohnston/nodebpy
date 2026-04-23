@@ -210,6 +210,312 @@ class AdvectGrid(NodeBuilder):
         self.node.data_type = value
 
 
+class ClipGrid(NodeBuilder):
+    """
+    Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    min_x : InputInteger
+        Min X
+    min_y : InputInteger
+        Min Y
+    min_z : InputInteger
+        Min Z
+    max_x : InputInteger
+        Max X
+    max_y : InputInteger
+        Max Y
+    max_z : InputInteger
+        Max Z
+
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.min_x : IntegerSocket
+        Min X
+    i.min_y : IntegerSocket
+        Min Y
+    i.min_z : IntegerSocket
+        Min Z
+    i.max_x : IntegerSocket
+        Max X
+    i.max_y : IntegerSocket
+        Max Y
+    i.max_z : IntegerSocket
+        Max Z
+
+    Outputs
+    -------
+    o.grid : FloatSocket
+        Grid
+    """
+
+    _bl_idname = "GeometryNodeGridClip"
+    node: bpy.types.GeometryNodeGridClip
+
+    class _Inputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+        min_x: IntegerSocket
+        """Min X"""
+        min_y: IntegerSocket
+        """Min Y"""
+        min_z: IntegerSocket
+        """Min Z"""
+        max_x: IntegerSocket
+        """Max X"""
+        max_y: IntegerSocket
+        """Max Y"""
+        max_z: IntegerSocket
+        """Max Z"""
+
+    class _Outputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        grid: InputFloat = 0.0,
+        min_x: InputInteger = 0,
+        min_y: InputInteger = 0,
+        min_z: InputInteger = 0,
+        max_x: InputInteger = 32,
+        max_y: InputInteger = 32,
+        max_z: InputInteger = 32,
+        *,
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {
+            "Grid": grid,
+            "Min X": min_x,
+            "Min Y": min_y,
+            "Min Z": min_z,
+            "Max X": max_x,
+            "Max Y": max_y,
+            "Max Z": max_z,
+        }
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        grid: InputFloat = 0.0,
+        min_x: InputInteger = 0,
+        min_y: InputInteger = 0,
+        min_z: InputInteger = 0,
+        max_x: InputInteger = 32,
+        max_y: InputInteger = 32,
+        max_z: InputInteger = 32,
+    ) -> "ClipGrid":
+        """Create Clip Grid with operation 'Float'."""
+        return cls(
+            data_type="FLOAT",
+            grid=grid,
+            min_x=min_x,
+            min_y=min_y,
+            min_z=min_z,
+            max_x=max_x,
+            max_y=max_y,
+            max_z=max_z,
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        grid: InputInteger = 0,
+        min_x: InputInteger = 0,
+        min_y: InputInteger = 0,
+        min_z: InputInteger = 0,
+        max_x: InputInteger = 32,
+        max_y: InputInteger = 32,
+        max_z: InputInteger = 32,
+    ) -> "ClipGrid":
+        """Create Clip Grid with operation 'Integer'."""
+        return cls(
+            data_type="INT",
+            grid=grid,
+            min_x=min_x,
+            min_y=min_y,
+            min_z=min_z,
+            max_x=max_x,
+            max_y=max_y,
+            max_z=max_z,
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        grid: InputBoolean = False,
+        min_x: InputInteger = 0,
+        min_y: InputInteger = 0,
+        min_z: InputInteger = 0,
+        max_x: InputInteger = 32,
+        max_y: InputInteger = 32,
+        max_z: InputInteger = 32,
+    ) -> "ClipGrid":
+        """Create Clip Grid with operation 'Boolean'."""
+        return cls(
+            data_type="BOOLEAN",
+            grid=grid,
+            min_x=min_x,
+            min_y=min_y,
+            min_z=min_z,
+            max_x=max_x,
+            max_y=max_y,
+            max_z=max_z,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        grid: InputVector = None,
+        min_x: InputInteger = 0,
+        min_y: InputInteger = 0,
+        min_z: InputInteger = 0,
+        max_x: InputInteger = 32,
+        max_y: InputInteger = 32,
+        max_z: InputInteger = 32,
+    ) -> "ClipGrid":
+        """Create Clip Grid with operation 'Vector'."""
+        return cls(
+            data_type="VECTOR",
+            grid=grid,
+            min_x=min_x,
+            min_y=min_y,
+            min_z=min_z,
+            max_x=max_x,
+            max_y=max_y,
+            max_z=max_z,
+        )
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+        self.node.data_type = value
+
+
+class CubeGridTopology(NodeBuilder):
+    """
+    Create a boolean grid topology with the given dimensions, for use with the Field to Grid node
+
+    Parameters
+    ----------
+    bounds_min : InputVector
+        Bounds Min
+    bounds_max : InputVector
+        Bounds Max
+    resolution_x : InputInteger
+        Resolution X
+    resolution_y : InputInteger
+        Resolution Y
+    resolution_z : InputInteger
+        Resolution Z
+    min_x : InputInteger
+        Min X
+    min_y : InputInteger
+        Min Y
+    min_z : InputInteger
+        Min Z
+
+    Inputs
+    ------
+    i.bounds_min : VectorSocket
+        Bounds Min
+    i.bounds_max : VectorSocket
+        Bounds Max
+    i.resolution_x : IntegerSocket
+        Resolution X
+    i.resolution_y : IntegerSocket
+        Resolution Y
+    i.resolution_z : IntegerSocket
+        Resolution Z
+    i.min_x : IntegerSocket
+        Min X
+    i.min_y : IntegerSocket
+        Min Y
+    i.min_z : IntegerSocket
+        Min Z
+
+    Outputs
+    -------
+    o.topology : BooleanSocket
+        Topology
+    """
+
+    _bl_idname = "GeometryNodeCubeGridTopology"
+    node: bpy.types.GeometryNodeCubeGridTopology
+
+    class _Inputs(SocketAccessor):
+        bounds_min: VectorSocket
+        """Bounds Min"""
+        bounds_max: VectorSocket
+        """Bounds Max"""
+        resolution_x: IntegerSocket
+        """Resolution X"""
+        resolution_y: IntegerSocket
+        """Resolution Y"""
+        resolution_z: IntegerSocket
+        """Resolution Z"""
+        min_x: IntegerSocket
+        """Min X"""
+        min_y: IntegerSocket
+        """Min Y"""
+        min_z: IntegerSocket
+        """Min Z"""
+
+    class _Outputs(SocketAccessor):
+        topology: BooleanSocket
+        """Topology"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        bounds_min: InputVector = None,
+        bounds_max: InputVector = None,
+        resolution_x: InputInteger = 32,
+        resolution_y: InputInteger = 32,
+        resolution_z: InputInteger = 32,
+        min_x: InputInteger = 0,
+        min_y: InputInteger = 0,
+        min_z: InputInteger = 0,
+    ):
+        super().__init__()
+        key_args = {
+            "Bounds Min": bounds_min,
+            "Bounds Max": bounds_max,
+            "Resolution X": resolution_x,
+            "Resolution Y": resolution_y,
+            "Resolution Z": resolution_z,
+            "Min X": min_x,
+            "Min Y": min_y,
+            "Min Z": min_z,
+        }
+
+        self._establish_links(**key_args)
+
+
 class DistributePointsInGrid(NodeBuilder):
     """
     Generate points inside a volume grid
@@ -570,6 +876,158 @@ class GridCurl(NodeBuilder):
         self._establish_links(**key_args)
 
 
+class GridDilateErode(NodeBuilder):
+    """
+    Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    connectivity : InputMenu | Literal['Face', 'Edge', 'Vertex']
+        Connectivity
+    tiles : InputMenu | Literal['Ignore', 'Expand', 'Preserve']
+        Tiles
+    steps : InputInteger
+        Steps
+
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.connectivity : MenuSocket
+        Connectivity
+    i.tiles : MenuSocket
+        Tiles
+    i.steps : IntegerSocket
+        Steps
+
+    Outputs
+    -------
+    o.grid : FloatSocket
+        Grid
+    """
+
+    _bl_idname = "GeometryNodeGridDilateAndErode"
+    node: bpy.types.GeometryNodeGridDilateAndErode
+
+    class _Inputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+        connectivity: MenuSocket
+        """Connectivity"""
+        tiles: MenuSocket
+        """Tiles"""
+        steps: IntegerSocket
+        """Steps"""
+
+    class _Outputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        grid: InputFloat = 0.0,
+        connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
+        tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
+        steps: InputInteger = 1,
+        *,
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {
+            "Grid": grid,
+            "Connectivity": connectivity,
+            "Tiles": tiles,
+            "Steps": steps,
+        }
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        grid: InputFloat = 0.0,
+        connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
+        tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
+        steps: InputInteger = 1,
+    ) -> "GridDilateErode":
+        """Create Grid Dilate & Erode with operation 'Float'."""
+        return cls(
+            data_type="FLOAT",
+            grid=grid,
+            connectivity=connectivity,
+            tiles=tiles,
+            steps=steps,
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        grid: InputInteger = 0,
+        connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
+        tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
+        steps: InputInteger = 1,
+    ) -> "GridDilateErode":
+        """Create Grid Dilate & Erode with operation 'Integer'."""
+        return cls(
+            data_type="INT",
+            grid=grid,
+            connectivity=connectivity,
+            tiles=tiles,
+            steps=steps,
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        grid: InputBoolean = False,
+        connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
+        tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
+        steps: InputInteger = 1,
+    ) -> "GridDilateErode":
+        """Create Grid Dilate & Erode with operation 'Boolean'."""
+        return cls(
+            data_type="BOOLEAN",
+            grid=grid,
+            connectivity=connectivity,
+            tiles=tiles,
+            steps=steps,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        grid: InputVector = None,
+        connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
+        tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
+        steps: InputInteger = 1,
+    ) -> "GridDilateErode":
+        """Create Grid Dilate & Erode with operation 'Vector'."""
+        return cls(
+            data_type="VECTOR",
+            grid=grid,
+            connectivity=connectivity,
+            tiles=tiles,
+            steps=steps,
+        )
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+        self.node.data_type = value
+
+
 class GridDivergence(NodeBuilder):
     """
     Calculate the flow into and out of each point of a directional vector grid
@@ -787,6 +1245,210 @@ class GridLaplacian(NodeBuilder):
         self._establish_links(**key_args)
 
 
+class GridMean(NodeBuilder):
+    """
+    Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    width : InputInteger
+        Width
+    iterations : InputInteger
+        Iterations
+
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.width : IntegerSocket
+        Width
+    i.iterations : IntegerSocket
+        Iterations
+
+    Outputs
+    -------
+    o.grid : FloatSocket
+        Grid
+    """
+
+    _bl_idname = "GeometryNodeGridMean"
+    node: bpy.types.GeometryNodeGridMean
+
+    class _Inputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+        width: IntegerSocket
+        """Width"""
+        iterations: IntegerSocket
+        """Iterations"""
+
+    class _Outputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        grid: InputFloat = 0.0,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
+        *,
+        data_type: Literal["FLOAT", "INT", "VECTOR"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Width": width, "Iterations": iterations}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        grid: InputFloat = 0.0,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
+    ) -> "GridMean":
+        """Create Grid Mean with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid, width=width, iterations=iterations)
+
+    @classmethod
+    def integer(
+        cls,
+        grid: InputInteger = 0,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
+    ) -> "GridMean":
+        """Create Grid Mean with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid, width=width, iterations=iterations)
+
+    @classmethod
+    def vector(
+        cls,
+        grid: InputVector = None,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
+    ) -> "GridMean":
+        """Create Grid Mean with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid, width=width, iterations=iterations)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
+        self.node.data_type = value
+
+
+class GridMedian(NodeBuilder):
+    """
+    Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+    width : InputInteger
+        Width
+    iterations : InputInteger
+        Iterations
+
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+    i.width : IntegerSocket
+        Width
+    i.iterations : IntegerSocket
+        Iterations
+
+    Outputs
+    -------
+    o.grid : FloatSocket
+        Grid
+    """
+
+    _bl_idname = "GeometryNodeGridMedian"
+    node: bpy.types.GeometryNodeGridMedian
+
+    class _Inputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+        width: IntegerSocket
+        """Width"""
+        iterations: IntegerSocket
+        """Iterations"""
+
+    class _Outputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        grid: InputFloat = 0.0,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
+        *,
+        data_type: Literal["FLOAT", "INT", "VECTOR"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Width": width, "Iterations": iterations}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        grid: InputFloat = 0.0,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
+    ) -> "GridMedian":
+        """Create Grid Median with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid, width=width, iterations=iterations)
+
+    @classmethod
+    def integer(
+        cls,
+        grid: InputInteger = 0,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
+    ) -> "GridMedian":
+        """Create Grid Median with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid, width=width, iterations=iterations)
+
+    @classmethod
+    def vector(
+        cls,
+        grid: InputVector = None,
+        width: InputInteger = 1,
+        iterations: InputInteger = 1,
+    ) -> "GridMedian":
+        """Create Grid Median with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid, width=width, iterations=iterations)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
+        self.node.data_type = value
+
+
 class GridToMesh(NodeBuilder):
     """
     Generate a mesh on the "surface" of a volume grid
@@ -847,6 +1509,108 @@ class GridToMesh(NodeBuilder):
         key_args = {"Grid": grid, "Threshold": threshold, "Adaptivity": adaptivity}
 
         self._establish_links(**key_args)
+
+
+class GridToPoints(NodeBuilder):
+    """
+    Generate a point cloud from a volume grid's active voxels
+
+    Parameters
+    ----------
+    grid : InputFloat
+        Grid
+
+    Inputs
+    ------
+    i.grid : FloatSocket
+        Grid
+
+    Outputs
+    -------
+    o.points : GeometrySocket
+        Points
+    o.value : FloatSocket
+        Value
+    o.x : IntegerSocket
+        X
+    o.y : IntegerSocket
+        Y
+    o.z : IntegerSocket
+        Z
+    o.is_tile : BooleanSocket
+        Is Tile
+    o.extent : IntegerSocket
+        Extent
+    """
+
+    _bl_idname = "GeometryNodeGridToPoints"
+    node: bpy.types.GeometryNodeGridToPoints
+
+    class _Inputs(SocketAccessor):
+        grid: FloatSocket
+        """Grid"""
+
+    class _Outputs(SocketAccessor):
+        points: GeometrySocket
+        """Points"""
+        value: FloatSocket
+        """Value"""
+        x: IntegerSocket
+        """X"""
+        y: IntegerSocket
+        """Y"""
+        z: IntegerSocket
+        """Z"""
+        is_tile: BooleanSocket
+        """Is Tile"""
+        extent: IntegerSocket
+        """Extent"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        grid: InputFloat = 0.0,
+        *,
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, grid: InputFloat = 0.0) -> "GridToPoints":
+        """Create Grid to Points with operation 'Float'."""
+        return cls(data_type="FLOAT", grid=grid)
+
+    @classmethod
+    def integer(cls, grid: InputInteger = 0) -> "GridToPoints":
+        """Create Grid to Points with operation 'Integer'."""
+        return cls(data_type="INT", grid=grid)
+
+    @classmethod
+    def boolean(cls, grid: InputBoolean = False) -> "GridToPoints":
+        """Create Grid to Points with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", grid=grid)
+
+    @classmethod
+    def vector(cls, grid: InputVector = None) -> "GridToPoints":
+        """Create Grid to Points with operation 'Vector'."""
+        return cls(data_type="VECTOR", grid=grid)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+        self.node.data_type = value
 
 
 class MeshToDensityGrid(NodeBuilder):
@@ -1946,6 +2710,8 @@ class SetGridBackground(NodeBuilder):
         Grid
     background : InputFloat
         Background
+    update_inactive : InputBoolean
+        Update Inactive
 
     Inputs
     ------
@@ -1953,6 +2719,8 @@ class SetGridBackground(NodeBuilder):
         Grid
     i.background : FloatSocket
         Background
+    i.update_inactive : BooleanSocket
+        Update Inactive
 
     Outputs
     -------
@@ -1968,6 +2736,8 @@ class SetGridBackground(NodeBuilder):
         """Grid"""
         background: FloatSocket
         """Background"""
+        update_inactive: BooleanSocket
+        """Update Inactive"""
 
     class _Outputs(SocketAccessor):
         grid: FloatSocket
@@ -1984,41 +2754,78 @@ class SetGridBackground(NodeBuilder):
         self,
         grid: InputFloat = 0.0,
         background: InputFloat = 0.0,
+        update_inactive: InputBoolean = False,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
         super().__init__()
-        key_args = {"Grid": grid, "Background": background}
+        key_args = {
+            "Grid": grid,
+            "Background": background,
+            "Update Inactive": update_inactive,
+        }
         self.data_type = data_type
         self._establish_links(**key_args)
 
     @classmethod
     def float(
-        cls, grid: InputFloat = 0.0, background: InputFloat = 0.0
+        cls,
+        grid: InputFloat = 0.0,
+        background: InputFloat = 0.0,
+        update_inactive: InputBoolean = False,
     ) -> "SetGridBackground":
         """Create Set Grid Background with operation 'Float'."""
-        return cls(data_type="FLOAT", grid=grid, background=background)
+        return cls(
+            data_type="FLOAT",
+            grid=grid,
+            background=background,
+            update_inactive=update_inactive,
+        )
 
     @classmethod
     def integer(
-        cls, grid: InputInteger = 0, background: InputInteger = 0
+        cls,
+        grid: InputInteger = 0,
+        background: InputInteger = 0,
+        update_inactive: InputBoolean = False,
     ) -> "SetGridBackground":
         """Create Set Grid Background with operation 'Integer'."""
-        return cls(data_type="INT", grid=grid, background=background)
+        return cls(
+            data_type="INT",
+            grid=grid,
+            background=background,
+            update_inactive=update_inactive,
+        )
 
     @classmethod
     def boolean(
-        cls, grid: InputBoolean = False, background: InputBoolean = False
+        cls,
+        grid: InputBoolean = False,
+        background: InputBoolean = False,
+        update_inactive: InputBoolean = False,
     ) -> "SetGridBackground":
         """Create Set Grid Background with operation 'Boolean'."""
-        return cls(data_type="BOOLEAN", grid=grid, background=background)
+        return cls(
+            data_type="BOOLEAN",
+            grid=grid,
+            background=background,
+            update_inactive=update_inactive,
+        )
 
     @classmethod
     def vector(
-        cls, grid: InputVector = None, background: InputVector = None
+        cls,
+        grid: InputVector = None,
+        background: InputVector = None,
+        update_inactive: InputBoolean = False,
     ) -> "SetGridBackground":
         """Create Set Grid Background with operation 'Vector'."""
-        return cls(data_type="VECTOR", grid=grid, background=background)
+        return cls(
+            data_type="VECTOR",
+            grid=grid,
+            background=background,
+            update_inactive=update_inactive,
+        )
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
