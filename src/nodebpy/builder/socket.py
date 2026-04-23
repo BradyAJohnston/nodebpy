@@ -7,6 +7,7 @@ from bpy.types import (
     FunctionNodeCombineMatrix,
     FunctionNodeSeparateMatrix,
     GeometryNodeTree,
+    NodeLinks,
     NodeSocket,
 )
 
@@ -41,11 +42,8 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         return self._tree
 
     @property
-    def links(self) -> bpy.types.NodeLinks:
-        links = self.socket.links
-        assert links is not None
-        assert len(links) > 0
-        return links
+    def links(self) -> NodeLinks | None:
+        return self.socket.links
 
     @property
     def _default_output_socket(self) -> NodeSocket:

@@ -1,4 +1,3 @@
-from functools import reduce
 
 import bpy
 import pytest
@@ -686,6 +685,15 @@ def test_matrix_socket_input_indexing():
         transform = g.SetInstanceTransform()
         val >> transform.i.transform[0]
         val >> transform.i.transform[1]
+
+        for i, input in enumerate(transform.i.transform):
+            if i < 2:
+                assert input.links
+                assert input.links[0].from_node == val.node
+            else:
+                assert not input.links
+            input.socket.default_value = i  # ty: ignore[unresolved-attribute]
+            assert input.socket.default_value == i  # ty: ignore[unresolved-attribute]
 
     transform_input = transform.node.inputs["Transform"]
     assert transform_input.links
