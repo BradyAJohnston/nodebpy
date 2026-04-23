@@ -500,3 +500,51 @@ def test_socket_accessort():
             >> sim.output
             >> tree.outputs.geometry("MovedCube")
         )
+
+
+def test_accessor_slice():
+    with g.tree():
+        sep = g.SeparateXYZ(g.Position())
+        comb = g.CombineXYZ(*sep.o[:])
+        comb2 = g.CombineXYZ()
+
+        sep.o[1] >> comb2.i[2]
+
+        with pytest.raises(IndexError):
+            sep.o[3] >> comb2.i.x
+        with pytest.raises(IndexError):
+            sep.o[0] >> comb2.i[3]
+
+    assert all(input.links for input in comb.i[:])
+    assert all(input.links[0].from_node == sep.node for input in comb.i[:])
+    assert comb2.i.z.links
+    assert comb2.i.z.links[0].from_node == sep.node
+    assert comb2.i.z.links[0].from_socket == sep.o.y.socket
+
+
+def test_accessor_slice_matrix():
+    with g.tree() as tree:
+        mat = g.InstanceTransform()
+        comb = g.CombineMatrix(*mat.o.transform[:])
+
+        vec = g.Position()
+        vec_comb = g.CombineXYZ(*vec.o.position[:])
+
+        col = g.Color()
+        col_comb = g.CombineColor(*col.o.color[:])
+
+    assert all(input.links for input in comb.i[:])
+    assert all(
+        (input.links[0].from_node.bl_idname == g.SeparateMatrix._bl_idname)
+        for input in comb.i[:]
+    )
+    assert all(input.links for input in vec_comb.i[:])
+    assert all(
+        (input.links[0].from_node.bl_idname == g.SeparateXYZ._bl_idname)
+        for input in vec_comb.i[:]
+    )
+    assert all(input.links for input in col_comb.i[:])
+    assert all(
+        (input.links[0].from_node.bl_idname == g.SeparateColor._bl_idname)
+        for input in col_comb.i[:]
+    )

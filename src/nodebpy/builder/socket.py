@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Iterator, overload
 
 import bpy
 from bpy.types import GeometryNodeTree, NodeSocket
@@ -156,6 +156,21 @@ class _VectorMixin:
     def z(self) -> Socket:
         return self._separated_value("Z")
 
+    @overload
+    def __getitem__(self, key: slice) -> "list[Socket]": ...
+    @overload
+    def __getitem__(self, key: int) -> "Socket": ...
+    def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+        return [self.x, self.y, self.z][key]
+
+    def __iter__(self) -> Iterator["Socket"]:
+        yield self.x
+        yield self.y
+        yield self.z
+
+    def __len__(self) -> int:
+        return 3
+
     def _dispatch_unary(self, operation: str) -> "BaseNode":
         from ..nodes.geometry import VectorMath
 
@@ -276,6 +291,22 @@ class _ColorMixin:
     @property
     def a(self) -> Socket:
         return self._separated_channel("Alpha")
+
+    @overload
+    def __getitem__(self, key: slice) -> "list[Socket]": ...
+    @overload
+    def __getitem__(self, key: int) -> "Socket": ...
+    def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+        return [self.r, self.g, self.b, self.a][key]
+
+    def __iter__(self) -> Iterator["Socket"]:
+        yield self.r
+        yield self.g
+        yield self.b
+        yield self.a
+
+    def __len__(self) -> int:
+        return 4
 
 
 class _IntegerMixin:
@@ -411,6 +442,31 @@ class _MatrixMixin:
     @property
     def scale(self) -> "VectorSocket":
         return self._separate_transform("Scale")  # type: ignore[return-value]
+
+    def _get_or_create_separate_matrix(self) -> "bpy.types.Node":
+        from ..nodes.geometry.converter import SeparateMatrix
+
+        for link in self.socket.links:
+            if link.to_node.bl_idname == "FunctionNodeSeparateMatrix":
+                return link.to_node
+        return SeparateMatrix(self).node
+
+    @overload
+    def __getitem__(self, key: slice) -> "list[Socket]": ...
+    @overload
+    def __getitem__(self, key: int) -> "Socket": ...
+    def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+        node = self._get_or_create_separate_matrix()
+        if isinstance(key, slice):
+            return [_get_socket_linker(node.outputs[i]) for i in range(*key.indices(len(node.outputs)))]
+        return _get_socket_linker(node.outputs[key])
+
+    def __iter__(self) -> Iterator["Socket"]:
+        node = self._get_or_create_separate_matrix()
+        return iter(_get_socket_linker(node.outputs[i]) for i in range(len(node.outputs)))
+
+    def __len__(self) -> int:
+        return 16
 
 
 # ---------------------------------------------------------------------------
