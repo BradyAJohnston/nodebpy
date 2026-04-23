@@ -1,7 +1,4 @@
 import itertools
-from functools import reduce
-from itertools import product
-from operator import and_
 
 import bpy
 import pytest

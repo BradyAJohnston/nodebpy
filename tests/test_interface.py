@@ -523,7 +523,7 @@ def test_accessor_slice():
 
 
 def test_accessor_slice_matrix():
-    with g.tree() as tree:
+    with g.tree():
         mat = g.InstanceTransform()
         comb = g.CombineMatrix(*mat.o.transform[:])
 

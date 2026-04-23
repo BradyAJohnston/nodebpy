@@ -521,18 +521,25 @@ class _MatrixMixin:
             node = self._get_or_create_separate_matrix()
             outputs = node.outputs
             if isinstance(key, slice):
-                return [_get_socket_linker(outputs[i]) for i in range(*key.indices(len(outputs)))]
+                return [
+                    _get_socket_linker(outputs[i])
+                    for i in range(*key.indices(len(outputs)))
+                ]
             return _get_socket_linker(outputs[key])
         node = self._get_or_create_combine_matrix()
         inputs = node.inputs
         if isinstance(key, slice):
-            return [_get_socket_linker(inputs[i]) for i in range(*key.indices(len(inputs)))]
+            return [
+                _get_socket_linker(inputs[i]) for i in range(*key.indices(len(inputs)))
+            ]
         return _get_socket_linker(inputs[key])
 
     def __iter__(self) -> Iterator["Socket"]:
         if self.socket.is_output:
             node = self._get_or_create_separate_matrix()
-            return iter(_get_socket_linker(node.outputs[i]) for i in range(len(node.outputs)))
+            return iter(
+                _get_socket_linker(node.outputs[i]) for i in range(len(node.outputs))
+            )
         node = self._get_or_create_combine_matrix()
         return iter(_get_socket_linker(node.inputs[i]) for i in range(len(node.inputs)))
 
