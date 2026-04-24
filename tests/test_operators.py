@@ -23,7 +23,7 @@ class TestPowerOperator:
 
         assert result.node.bl_idname == "ShaderNodeMath"
         assert result.operation == "POWER"
-        assert result.i[1].default_value == 3.0
+        assert result.i.value_001.default_value == 3.0
 
     def test_integer_power(self):
         with g.tree("TestIntPower"):
@@ -52,7 +52,9 @@ class TestPowerOperator:
 
         assert result.node.bl_idname == "ShaderNodeMath"
         assert result.operation == "POWER"
-        assert result.inputs[0].default_value == 2.0
+        assert result.i.value.default_value == 2.0
+        assert not result.i.value.links
+        assert result.i.value_001.links
 
 
 class TestModuloOperator:
@@ -121,7 +123,7 @@ class TestFloorDivOperator:
 
         assert result.node.bl_idname == "ShaderNodeVectorMath"
         assert result.operation == "FLOOR"
-        assert result.inputs[0].links[0].from_node.operation == "DIVIDE"
+        assert result.i.vector.links[0].from_node.operation == "DIVIDE"
 
     def test_rfloordiv_integer(self):
         with TreeBuilder("TestRFloorDivInt"):
@@ -428,8 +430,8 @@ class TestVectorScalarOperandOrder:
             vec = g.Vector((1, 2, 3))
             result = vec / 2.0
 
-        assert len(result.i[0].links) == 1
-        assert tuple(result.i[1].default_value) == (2.0, 2.0, 2.0)
+        assert len(result.i.vector.links) == 1
+        assert tuple(result.i.vector_001.default_value) == (2.0, 2.0, 2.0)
 
     def test_scalar_div_vector_order(self):
         """2.0 / vec should put (2,2,2) in input 0, vec in input 1."""
