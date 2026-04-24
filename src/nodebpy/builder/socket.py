@@ -4,11 +4,6 @@ from typing import TYPE_CHECKING, Any, Iterator, overload
 
 import bpy
 from bpy.types import (
-    FunctionNodeAlignRotationToVector,
-    FunctionNodeCombineMatrix,
-    FunctionNodeRotationToEuler,
-    FunctionNodeRotationToQuaternion,
-    FunctionNodeSeparateMatrix,
     GeometryNodeTree,
     NodeLinks,
     NodeSocket,
@@ -451,40 +446,35 @@ class _RotationMixin:
     socket: NodeSocket
     _tree: TreeBuilder
 
-    def _quaternion_component(self, component: str) -> FloatSocket:
-        from ..nodes.geometry.converter import RotationToQuaternion
-
-        if self.socket.links:
-            for link in self.socket.links:
-                if isinstance(link.to_node, FunctionNodeRotationToQuaternion):
-                    return _get_socket_linker(link.to_node.outputs[component])
-        return RotationToQuaternion(self.socket).o[component]
-
     @property
     def w(self) -> FloatSocket:
-        return self._quaternion_component("W")
+        from ..nodes.geometry import RotationToQuaternion
+
+        return RotationToQuaternion._find_or_create_linked(self.socket).o.w
 
     @property
     def x(self) -> FloatSocket:
-        return self._quaternion_component("X")
+        from ..nodes.geometry import RotationToQuaternion
+
+        return RotationToQuaternion._find_or_create_linked(self.socket).o.x
 
     @property
     def y(self) -> FloatSocket:
-        return self._quaternion_component("Y")
+        from ..nodes.geometry import RotationToQuaternion
+
+        return RotationToQuaternion._find_or_create_linked(self.socket).o.y
 
     @property
     def z(self) -> FloatSocket:
-        return self._quaternion_component("Z")
+        from ..nodes.geometry import RotationToQuaternion
+
+        return RotationToQuaternion._find_or_create_linked(self.socket).o.z
 
     @property
     def euler(self) -> "VectorSocket":
         from ..nodes.geometry.converter import RotationToEuler
 
-        if self.socket.links:
-            for link in self.socket.links:
-                if isinstance(link.to_node, FunctionNodeRotationToEuler):
-                    return _get_socket_linker(link.to_node.outputs["Euler"])
-        return RotationToEuler(self.socket).o.euler
+        return RotationToEuler._find_or_create_linked(self.socket).o.euler
 
 
 class _MatrixMixin:
@@ -493,75 +483,56 @@ class _MatrixMixin:
     socket: NodeSocket
     _tree: TreeBuilder
 
-    def _separate_transform(self, output: str) -> Socket:
-        from ..nodes.geometry.converter import SeparateTransform
-
-        for link in self.socket.links:
-            if link.to_node.bl_idname == "FunctionNodeSeparateTransform":
-                return _get_socket_linker(link.to_node.outputs[output])
-        return SeparateTransform(self).outputs._get(output)
-
     @property
     def translation(self) -> "VectorSocket":
-        return self._separate_transform("Translation")  # type: ignore[return-value]
+        from ..nodes.geometry import SeparateTransform
+
+        return SeparateTransform._find_or_create_linked(self.socket).o.translation
 
     @property
     def rotation(self) -> "RotationSocket":
-        return self._separate_transform("Rotation")  # type: ignore[return-value]
+        from ..nodes.geometry import SeparateTransform
+
+        return SeparateTransform._find_or_create_linked(self.socket).o.rotation
 
     @property
     def scale(self) -> "VectorSocket":
-        return self._separate_transform("Scale")  # type: ignore[return-value]
+        from ..nodes.geometry import SeparateTransform
 
-    def _get_or_create_separate_matrix(self) -> FunctionNodeSeparateMatrix:
-        from ..nodes.geometry.converter import SeparateMatrix
+        return SeparateTransform._find_or_create_linked(self.socket).o.scale
 
-        if self.socket.links:
-            for link in self.socket.links:
-                if isinstance(link.to_node, FunctionNodeSeparateMatrix):
-                    return link.to_node
-        return SeparateMatrix(self).node
+    @property
+    def determinant(self) -> "FloatSocket":
+        from ..nodes.geometry import MatrixDeterminant
 
-    def _get_or_create_combine_matrix(self) -> FunctionNodeCombineMatrix:
-        from ..nodes.geometry.converter import CombineMatrix
-
-        if self.socket.links:
-            for link in self.socket.links:
-                if isinstance(link.from_node, FunctionNodeCombineMatrix):
-                    return link.from_node
-
-        combine = CombineMatrix()
-        self._tree.link(combine.node.outputs[0], self.socket)
-        return combine.node
+        return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
 
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
     @overload
     def __getitem__(self, key: int) -> "Socket": ...
     def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+        from ..nodes.geometry import CombineMatrix, SeparateMatrix
+
         if self.socket.is_output:
-            node = self._get_or_create_separate_matrix()
-            outputs = node.outputs
+            node = SeparateMatrix._find_or_create_linked(self.socket)
             if isinstance(key, slice):
-                return [
-                    _get_socket_linker(outputs[i])
-                    for i in range(*key.indices(len(outputs)))
-                ]
-            return _get_socket_linker(outputs[key])
-        node = self._get_or_create_combine_matrix()
-        inputs = node.inputs
+                return [node.o[i] for i in range(*key.indices(len(node.o)))]
+            return node.o[key]
+        node = CombineMatrix._find_or_create_linked(self.socket)
         if isinstance(key, slice):
-            return [
-                _get_socket_linker(inputs[i]) for i in range(*key.indices(len(inputs)))
-            ]
-        return _get_socket_linker(inputs[key])
+            return [node.i[i] for i in range(*key.indices(len(node.i)))]
+        return node.i[key]
 
     def __iter__(self) -> Iterator["Socket"]:
+        from ..nodes.geometry import CombineMatrix, SeparateMatrix
+
         if self.socket.is_output:
-            node = self._get_or_create_separate_matrix()
-            return iter(_get_socket_linker(o) for o in node.outputs)
-        node = self._get_or_create_combine_matrix()
-        return iter(_get_socket_linker(i) for i in node.inputs)
+            node = SeparateMatrix._find_or_create_linked(self.socket)
+            return iter(node.o[:])
+        else:
+            node = CombineMatrix._find_or_create_linked(self.socket)
+            return iter(node.i[:])
 
     def __len__(self) -> int:
         return 16

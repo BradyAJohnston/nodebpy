@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from nodebpy.nodes.compositor import CombineXYZ, SeparateXYZ
+from nodebpy.nodes.compositor import CombineXYZ
 from nodebpy.types import InputInteger, InputVector
 
 from ...builder import (
@@ -8,7 +8,6 @@ from ...builder import (
     NodeGroupBuilder,
     RotationSocket,
     SocketAccessor,
-    SocketRotation,
     VectorSocket,
 )
 from . import (
@@ -19,9 +18,7 @@ from . import (
     EvaluateAtIndex,
     FieldAverage,
     Math,
-    MatrixDeterminant,
     MatrixSVD,
-    SeparateMatrix,
     Switch,
 )
 
@@ -198,4 +195,4 @@ class PrincipalComponents(NodeGroupBuilder):
         long >> out_long_axis
         short >> out_shortest_axis
         AxesToRotation(long, short) >> out_rotation
-        (inter * Math.sign(MatrixDeterminant(svd.o.u))) >> out_intermediate_axis
+        (inter * Math.sign(svd.o.u.determinant)) >> out_intermediate_axis
