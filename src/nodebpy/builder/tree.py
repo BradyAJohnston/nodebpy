@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
 
 import bpy
 from bpy.types import (
     CompositorNodeTree,
     GeometryNodeTree,
     Node,
+    NodeFrame,
     Nodes,
     NodeSocket,
     NodeTree,
@@ -28,23 +29,25 @@ from ._utils import SocketError, _allow_innactive_sockets
 if TYPE_CHECKING:
     from .interface import (
         InterfaceSocket,
-        SocketBoolean,
-        SocketBundle,
-        SocketClosure,
-        SocketCollection,
-        SocketColor,
-        SocketFloat,
-        SocketGeometry,
-        SocketImage,
-        SocketInteger,
-        SocketMaterial,
-        SocketMatrix,
-        SocketMenu,
-        SocketObject,
-        SocketRotation,
-        SocketShader,
-        SocketString,
-        SocketVector,
+    )
+    from .socket import (
+        BooleanSocket,
+        BundleSocket,
+        ClosureSocket,
+        CollectionSocket,
+        ColorSocket,
+        FloatSocket,
+        GeometrySocket,
+        ImageSocket,
+        IntegerSocket,
+        MaterialSocket,
+        MatrixSocket,
+        MenuSocket,
+        ObjectSocket,
+        RotationSocket,
+        ShaderSocket,
+        StringSocket,
+        VectorSocket,
     )
 
 
@@ -126,7 +129,7 @@ class SocketContext:
         subtype: FloatInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "SocketFloat":
+    ) -> "FloatSocket":
         """Add a Float socket to this input/output interface."""
         from .interface import SocketFloat
 
@@ -162,7 +165,7 @@ class SocketContext:
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "SocketInteger":
+    ) -> "IntegerSocket":
         """Add an Integer socket to this input/output interface."""
         from .interface import SocketInteger
 
@@ -197,7 +200,7 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         is_panel_toggle: bool = False,
-    ) -> "SocketBoolean":
+    ) -> "BooleanSocket":
         """Add a Boolean socket to this input/output interface."""
         from .interface import SocketBoolean
 
@@ -235,7 +238,7 @@ class SocketContext:
             "VALUE", "NORMAL", "POSITION", "HANDLE_LEFT", "HANDLE_RIGHT"
         ] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
-    ) -> "SocketVector":
+    ) -> "VectorSocket":
         """Add a Vector socket to this input/output interface."""
         from .interface import SocketVector
 
@@ -269,7 +272,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "SocketColor":
+    ) -> "ColorSocket":
         """Add a Color socket to this input/output interface."""
         from .interface import SocketColor
 
@@ -298,7 +301,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "SocketRotation":
+    ) -> "RotationSocket":
         """Add a Rotation socket to this input/output interface."""
         from .interface import SocketRotation
 
@@ -327,7 +330,7 @@ class SocketContext:
         default_input: Literal["VALUE", "INSTANCE_TRANSFORM"] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "SocketMatrix":
+    ) -> "MatrixSocket":
         """Add a Matrix socket to this input/output interface."""
         from .interface import SocketMatrix
 
@@ -354,7 +357,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         subtype: StringInterfaceSubtypes = "NONE",
-    ) -> "SocketString":
+    ) -> "StringSocket":
         """Add a String socket to this input/output interface."""
         from .interface import SocketString
 
@@ -380,7 +383,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> "SocketMenu":
+    ) -> "MenuSocket":
         """Add a Menu socket to this input/output interface."""
         from .interface import SocketMenu
 
@@ -405,7 +408,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "SocketObject":
+    ) -> "ObjectSocket":
         """Add an Object socket to this input/output interface."""
         from .interface import SocketObject
 
@@ -427,7 +430,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "SocketGeometry":
+    ) -> "GeometrySocket":
         """Add a Geometry socket to this input/output interface."""
         from .interface import SocketGeometry
 
@@ -449,7 +452,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "SocketCollection":
+    ) -> "CollectionSocket":
         """Add a Collection socket to this input/output interface."""
         from .interface import SocketCollection
 
@@ -472,7 +475,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "SocketImage":
+    ) -> "ImageSocket":
         """Add an Image socket to this input/output interface."""
         from .interface import SocketImage
 
@@ -495,7 +498,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "SocketMaterial":
+    ) -> "MaterialSocket":
         """Add a Material socket to this input/output interface."""
         from .interface import SocketMaterial
 
@@ -517,7 +520,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "SocketBundle":
+    ) -> "BundleSocket":
         """Add a Bundle socket to this input/output interface."""
         from .interface import SocketBundle
 
@@ -538,7 +541,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "SocketClosure":
+    ) -> "ClosureSocket":
         """Add a Closure socket to this input/output interface."""
         from .interface import SocketClosure
 
@@ -559,7 +562,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "SocketShader":
+    ) -> "ShaderSocket":
         """Add a Shader socket to this input/output interface."""
         from .interface import SocketShader
 
@@ -627,6 +630,7 @@ class TreeBuilder:
     """
 
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
+    _frame_contexts: ClassVar["list[NodeFrame]"] = []
 
     def __init__(
         self,
@@ -727,7 +731,7 @@ class TreeBuilder:
         """Whatever tree was previously active is set to be the active one (or None if no previously active tree)."""
         TreeBuilder._tree_contexts.pop()
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         self.activate_tree()
         return self
 
@@ -788,16 +792,16 @@ class TreeBuilder:
     def _input_node(self) -> Node:
         """Get or create the Group Input node."""
         try:
-            return self.tree.nodes["Group Input"]  # type: ignore
+            return self.tree.nodes["Group Input"]
         except KeyError:
-            return self.tree.nodes.new("NodeGroupInput")  # type: ignore
+            return self.tree.nodes.new("NodeGroupInput")
 
     def _output_node(self) -> Node:
         """Get or create the Group Output node."""
         try:
-            return self.tree.nodes["Group Output"]  # type: ignore
+            return self.tree.nodes["Group Output"]
         except KeyError:
-            return self.tree.nodes.new("NodeGroupOutput")  # type: ignore
+            return self.tree.nodes.new("NodeGroupOutput")
 
     def link(self, socket1: NodeSocket, socket2: NodeSocket) -> bpy.types.NodeLink:
         # Unwrap Socket wrappers to raw NodeSocket
@@ -835,6 +839,8 @@ class TreeBuilder:
     def add(self, name: str) -> Node:
         node = self.tree.nodes.new(name)
         node.hide = self.collapse
+        if self._frame_contexts:
+            node.parent = self._frame_contexts[-1]
         return node
 
 

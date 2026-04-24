@@ -11,7 +11,6 @@ from ...builder import (
     BundleSocket,
     ColorSocket,
     FloatSocket,
-    GeometrySocket,
     IntegerSocket,
     MatrixSocket,
     MenuSocket,
@@ -37,6 +36,7 @@ from ...types import (
     InputString,
     InputFloat,
     InputVector,
+    InputFont,
 )
 
 
@@ -1332,6 +1332,391 @@ class FloatToInteger(NodeBuilder):
     @rounding_mode.setter
     def rounding_mode(self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]):
         self.node.rounding_mode = value
+
+
+class GetBundleItem(NodeBuilder):
+    """
+    Retrieve a bundle item by path.
+
+    Parameters
+    ----------
+    bundle : InputBundle
+        Bundle
+    path : InputString
+        Path
+    remove : InputBoolean
+        Remove
+
+    Inputs
+    ------
+    i.bundle : BundleSocket
+        Bundle
+    i.path : StringSocket
+        Path
+    i.remove : BooleanSocket
+        Remove
+
+    Outputs
+    -------
+    o.bundle : BundleSocket
+        Bundle
+    o.item : FloatSocket
+        Item
+    o.exists : BooleanSocket
+        Exists
+    """
+
+    _bl_idname = "NodeGetBundleItem"
+    node: bpy.types.Node
+
+    class _Inputs(SocketAccessor):
+        bundle: BundleSocket
+        """Bundle"""
+        path: StringSocket
+        """Path"""
+        remove: BooleanSocket
+        """Remove"""
+
+    class _Outputs(SocketAccessor):
+        bundle: BundleSocket
+        """Bundle"""
+        item: FloatSocket
+        """Item"""
+        exists: BooleanSocket
+        """Exists"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+        ] = "FLOAT",
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
+    ):
+        super().__init__()
+        key_args = {"Bundle": bundle, "Path": path, "Remove": remove}
+        self.socket_type = socket_type
+        self.structure_type = structure_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Float'."""
+        return cls(socket_type="FLOAT", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def integer(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Integer'."""
+        return cls(socket_type="INT", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def boolean(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Boolean'."""
+        return cls(socket_type="BOOLEAN", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def vector(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Vector'."""
+        return cls(socket_type="VECTOR", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def color(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Color'."""
+        return cls(socket_type="RGBA", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def rotation(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Rotation'."""
+        return cls(socket_type="ROTATION", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def matrix(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Matrix'."""
+        return cls(socket_type="MATRIX", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def string(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'String'."""
+        return cls(socket_type="STRING", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def menu(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Menu'."""
+        return cls(socket_type="MENU", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def object(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Object'."""
+        return cls(socket_type="OBJECT", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def image(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Image'."""
+        return cls(socket_type="IMAGE", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def geometry(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Geometry'."""
+        return cls(socket_type="GEOMETRY", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def collection(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Collection'."""
+        return cls(socket_type="COLLECTION", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def material(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Material'."""
+        return cls(socket_type="MATERIAL", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def bundle(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Bundle'."""
+        return cls(socket_type="BUNDLE", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def closure(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Closure'."""
+        return cls(socket_type="CLOSURE", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def font(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Font'."""
+        return cls(socket_type="FONT", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def auto(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
+        return cls(structure_type="AUTO", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def dynamic(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
+        return cls(structure_type="DYNAMIC", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def field(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Field'. Socket expects a field"""
+        return cls(structure_type="FIELD", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def grid(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Grid'. Socket expects a grid"""
+        return cls(structure_type="GRID", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def list(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'List'. Socket expects a list"""
+        return cls(structure_type="LIST", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
+    def single(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Single'. Socket expects a single value"""
+        return cls(structure_type="SINGLE", bundle=bundle, path=path, remove=remove)
+
+    @property
+    def socket_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+    ]:
+        return self.node.socket_type
+
+    @socket_type.setter
+    def socket_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+        ],
+    ):
+        self.node.socket_type = value
+
+    @property
+    def structure_type(
+        self,
+    ) -> Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]:
+        return self.node.structure_type
+
+    @structure_type.setter
+    def structure_type(
+        self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
+    ):
+        self.node.structure_type = value
 
 
 class HashValue(NodeBuilder):
@@ -2773,6 +3158,59 @@ class MatrixDeterminant(NodeBuilder):
         self._establish_links(**key_args)
 
 
+class MatrixSVD(NodeBuilder):
+    """
+    Compute the singular value decomposition of the 3x3 part of a matrix
+
+    Parameters
+    ----------
+    matrix : InputMatrix
+        Matrix
+
+    Inputs
+    ------
+    i.matrix : MatrixSocket
+        Matrix
+
+    Outputs
+    -------
+    o.u : MatrixSocket
+        U
+    o.s : VectorSocket
+        S
+    o.v : MatrixSocket
+        V
+    """
+
+    _bl_idname = "FunctionNodeMatrixSVD"
+    node: bpy.types.FunctionNodeMatrixSVD
+
+    class _Inputs(SocketAccessor):
+        matrix: MatrixSocket
+        """Matrix"""
+
+    class _Outputs(SocketAccessor):
+        u: MatrixSocket
+        """U"""
+        s: VectorSocket
+        """S"""
+        v: MatrixSocket
+        """V"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, matrix: InputMatrix = None):
+        super().__init__()
+        key_args = {"Matrix": matrix}
+
+        self._establish_links(**key_args)
+
+
 class Mix(NodeBuilder):
     """
     Mix values by a factor
@@ -3134,6 +3572,10 @@ class PackUVIslands(NodeBuilder):
         Rotate
     method : InputMenu | Literal['Bounding Box', 'Convex Hull', 'Exact Shape']
         Method
+    bottom_left : InputVector
+        Bottom Left
+    top_right : InputVector
+        Top Right
 
     Inputs
     ------
@@ -3147,6 +3589,10 @@ class PackUVIslands(NodeBuilder):
         Rotate
     i.method : MenuSocket
         Method
+    i.bottom_left : VectorSocket
+        Bottom Left
+    i.top_right : VectorSocket
+        Top Right
 
     Outputs
     -------
@@ -3168,6 +3614,10 @@ class PackUVIslands(NodeBuilder):
         """Rotate"""
         method: MenuSocket
         """Method"""
+        bottom_left: VectorSocket
+        """Bottom Left"""
+        top_right: VectorSocket
+        """Top Right"""
 
     class _Outputs(SocketAccessor):
         uv: VectorSocket
@@ -3188,6 +3638,8 @@ class PackUVIslands(NodeBuilder):
         rotate: InputBoolean = True,
         method: InputMenu
         | Literal["Bounding Box", "Convex Hull", "Exact Shape"] = "Bounding Box",
+        bottom_left: InputVector = None,
+        top_right: InputVector = None,
     ):
         super().__init__()
         key_args = {
@@ -3196,6 +3648,8 @@ class PackUVIslands(NodeBuilder):
             "Margin": margin,
             "Rotate": rotate,
             "Method": method,
+            "Bottom Left": bottom_left,
+            "Top Right": top_right,
         }
 
         self._establish_links(**key_args)
@@ -4357,6 +4811,344 @@ class SliceString(NodeBuilder):
         self._establish_links(**key_args)
 
 
+class StoreBundleItem(NodeBuilder):
+    """
+    Store a bundle item by path and data type.
+
+    Parameters
+    ----------
+    bundle : InputBundle
+        Bundle
+    path : InputString
+        Path
+    item : InputFloat
+        Item
+
+    Inputs
+    ------
+    i.bundle : BundleSocket
+        Bundle
+    i.path : StringSocket
+        Path
+    i.item : FloatSocket
+        Item
+
+    Outputs
+    -------
+    o.bundle : BundleSocket
+        Bundle
+    """
+
+    _bl_idname = "NodeStoreBundleItem"
+    node: bpy.types.Node
+
+    class _Inputs(SocketAccessor):
+        bundle: BundleSocket
+        """Bundle"""
+        path: StringSocket
+        """Path"""
+        item: FloatSocket
+        """Item"""
+
+    class _Outputs(SocketAccessor):
+        bundle: BundleSocket
+        """Bundle"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+        ] = "FLOAT",
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
+    ):
+        super().__init__()
+        key_args = {"Bundle": bundle, "Path": path, "Item": item}
+        self.socket_type = socket_type
+        self.structure_type = structure_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Float'."""
+        return cls(socket_type="FLOAT", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def integer(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputInteger = 0
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Integer'."""
+        return cls(socket_type="INT", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def boolean(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputBoolean = False,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Boolean'."""
+        return cls(socket_type="BOOLEAN", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def vector(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputVector = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Vector'."""
+        return cls(socket_type="VECTOR", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def color(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputColor = None
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Color'."""
+        return cls(socket_type="RGBA", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def rotation(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputRotation = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Rotation'."""
+        return cls(socket_type="ROTATION", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def matrix(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputMatrix = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Matrix'."""
+        return cls(socket_type="MATRIX", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def string(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputString = ""
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'String'."""
+        return cls(socket_type="STRING", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def menu(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputMenu = None
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Menu'."""
+        return cls(socket_type="MENU", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def object(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputObject = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Object'."""
+        return cls(socket_type="OBJECT", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def image(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputImage = None
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Image'."""
+        return cls(socket_type="IMAGE", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def geometry(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputGeometry = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Geometry'."""
+        return cls(socket_type="GEOMETRY", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def collection(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputCollection = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Collection'."""
+        return cls(socket_type="COLLECTION", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def material(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputMaterial = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Material'."""
+        return cls(socket_type="MATERIAL", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def bundle(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputBundle = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Bundle'."""
+        return cls(socket_type="BUNDLE", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def closure(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputClosure = None,
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Closure'."""
+        return cls(socket_type="CLOSURE", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def font(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputFont = None
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Font'."""
+        return cls(socket_type="FONT", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def auto(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
+        return cls(structure_type="AUTO", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def dynamic(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
+        return cls(structure_type="DYNAMIC", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def field(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Field'. Socket expects a field"""
+        return cls(structure_type="FIELD", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def grid(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Grid'. Socket expects a grid"""
+        return cls(structure_type="GRID", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def list(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'List'. Socket expects a list"""
+        return cls(structure_type="LIST", bundle=bundle, path=path, item=item)
+
+    @classmethod
+    def single(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Single'. Socket expects a single value"""
+        return cls(structure_type="SINGLE", bundle=bundle, path=path, item=item)
+
+    @property
+    def socket_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+    ]:
+        return self.node.socket_type
+
+    @socket_type.setter
+    def socket_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+        ],
+    ):
+        self.node.socket_type = value
+
+    @property
+    def structure_type(
+        self,
+    ) -> Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]:
+        return self.node.structure_type
+
+    @structure_type.setter
+    def structure_type(
+        self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
+    ):
+        self.node.structure_type = value
+
+
 class StringLength(NodeBuilder):
     """
     Output the number of characters in the given string
@@ -4482,23 +5274,23 @@ class Switch(NodeBuilder):
     ----------
     switch : InputBoolean
         Switch
-    false : InputGeometry
+    false : InputFloat
         False
-    true : InputGeometry
+    true : InputFloat
         True
 
     Inputs
     ------
     i.switch : BooleanSocket
         Switch
-    i.false : GeometrySocket
+    i.false : FloatSocket
         False
-    i.true : GeometrySocket
+    i.true : FloatSocket
         True
 
     Outputs
     -------
-    o.output : GeometrySocket
+    o.output : FloatSocket
         Output
     """
 
@@ -4508,13 +5300,13 @@ class Switch(NodeBuilder):
     class _Inputs(SocketAccessor):
         switch: BooleanSocket
         """Switch"""
-        false: GeometrySocket
+        false: FloatSocket
         """False"""
-        true: GeometrySocket
+        true: FloatSocket
         """True"""
 
     class _Outputs(SocketAccessor):
-        output: GeometrySocket
+        output: FloatSocket
         """Output"""
 
     if TYPE_CHECKING:
@@ -4527,8 +5319,8 @@ class Switch(NodeBuilder):
     def __init__(
         self,
         switch: InputBoolean = False,
-        false: InputGeometry = None,
-        true: InputGeometry = None,
+        false: InputFloat = 0.0,
+        true: InputFloat = 0.0,
         *,
         input_type: Literal[
             "FLOAT",
@@ -4547,7 +5339,8 @@ class Switch(NodeBuilder):
             "MATERIAL",
             "BUNDLE",
             "CLOSURE",
-        ] = "GEOMETRY",
+            "FONT",
+        ] = "FLOAT",
     ):
         super().__init__()
         key_args = {"Switch": switch, "False": false, "True": true}
@@ -4714,6 +5507,16 @@ class Switch(NodeBuilder):
         """Create Switch with operation 'Closure'."""
         return cls(input_type="CLOSURE", switch=switch, false=false, true=true)
 
+    @classmethod
+    def font(
+        cls,
+        switch: InputBoolean = False,
+        false: InputFont = None,
+        true: InputFont = None,
+    ) -> "Switch":
+        """Create Switch with operation 'Font'."""
+        return cls(input_type="FONT", switch=switch, false=false, true=true)
+
     @property
     def input_type(
         self,
@@ -4734,6 +5537,7 @@ class Switch(NodeBuilder):
         "MATERIAL",
         "BUNDLE",
         "CLOSURE",
+        "FONT",
     ]:
         return self.node.input_type
 
@@ -4757,6 +5561,7 @@ class Switch(NodeBuilder):
             "MATERIAL",
             "BUNDLE",
             "CLOSURE",
+            "FONT",
         ],
     ):
         self.node.input_type = value
@@ -4931,8 +5736,12 @@ class UVUnwrap(NodeBuilder):
         Margin
     fill_holes : InputBoolean
         Fill Holes
-    method : InputMenu | Literal['Angle Based', 'Conformal']
+    method : InputMenu | Literal['Angle Based', 'Conformal', 'Minimum Stretch']
         Method
+    iterations : InputInteger
+        Iterations
+    no_flip : InputBoolean
+        No Flip
 
     Inputs
     ------
@@ -4946,6 +5755,10 @@ class UVUnwrap(NodeBuilder):
         Fill Holes
     i.method : MenuSocket
         Method
+    i.iterations : IntegerSocket
+        Iterations
+    i.no_flip : BooleanSocket
+        No Flip
 
     Outputs
     -------
@@ -4967,6 +5780,10 @@ class UVUnwrap(NodeBuilder):
         """Fill Holes"""
         method: MenuSocket
         """Method"""
+        iterations: IntegerSocket
+        """Iterations"""
+        no_flip: BooleanSocket
+        """No Flip"""
 
     class _Outputs(SocketAccessor):
         uv: VectorSocket
@@ -4985,7 +5802,10 @@ class UVUnwrap(NodeBuilder):
         seam: InputBoolean = False,
         margin: InputFloat = 0.001,
         fill_holes: InputBoolean = True,
-        method: InputMenu | Literal["Angle Based", "Conformal"] = "Angle Based",
+        method: InputMenu
+        | Literal["Angle Based", "Conformal", "Minimum Stretch"] = "Angle Based",
+        iterations: InputInteger = 10,
+        no_flip: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -4994,6 +5814,8 @@ class UVUnwrap(NodeBuilder):
             "Margin": margin,
             "Fill Holes": fill_holes,
             "Method": method,
+            "Iterations": iterations,
+            "No Flip": no_flip,
         }
 
         self._establish_links(**key_args)

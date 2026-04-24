@@ -33,6 +33,7 @@ from ...types import (
     InputString,
     InputFloat,
     InputVector,
+    InputFont,
 )
 
 
@@ -194,6 +195,7 @@ class EnableOutput(NodeBuilder):
             "MATERIAL",
             "BUNDLE",
             "CLOSURE",
+            "FONT",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -313,6 +315,13 @@ class EnableOutput(NodeBuilder):
         """Create Enable Output with operation 'Closure'."""
         return cls(data_type="CLOSURE", enable=enable, value=value)
 
+    @classmethod
+    def font(
+        cls, enable: InputBoolean = False, value: InputFont = None
+    ) -> "EnableOutput":
+        """Create Enable Output with operation 'Font'."""
+        return cls(data_type="FONT", enable=enable, value=value)
+
     @property
     def data_type(
         self,
@@ -333,6 +342,7 @@ class EnableOutput(NodeBuilder):
         "MATERIAL",
         "BUNDLE",
         "CLOSURE",
+        "FONT",
     ]:
         return self.node.data_type
 
@@ -356,6 +366,7 @@ class EnableOutput(NodeBuilder):
             "MATERIAL",
             "BUNDLE",
             "CLOSURE",
+            "FONT",
         ],
     ):
         self.node.data_type = value

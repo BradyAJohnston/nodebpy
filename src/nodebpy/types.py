@@ -15,6 +15,7 @@ from bpy.types import (
     NodeSocketCollection,
     NodeSocketColor,
     NodeSocketFloat,
+    NodeSocketFont,
     NodeSocketGeometry,
     NodeSocketImage,
     NodeSocketInt,
@@ -27,6 +28,7 @@ from bpy.types import (
     NodeSocketString,
     NodeSocketVector,
     Object,
+    VectorFont,
 )
 from mathutils import Euler
 
@@ -84,6 +86,8 @@ InputClosure = typing.Union[NodeSocketClosure, InputLinkable]
 InputShader = typing.Union[
     NodeSocketShader, NodeSocketColor, NodeSocketVector, NodeSocketFloat, InputLinkable
 ]
+InputFont = typing.Union[NodeSocketFont, InputLinkable, VectorFont]
+
 
 InputGrid = typing.Union[
     NodeSocketFloat, NodeSocketInt, NodeSocketVector, NodeSocketBool, InputLinkable

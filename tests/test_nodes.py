@@ -5,7 +5,7 @@ import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy import sockets as s
+from nodebpy import shader as s
 
 
 def test_capture_attribute():
@@ -24,9 +24,9 @@ def test_capture_attribute():
     assert len(cap._items) == 1
     assert cap.node.outputs[1].name == "Position"
     assert cap.node.outputs[1].type == "VECTOR"
-    assert cap.i.position.socket.links
-    assert len(cap.i.position.socket.links) == 1
-    assert cap.i.position.socket.links[0].from_node.bl_idname == g.Position._bl_idname
+    assert cap.i.position.links
+    assert len(cap.i.position.links) == 1
+    assert cap.i.position.links[0].from_node.bl_idname == g.Position._bl_idname
 
     with TreeBuilder() as tree:
         cap = g.Points(
@@ -37,13 +37,9 @@ def test_capture_attribute():
             normal=g.Normal(),
         )
         assert len(cap.node.capture_items) == 3
+        assert cap.i.normal.links[0].from_node.bl_idname == "GeometryNodeInputNormal"
         assert (
-            cap.inputs["normal"].socket.links[0].from_node.bl_idname
-            == "GeometryNodeInputNormal"
-        )
-        assert (
-            cap.inputs["Position"].socket.links[0].from_node.bl_idname
-            == "GeometryNodeInputPosition"
+            cap.i.position.links[0].from_node.bl_idname == "GeometryNodeInputPosition"
         )
 
 
@@ -333,13 +329,14 @@ def test_index_switch(snapshot_tree):
     assert len(index.node.index_switch_items) == 4
     assert len(tree) == 6
     assert index.i.index.socket.default_value == 5
-    assert index2.node.inputs[1].default_value == pytest.approx(0.0)
-    assert index2.node.inputs[2].default_value == pytest.approx(1.0)
-    assert index2.node.inputs[3].default_value == pytest.approx(2.0)
+    assert index2.i[1].default_value == pytest.approx(0.0)
+    assert index2.i[2].default_value == pytest.approx(1.0)
+    assert index2.i[3].default_value == pytest.approx(2.0)
 
 
 def test_menu_switch():
     with TreeBuilder() as tree:
+        menu = tree.inputs.menu()
         items = (
             g.Cube(),
             g.UVSphere(),
@@ -347,8 +344,6 @@ def test_menu_switch():
             g.Cube(),
         )
         switch = g.MenuSwitch.geometry(*items, custom=g.Cone())
-        with tree.inputs:
-            menu = s.SocketMenu()
         menu >> switch
         menu.socket.default_value = "Mesh"
 
@@ -390,21 +385,17 @@ def test_multi_menu():
         switch1 = g.IndexSwitch.geometry(*items, index=menu)
         switch2 = g.IndexSwitch.geometry(*reversed(items), index=menu)
 
-        with tree.inputs:
-            menu_input = s.SocketMenu()
-            menu_input >> menu
-            menu_input.default_value = "test"
+        menu_input = tree.inputs.menu()
+        menu_input >> menu
+        menu_input.default_value = "test"
 
-        with tree.outputs:
-            g.JoinGeometry(switch1, switch2) >> s.SocketGeometry("Output")
+        g.JoinGeometry(switch1, switch2) >> tree.outputs.geometry("Output")
 
 
 def test_switch_repeatzone(snapshot_tree):
     with TreeBuilder() as tree:
-        with tree.inputs:
-            input = s.SocketGeometry()
-        with tree.outputs:
-            output = s.SocketGeometry()
+        input = tree.inputs.geometry()
+        output = tree.outputs.geometry()
 
         items = (g.Cube(), g.IcoSphere(), g.Grid())
         zone = g.RepeatZone(5, input)
@@ -419,13 +410,11 @@ def test_switch_repeatzone(snapshot_tree):
 
 def test_generate_select_group():
     with TreeBuilder() as tree:
-        with tree.inputs:
-            switch = g.IndexSwitch.boolean(
-                *[s.SocketBoolean(str(i)) for i in range(20)],
-                index=g.NamedAttribute.integer("chain_id"),
-            )
-        with tree.outputs:
-            switch >> s.SocketBoolean("Selection")
+        switch = g.IndexSwitch.boolean(
+            *[tree.inputs.boolean(str(i)) for i in range(20)],
+            index=g.NamedAttribute.integer("chain_id"),
+        )
+        switch >> tree.outputs.boolean("Selection")
 
     assert len(switch.node.index_switch_items) == 20
     assert len(tree) == 4
@@ -454,10 +443,9 @@ def test_accumulate_field():
 
 
 def test_edge_other_point():
-    with TreeBuilder() as tree:
-        with tree.inputs:
-            v_index = s.SocketInteger("Vertex Index", default_input="INDEX")
-            e_index = s.SocketInteger("Edge Number")
+    with TreeBuilder(arrange="simple") as tree:
+        v_index = tree.inputs.integer("Vertex Index", default_input="INDEX")
+        e_index = tree.inputs.integer("Edge Number")
 
         # with the index from the selected edge from the input, we get the two different vertices
         # of the edge. We compare them and return the one that isn't the current input vertex index
@@ -467,12 +455,12 @@ def test_edge_other_point():
         vert_2 = g.EvaluateAtIndex.edge.integer(ev.o.vertex_index_2, eov)
         other_vertex = g.Switch.integer(v_index == vert_1, vert_1, vert_2)
 
-        with tree.outputs:
-            _ = other_vertex >> s.SocketInteger("Other Vertex")
+        _ = other_vertex >> tree.outputs.integer("Other Vertex")
 
-    other_vertex.node.inputs[0].links[0].from_node == vert_1.node
-    other_vertex.node.inputs[1].links[0].from_node == vert_2.node
-    other_vertex.node.inputs[2].links[0].from_node.name == "Compare"
+    assert other_vertex.i[0].links[0].from_node
+    assert other_vertex.i[0].links[0].from_node.bl_idname == g.Compare._bl_idname
+    assert other_vertex.i[1].links[0].from_node == vert_1.node
+    assert other_vertex.i[2].links[0].from_node == vert_2.node
 
 
 def test_align_rotation_to_vector():
@@ -483,20 +471,16 @@ def test_align_rotation_to_vector():
         # this should select the rotation input socket
         artv2 = g.AxesToRotation() >> g.AlignRotationToVector()
 
+    assert artv.i.vector.links[0].from_socket == tree.nodes["Random Value"].outputs[0]
     assert (
-        artv.i.vector.socket.links[0].from_socket
-        == tree.nodes["Random Value"].outputs[0]
-    )
-    assert (
-        artv2.i.rotation.socket.links[0].from_socket
+        artv2.i.rotation.links[0].from_socket
         == tree.nodes["Axes to Rotation"].outputs[0]
     )
 
 
 def test_foreachgeometryelement_zone():
     with TreeBuilder() as tree:
-        with tree.outputs:
-            out = s.SocketGeometry("Geometry")
+        out = tree.outputs.geometry("Geometry")
         cube = g.Cube()
         zone = g.ForEachGeometryElementZone(
             cube,
@@ -541,7 +525,7 @@ def test_foreachgeometryelement_zone():
 
 
 def test_boolean_math_methods():
-    with TreeBuilder(arrange=None, collapse=True) as tree:
+    with TreeBuilder(arrange="simple", collapse=True) as tree:
         _ = (
             g.Boolean()
             >> g.BooleanMath.not_and(..., True)
@@ -672,7 +656,7 @@ def test_mesh_boolean():
         bool4 = g.MeshBoolean.union(*meshes, self_intersection=True, solver="EXACT")
         assert len(bool4.i.mesh_2.links) == 2
         assert bool4.solver == "EXACT"
-        assert bool4.i.self_intersection.socket.default_value is True
+        assert bool4.i.self_intersection.default_value is True
 
     assert len(boolean.i.mesh_2.links) == 2
     assert len(bool2.i.mesh_2.links) == 2
@@ -707,21 +691,21 @@ def test_compare_node_data_types():
         comp = g.Compare.string.equal("A", "B")
         assert comp.data_type == "STRING"
         assert comp.operation == "EQUAL"
-        assert comp.i.a.socket.default_value == "A"
-        assert comp.i.b.socket.default_value == "B"
+        assert comp.i.a.default_value == "A"
+        assert comp.i.b.default_value == "B"
 
         comp = g.Compare.string.not_equal("X", "Y")
         assert comp.data_type == "STRING"
         assert comp.operation == "NOT_EQUAL"
-        assert comp.i.a.socket.default_value == "X"
-        assert comp.i.b.socket.default_value == "Y"
+        assert comp.i.a.default_value == "X"
+        assert comp.i.b.default_value == "Y"
 
         # --- float ---
         comp = g.Compare.float.less_than(1.0, 2.0)
         assert comp.data_type == "FLOAT"
         assert comp.operation == "LESS_THAN"
-        assert comp.i.a.socket.default_value == pytest.approx(1.0)
-        assert comp.i.b.socket.default_value == pytest.approx(2.0)
+        assert comp.i.a.default_value == pytest.approx(1.0)
+        assert comp.i.b.default_value == pytest.approx(2.0)
 
         comp = g.Compare.float.less_equal()
         assert comp.data_type == "FLOAT"
@@ -735,12 +719,12 @@ def test_compare_node_data_types():
 
         comp = g.Compare.float.equal(1.0, 0.0)
         assert comp.operation == "EQUAL"
-        assert comp.i.a.socket.default_value == pytest.approx(1.0)
+        assert comp.i.a.default_value == pytest.approx(1.0)
 
         comp = g.Compare.float.not_equal(3.0, 4.0)
         assert comp.operation == "NOT_EQUAL"
-        assert comp.i.a.socket.default_value == pytest.approx(3.0)
-        assert comp.i.b.socket.default_value == pytest.approx(4.0)
+        assert comp.i.a.default_value == pytest.approx(3.0)
+        assert comp.i.b.default_value == pytest.approx(4.0)
 
         # output socket
         assert comp.o.result.socket.type == "BOOLEAN"
@@ -749,8 +733,8 @@ def test_compare_node_data_types():
         comp = g.Compare.integer.less_than(1, 2)
         assert comp.data_type == "INT"
         assert comp.operation == "LESS_THAN"
-        assert comp.i.a.socket.default_value == 1
-        assert comp.i.b.socket.default_value == 2
+        assert comp.i.a.default_value == 1
+        assert comp.i.b.default_value == 2
 
         comp = g.Compare.integer.less_equal()
         assert comp.operation == "LESS_EQUAL"
@@ -763,16 +747,16 @@ def test_compare_node_data_types():
 
         comp = g.Compare.integer.equal(5, 5)
         assert comp.operation == "EQUAL"
-        assert comp.i.a.socket.default_value == 5
+        assert comp.i.a.default_value == 5
 
         comp = g.Compare.integer.not_equal()
         assert comp.operation == "NOT_EQUAL"
 
         # mutating data_type re-routes i.a / i.b
         comp.data_type = "FLOAT"
-        assert comp.i.a.socket.default_value == pytest.approx(0.0)
-        comp.i.a.socket.default_value = 7.0
-        assert comp.i.a.socket.default_value == pytest.approx(7.0)
+        assert comp.i.a.default_value == pytest.approx(0.0)
+        comp.i.a.default_value = 7
+        assert comp.i.a.default_value == pytest.approx(7.0)
 
         # --- vector ---
         comp = g.Compare.vector.less_than((1, 0, 0), (0, 1, 0))
@@ -793,12 +777,12 @@ def test_compare_node_data_types():
         assert comp.mode == "AVERAGE"
 
         comp = g.Compare.vector.equal(mode="DIRECTION", angle=0.5, epsilon=0.3)
-        assert comp.i.epsilon.socket.default_value == pytest.approx(0.3)
-        assert comp.i.angle.socket.default_value == pytest.approx(0.5)
+        assert comp.i.epsilon.default_value == pytest.approx(0.3)
+        assert comp.i.angle.default_value == pytest.approx(0.5)
 
         comp = g.Compare.vector.equal(mode="DOT_PRODUCT", c=0.5, epsilon=0.2)
-        assert comp.i.c.socket.default_value == pytest.approx(0.5)
-        assert comp.i.epsilon.socket.default_value == pytest.approx(0.2)
+        assert comp.i.c.default_value == pytest.approx(0.5)
+        assert comp.i.epsilon.default_value == pytest.approx(0.2)
 
         comp = g.Compare.vector.not_equal()
         assert comp.operation == "NOT_EQUAL"
@@ -816,3 +800,276 @@ def test_compare_node_data_types():
 
         comp = g.Compare.color.not_equal()
         assert comp.operation == "NOT_EQUAL"
+
+
+def test_manual_field_factories():
+    with g.tree("FieldFactories"):
+        eai = g.EvaluateAtIndex.corner.boolean()
+        assert eai.domain == "CORNER"
+        assert eai.data_type == "BOOLEAN"
+
+        eai = g.EvaluateAtIndex.face.float()
+        assert eai.domain == "FACE"
+        assert eai.data_type == "FLOAT"
+
+        eai = g.EvaluateAtIndex.face.transform()
+        assert eai.domain == "FACE"
+        assert eai.data_type == "FLOAT4X4"
+
+        with g.Frame("Test") as f:
+            af = g.AccumulateField.edge.float()
+            assert af.domain == "EDGE"
+            assert af.data_type == "FLOAT"
+
+        assert af.node.parent == f.node
+
+        assert f.shrink
+        f.shrink = False
+        assert not f.shrink
+        assert f.label == "Test"
+        assert f.text is None
+        f.text = bpy.data.texts.new("NewTex")
+        assert f.text is not None
+        assert isinstance(f.text, bpy.types.Text)
+
+        af = g.AccumulateField.edge.float(g.SplineParameter().o.length)
+        assert af.node
+        assert af.node.parent is None
+
+        af = g.AccumulateField.edge.integer()
+        assert af.data_type == "INT"
+        assert af.domain == "EDGE"
+
+        af = g.AccumulateField.edge.vector()
+        assert af.data_type == "FLOAT_VECTOR"
+        assert af.domain == "EDGE"
+
+        fa = g.FieldAverage.edge.float()
+        assert fa.domain == "EDGE"
+        assert fa.data_type == "FLOAT"
+
+        fmm = g.FieldMinAndMax.edge.float()
+        assert fmm.domain == "EDGE"
+        assert fmm.data_type == "FLOAT"
+
+        fmm = g.FieldMinAndMax.edge.integer()
+        assert fmm.domain == "EDGE"
+        assert fmm.data_type == "INT"
+
+        fmm = g.FieldMinAndMax.edge.vector()
+        assert fmm.domain == "EDGE"
+        assert fmm.data_type == "FLOAT_VECTOR"
+
+        eod = g.EvaluateOnDomain.edge.float()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "FLOAT"
+
+        eod = g.EvaluateOnDomain.edge.integer()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "INT"
+
+        eod = g.EvaluateOnDomain.edge.boolean()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "BOOLEAN"
+
+        eod = g.EvaluateOnDomain.edge.vector()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "FLOAT_VECTOR"
+
+        eod = g.EvaluateOnDomain.edge.rotation()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "QUATERNION"
+
+        eod = g.EvaluateOnDomain.edge.transform()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "FLOAT4X4"
+
+        stat = g.AttributeStatistic.point.float()
+        assert stat.domain == "POINT"
+        assert stat.data_type == "FLOAT"
+
+        stat = g.AttributeStatistic.point.vector()
+        assert stat.domain == "POINT"
+        assert stat.data_type == "FLOAT_VECTOR"
+
+        stat = g.AttributeStatistic.edge.float()
+        assert stat.domain == "EDGE"
+
+        stat = g.AttributeStatistic.face.vector()
+        assert stat.domain == "FACE"
+        stat = g.AttributeStatistic.corner.float()
+        assert stat.domain == "CORNER"
+
+        stat = g.AttributeStatistic.spline.float()
+        assert stat.domain == "CURVE"
+
+        stat = g.AttributeStatistic.instance.float()
+        assert stat.domain == "INSTANCE"
+
+        stat = g.AttributeStatistic.layer.float()
+        assert stat.domain == "LAYER"
+
+
+def test_bone_info():
+    with g.tree():
+        bi = g.BoneInfo()
+        assert bi.transform_space == "ORIGINAL"
+        bi.transform_space = "RELATIVE"
+        assert bi.transform_space == "RELATIVE"
+
+
+def test_grid():
+    with g.tree():
+        info = g.GridInfo.boolean()
+        assert info.data_type == "BOOLEAN"
+        info.data_type = "FLOAT"
+        assert info.data_type == "FLOAT"
+
+        mean = g.GridMean.vector()
+        assert mean.data_type == "VECTOR"
+        mean.data_type = "FLOAT"
+        assert mean.data_type == "FLOAT"
+
+        median = g.GridMedian.vector()
+        assert median.data_type == "VECTOR"
+        median.data_type = "FLOAT"
+        assert median.data_type == "FLOAT"
+
+        gtp = g.GridToPoints.vector()
+        assert gtp.data_type == "VECTOR"
+        gtp.data_type = "FLOAT"
+        assert gtp.data_type == "FLOAT"
+
+        gc = g.ClipGrid.integer()
+        assert gc.data_type == "INT"
+        gc.data_type = "FLOAT"
+        assert gc.data_type == "FLOAT"
+
+        gde = g.GridDilateErode.vector()
+        assert gde.data_type == "VECTOR"
+        gde.data_type = "FLOAT"
+        assert gde.data_type == "FLOAT"
+
+        idx = g.IndexSwitch.bundle()
+        assert idx.data_type == "BUNDLE"
+        idx.data_type = "FLOAT"
+        assert idx.data_type == "FLOAT"
+
+
+def test_bundle_item():
+    with g.tree():
+        gbi = g.GetBundleItem.float()
+        assert gbi.structure_type == "AUTO"
+        gbi.structure_type = "LIST"
+        assert gbi.structure_type == "LIST"
+        assert gbi.socket_type == "FLOAT"
+        gbi.socket_type = "INT"
+        assert gbi.socket_type == "INT"
+
+        sbi = g.StoreBundleItem.float()
+        assert sbi.structure_type == "AUTO"
+        sbi.structure_type = "LIST"
+        assert sbi.structure_type == "LIST"
+        assert sbi.socket_type == "FLOAT"
+        sbi.socket_type = "INT"
+        assert sbi.socket_type == "INT"
+
+        switch = g.Switch.bundle()
+        assert switch.input_type == "BUNDLE"
+        switch.input_type = "FLOAT"
+        assert switch.input_type == "FLOAT"
+
+
+def test_uv_normal_map():
+    with s.tree():
+        map = s.NormalMap()
+        assert map.space == "TANGENT"
+        map.space = "OBJECT"
+        assert map.uv_map == ""
+        map.uv_map = "UV Map"
+        assert map.uv_map == "UV Map"
+        assert map.base == "DISPLACED"
+        map.base = "ORIGINAL"
+        assert map.base == "ORIGINAL"
+
+        vec = s.VectorDisplacement()
+        assert vec.space == "TANGENT"
+        vec.space = "OBJECT"
+
+        vec = s.VectorTransform()
+        assert vec.vector_type == "VECTOR"
+        vec.vector_type = "POINT"
+        assert vec.vector_type == "POINT"
+        assert vec.convert_from == "WORLD"
+        vec.convert_from = "OBJECT"
+        assert vec.convert_from == "OBJECT"
+        assert vec.convert_to == "OBJECT"
+        vec.convert_to = "WORLD"
+        assert vec.convert_to == "WORLD"
+
+
+def test_geometry_nodes():
+    with g.tree():
+        cu = g.Arc.points()
+        assert cu.mode == "POINTS"
+        cu.mode = "RADIUS"
+        assert cu.mode == "RADIUS"
+
+        bez = g.BezierSegment.position()
+        assert bez.mode == "POSITION"
+        bez.mode = "OFFSET"
+        assert bez.mode == "OFFSET"
+
+        cone = g.Cone.n_gon()
+        assert cone.fill_type == "NGON"
+        cone.fill_type = "TRIANGLE_FAN"
+        assert cone.fill_type == "TRIANGLE_FAN"
+
+        circle = g.CurveCircle.points()
+        assert circle.mode == "POINTS"
+        circle.mode = "RADIUS"
+        assert circle.mode == "RADIUS"
+
+        line = g.CurveLine.direction()
+        assert line.mode == "DIRECTION"
+        line.mode = "POINTS"
+        assert line.mode == "POINTS"
+
+        ctp = g.CurveToPoints.evaluated()
+        assert ctp.mode == "EVALUATED"
+        ctp.mode = "COUNT"
+        assert ctp.mode == "COUNT"
+
+        cyl = g.Cylinder.triangles()
+        assert cyl.fill_type == "TRIANGLE_FAN"
+        cyl.fill_type = "NGON"
+        assert cyl.fill_type == "NGON"
+
+        dg = g.DeleteGeometry.edge()
+        assert dg.domain == "EDGE"
+        dg.domain = "FACE"
+        assert dg.domain == "FACE"
+        assert dg.mode == "ALL"
+        dg.mode = "EDGE_FACE"
+        assert dg.mode == "EDGE_FACE"
+
+        dis = g.DistributePointsOnFaces()
+        assert dis.distribute_method == "RANDOM"
+        dis.distribute_method = "POISSON"
+        assert dis.distribute_method == "POISSON"
+        assert not dis.use_legacy_normal
+        dis.use_legacy_normal = True
+        assert dis.use_legacy_normal
+
+        rz = g.RealizeInstances()
+        assert not rz.realize_to_point_domain
+        rz.realize_to_point_domain = True
+        assert rz.realize_to_point_domain
+
+        res = g.ResampleCurve()
+        assert res.i.mode.default_value == "Count"
+        res.i.mode.default_value = "Length"
+        assert res.i.mode.default_value == "Length"
+        assert not res.keep_last_segment
+        res.keep_last_segment = True
+        assert res.keep_last_segment

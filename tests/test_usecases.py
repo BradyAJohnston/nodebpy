@@ -5,6 +5,7 @@ from operator import and_
 import bpy
 
 from nodebpy import geometry as g
+from nodebpy.nodes.geometry.groups import PrincipalComponents
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
@@ -64,3 +65,10 @@ def test_decoder_8bit():
 def test_import_channel():
     tree = import_channel()
     assert len(tree.nodes) == 10
+
+
+def test_PCA_asset():
+    with g.tree():
+        pca = PrincipalComponents()
+
+    assert len(pca.node.node_tree.nodes) == 35
