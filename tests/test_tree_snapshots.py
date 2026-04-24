@@ -21,8 +21,8 @@ def test_simple_tree_snapshot(snapshot_tree):
         input >> set_pos >> transform >> output
 
         # Set some properties
-        transform.node.inputs["Translation"].default_value = (1.0, 2.0, 3.0)
-        set_pos.node.inputs["Offset"].default_value = (0.5, 0.5, 0.5)
+        transform.i.translation.default_value = (1.0, 2.0, 3.0)
+        set_pos.i.offset.default_value = (0.5, 0.5, 0.5)
 
     # This will create/compare a snapshot of the tree structure
     assert snapshot_tree == tree
@@ -50,9 +50,9 @@ def test_complex_tree_snapshot(snapshot_tree):
             >> output
         )
 
-        transform1.node.inputs["Translation"].default_value = (2.0, 0.0, 0.0)
-        transform2.node.inputs["Translation"].default_value = (-2.0, 0.0, 0.0)
-        subdivide.node.inputs["Level"].default_value = 2
+        transform1.i.translation.default_value = (2.0, 0.0, 0.0)
+        transform2.i.translation.default_value = (-2.0, 0.0, 0.0)
+        subdivide.i.level.default_value = 2
 
     assert snapshot_tree == tree
 

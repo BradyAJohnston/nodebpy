@@ -6,7 +6,7 @@ import bpy
 from bpy.types import NodeSocket
 
 from ._registry import _get_socket_linker
-from ._utils import SocketError, _allow_innactive_sockets, denormalize_name
+from ._utils import SocketError, _allow_innactive_sockets, denormalize_name, normalize_name
 
 if TYPE_CHECKING:
     from .socket import Socket
@@ -43,6 +43,10 @@ class SocketAccessor:
         for candidate in (key, denorm):
             if candidate in ids:
                 return ids.index(candidate)
+        # Normalized identifier match: 'value_001' matches identifier 'Value_001'
+        normalized_ids = [normalize_name(id) for id in ids]
+        if key in normalized_ids:
+            return normalized_ids.index(key)
         names = [s.name for s in self._collection]
         for key in (key, denorm):
             if key in names:
