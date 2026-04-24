@@ -1,19 +1,32 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Iterable, Literal, Self
+from typing import TYPE_CHECKING, Any, Iterable, Literal, Protocol, Self, cast
 
 import bpy
-from bpy.types import Node, NodeSocket
+from bpy.types import (
+    CompositorNodeTree,
+    GeometryNodeTree,
+    Node,
+    NodeSocket,
+    ShaderNodeTree,
+)
 
-from ..types import SOCKET_COMPATIBILITY, SOCKET_TYPES, InputAny, InputLinkable
+from ..types import SOCKET_COMPATIBILITY, SOCKET_TYPES, InputAny
 from ._utils import SocketError, _NodeLike, _SocketLike
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
 
 if TYPE_CHECKING:
-    pass
+
+    class _DynamicTarget(Protocol):
+        """Structural type for a node that supports dynamic socket addition."""
+
+        def _add_inputs(self, *args: Any, **kwargs: Any) -> dict[str, NodeSocket]: ...
+
+        @property
+        def inputs(self) -> SocketAccessor: ...
 
 
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
@@ -86,7 +99,9 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                     assert link.to_node
                     if link.to_node.bl_idname == cls._bl_idname:
                         return cls._from_node(link.to_node)
-            return cls(socket)
+            node = cls()
+            node.tree.link(socket, node.inputs._best_match(socket.type))
+            return node
         else:
             if socket.links:
                 for link in socket.links:
@@ -115,7 +130,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             if value is None or (
                 "GridPrune" in self._bl_idname
                 and name == "Threshold"
-                and self.node.data_type == "BOOLEAN"
+                and getattr(self.node, "data_type", None) == "BOOLEAN"
             ):
                 continue
             if isinstance(value, Node):
@@ -128,7 +143,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                 continue
 
             elif isinstance(value, _SocketLike):
-                self._link_from(value, name)
+                self._link_from(value.socket, name)
             elif isinstance(value, NodeSocket):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
@@ -192,10 +207,14 @@ class DynamicInputsMixin:
         try:
             return super()._find_best_socket_pair(source, target)  # type: ignore
         except SocketError:
-            target_name, source_socket = list(target._add_inputs(source).items())[0]
-            return (source_socket, target.inputs[target_name].socket)
+            dyn = cast("_DynamicTarget", target)
+            target_name, source_socket = list(dyn._add_inputs(source).items())[0]
+            return (source_socket, dyn.inputs[target_name].socket)
 
-    def _add_inputs(self, *args, **kwargs) -> dict[str, InputLinkable]:
+    def _add_socket(self, name: str, *args: Any, **kwargs: Any) -> NodeSocket:
+        raise NotImplementedError(f"{type(self).__name__} must implement _add_socket")
+
+    def _add_inputs(self, *args, **kwargs) -> dict[str, NodeSocket]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
         new_sockets = {}
         items = {}
@@ -216,9 +235,37 @@ class NodeGroupBuilder(BaseNode, ABC):
     """Base class for custom node groups.
 
     Subclasses implement :meth:`_build_group` with the node-graph logic.
+    Subclass one of the editor-specific variants: :class:`GeometryNodeGroup`,
+    :class:`ShaderNodeGroup`, or :class:`CompositorNodeGroup`.
     """
 
     _name: str
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self._setup_node_group()
+        self.node.show_options = False
+        self._establish_links(**kwargs)
+
+    @abstractmethod
+    def _setup_node_group(self) -> None:
+        """Set ``self.node.node_tree`` and any node-type-specific properties.
+
+        Called by ``__init__`` after the node is created but before links are
+        established. Concrete subclasses have a narrowed ``self.node`` type,
+        so the ``node_tree`` assignment is type-safe here rather than in the
+        base class where ``self.node`` is only ``bpy.types.Node``.
+        """
+        ...
+
+    @abstractmethod
+    def _build_group(self, tree: TreeBuilder) -> None:
+        """Build the node group internals and interface."""
+
+
+class GeometryNodeGroup(NodeGroupBuilder):
+    """Node group in a Geometry Nodes tree."""
+
     _bl_idname = "GeometryNodeGroup"
     _warning_propagation: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"] = (
         "ALL"
@@ -236,25 +283,48 @@ class NodeGroupBuilder(BaseNode, ABC):
     ] = "NONE"
     node: bpy.types.GeometryNodeGroup
 
-    def __init__(self, **kwargs):
-        super().__init__()
+    def _setup_node_group(self) -> None:
         self.node.node_tree = self._get_or_create_group()
-        self.node.show_options = False
         self.node.warning_propagation = self._warning_propagation
-        self._establish_links(**kwargs)
 
-    def _get_or_create_group(self) -> bpy.types.GeometryNodeTree:
-        name = self._name
-        if name in bpy.data.node_groups:
-            return bpy.data.node_groups[name]
-
-        with TreeBuilder(name) as tree:
+    def _get_or_create_group(self) -> GeometryNodeTree:
+        if self._name in bpy.data.node_groups:
+            return cast(GeometryNodeTree, bpy.data.node_groups[self._name])
+        with TreeBuilder.geometry(self._name) as tree:
             self._build_group(tree)
-            tree.tree.color_tag = self._color_tag
-
+        tree.tree.color_tag = self._color_tag
         return tree.tree
 
-    @classmethod
-    @abstractmethod
-    def _build_group(cls, tree: TreeBuilder) -> None:
-        """Code that builds the node group internals and interface"""
+
+class ShaderNodeGroup(NodeGroupBuilder):
+    """Node group in a Shader (Material) node tree."""
+
+    _bl_idname = "ShaderNodeGroup"
+    node: bpy.types.ShaderNodeGroup
+
+    def _setup_node_group(self) -> None:
+        self.node.node_tree = self._get_or_create_group()
+
+    def _get_or_create_group(self) -> ShaderNodeTree:
+        if self._name in bpy.data.node_groups:
+            return cast(ShaderNodeTree, bpy.data.node_groups[self._name])
+        with TreeBuilder.shader(self._name) as tree:
+            self._build_group(tree)
+        return tree.tree
+
+
+class CompositorNodeGroup(NodeGroupBuilder):
+    """Node group in a Compositor node tree."""
+
+    _bl_idname = "CompositorNodeGroup"
+    node: bpy.types.CompositorNodeGroup
+
+    def _setup_node_group(self) -> None:
+        self.node.node_tree = self._get_or_create_group()
+
+    def _get_or_create_group(self) -> CompositorNodeTree:
+        if self._name in bpy.data.node_groups:
+            return cast(CompositorNodeTree, bpy.data.node_groups[self._name])
+        with TreeBuilder.compositor(self._name) as tree:
+            self._build_group(tree)
+        return tree.tree

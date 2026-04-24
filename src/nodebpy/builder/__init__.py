@@ -27,7 +27,14 @@ from .interface import (
     SocketVector,
 )
 from .mixins import LinkingMixin, OperatorMixin
-from .node import BaseNode, DynamicInputsMixin, NodeGroupBuilder
+from .node import (
+    BaseNode,
+    CompositorNodeGroup,
+    DynamicInputsMixin,
+    GeometryNodeGroup,
+    NodeGroupBuilder,
+    ShaderNodeGroup,
+)
 from .socket import (
     BooleanSocket,
     BundleSocket,
@@ -82,6 +89,9 @@ __all__ = [
     "DynamicInputsMixin",
     # Node groups
     "NodeGroupBuilder",
+    "GeometryNodeGroup",
+    "ShaderNodeGroup",
+    "CompositorNodeGroup",
     # Type-specific socket classes (runtime)
     "FloatSocket",
     "VectorSocket",
