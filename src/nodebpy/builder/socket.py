@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Iterator, overload
 import bpy
 from bpy.types import (
     GeometryNodeTree,
+    NodeLink,
     NodeLinks,
     NodeSocket,
 )
@@ -17,9 +18,9 @@ from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
 
 if TYPE_CHECKING:
-    from .node import BaseNode
     from ..nodes.geometry.converter import IntegerMath, Math
     from ..nodes.geometry.vector import VectorMath
+    from .node import BaseNode
 
 
 class Socket(_SocketLike, OperatorMixin, LinkingMixin):
@@ -42,8 +43,10 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         return self._tree
 
     @property
-    def links(self) -> NodeLinks | None:
-        return self.socket.links
+    def links(self) -> list[NodeLink]:
+        if self.socket.links is None:
+            return []
+        return [link for link in self.socket.links]
 
     @property
     def _default_output_socket(self) -> NodeSocket:
@@ -127,6 +130,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
             return result
 
     if TYPE_CHECKING:
+
         def __add__(self, other: Any) -> "Math": ...
         def __radd__(self, other: Any) -> "Math": ...
         def __sub__(self, other: Any) -> "Math": ...
@@ -273,6 +277,7 @@ class _VectorMixin:
             return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
 
     if TYPE_CHECKING:
+
         def __add__(self, other: Any) -> "VectorMath": ...
         def __radd__(self, other: Any) -> "VectorMath": ...
         def __sub__(self, other: Any) -> "VectorMath": ...
@@ -442,6 +447,7 @@ class _IntegerMixin:
         return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
 
     if TYPE_CHECKING:
+
         def __add__(self, other: Any) -> "IntegerMath": ...
         def __radd__(self, other: Any) -> "IntegerMath": ...
         def __sub__(self, other: Any) -> "IntegerMath": ...

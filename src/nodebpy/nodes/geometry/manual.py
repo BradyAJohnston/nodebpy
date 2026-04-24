@@ -892,27 +892,26 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         "MATRIX": "FLOAT4X4",
     }
 
-    @staticmethod
-    def _domain_factory(domain: _AttributeDomains):
-        @classmethod
-        def method(
-            cls,
+    class _DomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def __call__(
+            self,
             *args: InputLinkable,
             geometry: InputGeometry = None,
             **kwargs,
         ) -> "CaptureAttribute":
             """Create a CaptureAttribute node with a pre-set domain"""
-            return cls(*args, geometry=geometry, domain=domain, **kwargs)
+            return CaptureAttribute(*args, geometry=geometry, domain=self._domain, **kwargs)
 
-        return method
-
-    point = _domain_factory("POINT")
-    edge = _domain_factory("EDGE")
-    face = _domain_factory("FACE")
-    corner = _domain_factory("CORNER")
-    curve = _domain_factory("CURVE")
-    instance = _domain_factory("INSTANCE")
-    layer = _domain_factory("LAYER")
+    point = _DomainFactory("POINT")
+    edge = _DomainFactory("EDGE")
+    face = _DomainFactory("FACE")
+    corner = _DomainFactory("CORNER")
+    curve = _DomainFactory("CURVE")
+    instance = _DomainFactory("INSTANCE")
+    layer = _DomainFactory("LAYER")
 
     class _Inputs(SocketAccessor):
         geometry: SocketGeometry

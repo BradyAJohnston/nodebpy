@@ -24,9 +24,9 @@ def test_capture_attribute():
     assert len(cap._items) == 1
     assert cap.node.outputs[1].name == "Position"
     assert cap.node.outputs[1].type == "VECTOR"
-    assert cap.i.position.socket.links
-    assert len(cap.i.position.socket.links) == 1
-    assert cap.i.position.socket.links[0].from_node.bl_idname == g.Position._bl_idname
+    assert cap.i.position.links
+    assert len(cap.i.position.links) == 1
+    assert cap.i.position.links[0].from_node.bl_idname == g.Position._bl_idname
 
     with TreeBuilder() as tree:
         cap = g.Points(
@@ -37,13 +37,9 @@ def test_capture_attribute():
             normal=g.Normal(),
         )
         assert len(cap.node.capture_items) == 3
+        assert cap.i.normal.links[0].from_node.bl_idname == "GeometryNodeInputNormal"
         assert (
-            cap.inputs["normal"].socket.links[0].from_node.bl_idname
-            == "GeometryNodeInputNormal"
-        )
-        assert (
-            cap.inputs["Position"].socket.links[0].from_node.bl_idname
-            == "GeometryNodeInputPosition"
+            cap.i.position.links[0].from_node.bl_idname == "GeometryNodeInputPosition"
         )
 
 
