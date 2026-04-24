@@ -761,3 +761,53 @@ def test_matrix_socket_output_len():
     with g.tree():
         mat = g.InstanceTransform()
         assert len(mat.o.transform) == 16
+
+        assert mat.o.transform.invert.node.bl_idname == g.InvertMatrix._bl_idname
+        assert mat.o.transform.transpose.node.bl_idname == g.TransposeMatrix._bl_idname
+
+        assert len(mat.o.transform.links) == 2
+
+        rot = g.Rotation()
+        rot.o.rotation.invert.node.bl_idname == g.InvertRotation._bl_idname
+
+
+def test_socket_defaults():
+    with g.tree():
+        sep = g.SeparateXYZ()
+        assert sep.i.vector.links == []
+        g.Vector() >> sep
+        assert sep.i.vector.links != []
+        assert len(sep.i.vector.links) == 1
+
+        sep = g.SeparateColor()
+        assert sep.i.color.default_value == [1.0, 1.0, 1.0, 1.0]
+        sep.i.color.default_value = [0.0, 0.0, 0.0, 1.0]
+        assert sep.i.color.default_value == [0.0, 0.0, 0.0, 1.0]
+
+        n = g.BooleanMath.l_not()
+        assert n.i.boolean.default_value is False
+        n.i.boolean.default_value = True
+        assert n.i.boolean.default_value is True
+
+        string = g.StringLength()
+
+        assert string.i.string.default_value == ""
+        string.i.string.default_value = "Some string"
+        assert string.i.string.default_value == "Some string"
+
+        mat = g.Material().o.material
+        assert mat.default_value is None
+        mat.default_value = bpy.data.materials.new("New Material")
+        assert mat.default_value.name == "New Material"
+
+        image = g.Image().o.image
+        assert image.default_value is None
+        image.default_value = bpy.data.images.new("New Image", width=1024, height=1024)
+        assert image.default_value.name == "New Image"
+
+        collection = g.Collection()
+        assert collection.o.collection.default_value is None
+        collection.o.collection.default_value = bpy.data.collections.new(
+            "New Collection"
+        )
+        assert collection.o.collection.default_value.name == "New Collection"

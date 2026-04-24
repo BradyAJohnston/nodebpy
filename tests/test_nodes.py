@@ -863,9 +863,14 @@ def test_manual_field_factories():
         eod = g.EvaluateOnDomain.edge.float()
         assert eod.domain == "EDGE"
         assert eod.data_type == "FLOAT"
+
         eod = g.EvaluateOnDomain.edge.integer()
         assert eod.domain == "EDGE"
         assert eod.data_type == "INT"
+
+        eod = g.EvaluateOnDomain.edge.boolean()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "BOOLEAN"
 
         eod = g.EvaluateOnDomain.edge.vector()
         assert eod.domain == "EDGE"
@@ -905,6 +910,14 @@ def test_manual_field_factories():
         assert stat.domain == "LAYER"
 
 
+def test_bone_info():
+    with g.tree():
+        bi = g.BoneInfo()
+        assert bi.transform_space == "ORIGINAL"
+        bi.transform_space = "RELATIVE"
+        assert bi.transform_space == "RELATIVE"
+
+
 def test_grid():
     with g.tree():
         info = g.GridInfo.boolean()
@@ -927,18 +940,39 @@ def test_grid():
         gtp.data_type = "FLOAT"
         assert gtp.data_type == "FLOAT"
 
+        gc = g.ClipGrid.integer()
+        assert gc.data_type == "INT"
+        gc.data_type = "FLOAT"
+        assert gc.data_type == "FLOAT"
+
+        gde = g.GridDilateErode.vector()
+        assert gde.data_type == "VECTOR"
+        gde.data_type = "FLOAT"
+        assert gde.data_type == "FLOAT"
+
+        idx = g.IndexSwitch.bundle()
+        assert idx.data_type == "BUNDLE"
+        idx.data_type = "FLOAT"
+        assert idx.data_type == "FLOAT"
+
 
 def test_bundle_item():
     with g.tree():
-        gbi = g.GetBundleItem()
+        gbi = g.GetBundleItem.float()
         assert gbi.structure_type == "AUTO"
         gbi.structure_type = "LIST"
         assert gbi.structure_type == "LIST"
+        assert gbi.socket_type == "FLOAT"
+        gbi.socket_type = "INT"
+        assert gbi.socket_type == "INT"
 
-        sbi = g.StoreBundleItem()
+        sbi = g.StoreBundleItem.float()
         assert sbi.structure_type == "AUTO"
         sbi.structure_type = "LIST"
         assert sbi.structure_type == "LIST"
+        assert sbi.socket_type == "FLOAT"
+        sbi.socket_type = "INT"
+        assert sbi.socket_type == "INT"
 
         switch = g.Switch.bundle()
         assert switch.input_type == "BUNDLE"
