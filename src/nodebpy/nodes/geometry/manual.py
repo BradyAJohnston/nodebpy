@@ -2309,6 +2309,14 @@ class AttributeStatistic(NodeBuilder, Generic[_T]):
                 domain=self._domain,
             )
 
+    point = _AttributeStatisticDomainFactor("POINT")
+    edge = _AttributeStatisticDomainFactor("EDGE")
+    face = _AttributeStatisticDomainFactor("FACE")
+    corner = _AttributeStatisticDomainFactor("CORNER")
+    spline = _AttributeStatisticDomainFactor("CURVE")
+    instance = _AttributeStatisticDomainFactor("INSTANCE")
+    layer = _AttributeStatisticDomainFactor("LAYER")
+
     class _Inputs(SocketAccessor, Generic[_S]):
         geometry: SocketGeometry
         """The geometry whose attribute to analyze."""

@@ -6,6 +6,7 @@ import pytest
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy import sockets as s
+from nodebpy.nodes.geometry import EvaluateAtIndex
 
 
 def test_capture_attribute():
@@ -808,3 +809,106 @@ def test_compare_node_data_types():
 
         comp = g.Compare.color.not_equal()
         assert comp.operation == "NOT_EQUAL"
+
+
+def test_manual_field_factories():
+    with g.tree("FieldFactories"):
+        eai = g.EvaluateAtIndex.corner.boolean()
+        assert eai.domain == "CORNER"
+        assert eai.data_type == "BOOLEAN"
+
+        eai = g.EvaluateAtIndex.face.float()
+        assert eai.domain == "FACE"
+        assert eai.data_type == "FLOAT"
+
+        eai = g.EvaluateAtIndex.face.transform()
+        assert eai.domain == "FACE"
+        assert eai.data_type == "FLOAT4X4"
+
+        with g.Frame("Test") as f:
+            af = g.AccumulateField.edge.float()
+            assert af.domain == "EDGE"
+            assert af.data_type == "FLOAT"
+
+        assert af.node.parent == f.node
+
+        assert f.shrink
+        f.shrink = False
+        assert not f.shrink
+        assert f.label == "Test"
+        assert f.text is None
+        f.text = bpy.data.texts.new("NewTex")
+        assert f.text is not None
+        assert isinstance(f.text, bpy.types.Text)
+
+        af = g.AccumulateField.edge.float(g.SplineParameter().o.length)
+        assert af.node
+        assert af.node.parent is None
+
+        af = g.AccumulateField.edge.integer()
+        assert af.data_type == "INT"
+        assert af.domain == "EDGE"
+
+        af = g.AccumulateField.edge.vector()
+        assert af.data_type == "FLOAT_VECTOR"
+        assert af.domain == "EDGE"
+
+        fa = g.FieldAverage.edge.float()
+        assert fa.domain == "EDGE"
+        assert fa.data_type == "FLOAT"
+
+        fmm = g.FieldMinAndMax.edge.float()
+        assert fmm.domain == "EDGE"
+        assert fmm.data_type == "FLOAT"
+
+        fmm = g.FieldMinAndMax.edge.integer()
+        assert fmm.domain == "EDGE"
+        assert fmm.data_type == "INT"
+
+        fmm = g.FieldMinAndMax.edge.vector()
+        assert fmm.domain == "EDGE"
+        assert fmm.data_type == "FLOAT_VECTOR"
+
+        eod = g.EvaluateOnDomain.edge.float()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "FLOAT"
+        eod = g.EvaluateOnDomain.edge.integer()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "INT"
+
+        eod = g.EvaluateOnDomain.edge.vector()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "FLOAT_VECTOR"
+
+        eod = g.EvaluateOnDomain.edge.rotation()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "QUATERNION"
+
+        eod = g.EvaluateOnDomain.edge.transform()
+        assert eod.domain == "EDGE"
+        assert eod.data_type == "FLOAT4X4"
+
+        stat = g.AttributeStatistic.point.float()
+        assert stat.domain == "POINT"
+        assert stat.data_type == "FLOAT"
+
+        stat = g.AttributeStatistic.point.vector()
+        assert stat.domain == "POINT"
+        assert stat.data_type == "FLOAT_VECTOR"
+
+        stat = g.AttributeStatistic.edge.float()
+        assert stat.domain == "EDGE"
+
+        stat = g.AttributeStatistic.face.vector()
+        assert stat.domain == "FACE"
+        stat = g.AttributeStatistic.corner.float()
+        assert stat.domain == "CORNER"
+
+        stat = g.AttributeStatistic.spline.float()
+        assert stat.domain == "CURVE"
+
+        stat = g.AttributeStatistic.instance.float()
+        assert stat.domain == "INSTANCE"
+
+        stat = g.AttributeStatistic.layer.float()
+        assert stat.domain == "LAYER"
