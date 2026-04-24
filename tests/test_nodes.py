@@ -5,8 +5,7 @@ import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy import sockets as s
-from nodebpy.nodes.geometry import EvaluateAtIndex
+from nodebpy import shader as s
 
 
 def test_capture_attribute():
@@ -337,6 +336,7 @@ def test_index_switch(snapshot_tree):
 
 def test_menu_switch():
     with TreeBuilder() as tree:
+        menu = tree.inputs.menu()
         items = (
             g.Cube(),
             g.UVSphere(),
@@ -344,8 +344,6 @@ def test_menu_switch():
             g.Cube(),
         )
         switch = g.MenuSwitch.geometry(*items, custom=g.Cone())
-        with tree.inputs:
-            menu = s.SocketMenu()
         menu >> switch
         menu.socket.default_value = "Mesh"
 
@@ -387,21 +385,17 @@ def test_multi_menu():
         switch1 = g.IndexSwitch.geometry(*items, index=menu)
         switch2 = g.IndexSwitch.geometry(*reversed(items), index=menu)
 
-        with tree.inputs:
-            menu_input = s.SocketMenu()
-            menu_input >> menu
-            menu_input.default_value = "test"
+        menu_input = tree.inputs.menu()
+        menu_input >> menu
+        menu_input.default_value = "test"
 
-        with tree.outputs:
-            g.JoinGeometry(switch1, switch2) >> s.SocketGeometry("Output")
+        g.JoinGeometry(switch1, switch2) >> tree.outputs.geometry("Output")
 
 
 def test_switch_repeatzone(snapshot_tree):
     with TreeBuilder() as tree:
-        with tree.inputs:
-            input = s.SocketGeometry()
-        with tree.outputs:
-            output = s.SocketGeometry()
+        input = tree.inputs.geometry()
+        output = tree.outputs.geometry()
 
         items = (g.Cube(), g.IcoSphere(), g.Grid())
         zone = g.RepeatZone(5, input)
@@ -416,13 +410,11 @@ def test_switch_repeatzone(snapshot_tree):
 
 def test_generate_select_group():
     with TreeBuilder() as tree:
-        with tree.inputs:
-            switch = g.IndexSwitch.boolean(
-                *[s.SocketBoolean(str(i)) for i in range(20)],
-                index=g.NamedAttribute.integer("chain_id"),
-            )
-        with tree.outputs:
-            switch >> s.SocketBoolean("Selection")
+        switch = g.IndexSwitch.boolean(
+            *[tree.inputs.boolean(str(i)) for i in range(20)],
+            index=g.NamedAttribute.integer("chain_id"),
+        )
+        switch >> tree.outputs.boolean("Selection")
 
     assert len(switch.node.index_switch_items) == 20
     assert len(tree) == 4
@@ -488,8 +480,7 @@ def test_align_rotation_to_vector():
 
 def test_foreachgeometryelement_zone():
     with TreeBuilder() as tree:
-        with tree.outputs:
-            out = s.SocketGeometry("Geometry")
+        out = tree.outputs.geometry("Geometry")
         cube = g.Cube()
         zone = g.ForEachGeometryElementZone(
             cube,
@@ -912,3 +903,72 @@ def test_manual_field_factories():
 
         stat = g.AttributeStatistic.layer.float()
         assert stat.domain == "LAYER"
+
+
+def test_grid():
+    with g.tree():
+        info = g.GridInfo.boolean()
+        assert info.data_type == "BOOLEAN"
+        info.data_type = "FLOAT"
+        assert info.data_type == "FLOAT"
+
+        mean = g.GridMean.vector()
+        assert mean.data_type == "VECTOR"
+        mean.data_type = "FLOAT"
+        assert mean.data_type == "FLOAT"
+
+        median = g.GridMedian.vector()
+        assert median.data_type == "VECTOR"
+        median.data_type = "FLOAT"
+        assert median.data_type == "FLOAT"
+
+        gtp = g.GridToPoints.vector()
+        assert gtp.data_type == "VECTOR"
+        gtp.data_type = "FLOAT"
+        assert gtp.data_type == "FLOAT"
+
+
+def test_bundle_item():
+    with g.tree():
+        gbi = g.GetBundleItem()
+        assert gbi.structure_type == "AUTO"
+        gbi.structure_type = "LIST"
+        assert gbi.structure_type == "LIST"
+
+        sbi = g.StoreBundleItem()
+        assert sbi.structure_type == "AUTO"
+        sbi.structure_type = "LIST"
+        assert sbi.structure_type == "LIST"
+
+        switch = g.Switch.bundle()
+        assert switch.input_type == "BUNDLE"
+        switch.input_type = "FLOAT"
+        assert switch.input_type == "FLOAT"
+
+
+def test_uv_normal_map():
+    with s.tree():
+        map = s.NormalMap()
+        assert map.space == "TANGENT"
+        map.space = "OBJECT"
+        assert map.uv_map == ""
+        map.uv_map = "UV Map"
+        assert map.uv_map == "UV Map"
+        assert map.base == "DISPLACED"
+        map.base = "ORIGINAL"
+        assert map.base == "ORIGINAL"
+
+        vec = s.VectorDisplacement()
+        assert vec.space == "TANGENT"
+        vec.space = "OBJECT"
+
+        vec = s.VectorTransform()
+        assert vec.vector_type == "VECTOR"
+        vec.vector_type = "POINT"
+        assert vec.vector_type == "POINT"
+        assert vec.convert_from == "WORLD"
+        vec.convert_from = "OBJECT"
+        assert vec.convert_from == "OBJECT"
+        assert vec.convert_to == "OBJECT"
+        vec.convert_to = "WORLD"
+        assert vec.convert_to == "WORLD"
