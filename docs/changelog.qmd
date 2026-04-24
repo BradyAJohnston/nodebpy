@@ -16,6 +16,7 @@ mat = g.InstanceTransform().o.transform
 
 vec = g.CombineXYZ(*mat[:3])
 ```
+- Fix doc building and will only deploy on tagged releases([#49](https://github.com/BradyAJohnston/nodebpy/pull/49))
 
 ## v0.10.2 - 2026-04-21
 
