@@ -173,9 +173,9 @@ class PrincipalComponents(NodeGroupBuilder):
             description="Rotation that defines the principal component basis",
         )
         with tree.outputs.panel("Principal Axes", default_closed=True):
-            out_long_axis = tree.outputs.vector("Longest Axis")
-            out_intermediate_axis = tree.outputs.vector("Intermediate Axis")
-            out_shortest_axis = tree.outputs.vector("Shortest Axis")
+            out_long = tree.outputs.vector("Longest Axis")
+            out_inter = tree.outputs.vector("Intermediate Axis")
+            out_short = tree.outputs.vector("Shortest Axis")
 
         centroid = FieldAverage.point.vector(position, group_id)
         centroid >> out_centroid
@@ -192,7 +192,7 @@ class PrincipalComponents(NodeGroupBuilder):
         short, inter, long = [
             CombineXYZ(*svd.o.u[i * 4 : (i * 4) + 3]) for i in range(3)
         ]
-        long >> out_long_axis
-        short >> out_shortest_axis
+        long >> out_long
+        short >> out_short
         AxesToRotation(long, short) >> out_rotation
-        (inter * Math.sign(svd.o.u.determinant)) >> out_intermediate_axis
+        (inter * Math.sign(svd.o.u.determinant)) >> out_inter

@@ -469,6 +469,12 @@ class _RotationMixin:
 
         return RotationToEuler._find_or_create_linked(self.socket).o.euler
 
+    @property
+    def invert(self) -> "RotationSocket":
+        from ..nodes.geometry import InvertRotation
+
+        return InvertRotation._find_or_create_linked(self.socket).o.rotation
+
 
 class _MatrixMixin:
     """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
@@ -499,6 +505,18 @@ class _MatrixMixin:
         from ..nodes.geometry import MatrixDeterminant
 
         return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
+
+    @property
+    def invert(self) -> "MatrixSocket":
+        from ..nodes.geometry import InvertMatrix
+
+        return InvertMatrix._find_or_create_linked(self.socket).o.matrix
+
+    @property
+    def transpose(self) -> "MatrixSocket":
+        from ..nodes.geometry import TransposeMatrix
+
+        return TransposeMatrix._find_or_create_linked(self.socket).o.matrix
 
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
