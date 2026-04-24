@@ -59,7 +59,6 @@ def test_shader_menu_switch():
             _ = menu >> sockets.SocketFloat()
 
     assert len(menu.node.enum_items) == 10
-    print(list(menu.inputs._items()))
     for i, input in enumerate([x for x in menu.inputs._values() if x.type == "VALUE"]):
         assert input.socket.links[0].from_node.bl_idname == s.Value._bl_idname
         # we have to check the output defeault value here because that is how the Value
@@ -109,3 +108,8 @@ def test_nodes():
         assert not bump.invert
         bump.invert = True
         assert bump.invert
+
+        norm = s.NormalMap()
+        assert norm.convention == "OPENGL"
+        norm.convention = "DIRECTX"
+        assert norm.convention == "DIRECTX"

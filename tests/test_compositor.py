@@ -93,6 +93,6 @@ def test_compositor_menu_switch():
 def test_nodes():
     with c.tree():
         idx = c.IndexSwitch.vector()
-        assert idx.node.data_type == "VECTOR"
-        idx.node.data_type = "FLOAT"
-        assert idx.node.data_type == "FLOAT"
+        assert idx.data_type == "VECTOR"
+        idx.data_type = "FLOAT"
+        assert idx.data_type == "FLOAT"
