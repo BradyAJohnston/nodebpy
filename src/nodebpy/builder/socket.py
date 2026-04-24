@@ -136,56 +136,49 @@ class _VectorMixin:
     socket: NodeSocket
     _tree: TreeBuilder
 
-    def _separated_value(self, value: str) -> Socket:
-        from ..nodes.geometry import SeparateXYZ
-
-        for link in self.socket.links:
-            if link.to_node.bl_idname == "ShaderNodeSeparateXYZ":
-                return Socket(link.to_node.outputs[value])
-
-        return SeparateXYZ(self).o._get(value.lower())
-
     @property
     def x(self) -> Socket:
-        return self._separated_value("X")
+        from ..nodes.geometry import SeparateXYZ
+
+        return SeparateXYZ._find_or_create_linked(self.socket).o.x
 
     @property
     def y(self) -> Socket:
-        return self._separated_value("Y")
+        from ..nodes.geometry import SeparateXYZ
+
+        return SeparateXYZ._find_or_create_linked(self.socket).o.y
 
     @property
     def z(self) -> Socket:
-        return self._separated_value("Z")
+        from ..nodes.geometry import SeparateXYZ
 
-    def _get_or_create_combine_xyz(self) -> "bpy.types.Node":
-        from ..nodes.geometry.converter import CombineXYZ
-
-        for link in self.socket.links:
-            if link.from_node.bl_idname == "ShaderNodeCombineXYZ":
-                return link.from_node
-        combine = CombineXYZ()
-        self._tree.link(combine.node.outputs[0], self.socket)
-        return combine.node
+        return SeparateXYZ._find_or_create_linked(self.socket).o.z
 
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
     @overload
     def __getitem__(self, key: int) -> "Socket": ...
     def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+        from ..nodes.geometry import CombineXYZ, SeparateXYZ
+
         if self.socket.is_output:
-            return [self.x, self.y, self.z][key]
-        node = self._get_or_create_combine_xyz()
-        return [_get_socket_linker(node.inputs[i]) for i in range(3)][key]
+            return SeparateXYZ._find_or_create_linked(self.socket).o[key]
+        else:
+            return CombineXYZ._find_or_create_linked(self.socket).i[key]
 
     def __iter__(self) -> Iterator["Socket"]:
+        from ..nodes.geometry import CombineXYZ, SeparateXYZ
+
         if self.socket.is_output:
-            yield self.x
-            yield self.y
-            yield self.z
+            node = SeparateXYZ._find_or_create_linked(self.socket)
+            yield node.o.x
+            yield node.o.y
+            yield node.o.z
         else:
-            node = self._get_or_create_combine_xyz()
-            for i in node.inputs:
-                yield _get_socket_linker(i)
+            node = CombineXYZ._find_or_create_linked(self.socket)
+            yield node.i.x
+            yield node.i.y
+            yield node.i.z
 
     def __len__(self) -> int:
         return 3
