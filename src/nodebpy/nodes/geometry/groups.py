@@ -18,6 +18,7 @@ from . import (
     EdgeVertices,
     EvaluateAtIndex,
     FieldAverage,
+    Frame,
     Math,
     MatrixSVD,
     Switch,
@@ -158,6 +159,7 @@ class PrincipalComponents(NodeGroupBuilder):
         super().__init__(**kwargs)
 
     def _build_group(self, tree: TreeBuilder):
+        tree.collapse = True
         position = tree.inputs.vector("Position", default_input="POSITION")
         group_id = tree.inputs.integer(
             "Group ID",
@@ -178,22 +180,26 @@ class PrincipalComponents(NodeGroupBuilder):
             out_inter = tree.outputs.vector("Intermediate Axis")
             out_short = tree.outputs.vector("Shortest Axis")
 
-        centroid = FieldAverage.point.vector(position, group_id)
-        centroid >> out_centroid
-        diff = position - centroid
-        matrix = CombineMatrix()
+        with Frame("Centroid"):
+            centroid = FieldAverage.point.vector(position, group_id)
+            centroid >> out_centroid
 
-        for i, axis1 in enumerate(diff.o.vector):
-            mean = FieldAverage.point.vector(diff * axis1, group_id)
-            for j, axis2 in enumerate(mean.o.mean):
-                axis2 >> matrix.i[int(i * 4 + j)]
+        with Frame("Covariance Matrix"):
+            diff = position - centroid
+            matrix = CombineMatrix()
 
-        svd = MatrixSVD(matrix)
-        svd.o.s >> out_princ
-        short, inter, long = [
-            CombineXYZ(*svd.o.u[i * 4 : (i * 4) + 3]) for i in range(3)
-        ]
-        long >> out_long
-        short >> out_short
-        AxesToRotation(long, short) >> out_rotation
-        (inter * Math.sign(svd.o.u.determinant)) >> out_inter
+            for i, axis1 in enumerate(diff.o.vector):
+                mean = FieldAverage.point.vector(diff * axis1, group_id)
+                for j, axis2 in enumerate(mean.o.mean):
+                    axis2 >> matrix.i[int(i * 4 + j)]
+
+        with Frame("SVD"):
+            svd = MatrixSVD(matrix)
+            svd.o.s >> out_princ
+            long, inter, short = [
+                CombineXYZ(*svd.o.u[i * 4 : (i * 4) + 3]) for i in range(3)
+            ]
+            long >> out_long
+            short >> out_short
+            AxesToRotation(long, short) >> out_rotation
+            (inter * Math.sign(svd.o.u.determinant)) >> out_inter

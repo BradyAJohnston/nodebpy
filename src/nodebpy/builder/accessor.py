@@ -6,7 +6,12 @@ import bpy
 from bpy.types import NodeSocket
 
 from ._registry import _get_socket_linker
-from ._utils import SocketError, _allow_innactive_sockets, denormalize_name, normalize_name
+from ._utils import (
+    SocketError,
+    _allow_innactive_sockets,
+    denormalize_name,
+    normalize_name,
+)
 
 if TYPE_CHECKING:
     from .socket import Socket

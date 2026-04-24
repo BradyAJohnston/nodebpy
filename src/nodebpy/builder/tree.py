@@ -7,6 +7,7 @@ from bpy.types import (
     CompositorNodeTree,
     GeometryNodeTree,
     Node,
+    NodeFrame,
     Nodes,
     NodeSocket,
     NodeTree,
@@ -629,6 +630,7 @@ class TreeBuilder:
     """
 
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
+    _frame_contexts: ClassVar["list[NodeFrame]"] = []
 
     def __init__(
         self,
@@ -837,6 +839,8 @@ class TreeBuilder:
     def add(self, name: str) -> Node:
         node = self.tree.nodes.new(name)
         node.hide = self.collapse
+        if self._frame_contexts:
+            node.parent = self._frame_contexts[-1]
         return node
 
 

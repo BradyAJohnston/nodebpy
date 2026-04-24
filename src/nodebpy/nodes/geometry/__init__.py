@@ -35,6 +35,7 @@ from .manual import (
     FieldVariance,
     Compare,
     AttributeStatistic,
+    Frame,
     tree,
 )
 from .converter import (
@@ -448,6 +449,7 @@ __all__ = (
     "ForEachGeometryElementOutput",
     "ForEachGeometryElementZone",
     "FormatString",
+    "Frame",
     "GaborTexture",
     "Gamma",
     "GeometryProximity",

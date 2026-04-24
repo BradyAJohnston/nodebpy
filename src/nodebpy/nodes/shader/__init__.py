@@ -6,6 +6,7 @@ from .manual import (
     RepeatOutput,
     RepeatZone,
     Attribute,
+    Frame,
     tree,
     material,
 )
@@ -177,6 +178,7 @@ __all__ = (
     "EnvironmentTexture",
     "EvaluateClosure",
     "FloatCurve",
+    "Frame",
     "Fresnel",
     "GaborTexture",
     "Gamma",

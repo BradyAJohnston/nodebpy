@@ -79,7 +79,6 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Closure",
         "Simulation",
         "For Each",
-        "Frame",
         "GridBoolean",
         "Reroute",
         "FieldMinAndMax",
@@ -119,6 +118,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "FieldVariance",
         "Compare",
         "AttributeStatistic",
+        "Frame",
         "tree",
     ),
     class_name_prefix_strips=[
@@ -134,7 +134,6 @@ SHADER_CONFIG = TreeTypeConfig(
     output_dir_name="shader",
     nodes_to_skip=[
         "Legacy",
-        "Frame",
         "Reroute",
     ],
     manually_defined=(
@@ -143,6 +142,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "RepeatOutput",
         "RepeatZone",
         "Attribute",
+        "Frame",
         "tree",
         "material",
     ),
@@ -157,13 +157,13 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
     output_dir_name="compositor",
     nodes_to_skip=[
         "Legacy",
-        "Frame",
         "Reroute",
         "Cryptomatte",
         "Image",
     ],
     manually_defined=(
         "MenuSwitch",
+        "Frame",
         "tree",
     ),
     class_name_prefix_strips=[

@@ -105,6 +105,7 @@ __all__ = (
     "FieldVariance",
     "Compare",
     "AttributeStatistic",
+    "Frame",
 )
 
 
@@ -115,6 +116,57 @@ def tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
 ) -> TreeBuilder:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
+
+
+class Frame(NodeBuilder):
+    """ """
+
+    _bl_idname = "NodeFrame"
+    node: bpy.types.NodeFrame
+
+    def __init__(
+        self,
+        label: str | None = None,
+        shrink: bool = True,
+        text: bpy.types.Text | None = None,
+    ):
+        super().__init__()
+        self.label = label
+        self.shrink = shrink
+        self.text = text
+
+    @property
+    def label(self) -> str | None:
+        return self.node.label
+
+    @label.setter
+    def label(self, value: str | None):
+        if value is not None:
+            self.node.label = value
+
+    @property
+    def shrink(self) -> bool:
+        return self.node.shrink
+
+    @shrink.setter
+    def shrink(self, value: bool):
+        self.node.shrink = value
+
+    @property
+    def text(self) -> bpy.types.Text | None:
+        return self.node.text
+
+    @text.setter
+    def text(self, value: bpy.types.Text | None):
+        if value is not None:
+            self.node.text = value
+
+    def __enter__(self):
+        TreeBuilder._frame_contexts.append(self.node)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        TreeBuilder._frame_contexts.pop()
 
 
 class Bake(NodeBuilder, DynamicInputsMixin):
