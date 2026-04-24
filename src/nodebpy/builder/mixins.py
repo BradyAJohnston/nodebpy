@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 from types import EllipsisType
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from bpy.types import NodeLink, NodeSocket
 
 from ._registry import _get_socket_linker
 from ._utils import SocketError, _resolve_promotion, _SocketLike
 
+_RShiftT = TypeVar("_RShiftT")
+
 if TYPE_CHECKING:
+    from ..nodes.geometry import Compare, Math
     from ..types import InputLinkable
     from .node import BaseNode
     from .socket import Socket
@@ -26,7 +29,7 @@ class OperatorMixin:
 
     def _apply_math_operation(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "BaseNode":
+    ) -> "Math":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
@@ -34,43 +37,43 @@ class OperatorMixin:
         )
         return _get_socket_linker(socket)._dispatch_math(other, operation, reverse)
 
-    def __mul__(self, other: Any) -> "BaseNode":
+    def __mul__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "multiply")
 
-    def __rmul__(self, other: Any) -> "BaseNode":
+    def __rmul__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "multiply", reverse=True)
 
-    def __truediv__(self, other: Any) -> "BaseNode":
+    def __truediv__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "divide")
 
-    def __rtruediv__(self, other: Any) -> "BaseNode":
+    def __rtruediv__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "divide", reverse=True)
 
-    def __add__(self, other: Any) -> "BaseNode":
+    def __add__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "add")
 
-    def __radd__(self, other: Any) -> "BaseNode":
+    def __radd__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "add", reverse=True)
 
-    def __sub__(self, other: Any) -> "BaseNode":
+    def __sub__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "subtract")
 
-    def __rsub__(self, other: Any) -> "BaseNode":
+    def __rsub__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "subtract", reverse=True)
 
-    def __pow__(self, other: Any) -> "BaseNode":
+    def __pow__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "power")
 
-    def __rpow__(self, other: Any) -> "BaseNode":
+    def __rpow__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "power", reverse=True)
 
-    def __mod__(self, other: Any) -> "BaseNode":
+    def __mod__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "modulo")
 
-    def __rmod__(self, other: Any) -> "BaseNode":
+    def __rmod__(self, other: Any) -> "Math":
         return self._apply_math_operation(other, "modulo", reverse=True)
 
-    def __floordiv__(self, other: Any) -> "BaseNode":
+    def __floordiv__(self, other: Any) -> "Math":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
@@ -78,7 +81,7 @@ class OperatorMixin:
         )
         return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
 
-    def __rfloordiv__(self, other: Any) -> "BaseNode":
+    def __rfloordiv__(self, other: Any) -> "Math":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
@@ -86,37 +89,37 @@ class OperatorMixin:
         )
         return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
 
-    def __neg__(self) -> "BaseNode":
+    def __neg__(self) -> "Math":
         return _get_socket_linker(self._default_output_socket)._dispatch_unary(  # type: ignore[attr-defined]
             "negate"
         )
 
-    def __abs__(self) -> "BaseNode":
+    def __abs__(self) -> "Math":
         return _get_socket_linker(self._default_output_socket)._dispatch_unary(  # type: ignore[attr-defined]
             "absolute"
         )
 
-    def _apply_compare_operation(self, other: Any, operation: str) -> "BaseNode":
+    def _apply_compare_operation(self, other: Any, operation: str) -> "Math":
         return _get_socket_linker(self._default_output_socket)._dispatch_compare(  # type: ignore[attr-defined]
             other, operation
         )
 
-    def __lt__(self, other: Any) -> "BaseNode":
+    def __lt__(self, other: Any) -> "Compare":
         return self._apply_compare_operation(other, "less_than")
 
-    def __gt__(self, other: Any) -> "BaseNode":
+    def __gt__(self, other: Any) -> "Compare":
         return self._apply_compare_operation(other, "greater_than")
 
-    def __le__(self, other: Any) -> "BaseNode":
+    def __le__(self, other: Any) -> "Compare":
         return self._apply_compare_operation(other, "less_equal")
 
-    def __ge__(self, other: Any) -> "BaseNode":
+    def __ge__(self, other: Any) -> "Compare":
         return self._apply_compare_operation(other, "greater_equal")
 
-    def __eq__(self, other: Any) -> "BaseNode":  # type: ignore[override]
+    def __eq__(self, other: Any) -> "Compare":  # type: ignore[override]
         return self._apply_compare_operation(other, "equal")
 
-    def __ne__(self, other: Any) -> "BaseNode":  # type: ignore[override]
+    def __ne__(self, other: Any) -> "Compare":  # type: ignore[override]
         return self._apply_compare_operation(other, "not_equal")
 
     def _apply_boolean_operation(self, other: Any, operation: str):

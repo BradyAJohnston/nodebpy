@@ -435,11 +435,15 @@ class NormalMap(NodeBuilder):
             "TANGENT", "OBJECT", "WORLD", "BLENDER_OBJECT", "BLENDER_WORLD"
         ] = "TANGENT",
         uv_map: str = "",
+        convention: Literal["OPENGL", "DIRECTX"] = "OPENGL",
+        base: Literal["ORIGINAL", "DISPLACED"] = "DISPLACED",
     ):
         super().__init__()
         key_args = {"Strength": strength, "Color": color}
         self.space = space
         self.uv_map = uv_map
+        self.convention = convention
+        self.base = base
         self._establish_links(**key_args)
 
     @property
@@ -462,6 +466,22 @@ class NormalMap(NodeBuilder):
     @uv_map.setter
     def uv_map(self, value: str):
         self.node.uv_map = value
+
+    @property
+    def convention(self) -> Literal["OPENGL", "DIRECTX"]:
+        return self.node.convention
+
+    @convention.setter
+    def convention(self, value: Literal["OPENGL", "DIRECTX"]):
+        self.node.convention = value
+
+    @property
+    def base(self) -> Literal["ORIGINAL", "DISPLACED"]:
+        return self.node.base
+
+    @base.setter
+    def base(self, value: Literal["ORIGINAL", "DISPLACED"]):
+        self.node.base = value
 
 
 class VectorDisplacement(NodeBuilder):

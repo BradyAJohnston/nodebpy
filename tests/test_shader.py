@@ -59,7 +59,6 @@ def test_shader_menu_switch():
             _ = menu >> sockets.SocketFloat()
 
     assert len(menu.node.enum_items) == 10
-    print(list(menu.inputs._items()))
     for i, input in enumerate([x for x in menu.inputs._values() if x.type == "VALUE"]):
         assert input.socket.links[0].from_node.bl_idname == s.Value._bl_idname
         # we have to check the output defeault value here because that is how the Value
@@ -96,3 +95,21 @@ def test_material_node_cartoon():
     assert "Cartoon" not in bpy.data.node_groups
     assert attr.attribute_name == "sec_struct"
     assert attr.attribute_type == "GEOMETRY"
+
+
+def test_nodes():
+    with s.tree():
+        ray = s.Raycast()
+        assert not ray.only_local
+        ray.only_local = True
+        assert ray.only_local
+
+        bump = s.Bump()
+        assert not bump.invert
+        bump.invert = True
+        assert bump.invert
+
+        norm = s.NormalMap()
+        assert norm.convention == "OPENGL"
+        norm.convention = "DIRECTX"
+        assert norm.convention == "DIRECTX"

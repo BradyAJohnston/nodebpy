@@ -7,6 +7,7 @@ import bpy
 from ...builder import (
     BaseNode as NodeBuilder,
     SocketAccessor,
+    Socket,
     BooleanSocket,
     ColorSocket,
     FloatSocket,
@@ -17,11 +18,13 @@ from ...builder import (
 )
 
 from ...types import (
+    InputLinkable,
     InputBoolean,
     InputColor,
     InputInteger,
     InputMenu,
     InputRotation,
+    InputString,
     InputFloat,
     InputVector,
 )
@@ -586,6 +589,191 @@ class IDMask(NodeBuilder):
         key_args = {"ID value": id_value, "Index": index, "Anti-Alias": anti_alias}
 
         self._establish_links(**key_args)
+
+
+class IndexSwitch(NodeBuilder):
+    """
+    Choose between an arbitrary number of values with an index
+
+    Parameters
+    ----------
+    index : InputInteger
+        Index
+    item_0 : InputColor
+        0
+    item_1 : InputColor
+        1
+    extend : InputLinkable
+
+
+    Inputs
+    ------
+    i.index : IntegerSocket
+        Index
+    i.item_0 : ColorSocket
+        0
+    i.item_1 : ColorSocket
+        1
+    i.extend : Socket
+
+
+    Outputs
+    -------
+    o.output : ColorSocket
+        Output
+    """
+
+    _bl_idname = "GeometryNodeIndexSwitch"
+    node: bpy.types.GeometryNodeIndexSwitch
+
+    class _Inputs(SocketAccessor):
+        index: IntegerSocket
+        """Index"""
+        item_0: ColorSocket
+        """0"""
+        item_1: ColorSocket
+        """1"""
+        extend: Socket
+
+    class _Outputs(SocketAccessor):
+        output: ColorSocket
+        """Output"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        index: InputInteger = 0,
+        item_0: InputColor = None,
+        item_1: InputColor = None,
+        extend: InputLinkable = None,
+        *,
+        data_type: Literal[
+            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"
+        ] = "RGBA",
+    ):
+        super().__init__()
+        key_args = {
+            "Index": index,
+            "Item_0": item_0,
+            "Item_1": item_1,
+            "__extend__": extend,
+        }
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputFloat = 0.0,
+        item_1: InputFloat = 0.0,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Float'."""
+        return cls(
+            data_type="FLOAT", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputInteger = 0,
+        item_1: InputInteger = 0,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Integer'."""
+        return cls(
+            data_type="INT", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputBoolean = False,
+        item_1: InputBoolean = False,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Boolean'."""
+        return cls(
+            data_type="BOOLEAN",
+            index=index,
+            item_0=item_0,
+            item_1=item_1,
+            extend=extend,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputVector = None,
+        item_1: InputVector = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Vector'."""
+        return cls(
+            data_type="VECTOR", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def color(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputColor = None,
+        item_1: InputColor = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Color'."""
+        return cls(
+            data_type="RGBA", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def string(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputString = "",
+        item_1: InputString = "",
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'String'."""
+        return cls(
+            data_type="STRING", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def menu(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputMenu = None,
+        item_1: InputMenu = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Menu'."""
+        return cls(
+            data_type="MENU", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"],
+    ):
+        self.node.data_type = value
 
 
 class Levels(NodeBuilder):

@@ -789,6 +789,94 @@ class PointInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
+class Raycast(NodeBuilder):
+    """
+    Cast rays and retrieve information from the hit point
+
+    Parameters
+    ----------
+    position : InputVector
+        Position
+    direction : InputVector
+        Direction
+    length : InputFloat
+        Length
+
+    Inputs
+    ------
+    i.position : VectorSocket
+        Position
+    i.direction : VectorSocket
+        Direction
+    i.length : FloatSocket
+        Length
+
+    Outputs
+    -------
+    o.is_hit : FloatSocket
+        Is Hit
+    o.self_hit : FloatSocket
+        Self Hit
+    o.hit_distance : FloatSocket
+        Hit Distance
+    o.hit_position : VectorSocket
+        Hit Position
+    o.hit_normal : VectorSocket
+        Hit Normal
+    """
+
+    _bl_idname = "ShaderNodeRaycast"
+    node: bpy.types.ShaderNodeRaycast
+
+    class _Inputs(SocketAccessor):
+        position: VectorSocket
+        """Position"""
+        direction: VectorSocket
+        """Direction"""
+        length: FloatSocket
+        """Length"""
+
+    class _Outputs(SocketAccessor):
+        is_hit: FloatSocket
+        """Is Hit"""
+        self_hit: FloatSocket
+        """Self Hit"""
+        hit_distance: FloatSocket
+        """Hit Distance"""
+        hit_position: VectorSocket
+        """Hit Position"""
+        hit_normal: VectorSocket
+        """Hit Normal"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        position: InputVector = None,
+        direction: InputVector = None,
+        length: InputFloat = 1.0,
+        *,
+        only_local: bool = False,
+    ):
+        super().__init__()
+        key_args = {"Position": position, "Direction": direction, "Length": length}
+        self.only_local = only_local
+        self._establish_links(**key_args)
+
+    @property
+    def only_local(self) -> bool:
+        return self.node.only_local
+
+    @only_local.setter
+    def only_local(self, value: bool):
+        self.node.only_local = value
+
+
 class Tangent(NodeBuilder):
     """
     Generate a tangent direction for the Anisotropic BSDF

@@ -13,7 +13,6 @@ jobs:
       max-parallel: 4
       fail-fast: false
       matrix:
-        version: ["5.0"]
         os: [macos-latest, windows-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +25,6 @@ jobs:
       - name: Install
         run: |
           uv sync  --all-extras --dev
-          uv pip install bpy~=${{ matrix.version }}
 
       - name: Run tests
         run: |
@@ -34,11 +32,11 @@ jobs:
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
-        if: matrix.os == 'macos-latest' && matrix.version == '5.0'
+        if: matrix.os == 'macos-latest'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           name: coverage.xml
 
       - name: Upload coverage reports to Codecov
-        if: matrix.os == 'macos-latest' && matrix.version == '5.0'
+        if: matrix.os == 'macos-latest'
         uses: codecov/codecov-action@v3

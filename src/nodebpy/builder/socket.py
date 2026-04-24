@@ -4,15 +4,29 @@ from typing import TYPE_CHECKING, Any, Iterator, overload
 
 import bpy
 from bpy.types import (
-    FunctionNodeAlignRotationToVector,
-    FunctionNodeCombineMatrix,
-    FunctionNodeRotationToEuler,
-    FunctionNodeRotationToQuaternion,
-    FunctionNodeSeparateMatrix,
     GeometryNodeTree,
-    NodeLinks,
+    NodeLink,
     NodeSocket,
+    NodeSocketBool,
+    NodeSocketBundle,
+    NodeSocketClosure,
+    NodeSocketCollection,
+    NodeSocketColor,
+    NodeSocketFloat,
+    NodeSocketFont,
+    NodeSocketGeometry,
+    NodeSocketImage,
+    NodeSocketInt,
+    NodeSocketMaterial,
+    NodeSocketMatrix,
+    NodeSocketMenu,
+    NodeSocketObject,
+    NodeSocketRotation,
+    NodeSocketShader,
+    NodeSocketString,
+    NodeSocketVector,
 )
+from mathutils import Euler
 
 from ..types import SOCKET_TYPES
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
@@ -22,6 +36,9 @@ from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
 
 if TYPE_CHECKING:
+    from ..nodes.geometry.converter import IntegerMath, Math
+    from ..nodes.geometry.manual import Compare
+    from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
 
 
@@ -45,8 +62,9 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         return self._tree
 
     @property
-    def links(self) -> NodeLinks | None:
-        return self.socket.links
+    def links(self) -> list[NodeLink]:
+        assert self.socket.links is not None
+        return [link for link in self.socket.links]
 
     @property
     def _default_output_socket(self) -> NodeSocket:
@@ -129,6 +147,29 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
                 result = Math.subtract(1.0, result._default_output_socket)
             return result
 
+    if TYPE_CHECKING:
+
+        def __add__(self, other: Any) -> "Math": ...
+        def __radd__(self, other: Any) -> "Math": ...
+        def __sub__(self, other: Any) -> "Math": ...
+        def __rsub__(self, other: Any) -> "Math": ...
+        def __mul__(self, other: Any) -> "Math": ...
+        def __rmul__(self, other: Any) -> "Math": ...
+        def __div__(self, other: Any) -> "Math": ...
+        def __rdiv__(self, other: Any) -> "Math": ...
+        def __truediv__(self, other: Any) -> "Math": ...
+        def __rtruediv__(self, other: Any) -> "Math": ...
+        def __floordiv__(self, other: Any) -> "Math": ...
+        def __rfloordiv__(self, other: Any) -> "Math": ...
+        def __neg__(self) -> "Math": ...
+        def __abs__(self) -> "Math": ...
+        def __lt__(self, other: Any) -> "Compare": ...
+        def __gt__(self, other: Any) -> "Compare": ...
+        def __le__(self, other: Any) -> "Compare": ...
+        def __ge__(self, other: Any) -> "Compare": ...
+        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+
 
 # ---------------------------------------------------------------------------
 # Type-specific behaviour mixins
@@ -138,59 +179,60 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
 class _VectorMixin:
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
-    socket: NodeSocket
+    socket: NodeSocketVector
     _tree: TreeBuilder
-
-    def _separated_value(self, value: str) -> Socket:
-        from ..nodes.geometry import SeparateXYZ
-
-        for link in self.socket.links:
-            if link.to_node.bl_idname == "ShaderNodeSeparateXYZ":
-                return Socket(link.to_node.outputs[value])
-
-        return SeparateXYZ(self).o._get(value.lower())
 
     @property
     def x(self) -> Socket:
-        return self._separated_value("X")
+        from ..nodes.geometry import SeparateXYZ
+
+        return SeparateXYZ._find_or_create_linked(self.socket).o.x
 
     @property
     def y(self) -> Socket:
-        return self._separated_value("Y")
+        from ..nodes.geometry import SeparateXYZ
+
+        return SeparateXYZ._find_or_create_linked(self.socket).o.y
 
     @property
     def z(self) -> Socket:
-        return self._separated_value("Z")
+        from ..nodes.geometry import SeparateXYZ
 
-    def _get_or_create_combine_xyz(self) -> "bpy.types.Node":
-        from ..nodes.geometry.converter import CombineXYZ
+        return SeparateXYZ._find_or_create_linked(self.socket).o.z
 
-        for link in self.socket.links:
-            if link.from_node.bl_idname == "ShaderNodeCombineXYZ":
-                return link.from_node
-        combine = CombineXYZ()
-        self._tree.link(combine.node.outputs[0], self.socket)
-        return combine.node
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float] | tuple[float, float, float]) -> None:
+        self.socket.default_value = value
 
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
     @overload
     def __getitem__(self, key: int) -> "Socket": ...
     def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+        from ..nodes.geometry import CombineXYZ, SeparateXYZ
+
         if self.socket.is_output:
-            return [self.x, self.y, self.z][key]
-        node = self._get_or_create_combine_xyz()
-        return [_get_socket_linker(node.inputs[i]) for i in range(3)][key]
+            return SeparateXYZ._find_or_create_linked(self.socket).o[key]
+        else:
+            return CombineXYZ._find_or_create_linked(self.socket).i[key]
 
     def __iter__(self) -> Iterator["Socket"]:
+        from ..nodes.geometry import CombineXYZ, SeparateXYZ
+
         if self.socket.is_output:
-            yield self.x
-            yield self.y
-            yield self.z
+            node = SeparateXYZ._find_or_create_linked(self.socket)
+            yield node.o.x
+            yield node.o.y
+            yield node.o.z
         else:
-            node = self._get_or_create_combine_xyz()
-            for i in node.inputs:
-                yield _get_socket_linker(i)
+            node = CombineXYZ._find_or_create_linked(self.socket)
+            yield node.i.x
+            yield node.i.y
+            yield node.i.z
 
     def __len__(self) -> int:
         return 3
@@ -268,6 +310,27 @@ class _VectorMixin:
         else:
             return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
 
+    if TYPE_CHECKING:
+
+        def __add__(self, other: Any) -> "VectorMath": ...
+        def __radd__(self, other: Any) -> "VectorMath": ...
+        def __sub__(self, other: Any) -> "VectorMath": ...
+        def __rsub__(self, other: Any) -> "VectorMath": ...
+        def __mul__(self, other: Any) -> "VectorMath": ...
+        def __rmul__(self, other: Any) -> "VectorMath": ...
+        def __truediv__(self, other: Any) -> "VectorMath": ...
+        def __rtruediv__(self, other: Any) -> "VectorMath": ...
+        def __floordiv__(self, other: Any) -> "VectorMath": ...
+        def __rfloordiv__(self, other: Any) -> "VectorMath": ...
+        def __neg__(self) -> "VectorMath": ...
+        def __abs__(self) -> "VectorMath": ...
+        def __lt__(self, other: Any) -> "Compare": ...
+        def __gt__(self, other: Any) -> "Compare": ...
+        def __le__(self, other: Any) -> "Compare": ...
+        def __ge__(self, other: Any) -> "Compare": ...
+        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+
 
 _SEPARATE_COLOR_IDNAMES = (
     "FunctionNodeSeparateColor",
@@ -279,7 +342,7 @@ _SEPARATE_COLOR_IDNAMES = (
 class _ColorMixin:
     """Color-specific properties (.r, .g, .b, .a)."""
 
-    socket: NodeSocket
+    socket: NodeSocketColor
     _tree: TreeBuilder
 
     def _get_separate_color_cls(self):
@@ -315,6 +378,14 @@ class _ColorMixin:
     @property
     def a(self) -> Socket:
         return self._separated_channel("Alpha")
+
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float]) -> None:
+        self.socket.default_value = value
 
     _COMBINE_COLOR_IDNAMES = (
         "FunctionNodeCombineColor",
@@ -371,8 +442,16 @@ class _ColorMixin:
 class _IntegerMixin:
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""
 
-    socket: NodeSocket
+    socket: NodeSocketInt
     _tree: TreeBuilder
+
+    @property
+    def default_value(self) -> int:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: int) -> None:
+        self.socket.default_value = value
 
     @property
     def _is_geometry_tree(self) -> bool:
@@ -423,6 +502,27 @@ class _IntegerMixin:
             return getattr(Compare.integer, operation)(self.socket, other)
         return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
 
+    if TYPE_CHECKING:
+
+        def __add__(self, other: Any) -> "IntegerMath": ...
+        def __radd__(self, other: Any) -> "IntegerMath": ...
+        def __sub__(self, other: Any) -> "IntegerMath": ...
+        def __rsub__(self, other: Any) -> "IntegerMath": ...
+        def __mul__(self, other: Any) -> "IntegerMath": ...
+        def __rmul__(self, other: Any) -> "IntegerMath": ...
+        def __truediv__(self, other: Any) -> "IntegerMath": ...
+        def __rtruediv__(self, other: Any) -> "IntegerMath": ...
+        def __floordiv__(self, other: Any) -> "IntegerMath": ...
+        def __rfloordiv__(self, other: Any) -> "IntegerMath": ...
+        def __neg__(self) -> "IntegerMath": ...
+        def __abs__(self) -> "IntegerMath": ...
+        def __lt__(self, other: Any) -> "Compare": ...
+        def __gt__(self, other: Any) -> "Compare": ...
+        def __le__(self, other: Any) -> "Compare": ...
+        def __ge__(self, other: Any) -> "Compare": ...
+        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+
 
 # ---------------------------------------------------------------------------
 # Type-specific behaviour mixins (continued)
@@ -432,7 +532,15 @@ class _IntegerMixin:
 class _BooleanMixin:
     """Boolean-specific operator overrides — routes directly through BooleanMath."""
 
-    socket: NodeSocket
+    socket: NodeSocketBool
+
+    @property
+    def default_value(self) -> bool:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bool) -> None:
+        self.socket.default_value = value
 
     def __or__(self, other: Any) -> "BaseNode":
         from ..nodes.geometry.converter import BooleanMath
@@ -448,120 +556,137 @@ class _BooleanMixin:
 class _RotationMixin:
     """Rotation-specific properties (.w, .x, .y, .z) via RotationToQuaternion."""
 
-    socket: NodeSocket
+    socket: NodeSocketRotation
     _tree: TreeBuilder
 
-    def _quaternion_component(self, component: str) -> FloatSocket:
-        from ..nodes.geometry.converter import RotationToQuaternion
+    @property
+    def default_value(self) -> Euler:
+        return self.socket.default_value
 
-        if self.socket.links:
-            for link in self.socket.links:
-                if isinstance(link.to_node, FunctionNodeRotationToQuaternion):
-                    return _get_socket_linker(link.to_node.outputs[component])
-        return RotationToQuaternion(self.socket).o[component]
+    @default_value.setter
+    def default_value(self, value: Euler) -> None:
+        self.socket.default_value = value
 
     @property
     def w(self) -> FloatSocket:
-        return self._quaternion_component("W")
+        from ..nodes.geometry import RotationToQuaternion
+
+        return RotationToQuaternion._find_or_create_linked(self.socket).o.w
 
     @property
     def x(self) -> FloatSocket:
-        return self._quaternion_component("X")
+        from ..nodes.geometry import RotationToQuaternion
+
+        return RotationToQuaternion._find_or_create_linked(self.socket).o.x
 
     @property
     def y(self) -> FloatSocket:
-        return self._quaternion_component("Y")
+        from ..nodes.geometry import RotationToQuaternion
+
+        return RotationToQuaternion._find_or_create_linked(self.socket).o.y
 
     @property
     def z(self) -> FloatSocket:
-        return self._quaternion_component("Z")
+        from ..nodes.geometry import RotationToQuaternion
+
+        return RotationToQuaternion._find_or_create_linked(self.socket).o.z
 
     @property
     def euler(self) -> "VectorSocket":
         from ..nodes.geometry.converter import RotationToEuler
 
-        if self.socket.links:
-            for link in self.socket.links:
-                if isinstance(link.to_node, FunctionNodeRotationToEuler):
-                    return _get_socket_linker(link.to_node.outputs["Euler"])
-        return RotationToEuler(self.socket).o.euler
+        return RotationToEuler._find_or_create_linked(self.socket).o.euler
+
+    @property
+    def invert(self) -> "RotationSocket":
+        from ..nodes.geometry import InvertRotation
+
+        return InvertRotation._find_or_create_linked(self.socket).o.rotation
+
+
+class _FloatMixin:
+    """Float-specific properties (.x, .y, .z) and dispatch."""
+
+    socket: NodeSocketFloat
+    _tree: TreeBuilder
+
+    @property
+    def default_value(self) -> float:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: float) -> None:
+        self.socket.default_value = value
 
 
 class _MatrixMixin:
     """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
 
-    socket: NodeSocket
+    socket: NodeSocketMatrix
     _tree: TreeBuilder
-
-    def _separate_transform(self, output: str) -> Socket:
-        from ..nodes.geometry.converter import SeparateTransform
-
-        for link in self.socket.links:
-            if link.to_node.bl_idname == "FunctionNodeSeparateTransform":
-                return _get_socket_linker(link.to_node.outputs[output])
-        return SeparateTransform(self).outputs._get(output)
 
     @property
     def translation(self) -> "VectorSocket":
-        return self._separate_transform("Translation")  # type: ignore[return-value]
+        from ..nodes.geometry import SeparateTransform
+
+        return SeparateTransform._find_or_create_linked(self.socket).o.translation
 
     @property
     def rotation(self) -> "RotationSocket":
-        return self._separate_transform("Rotation")  # type: ignore[return-value]
+        from ..nodes.geometry import SeparateTransform
+
+        return SeparateTransform._find_or_create_linked(self.socket).o.rotation
 
     @property
     def scale(self) -> "VectorSocket":
-        return self._separate_transform("Scale")  # type: ignore[return-value]
+        from ..nodes.geometry import SeparateTransform
 
-    def _get_or_create_separate_matrix(self) -> FunctionNodeSeparateMatrix:
-        from ..nodes.geometry.converter import SeparateMatrix
+        return SeparateTransform._find_or_create_linked(self.socket).o.scale
 
-        if self.socket.links:
-            for link in self.socket.links:
-                if isinstance(link.to_node, FunctionNodeSeparateMatrix):
-                    return link.to_node
-        return SeparateMatrix(self).node
+    @property
+    def determinant(self) -> "FloatSocket":
+        from ..nodes.geometry import MatrixDeterminant
 
-    def _get_or_create_combine_matrix(self) -> FunctionNodeCombineMatrix:
-        from ..nodes.geometry.converter import CombineMatrix
+        return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
 
-        if self.socket.links:
-            for link in self.socket.links:
-                if isinstance(link.from_node, FunctionNodeCombineMatrix):
-                    return link.from_node
+    @property
+    def invert(self) -> "MatrixSocket":
+        from ..nodes.geometry import InvertMatrix
 
-        combine = CombineMatrix()
-        self._tree.link(combine.node.outputs[0], self.socket)
-        return combine.node
+        return InvertMatrix._find_or_create_linked(self.socket).o.matrix
+
+    @property
+    def transpose(self) -> "MatrixSocket":
+        from ..nodes.geometry import TransposeMatrix
+
+        return TransposeMatrix._find_or_create_linked(self.socket).o.matrix
 
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
     @overload
     def __getitem__(self, key: int) -> "Socket": ...
     def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+        from ..nodes.geometry import CombineMatrix, SeparateMatrix
+
         if self.socket.is_output:
-            node = self._get_or_create_separate_matrix()
-            outputs = node.outputs
+            node = SeparateMatrix._find_or_create_linked(self.socket)
             if isinstance(key, slice):
-                return [
-                    _get_socket_linker(outputs[i])
-                    for i in range(*key.indices(len(outputs)))
-                ]
-            return _get_socket_linker(outputs[key])
-        node = self._get_or_create_combine_matrix()
-        inputs = node.inputs
+                return [node.o[i] for i in range(*key.indices(len(node.o)))]
+            return node.o[key]
+        node = CombineMatrix._find_or_create_linked(self.socket)
         if isinstance(key, slice):
-            return [
-                _get_socket_linker(inputs[i]) for i in range(*key.indices(len(inputs)))
-            ]
-        return _get_socket_linker(inputs[key])
+            return [node.i[i] for i in range(*key.indices(len(node.i)))]
+        return node.i[key]
 
     def __iter__(self) -> Iterator["Socket"]:
+        from ..nodes.geometry import CombineMatrix, SeparateMatrix
+
         if self.socket.is_output:
-            node = self._get_or_create_separate_matrix()
-            return iter(_get_socket_linker(o) for o in node.outputs)
-        node = self._get_or_create_combine_matrix()
-        return iter(_get_socket_linker(i) for i in node.inputs)
+            node = SeparateMatrix._find_or_create_linked(self.socket)
+            return iter(node.o[:])
+        else:
+            node = CombineMatrix._find_or_create_linked(self.socket)
+            return iter(node.i[:])
 
     def __len__(self) -> int:
         return 16
@@ -575,7 +700,7 @@ class _MatrixMixin:
 # ---------------------------------------------------------------------------
 
 
-class FloatSocket(Socket):
+class FloatSocket(_FloatMixin, Socket):
     """Runtime float socket wrapper."""
 
 
@@ -606,41 +731,115 @@ class MatrixSocket(_MatrixMixin, Socket):
 class StringSocket(Socket):
     """Runtime string socket wrapper."""
 
+    socket: NodeSocketString
+
+    @property
+    def default_value(self) -> str:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: str) -> None:
+        self.socket.default_value = value
+
 
 class MenuSocket(Socket):
     """Runtime menu socket wrapper."""
+
+    socket: NodeSocketMenu
+
+    @property
+    def default_value(self) -> str:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: str) -> None:
+        self.socket.default_value = value
 
 
 class GeometrySocket(Socket):
     """Runtime geometry socket wrapper."""
 
+    socket: NodeSocketGeometry
+
 
 class ObjectSocket(Socket):
     """Runtime object socket wrapper."""
+
+    socket: NodeSocketObject
+
+    @property
+    def default_value(self) -> bpy.types.Object | None:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bpy.types.Object) -> None:
+        self.socket.default_value = value
 
 
 class MaterialSocket(Socket):
     """Runtime material socket wrapper."""
 
+    socket: NodeSocketMaterial
+
+    @property
+    def default_value(self) -> bpy.types.Material | None:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bpy.types.Material) -> None:
+        self.socket.default_value = value
+
 
 class ImageSocket(Socket):
     """Runtime image socket wrapper."""
+
+    socket: NodeSocketImage
+
+    @property
+    def default_value(self) -> bpy.types.Image | None:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bpy.types.Image) -> None:
+        self.socket.default_value = value
 
 
 class CollectionSocket(Socket):
     """Runtime collection socket wrapper."""
 
+    socket: NodeSocketCollection
+
+    @property
+    def default_value(self) -> bpy.types.Collection | None:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bpy.types.Collection) -> None:
+        self.socket.default_value = value
+
 
 class BundleSocket(Socket):
     """Runtime bundle socket wrapper."""
+
+    socket: NodeSocketBundle
 
 
 class ClosureSocket(Socket):
     """Runtime closure socket wrapper."""
 
+    socket: NodeSocketClosure
+
 
 class ShaderSocket(Socket):
     """Runtime shader socket wrapper."""
+
+    socket: NodeSocketShader
+
+
+class FontSocket(Socket):
+    """Runtime font socket wrapper."""
+
+    socket: NodeSocketFont
 
 
 _SOCKET_LINKER_REGISTRY["NodeSocketFloat"] = FloatSocket
@@ -656,6 +855,7 @@ _SOCKET_LINKER_REGISTRY["NodeSocketGeometry"] = GeometrySocket
 _SOCKET_LINKER_REGISTRY["NodeSocketObject"] = ObjectSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketMaterial"] = MaterialSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketImage"] = ImageSocket
+_SOCKET_LINKER_REGISTRY["NodeSocketFont"] = FontSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketCollection"] = CollectionSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketBundle"] = BundleSocket
 _SOCKET_LINKER_REGISTRY["NodeSocketClosure"] = ClosureSocket

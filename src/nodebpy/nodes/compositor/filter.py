@@ -620,7 +620,7 @@ class Defocus(NodeBuilder):
         angle: float = 0.0,
         f_stop: float = 0.0,
         blur_max: float = 0.0,
-        use_zbuffer: bool = False,
+        use_zbuffer: bool = True,
         z_scale: float = 0.0,
     ):
         super().__init__()
@@ -1429,7 +1429,7 @@ class Glare(NodeBuilder):
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
         clamp_highlights: InputBoolean = False,
-        max: InputFloat = 10.0,
+        maximum_highlights: InputFloat = 10.0,
         strength: InputFloat = 1.0,
         saturation: InputFloat = 1.0,
         tint: InputColor = None,
@@ -1442,7 +1442,7 @@ class Glare(NodeBuilder):
             highlights_threshold=highlights_threshold,
             highlights_smoothness=highlights_smoothness,
             clamp_highlights=clamp_highlights,
-            maximum_highlights=max,
+            maximum_highlights=maximum_highlights,
             strength=strength,
             saturation=saturation,
             tint=tint,
@@ -1458,7 +1458,7 @@ class Glare(NodeBuilder):
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
         clamp_highlights: InputBoolean = False,
-        max: InputFloat = 10.0,
+        maximum_highlights: InputFloat = 10.0,
         strength: InputFloat = 1.0,
         saturation: InputFloat = 1.0,
         tint: InputColor = None,
@@ -1472,7 +1472,7 @@ class Glare(NodeBuilder):
             highlights_threshold=highlights_threshold,
             highlights_smoothness=highlights_smoothness,
             clamp_highlights=clamp_highlights,
-            maximum_highlights=max,
+            maximum_highlights=maximum_highlights,
             strength=strength,
             saturation=saturation,
             tint=tint,
@@ -1489,7 +1489,7 @@ class Glare(NodeBuilder):
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
         clamp_highlights: InputBoolean = False,
-        max: InputFloat = 10.0,
+        maximum_highlights: InputFloat = 10.0,
         strength: InputFloat = 1.0,
         saturation: InputFloat = 1.0,
         tint: InputColor = None,
@@ -1506,7 +1506,7 @@ class Glare(NodeBuilder):
             highlights_threshold=highlights_threshold,
             highlights_smoothness=highlights_smoothness,
             clamp_highlights=clamp_highlights,
-            maximum_highlights=max,
+            maximum_highlights=maximum_highlights,
             strength=strength,
             saturation=saturation,
             tint=tint,
@@ -1526,7 +1526,7 @@ class Glare(NodeBuilder):
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
         clamp_highlights: InputBoolean = False,
-        max: InputFloat = 10.0,
+        maximum_highlights: InputFloat = 10.0,
         strength: InputFloat = 1.0,
         saturation: InputFloat = 1.0,
         tint: InputColor = None,
@@ -1539,7 +1539,7 @@ class Glare(NodeBuilder):
             highlights_threshold=highlights_threshold,
             highlights_smoothness=highlights_smoothness,
             clamp_highlights=clamp_highlights,
-            maximum_highlights=max,
+            maximum_highlights=maximum_highlights,
             strength=strength,
             saturation=saturation,
             tint=tint,
@@ -1555,7 +1555,7 @@ class Glare(NodeBuilder):
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
         clamp_highlights: InputBoolean = False,
-        max: InputFloat = 10.0,
+        maximum_highlights: InputFloat = 10.0,
         strength: InputFloat = 1.0,
         saturation: InputFloat = 1.0,
         tint: InputColor = None,
@@ -1570,7 +1570,7 @@ class Glare(NodeBuilder):
             highlights_threshold=highlights_threshold,
             highlights_smoothness=highlights_smoothness,
             clamp_highlights=clamp_highlights,
-            maximum_highlights=max,
+            maximum_highlights=maximum_highlights,
             strength=strength,
             saturation=saturation,
             tint=tint,
@@ -1588,7 +1588,7 @@ class Glare(NodeBuilder):
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
         clamp_highlights: InputBoolean = False,
-        max: InputFloat = 10.0,
+        maximum_highlights: InputFloat = 10.0,
         strength: InputFloat = 1.0,
         saturation: InputFloat = 1.0,
         tint: InputColor = None,
@@ -1603,7 +1603,7 @@ class Glare(NodeBuilder):
             highlights_threshold=highlights_threshold,
             highlights_smoothness=highlights_smoothness,
             clamp_highlights=clamp_highlights,
-            maximum_highlights=max,
+            maximum_highlights=maximum_highlights,
             strength=strength,
             saturation=saturation,
             tint=tint,
@@ -1621,7 +1621,7 @@ class Glare(NodeBuilder):
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
         clamp_highlights: InputBoolean = False,
-        max: InputFloat = 10.0,
+        maximum_highlights: InputFloat = 10.0,
         strength: InputFloat = 1.0,
         saturation: InputFloat = 1.0,
         tint: InputColor = None,
@@ -1635,7 +1635,7 @@ class Glare(NodeBuilder):
             highlights_threshold=highlights_threshold,
             highlights_smoothness=highlights_smoothness,
             clamp_highlights=clamp_highlights,
-            maximum_highlights=max,
+            maximum_highlights=maximum_highlights,
             strength=strength,
             saturation=saturation,
             tint=tint,
@@ -1829,6 +1829,55 @@ class Kuwahara(NodeBuilder):
         )
 
 
+class MaskToSDF(NodeBuilder):
+    """
+    Computes a signed distance field from the given mask
+
+    Parameters
+    ----------
+    mask : InputBoolean
+        Mask
+
+    Inputs
+    ------
+    i.mask : BooleanSocket
+        Mask
+
+    Outputs
+    -------
+    o.sdf : FloatSocket
+        SDF
+    o.nearest_pixel : VectorSocket
+        Nearest Pixel
+    """
+
+    _bl_idname = "CompositorNodeMaskToSDF"
+    node: bpy.types.CompositorNodeMaskToSDF
+
+    class _Inputs(SocketAccessor):
+        mask: BooleanSocket
+        """Mask"""
+
+    class _Outputs(SocketAccessor):
+        sdf: FloatSocket
+        """SDF"""
+        nearest_pixel: VectorSocket
+        """Nearest Pixel"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, mask: InputBoolean = False):
+        super().__init__()
+        key_args = {"Mask": mask}
+
+        self._establish_links(**key_args)
+
+
 class Pixelate(NodeBuilder):
     """
     Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance
@@ -1895,7 +1944,7 @@ class VectorBlur(NodeBuilder):
     speed : InputVector
         Speed
     z : InputFloat
-        Z
+        Depth
     samples : InputInteger
         Samples
     shutter : InputFloat
@@ -1908,7 +1957,7 @@ class VectorBlur(NodeBuilder):
     i.speed : VectorSocket
         Speed
     i.z : FloatSocket
-        Z
+        Depth
     i.samples : IntegerSocket
         Samples
     i.shutter : FloatSocket
@@ -1929,7 +1978,7 @@ class VectorBlur(NodeBuilder):
         speed: VectorSocket
         """Speed"""
         z: FloatSocket
-        """Z"""
+        """Depth"""
         samples: IntegerSocket
         """Samples"""
         shutter: FloatSocket

@@ -244,6 +244,7 @@ class VectorMath(NodeBuilder):
             "SIGN",
             "MINIMUM",
             "MAXIMUM",
+            "ROUND",
             "FLOOR",
             "CEIL",
             "FRACTION",
@@ -417,6 +418,11 @@ class VectorMath(NodeBuilder):
         return cls(operation="MAXIMUM", vector=vector, vector_001=vector_001)
 
     @classmethod
+    def round(cls, vector: InputVector = None) -> "VectorMath":
+        """Create Vector Math with operation 'Round'. Entry-wise round to the nearest integer. Round upward if the fraction part is 0.5"""
+        return cls(operation="ROUND", vector=vector)
+
+    @classmethod
     def floor(cls, vector: InputVector = None) -> "VectorMath":
         """Create Vector Math with operation 'Floor'. Entry-wise floor"""
         return cls(operation="FLOOR", vector=vector)
@@ -499,6 +505,7 @@ class VectorMath(NodeBuilder):
         "SIGN",
         "MINIMUM",
         "MAXIMUM",
+        "ROUND",
         "FLOOR",
         "CEIL",
         "FRACTION",
@@ -535,6 +542,7 @@ class VectorMath(NodeBuilder):
             "SIGN",
             "MINIMUM",
             "MAXIMUM",
+            "ROUND",
             "FLOOR",
             "CEIL",
             "FRACTION",

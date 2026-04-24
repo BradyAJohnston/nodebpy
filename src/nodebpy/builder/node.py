@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Iterable, Literal
+from typing import TYPE_CHECKING, Iterable, Literal, Self
 
 import bpy
 from bpy.types import Node, NodeSocket
@@ -25,7 +25,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
 
-    def __init__(self):
+    def __init__(self, node: bpy.types.Node | None = None):
         tree = (
             TreeBuilder._tree_contexts[-1] if len(TreeBuilder._tree_contexts) else None
         )
@@ -39,7 +39,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
         self._tree = tree
         self._placeholder_inputs = []
-        self.node: bpy.types.Node = self._tree.add(self.__class__._bl_idname)
+        self.node = node if node else self._tree.add(self.__class__._bl_idname)
 
     @property
     def tree(self) -> TreeBuilder:
@@ -70,6 +70,33 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             counter += 1
             socket = self.node.outputs[counter]
         return socket
+
+    @classmethod
+    def _from_node(cls, node: bpy.types.Node) -> Self:
+        builder = cls()
+        builder.tree.nodes.remove(builder.node)
+        builder.node = node
+        return builder
+
+    @classmethod
+    def _find_or_create_linked(cls, socket: NodeSocket) -> Self:
+        if socket.is_output:
+            if socket.links:
+                for link in socket.links:
+                    assert link.to_node
+                    if link.to_node.bl_idname == cls._bl_idname:
+                        return cls._from_node(link.to_node)
+            return cls(socket)
+        else:
+            if socket.links:
+                for link in socket.links:
+                    assert link.from_node
+                    if link.from_node.bl_idname == cls._bl_idname:
+                        return cls._from_node(link.from_node)
+
+            node = cls()
+            node >> socket
+            return node
 
     def _set_input_default_value(self, input, value):
         """Set the default value for an input socket, handling type conversions."""

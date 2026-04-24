@@ -173,6 +173,87 @@ class ActiveElement(NodeBuilder):
         self.node.domain = value
 
 
+class BoneInfo(NodeBuilder):
+    """
+    Retrieve information of armature bones
+
+    Parameters
+    ----------
+    armature : InputObject
+        Armature
+    bone_name : InputString
+        Bone Name
+
+    Inputs
+    ------
+    i.armature : ObjectSocket
+        Armature
+    i.bone_name : StringSocket
+        Bone Name
+
+    Outputs
+    -------
+    o.pose : MatrixSocket
+        Pose
+    o.local_pose : MatrixSocket
+        Local Pose
+    o.transform_pose : MatrixSocket
+        Transform Pose
+    o.rest_pose : MatrixSocket
+        Rest Pose
+    o.rest_length : FloatSocket
+        Rest Length
+    """
+
+    _bl_idname = "GeometryNodeBoneInfo"
+    node: bpy.types.GeometryNodeBoneInfo
+
+    class _Inputs(SocketAccessor):
+        armature: ObjectSocket
+        """Armature"""
+        bone_name: StringSocket
+        """Bone Name"""
+
+    class _Outputs(SocketAccessor):
+        pose: MatrixSocket
+        """Pose"""
+        local_pose: MatrixSocket
+        """Local Pose"""
+        transform_pose: MatrixSocket
+        """Transform Pose"""
+        rest_pose: MatrixSocket
+        """Rest Pose"""
+        rest_length: FloatSocket
+        """Rest Length"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        armature: InputObject = None,
+        bone_name: InputString = "",
+        *,
+        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
+    ):
+        super().__init__()
+        key_args = {"Armature": armature, "Bone Name": bone_name}
+        self.transform_space = transform_space
+        self._establish_links(**key_args)
+
+    @property
+    def transform_space(self) -> Literal["ORIGINAL", "RELATIVE"]:
+        return self.node.transform_space
+
+    @transform_space.setter
+    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]):
+        self.node.transform_space = value
+
+
 class Boolean(NodeBuilder):
     """
     Provide a True/False value that can be connected to other nodes in the tree

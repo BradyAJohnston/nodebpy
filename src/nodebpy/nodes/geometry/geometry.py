@@ -8,8 +8,10 @@ from ...builder import (
     BaseNode as NodeBuilder,
     SocketAccessor,
     BooleanSocket,
+    BundleSocket,
     ColorSocket,
     FloatSocket,
+    FontSocket,
     GeometrySocket,
     IntegerSocket,
     MaterialSocket,
@@ -22,6 +24,7 @@ from ...builder import (
 
 from ...types import (
     InputBoolean,
+    InputBundle,
     InputColor,
     InputGeometry,
     InputInteger,
@@ -32,6 +35,7 @@ from ...types import (
     InputString,
     InputFloat,
     InputVector,
+    InputFont,
 )
 
 
@@ -2133,6 +2137,8 @@ class FillCurve(NodeBuilder):
         Group ID
     mode : InputMenu | Literal['Triangles', 'N-gons']
         Mode
+    fill_rule : InputMenu | Literal['Even-Odd', 'Non-Zero']
+        Fill Rule
 
     Inputs
     ------
@@ -2142,6 +2148,8 @@ class FillCurve(NodeBuilder):
         Group ID
     i.mode : MenuSocket
         Mode
+    i.fill_rule : MenuSocket
+        Fill Rule
 
     Outputs
     -------
@@ -2159,6 +2167,8 @@ class FillCurve(NodeBuilder):
         """Group ID"""
         mode: MenuSocket
         """Mode"""
+        fill_rule: MenuSocket
+        """Fill Rule"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
@@ -2176,9 +2186,15 @@ class FillCurve(NodeBuilder):
         curve: InputGeometry = None,
         group_id: InputInteger = 0,
         mode: InputMenu | Literal["Triangles", "N-gons"] = "Triangles",
+        fill_rule: InputMenu | Literal["Even-Odd", "Non-Zero"] = "Even-Odd",
     ):
         super().__init__()
-        key_args = {"Curve": curve, "Group ID": group_id, "Mode": mode}
+        key_args = {
+            "Curve": curve,
+            "Group ID": group_id,
+            "Mode": mode,
+            "Fill Rule": fill_rule,
+        }
 
         self._establish_links(**key_args)
 
@@ -2410,6 +2426,65 @@ class GeometryProximity(NodeBuilder):
     @target_element.setter
     def target_element(self, value: Literal["POINTS", "EDGES", "FACES"]):
         self.node.target_element = value
+
+
+class GetGeometryBundle(NodeBuilder):
+    """
+    Get the bundle of a geometry
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    remove : InputBoolean
+        Remove
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.remove : BooleanSocket
+        Remove
+
+    Outputs
+    -------
+    o.geometry : GeometrySocket
+        Geometry
+    o.bundle : BundleSocket
+        Bundle
+    """
+
+    _bl_idname = "GeometryNodeGetGeometryBundle"
+    node: bpy.types.GeometryNodeGetGeometryBundle
+
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        remove: BooleanSocket
+        """Remove"""
+
+    class _Outputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        bundle: BundleSocket
+        """Bundle"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        remove: InputBoolean = False,
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry, "Remove": remove}
+
+        self._establish_links(**key_args)
 
 
 class GreasePencilToCurves(NodeBuilder):
@@ -4366,6 +4441,8 @@ class RealizeInstances(NodeBuilder):
         selection: InputBoolean = True,
         realize_all: InputBoolean = True,
         depth: InputInteger = 0,
+        *,
+        realize_to_point_domain: bool = False,
     ):
         super().__init__()
         key_args = {
@@ -4374,8 +4451,16 @@ class RealizeInstances(NodeBuilder):
             "Realize All": realize_all,
             "Depth": depth,
         }
-
+        self.realize_to_point_domain = realize_to_point_domain
         self._establish_links(**key_args)
+
+    @property
+    def realize_to_point_domain(self) -> bool:
+        return self.node.realize_to_point_domain
+
+    @realize_to_point_domain.setter
+    def realize_to_point_domain(self, value: bool):
+        self.node.realize_to_point_domain = value
 
 
 class ReplaceMaterial(NodeBuilder):
@@ -6492,6 +6577,61 @@ class SetFaceSet(NodeBuilder):
         self._establish_links(**key_args)
 
 
+class SetGeometryBundle(NodeBuilder):
+    """
+    Set the bundle of a geometry
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    bundle : InputBundle
+        Bundle
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.bundle : BundleSocket
+        Bundle
+
+    Outputs
+    -------
+    o.geometry : GeometrySocket
+        Geometry
+    """
+
+    _bl_idname = "GeometryNodeSetGeometryBundle"
+    node: bpy.types.GeometryNodeSetGeometryBundle
+
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        bundle: BundleSocket
+        """Bundle"""
+
+    class _Outputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        bundle: InputBundle = None,
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry, "Bundle": bundle}
+
+        self._establish_links(**key_args)
+
+
 class SetGeometryName(NodeBuilder):
     """
     Set the name of a geometry for easier debugging
@@ -8483,12 +8623,22 @@ class StringToCurves(NodeBuilder):
         String
     size : InputFloat
         Size
+    font : InputFont
+        Font
+    align_x : InputMenu | Literal['Left', 'Center', 'Right', 'Justify', 'Flush']
+        Align X
+    align_y : InputMenu | Literal['Top', 'Top Baseline', 'Middle', 'Bottom Baseline', 'Bottom']
+        Align Y
+    pivot_point : InputMenu | Literal['Midpoint', 'Top Left', 'Top Center', 'Top Right', 'Bottom Left', 'Bottom Center', 'Bottom Right']
+        Pivot Point
     character_spacing : InputFloat
         Character Spacing
     word_spacing : InputFloat
         Word Spacing
     line_spacing : InputFloat
         Line Spacing
+    overflow : InputMenu | Literal['Overflow', 'Scale To Fit', 'Truncate']
+        Overflow
     text_box_width : InputFloat
         Text Box Width
     text_box_height : InputFloat
@@ -8500,12 +8650,22 @@ class StringToCurves(NodeBuilder):
         String
     i.size : FloatSocket
         Size
+    i.font : FontSocket
+        Font
+    i.align_x : MenuSocket
+        Align X
+    i.align_y : MenuSocket
+        Align Y
+    i.pivot_point : MenuSocket
+        Pivot Point
     i.character_spacing : FloatSocket
         Character Spacing
     i.word_spacing : FloatSocket
         Word Spacing
     i.line_spacing : FloatSocket
         Line Spacing
+    i.overflow : MenuSocket
+        Overflow
     i.text_box_width : FloatSocket
         Text Box Width
     i.text_box_height : FloatSocket
@@ -8519,6 +8679,8 @@ class StringToCurves(NodeBuilder):
         Remainder
     o.line : IntegerSocket
         Line
+    o.word : IntegerSocket
+        Word
     o.pivot_point : VectorSocket
         Pivot Point
     """
@@ -8531,12 +8693,22 @@ class StringToCurves(NodeBuilder):
         """String"""
         size: FloatSocket
         """Size"""
+        font: FontSocket
+        """Font"""
+        align_x: MenuSocket
+        """Align X"""
+        align_y: MenuSocket
+        """Align Y"""
+        pivot_point: MenuSocket
+        """Pivot Point"""
         character_spacing: FloatSocket
         """Character Spacing"""
         word_spacing: FloatSocket
         """Word Spacing"""
         line_spacing: FloatSocket
         """Line Spacing"""
+        overflow: MenuSocket
+        """Overflow"""
         text_box_width: FloatSocket
         """Text Box Width"""
         text_box_height: FloatSocket
@@ -8549,6 +8721,8 @@ class StringToCurves(NodeBuilder):
         """Remainder"""
         line: IntegerSocket
         """Line"""
+        word: IntegerSocket
+        """Word"""
         pivot_point: VectorSocket
         """Pivot Point"""
 
@@ -8563,100 +8737,48 @@ class StringToCurves(NodeBuilder):
         self,
         string: InputString = "",
         size: InputFloat = 1.0,
+        font: InputFont = None,
+        align_x: InputMenu
+        | Literal["Left", "Center", "Right", "Justify", "Flush"] = "Left",
+        align_y: InputMenu
+        | Literal[
+            "Top", "Top Baseline", "Middle", "Bottom Baseline", "Bottom"
+        ] = "Top Baseline",
+        pivot_point: InputMenu
+        | Literal[
+            "Midpoint",
+            "Top Left",
+            "Top Center",
+            "Top Right",
+            "Bottom Left",
+            "Bottom Center",
+            "Bottom Right",
+        ] = "Midpoint",
         character_spacing: InputFloat = 1.0,
         word_spacing: InputFloat = 1.0,
         line_spacing: InputFloat = 1.0,
+        overflow: InputMenu
+        | Literal["Overflow", "Scale To Fit", "Truncate"] = "Overflow",
         text_box_width: InputFloat = 0.0,
         text_box_height: InputFloat = 0.0,
-        *,
-        overflow: Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"] = "OVERFLOW",
-        align_x: Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"] = "LEFT",
-        align_y: Literal[
-            "TOP", "TOP_BASELINE", "MIDDLE", "BOTTOM_BASELINE", "BOTTOM"
-        ] = "TOP_BASELINE",
-        pivot_mode: Literal[
-            "MIDPOINT",
-            "TOP_LEFT",
-            "TOP_CENTER",
-            "TOP_RIGHT",
-            "BOTTOM_LEFT",
-            "BOTTOM_CENTER",
-            "BOTTOM_RIGHT",
-        ] = "BOTTOM_LEFT",
     ):
         super().__init__()
         key_args = {
             "String": string,
             "Size": size,
+            "Font": font,
+            "Align X": align_x,
+            "Align Y": align_y,
+            "Pivot Point": pivot_point,
             "Character Spacing": character_spacing,
             "Word Spacing": word_spacing,
             "Line Spacing": line_spacing,
+            "Overflow": overflow,
             "Text Box Width": text_box_width,
             "Text Box Height": text_box_height,
         }
-        self.overflow = overflow
-        self.align_x = align_x
-        self.align_y = align_y
-        self.pivot_mode = pivot_mode
+
         self._establish_links(**key_args)
-
-    @property
-    def overflow(self) -> Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"]:
-        return self.node.overflow
-
-    @overflow.setter
-    def overflow(self, value: Literal["OVERFLOW", "SCALE_TO_FIT", "TRUNCATE"]):
-        self.node.overflow = value
-
-    @property
-    def align_x(self) -> Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"]:
-        return self.node.align_x
-
-    @align_x.setter
-    def align_x(self, value: Literal["LEFT", "CENTER", "RIGHT", "JUSTIFY", "FLUSH"]):
-        self.node.align_x = value
-
-    @property
-    def align_y(
-        self,
-    ) -> Literal["TOP", "TOP_BASELINE", "MIDDLE", "BOTTOM_BASELINE", "BOTTOM"]:
-        return self.node.align_y
-
-    @align_y.setter
-    def align_y(
-        self,
-        value: Literal["TOP", "TOP_BASELINE", "MIDDLE", "BOTTOM_BASELINE", "BOTTOM"],
-    ):
-        self.node.align_y = value
-
-    @property
-    def pivot_mode(
-        self,
-    ) -> Literal[
-        "MIDPOINT",
-        "TOP_LEFT",
-        "TOP_CENTER",
-        "TOP_RIGHT",
-        "BOTTOM_LEFT",
-        "BOTTOM_CENTER",
-        "BOTTOM_RIGHT",
-    ]:
-        return self.node.pivot_mode
-
-    @pivot_mode.setter
-    def pivot_mode(
-        self,
-        value: Literal[
-            "MIDPOINT",
-            "TOP_LEFT",
-            "TOP_CENTER",
-            "TOP_RIGHT",
-            "BOTTOM_LEFT",
-            "BOTTOM_CENTER",
-            "BOTTOM_RIGHT",
-        ],
-    ):
-        self.node.pivot_mode = value
 
 
 class SubdivideCurve(NodeBuilder):
