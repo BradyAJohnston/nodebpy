@@ -276,7 +276,7 @@ class LinkingMixin:
         else:
             self._link(source, input)
 
-    def __rshift__(self, other: "BaseNode | Socket") -> "BaseNode | Socket":
+    def __rshift__(self, other: _RShiftT) -> _RShiftT:
         """Chain nodes using >> operator. Links output to input.
 
         Usage:
