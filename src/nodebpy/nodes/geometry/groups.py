@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from nodebpy import TreeBuilder
 from nodebpy.nodes.compositor import CombineXYZ
 from nodebpy.types import InputInteger, InputVector
 
@@ -156,7 +157,7 @@ class PrincipalComponents(NodeGroupBuilder):
         }
         super().__init__(**kwargs)
 
-    def _build_group(self, tree):
+    def _build_group(self, tree: TreeBuilder):
         position = tree.inputs.vector("Position", default_input="POSITION")
         group_id = tree.inputs.integer(
             "Group ID",
