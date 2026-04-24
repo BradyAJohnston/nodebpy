@@ -63,8 +63,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
 
     @property
     def links(self) -> list[NodeLink]:
-        if self.socket.links is None:
-            return []
+        assert self.socket.links is not None
         return [link for link in self.socket.links]
 
     @property

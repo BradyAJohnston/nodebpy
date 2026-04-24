@@ -1,5 +1,6 @@
 import bpy
 import pytest
+from mathutils import Euler
 
 from nodebpy import compositor as c
 from nodebpy import geometry as g
@@ -779,6 +780,11 @@ def test_socket_defaults():
         assert sep.i.vector.links != []
         assert len(sep.i.vector.links) == 1
 
+        rot = g.RotationToEuler()
+        assert rot.i.rotation.default_value == Euler([0.0, 0.0, 0.0])
+        rot.i.rotation.default_value = Euler([1.0, 1.0, 1.0])
+        assert rot.i.rotation.default_value == Euler([1.0, 1.0, 1.0])
+
         sep = g.SeparateColor()
         assert sep.i.color.default_value == [1.0, 1.0, 1.0, 1.0]
         sep.i.color.default_value = [0.0, 0.0, 0.0, 1.0]
@@ -790,24 +796,28 @@ def test_socket_defaults():
         assert n.i.boolean.default_value is True
 
         string = g.StringLength()
-
         assert string.i.string.default_value == ""
         string.i.string.default_value = "Some string"
         assert string.i.string.default_value == "Some string"
 
-        mat = g.Material().o.material
+        mat = g.SetMaterial().i.material
         assert mat.default_value is None
         mat.default_value = bpy.data.materials.new("New Material")
         assert mat.default_value.name == "New Material"
 
-        image = g.Image().o.image
+        image = g.ImageInfo().i.image
         assert image.default_value is None
         image.default_value = bpy.data.images.new("New Image", width=1024, height=1024)
         assert image.default_value.name == "New Image"
 
-        collection = g.Collection()
-        assert collection.o.collection.default_value is None
-        collection.o.collection.default_value = bpy.data.collections.new(
+        collection = g.CollectionInfo()
+        assert collection.i.collection.default_value is None
+        collection.i.collection.default_value = bpy.data.collections.new(
             "New Collection"
         )
-        assert collection.o.collection.default_value.name == "New Collection"
+        assert collection.i.collection.default_value.name == "New Collection"
+
+        obj = g.ObjectInfo()
+        assert obj.i.object.default_value is None
+        obj.i.object.default_value = bpy.data.objects["Cube"]
+        assert obj.i.object.default_value.name == "Cube"
