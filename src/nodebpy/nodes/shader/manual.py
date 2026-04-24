@@ -11,7 +11,7 @@ from ...builder import (
     VectorSocket,
 )
 from ...builder.accessor import SocketAccessor
-from ..geometry import RepeatInput, RepeatOutput, RepeatZone
+from ..geometry import Frame, RepeatInput, RepeatOutput, RepeatZone
 from ..geometry.manual import _MenuSwitchBase
 
 __all__ = [
@@ -20,6 +20,7 @@ __all__ = [
     "RepeatOutput",
     "RepeatZone",
     "Attribute",
+    "Frame",
     "tree",
     "material",
 ]

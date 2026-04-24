@@ -1,12 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, overload
 
 import bpy
 from bpy.types import NodeSocket
 
 from ._registry import _get_socket_linker
-from ._utils import SocketError, _allow_innactive_sockets, denormalize_name
+from ._utils import (
+    SocketError,
+    _allow_innactive_sockets,
+    denormalize_name,
+    normalize_name,
+)
 
 if TYPE_CHECKING:
     from .socket import Socket
@@ -43,6 +48,10 @@ class SocketAccessor:
         for candidate in (key, denorm):
             if candidate in ids:
                 return ids.index(candidate)
+        # Normalized identifier match: 'value_001' matches identifier 'Value_001'
+        normalized_ids = [normalize_name(id) for id in ids]
+        if key in normalized_ids:
+            return normalized_ids.index(key)
         names = [s.name for s in self._collection]
         for key in (key, denorm):
             if key in names:
@@ -58,11 +67,24 @@ class SocketAccessor:
             f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"
         )
 
-    def _get(self, key: str | int) -> "Socket":
+    @overload
+    def _get(self, key: slice) -> "list[Socket]": ...
+    @overload
+    def _get(self, key: str | int) -> "Socket": ...
+    def _get(self, key: str | int | slice) -> "Socket | list[Socket]":
         """Get a Socket for a socket by identifier, name, or index."""
+        if isinstance(key, slice):
+            return [
+                _get_socket_linker(self._collection[i])
+                for i in range(*key.indices(len(self._collection)))
+            ]
         return _get_socket_linker(self._collection[self._index(key)])
 
-    def __getitem__(self, key: str | int) -> "Socket":
+    @overload
+    def __getitem__(self, key: slice) -> "list[Socket]": ...
+    @overload
+    def __getitem__(self, key: str | int) -> "Socket": ...
+    def __getitem__(self, key: str | int | slice) -> "Socket | list[Socket]":
         """Access by identifier, name, or integer index."""
         return self._get(key)
 

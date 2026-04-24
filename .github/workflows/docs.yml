@@ -13,30 +13,32 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
-      - uses: quarto-dev/quarto-actions/setup@v2
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v4
         with:
-            version: "latest"
+          version: "latest"
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Build Docs
         run: |
-            uv sync --all-extras --dev
-            uv pip install -e .
-            cd docs
-            uv run -m quartodoc build
+          uv sync --all-extras --dev
+          uv pip install -e .
+          cd docs
+          uv run -m quartodoc build
 
       - name: Quarto Render
         run: |
-            uv run quarto render docs
+          uv run quarto render docs
 
-      # Only publish to GitHub Pages on push to main, not on PRs
+      # Only publish to GitHub Pages when a new version tag is pushed
       - name: Publish to GitHub Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         uses: quarto-dev/quarto-actions/publish@v2
         with:
-            target: gh-pages
-            path: docs
-            render: false
+          target: gh-pages
+          path: docs
+          render: false
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

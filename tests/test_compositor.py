@@ -88,3 +88,11 @@ def test_compositor_menu_switch():
         # we have to check the output defeault value here because that is how the Value
         # node is defined which is truly cursed but hey it is what it is
         assert input.socket.links[0].from_node.outputs[0].default_value == float(i)
+
+
+def test_nodes():
+    with c.tree():
+        idx = c.IndexSwitch.vector()
+        assert idx.data_type == "VECTOR"
+        idx.data_type = "FLOAT"
+        assert idx.data_type == "FLOAT"

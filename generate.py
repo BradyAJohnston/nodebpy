@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import bpy
-from bpy.types import bpy_prop_array
+from bpy.types import VectorFont, bpy_prop_array
 from mathutils import Euler, Vector
 
 # ---------------------------------------------------------------------------
@@ -49,6 +49,7 @@ _OUTPUT_SOCKET_CLASSES: dict[str, str] = {
     "NodeSocketBundle": "BundleSocket",
     "NodeSocketClosure": "ClosureSocket",
     "NodeSocketShader": "ShaderSocket",
+    "NodeSocketFont": "FontSocket",
 }
 
 
@@ -78,7 +79,6 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Closure",
         "Simulation",
         "For Each",
-        "Frame",
         "GridBoolean",
         "Reroute",
         "FieldMinAndMax",
@@ -118,6 +118,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "FieldVariance",
         "Compare",
         "AttributeStatistic",
+        "Frame",
         "tree",
     ),
     class_name_prefix_strips=[
@@ -133,7 +134,6 @@ SHADER_CONFIG = TreeTypeConfig(
     output_dir_name="shader",
     nodes_to_skip=[
         "Legacy",
-        "Frame",
         "Reroute",
     ],
     manually_defined=(
@@ -142,6 +142,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "RepeatOutput",
         "RepeatZone",
         "Attribute",
+        "Frame",
         "tree",
         "material",
     ),
@@ -156,13 +157,13 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
     output_dir_name="compositor",
     nodes_to_skip=[
         "Legacy",
-        "Frame",
         "Reroute",
         "Cryptomatte",
         "Image",
     ],
     manually_defined=(
         "MenuSwitch",
+        "Frame",
         "tree",
     ),
     class_name_prefix_strips=[
@@ -231,6 +232,7 @@ class SocketInfo:
             "NodeSocketClosure": "InputClosure",
             # Shader trees use NodeSocketShader for BSDF/closure outputs
             "NodeSocketShader": "InputShader",
+            "NodeSocketFont": "InputFont",
             # Virtual sockets adapt to whatever is connected
             "NodeSocketVirtual": "InputLinkable",
         }
@@ -405,6 +407,7 @@ class NodeInfo:
             "Vdb": "VDB",
             "3DLocation": "Location3D",
             "Bsdf": "BSDF",
+            "Svd": "SVD",
         }
 
         # Add prefix strips from config
@@ -518,13 +521,12 @@ class NodeInfo:
                 for socket in enum.sockets:
                     # Use label-based parameter naming
                     socket_name = get_socket_param_name(socket, sockets_use_same_name)
-                    if socket_name.startswith("min"):
-                        param_name = "min"
-                    elif socket_name.startswith("max"):
-                        param_name = "max"
-                    else:
-                        param_name = socket_name
-                    param_name = param_name.replace("_float", "").replace("_vector", "")
+                    suffixes_to_remove = ["_float", "_vector"]
+                    param_name = socket_name
+                    if socket_name.startswith("min") or socket_name.startswith("max"):
+                        suffixes_to_remove += ["_001", "_002"]
+                    for suffix in suffixes_to_remove:
+                        param_name = param_name.replace(suffix, "")
 
                     if (
                         param_name
@@ -591,13 +593,12 @@ class NodeInfo:
 
             for socket in enum.sockets:
                 socket_name = get_socket_param_name(socket, sockets_use_same_name)
-                if socket_name.startswith("min"):
-                    param_name = "min"
-                elif socket_name.startswith("max"):
-                    param_name = "max"
-                else:
-                    param_name = socket_name
-                param_name = param_name.replace("_float", "").replace("_vector", "")
+                suffixes_to_remove = ["_float", "_vector"]
+                param_name = socket_name
+                if socket_name.startswith("min") or socket_name.startswith("max"):
+                    suffixes_to_remove += ["_001", "_002"]
+                for suffix in suffixes_to_remove:
+                    param_name = param_name.replace(suffix, "")
 
                 if param_name and param_name != "" and param_name != type_param_name:
                     input_params.append(
@@ -682,6 +683,8 @@ def format_python_value(value: Any) -> str:
         return str(value)
     elif isinstance(value, int):
         return str(value)
+    elif isinstance(value, VectorFont):
+        return "None"
     elif isinstance(value, float):
         return str(round(value, 4))
     elif hasattr(value, "__iter__") and not isinstance(value, str):
@@ -1221,6 +1224,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         "InputString",
         "InputFloat",
         "InputVector",
+        "InputFont",
     ]
     type_imports = [
         t

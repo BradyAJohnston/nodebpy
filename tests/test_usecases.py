@@ -1,6 +1,11 @@
+from functools import reduce
+from itertools import product
+from operator import and_
+
 import bpy
 
 from nodebpy import geometry as g
+from nodebpy.nodes.geometry.groups import PrincipalComponents
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
@@ -34,6 +39,36 @@ def import_channel() -> bpy.types.GeometryNodeTree:
     return tree.tree
 
 
+def test_decoder_8bit():
+    # this should actually be 8 bits but it takes a bit longer to run through
+    # (~20 seconds) so for testing we can keep it much smaller. It's a nice
+    # clean implementation and good example of the code in action.
+    N_BITS = 4
+    with g.tree("8-Bit Decoder", arrange="simple") as tree:
+        bits = [tree.inputs.boolean(f"Bit {i}") for i in range(N_BITS)]
+        not_bits = [g.BooleanMath.l_not(b) for b in bits]
+
+        for i, combo in enumerate(product((False, True), repeat=N_BITS)):
+            terms = [b if on else nb for b, nb, on in zip(bits, not_bits, combo)]
+            reduce(and_, terms) >> tree.outputs.boolean(f"Out {i}")
+
+    assert len(tree) == 54
+    assert len(tree.inputs) == 4
+    assert len(tree.outputs) == 16
+    assert all(
+        i.links[0].from_node.operation == "AND"
+        for i in tree.nodes["Group Output"].inputs
+        if i.identifier != "__extend__"
+    )
+
+
 def test_import_channel():
     tree = import_channel()
     assert len(tree.nodes) == 10
+
+
+def test_PCA_asset():
+    with g.tree():
+        pca = PrincipalComponents()
+
+    assert len(pca.node.node_tree.nodes) == 35
