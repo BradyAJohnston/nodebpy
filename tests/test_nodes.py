@@ -329,9 +329,9 @@ def test_index_switch(snapshot_tree):
     assert len(index.node.index_switch_items) == 4
     assert len(tree) == 6
     assert index.i.index.socket.default_value == 5
-    assert index2.node.inputs[1].default_value == pytest.approx(0.0)
-    assert index2.node.inputs[2].default_value == pytest.approx(1.0)
-    assert index2.node.inputs[3].default_value == pytest.approx(2.0)
+    assert index2.i[1].default_value == pytest.approx(0.0)
+    assert index2.i[2].default_value == pytest.approx(1.0)
+    assert index2.i[3].default_value == pytest.approx(2.0)
 
 
 def test_menu_switch():
@@ -450,10 +450,9 @@ def test_accumulate_field():
 
 
 def test_edge_other_point():
-    with TreeBuilder() as tree:
-        with tree.inputs:
-            v_index = s.SocketInteger("Vertex Index", default_input="INDEX")
-            e_index = s.SocketInteger("Edge Number")
+    with TreeBuilder(arrange="simple") as tree:
+        v_index = tree.inputs.integer("Vertex Index", default_input="INDEX")
+        e_index = tree.inputs.integer("Edge Number")
 
         # with the index from the selected edge from the input, we get the two different vertices
         # of the edge. We compare them and return the one that isn't the current input vertex index
@@ -463,12 +462,12 @@ def test_edge_other_point():
         vert_2 = g.EvaluateAtIndex.edge.integer(ev.o.vertex_index_2, eov)
         other_vertex = g.Switch.integer(v_index == vert_1, vert_1, vert_2)
 
-        with tree.outputs:
-            _ = other_vertex >> s.SocketInteger("Other Vertex")
+        _ = other_vertex >> tree.outputs.integer("Other Vertex")
 
-    other_vertex.node.inputs[0].links[0].from_node == vert_1.node
-    other_vertex.node.inputs[1].links[0].from_node == vert_2.node
-    other_vertex.node.inputs[2].links[0].from_node.name == "Compare"
+    assert other_vertex.i[0].links[0].from_node
+    assert other_vertex.i[0].links[0].from_node.bl_idname == g.Compare._bl_idname
+    assert other_vertex.i[1].links[0].from_node == vert_1.node
+    assert other_vertex.i[2].links[0].from_node == vert_2.node
 
 
 def test_align_rotation_to_vector():
@@ -479,12 +478,9 @@ def test_align_rotation_to_vector():
         # this should select the rotation input socket
         artv2 = g.AxesToRotation() >> g.AlignRotationToVector()
 
+    assert artv.i.vector.links[0].from_socket == tree.nodes["Random Value"].outputs[0]
     assert (
-        artv.i.vector.socket.links[0].from_socket
-        == tree.nodes["Random Value"].outputs[0]
-    )
-    assert (
-        artv2.i.rotation.socket.links[0].from_socket
+        artv2.i.rotation.links[0].from_socket
         == tree.nodes["Axes to Rotation"].outputs[0]
     )
 
@@ -537,7 +533,7 @@ def test_foreachgeometryelement_zone():
 
 
 def test_boolean_math_methods():
-    with TreeBuilder(arrange=None, collapse=True) as tree:
+    with TreeBuilder(arrange="simple", collapse=True) as tree:
         _ = (
             g.Boolean()
             >> g.BooleanMath.not_and(..., True)
@@ -668,7 +664,7 @@ def test_mesh_boolean():
         bool4 = g.MeshBoolean.union(*meshes, self_intersection=True, solver="EXACT")
         assert len(bool4.i.mesh_2.links) == 2
         assert bool4.solver == "EXACT"
-        assert bool4.i.self_intersection.socket.default_value is True
+        assert bool4.i.self_intersection.default_value is True
 
     assert len(boolean.i.mesh_2.links) == 2
     assert len(bool2.i.mesh_2.links) == 2
@@ -703,21 +699,21 @@ def test_compare_node_data_types():
         comp = g.Compare.string.equal("A", "B")
         assert comp.data_type == "STRING"
         assert comp.operation == "EQUAL"
-        assert comp.i.a.socket.default_value == "A"
-        assert comp.i.b.socket.default_value == "B"
+        assert comp.i.a.default_value == "A"
+        assert comp.i.b.default_value == "B"
 
         comp = g.Compare.string.not_equal("X", "Y")
         assert comp.data_type == "STRING"
         assert comp.operation == "NOT_EQUAL"
-        assert comp.i.a.socket.default_value == "X"
-        assert comp.i.b.socket.default_value == "Y"
+        assert comp.i.a.default_value == "X"
+        assert comp.i.b.default_value == "Y"
 
         # --- float ---
         comp = g.Compare.float.less_than(1.0, 2.0)
         assert comp.data_type == "FLOAT"
         assert comp.operation == "LESS_THAN"
-        assert comp.i.a.socket.default_value == pytest.approx(1.0)
-        assert comp.i.b.socket.default_value == pytest.approx(2.0)
+        assert comp.i.a.default_value == pytest.approx(1.0)
+        assert comp.i.b.default_value == pytest.approx(2.0)
 
         comp = g.Compare.float.less_equal()
         assert comp.data_type == "FLOAT"
@@ -731,12 +727,12 @@ def test_compare_node_data_types():
 
         comp = g.Compare.float.equal(1.0, 0.0)
         assert comp.operation == "EQUAL"
-        assert comp.i.a.socket.default_value == pytest.approx(1.0)
+        assert comp.i.a.default_value == pytest.approx(1.0)
 
         comp = g.Compare.float.not_equal(3.0, 4.0)
         assert comp.operation == "NOT_EQUAL"
-        assert comp.i.a.socket.default_value == pytest.approx(3.0)
-        assert comp.i.b.socket.default_value == pytest.approx(4.0)
+        assert comp.i.a.default_value == pytest.approx(3.0)
+        assert comp.i.b.default_value == pytest.approx(4.0)
 
         # output socket
         assert comp.o.result.socket.type == "BOOLEAN"
@@ -745,8 +741,8 @@ def test_compare_node_data_types():
         comp = g.Compare.integer.less_than(1, 2)
         assert comp.data_type == "INT"
         assert comp.operation == "LESS_THAN"
-        assert comp.i.a.socket.default_value == 1
-        assert comp.i.b.socket.default_value == 2
+        assert comp.i.a.default_value == 1
+        assert comp.i.b.default_value == 2
 
         comp = g.Compare.integer.less_equal()
         assert comp.operation == "LESS_EQUAL"
@@ -759,16 +755,16 @@ def test_compare_node_data_types():
 
         comp = g.Compare.integer.equal(5, 5)
         assert comp.operation == "EQUAL"
-        assert comp.i.a.socket.default_value == 5
+        assert comp.i.a.default_value == 5
 
         comp = g.Compare.integer.not_equal()
         assert comp.operation == "NOT_EQUAL"
 
         # mutating data_type re-routes i.a / i.b
         comp.data_type = "FLOAT"
-        assert comp.i.a.socket.default_value == pytest.approx(0.0)
-        comp.i.a.socket.default_value = 7.0
-        assert comp.i.a.socket.default_value == pytest.approx(7.0)
+        assert comp.i.a.default_value == pytest.approx(0.0)
+        comp.i.a.default_value = 7
+        assert comp.i.a.default_value == pytest.approx(7.0)
 
         # --- vector ---
         comp = g.Compare.vector.less_than((1, 0, 0), (0, 1, 0))
@@ -789,12 +785,12 @@ def test_compare_node_data_types():
         assert comp.mode == "AVERAGE"
 
         comp = g.Compare.vector.equal(mode="DIRECTION", angle=0.5, epsilon=0.3)
-        assert comp.i.epsilon.socket.default_value == pytest.approx(0.3)
-        assert comp.i.angle.socket.default_value == pytest.approx(0.5)
+        assert comp.i.epsilon.default_value == pytest.approx(0.3)
+        assert comp.i.angle.default_value == pytest.approx(0.5)
 
         comp = g.Compare.vector.equal(mode="DOT_PRODUCT", c=0.5, epsilon=0.2)
-        assert comp.i.c.socket.default_value == pytest.approx(0.5)
-        assert comp.i.epsilon.socket.default_value == pytest.approx(0.2)
+        assert comp.i.c.default_value == pytest.approx(0.5)
+        assert comp.i.epsilon.default_value == pytest.approx(0.2)
 
         comp = g.Compare.vector.not_equal()
         assert comp.operation == "NOT_EQUAL"

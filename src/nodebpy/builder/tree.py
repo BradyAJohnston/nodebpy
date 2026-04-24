@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
 
 import bpy
 from bpy.types import (
@@ -729,7 +729,7 @@ class TreeBuilder:
         """Whatever tree was previously active is set to be the active one (or None if no previously active tree)."""
         TreeBuilder._tree_contexts.pop()
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         self.activate_tree()
         return self
 

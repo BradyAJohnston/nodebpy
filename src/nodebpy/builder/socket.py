@@ -6,9 +6,27 @@ import bpy
 from bpy.types import (
     GeometryNodeTree,
     NodeLink,
-    NodeLinks,
     NodeSocket,
+    NodeSocketBool,
+    NodeSocketBundle,
+    NodeSocketClosure,
+    NodeSocketCollection,
+    NodeSocketColor,
+    NodeSocketFloat,
+    NodeSocketFont,
+    NodeSocketGeometry,
+    NodeSocketImage,
+    NodeSocketInt,
+    NodeSocketMaterial,
+    NodeSocketMatrix,
+    NodeSocketMenu,
+    NodeSocketObject,
+    NodeSocketRotation,
+    NodeSocketShader,
+    NodeSocketString,
+    NodeSocketVector,
 )
+from mathutils import Euler
 
 from ..types import SOCKET_TYPES
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
@@ -19,6 +37,7 @@ from .tree import TreeBuilder
 
 if TYPE_CHECKING:
     from ..nodes.geometry.converter import IntegerMath, Math
+    from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
 
@@ -143,6 +162,12 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         def __rfloordiv__(self, other: Any) -> "Math": ...
         def __neg__(self) -> "Math": ...
         def __abs__(self) -> "Math": ...
+        def __lt__(self, other: Any) -> "Compare": ...
+        def __gt__(self, other: Any) -> "Compare": ...
+        def __le__(self, other: Any) -> "Compare": ...
+        def __ge__(self, other: Any) -> "Compare": ...
+        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
 
 
 # ---------------------------------------------------------------------------
@@ -153,7 +178,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
 class _VectorMixin:
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
-    socket: NodeSocket
+    socket: NodeSocketVector
     _tree: TreeBuilder
 
     @property
@@ -173,6 +198,14 @@ class _VectorMixin:
         from ..nodes.geometry import SeparateXYZ
 
         return SeparateXYZ._find_or_create_linked(self.socket).o.z
+
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float]) -> None:
+        self.socket.default_value = value
 
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
@@ -290,6 +323,12 @@ class _VectorMixin:
         def __rfloordiv__(self, other: Any) -> "VectorMath": ...
         def __neg__(self) -> "VectorMath": ...
         def __abs__(self) -> "VectorMath": ...
+        def __lt__(self, other: Any) -> "Compare": ...
+        def __gt__(self, other: Any) -> "Compare": ...
+        def __le__(self, other: Any) -> "Compare": ...
+        def __ge__(self, other: Any) -> "Compare": ...
+        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
 
 
 _SEPARATE_COLOR_IDNAMES = (
@@ -302,7 +341,7 @@ _SEPARATE_COLOR_IDNAMES = (
 class _ColorMixin:
     """Color-specific properties (.r, .g, .b, .a)."""
 
-    socket: NodeSocket
+    socket: NodeSocketColor
     _tree: TreeBuilder
 
     def _get_separate_color_cls(self):
@@ -338,6 +377,14 @@ class _ColorMixin:
     @property
     def a(self) -> Socket:
         return self._separated_channel("Alpha")
+
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float]) -> None:
+        self.socket.default_value = value
 
     _COMBINE_COLOR_IDNAMES = (
         "FunctionNodeCombineColor",
@@ -394,8 +441,16 @@ class _ColorMixin:
 class _IntegerMixin:
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""
 
-    socket: NodeSocket
+    socket: NodeSocketInt
     _tree: TreeBuilder
+
+    @property
+    def default_value(self) -> int:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: int) -> None:
+        self.socket.default_value = value
 
     @property
     def _is_geometry_tree(self) -> bool:
@@ -460,6 +515,12 @@ class _IntegerMixin:
         def __rfloordiv__(self, other: Any) -> "IntegerMath": ...
         def __neg__(self) -> "IntegerMath": ...
         def __abs__(self) -> "IntegerMath": ...
+        def __lt__(self, other: Any) -> "Compare": ...
+        def __gt__(self, other: Any) -> "Compare": ...
+        def __le__(self, other: Any) -> "Compare": ...
+        def __ge__(self, other: Any) -> "Compare": ...
+        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
 
 
 # ---------------------------------------------------------------------------
@@ -470,7 +531,15 @@ class _IntegerMixin:
 class _BooleanMixin:
     """Boolean-specific operator overrides — routes directly through BooleanMath."""
 
-    socket: NodeSocket
+    socket: NodeSocketBool
+
+    @property
+    def default_value(self) -> bool:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bool) -> None:
+        self.socket.default_value = value
 
     def __or__(self, other: Any) -> "BaseNode":
         from ..nodes.geometry.converter import BooleanMath
@@ -486,8 +555,16 @@ class _BooleanMixin:
 class _RotationMixin:
     """Rotation-specific properties (.w, .x, .y, .z) via RotationToQuaternion."""
 
-    socket: NodeSocket
+    socket: NodeSocketRotation
     _tree: TreeBuilder
+
+    @property
+    def default_value(self) -> Euler:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: Euler) -> None:
+        self.socket.default_value = value
 
     @property
     def w(self) -> FloatSocket:
@@ -526,10 +603,25 @@ class _RotationMixin:
         return InvertRotation._find_or_create_linked(self.socket).o.rotation
 
 
+class _FloatMixin:
+    """Float-specific properties (.x, .y, .z) and dispatch."""
+
+    socket: NodeSocketFloat
+    _tree: TreeBuilder
+
+    @property
+    def default_value(self) -> float:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: float) -> None:
+        self.socket.default_value = value
+
+
 class _MatrixMixin:
     """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
 
-    socket: NodeSocket
+    socket: NodeSocketMatrix
     _tree: TreeBuilder
 
     @property
@@ -607,7 +699,7 @@ class _MatrixMixin:
 # ---------------------------------------------------------------------------
 
 
-class FloatSocket(Socket):
+class FloatSocket(_FloatMixin, Socket):
     """Runtime float socket wrapper."""
 
 
@@ -638,45 +730,107 @@ class MatrixSocket(_MatrixMixin, Socket):
 class StringSocket(Socket):
     """Runtime string socket wrapper."""
 
+    socket: NodeSocketString
+
+    @property
+    def default_value(self) -> str:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: str) -> None:
+        self.socket.default_value = value
+
 
 class MenuSocket(Socket):
     """Runtime menu socket wrapper."""
+
+    socket: NodeSocketMenu
 
 
 class GeometrySocket(Socket):
     """Runtime geometry socket wrapper."""
 
+    socket: NodeSocketGeometry
+
 
 class ObjectSocket(Socket):
     """Runtime object socket wrapper."""
+
+    socket: NodeSocketObject
+
+    @property
+    def default_value(self) -> bpy.types.Object | None:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bpy.types.Object) -> None:
+        self.socket.default_value = value
 
 
 class MaterialSocket(Socket):
     """Runtime material socket wrapper."""
 
+    socket: NodeSocketMaterial
+
+    @property
+    def default_value(self) -> bpy.types.Material | None:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bpy.types.Material) -> None:
+        self.socket.default_value = value
+
 
 class ImageSocket(Socket):
     """Runtime image socket wrapper."""
+
+    socket: NodeSocketImage
+
+    @property
+    def default_value(self) -> bpy.types.Image | None:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bpy.types.Image) -> None:
+        self.socket.default_value = value
 
 
 class CollectionSocket(Socket):
     """Runtime collection socket wrapper."""
 
+    socket: NodeSocketCollection
+
+    @property
+    def default_value(self) -> bpy.types.Collection | None:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: bpy.types.Collection) -> None:
+        self.socket.default_value = value
+
 
 class BundleSocket(Socket):
     """Runtime bundle socket wrapper."""
+
+    socket: NodeSocketBundle
 
 
 class ClosureSocket(Socket):
     """Runtime closure socket wrapper."""
 
+    socket: NodeSocketClosure
+
 
 class ShaderSocket(Socket):
     """Runtime shader socket wrapper."""
 
+    socket: NodeSocketShader
+
 
 class FontSocket(Socket):
     """Runtime font socket wrapper."""
+
+    socket: NodeSocketFont
 
 
 _SOCKET_LINKER_REGISTRY["NodeSocketFloat"] = FloatSocket

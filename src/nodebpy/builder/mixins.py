@@ -3,12 +3,12 @@ from __future__ import annotations
 from types import EllipsisType
 from typing import TYPE_CHECKING, Any, TypeVar
 
-_RShiftT = TypeVar("_RShiftT")
-
 from bpy.types import NodeLink, NodeSocket
 
 from ._registry import _get_socket_linker
 from ._utils import SocketError, _resolve_promotion, _SocketLike
+
+_RShiftT = TypeVar("_RShiftT")
 
 if TYPE_CHECKING:
     from ..types import InputLinkable
@@ -275,7 +275,7 @@ class LinkingMixin:
         else:
             self._link(source, input)
 
-    def __rshift__(self, other: _RShiftT) -> _RShiftT:
+    def __rshift__(self, other: "BaseNode | Socket") -> "BaseNode | Socket":
         """Chain nodes using >> operator. Links output to input.
 
         Usage:

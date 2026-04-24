@@ -15,6 +15,7 @@ from ...builder import (
     ColorSocket,
     DynamicInputsMixin,
     FloatSocket,
+    GeometrySocket,
     IntegerSocket,
     MaterialSocket,
     MatrixSocket,
@@ -402,12 +403,21 @@ class MeshBoolean(NodeBuilder):
     node: bpy.types.GeometryNodeMeshBoolean
 
     class _Inputs(SocketAccessor):
-        mesh_1: SocketGeometry
-        mesh_2: SocketGeometry
+        mesh_1: GeometrySocket
+        mesh_2: GeometrySocket
+        self_intersection: BooleanSocket
+        hole_tolerant: BooleanSocket
 
     class _Outputs(SocketAccessor):
-        geometry: SocketGeometry
-        intersecting_edges: SocketGeometry
+        geometry: GeometrySocket
+        intersecting_edges: BooleanSocket
+
+    if TYPE_CHECKING:
+
+        @property
+        def o(self) -> _Outputs: ...
+        @property
+        def i(self) -> _Inputs: ...
 
     def __init__(
         self,
@@ -448,8 +458,8 @@ class MeshBoolean(NodeBuilder):
     def union(
         cls,
         *args: InputGeometry,
-        hole_tolerant: InputBoolean = False,
         self_intersection: InputBoolean = False,
+        hole_tolerant: InputBoolean = False,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
         key_args = {}
@@ -468,8 +478,8 @@ class MeshBoolean(NodeBuilder):
         cls,
         *args: InputGeometry,
         mesh_1: InputGeometry = None,
-        hole_tolerant: InputBoolean = False,
         self_intersection: InputBoolean = False,
+        hole_tolerant: InputBoolean = False,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
         key_args = {}
@@ -903,7 +913,9 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
             **kwargs,
         ) -> "CaptureAttribute":
             """Create a CaptureAttribute node with a pre-set domain"""
-            return CaptureAttribute(*args, geometry=geometry, domain=self._domain, **kwargs)
+            return CaptureAttribute(
+                *args, geometry=geometry, domain=self._domain, **kwargs
+            )
 
     point = _DomainFactory("POINT")
     edge = _DomainFactory("EDGE")
@@ -1803,7 +1815,7 @@ _CompareVectorModes = Literal[
 ]
 
 
-class Compare(NodeBuilder):
+class Compare(NodeBuilder, Generic[_T]):
     """Perform a comparison operation on the two given inputs"""
 
     _bl_idname = "FunctionNodeCompare"
@@ -1811,25 +1823,33 @@ class Compare(NodeBuilder):
 
     class _FloatFactory:
         @staticmethod
-        def less_than(a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare":
+        def less_than(
+            a: InputFloat = 0.0, b: InputFloat = 0.0
+        ) -> "Compare[FloatSocket]":
             return Compare(operation="LESS_THAN", data_type="FLOAT", A=a, B=b)
 
         @staticmethod
-        def less_equal(a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare":
+        def less_equal(
+            a: InputFloat = 0.0, b: InputFloat = 0.0
+        ) -> "Compare[FloatSocket]":
             return Compare(operation="LESS_EQUAL", data_type="FLOAT", A=a, B=b)
 
         @staticmethod
-        def greater_than(a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare":
+        def greater_than(
+            a: InputFloat = 0.0, b: InputFloat = 0.0
+        ) -> "Compare[FloatSocket]":
             return Compare(operation="GREATER_THAN", data_type="FLOAT", A=a, B=b)
 
         @staticmethod
-        def greater_equal(a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare":
+        def greater_equal(
+            a: InputFloat = 0.0, b: InputFloat = 0.0
+        ) -> "Compare[FloatSocket]":
             return Compare(operation="GREATER_EQUAL", data_type="FLOAT", A=a, B=b)
 
         @staticmethod
         def equal(
             a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.0001
-        ) -> "Compare":
+        ) -> "Compare[FloatSocket]":
             return Compare(
                 operation="EQUAL", data_type="FLOAT", A=a, B=b, Epsilon=epsilon
             )
@@ -1837,34 +1857,44 @@ class Compare(NodeBuilder):
         @staticmethod
         def not_equal(
             a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.0001
-        ) -> "Compare":
+        ) -> "Compare[FloatSocket]":
             return Compare(
                 operation="NOT_EQUAL", data_type="FLOAT", A=a, B=b, Epsilon=epsilon
             )
 
     class _IntegerFactory:
         @staticmethod
-        def less_than(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+        def less_than(
+            a: InputInteger = 0, b: InputInteger = 0
+        ) -> "Compare[IntegerSocket]":
             return Compare(operation="LESS_THAN", data_type="INT", A_INT=a, B_INT=b)
 
         @staticmethod
-        def less_equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+        def less_equal(
+            a: InputInteger = 0, b: InputInteger = 0
+        ) -> "Compare[IntegerSocket]":
             return Compare(operation="LESS_EQUAL", data_type="INT", A_INT=a, B_INT=b)
 
         @staticmethod
-        def greater_than(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+        def greater_than(
+            a: InputInteger = 0, b: InputInteger = 0
+        ) -> "Compare[IntegerSocket]":
             return Compare(operation="GREATER_THAN", data_type="INT", A_INT=a, B_INT=b)
 
         @staticmethod
-        def greater_equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+        def greater_equal(
+            a: InputInteger = 0, b: InputInteger = 0
+        ) -> "Compare[IntegerSocket]":
             return Compare(operation="GREATER_EQUAL", data_type="INT", A_INT=a, B_INT=b)
 
         @staticmethod
-        def equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+        def equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare[IntegerSocket]":
             return Compare(operation="EQUAL", data_type="INT", A_INT=a, B_INT=b)
 
         @staticmethod
-        def not_equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare":
+        def not_equal(
+            a: InputInteger = 0, b: InputInteger = 0
+        ) -> "Compare[IntegerSocket]":
             return Compare(operation="NOT_EQUAL", data_type="INT", A_INT=a, B_INT=b)
 
     class _VectorFactory:
@@ -1877,7 +1907,7 @@ class Compare(NodeBuilder):
             c: InputFloat,
             angle: InputFloat,
             epsilon: InputFloat,
-        ) -> "Compare":
+        ) -> "Compare[VectorSocket]":
             kwargs: dict = {
                 "operation": operation,
                 "data_type": "VECTOR",
@@ -1901,7 +1931,7 @@ class Compare(NodeBuilder):
             mode: _CompareVectorModes = "ELEMENT",
             c: InputFloat = None,
             angle: InputFloat = None,
-        ) -> "Compare":
+        ) -> "Compare[VectorSocket]":
             return Compare._VectorFactory._make("LESS_THAN", a, b, mode, c, angle, None)
 
         @staticmethod
@@ -1912,7 +1942,7 @@ class Compare(NodeBuilder):
             mode: _CompareVectorModes = "ELEMENT",
             c: InputFloat = None,
             angle: InputFloat = None,
-        ) -> "Compare":
+        ) -> "Compare[VectorSocket]":
             return Compare._VectorFactory._make(
                 "LESS_EQUAL", a, b, mode, c, angle, None
             )
@@ -1925,7 +1955,7 @@ class Compare(NodeBuilder):
             mode: _CompareVectorModes = "ELEMENT",
             c: InputFloat = None,
             angle: InputFloat = None,
-        ) -> "Compare":
+        ) -> "Compare[VectorSocket]":
             return Compare._VectorFactory._make(
                 "GREATER_THAN", a, b, mode, c, angle, None
             )
@@ -1938,7 +1968,7 @@ class Compare(NodeBuilder):
             mode: _CompareVectorModes = "ELEMENT",
             c: InputFloat = None,
             angle: InputFloat = None,
-        ) -> "Compare":
+        ) -> "Compare[VectorSocket]":
             return Compare._VectorFactory._make(
                 "GREATER_EQUAL", a, b, mode, c, angle, None
             )
@@ -1952,7 +1982,7 @@ class Compare(NodeBuilder):
             c: InputFloat = None,
             angle: InputFloat = None,
             epsilon: InputFloat = 0.0001,
-        ) -> "Compare":
+        ) -> "Compare[VectorSocket]":
             return Compare._VectorFactory._make("EQUAL", a, b, mode, c, angle, epsilon)
 
         @staticmethod
@@ -1964,24 +1994,28 @@ class Compare(NodeBuilder):
             c: InputFloat = None,
             angle: InputFloat = None,
             epsilon: InputFloat = 0.0001,
-        ) -> "Compare":
+        ) -> "Compare[VectorSocket]":
             return Compare._VectorFactory._make(
                 "NOT_EQUAL", a, b, mode, c, angle, epsilon
             )
 
     class _ColorFactory:
         @staticmethod
-        def brighter(a: InputColor = None, b: InputColor = None) -> "Compare":
+        def brighter(
+            a: InputColor = None, b: InputColor = None
+        ) -> "Compare[ColorSocket]":
             return Compare(operation="BRIGHTER", data_type="RGBA", A_COL=a, B_COL=b)
 
         @staticmethod
-        def darker(a: InputColor = None, b: InputColor = None) -> "Compare":
+        def darker(
+            a: InputColor = None, b: InputColor = None
+        ) -> "Compare[ColorSocket]":
             return Compare(operation="DARKER", data_type="RGBA", A_COL=a, B_COL=b)
 
         @staticmethod
         def equal(
             a: InputColor = None, b: InputColor = None, epsilon: InputFloat = 0.0001
-        ) -> "Compare":
+        ) -> "Compare[ColorSocket]":
             return Compare(
                 operation="EQUAL", data_type="RGBA", A_COL=a, B_COL=b, Epsilon=epsilon
             )
@@ -1989,7 +2023,7 @@ class Compare(NodeBuilder):
         @staticmethod
         def not_equal(
             a: InputColor = None, b: InputColor = None, epsilon: InputFloat = 0.0001
-        ) -> "Compare":
+        ) -> "Compare[ColorSocket]":
             return Compare(
                 operation="NOT_EQUAL",
                 data_type="RGBA",
@@ -2000,11 +2034,13 @@ class Compare(NodeBuilder):
 
     class _StringFactory:
         @staticmethod
-        def equal(a: InputString = "", b: InputString = "") -> "Compare":
+        def equal(a: InputString = "", b: InputString = "") -> "Compare[StringSocket]":
             return Compare(operation="EQUAL", data_type="STRING", A_STR=a, B_STR=b)
 
         @staticmethod
-        def not_equal(a: InputString = "", b: InputString = "") -> "Compare":
+        def not_equal(
+            a: InputString = "", b: InputString = ""
+        ) -> "Compare[StringSocket]":
             return Compare(operation="NOT_EQUAL", data_type="STRING", A_STR=a, B_STR=b)
 
     float = _FloatFactory()
@@ -2013,18 +2049,18 @@ class Compare(NodeBuilder):
     color = _ColorFactory()
     string = _StringFactory()
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         _bpy_node: "bpy.types.FunctionNodeCompare"
 
         @property
-        def a(self) -> FloatSocket | VectorSocket | ColorSocket:
+        def a(self) -> _S:
             """Input socket: A"""
-            return self._get("A{}".format(Compare._suffix(self._bpy_node.data_type)))  # ty: ignore[invalid-return-type]
+            return self._get("A{}".format(Compare._suffix(self._bpy_node.data_type)))  # type: ignore[return-value]
 
         @property
-        def b(self) -> FloatSocket | VectorSocket | ColorSocket:
+        def b(self) -> _S:
             """Input socket: B"""
-            return self._get("B{}".format(Compare._suffix(self._bpy_node.data_type)))  # ty: ignore[invalid-return-type]
+            return self._get("B{}".format(Compare._suffix(self._bpy_node.data_type)))  # type: ignore[return-value]
 
         c: FloatSocket
         epsilon: FloatSocket
@@ -2035,12 +2071,15 @@ class Compare(NodeBuilder):
         """Boolean result of the comparison."""
 
     @property
-    def i(self) -> _Inputs:  # type: ignore[override]
+    def i(self) -> "_Inputs":  # type: ignore[override]
         accessor = Compare._Inputs(self.node.inputs, "input")
         accessor._bpy_node = self.node
         return accessor
 
     if TYPE_CHECKING:
+
+        @property  # type: ignore[override]
+        def i(self) -> "_Inputs[_T]": ...
 
         @property
         def o(self) -> _Outputs: ...
