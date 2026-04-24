@@ -96,3 +96,16 @@ def test_material_node_cartoon():
     assert "Cartoon" not in bpy.data.node_groups
     assert attr.attribute_name == "sec_struct"
     assert attr.attribute_type == "GEOMETRY"
+
+
+def test_nodes():
+    with s.tree():
+        ray = s.Raycast()
+        assert not ray.only_local
+        ray.only_local = True
+        assert ray.only_local
+
+        bump = s.Bump()
+        assert not bump.invert
+        bump.invert = True
+        assert bump.invert

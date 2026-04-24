@@ -1006,3 +1006,70 @@ def test_uv_normal_map():
         assert vec.convert_to == "OBJECT"
         vec.convert_to = "WORLD"
         assert vec.convert_to == "WORLD"
+
+
+def test_geometry_nodes():
+    with g.tree():
+        cu = g.Arc.points()
+        assert cu.mode == "POINTS"
+        cu.mode = "RADIUS"
+        assert cu.mode == "RADIUS"
+
+        bez = g.BezierSegment.position()
+        assert bez.mode == "POSITION"
+        bez.mode = "OFFSET"
+        assert bez.mode == "OFFSET"
+
+        cone = g.Cone.n_gon()
+        assert cone.fill_type == "NGON"
+        cone.fill_type = "TRIANGLE_FAN"
+        assert cone.fill_type == "TRIANGLE_FAN"
+
+        circle = g.CurveCircle.points()
+        assert circle.mode == "POINTS"
+        circle.mode = "RADIUS"
+        assert circle.mode == "RADIUS"
+
+        line = g.CurveLine.direction()
+        assert line.mode == "DIRECTION"
+        line.mode = "POINTS"
+        assert line.mode == "POINTS"
+
+        ctp = g.CurveToPoints.evaluated()
+        assert ctp.mode == "EVALUATED"
+        ctp.mode = "COUNT"
+        assert ctp.mode == "COUNT"
+
+        cyl = g.Cylinder.triangles()
+        assert cyl.fill_type == "TRIANGLE_FAN"
+        cyl.fill_type = "NGON"
+        assert cyl.fill_type == "NGON"
+
+        dg = g.DeleteGeometry.edge()
+        assert dg.domain == "EDGE"
+        dg.domain = "FACE"
+        assert dg.domain == "FACE"
+        assert dg.mode == "ALL"
+        dg.mode = "EDGE_FACE"
+        assert dg.mode == "EDGE_FACE"
+
+        dis = g.DistributePointsOnFaces()
+        assert dis.distribute_method == "RANDOM"
+        dis.distribute_method = "POISSON"
+        assert dis.distribute_method == "POISSON"
+        assert not dis.use_legacy_normal
+        dis.use_legacy_normal = True
+        assert dis.use_legacy_normal
+
+        rz = g.RealizeInstances()
+        assert not rz.realize_to_point_domain
+        rz.realize_to_point_domain = True
+        assert rz.realize_to_point_domain
+
+        res = g.ResampleCurve()
+        assert res.i.mode.default_value == "Count"
+        res.i.mode.default_value = "Length"
+        assert res.i.mode.default_value == "Length"
+        assert not res.keep_last_segment
+        res.keep_last_segment = True
+        assert res.keep_last_segment

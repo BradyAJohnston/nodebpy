@@ -808,16 +808,19 @@ def test_socket_defaults():
         image = g.ImageInfo().i.image
         assert image.default_value is None
         image.default_value = bpy.data.images.new("New Image", width=1024, height=1024)
-        assert image.default_value.name == "New Image"
+        assert image.default_value == bpy.data.images["New Image"]
 
         collection = g.CollectionInfo()
         assert collection.i.collection.default_value is None
         collection.i.collection.default_value = bpy.data.collections.new(
             "New Collection"
         )
-        assert collection.i.collection.default_value.name == "New Collection"
+        assert (
+            collection.i.collection.default_value
+            == bpy.data.collections["New Collection"]
+        )
 
         obj = g.ObjectInfo()
         assert obj.i.object.default_value is None
         obj.i.object.default_value = bpy.data.objects["Cube"]
-        assert obj.i.object.default_value.name == "Cube"
+        assert obj.i.object.default_value == bpy.data.objects["Cube"]

@@ -747,6 +747,14 @@ class MenuSocket(Socket):
 
     socket: NodeSocketMenu
 
+    @property
+    def default_value(self) -> str:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: str) -> None:
+        self.socket.default_value = value
+
 
 class GeometrySocket(Socket):
     """Runtime geometry socket wrapper."""
