@@ -3,7 +3,7 @@ title: Custom Node Groups
 ---
 
 ```{python}
-from nodebpy import GeometryNodeGroup, geometry as g
+from nodebpy import CustomGeometryGroup, geometry as g
 from nodebpy.types import (
     InputFloat,
     InputInteger,
@@ -27,7 +27,7 @@ A custom node group class has four parts:
 ```{python}
 # | eval: false
 
-class MyNode(GeometryNodeGroup):
+class MyNode(CustomGeometryGroup):
     _name = "My Node"  # 1. Name
 
     def __init__(self, value: float = 0.0):  # 3. Constructor
@@ -45,7 +45,7 @@ The display name for the group inside Blender. This is also the key used to cach
 Let's start with something visually obvious -- a node that randomly displaces each point on a mesh. This is useful any time you want to add organic variation to geometry.
 
 ```{python}
-class Jitter(GeometryNodeGroup):
+class Jitter(CustomGeometryGroup):
     """Randomly offset each point by a bounded amount."""
 
     _name = "Jitter"
@@ -98,7 +98,7 @@ Next, a node that distributes instances in a ring. This is a common pattern for 
 from math import tau
 
 
-class RadialArray(GeometryNodeGroup):
+class RadialArray(CustomGeometryGroup):
     """Distribute instances evenly around a circle."""
 
     _name = "Radial Array"
