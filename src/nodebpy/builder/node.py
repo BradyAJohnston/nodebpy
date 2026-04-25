@@ -180,7 +180,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         return SocketAccessor(self.node.inputs, "input")
 
 
-class DynamicInputsMixin:
+class DynamicInputsMixin(ABC):
     _socket_data_types: tuple[str, ...]
     _type_map: dict[str, str] = {}
 
@@ -211,8 +211,8 @@ class DynamicInputsMixin:
             target_name, source_socket = list(dyn._add_inputs(source).items())[0]
             return (source_socket, dyn.inputs[target_name].socket)
 
-    def _add_socket(self, name: str, *args: Any, **kwargs: Any) -> NodeSocket:
-        raise NotImplementedError(f"{type(self).__name__} must implement _add_socket")
+    @abstractmethod
+    def _add_socket(self, name: str, *args: Any, **kwargs: Any) -> NodeSocket: ...
 
     def _add_inputs(self, *args, **kwargs) -> dict[str, NodeSocket]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""

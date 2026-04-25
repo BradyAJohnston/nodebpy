@@ -22,7 +22,7 @@ class _SimpleGeomGroup(GeometryNodeGroup):
     _color_tag = "GEOMETRY"
     _warning_propagation = "ERRORS"
 
-    def _build_group(self, tree):
+    def _build_group(self, tree: TreeBuilder[GeometryNodeTree]):
         x = tree.inputs.float("Value")
         x >> tree.outputs.float("Result")
 
@@ -318,15 +318,3 @@ def test_group_already_exists_wrong_type():
     with c.tree():
         with pytest.raises(TypeError):
             _CompGroup()
-
-
-def test_dynamic_inputs_mixin():
-    class _DynamicGroup(GeometryNodeGroup, DynamicInputsMixin):
-        _name = "Test Dynamic Group"
-
-        def _build_group(self, tree):
-            pass
-
-    with TreeBuilder():
-        with pytest.raises(NotImplementedError):
-            _DynamicGroup()._add_socket("test")
