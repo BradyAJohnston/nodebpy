@@ -4,7 +4,12 @@ import bpy
 import pytest
 from bpy.types import CompositorNodeTree, GeometryNodeTree, ShaderNodeTree
 
-from nodebpy import CompositorNodeGroup, GeometryNodeGroup, ShaderNodeGroup, TreeBuilder
+from nodebpy import (
+    CustomCompositorGroup,
+    CustomGeometryGroup,
+    CustomShaderGroup,
+    TreeBuilder,
+)
 from nodebpy.builder import SocketLinker
 from nodebpy.builder.node import DynamicInputsMixin
 from nodebpy.nodes import compositor as c
@@ -17,7 +22,7 @@ from nodebpy.nodes.geometry.groups import OffsetVector, OtherVertex
 # ---------------------------------------------------------------------------
 
 
-class _SimpleGeomGroup(GeometryNodeGroup):
+class _SimpleGeomGroup(CustomGeometryGroup):
     _name = "Test Simple Geometry Group"
     _color_tag = "GEOMETRY"
     _warning_propagation = "ERRORS"
@@ -27,7 +32,7 @@ class _SimpleGeomGroup(GeometryNodeGroup):
         x >> tree.outputs.float("Result")
 
 
-class _SimpleShaderGroup(ShaderNodeGroup):
+class _SimpleShaderGroup(CustomShaderGroup):
     _name = "Test Simple Shader Group"
 
     def _build_group(self, tree):
@@ -35,7 +40,7 @@ class _SimpleShaderGroup(ShaderNodeGroup):
         x >> tree.outputs.float("Result")
 
 
-class _SimpleCompositorGroup(CompositorNodeGroup):
+class _SimpleCompositorGroup(CustomCompositorGroup):
     _name = "Test Simple Compositor Group"
 
     def _build_group(self, tree):
@@ -193,13 +198,13 @@ def test_geometry_node_group_warning_propagation():
 def test_type_mismatch_geometry_vs_shader_raises():
     """Reusing a geometry group name for a ShaderNodeGroup raises TypeError."""
 
-    class _ConflictGeom(GeometryNodeGroup):
+    class _ConflictGeom(CustomGeometryGroup):
         _name = "Test Conflict Geom vs Shader"
 
         def _build_group(self, tree):
             pass
 
-    class _ConflictShader(ShaderNodeGroup):
+    class _ConflictShader(CustomShaderGroup):
         _name = "Test Conflict Geom vs Shader"
 
         def _build_group(self, tree):
@@ -216,13 +221,13 @@ def test_type_mismatch_geometry_vs_shader_raises():
 def test_type_mismatch_shader_vs_compositor_raises():
     """Reusing a shader group name for a CompositorNodeGroup raises TypeError."""
 
-    class _ConflictShader(ShaderNodeGroup):
+    class _ConflictShader(CustomShaderGroup):
         _name = "Test Conflict Shader vs Compositor"
 
         def _build_group(self, tree):
             pass
 
-    class _ConflictCompositor(CompositorNodeGroup):
+    class _ConflictCompositor(CustomCompositorGroup):
         _name = "Test Conflict Shader vs Compositor"
 
         def _build_group(self, tree):
@@ -239,13 +244,13 @@ def test_type_mismatch_shader_vs_compositor_raises():
 def test_same_name_same_type_does_not_raise():
     """Reusing a name for the same tree type is fine — it returns the cached tree."""
 
-    class _CacheA(GeometryNodeGroup):
+    class _CacheA(CustomGeometryGroup):
         _name = "Test Same Type Cache"
 
         def _build_group(self, tree):
             pass
 
-    class _CacheB(GeometryNodeGroup):
+    class _CacheB(CustomGeometryGroup):
         _name = "Test Same Type Cache"
 
         def _build_group(self, tree):
@@ -267,7 +272,7 @@ def test_build_group_receives_instance_not_class():
     """_build_group receives self as a class instance, not the class itself."""
     captured = []
 
-    class _SelfCheck(GeometryNodeGroup):
+    class _SelfCheck(CustomGeometryGroup):
         _name = "Test Build Group Self Check"
 
         def _build_group(self, tree):
@@ -285,7 +290,7 @@ def test_build_group_called_once_across_instances():
     """_build_group is only called when the group is first created, not on reuse."""
     call_count = [0]
 
-    class _CountCalls(GeometryNodeGroup):
+    class _CountCalls(CustomGeometryGroup):
         _name = "Test Build Group Call Count"
 
         def _build_group(self, tree):
@@ -300,13 +305,13 @@ def test_build_group_called_once_across_instances():
 
 
 def test_group_already_exists_wrong_type():
-    class _GeomGroup(GeometryNodeGroup):
+    class _GeomGroup(CustomGeometryGroup):
         _name = "TestGroup"
 
         def _build_group(self, tree):
             pass
 
-    class _CompGroup(CompositorNodeGroup):
+    class _CompGroup(CustomCompositorGroup):
         _name = "TestGroup"
 
         def _build_group(self, tree):

@@ -5,7 +5,7 @@ from nodebpy.nodes.compositor import CombineXYZ
 from nodebpy.types import InputInteger, InputVector
 
 from ...builder import (
-    GeometryNodeGroup,
+    CustomGeometryGroup,
     IntegerSocket,
     RotationSocket,
     SocketAccessor,
@@ -25,7 +25,7 @@ from . import (
 )
 
 
-class OtherVertex(GeometryNodeGroup):
+class OtherVertex(CustomGeometryGroup):
     """
     Given a vertex and an edge number from that vertex, returns the other
     vertex of that edge.
@@ -71,7 +71,7 @@ class OtherVertex(GeometryNodeGroup):
         _ = switch >> tree.outputs.integer("Other Vertex")
 
 
-class OffsetVector(GeometryNodeGroup):
+class OffsetVector(CustomGeometryGroup):
     """
     Evaluate a given vector field at an offset to the current ``Index``.
     """
@@ -117,7 +117,7 @@ class OffsetVector(GeometryNodeGroup):
         _ = value >> tree.outputs.vector("Vector")
 
 
-class PrincipalComponents(GeometryNodeGroup):
+class PrincipalComponents(CustomGeometryGroup):
     """
     Compute PCA on a given vector field.
     """

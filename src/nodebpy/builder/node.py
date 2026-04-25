@@ -1,7 +1,17 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Iterable, Literal, Protocol, Self, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generic,
+    Iterable,
+    Literal,
+    Protocol,
+    Self,
+    TypeVar,
+    cast,
+)
 
 import bpy
 from bpy.types import (
@@ -17,6 +27,8 @@ from ._utils import SocketError, _NodeLike, _SocketLike
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
+
+_T = TypeVar("_T", bound=bpy.types.NodeTree)
 
 if TYPE_CHECKING:
 
@@ -113,8 +125,9 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             node >> socket
             return node
 
-    def _set_input_default_value(self, input, value):
+    def _set_input_default_value(self, input: NodeSocket, value: Any) -> None:
         """Set the default value for an input socket, handling type conversions."""
+        assert hasattr(input, "default_value")
         if (
             hasattr(input, "type")
             and input.type == "VECTOR"
@@ -231,7 +244,7 @@ class DynamicInputsMixin(ABC):
         return new_sockets
 
 
-class NodeGroupBuilder(BaseNode, ABC):
+class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
     """Base class for custom node groups.
 
     Subclasses implement :meth:`_build_group` with the node-graph logic.
@@ -240,6 +253,20 @@ class NodeGroupBuilder(BaseNode, ABC):
     """
 
     _name: str
+    _warning_propagation: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"] = (
+        "ALL"
+    )
+    _color_tag: Literal[
+        "NONE",
+        "ATTRIBUTE",
+        "COLOR",
+        "CONVERTER",
+        "GEOMETRY",
+        "INPUT",
+        "OUTPUT",
+        "TEXTURE",
+        "VECTOR",
+    ] = "NONE"
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -262,25 +289,21 @@ class NodeGroupBuilder(BaseNode, ABC):
     def _build_group(self, tree: TreeBuilder) -> None:
         """Build the node group internals and interface."""
 
+    def _get_or_create_tree(self) -> _T:
+        existing = bpy.data.node_groups[self._name]
+        if existing.bl_idname == self.tree.tree.bl_idname:
+            return cast(_T, existing)
+        raise TypeError(
+            f"Node group '{self._name}' already exists as "
+            f"{type(existing).__name__}, not {self._bl_idname}. "
+            f"Use a unique _name for this group."
+        )
 
-class GeometryNodeGroup(NodeGroupBuilder):
+
+class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
     """Node group in a Geometry Nodes tree."""
 
     _bl_idname = "GeometryNodeGroup"
-    _warning_propagation: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"] = (
-        "ALL"
-    )
-    _color_tag: Literal[
-        "NONE",
-        "ATTRIBUTE",
-        "COLOR",
-        "CONVERTER",
-        "GEOMETRY",
-        "INPUT",
-        "OUTPUT",
-        "TEXTURE",
-        "VECTOR",
-    ] = "NONE"
     node: bpy.types.GeometryNodeGroup
 
     def _setup_node_group(self) -> None:
@@ -288,22 +311,16 @@ class GeometryNodeGroup(NodeGroupBuilder):
         self.node.warning_propagation = self._warning_propagation
 
     def _get_or_create_group(self) -> GeometryNodeTree:
-        if self._name in bpy.data.node_groups:
-            existing = bpy.data.node_groups[self._name]
-            if isinstance(existing, GeometryNodeTree):
-                return existing
-            raise TypeError(
-                f"Node group '{self._name}' already exists as "
-                f"{type(existing).__name__}, not GeometryNodeTree. "
-                f"Use a unique _name for this group."
-            )
-        with TreeBuilder.geometry(self._name) as tree:
-            self._build_group(tree)
-        tree.tree.color_tag = self._color_tag
-        return tree.tree
+        try:
+            return self._get_or_create_tree()
+        except KeyError:
+            with TreeBuilder.geometry(self._name) as tree:
+                self._build_group(tree)
+            tree.tree.color_tag = self._color_tag
+            return tree.tree
 
 
-class ShaderNodeGroup(NodeGroupBuilder):
+class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
     """Node group in a Shader (Material) node tree."""
 
     _bl_idname = "ShaderNodeGroup"
@@ -313,21 +330,16 @@ class ShaderNodeGroup(NodeGroupBuilder):
         self.node.node_tree = self._get_or_create_group()
 
     def _get_or_create_group(self) -> ShaderNodeTree:
-        if self._name in bpy.data.node_groups:
-            existing = bpy.data.node_groups[self._name]
-            if isinstance(existing, ShaderNodeTree):
-                return existing
-            raise TypeError(
-                f"Node group '{self._name}' already exists as "
-                f"{type(existing).__name__}, not ShaderNodeTree. "
-                f"Use a unique _name for this group."
-            )
-        with TreeBuilder.shader(self._name) as tree:
-            self._build_group(tree)
-        return tree.tree
+        try:
+            return self._get_or_create_tree()
+        except KeyError:
+            with TreeBuilder.shader(self._name) as tree:
+                self._build_group(tree)
+            tree.tree.color_tag = self._color_tag
+            return tree.tree
 
 
-class CompositorNodeGroup(NodeGroupBuilder):
+class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
     """Node group in a Compositor node tree."""
 
     _bl_idname = "CompositorNodeGroup"
@@ -337,15 +349,10 @@ class CompositorNodeGroup(NodeGroupBuilder):
         self.node.node_tree = self._get_or_create_group()
 
     def _get_or_create_group(self) -> CompositorNodeTree:
-        if self._name in bpy.data.node_groups:
-            existing = bpy.data.node_groups[self._name]
-            if isinstance(existing, CompositorNodeTree):
-                return existing
-            raise TypeError(
-                f"Node group '{self._name}' already exists as "
-                f"{type(existing).__name__}, not CompositorNodeTree. "
-                f"Use a unique _name for this group."
-            )
-        with TreeBuilder.compositor(self._name) as tree:
-            self._build_group(tree)
-        return tree.tree
+        try:
+            return self._get_or_create_tree()
+        except KeyError:
+            with TreeBuilder.compositor(self._name) as tree:
+                self._build_group(tree)
+            tree.tree.color_tag = self._color_tag
+            return tree.tree

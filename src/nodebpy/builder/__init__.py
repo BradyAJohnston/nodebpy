@@ -29,11 +29,11 @@ from .interface import (
 from .mixins import LinkingMixin, OperatorMixin
 from .node import (
     BaseNode,
-    CompositorNodeGroup,
+    CustomCompositorGroup,
+    CustomGeometryGroup,
+    CustomShaderGroup,
     DynamicInputsMixin,
-    GeometryNodeGroup,
     NodeGroupBuilder,
-    ShaderNodeGroup,
 )
 from .socket import (
     BooleanSocket,
