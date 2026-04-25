@@ -6,9 +6,11 @@ from bpy.types import CompositorNodeTree, GeometryNodeTree, ShaderNodeTree
 
 from nodebpy import CompositorNodeGroup, GeometryNodeGroup, ShaderNodeGroup, TreeBuilder
 from nodebpy.builder import SocketLinker
+from nodebpy.builder.node import DynamicInputsMixin
+from nodebpy.nodes import compositor as c
+from nodebpy.nodes import geometry as g
 from nodebpy.nodes.geometry import IntegerMath
 from nodebpy.nodes.geometry.groups import OffsetVector, OtherVertex
-
 
 # ---------------------------------------------------------------------------
 # Concrete subclasses used in the new tests below
@@ -193,11 +195,15 @@ def test_type_mismatch_geometry_vs_shader_raises():
 
     class _ConflictGeom(GeometryNodeGroup):
         _name = "Test Conflict Geom vs Shader"
-        def _build_group(self, tree): pass
+
+        def _build_group(self, tree):
+            pass
 
     class _ConflictShader(ShaderNodeGroup):
         _name = "Test Conflict Geom vs Shader"
-        def _build_group(self, tree): pass
+
+        def _build_group(self, tree):
+            pass
 
     with TreeBuilder():
         _ConflictGeom()
@@ -212,11 +218,15 @@ def test_type_mismatch_shader_vs_compositor_raises():
 
     class _ConflictShader(ShaderNodeGroup):
         _name = "Test Conflict Shader vs Compositor"
-        def _build_group(self, tree): pass
+
+        def _build_group(self, tree):
+            pass
 
     class _ConflictCompositor(CompositorNodeGroup):
         _name = "Test Conflict Shader vs Compositor"
-        def _build_group(self, tree): pass
+
+        def _build_group(self, tree):
+            pass
 
     with TreeBuilder.shader():
         _ConflictShader()
@@ -231,11 +241,15 @@ def test_same_name_same_type_does_not_raise():
 
     class _CacheA(GeometryNodeGroup):
         _name = "Test Same Type Cache"
-        def _build_group(self, tree): pass
+
+        def _build_group(self, tree):
+            pass
 
     class _CacheB(GeometryNodeGroup):
         _name = "Test Same Type Cache"
-        def _build_group(self, tree): pass
+
+        def _build_group(self, tree):
+            pass
 
     with TreeBuilder():
         a = _CacheA()
@@ -283,3 +297,36 @@ def test_build_group_called_once_across_instances():
         _CountCalls()
 
     assert call_count[0] == 1
+
+
+def test_group_already_exists_wrong_type():
+    class _GeomGroup(GeometryNodeGroup):
+        _name = "TestGroup"
+
+        def _build_group(self, tree):
+            pass
+
+    class _CompGroup(CompositorNodeGroup):
+        _name = "TestGroup"
+
+        def _build_group(self, tree):
+            pass
+
+    with g.tree():
+        _GeomGroup()
+
+    with c.tree():
+        with pytest.raises(TypeError):
+            _CompGroup()
+
+
+def test_dynamic_inputs_mixin():
+    class _DynamicGroup(GeometryNodeGroup, DynamicInputsMixin):
+        _name = "Test Dynamic Group"
+
+        def _build_group(self, tree):
+            pass
+
+    with TreeBuilder():
+        with pytest.raises(NotImplementedError):
+            _DynamicGroup()._add_socket("test")
