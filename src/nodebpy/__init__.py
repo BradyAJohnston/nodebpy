@@ -1,5 +1,11 @@
-from . import nodes, diagram, sockets
-from .builder import TreeBuilder, NodeGroupBuilder
+from . import diagram, nodes, sockets
+from .builder import (
+    CustomCompositorGroup,
+    CustomGeometryGroup,
+    CustomShaderGroup,
+    NodeGroupBuilder,
+    TreeBuilder,
+)
 from .nodes import compositor, geometry, shader
 
 __all__ = [
@@ -11,4 +17,7 @@ __all__ = [
     "diagram",
     "TreeBuilder",
     "NodeGroupBuilder",
+    "GeometryNodeGroup",
+    "ShaderNodeGroup",
+    "CompositorNodeGroup",
 ]

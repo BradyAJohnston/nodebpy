@@ -3,7 +3,7 @@ title: Custom Node Groups
 ---
 
 ```{python}
-from nodebpy import NodeGroupBuilder, geometry as g
+from nodebpy import CustomGeometryGroup, geometry as g
 from nodebpy.types import (
     InputFloat,
     InputInteger,
@@ -27,14 +27,13 @@ A custom node group class has four parts:
 ```{python}
 # | eval: false
 
-class MyNode(NodeGroupBuilder):
+class MyNode(CustomGeometryGroup):
     _name = "My Node"  # 1. Name
 
     def __init__(self, value: float = 0.0):  # 3. Constructor
         super().__init__(value=value)
 
-    @classmethod
-    def _build_group(cls, tree):  # 4. Graph logic
+    def _build_group(self, tree):  # 4. Graph logic
         return (value + g.Value(1.0)) >> tree.ouptuts.float()
 ```
 
@@ -46,7 +45,7 @@ The display name for the group inside Blender. This is also the key used to cach
 Let's start with something visually obvious -- a node that randomly displaces each point on a mesh. This is useful any time you want to add organic variation to geometry.
 
 ```{python}
-class Jitter(NodeGroupBuilder):
+class Jitter(CustomGeometryGroup):
     """Randomly offset each point by a bounded amount."""
 
     _name = "Jitter"
@@ -60,8 +59,7 @@ class Jitter(NodeGroupBuilder):
     ):
         super().__init__(**{"Geometry": geometry, "Amount": amount, "Seed": seed})
 
-    @classmethod
-    def _build_group(cls, tree):
+    def _build_group(self, tree):
         geometry = tree.inputs.geometry("Geometry")
         amount = tree.inputs.float("Amount", 0.2)
         seed = tree.inputs.integer("Seed")
@@ -100,7 +98,7 @@ Next, a node that distributes instances in a ring. This is a common pattern for 
 from math import tau
 
 
-class RadialArray(NodeGroupBuilder):
+class RadialArray(CustomGeometryGroup):
     """Distribute instances evenly around a circle."""
 
     _name = "Radial Array"
@@ -114,8 +112,7 @@ class RadialArray(NodeGroupBuilder):
     ):
         super().__init__(geometry=geometry, count=count, radius=radius)
 
-    @classmethod
-    def _build_group(cls, tree):
+    def _build_group(self, tree):
         geometry = tree.inputs.geometry()
         count = tree.inputs.integer("Count", 6)
         radius = tree.inputs.float("Radius", 2.0)

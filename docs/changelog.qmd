@@ -2,7 +2,12 @@
 title: Changelog
 ---
 
-## v0.11.1
+## v0.12.0 - 2026-04-25
+
+### Enhancements
+- Support custom node groups for each node tree via `CustomGeometryGroup`, `CustomShaderGroup`, `CustomCompositorGroup` ([`#53`](https://github.com/BradyAJohnston/nodebpy/issues/53))
+
+## v0.11.1 - 2026-04-24
 
 ### Bug Fixes
 - Fix type inference for the `>>` operator in chains, properly propagating the correct node's return type.

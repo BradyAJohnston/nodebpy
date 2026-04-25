@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Protocol, runtime_checkable
 
 import bpy
 from bpy.types import NodeSocket
@@ -73,9 +73,15 @@ def _resolve_promotion(
     return self_socket, other, reverse
 
 
-class _NodeLike:
-    """Marker base for objects that wrap a Blender node (have .node, .inputs, .outputs)."""
+@runtime_checkable
+class _NodeLike(Protocol):
+    """Protocol for objects that wrap a Blender node and expose an ``outputs`` accessor."""
+
+    outputs: Any  # SocketAccessor at runtime; typed as Any to avoid circular import
 
 
-class _SocketLike:
-    """Marker base for objects that wrap a single Blender NodeSocket (have .socket)."""
+@runtime_checkable
+class _SocketLike(Protocol):
+    """Protocol for objects that wrap a single Blender NodeSocket and expose ``.socket``."""
+
+    socket: NodeSocket
