@@ -289,7 +289,14 @@ class GeometryNodeGroup(NodeGroupBuilder):
 
     def _get_or_create_group(self) -> GeometryNodeTree:
         if self._name in bpy.data.node_groups:
-            return cast(GeometryNodeTree, bpy.data.node_groups[self._name])
+            existing = bpy.data.node_groups[self._name]
+            if isinstance(existing, GeometryNodeTree):
+                return existing
+            raise TypeError(
+                f"Node group '{self._name}' already exists as "
+                f"{type(existing).__name__}, not GeometryNodeTree. "
+                f"Use a unique _name for this group."
+            )
         with TreeBuilder.geometry(self._name) as tree:
             self._build_group(tree)
         tree.tree.color_tag = self._color_tag
@@ -307,7 +314,14 @@ class ShaderNodeGroup(NodeGroupBuilder):
 
     def _get_or_create_group(self) -> ShaderNodeTree:
         if self._name in bpy.data.node_groups:
-            return cast(ShaderNodeTree, bpy.data.node_groups[self._name])
+            existing = bpy.data.node_groups[self._name]
+            if isinstance(existing, ShaderNodeTree):
+                return existing
+            raise TypeError(
+                f"Node group '{self._name}' already exists as "
+                f"{type(existing).__name__}, not ShaderNodeTree. "
+                f"Use a unique _name for this group."
+            )
         with TreeBuilder.shader(self._name) as tree:
             self._build_group(tree)
         return tree.tree
@@ -324,7 +338,14 @@ class CompositorNodeGroup(NodeGroupBuilder):
 
     def _get_or_create_group(self) -> CompositorNodeTree:
         if self._name in bpy.data.node_groups:
-            return cast(CompositorNodeTree, bpy.data.node_groups[self._name])
+            existing = bpy.data.node_groups[self._name]
+            if isinstance(existing, CompositorNodeTree):
+                return existing
+            raise TypeError(
+                f"Node group '{self._name}' already exists as "
+                f"{type(existing).__name__}, not CompositorNodeTree. "
+                f"Use a unique _name for this group."
+            )
         with TreeBuilder.compositor(self._name) as tree:
             self._build_group(tree)
         return tree.tree
