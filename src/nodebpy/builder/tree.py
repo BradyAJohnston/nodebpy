@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
+from typing import TYPE_CHECKING, Any, ClassVar, Generic, Literal, Self, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -623,12 +623,16 @@ class OutputInterfaceContext(DirectionalContext):
     _direction = "OUTPUT"
 
 
-class TreeBuilder:
+_TreeT = TypeVar("_TreeT", bound=NodeTree)
+
+
+class TreeBuilder(Generic[_TreeT]):
     """Builder for creating Blender node trees with a clean Python API.
 
     Supports geometry, shader, and compositor node trees.
     """
 
+    tree: _TreeT
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
     _frame_contexts: ClassVar["list[NodeFrame]"] = []
 
@@ -645,9 +649,9 @@ class TreeBuilder:
         ignore_visibility: bool = False,
     ):
         if isinstance(tree, str):
-            self.tree = bpy.data.node_groups.new(tree, tree_type)
+            self.tree = bpy.data.node_groups.new(tree, tree_type)  # type: ignore[assignment]
         else:
-            self.tree = tree
+            self.tree = tree  # type: ignore[assignment]
 
         self._menu_defaults: dict[str, str] = {}
         self.inputs = InputInterfaceContext(self)
@@ -665,14 +669,17 @@ class TreeBuilder:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder":
+    ) -> "TreeBuilder[GeometryNodeTree]":
         """Create a geometry node tree."""
-        return cls(
-            name,
-            tree_type="GeometryNodeTree",
-            collapse=collapse,
-            arrange=arrange,
-            fake_user=fake_user,
+        return cast(
+            "TreeBuilder[GeometryNodeTree]",
+            cls(
+                name,
+                tree_type="GeometryNodeTree",
+                collapse=collapse,
+                arrange=arrange,
+                fake_user=fake_user,
+            ),
         )
 
     @classmethod
@@ -683,14 +690,17 @@ class TreeBuilder:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder":
+    ) -> "TreeBuilder[ShaderNodeTree]":
         """Create a shader node tree."""
-        return cls(
-            name,
-            tree_type="ShaderNodeTree",
-            collapse=collapse,
-            arrange=arrange,
-            fake_user=fake_user,
+        return cast(
+            "TreeBuilder[ShaderNodeTree]",
+            cls(
+                name,
+                tree_type="ShaderNodeTree",
+                collapse=collapse,
+                arrange=arrange,
+                fake_user=fake_user,
+            ),
         )
 
     @classmethod
@@ -701,14 +711,17 @@ class TreeBuilder:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder":
+    ) -> "TreeBuilder[CompositorNodeTree]":
         """Create a compositor node tree."""
-        return cls(
-            name,
-            tree_type="CompositorNodeTree",
-            collapse=collapse,
-            arrange=arrange,
-            fake_user=fake_user,
+        return cast(
+            "TreeBuilder[CompositorNodeTree]",
+            cls(
+                name,
+                tree_type="CompositorNodeTree",
+                collapse=collapse,
+                arrange=arrange,
+                fake_user=fake_user,
+            ),
         )
 
     @property

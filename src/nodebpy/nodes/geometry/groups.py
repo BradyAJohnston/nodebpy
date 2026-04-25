@@ -5,8 +5,8 @@ from nodebpy.nodes.compositor import CombineXYZ
 from nodebpy.types import InputInteger, InputVector
 
 from ...builder import (
+    CustomGeometryGroup,
     IntegerSocket,
-    NodeGroupBuilder,
     RotationSocket,
     SocketAccessor,
     VectorSocket,
@@ -25,7 +25,7 @@ from . import (
 )
 
 
-class OtherVertex(NodeGroupBuilder):
+class OtherVertex(CustomGeometryGroup):
     """
     Given a vertex and an edge number from that vertex, returns the other
     vertex of that edge.
@@ -58,8 +58,7 @@ class OtherVertex(NodeGroupBuilder):
         kwargs = {"Vertex Index": vertex_index, "Edge Number": edge_number}
         super().__init__(**kwargs)
 
-    @classmethod
-    def _build_group(cls, tree):
+    def _build_group(self, tree: TreeBuilder):
         vertex_index = tree.inputs.integer("Vertex Index", default_input="INDEX")
         edge_number = tree.inputs.integer("Edge Number")
 
@@ -72,7 +71,7 @@ class OtherVertex(NodeGroupBuilder):
         _ = switch >> tree.outputs.integer("Other Vertex")
 
 
-class OffsetVector(NodeGroupBuilder):
+class OffsetVector(CustomGeometryGroup):
     """
     Evaluate a given vector field at an offset to the current ``Index``.
     """
@@ -108,8 +107,7 @@ class OffsetVector(NodeGroupBuilder):
     ):
         super().__init__(index=index, vector=vector, offset=offset)
 
-    @classmethod
-    def _build_group(cls, tree):
+    def _build_group(self, tree: TreeBuilder):
         index = tree.inputs.integer("Index", default_input="INDEX")
         vector = tree.inputs.vector("Vector", default_input="POSITION")
         offset = tree.inputs.integer("Offset")
@@ -119,7 +117,7 @@ class OffsetVector(NodeGroupBuilder):
         _ = value >> tree.outputs.vector("Vector")
 
 
-class PrincipalComponents(NodeGroupBuilder):
+class PrincipalComponents(CustomGeometryGroup):
     """
     Compute PCA on a given vector field.
     """

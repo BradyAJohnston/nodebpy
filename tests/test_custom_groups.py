@@ -2,13 +2,50 @@ from functools import reduce
 
 import bpy
 import pytest
+from bpy.types import CompositorNodeTree, GeometryNodeTree, ShaderNodeTree
 
-from nodebpy import TreeBuilder
-from nodebpy.builder import (
-    SocketLinker,
+from nodebpy import (
+    CustomCompositorGroup,
+    CustomGeometryGroup,
+    CustomShaderGroup,
+    TreeBuilder,
 )
+from nodebpy.builder import SocketLinker
+from nodebpy.builder.node import DynamicInputsMixin
+from nodebpy.nodes import compositor as c
+from nodebpy.nodes import geometry as g
 from nodebpy.nodes.geometry import IntegerMath
 from nodebpy.nodes.geometry.groups import OffsetVector, OtherVertex
+
+# ---------------------------------------------------------------------------
+# Concrete subclasses used in the new tests below
+# ---------------------------------------------------------------------------
+
+
+class _SimpleGeomGroup(CustomGeometryGroup):
+    _name = "Test Simple Geometry Group"
+    _color_tag = "GEOMETRY"
+    _warning_propagation = "ERRORS"
+
+    def _build_group(self, tree: TreeBuilder[GeometryNodeTree]):
+        x = tree.inputs.float("Value")
+        x >> tree.outputs.float("Result")
+
+
+class _SimpleShaderGroup(CustomShaderGroup):
+    _name = "Test Simple Shader Group"
+
+    def _build_group(self, tree):
+        x = tree.inputs.float("Value")
+        x >> tree.outputs.float("Result")
+
+
+class _SimpleCompositorGroup(CustomCompositorGroup):
+    _name = "Test Simple Compositor Group"
+
+    def _build_group(self, tree):
+        x = tree.inputs.float("Value")
+        x >> tree.outputs.float("Result")
 
 
 def test_custom_group():
@@ -83,3 +120,206 @@ def test_group_reuses_existing_node_group():
 
     assert a.node.node_tree is b.node.node_tree
     assert a.node is not b.node
+
+
+# ---------------------------------------------------------------------------
+# ShaderNodeGroup
+# ---------------------------------------------------------------------------
+
+
+def test_shader_node_group_creates_shader_tree():
+    """ShaderNodeGroup.node_tree is a ShaderNodeTree."""
+    with TreeBuilder.shader():
+        node = _SimpleShaderGroup()
+    assert isinstance(node.node.node_tree, ShaderNodeTree)
+
+
+def test_shader_node_group_reuses_tree():
+    """Multiple instances share the same underlying ShaderNodeTree."""
+    with TreeBuilder.shader():
+        a = _SimpleShaderGroup()
+        b = _SimpleShaderGroup()
+    assert a.node.node_tree is b.node.node_tree
+    assert a.node is not b.node
+
+
+# ---------------------------------------------------------------------------
+# CompositorNodeGroup
+# ---------------------------------------------------------------------------
+
+
+def test_compositor_node_group_creates_compositor_tree():
+    """CompositorNodeGroup.node_tree is a CompositorNodeTree."""
+    with TreeBuilder.compositor():
+        node = _SimpleCompositorGroup()
+    assert isinstance(node.node.node_tree, CompositorNodeTree)
+
+
+def test_compositor_node_group_reuses_tree():
+    """Multiple instances share the same underlying CompositorNodeTree."""
+    with TreeBuilder.compositor():
+        a = _SimpleCompositorGroup()
+        b = _SimpleCompositorGroup()
+    assert a.node.node_tree is b.node.node_tree
+    assert a.node is not b.node
+
+
+# ---------------------------------------------------------------------------
+# GeometryNodeGroup — class-level properties
+# ---------------------------------------------------------------------------
+
+
+def test_geometry_node_group_creates_geometry_tree():
+    """GeometryNodeGroup.node_tree is a GeometryNodeTree."""
+    with TreeBuilder():
+        node = _SimpleGeomGroup()
+    assert isinstance(node.node.node_tree, GeometryNodeTree)
+
+
+def test_geometry_node_group_color_tag():
+    """_color_tag is applied to the node tree on first creation."""
+    with TreeBuilder():
+        node = _SimpleGeomGroup()
+    assert node.node.node_tree.color_tag == "GEOMETRY"
+
+
+def test_geometry_node_group_warning_propagation():
+    """_warning_propagation is applied to the node instance."""
+    with TreeBuilder():
+        node = _SimpleGeomGroup()
+    assert node.node.warning_propagation == "ERRORS"
+
+
+# ---------------------------------------------------------------------------
+# Type-mismatch detection
+# ---------------------------------------------------------------------------
+
+
+def test_type_mismatch_geometry_vs_shader_raises():
+    """Reusing a geometry group name for a ShaderNodeGroup raises TypeError."""
+
+    class _ConflictGeom(CustomGeometryGroup):
+        _name = "Test Conflict Geom vs Shader"
+
+        def _build_group(self, tree):
+            pass
+
+    class _ConflictShader(CustomShaderGroup):
+        _name = "Test Conflict Geom vs Shader"
+
+        def _build_group(self, tree):
+            pass
+
+    with TreeBuilder():
+        _ConflictGeom()
+
+    with TreeBuilder.shader():
+        with pytest.raises(TypeError, match="already exists"):
+            _ConflictShader()
+
+
+def test_type_mismatch_shader_vs_compositor_raises():
+    """Reusing a shader group name for a CompositorNodeGroup raises TypeError."""
+
+    class _ConflictShader(CustomShaderGroup):
+        _name = "Test Conflict Shader vs Compositor"
+
+        def _build_group(self, tree):
+            pass
+
+    class _ConflictCompositor(CustomCompositorGroup):
+        _name = "Test Conflict Shader vs Compositor"
+
+        def _build_group(self, tree):
+            pass
+
+    with TreeBuilder.shader():
+        _ConflictShader()
+
+    with TreeBuilder.compositor():
+        with pytest.raises(TypeError, match="already exists"):
+            _ConflictCompositor()
+
+
+def test_same_name_same_type_does_not_raise():
+    """Reusing a name for the same tree type is fine — it returns the cached tree."""
+
+    class _CacheA(CustomGeometryGroup):
+        _name = "Test Same Type Cache"
+
+        def _build_group(self, tree):
+            pass
+
+    class _CacheB(CustomGeometryGroup):
+        _name = "Test Same Type Cache"
+
+        def _build_group(self, tree):
+            pass
+
+    with TreeBuilder():
+        a = _CacheA()
+        b = _CacheB()  # different Python class, same _name → reuses
+
+    assert a.node.node_tree is b.node.node_tree
+
+
+# ---------------------------------------------------------------------------
+# _build_group is a regular instance method (not classmethod)
+# ---------------------------------------------------------------------------
+
+
+def test_build_group_receives_instance_not_class():
+    """_build_group receives self as a class instance, not the class itself."""
+    captured = []
+
+    class _SelfCheck(CustomGeometryGroup):
+        _name = "Test Build Group Self Check"
+
+        def _build_group(self, tree):
+            captured.append(self)
+
+    with TreeBuilder():
+        node = _SelfCheck()
+
+    assert len(captured) == 1
+    assert isinstance(captured[0], _SelfCheck)
+    assert not isinstance(captured[0], type)
+
+
+def test_build_group_called_once_across_instances():
+    """_build_group is only called when the group is first created, not on reuse."""
+    call_count = [0]
+
+    class _CountCalls(CustomGeometryGroup):
+        _name = "Test Build Group Call Count"
+
+        def _build_group(self, tree):
+            call_count[0] += 1
+
+    with TreeBuilder():
+        _CountCalls()
+        _CountCalls()
+        _CountCalls()
+
+    assert call_count[0] == 1
+
+
+def test_group_already_exists_wrong_type():
+    class _GeomGroup(CustomGeometryGroup):
+        _name = "TestGroup"
+
+        def _build_group(self, tree):
+            pass
+
+    class _CompGroup(CustomCompositorGroup):
+        _name = "TestGroup"
+
+        def _build_group(self, tree):
+            pass
+
+    with g.tree():
+        _GeomGroup()
+
+    with c.tree():
+        with pytest.raises(TypeError):
+            _CompGroup()
