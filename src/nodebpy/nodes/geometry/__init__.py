@@ -54,6 +54,7 @@ from .converter import (
     CombineTransform,
     CombineXYZ,
     EulerToRotation,
+    FieldMinMax,
     FindInString,
     FloatCurve,
     FloatToInteger,
@@ -343,6 +344,9 @@ from .texture import (
 from .output import (
     Viewer,
 )
+from .utilities import (
+    Reroute,
+)
 from .color import (
     Gamma,
     RGBCurves,
@@ -438,6 +442,7 @@ __all__ = (
     "FaceSet",
     "FieldAverage",
     "FieldMinAndMax",
+    "FieldMinMax",
     "FieldToGrid",
     "FieldVariance",
     "FillCurve",
@@ -568,6 +573,7 @@ __all__ = (
     "RepeatZone",
     "ReplaceMaterial",
     "ReplaceString",
+    "Reroute",
     "ResampleCurve",
     "ReverseCurve",
     "RotateEuler",

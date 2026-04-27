@@ -1162,6 +1162,162 @@ class EulerToRotation(NodeBuilder):
         self._establish_links(**key_args)
 
 
+class FieldMinMax(NodeBuilder):
+    """
+    Calculate the minimum and maximum of a given field
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    group_index : InputInteger
+        Group ID
+
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.group_index : IntegerSocket
+        Group ID
+
+    Outputs
+    -------
+    o.min : FloatSocket
+        Min
+    o.max : FloatSocket
+        Max
+    """
+
+    _bl_idname = "GeometryNodeFieldMinAndMax"
+    node: bpy.types.GeometryNodeFieldMinAndMax
+
+    class _Inputs(SocketAccessor):
+        value: FloatSocket
+        """Value"""
+        group_index: IntegerSocket
+        """Group ID"""
+
+    class _Outputs(SocketAccessor):
+        min: FloatSocket
+        """Min"""
+        max: FloatSocket
+        """Max"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        value: InputFloat = 0.0,
+        group_index: InputInteger = 0,
+        *,
+        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Float'. Floating-point value"""
+        return cls(data_type="FLOAT", value=value, group_index=group_index)
+
+    @classmethod
+    def integer(
+        cls, value: InputInteger = 0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Integer'. 32-bit integer"""
+        return cls(data_type="INT", value=value, group_index=group_index)
+
+    @classmethod
+    def vector(
+        cls, value: InputVector = None, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Vector'. 3D vector with floating-point values"""
+        return cls(data_type="FLOAT_VECTOR", value=value, group_index=group_index)
+
+    @classmethod
+    def point(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Point'. Attribute on point"""
+        return cls(domain="POINT", value=value, group_index=group_index)
+
+    @classmethod
+    def edge(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Edge'. Attribute on mesh edge"""
+        return cls(domain="EDGE", value=value, group_index=group_index)
+
+    @classmethod
+    def face(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Face'. Attribute on mesh faces"""
+        return cls(domain="FACE", value=value, group_index=group_index)
+
+    @classmethod
+    def face_corner(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Face Corner'. Attribute on mesh face corner"""
+        return cls(domain="CORNER", value=value, group_index=group_index)
+
+    @classmethod
+    def spline(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Spline'. Attribute on spline"""
+        return cls(domain="CURVE", value=value, group_index=group_index)
+
+    @classmethod
+    def instance(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Instance'. Attribute on instance"""
+        return cls(domain="INSTANCE", value=value, group_index=group_index)
+
+    @classmethod
+    def layer(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinMax":
+        """Create Field Min & Max with operation 'Layer'. Attribute on Grease Pencil layer"""
+        return cls(domain="LAYER", value=value, group_index=group_index)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
+    ):
+        self.node.domain = value
+
+
 class FindInString(NodeBuilder):
     """
     Find the number of times a given string occurs in another string and the position of the first match
