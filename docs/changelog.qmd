@@ -2,6 +2,11 @@
 title: Changelog
 ---
 
+## Unreleased
+
+### Bug Fixes
+- Math on a `ColorSocket` now uses the `VectorMath` instead of `Math` preserving the RGB channels as XYZ. ([`#56`](https://github.com/BradyAJohnston/nodebpy/pull/56))
+
 ## v0.12.0 - 2026-04-25
 
 ### Enhancements
