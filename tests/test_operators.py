@@ -965,7 +965,7 @@ class TestColorSocketOperatorMath:
             result5 = color ** g.Value(3.0)
             result6 = color * (0.1, 0.2, 0.3)
             result7 = color**0.1
-            result8 = color.socket * g.Vector().o.vector.socket
+            result8 = color * g.Vector().o.vector.socket
 
         assert result.node.bl_idname == g.VectorMath._bl_idname
         assert result2.node.bl_idname == g.VectorMath._bl_idname
@@ -983,8 +983,8 @@ class TestColorSocketOperatorMath:
         assert result7.i.vector_001.default_value == pytest.approx((0.1, 0.1, 0.1))
         assert result8.node.bl_idname == g.VectorMath._bl_idname
         assert result8.operation == "MULTIPLY"
-        assert result8.i[0].links.from_node == color.node
-        assert result8.i[1].links.from_node.bl_idname == g.Vector._bl_idname
+        assert result8.i[0].links[0].from_node == color.node
+        assert result8.i[1].links[0].from_node.bl_idname == g.Vector._bl_idname
 
 
 class TestIntegerSocketOperators:
