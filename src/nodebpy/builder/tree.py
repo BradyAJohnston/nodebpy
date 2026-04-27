@@ -823,8 +823,13 @@ class TreeBuilder(Generic[_TreeT]):
         if not isinstance(socket2, NodeSocket):
             socket2 = socket2.socket  # type: ignore[attr-defined]
 
+        is_reroute = (
+            getattr(socket1.node, "bl_idname", None) == "NodeReroute"
+            or getattr(socket2.node, "bl_idname", None) == "NodeReroute"
+        )
         if (
-            socket1.type not in SOCKET_COMPATIBILITY.get(socket2.type, ())
+            not is_reroute
+            and socket1.type not in SOCKET_COMPATIBILITY.get(socket2.type, ())
             and socket2.type != "CUSTOM"
         ):
             raise SocketError(

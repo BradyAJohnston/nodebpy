@@ -343,6 +343,9 @@ from .texture import (
 from .output import (
     Viewer,
 )
+from .utilities import (
+    Reroute,
+)
 from .color import (
     Gamma,
     RGBCurves,
@@ -568,6 +571,7 @@ __all__ = (
     "RepeatZone",
     "ReplaceMaterial",
     "ReplaceString",
+    "Reroute",
     "ResampleCurve",
     "ReverseCurve",
     "RotateEuler",
