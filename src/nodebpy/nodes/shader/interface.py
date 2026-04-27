@@ -7,6 +7,7 @@ import bpy
 from ...builder import BaseNode as NodeBuilder, SocketAccessor, ClosureSocket
 
 
+
 class ClosureInput(NodeBuilder):
     """
     Closure Input node

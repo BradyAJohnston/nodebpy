@@ -36,6 +36,7 @@ from .manual import (
     Compare,
     AttributeStatistic,
     Frame,
+    Float,
     tree,
 )
 from .converter import (
@@ -443,6 +444,7 @@ __all__ = (
     "FilletCurve",
     "FindInString",
     "FlipFaces",
+    "Float",
     "FloatCurve",
     "FloatToInteger",
     "ForEachGeometryElementInput",

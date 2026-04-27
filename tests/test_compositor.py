@@ -1,6 +1,4 @@
-from nodebpy import TreeBuilder
 from nodebpy import compositor as c
-from nodebpy import sockets as s
 
 
 def test_initial_compositor():

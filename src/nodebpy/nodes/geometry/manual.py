@@ -106,6 +106,7 @@ __all__ = (
     "Compare",
     "AttributeStatistic",
     "Frame",
+    "Float",
 )
 
 
@@ -356,6 +357,10 @@ class Value(NodeBuilder):
     @value.setter
     def value(self, value: float):
         self.node.outputs[0].default_value = value  # type: ignore
+
+
+class Float(Value):
+    """Input numerical values to other nodes in the tree. A 'type-hinted' wrapper of the Value node."""
 
 
 ### === ###
