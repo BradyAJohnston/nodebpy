@@ -109,7 +109,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         math_operation = "floored_modulo" if operation == "modulo" else operation
         return getattr(Math, math_operation)(*values)
 
-    def _dispatch_unary(self, operation: str) -> "BaseNode":
+    def _dispatch_unary(self, operation: str) -> "Math":
         """Scalar unary dispatch (float). Uses the Math node."""
         from ..nodes.geometry.converter import Math
 
@@ -119,7 +119,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
             return Math.absolute(self.socket)
         raise ValueError(f"Unknown unary operation: {operation}")
 
-    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "BaseNode":
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "Math":
         """Scalar floor division: divide then floor."""
         from ..nodes.geometry.converter import Math
 
@@ -127,7 +127,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         divided = Math.divide(*values)
         return Math.floor(divided)
 
-    def _dispatch_compare(self, other: Any, operation: str) -> "BaseNode":
+    def _dispatch_compare(self, other: Any, operation: str) -> "Compare | Math":
         """Scalar comparison dispatch."""
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
