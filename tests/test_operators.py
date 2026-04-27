@@ -999,3 +999,8 @@ class TestIntegerSocketOperators:
             assert result.i.value.links[0].from_node == input.node
             assert not result.i.value_001.links
             assert result.i.value_001.default_value == pytest.approx(-1.0)
+
+            result2 = result.o.value == input
+            assert result2.node.bl_idname == c.Math._bl_idname
+            assert result2.operation == "COMPARE"
+            assert result2.i.value_002.default_value == pytest.approx(0.00001)

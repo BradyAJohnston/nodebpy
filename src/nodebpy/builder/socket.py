@@ -141,9 +141,12 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
                 "greater_than": ("greater_than", False),
                 "less_equal": ("greater_than", True),
                 "greater_equal": ("less_than", True),
+                "equal": ("compare", False),
             }
             math_op, negate = _MATH_COMPARE_MAP[operation]
             result = getattr(Math, math_op)(self.socket, other)
+            if operation == "equal":
+                result.i.value_002.default_value = 0.00001
             if negate:
                 result = Math.subtract(1.0, result._default_output_socket)
             return result
@@ -533,7 +536,7 @@ class _IntegerMixin:
             return IntegerMath.divide_floor(*values)
         return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
 
-    def _dispatch_compare(self, other: Any, operation: str) -> "BaseNode":
+    def _dispatch_compare(self, other: Any, operation: str) -> "Compare | Math":
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
