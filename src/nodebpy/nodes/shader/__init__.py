@@ -46,6 +46,9 @@ from ..geometry.texture import (
     WaveTexture,
     WhiteNoiseTexture,
 )
+from ..geometry.utilities import (
+    Reroute,
+)
 from ..geometry.vector import (
     RadialTiling,
     VectorCurves,
@@ -230,6 +233,7 @@ __all__ = (
     "RepeatInput",
     "RepeatOutput",
     "RepeatZone",
+    "Reroute",
     "Script",
     "SeparateBundle",
     "SeparateColor",

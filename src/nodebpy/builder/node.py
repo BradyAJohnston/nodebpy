@@ -15,10 +15,13 @@ from typing import (
 
 import bpy
 from bpy.types import (
+    CompositorNodeGroup,
     CompositorNodeTree,
+    GeometryNodeGroup,
     GeometryNodeTree,
     Node,
     NodeSocket,
+    ShaderNodeGroup,
     ShaderNodeTree,
 )
 
@@ -50,7 +53,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
 
-    def __init__(self, node: bpy.types.Node | None = None):
+    def __init__(self, node: Node | None = None):
         tree = (
             TreeBuilder._tree_contexts[-1] if len(TreeBuilder._tree_contexts) else None
         )
@@ -97,7 +100,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         return socket
 
     @classmethod
-    def _from_node(cls, node: bpy.types.Node) -> Self:
+    def _from_node(cls, node: Node) -> Self:
         builder = cls()
         builder.tree.nodes.remove(builder.node)
         builder.node = node
@@ -274,6 +277,12 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
         self.node.show_options = False
         self._establish_links(**kwargs)
 
+    @property
+    @abstractmethod
+    def node_tree(self) -> _T:
+        """The internal node tree for this group node."""
+        ...
+
     @abstractmethod
     def _setup_node_group(self) -> None:
         """Set ``self.node.node_tree`` and any node-type-specific properties.
@@ -304,7 +313,12 @@ class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
     """Node group in a Geometry Nodes tree."""
 
     _bl_idname = "GeometryNodeGroup"
-    node: bpy.types.GeometryNodeGroup
+    node: GeometryNodeGroup
+
+    @property
+    def node_tree(self) -> GeometryNodeTree:
+        assert self.node.node_tree is not None
+        return self.node.node_tree
 
     def _setup_node_group(self) -> None:
         self.node.node_tree = self._get_or_create_group()
@@ -324,7 +338,12 @@ class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
     """Node group in a Shader (Material) node tree."""
 
     _bl_idname = "ShaderNodeGroup"
-    node: bpy.types.ShaderNodeGroup
+    node: ShaderNodeGroup
+
+    @property
+    def node_tree(self) -> ShaderNodeTree:
+        assert self.node.node_tree is not None
+        return self.node.node_tree
 
     def _setup_node_group(self) -> None:
         self.node.node_tree = self._get_or_create_group()
@@ -343,7 +362,12 @@ class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
     """Node group in a Compositor node tree."""
 
     _bl_idname = "CompositorNodeGroup"
-    node: bpy.types.CompositorNodeGroup
+    node: CompositorNodeGroup
+
+    @property
+    def node_tree(self) -> CompositorNodeTree:
+        assert self.node.node_tree is not None
+        return self.node.node_tree
 
     def _setup_node_group(self) -> None:
         self.node.node_tree = self._get_or_create_group()

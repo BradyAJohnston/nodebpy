@@ -80,8 +80,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Simulation",
         "For Each",
         "GridBoolean",
-        "Reroute",
-        "FieldMinAndMax",
+        "Field Min",
     ],
     manually_defined=(
         "SetHandleType",
@@ -135,7 +134,6 @@ SHADER_CONFIG = TreeTypeConfig(
     output_dir_name="shader",
     nodes_to_skip=[
         "Legacy",
-        "Reroute",
     ],
     manually_defined=(
         "MenuSwitch",
@@ -159,15 +157,14 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
     output_dir_name="compositor",
     nodes_to_skip=[
         "Legacy",
-        "Reroute",
-        "Cryptomatte",
-        "Image",
     ],
     manually_defined=(
         "MenuSwitch",
         "Frame",
         "tree",
         "Float",
+        "Image",
+        "Cryptomatte",
     ),
     class_name_prefix_strips=[
         "CompositorNode",

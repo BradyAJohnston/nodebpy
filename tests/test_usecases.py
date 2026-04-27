@@ -71,7 +71,7 @@ def test_PCA_asset():
     with g.tree():
         pca = PrincipalComponents()
 
-    assert len(pca.node.node_tree.nodes) == 35
+    assert len(pca.node_tree.nodes) == 35
 
 
 def test_surface_hello_world():

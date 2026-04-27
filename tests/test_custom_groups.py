@@ -13,8 +13,10 @@ from nodebpy.builder import (
 )
 from nodebpy.nodes import compositor as c
 from nodebpy.nodes import geometry as g
+from nodebpy.nodes import shader as s
 from nodebpy.nodes.geometry import IntegerMath
 from nodebpy.nodes.geometry.groups import OffsetVector, OtherVertex
+from nodebpy.types import InputColor
 
 # ---------------------------------------------------------------------------
 # Concrete subclasses used in the new tests below
@@ -322,3 +324,43 @@ def test_group_already_exists_wrong_type():
     with c.tree():
         with pytest.raises(TypeError):
             _CompGroup()
+
+
+class TestCustomShaderGroup:
+    class _SimpleEmissionGroup(CustomShaderGroup):
+        _name = "SimpleEmission"
+
+        def _build_group(self, tree: TreeBuilder):
+            s.Attribute.geometry("Color") >> tree.outputs.shader("Shader")
+
+    def test_simple_emission_group(self):
+        with s.tree():
+            node = self._SimpleEmissionGroup()
+            assert isinstance(node.node_tree, ShaderNodeTree)
+            assert len(node.node_tree.nodes) == 2
+
+
+class TestCustomCompositorGroup:
+    class _SimpleCompositorGroup(CustomCompositorGroup):
+        _name = ""
+
+        def __init__(self, image: InputColor):
+            kwargs = {
+                "Image": image,
+            }
+            super().__init__(**kwargs)
+
+        def _build_group(self, tree: TreeBuilder):
+            (
+                tree.inputs.color("Image")
+                >> c.AlphaOver()
+                >> c.Blur()
+                >> tree.outputs.color("Image")
+            )
+
+    def test_simple_compositor_group(self):
+        with c.tree() as tree:
+            node = self._SimpleCompositorGroup(c.RenderLayers().o.image)
+            assert isinstance(node.node_tree, CompositorNodeTree)
+            assert len(node.node_tree.nodes) == 4
+            node >> tree.outputs.color("Image")

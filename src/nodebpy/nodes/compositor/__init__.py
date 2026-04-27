@@ -5,6 +5,8 @@ from .manual import (
     Frame,
     tree,
     Float,
+    Image,
+    Cryptomatte,
 )
 from ..geometry.color import (
     Gamma,
@@ -41,6 +43,9 @@ from ..geometry.texture import (
     VoronoiTexture,
     WaveTexture,
     WhiteNoiseTexture,
+)
+from ..geometry.utilities import (
+    Reroute,
 )
 from ..geometry.vector import (
     RadialTiling,
@@ -80,6 +85,20 @@ from .filter import (
     MaskToSDF,
     Pixelate,
     VectorBlur,
+)
+from .input import (
+    BokehImage,
+    Color,
+    ImageCoordinates,
+    ImageInfo,
+    Mask,
+    MovieClip,
+    Normal,
+    RenderLayers,
+    SceneTime,
+    SequencerStripInfo,
+    TimeCurve,
+    TrackPosition,
 )
 from .matte import (
     BoxMask,
@@ -130,17 +149,6 @@ from .distort import (
 from .group import (
     Group,
 )
-from .input import (
-    Color,
-    Mask,
-    MovieClip,
-    Normal,
-    RenderLayers,
-    SceneTime,
-    SequencerStripInfo,
-    TimeCurve,
-    TrackPosition,
-)
 from .vector import (
     Normalize,
 )
@@ -160,6 +168,7 @@ __all__ = (
     "Blackbody",
     "Blur",
     "BokehBlur",
+    "BokehImage",
     "Boolean",
     "BoxMask",
     "BrickTexture",
@@ -181,6 +190,7 @@ __all__ = (
     "Convolve",
     "CornerPin",
     "Crop",
+    "Cryptomatte",
     "Defocus",
     "Denoise",
     "DepthCombine",
@@ -210,6 +220,9 @@ __all__ = (
     "HueCorrect",
     "Huesaturationvalue",
     "IDMask",
+    "Image",
+    "ImageCoordinates",
+    "ImageInfo",
     "IndexSwitch",
     "Inpaint",
     "Integer",
@@ -241,6 +254,7 @@ __all__ = (
     "RadialTiling",
     "RelativeToPixel",
     "RenderLayers",
+    "Reroute",
     "Rotate",
     "Scale",
     "SceneTime",
