@@ -67,7 +67,10 @@ def _resolve_promotion(
 
     if other_prec > self_prec:
         # Other side is dominant — swap so the linker wraps the vector/higher socket
-        other_socket = other._default_output_socket
+        if isinstance(other, NodeSocket):
+            other_socket = other
+        else:
+            other_socket = other._default_output_socket
         return other_socket, self_socket, not reverse
 
     return self_socket, other, reverse

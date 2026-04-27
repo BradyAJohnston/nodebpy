@@ -28,7 +28,7 @@ class SocketAccessor:
 
     def __init__(
         self,
-        collection: bpy.types.NodeInputs | bpy.types.NodeOutputs,
+        collection: bpy.types.NodeInputs | bpy.types.NodeOutputs | list[NodeSocket],
         direction: Literal["input", "output"],
     ):
         self._direction = direction
