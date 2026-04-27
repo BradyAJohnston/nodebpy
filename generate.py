@@ -119,6 +119,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Compare",
         "AttributeStatistic",
         "Frame",
+        "Float",
         "tree",
     ),
     class_name_prefix_strips=[
@@ -144,6 +145,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "Attribute",
         "Frame",
         "tree",
+        "Float",
         "material",
     ),
     class_name_prefix_strips=[
@@ -165,6 +167,7 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "MenuSwitch",
         "Frame",
         "tree",
+        "Float",
     ),
     class_name_prefix_strips=[
         "CompositorNode",

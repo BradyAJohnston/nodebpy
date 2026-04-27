@@ -8,6 +8,7 @@ from .manual import (
     Attribute,
     Frame,
     tree,
+    Float,
     material,
 )
 from ..geometry.color import (
@@ -177,6 +178,7 @@ __all__ = (
     "Emission",
     "EnvironmentTexture",
     "EvaluateClosure",
+    "Float",
     "FloatCurve",
     "Frame",
     "Fresnel",

@@ -3,7 +3,8 @@ title: Custom Node Groups
 ---
 
 ```{python}
-from nodebpy import CustomGeometryGroup, geometry as g
+from nodebpy import geometry as g
+from nodebpy.builder import CustomGeometryGroup
 from nodebpy.types import (
     InputFloat,
     InputInteger,

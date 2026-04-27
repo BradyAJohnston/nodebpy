@@ -89,6 +89,9 @@ __all__ = [
     "DynamicInputsMixin",
     # Node groups
     "NodeGroupBuilder",
+    "CustomCompositorGroup",
+    "CustomGeometryGroup",
+    "CustomShaderGroup",
     "GeometryNodeGroup",
     "ShaderNodeGroup",
     "CompositorNodeGroup",

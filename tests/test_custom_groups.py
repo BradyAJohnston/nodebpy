@@ -4,14 +4,13 @@ import bpy
 import pytest
 from bpy.types import CompositorNodeTree, GeometryNodeTree, ShaderNodeTree
 
-from nodebpy import (
+from nodebpy.builder import (
     CustomCompositorGroup,
     CustomGeometryGroup,
     CustomShaderGroup,
+    SocketLinker,
     TreeBuilder,
 )
-from nodebpy.builder import SocketLinker
-from nodebpy.builder.node import DynamicInputsMixin
 from nodebpy.nodes import compositor as c
 from nodebpy.nodes import geometry as g
 from nodebpy.nodes.geometry import IntegerMath
@@ -279,7 +278,7 @@ def test_build_group_receives_instance_not_class():
             captured.append(self)
 
     with TreeBuilder():
-        node = _SelfCheck()
+        _SelfCheck()
 
     assert len(captured) == 1
     assert isinstance(captured[0], _SelfCheck)

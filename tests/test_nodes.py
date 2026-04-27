@@ -4,6 +4,7 @@ import bpy
 import pytest
 
 from nodebpy import TreeBuilder
+from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 
@@ -1073,3 +1074,20 @@ def test_geometry_nodes():
         assert not res.keep_last_segment
         res.keep_last_segment = True
         assert res.keep_last_segment
+
+
+def test_node_float_input():
+    with g.tree():
+        node = g.Float(5.0)
+        assert node.value == pytest.approx(5.0)
+        assert node.node.bl_idname == g.Value._bl_idname
+
+    with c.tree():
+        node = c.Float(5.0)
+        assert node.value == pytest.approx(5.0)
+        assert node.node.bl_idname == g.Value._bl_idname
+
+    with s.tree():
+        node = s.Float(5.0)
+        assert node.value == pytest.approx(5.0)
+        assert node.node.bl_idname == g.Value._bl_idname
