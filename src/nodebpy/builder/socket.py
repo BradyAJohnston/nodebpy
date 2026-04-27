@@ -466,18 +466,15 @@ class _ColorMixin:
                 return VectorMath.multiply(*values)
         else:
             vector_method = getattr(VectorMath, operation, None)
-            if vector_method is not None:
-                if isinstance(other, (int, float)):
-                    scalar_vector = (other, other, other)
-                    return (
-                        vector_method(self.socket, scalar_vector)
-                        if not reverse
-                        else vector_method(scalar_vector, self.socket)
-                    )
-                return vector_method(*values)
-            return Socket._dispatch_math(
-                cast("Socket", self), other, operation, reverse
-            )
+            assert vector_method is not None
+            if isinstance(other, (int, float)):
+                scalar_vector = (other, other, other)
+                return (
+                    vector_method(self.socket, scalar_vector)
+                    if not reverse
+                    else vector_method(scalar_vector, self.socket)
+                )
+            return vector_method(*values)
 
 
 class _IntegerMixin:
