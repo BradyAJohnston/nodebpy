@@ -11,6 +11,7 @@ from ...builder import (
 )
 from ...builder import (
     BooleanSocket,
+    ClosureSocket,
     CollectionSocket,
     ColorSocket,
     DynamicInputsMixin,
@@ -34,6 +35,7 @@ from ...types import (
     SOCKET_TYPES,
     InputAny,
     InputBoolean,
+    InputClosure,
     InputColor,
     InputFloat,
     InputGeometry,
@@ -56,6 +58,8 @@ from ...types import (
 )
 from .converter import Switch
 from .zone import (
+    ClosureInput,
+    ClosureOutput,
     ForEachGeometryElementInput,
     ForEachGeometryElementOutput,
     ForEachGeometryElementZone,
@@ -80,6 +84,9 @@ __all__ = (
     "ForEachGeometryElementInput",
     "ForEachGeometryElementOutput",
     "ForEachGeometryElementZone",
+    "EvaluateClosure",
+    "ClosureInput",
+    "ClosureOutput",
     "GeometryToInstance",
     "SDFGridBoolean",
     #
@@ -117,6 +124,78 @@ def tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
 ) -> TreeBuilder:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
+
+
+class EvaluateClosure(NodeBuilder):
+    """
+    Execute a given closure
+
+    Parameters
+    ----------
+    closure : InputClosure
+        Closure
+
+    Inputs
+    ------
+    i.closure : ClosureSocket
+        Closure
+    """
+
+    _bl_idname = "NodeEvaluateClosure"
+    node: bpy.types.Node
+
+    class _Inputs(SocketAccessor):
+        closure: ClosureSocket
+        """Closure"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        closure: InputClosure = None,
+        *,
+        active_input_index: int = 0,
+        active_output_index: int = 0,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        key_args = {"Closure": closure}
+        self.active_input_index = active_input_index
+        self.active_output_index = active_output_index
+        self.define_signature = define_signature
+        self._establish_links(**key_args)
+
+    @property
+    def active_input_index(self) -> int:
+        return self.node.active_input_index
+
+    @active_input_index.setter
+    def active_input_index(self, value: int):
+        self.node.active_input_index = value
+
+    @property
+    def active_output_index(self) -> int:
+        return self.node.active_output_index
+
+    @active_output_index.setter
+    def active_output_index(self, value: int):
+        self.node.active_output_index = value
+
+    @property
+    def define_signature(self) -> bool:
+        return self.node.define_signature
+
+    @define_signature.setter
+    def define_signature(self, value: bool):
+        self.node.define_signature = value
 
 
 class Frame(NodeBuilder):
