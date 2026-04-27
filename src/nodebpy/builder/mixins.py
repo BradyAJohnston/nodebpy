@@ -239,6 +239,11 @@ class LinkingMixin:
         else:
             inputs = [target]
 
+        # NodeReroute adapts its type to whatever is linked — skip type matching
+        if getattr(getattr(target, "node", None), "bl_idname", None) == "NodeReroute":
+            if outputs and inputs:
+                return inputs[0], outputs[0]
+
         for output in outputs:
             compat_sockets = SOCKET_COMPATIBILITY.get(output.type, ())
             for input in inputs:
