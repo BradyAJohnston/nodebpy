@@ -10,6 +10,7 @@ import pytest
 
 import nodebpy
 from nodebpy import TreeBuilder
+from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import sockets as s
 
@@ -949,3 +950,63 @@ class TestMatrixMultiplcation:
             .from_node.bl_idname
             == g.MultiplyMatrices._bl_idname
         )
+
+
+class TestColorSocketOperatorMath:
+    def test_color_socket_operator_math(self):
+        "Multiplies a color by a scalar and verifies the result is a VectorMath node."
+        with g.tree("ColorSocketOperatorMath") as tree:
+            color = tree.inputs.color("Color")
+            result = color * 0.01
+
+            result2 = color * g.Integer(1).o.integer
+            result3 = int(1) * color
+            result4 = color * g.Value(2.0)
+            result5 = color ** g.Value(3.0)
+            result6 = color * (0.1, 0.2, 0.3)
+            result7 = color**0.1
+            result8 = color * g.Value().o.value.socket
+            result9 = g.Value().o.value == g.Integer().o.integer.socket
+            result10 = g.Integer().o.integer == g.Value().o.value
+
+        assert result.node.bl_idname == g.VectorMath._bl_idname
+        assert result2.node.bl_idname == g.VectorMath._bl_idname
+        assert result2.operation == "SCALE"
+        assert result3.node.bl_idname == g.VectorMath._bl_idname
+        assert result3.operation == "SCALE"
+        assert result4.node.bl_idname == g.VectorMath._bl_idname
+        assert result4.operation == "SCALE"
+        assert result5.node.bl_idname == g.VectorMath._bl_idname
+        assert result5.operation == "POWER"
+        assert result6.node.bl_idname == g.VectorMath._bl_idname
+        assert result6.operation == "MULTIPLY"
+        assert result7.node.bl_idname == g.VectorMath._bl_idname
+        assert result7.operation == "POWER"
+        assert result7.i.vector_001.default_value == pytest.approx((0.1, 0.1, 0.1))
+        assert result8.node.bl_idname == g.VectorMath._bl_idname
+        assert result8.operation == "SCALE"
+        assert result8.i.vector.links[0].from_node == color.node
+        assert result8.i.scale.links[0].from_node.bl_idname == g.Value._bl_idname
+        assert result9.operation == "EQUAL"
+        assert result9.data_type == "FLOAT"
+        assert result10.operation == "EQUAL"
+        assert result10.data_type == "FLOAT"
+
+
+class TestIntegerSocketOperators:
+    def test_integer_socket_operations(self):
+        "Only Geometry Nodes has Integer Math node so for now we fallback on Math"
+        with c.tree() as tree:
+            input = tree.inputs.integer()
+            result = -input
+            assert result.node.bl_idname == c.Math._bl_idname
+            assert result.operation == "MULTIPLY"
+            assert result.i.value.links
+            assert result.i.value.links[0].from_node == input.node
+            assert not result.i.value_001.links
+            assert result.i.value_001.default_value == pytest.approx(-1.0)
+
+            result2 = result.o.value == input
+            assert result2.node.bl_idname == c.Math._bl_idname
+            assert result2.operation == "COMPARE"
+            assert result2.i.value_002.default_value == pytest.approx(0.00001)

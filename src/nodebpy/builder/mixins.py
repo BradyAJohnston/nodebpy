@@ -100,9 +100,12 @@ class OperatorMixin:
         )
 
     def _apply_compare_operation(self, other: Any, operation: str) -> "Math":
-        return _get_socket_linker(self._default_output_socket)._dispatch_compare(  # type: ignore[attr-defined]
-            other, operation
+        socket, other, _ = _resolve_promotion(
+            self._default_output_socket,  # type: ignore[attr-defined]
+            other,
+            False,
         )
+        return _get_socket_linker(socket)._dispatch_compare(other, operation)
 
     def __lt__(self, other: Any) -> "Compare":
         return self._apply_compare_operation(other, "less_than")
