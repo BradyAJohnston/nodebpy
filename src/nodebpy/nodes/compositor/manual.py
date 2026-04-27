@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING, Literal
 
-from bpy.types import CompositorNodeImage
+from bpy.types import CompositorNodeCryptomatteV2, CompositorNodeImage
+
+from nodebpy.types import InputColor
 
 from ...builder import (
     ColorSocket,
@@ -91,6 +93,193 @@ class Image(NodeBuilder):
         if view:
             self.view = view
         self._establish_links(**key_args)
+
+    @property
+    def frame_duration(self) -> int:
+        return self.node.frame_duration
+
+    @frame_duration.setter
+    def frame_duration(self, value: int):
+        self.node.frame_duration = value
+
+    @property
+    def frame_start(self) -> int:
+        return self.node.frame_start
+
+    @frame_start.setter
+    def frame_start(self, value: int):
+        self.node.frame_start = value
+
+    @property
+    def frame_offset(self) -> int:
+        return self.node.frame_offset
+
+    @frame_offset.setter
+    def frame_offset(self, value: int):
+        self.node.frame_offset = value
+
+    @property
+    def use_cyclic(self) -> bool:
+        return self.node.use_cyclic
+
+    @use_cyclic.setter
+    def use_cyclic(self, value: bool):
+        self.node.use_cyclic = value
+
+    @property
+    def use_auto_refresh(self) -> bool:
+        return self.node.use_auto_refresh
+
+    @use_auto_refresh.setter
+    def use_auto_refresh(self, value: bool):
+        self.node.use_auto_refresh = value
+
+    @property
+    def layer(self) -> str:
+        return self.node.layer
+
+    @layer.setter
+    def layer(self, value: str):
+        self.node.layer = value
+
+    @property
+    def has_layers(self) -> bool:
+        return self.node.has_layers
+
+    @property
+    def view(self) -> str:
+        return self.node.view
+
+    @view.setter
+    def view(self, value: str):
+        self.node.view = value
+
+    @property
+    def has_views(self) -> bool:
+        return self.node.has_views
+
+
+class Cryptomatte(NodeBuilder):
+    """
+    Generate matte for individual objects and materials using Cryptomatte render passes
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+
+    Outputs
+    -------
+    o.image : ColorSocket
+        Image
+    o.matte : FloatSocket
+        Matte
+    o.pick : ColorSocket
+        Pick
+    """
+
+    _bl_idname = "CompositorNodeCryptomatteV2"
+    node: CompositorNodeCryptomatteV2
+
+    class _Inputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    class _Outputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+        matte: FloatSocket
+        """Matte"""
+        pick: ColorSocket
+        """Pick"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        image: InputColor = None,
+        *,
+        source: Literal["RENDER", "IMAGE"] = "RENDER",
+        matte_id: str = "",
+        add: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        remove: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        layer_name: str | None = None,
+        frame_duration: int = 0,
+        frame_start: int = 0,
+        frame_offset: int = 0,
+        use_cyclic: bool = False,
+        use_auto_refresh: bool = False,
+        layer: str | None = None,
+        view: str | None = None,
+    ):
+        super().__init__()
+        key_args = {"Image": image}
+        self.source = source
+        self.matte_id = matte_id
+        self.add = add
+        self.remove = remove
+        self.frame_duration = frame_duration
+        self.frame_start = frame_start
+        self.frame_offset = frame_offset
+        self.use_cyclic = use_cyclic
+        self.use_auto_refresh = use_auto_refresh
+        if layer_name is not None:
+            self.layer_name = layer_name
+        if layer is not None:
+            self.layer = layer
+        if view is not None:
+            self.view = view
+        self._establish_links(**key_args)
+
+    @property
+    def source(self) -> Literal["RENDER", "IMAGE"]:
+        return self.node.source
+
+    @source.setter
+    def source(self, value: Literal["RENDER", "IMAGE"]):
+        self.node.source = value
+
+    @property
+    def matte_id(self) -> str:
+        return self.node.matte_id
+
+    @matte_id.setter
+    def matte_id(self, value: str):
+        self.node.matte_id = value
+
+    @property
+    def add(self) -> tuple[float, float, float]:
+        return self.node.add
+
+    @add.setter
+    def add(self, value: tuple[float, float, float]):
+        self.node.add = value
+
+    @property
+    def remove(self) -> tuple[float, float, float]:
+        return self.node.remove
+
+    @remove.setter
+    def remove(self, value: tuple[float, float, float]):
+        self.node.remove = value
+
+    @property
+    def layer_name(self) -> str:
+        return self.node.layer_name
+
+    @layer_name.setter
+    def layer_name(self, value: str):
+        self.node.layer_name = value
 
     @property
     def frame_duration(self) -> int:

@@ -6,6 +6,7 @@ from .manual import (
     tree,
     Float,
     Image,
+    Cryptomatte,
 )
 from ..geometry.color import (
     Gamma,
@@ -189,6 +190,7 @@ __all__ = (
     "Convolve",
     "CornerPin",
     "Crop",
+    "Cryptomatte",
     "Defocus",
     "Denoise",
     "DepthCombine",

@@ -156,7 +156,6 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
     output_dir_name="compositor",
     nodes_to_skip=[
         "Legacy",
-        "Cryptomatte",
     ],
     manually_defined=(
         "MenuSwitch",
@@ -164,6 +163,7 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "tree",
         "Float",
         "Image",
+        "Cryptomatte",
     ),
     class_name_prefix_strips=[
         "CompositorNode",
