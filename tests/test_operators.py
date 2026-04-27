@@ -966,6 +966,7 @@ class TestColorSocketOperatorMath:
             result6 = color * (0.1, 0.2, 0.3)
             result7 = color**0.1
             result8 = color * g.Value().o.value.socket
+            result9 = g.Integer().integer == g.Value().o.value
 
         assert result.node.bl_idname == g.VectorMath._bl_idname
         assert result2.node.bl_idname == g.VectorMath._bl_idname
@@ -985,6 +986,8 @@ class TestColorSocketOperatorMath:
         assert result8.operation == "SCALE"
         assert result8.i.vector.links[0].from_node == color.node
         assert result8.i.scale.links[0].from_node.bl_idname == g.Value._bl_idname
+        assert result9.operation == "EQUAL"
+        assert result9.data_type == "FLOAT"
 
 
 class TestIntegerSocketOperators:

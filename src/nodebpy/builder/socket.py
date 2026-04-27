@@ -101,7 +101,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "BaseNode":
+    ) -> "Math":
         """Scalar math dispatch (float). Uses the Math node."""
         from ..nodes.geometry.converter import Math
 
