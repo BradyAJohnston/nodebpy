@@ -949,3 +949,13 @@ class TestMatrixMultiplcation:
             .from_node.bl_idname
             == g.MultiplyMatrices._bl_idname
         )
+
+
+class TestColorSocketOperatorMath:
+    def test_color_socket_operator_math(self):
+        "Multiplies a color by a scalar and verifies the result is a VectorMath node."
+        with g.tree("ColorSocketOperatorMath") as tree:
+            color = tree.inputs.color("Color")
+            result = color * 0.01
+
+        assert result.node.bl_idname == g.VectorMath._bl_idname

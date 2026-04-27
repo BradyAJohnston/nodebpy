@@ -438,6 +438,35 @@ class _ColorMixin:
     def __len__(self) -> int:
         return 4
 
+    def _dispatch_math(
+        self, other: Any, operation: str, reverse: bool = False
+    ) -> "BaseNode":
+        from ..nodes.geometry import VectorMath
+
+        values = (self.socket, other) if not reverse else (other, self.socket)
+
+        if operation == "multiply":
+            if isinstance(other, (int, float)):
+                return VectorMath.scale(self.socket, other)
+            elif isinstance(other, NodeSocket) and other.type in ("VALUE", "FLOAT", "INT"):
+                return VectorMath.scale(self.socket, other)
+            elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(other, "type", None) in ("VALUE", "FLOAT", "INT"):
+                return VectorMath.scale(self.socket, other._default_output_socket)
+            else:
+                return VectorMath.multiply(*values)
+        else:
+            vector_method = getattr(VectorMath, operation, None)
+            if vector_method is not None:
+                if isinstance(other, (int, float)):
+                    scalar_vector = (other, other, other)
+                    return (
+                        vector_method(self.socket, scalar_vector)
+                        if not reverse
+                        else vector_method(scalar_vector, self.socket)
+                    )
+                return vector_method(*values)
+            return Socket._dispatch_math(self, other, operation, reverse)  # type: ignore[arg-type]
+
 
 class _IntegerMixin:
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""

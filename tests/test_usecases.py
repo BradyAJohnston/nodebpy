@@ -72,3 +72,26 @@ def test_PCA_asset():
         pca = PrincipalComponents()
 
     assert len(pca.node.node_tree.nodes) == 35
+
+
+def test_surface_hello_world():
+    with g.tree("Hello World") as tree:
+        height = tree.inputs.float("Height", 3.0)
+        omega = tree.inputs.float("Omega", 0.5)
+
+        with g.Frame("Computing the wave"):
+            with g.Frame("Distance"):
+                pos = g.Position().o.position
+                distance = g.Math.square_root(pos.x**2 + pos.y**2)
+            z = height * g.Math.sine(distance / omega) / distance
+
+        with g.Frame("Point offset & smooth"):
+            mesh = (
+                g.Grid(20, 20, 200, 200)
+                >> g.SetPosition(offset=g.CombineXYZ(z=z))
+                >> g.SetShadeSmooth.face()
+            )
+
+        mesh >> tree.outputs.geometry("Mesh")
+
+    assert len(tree) == 22
