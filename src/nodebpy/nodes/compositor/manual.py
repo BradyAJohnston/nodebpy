@@ -1,9 +1,9 @@
 from typing import Literal
 
 from ...builder import TreeBuilder
-from ..geometry.manual import Frame, _MenuSwitchBase
+from ..geometry.manual import Float, Frame, _MenuSwitchBase
 
-__all__ = ["Frame", "MenuSwitch", "tree"]
+__all__ = ["Frame", "MenuSwitch", "tree", "Float"]
 
 
 def tree(

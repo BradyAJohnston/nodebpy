@@ -4,6 +4,7 @@ from .manual import (
     MenuSwitch,
     Frame,
     tree,
+    Float,
 )
 from ..geometry.color import (
     Gamma,
@@ -196,6 +197,7 @@ __all__ = (
     "FileOutput",
     "Filter",
     "Flip",
+    "Float",
     "FloatCurve",
     "Frame",
     "GaborTexture",

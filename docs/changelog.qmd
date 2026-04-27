@@ -4,6 +4,9 @@ title: Changelog
 
 ## Unreleased
 
+### Enhancements
+- Add a `Float()` class which just wraps the `Value()` class / node but is better for hinting towards it's type and more discoverage (`[#58](https://github.com/BradyAJohnston/nodebpy/issues/58)`)
+
 ### Bug Fixes
 - Math on a `ColorSocket` now uses the `VectorMath` instead of `Math` preserving the RGB channels as XYZ. ([`#56`](https://github.com/BradyAJohnston/nodebpy/pull/56))
 

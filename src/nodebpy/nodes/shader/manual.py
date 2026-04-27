@@ -12,7 +12,7 @@ from ...builder import (
 )
 from ...builder.accessor import SocketAccessor
 from ..geometry import Frame, RepeatInput, RepeatOutput, RepeatZone
-from ..geometry.manual import _MenuSwitchBase
+from ..geometry.manual import Float, _MenuSwitchBase
 
 __all__ = [
     "MenuSwitch",
@@ -21,6 +21,7 @@ __all__ = [
     "RepeatZone",
     "Attribute",
     "Frame",
+    "Float",
     "tree",
     "material",
 ]
