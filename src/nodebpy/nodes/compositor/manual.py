@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Literal
 
 from bpy.types import CompositorNodeCryptomatteV2, CompositorNodeImage
 
-from nodebpy.types import InputColor
+from nodebpy.types import Image, InputColor
 
 from ...builder import (
     ColorSocket,
@@ -73,6 +73,7 @@ class Image(NodeBuilder):
 
     def __init__(
         self,
+        image: Image | None = None,
         frame_duration: int = 0,
         frame_start: int = 0,
         frame_offset: int = 0,
@@ -83,6 +84,7 @@ class Image(NodeBuilder):
     ):
         super().__init__()
         key_args = {}
+        self.image = image
         self.frame_duration = frame_duration
         self.frame_start = frame_start
         self.frame_offset = frame_offset
@@ -93,6 +95,14 @@ class Image(NodeBuilder):
         if view:
             self.view = view
         self._establish_links(**key_args)
+
+    @property
+    def image(self) -> Image | None:
+        return self.node.image
+
+    @image.setter
+    def image(self, value: Image | None):
+        self.node.image = value
 
     @property
     def frame_duration(self) -> int:
@@ -211,8 +221,6 @@ class Cryptomatte(NodeBuilder):
         *,
         source: Literal["RENDER", "IMAGE"] = "RENDER",
         matte_id: str = "",
-        add: tuple[float, float, float] = (0.735, 0.735, 0.735),
-        remove: tuple[float, float, float] = (0.735, 0.735, 0.735),
         layer_name: str | None = None,
         frame_duration: int = 0,
         frame_start: int = 0,
@@ -226,8 +234,6 @@ class Cryptomatte(NodeBuilder):
         key_args = {"Image": image}
         self.source = source
         self.matte_id = matte_id
-        self.add = add
-        self.remove = remove
         self.frame_duration = frame_duration
         self.frame_start = frame_start
         self.frame_offset = frame_offset
@@ -256,22 +262,6 @@ class Cryptomatte(NodeBuilder):
     @matte_id.setter
     def matte_id(self, value: str):
         self.node.matte_id = value
-
-    @property
-    def add(self) -> tuple[float, float, float]:
-        return self.node.add
-
-    @add.setter
-    def add(self, value: tuple[float, float, float]):
-        self.node.add = value
-
-    @property
-    def remove(self) -> tuple[float, float, float]:
-        return self.node.remove
-
-    @remove.setter
-    def remove(self, value: tuple[float, float, float]):
-        self.node.remove = value
 
     @property
     def layer_name(self) -> str:

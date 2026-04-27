@@ -1091,3 +1091,58 @@ def test_node_float_input():
         node = s.Float(5.0)
         assert node.value == pytest.approx(5.0)
         assert node.node.bl_idname == g.Value._bl_idname
+
+
+def test_compositor_node_image():
+    with c.tree():
+        im = bpy.data.images.new("test", width=100, height=100)
+        node = c.Image(image=im)
+        assert node.node.bl_idname == "CompositorNodeImage"
+        assert node.frame_duration == 0
+        node.frame_duration = 10
+        assert node.frame_duration == 10
+        assert node.frame_start == 0
+        node.frame_start = 10
+        assert node.frame_start == 10
+        assert node.frame_offset == 0
+        node.frame_offset = 10
+        assert node.frame_offset == 10
+        assert not node.use_cyclic
+        node.use_cyclic = True
+        assert node.use_cyclic
+        assert not node.use_auto_refresh
+        node.use_auto_refresh = True
+        assert node.use_auto_refresh
+        assert not node.has_layers
+        assert node.image == im
+        node.image = None
+        assert node.image is None
+        node.image = im
+        assert node.layer == ""
+        assert node.view == ""
+        assert not node.has_views
+
+        matt = c.Cryptomatte()
+        assert matt.source == "RENDER"
+        matt.source = "IMAGE"
+        assert matt.source == "IMAGE"
+        assert matt.matte_id == ""
+        matt.matte_id = "test"
+        assert matt.matte_id == "test"
+        assert matt.layer_name == ""
+        assert matt.frame_duration == 0
+        matt.frame_duration = 10
+        assert matt.frame_duration == 10
+        assert matt.frame_start == 0
+        matt.frame_start = 10
+        assert matt.frame_start == 10
+        assert matt.frame_offset == 0
+        matt.frame_offset = 10
+        assert matt.frame_offset == 10
+        assert not matt.use_cyclic
+        matt.use_cyclic = True
+        assert matt.use_cyclic
+        assert not matt.use_auto_refresh
+        matt.use_auto_refresh = True
+        assert matt.use_auto_refresh
+        assert not matt.has_layers
