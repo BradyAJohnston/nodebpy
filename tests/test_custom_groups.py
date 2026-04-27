@@ -3,7 +3,6 @@ from functools import reduce
 import bpy
 import pytest
 from bpy.types import CompositorNodeTree, GeometryNodeTree, ShaderNodeTree
-from pydantic_core.core_schema import IsInstanceSchema
 
 from nodebpy.builder import (
     CustomCompositorGroup,

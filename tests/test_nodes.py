@@ -1130,6 +1130,9 @@ def test_compositor_node_image():
         matt.matte_id = "test"
         assert matt.matte_id == "test"
         assert matt.layer_name == ""
+        assert matt.layer == ""
+        assert matt.view == ""
+        assert not matt.has_views
         assert matt.frame_duration == 0
         matt.frame_duration = 10
         assert matt.frame_duration == 10
@@ -1146,3 +1149,19 @@ def test_compositor_node_image():
         matt.use_auto_refresh = True
         assert matt.use_auto_refresh
         assert not matt.has_layers
+
+
+def test_geometry_reroute():
+    with g.tree():
+        node = g.Reroute()
+        assert node.socket_idname == "NodeSocketColor"
+        node.socket_idname = "NodeSocketFloat"
+        assert node.socket_idname == "NodeSocketFloat"
+
+    with g.tree("test", arrange=None) as tree:
+        g.Cube().o.mesh >> g.Reroute() >> tree.outputs.geometry()
+
+    assert len(tree) == 3
+    assert len(tree.tree.links) == 2
+    assert bpy.data.node_groups["test"].nodes["Reroute"].inputs[0].type == "GEOMETRY"
+    assert bpy.data.node_groups["test"].nodes["Reroute"].outputs[0].type == "GEOMETRY"

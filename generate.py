@@ -80,6 +80,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Simulation",
         "For Each",
         "GridBoolean",
+        "Field Min",
     ],
     manually_defined=(
         "SetHandleType",
