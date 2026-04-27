@@ -958,4 +958,18 @@ class TestColorSocketOperatorMath:
             color = tree.inputs.color("Color")
             result = color * 0.01
 
+            result2 = color * g.Integer(1)
+            result3 = int(1) * color
+            result4 = color * g.Value(2.0)
+
+            result5 = color ** g.Value(3.0)
+
         assert result.node.bl_idname == g.VectorMath._bl_idname
+        assert result2.node.bl_idname == g.VectorMath._bl_idname
+        assert result2.operation == "SCALE"
+        assert result3.node.bl_idname == g.VectorMath._bl_idname
+        assert result3.operation == "SCALE"
+        assert result4.node.bl_idname == g.VectorMath._bl_idname
+        assert result4.operation == "SCALE"
+        assert result5.node.bl_idname == g.VectorMath._bl_idname
+        assert result5.operation == "POWER"

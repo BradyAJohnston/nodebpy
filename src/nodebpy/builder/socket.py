@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator, overload
+from typing import TYPE_CHECKING, Any, Iterator, cast, overload
 
 import bpy
 from bpy.types import (
@@ -25,6 +25,7 @@ from bpy.types import (
     NodeSocketShader,
     NodeSocketString,
     NodeSocketVector,
+    NodeTree,
 )
 from mathutils import Euler
 
@@ -55,7 +56,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         self.socket = socket
         self.node = socket.node
         self._default_output_id = socket.identifier
-        self._tree = TreeBuilder(socket.node.id_data)  # type: ignore
+        self._tree = TreeBuilder(cast(NodeTree, socket.node.id_data))
 
     @property
     def tree(self) -> TreeBuilder:
@@ -167,8 +168,8 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         def __gt__(self, other: Any) -> "Compare": ...
         def __le__(self, other: Any) -> "Compare": ...
         def __ge__(self, other: Any) -> "Compare": ...
-        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
-        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __eq__(self, other: Any) -> "Compare": ...
+        def __ne__(self, other: Any) -> "Compare": ...
 
 
 # ---------------------------------------------------------------------------
@@ -308,7 +309,7 @@ class _VectorMixin:
 
             return getattr(Compare.vector, operation)(self.socket, other)
         else:
-            return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
+            return Socket._dispatch_compare(cast("Socket", self), other, operation)
 
     if TYPE_CHECKING:
 
@@ -324,12 +325,10 @@ class _VectorMixin:
         def __rfloordiv__(self, other: Any) -> "VectorMath": ...
         def __neg__(self) -> "VectorMath": ...
         def __abs__(self) -> "VectorMath": ...
-        def __lt__(self, other: Any) -> "Compare": ...
-        def __gt__(self, other: Any) -> "Compare": ...
-        def __le__(self, other: Any) -> "Compare": ...
-        def __ge__(self, other: Any) -> "Compare": ...
-        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
-        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __lt__(self, other: Any) -> "Compare[NodeSocketVector]": ...
+        def __gt__(self, other: Any) -> "Compare[NodeSocketVector]": ...
+        def __le__(self, other: Any) -> "Compare[NodeSocketVector]": ...
+        def __ge__(self, other: Any) -> "Compare[NodeSocketVector]": ...
 
 
 _SEPARATE_COLOR_IDNAMES = (
@@ -356,7 +355,9 @@ class _ColorMixin:
         return SeparateColor
 
     def _separated_channel(self, channel: str) -> Socket:
+        assert self.socket.links is not None
         for link in self.socket.links:
+            assert link.to_node is not None
             if link.to_node.bl_idname in _SEPARATE_COLOR_IDNAMES:
                 return Socket(link.to_node.outputs[channel])
 
@@ -448,9 +449,15 @@ class _ColorMixin:
         if operation == "multiply":
             if isinstance(other, (int, float)):
                 return VectorMath.scale(self.socket, other)
-            elif isinstance(other, NodeSocket) and other.type in ("VALUE", "FLOAT", "INT"):
+            elif isinstance(other, NodeSocket) and other.type in (
+                "VALUE",
+                "FLOAT",
+                "INT",
+            ):
                 return VectorMath.scale(self.socket, other)
-            elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(other, "type", None) in ("VALUE", "FLOAT", "INT"):
+            elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(
+                other, "type", None
+            ) in ("VALUE", "FLOAT", "INT"):
                 return VectorMath.scale(self.socket, other._default_output_socket)
             else:
                 return VectorMath.multiply(*values)
@@ -465,7 +472,9 @@ class _ColorMixin:
                         else vector_method(scalar_vector, self.socket)
                     )
                 return vector_method(*values)
-            return Socket._dispatch_math(self, other, operation, reverse)  # type: ignore[arg-type]
+            return Socket._dispatch_math(
+                cast("Socket", self), other, operation, reverse
+            )
 
 
 class _IntegerMixin:
@@ -504,7 +513,7 @@ class _IntegerMixin:
 
             values = (self.socket, other) if not reverse else (other, self.socket)
             return getattr(IntegerMath, operation)(*values)
-        return Socket._dispatch_math(self, other, operation, reverse)  # type: ignore[arg-type]
+        return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)
 
     def _dispatch_unary(self, operation: str) -> "BaseNode":
         if self._is_geometry_tree:
@@ -514,7 +523,7 @@ class _IntegerMixin:
                 return IntegerMath.negate(self.socket)
             elif operation == "absolute":
                 return IntegerMath.absolute(self.socket)
-        return Socket._dispatch_unary(self, operation)  # type: ignore[arg-type]
+        return Socket._dispatch_unary(cast("Socket", self), operation)
 
     def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "BaseNode":
         if self._is_geometry_tree and self._other_is_integer(other):
@@ -522,14 +531,14 @@ class _IntegerMixin:
 
             values = (self.socket, other) if not reverse else (other, self.socket)
             return IntegerMath.divide_floor(*values)
-        return Socket._dispatch_floordiv(self, other, reverse)  # type: ignore[arg-type]
+        return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
 
     def _dispatch_compare(self, other: Any, operation: str) -> "BaseNode":
         if isinstance(self._tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
             return getattr(Compare.integer, operation)(self.socket, other)
-        return Socket._dispatch_compare(self, other, operation)  # type: ignore[arg-type]
+        return Socket._dispatch_compare(cast("Socket", self), other, operation)
 
     if TYPE_CHECKING:
 
@@ -545,12 +554,10 @@ class _IntegerMixin:
         def __rfloordiv__(self, other: Any) -> "IntegerMath": ...
         def __neg__(self) -> "IntegerMath": ...
         def __abs__(self) -> "IntegerMath": ...
-        def __lt__(self, other: Any) -> "Compare": ...
-        def __gt__(self, other: Any) -> "Compare": ...
-        def __le__(self, other: Any) -> "Compare": ...
-        def __ge__(self, other: Any) -> "Compare": ...
-        def __eq__(self, other: Any) -> "Compare": ...  # type: ignore[override]
-        def __ne__(self, other: Any) -> "Compare": ...  # type: ignore[override]
+        def __lt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+        def __gt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+        def __le__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+        def __ge__(self, other: Any) -> "Compare[NodeSocketInt]": ...
 
 
 # ---------------------------------------------------------------------------
