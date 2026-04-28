@@ -2,9 +2,10 @@
 title: Changelog
 ---
 
-## v0.13.1 -
+## v0.14.0 -
 
 ### Enhancements
+- Drop the `.inputs` and `.outputs` accessors for the nodes, in favor of just using `.i` and `.o` properties directly. This will reduce confusion as `.inputs` and `.outputs` are available on the base `bpy` nodes themselves.
 - Better type hinting and stubs for the `MenuSwitch` and `IndexSwitch` nodes.
 
 ### Bug Fixes

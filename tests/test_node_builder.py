@@ -479,18 +479,18 @@ def test_auto_selection():
         # this explicitly grabs the "Value" socket (which got it's name from the n.Value() node)
         # and adds 10 then attempts to plug it into the zone output (it will choose the float
         # socket instead of the vector socket because that is the most compatible)
-        zone.input.outputs["Value"] + 10 >> zone.output
+        zone.input.o["Value"] + 10 >> zone.output
         # this should automatically pick the vector input socket because we are
         # explicity about the VectorMath and it will be the most compatible
         zone.input >> g.VectorMath.add(..., (1.2, 1.2, 1.2)) >> zone.output
 
     assert (
         tree.nodes["Math"].inputs[0].links[0].from_socket
-        == zone.input.outputs["Value"].socket
+        == zone.input.o["Value"].socket
     )
     assert (
         tree.nodes["Vector Math"].inputs[0].links[0].from_socket
-        == zone.input.outputs["Vector"].socket
+        == zone.input.o["Vector"].socket
     )
 
 
@@ -521,10 +521,10 @@ def test_placeholder():
         v = g.Color()
         mix = v >> g.Mix.color(0.3, (0.5, 0.5, 0.5, 1.0), ...)
 
-    assert not mix.inputs["Factor_Float"].socket.links
-    assert tuple(mix.inputs["A_Color"].socket.default_value) == (0.5, 0.5, 0.5, 1.0)
-    assert mix.inputs["B_Color"].socket.links
-    assert mix.inputs["B_Color"].socket.links[0].from_node == v.node
+    assert not mix.i["Factor_Float"].socket.links
+    assert tuple(mix.i["A_Color"].socket.default_value) == (0.5, 0.5, 0.5, 1.0)
+    assert mix.i["B_Color"].socket.links
+    assert mix.i["B_Color"].socket.links[0].from_node == v.node
 
 
 def test_nested_trees():
@@ -639,7 +639,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                 result = output >> g.JoinGeometry()
                 assert result.node is not None
                 assert result.node.bl_idname == g.JoinGeometry._bl_idname
-                assert result.inputs[0].links[0].from_node == output.node
+                assert result.i[0].links[0].from_node == output.node
             elif NodeSocketColor.bl_rna.identifier in output.socket.bl_idname:
                 result = output >> module.SeparateColor()
                 assert result.node is not None
@@ -716,21 +716,21 @@ def test_add_all_nodes(module, tree_type, class_names):
 
 def test_iter_outputs():
     with TreeBuilder("IndexSwitch"):
-        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).outputs._values())
+        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).o._values())
 
     assert len(switch.node.outputs) == 1
     # 1 input for the index, another for the dynamic socket
     assert len(switch.node.inputs) == 5
 
     with TreeBuilder("MultipleOutputs") as tree:
-        for name, output in g.SeparateXYZ(g.Position()).outputs._items():
+        for name, output in g.SeparateXYZ(g.Position()).o._items():
             with tree.outputs:
                 _ = output >> socket.SocketFloat(name)
 
     with TreeBuilder("MenuSwitch") as tree:
-        switch = g.MenuSwitch.float(**dict(g.SeparateXYZ().outputs._items()))
+        switch = g.MenuSwitch.float(**dict(g.SeparateXYZ().o._items()))
 
-    assert len(switch.inputs) == 5
+    assert len(switch.i) == 5
 
 
 def test_vector_socket_linker():
@@ -810,11 +810,11 @@ class TestSocketAccessor:
 
         with TreeBuilder("IterTest"):
             pos = g.Position()
-            _assert_equal(dict(pos.outputs._items()), {"Position": pos.o.position})
+            _assert_equal(dict(pos.o._items()), {"Position": pos.o.position})
 
             setpos = g.SetPosition()
             _assert_equal(
-                dict(setpos.inputs._items()),
+                dict(setpos.i._items()),
                 {
                     "Geometry": setpos.i.geometry,
                     "Selection": setpos.i.selection,
@@ -825,10 +825,10 @@ class TestSocketAccessor:
 
             assert all(
                 [
-                    a == b
+                    a == b.name
                     for a, b in zip(
                         ["Geometry", "Selection", "Position", "Offset"],
-                        list(setpos.inputs),
+                        list(setpos.i),
                     )
                 ]
             )
@@ -838,7 +838,7 @@ class TestSocketAccessor:
         with TreeBuilder("AccessorGuardTest"):
             pos = g.Position()
             # grab a SocketAccessor while inside the context so we have a valid node
-            accessor = pos.outputs
+            accessor = pos.o
 
         # Now we're outside the context — _tree_contexts is empty.
         # This should return False rather than raise IndexError.
@@ -848,13 +848,13 @@ class TestSocketAccessor:
         """Inside a normal tree context, ignore_visibility defaults to False."""
         with TreeBuilder("NormalContext"):
             pos = g.Position()
-            assert pos.outputs._ignore_visibility is False
+            assert pos.o._ignore_visibility is False
 
     def test_ignore_visibility_inside_context_when_set_true(self):
         """Inside an ignore_visibility=True context, the flag propagates."""
         with TreeBuilder("IgnoreVisContext", ignore_visibility=True):
             pos = g.Position()
-            assert pos.outputs._ignore_visibility is True
+            assert pos.o._ignore_visibility is True
 
     def test_values_unaffected_by_ignore_visibility(self):
         """values() / items() / keys() should not change when ignore_visibility=True.
@@ -864,13 +864,13 @@ class TestSocketAccessor:
         """
         with TreeBuilder("NormalVis", arrange=None) as _:
             node_normal = g.SeparateXYZ(g.Position())
-            normal_values = node_normal.outputs._values()
-            normal_keys = node_normal.outputs._keys()
+            normal_values = node_normal.o._values()
+            normal_keys = node_normal.o._keys()
 
         with TreeBuilder("IgnoreVis", arrange=None, ignore_visibility=True) as _:
             node_ignore = g.SeparateXYZ(g.Position())
-            ignore_values = node_ignore.outputs._values()
-            ignore_keys = node_ignore.outputs._keys()
+            ignore_values = node_ignore.o._values()
+            ignore_keys = node_ignore.o._keys()
 
         # SeparateXYZ has three visible outputs (X, Y, Z) regardless of the flag.
         assert len(normal_values) == len(ignore_values)
@@ -883,11 +883,11 @@ class TestSocketAccessor:
         # accessor should expose more (or equal) sockets than without it.
         with TreeBuilder("NormalAvail", arrange=None):
             mix = g.Mix()
-            normal_available = len(mix.inputs._available)
+            normal_available = len(mix.i._available)
 
         with TreeBuilder("IgnoreAvail", arrange=None, ignore_visibility=True):
             mix = g.Mix()
-            ignore_available = len(mix.inputs._available)
+            ignore_available = len(mix.i._available)
 
         assert ignore_available >= normal_available
 

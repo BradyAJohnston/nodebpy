@@ -76,11 +76,11 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         return self.socket
 
     @property
-    def outputs(self) -> SocketAccessor:
+    def o(self) -> SocketAccessor:
         return SocketAccessor([self.socket], "output")
 
     @property
-    def inputs(self) -> SocketAccessor:
+    def i(self) -> SocketAccessor:
         return SocketAccessor([self.socket], "input")
 
     @property
@@ -719,10 +719,10 @@ class _MatrixMixin:
 
         if self.socket.is_output:
             node = SeparateMatrix._find_or_create_linked(self.socket)
-            return iter(node.o[:])
+            return iter(node.o)
         else:
             node = CombineMatrix._find_or_create_linked(self.socket)
-            return iter(node.i[:])
+            return iter(node.i)
 
     def __len__(self) -> int:
         return 16

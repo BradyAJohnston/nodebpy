@@ -157,7 +157,7 @@ _SocketShapeStructureType = Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "SINGLE"
 
 
 SOCKET_TYPES = Literal[
-    "VALUE",
+    # "VALUE",
     "FLOAT",
     "INT",
     "BOOLEAN",
@@ -176,7 +176,7 @@ SOCKET_TYPES = Literal[
     "CLOSURE",
     "SHADER",
     "FONT",
-    "CUSTOM",
+    # "CUSTOM",
 ]
 
 SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {

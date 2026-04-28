@@ -61,7 +61,7 @@ You can use slicing to access individual or multiple components of input and out
 ```{python}
 with g.tree() as tree:
     sep = g.SeparateXYZ(g.Position())
-    comb = g.CombineXYZ(*sep.o[:])
+    comb = g.CombineXYZ(*sep.o)
     comb2 = g.CombineXYZ()
 
     sep.o[1] >> comb2.i[2]
@@ -76,9 +76,9 @@ with g.tree() as tree:
     diff = g.FieldAverage.point.vector(pos).o.mean - pos
     matrix = g.CombineMatrix()
 
-    for i, axis1 in enumerate(diff.o.vector[:]):
+    for i, axis1 in enumerate(diff.o.vector):
         sep = g.FieldAverage.point.vector(diff * axis1)
-        for j, axis2 in enumerate(sep.o.mean[:]):
+        for j, axis2 in enumerate(sep.o.mean):
             axis2 >> matrix.i[int(i * 4 + j)]
 
 tree
