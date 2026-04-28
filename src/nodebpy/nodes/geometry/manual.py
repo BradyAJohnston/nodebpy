@@ -2552,7 +2552,7 @@ class SampleCurve(NodeBuilder, Generic[_T]):
         def color(
             self,
             curves: InputGeometry = None,
-            value: InputVector = (0.0, 0.0, 0.0),
+            value: InputColor = (0.0, 0.0, 0.0, 0.0),
             factor: InputFloat = 0.0,
             curve_index: InputInteger = 0,
             *,
@@ -2572,7 +2572,7 @@ class SampleCurve(NodeBuilder, Generic[_T]):
         def rotation(
             self,
             curves: InputGeometry = None,
-            value: InputVector = (0.0, 0.0, 0.0),
+            value: InputRotation = (0.0, 0.0, 0.0),
             factor: InputFloat = 0.0,
             curve_index: InputInteger = 0,
             *,
@@ -2592,7 +2592,7 @@ class SampleCurve(NodeBuilder, Generic[_T]):
         def matrix(
             self,
             curves: InputGeometry = None,
-            value: InputVector = (0.0, 0.0, 0.0),
+            value: InputMatrix = None,
             factor: InputFloat = 0.0,
             curve_index: InputInteger = 0,
             *,
@@ -2693,7 +2693,7 @@ class SampleCurve(NodeBuilder, Generic[_T]):
         def color(
             self,
             curves: InputGeometry = None,
-            value: InputVector = (0.0, 0.0, 0.0),
+            value: InputColor = (0.0, 0.0, 0.0, 0.0),
             length: InputFloat = 0.0,
             curve_index: InputInteger = 0,
             *,
@@ -2713,7 +2713,7 @@ class SampleCurve(NodeBuilder, Generic[_T]):
         def rotation(
             self,
             curves: InputGeometry = None,
-            value: InputVector = (0.0, 0.0, 0.0),
+            value: InputRotation = (0.0, 0.0, 0.0),
             length: InputFloat = 0.0,
             curve_index: InputInteger = 0,
             *,
@@ -2733,7 +2733,7 @@ class SampleCurve(NodeBuilder, Generic[_T]):
         def matrix(
             self,
             curves: InputGeometry = None,
-            value: InputVector = (0.0, 0.0, 0.0),
+            value: InputMatrix = None,
             length: InputFloat = 0.0,
             curve_index: InputInteger = 0,
             *,
@@ -2965,7 +2965,7 @@ class SampleIndex(NodeBuilder, Generic[_T]):
                 clamp=clamp,
             )
 
-        def quaternion(
+        def rotation(
             self,
             geometry: InputGeometry = None,
             value: InputRotation = None,
