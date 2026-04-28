@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Generic, Literal, TypeVar
 
 import bpy
-from bpy.types import NodeSocket
+from bpy.types import NodeEvaluateClosure, NodeSocket
 
 from nodebpy.builder.accessor import SocketAccessor
 from nodebpy.builder.interface import SocketGeometry
@@ -11,6 +11,7 @@ from ...builder import (
 )
 from ...builder import (
     BooleanSocket,
+    ClosureSocket,
     CollectionSocket,
     ColorSocket,
     DynamicInputsMixin,
@@ -34,6 +35,7 @@ from ...types import (
     SOCKET_TYPES,
     InputAny,
     InputBoolean,
+    InputClosure,
     InputColor,
     InputFloat,
     InputGeometry,
@@ -56,6 +58,9 @@ from ...types import (
 )
 from .converter import Switch
 from .zone import (
+    ClosureInput,
+    ClosureOutput,
+    ClosureZone,
     ForEachGeometryElementInput,
     ForEachGeometryElementOutput,
     ForEachGeometryElementZone,
@@ -65,6 +70,7 @@ from .zone import (
     SimulationInput,
     SimulationOutput,
     SimulationZone,
+    _sync_closure_items,
 )
 
 _T = TypeVar("_T")
@@ -80,6 +86,10 @@ __all__ = (
     "ForEachGeometryElementInput",
     "ForEachGeometryElementOutput",
     "ForEachGeometryElementZone",
+    "EvaluateClosure",
+    "ClosureInput",
+    "ClosureOutput",
+    "ClosureZone",
     "GeometryToInstance",
     "SDFGridBoolean",
     #
@@ -117,6 +127,61 @@ def tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
 ) -> TreeBuilder:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
+
+
+class EvaluateClosure(NodeBuilder):
+    """
+    Execute a given closure
+
+    Parameters
+    ----------
+    closure : InputClosure
+        Closure
+
+    Inputs
+    ------
+    i.closure : ClosureSocket
+        Closure
+    """
+
+    _bl_idname = "NodeEvaluateClosure"
+    node: NodeEvaluateClosure
+
+    class _Inputs(SocketAccessor):
+        closure: ClosureSocket
+        """Closure"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        closure: InputClosure = None,
+        *,
+        active_input_index: int = 0,
+        active_output_index: int = 0,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        key_args = {"Closure": closure}
+        self.active_input_index = active_input_index
+        self.active_output_index = active_output_index
+        self.define_signature = define_signature
+        self._establish_links(**key_args)
+
+    def sync_signature(self, node: ClosureOutput | ClosureZone) -> None:
+        if isinstance(node, ClosureZone):
+            node = node.output
+
+        for name in ["input_items", "output_items"]:
+            _sync_closure_items(getattr(node.node, name), getattr(self.node, name))
 
 
 class Frame(NodeBuilder):

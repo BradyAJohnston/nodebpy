@@ -2,13 +2,13 @@ import itertools
 
 import bpy
 import pytest
-from numpy import isin
 
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import FloatSocket, MatrixSocket
+from nodebpy.builder import FloatSocket, MatrixSocket, VectorSocket
+from nodebpy.types import _AttributeDomains
 
 
 def test_capture_attribute():
@@ -314,7 +314,13 @@ def test_repeat(snapshot_tree):
         join = g.JoinGeometry()
         zone.output.capture(join)
         zone.input >> join
-        _ = g.Points(zone.i, position=g.RandomValue.vector(min=-1, seed=zone.i)) >> join
+        _ = (
+            g.Points(
+                zone.iteration,
+                position=g.RandomValue.vector(min=-1, seed=zone.iteration),
+            )
+            >> join
+        )
     assert all(
         [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
     )
@@ -402,7 +408,7 @@ def test_switch_repeatzone(snapshot_tree):
 
         items = (g.Cube(), g.IcoSphere(), g.Grid())
         zone = g.RepeatZone(5, input)
-        switch = g.IndexSwitch.geometry(*items, index=zone.i)
+        switch = g.IndexSwitch.geometry(*items, index=zone.iteration)
         join = g.JoinGeometry(zone.input, switch)
         join >> zone.output >> output
 
@@ -1167,6 +1173,36 @@ def test_geometry_reroute():
     assert len(tree.tree.links) == 2
     assert bpy.data.node_groups["test"].nodes["Reroute"].inputs[0].type == "GEOMETRY"
     assert bpy.data.node_groups["test"].nodes["Reroute"].outputs[0].type == "GEOMETRY"
+
+
+def test_closure_nodes():
+    with g.tree() as tree:
+        setpos = g.SetPosition()
+
+        cl = g.ClosureZone()
+
+        cl.input.link(setpos.i.geometry)
+        cl.output.link(setpos.o.geometry)
+
+        ec = g.EvaluateClosure()
+        ec.sync_signature(cl)
+        cl.output >> ec >> tree.outputs.geometry()
+
+        input, output = g.ClosureZone()
+        vec = g.CombineXYZ()
+        _ = [input.link(x) for x in vec.i[:]]
+        output.link(vec.o.vector)
+
+        ec = g.EvaluateClosure()
+        ec.sync_signature(output)
+        output >> ec >> tree.outputs.vector()
+
+        input, output = g.ClosureZone()
+
+        output.sync_signature(ec)
+        assert isinstance(output.i[0], VectorSocket)
+        assert len(input.o[:]) == 4
+        assert isinstance(input.o[0], FloatSocket)
 
 
 def test_sample_index():

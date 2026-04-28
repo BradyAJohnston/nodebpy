@@ -76,7 +76,6 @@ GEOMETRY_CONFIG = TreeTypeConfig(
     nodes_to_skip=[
         "AlignEulerToVector",
         "Legacy",
-        "Closure",
         "Simulation",
         "For Each",
         "GridBoolean",
@@ -103,6 +102,10 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "ForEachGeometryElementInput",
         "ForEachGeometryElementOutput",
         "ForEachGeometryElementZone",
+        "EvaluateClosure",
+        "ClosureInput",
+        "ClosureOutput",
+        "ClosureZone",
         "FormatString",
         "Collection",
         "Material",
@@ -410,6 +413,7 @@ class NodeInfo:
             "3DLocation": "Location3D",
             "Bsdf": "BSDF",
             "Svd": "SVD",
+            "Bw": "BW",
         }
 
         # Add prefix strips from config

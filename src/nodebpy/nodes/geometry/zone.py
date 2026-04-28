@@ -1,10 +1,25 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Iterable, Union
 
 import bpy
+from bpy.types import (
+    NodeClosureInput,
+    NodeClosureInputItems,
+    NodeClosureOutput,
+    NodeClosureOutputItems,
+    NodeEvaluateClosureInputItems,
+    NodeEvaluateClosureOutputItems,
+    NodeSocket,
+)
+
+from nodebpy.builder._registry import _get_socket_linker
+from nodebpy.builder._utils import _SocketLike
+
+if TYPE_CHECKING:
+    from .manual import EvaluateClosure
 
 from nodebpy.builder import BaseNode as NodeBuilder
-from nodebpy.builder import DynamicInputsMixin
+from nodebpy.builder import ClosureSocket, DynamicInputsMixin
 from nodebpy.builder import Socket as SocketLinker
 from nodebpy.builder.accessor import SocketAccessor
 
@@ -168,7 +183,7 @@ class SimulationZone:
 
 class BaseRepeatZone(BaseZone):
     _socket_data_types = (
-        "FLOAT",
+        "VALUE",
         "INT",
         "BOOLEAN",
         "VECTOR",
@@ -184,6 +199,8 @@ class BaseRepeatZone(BaseZone):
         "BUNDLE",
         "CLOSURE",
     )
+
+    _type_map = {"VALUE": "FLOAT"}
 
     @property
     def items(self) -> bpy.types.NodeGeometryRepeatOutputItems:
@@ -235,7 +252,7 @@ class RepeatZone:
         self.input._establish_links(**self.input._add_inputs(*args, **kwargs))
 
     @property
-    def i(self) -> SocketLinker:
+    def iteration(self) -> SocketLinker:
         """The current iteration index."""
         return self.input.o.iteration
 
@@ -249,7 +266,7 @@ class RepeatZone:
         if self._index > 0:
             raise StopIteration
         self._index += 1
-        return self.i, self.input, self.output
+        return self.iteration, self.input, self.output
 
 
 class ForEachGeometryElementZone:
@@ -442,3 +459,118 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         value: _AttributeDomains,
     ):
         self.node.domain = value
+
+
+class ClosureZone:
+    def __init__(
+        self,
+    ):
+        self.input = ClosureInput()
+        self.output = ClosureOutput()
+        self.input.node.pair_with_output(self.output.node)
+        self.input._establish_links()
+
+    def __getitem__(self, index: int):
+        match index:
+            case 0:
+                return self.input
+            case 1:
+                return self.output
+            case _:
+                raise IndexError("ClosureZone has only two items")
+
+
+_ClosureItemCollections = Union[
+    NodeClosureInputItems,
+    NodeClosureOutputItems,
+    NodeEvaluateClosureInputItems,
+    NodeEvaluateClosureOutputItems,
+    NodeEvaluateClosureOutputItems,
+]
+
+
+def _sync_closure_items(
+    source: _ClosureItemCollections, target: _ClosureItemCollections
+) -> None:
+    target.clear()
+    for source_item in source:
+        item = target.new(source_item.socket_type, source_item.name)
+        item.structure_type = source_item.structure_type
+
+
+class ClosureInput(NodeBuilder):
+    """
+    Closure Input node
+    """
+
+    _bl_idname = "NodeClosureInput"
+    node: NodeClosureInput
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+    def link(self, target: _SocketLike) -> SocketLinker:
+        self.tree.link(self.node.outputs[-1], target.socket)
+        return _get_socket_linker(self.node.outputs[-2])
+
+
+class ClosureOutput(NodeBuilder):
+    """
+    Closure Output node
+
+    Outputs
+    -------
+    o.closure : ClosureSocket
+        Closure
+    """
+
+    _bl_idname = "NodeClosureOutput"
+    node: NodeClosureOutput
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        closure: ClosureSocket
+        """Closure"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        key_args = {}
+        self.define_signature = define_signature
+        self._establish_links(**key_args)
+
+    def link(self, source: _SocketLike) -> SocketLinker:
+        self.tree.link(source.socket, self.node.inputs[-1])
+
+        return _get_socket_linker(self.node.inputs[-2])
+
+    def sync_signature(self, node: "EvaluateClosure") -> None:
+        for name in ["input_items", "output_items"]:
+            _sync_closure_items(getattr(node.node, name), getattr(self.node, name))
