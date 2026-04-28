@@ -65,7 +65,7 @@ def test_compositor_menu_switch():
         menu >> tree.outputs.float()
 
     assert len(menu.node.enum_items) == 10
-    for i, input in enumerate([x for x in menu.inputs._values() if x.type == "VALUE"]):
+    for i, input in enumerate([x for x in menu.i._values() if x.type == "VALUE"]):
         assert f"Input_{i}" == input.name
         assert float(i) == input.socket.default_value
 
@@ -76,7 +76,7 @@ def test_compositor_menu_switch():
         menu >> tree.outputs.float()
 
     assert len(menu.node.enum_items) == 10
-    for i, input in enumerate([x for x in menu.inputs._values() if x.type == "VALUE"]):
+    for i, input in enumerate([x for x in menu.i._values() if x.type == "VALUE"]):
         assert f"Input_{i}" == input.name
         assert input.socket.links[0].from_node.bl_idname == c.Value._bl_idname
         # we have to check the output defeault value here because that is how the Value

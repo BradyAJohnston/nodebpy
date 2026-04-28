@@ -196,7 +196,7 @@ class OperatorMixin:
 class LinkingMixin:
     """Node/socket linking logic: ``>>``, ``_link``, best-socket matching.
 
-    Requires ``tree``, ``inputs``, ``outputs``, ``_default_output_socket``,
+    Requires ``tree``, ``i``, ``o``, ``_default_output_socket``,
     and ``_default_input_socket`` on the concrete class.
     """
 
@@ -227,15 +227,15 @@ class LinkingMixin:
         from ..types import SOCKET_COMPATIBILITY
 
         possible_combos = []
-        if hasattr(source, "outputs"):
-            outputs = source.outputs._available  # type: ignore[union-attr]
+        if hasattr(source, "o"):
+            outputs = source.o._available  # type: ignore[union-attr]
         elif isinstance(source, NodeSocket):
             outputs = [source]
         else:
             raise TypeError(f"Cannot get outputs from {type(source)}")
 
-        if hasattr(target, "inputs"):
-            inputs = target.inputs._available  # type: ignore[union-attr]
+        if hasattr(target, "i"):
+            inputs = target.i._available  # type: ignore[union-attr]
         else:
             inputs = [target]
 
@@ -280,7 +280,7 @@ class LinkingMixin:
             try:
                 self._link(source, self.node.inputs[input])  # type: ignore[attr-defined]
             except KeyError:
-                self._link(source, self.node.inputs[self.inputs._index(input)])  # type: ignore[attr-defined]
+                self._link(source, self.node.inputs[self.i._index(input)])  # type: ignore[attr-defined]
         else:
             self._link(source, input)
 
@@ -304,8 +304,8 @@ class LinkingMixin:
             try:
                 target = other.node.inputs[name]
             except KeyError:
-                target = other.node.inputs[other.inputs._index(name)]
-            source = self.outputs._best_match(target.type)
+                target = other.node.inputs[other.i._index(name)]
+            source = self.o._best_match(target.type)
         else:
             try:
                 source, target = self._find_best_socket_pair(self, other)

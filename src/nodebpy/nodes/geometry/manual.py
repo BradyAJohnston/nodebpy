@@ -481,7 +481,7 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
         item = self.node.format_items.new(socket_type=type, name=name)
         if default_value is not None:
             try:
-                self.node.inputs[item.name].default_value = default_value  # type: ignore
+                self.i[item.name].default_value = default_value  # ty: ignore[unresolved-attribute]
             except TypeError as e:
                 raise ValueError(
                     f"Invalid default value for {type}: {default_value}"
@@ -491,9 +491,7 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
     @property
     def items(self) -> dict[str, SocketLinker]:
         """Input sockets:"""
-        return {
-            socket.name: self.inputs._get(socket.name) for socket in self.node.inputs
-        }
+        return {socket.name: self.i._get(socket.name) for socket in self.node.inputs}
 
 
 class JoinStrings(NodeBuilder):
@@ -961,7 +959,7 @@ class IndexSwitch(NodeBuilder, Generic[_T]):
     @property
     def data_type(self) -> SOCKET_TYPES:
         """Input socket: Data Type"""
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: SOCKET_TYPES):
@@ -1374,7 +1372,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
+            node._link_from(*node._find_best_socket_pair(arg, node.i["Grid 2"]))
         return node
 
     @classmethod
@@ -1386,7 +1384,7 @@ class SDFGridBoolean(NodeBuilder):
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
+            node._link_from(*node._find_best_socket_pair(arg, node.i["Grid 2"]))
         return node
 
     @classmethod
@@ -1398,11 +1396,11 @@ class SDFGridBoolean(NodeBuilder):
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
         if grid_1 is not None:
-            node._link_from(*node._find_best_socket_pair(grid_1, node.inputs["Grid 1"]))
+            node._link_from(*node._find_best_socket_pair(grid_1, node.i["Grid 1"]))
         for arg in args:
             if arg is None:
                 continue
-            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
+            node._link_from(*node._find_best_socket_pair(arg, node.i["Grid 2"]))
         return node
 
     class _Inputs(SocketAccessor):
