@@ -2,7 +2,6 @@ import itertools
 
 import bpy
 import pytest
-from numpy import isin
 
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
@@ -1181,6 +1180,8 @@ def test_closure_nodes():
         ec = g.EvaluateClosure()
         ec.sync_signature(cl)
         cl.output >> ec >> tree.outputs.geometry()
+
+
 def test_sample_index():
     with g.tree():
         points = g.Points(10, g.RandomValue.vector().o.value)
