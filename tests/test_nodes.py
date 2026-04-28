@@ -1198,6 +1198,10 @@ def test_sample_index():
         assert si.data_type == "BOOLEAN"
         assert si.domain == "CURVE"
 
+        si = g.SampleIndex.edge.color()
+        assert si.data_type == "FLOAT_COLOR"
+        assert si.domain == "EDGE"
+
         si = g.SampleIndex.instance.rotation()
         assert si.data_type == "QUATERNION"
         assert si.domain == "INSTANCE"
