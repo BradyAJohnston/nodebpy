@@ -5,16 +5,17 @@ title: Changelog
 ## Unreleased
 
 ### Enhancements
-- Add a `Float()` class which just wraps the `Value()` class / node but is better for hinting towards it's type and more discoverage (`[#58](https://github.com/BradyAJohnston/nodebpy/issues/58)`)
+- Support adding of closure nodes (`EvaluateClosure` and the `ClosureInput` / `ClosureOutput` nodes). Convenience `ClosureZone` class is added similar to the repeat, simulation and for-each-element zones. ([`#60`](https://github.com/BradyAJohnston/nodebpy/pull/60))
+- Add a `Float()` class which just wraps the `Value()` class / node but is better for hinting towards it's type and more discoverage (`[#58](https://github.com/BradyAJohnston/nodebpy/pull/58)`)
 
 ### Bug Fixes
-- Properly expose mode, domain and data_type as methods and method factories for `SampleIndex` and `SampleCurve`. ([`#61`](https://github.com/BradyAJohnston/nodebpy/issues/61))
+- Properly expose mode, domain and data_type as methods and method factories for `SampleIndex` and `SampleCurve`. ([`#61`](https://github.com/BradyAJohnston/nodebpy/pull/61))
 - Math on a `ColorSocket` now uses the `VectorMath` instead of `Math` preserving the RGB channels as XYZ. ([`#56`](https://github.com/BradyAJohnston/nodebpy/pull/56))
 
 ## v0.12.0 - 2026-04-25
 
 ### Enhancements
-- Support custom node groups for each node tree via `CustomGeometryGroup`, `CustomShaderGroup`, `CustomCompositorGroup` ([`#53`](https://github.com/BradyAJohnston/nodebpy/issues/53))
+- Support custom node groups for each node tree via `CustomGeometryGroup`, `CustomShaderGroup`, `CustomCompositorGroup` ([`#53`](https://github.com/BradyAJohnston/nodebpy/pull/53))
 
 ## v0.11.1 - 2026-04-24
 
