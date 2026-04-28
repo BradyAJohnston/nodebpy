@@ -126,7 +126,7 @@ with g.tree(arrange=None) as tree:
     # this explicitly grabs the "Value" socket (which got it's name from the g.Value() node)
     # and adds 10 then attempts to plug it into the zone output (it will choose the float
     # socket instead of the vector socket because that is the most compatible)
-    zone.input.outputs["Value"] + 10 >> zone.output
+    zone.input.o["Value"] + 10 >> zone.output
     # this should automatically pick the vector input socket because we are
     # explicity about the VectorMath and it will be the most compatible
     zone.input >> g.VectorMath.add((1.2, 1.2, 1.2)) >> zone.output
