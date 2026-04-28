@@ -1165,3 +1165,17 @@ def test_geometry_reroute():
     assert len(tree.tree.links) == 2
     assert bpy.data.node_groups["test"].nodes["Reroute"].inputs[0].type == "GEOMETRY"
     assert bpy.data.node_groups["test"].nodes["Reroute"].outputs[0].type == "GEOMETRY"
+
+
+def test_closure_nodes():
+    with g.tree() as tree:
+        setpos = g.SetPosition()
+
+        cl = g.ClosureZone()
+
+        cl.input.link(setpos.i.geometry)
+        cl.output.link(setpos.o.geometry)
+
+        ec = g.EvaluateClosure()
+        ec.sync_signature(cl)
+        cl.output >> ec >> tree.outputs.geometry()

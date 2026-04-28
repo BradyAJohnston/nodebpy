@@ -105,6 +105,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "EvaluateClosure",
         "ClosureInput",
         "ClosureOutput",
+        "ClosureZone",
         "FormatString",
         "Collection",
         "Material",

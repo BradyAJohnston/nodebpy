@@ -1,8 +1,21 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Iterable, Union
 
 import bpy
-from bpy.types import NodeClosureInput, NodeClosureOutput
+from bpy.types import (
+    NodeClosureInput,
+    NodeClosureInputItems,
+    NodeClosureOutput,
+    NodeClosureOutputItems,
+    NodeEvaluateClosureInputItems,
+    NodeEvaluateClosureOutputItems,
+    NodeSocket,
+)
+
+from nodebpy.builder._utils import _SocketLike
+
+if TYPE_CHECKING:
+    from .manual import EvaluateClosure
 
 from nodebpy.builder import BaseNode as NodeBuilder
 from nodebpy.builder import ClosureSocket, DynamicInputsMixin
@@ -445,6 +458,43 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         self.node.domain = value
 
 
+class ClosureZone:
+    def __init__(
+        self,
+    ):
+        self.input = ClosureInput()
+        self.output = ClosureOutput()
+        self.input.node.pair_with_output(self.output.node)
+        self.input._establish_links()
+
+    def __getitem__(self, index: int):
+        match index:
+            case 0:
+                return self.input
+            case 1:
+                return self.output
+            case _:
+                raise IndexError("ClosureZone has only two items")
+
+
+_ClosureItemCollections = Union[
+    NodeClosureInputItems,
+    NodeClosureOutputItems,
+    NodeEvaluateClosureInputItems,
+    NodeEvaluateClosureOutputItems,
+    NodeEvaluateClosureOutputItems,
+]
+
+
+def _sync_closure_items(
+    source: _ClosureItemCollections, target: _ClosureItemCollections
+) -> None:
+    target.clear()
+    for source_item in source:
+        item = target.new(source_item.socket_type, source_item.name)
+        item.structure_type = source_item.structure_type
+
+
 class ClosureInput(NodeBuilder):
     """
     Closure Input node
@@ -471,6 +521,10 @@ class ClosureInput(NodeBuilder):
         key_args = {}
 
         self._establish_links(**key_args)
+
+    def link(self, target: _SocketLike) -> NodeSocket:
+        self.tree.link(self.node.outputs[-1], target.socket)
+        return self.node.outputs[-2]
 
 
 class ClosureOutput(NodeBuilder):
@@ -502,37 +556,17 @@ class ClosureOutput(NodeBuilder):
 
     def __init__(
         self,
-        active_input_index: int = 0,
-        active_output_index: int = 0,
         define_signature: bool = False,
     ):
         super().__init__()
         key_args = {}
-        self.active_input_index = active_input_index
-        self.active_output_index = active_output_index
         self.define_signature = define_signature
         self._establish_links(**key_args)
 
-    @property
-    def active_input_index(self) -> int:
-        return self.node.active_input_index
+    def link(self, source: _SocketLike) -> NodeSocket:
+        self.tree.link(source.socket, self.node.inputs[-1])
+        return self.node.inputs[-2]
 
-    @active_input_index.setter
-    def active_input_index(self, value: int):
-        self.node.active_input_index = value
-
-    @property
-    def active_output_index(self) -> int:
-        return self.node.active_output_index
-
-    @active_output_index.setter
-    def active_output_index(self, value: int):
-        self.node.active_output_index = value
-
-    @property
-    def define_signature(self) -> bool:
-        return self.node.define_signature
-
-    @define_signature.setter
-    def define_signature(self, value: bool):
-        self.node.define_signature = value
+    def sync_signature(self, node: "EvaluateClosure") -> None:
+        for name in ["input_items", "output_items"]:
+            _sync_closure_items(getattr(node, name), getattr(self.node, name))

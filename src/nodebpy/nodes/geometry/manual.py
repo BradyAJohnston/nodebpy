@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Generic, Literal, TypeVar
 
 import bpy
-from bpy.types import NodeSocket
+from bpy.types import NodeEvaluateClosure, NodeSocket
 
 from nodebpy.builder.accessor import SocketAccessor
 from nodebpy.builder.interface import SocketGeometry
@@ -60,6 +60,7 @@ from .converter import Switch
 from .zone import (
     ClosureInput,
     ClosureOutput,
+    ClosureZone,
     ForEachGeometryElementInput,
     ForEachGeometryElementOutput,
     ForEachGeometryElementZone,
@@ -69,6 +70,7 @@ from .zone import (
     SimulationInput,
     SimulationOutput,
     SimulationZone,
+    _sync_closure_items,
 )
 
 _T = TypeVar("_T")
@@ -87,6 +89,7 @@ __all__ = (
     "EvaluateClosure",
     "ClosureInput",
     "ClosureOutput",
+    "ClosureZone",
     "GeometryToInstance",
     "SDFGridBoolean",
     #
@@ -142,7 +145,7 @@ class EvaluateClosure(NodeBuilder):
     """
 
     _bl_idname = "NodeEvaluateClosure"
-    node: bpy.types.Node
+    node: NodeEvaluateClosure
 
     class _Inputs(SocketAccessor):
         closure: ClosureSocket
@@ -173,29 +176,11 @@ class EvaluateClosure(NodeBuilder):
         self.define_signature = define_signature
         self._establish_links(**key_args)
 
-    @property
-    def active_input_index(self) -> int:
-        return self.node.active_input_index
-
-    @active_input_index.setter
-    def active_input_index(self, value: int):
-        self.node.active_input_index = value
-
-    @property
-    def active_output_index(self) -> int:
-        return self.node.active_output_index
-
-    @active_output_index.setter
-    def active_output_index(self, value: int):
-        self.node.active_output_index = value
-
-    @property
-    def define_signature(self) -> bool:
-        return self.node.define_signature
-
-    @define_signature.setter
-    def define_signature(self, value: bool):
-        self.node.define_signature = value
+    def sync_signature(self, node: ClosureOutput | ClosureZone) -> None:
+        if isinstance(node, ClosureZone):
+            node = node.output
+        _sync_closure_items(node.node.input_items, self.node.input_items)
+        _sync_closure_items(node.node.output_items, self.node.output_items)
 
 
 class Frame(NodeBuilder):
