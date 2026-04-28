@@ -6,7 +6,9 @@ title: Changelog
 
 ### Enhancements
 - Support adding of closure nodes (`EvaluateClosure` and the `ClosureInput` / `ClosureOutput` nodes). Convenience `ClosureZone` class is added similar to the repeat, simulation and for-each-element zones. ([`#60`](https://github.com/BradyAJohnston/nodebpy/pull/60))
+- Iteration output for the `RepeatZone` has change `.i` -> `.iteration` to not confuse with input / output socket access ([`#60`](https://github.com/BradyAJohnston/nodebpy/pull/60))
 - Add a `Float()` class which just wraps the `Value()` class / node but is better for hinting towards it's type and more discoverage (`[#58](https://github.com/BradyAJohnston/nodebpy/pull/58)`)
+
 
 ### Bug Fixes
 - Properly expose mode, domain and data_type as methods and method factories for `SampleIndex` and `SampleCurve`. ([`#61`](https://github.com/BradyAJohnston/nodebpy/pull/61))
