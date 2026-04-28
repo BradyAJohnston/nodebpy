@@ -5,24 +5,25 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     ColorSocket,
     FloatSocket,
     ShaderSocket,
+    SocketAccessor,
     StringSocket,
     VectorSocket,
 )
-
 from ...types import (
     InputColor,
-    InputString,
     InputFloat,
+    InputString,
     InputVector,
 )
 
 
-class PrincipledVolume(NodeBuilder):
+class PrincipledVolume(BaseNode):
     """
     Combine all volume shading components into a single easy to use node
 
@@ -168,7 +169,7 @@ class PrincipledVolume(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VolumeAbsorption(NodeBuilder):
+class VolumeAbsorption(BaseNode):
     """
     Absorb light as it passes through the volume
 
@@ -230,7 +231,7 @@ class VolumeAbsorption(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VolumeCoefficients(NodeBuilder):
+class VolumeCoefficients(BaseNode):
     """
     Model all three physical processes in a volume, represented by their coefficients
 
@@ -363,7 +364,7 @@ class VolumeCoefficients(NodeBuilder):
         self.node.phase = value
 
 
-class VolumeInfo(NodeBuilder):
+class VolumeInfo(BaseNode):
     """
     Read volume data attributes from volume grids
 
@@ -409,7 +410,7 @@ class VolumeInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VolumeScatter(NodeBuilder):
+class VolumeScatter(BaseNode):
     """
     Scatter light as it passes through the volume, often used to add fog to a scene
 

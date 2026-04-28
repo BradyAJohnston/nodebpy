@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, SocketAccessor, ColorSocket
-
+from ...builder import BaseNode as BaseNode
+from ...builder import ColorSocket, SocketAccessor
 from ...types import (
     InputColor,
 )
 
 
-class FileOutput(NodeBuilder):
+class FileOutput(BaseNode):
     """
     Write image file to disk
     """
@@ -80,7 +80,7 @@ class FileOutput(NodeBuilder):
         self.node.save_as_render = value
 
 
-class Viewer(NodeBuilder):
+class Viewer(BaseNode):
     """
     Visualize data from inside a node graph, in the image editor or as a backdrop
 

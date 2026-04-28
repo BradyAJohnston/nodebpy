@@ -4,10 +4,11 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, SocketAccessor
+from ...builder import BaseNode as BaseNode
+from ...builder import SocketAccessor
 
 
-class Viewer(NodeBuilder):
+class Viewer(BaseNode):
     """
     Display the input data in the Spreadsheet Editor
     """

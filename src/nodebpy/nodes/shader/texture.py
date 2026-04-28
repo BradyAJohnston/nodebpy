@@ -5,20 +5,21 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     ColorSocket,
     FloatSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputFloat,
     InputVector,
 )
 
 
-class EnvironmentTexture(NodeBuilder):
+class EnvironmentTexture(BaseNode):
     """
     Sample an image file as an environment texture. Typically used to light the scene with the background node
 
@@ -86,7 +87,7 @@ class EnvironmentTexture(NodeBuilder):
         self.node.interpolation = value
 
 
-class IesTexture(NodeBuilder):
+class IesTexture(BaseNode):
     """
     Match real world lights with IES files, which store the directional intensity distribution of light sources
 
@@ -175,7 +176,7 @@ class IesTexture(NodeBuilder):
         self.node.mode = value
 
 
-class ImageTexture(NodeBuilder):
+class ImageTexture(BaseNode):
     """
     Sample an image file as a texture
 
@@ -267,7 +268,7 @@ class ImageTexture(NodeBuilder):
         self.node.extension = value
 
 
-class SkyTexture(NodeBuilder):
+class SkyTexture(BaseNode):
     """
     Generate a procedural sky texture
 

@@ -5,24 +5,25 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     BooleanSocket,
     FloatSocket,
+    SocketAccessor,
 )
-
 from ...types import (
     InputBoolean,
     InputColor,
+    InputFloat,
     InputInteger,
     InputMenu,
     InputString,
-    InputFloat,
     InputVector,
 )
 
 
-class EnableOutput(NodeBuilder):
+class EnableOutput(BaseNode):
     """
     Either pass through the input value or output the fallback value
 

@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     BooleanSocket,
     BundleSocket,
     ColorSocket,
@@ -18,14 +19,16 @@ from ...builder import (
     MatrixSocket,
     MenuSocket,
     RotationSocket,
+    SocketAccessor,
     StringSocket,
     VectorSocket,
 )
-
 from ...types import (
     InputBoolean,
     InputBundle,
     InputColor,
+    InputFloat,
+    InputFont,
     InputGeometry,
     InputInteger,
     InputMaterial,
@@ -33,13 +36,11 @@ from ...types import (
     InputMenu,
     InputRotation,
     InputString,
-    InputFloat,
     InputVector,
-    InputFont,
 )
 
 
-class Arc(NodeBuilder):
+class Arc(BaseNode):
     """
     Generate a poly spline arc
 
@@ -227,7 +228,7 @@ class Arc(NodeBuilder):
         self.node.mode = value
 
 
-class BoundingBox(NodeBuilder):
+class BoundingBox(BaseNode):
     """
     Calculate the limits of a geometry's positions and generate a box mesh with those dimensions
 
@@ -290,7 +291,7 @@ class BoundingBox(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class BezierSegment(NodeBuilder):
+class BezierSegment(BaseNode):
     """
     Generate a 2D Bézier spline from the given control points and handles
 
@@ -420,7 +421,7 @@ class BezierSegment(NodeBuilder):
         self.node.mode = value
 
 
-class Cone(NodeBuilder):
+class Cone(BaseNode):
     """
     Generate a cone mesh
 
@@ -597,7 +598,7 @@ class Cone(NodeBuilder):
         self.node.fill_type = value
 
 
-class ConvexHull(NodeBuilder):
+class ConvexHull(BaseNode):
     """
     Create a mesh that encloses all points in the input geometry with the smallest number of points
 
@@ -642,7 +643,7 @@ class ConvexHull(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Cube(NodeBuilder):
+class Cube(BaseNode):
     """
     Generate a cuboid mesh with variable side lengths and subdivisions
 
@@ -720,7 +721,7 @@ class Cube(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CurveCircle(NodeBuilder):
+class CurveCircle(BaseNode):
     """
     Generate a poly spline circle
 
@@ -840,7 +841,7 @@ class CurveCircle(NodeBuilder):
         self.node.mode = value
 
 
-class CurveLength(NodeBuilder):
+class CurveLength(BaseNode):
     """
     Retrieve the length of all splines added together
 
@@ -885,7 +886,7 @@ class CurveLength(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CurveLine(NodeBuilder):
+class CurveLine(BaseNode):
     """
     Generate a poly spline line with two points
 
@@ -984,7 +985,7 @@ class CurveLine(NodeBuilder):
         self.node.mode = value
 
 
-class CurveToMesh(NodeBuilder):
+class CurveToMesh(BaseNode):
     """
     Convert curves into a mesh, optionally with a custom profile shape defined by curves
 
@@ -1058,7 +1059,7 @@ class CurveToMesh(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CurveToPoints(NodeBuilder):
+class CurveToPoints(BaseNode):
     """
     Generate a point cloud by sampling positions along curves
 
@@ -1161,7 +1162,7 @@ class CurveToPoints(NodeBuilder):
         self.node.mode = value
 
 
-class CurvesToGreasePencil(NodeBuilder):
+class CurvesToGreasePencil(BaseNode):
     """
     Convert the curves in each top-level instance into Grease Pencil layer
 
@@ -1227,7 +1228,7 @@ class CurvesToGreasePencil(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Cylinder(NodeBuilder):
+class Cylinder(BaseNode):
     """
     Generate a cylinder mesh
 
@@ -1390,7 +1391,7 @@ class Cylinder(NodeBuilder):
         self.node.fill_type = value
 
 
-class DeformCurvesOnSurface(NodeBuilder):
+class DeformCurvesOnSurface(BaseNode):
     """
     Translate and rotate curves based on changes between the object's original and evaluated surface mesh
 
@@ -1435,7 +1436,7 @@ class DeformCurvesOnSurface(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class DeleteGeometry(NodeBuilder):
+class DeleteGeometry(BaseNode):
     """
     Remove selected elements of a geometry
 
@@ -1577,7 +1578,7 @@ class DeleteGeometry(NodeBuilder):
         self.node.domain = value
 
 
-class DistributePointsOnFaces(NodeBuilder):
+class DistributePointsOnFaces(BaseNode):
     """
     Generate points spread out on the surface of a mesh
 
@@ -1703,7 +1704,7 @@ class DistributePointsOnFaces(NodeBuilder):
         self.node.use_legacy_normal = value
 
 
-class DualMesh(NodeBuilder):
+class DualMesh(BaseNode):
     """
     Convert Faces into vertices and vertices into faces
 
@@ -1758,7 +1759,7 @@ class DualMesh(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class DuplicateElements(NodeBuilder):
+class DuplicateElements(BaseNode):
     """
     Generate an arbitrary number copies of each selected input element
 
@@ -1906,7 +1907,7 @@ class DuplicateElements(NodeBuilder):
         self.node.domain = value
 
 
-class EdgePathsToCurves(NodeBuilder):
+class EdgePathsToCurves(BaseNode):
     """
     Output curves following paths across mesh edges
 
@@ -1972,7 +1973,7 @@ class EdgePathsToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ExtrudeMesh(NodeBuilder):
+class ExtrudeMesh(BaseNode):
     """
     Generate new vertices, edges, or faces from selected elements and move them based on an offset while keeping them connected by their boundary
 
@@ -2125,7 +2126,7 @@ class ExtrudeMesh(NodeBuilder):
         self.node.mode = value
 
 
-class FillCurve(NodeBuilder):
+class FillCurve(BaseNode):
     """
     Generate a mesh on the XY plane with faces on the inside of input curves
 
@@ -2199,7 +2200,7 @@ class FillCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FilletCurve(NodeBuilder):
+class FilletCurve(BaseNode):
     """
     Round corners by generating circular arcs on each control point
 
@@ -2281,7 +2282,7 @@ class FilletCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FlipFaces(NodeBuilder):
+class FlipFaces(BaseNode):
     """
     Reverse the order of the vertices and edges of selected faces, flipping their normal direction
 
@@ -2336,7 +2337,7 @@ class FlipFaces(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GeometryProximity(NodeBuilder):
+class GeometryProximity(BaseNode):
     """
     Compute the closest location on the target geometry
 
@@ -2428,7 +2429,7 @@ class GeometryProximity(NodeBuilder):
         self.node.target_element = value
 
 
-class GetGeometryBundle(NodeBuilder):
+class GetGeometryBundle(BaseNode):
     """
     Get the bundle of a geometry
 
@@ -2487,7 +2488,7 @@ class GetGeometryBundle(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GreasePencilToCurves(NodeBuilder):
+class GreasePencilToCurves(BaseNode):
     """
     Convert Grease Pencil layers into curve instances
 
@@ -2553,7 +2554,7 @@ class GreasePencilToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Grid(NodeBuilder):
+class Grid(BaseNode):
     """
     Generate a planar mesh on the XY plane
 
@@ -2631,7 +2632,7 @@ class Grid(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class IcoSphere(NodeBuilder):
+class IcoSphere(BaseNode):
     """
     Generate a spherical mesh that consists of equally sized triangles
 
@@ -2690,7 +2691,7 @@ class IcoSphere(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InstanceOnPoints(NodeBuilder):
+class InstanceOnPoints(BaseNode):
     """
     Generate a reference to geometry at each of the input points, without duplicating its underlying data
 
@@ -2788,7 +2789,7 @@ class InstanceOnPoints(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InstancesToPoints(NodeBuilder):
+class InstancesToPoints(BaseNode):
     """
         Generate points at the origins of instances.
     Note: Nested instances are not affected by this node
@@ -2863,7 +2864,7 @@ class InstancesToPoints(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InterpolateCurves(NodeBuilder):
+class InterpolateCurves(BaseNode):
     """
     Generate new curves on points by interpolating between existing curves
 
@@ -2969,7 +2970,7 @@ class InterpolateCurves(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MaterialSelection(NodeBuilder):
+class MaterialSelection(BaseNode):
     """
     Provide a selection of faces that use the specified material
 
@@ -3014,7 +3015,7 @@ class MaterialSelection(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MergeLayers(NodeBuilder):
+class MergeLayers(BaseNode):
     """
     Join groups of Grease Pencil layers into one
 
@@ -3114,7 +3115,7 @@ class MergeLayers(NodeBuilder):
         self.node.mode = value
 
 
-class MergeByDistance(NodeBuilder):
+class MergeByDistance(BaseNode):
     """
     Merge vertices or points within a given distance
 
@@ -3188,7 +3189,7 @@ class MergeByDistance(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MeshCircle(NodeBuilder):
+class MeshCircle(BaseNode):
     """
     Generate a circular ring of edges
 
@@ -3274,7 +3275,7 @@ class MeshCircle(NodeBuilder):
         self.node.fill_type = value
 
 
-class MeshLine(NodeBuilder):
+class MeshLine(BaseNode):
     """
     Generate vertices in a line and connect them with edges
 
@@ -3392,7 +3393,7 @@ class MeshLine(NodeBuilder):
         self.node.count_mode = value
 
 
-class MeshToCurve(NodeBuilder):
+class MeshToCurve(BaseNode):
     """
     Generate a curve from a mesh
 
@@ -3471,7 +3472,7 @@ class MeshToCurve(NodeBuilder):
         self.node.mode = value
 
 
-class MeshToPoints(NodeBuilder):
+class MeshToPoints(BaseNode):
     """
     Generate a point cloud from a mesh's vertices
 
@@ -3623,7 +3624,7 @@ class MeshToPoints(NodeBuilder):
         self.node.mode = value
 
 
-class Points(NodeBuilder):
+class Points(BaseNode):
     """
     Generate a point cloud with positions and radii defined by fields
 
@@ -3685,7 +3686,7 @@ class Points(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PointsToCurves(NodeBuilder):
+class PointsToCurves(BaseNode):
     """
     Split all points to curve by its group ID and reorder by weight
 
@@ -3751,7 +3752,7 @@ class PointsToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PointsToVertices(NodeBuilder):
+class PointsToVertices(BaseNode):
     """
     Generate a mesh vertex for each point cloud point
 
@@ -3806,7 +3807,7 @@ class PointsToVertices(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class QuadraticBezier(NodeBuilder):
+class QuadraticBezier(BaseNode):
     """
     Generate a poly spline in a parabola shape with control points positions
 
@@ -3880,7 +3881,7 @@ class QuadraticBezier(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Quadrilateral(NodeBuilder):
+class Quadrilateral(BaseNode):
     """
     Generate a polygon with four points
 
@@ -4087,7 +4088,7 @@ class Quadrilateral(NodeBuilder):
         self.node.mode = value
 
 
-class Raycast(NodeBuilder):
+class Raycast(BaseNode):
     """
     Cast rays from the context geometry onto a target geometry, and retrieve information from each hit point
 
@@ -4379,7 +4380,7 @@ class Raycast(NodeBuilder):
         self.node.data_type = value
 
 
-class RealizeInstances(NodeBuilder):
+class RealizeInstances(BaseNode):
     """
     Convert instances into real geometry data
 
@@ -4463,7 +4464,7 @@ class RealizeInstances(NodeBuilder):
         self.node.realize_to_point_domain = value
 
 
-class ReplaceMaterial(NodeBuilder):
+class ReplaceMaterial(BaseNode):
     """
     Swap one material with another
 
@@ -4525,7 +4526,7 @@ class ReplaceMaterial(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ResampleCurve(NodeBuilder):
+class ResampleCurve(BaseNode):
     """
     Generate a poly spline for each input spline
 
@@ -4617,7 +4618,7 @@ class ResampleCurve(NodeBuilder):
         self.node.keep_last_segment = value
 
 
-class ReverseCurve(NodeBuilder):
+class ReverseCurve(BaseNode):
     """
     Change the direction of curves by swapping their start and end data
 
@@ -4672,7 +4673,7 @@ class ReverseCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RotateInstances(NodeBuilder):
+class RotateInstances(BaseNode):
     """
     Rotate geometry instances in local or global space
 
@@ -4754,7 +4755,7 @@ class RotateInstances(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SampleNearest(NodeBuilder):
+class SampleNearest(BaseNode):
     """
     Find the element of a geometry closest to a position. Similar to the "Index of Nearest" node
 
@@ -4847,7 +4848,7 @@ class SampleNearest(NodeBuilder):
         self.node.domain = value
 
 
-class SampleNearestSurface(NodeBuilder):
+class SampleNearestSurface(BaseNode):
     """
     Calculate the interpolated value of a mesh attribute on the closest point of its surface
 
@@ -5105,7 +5106,7 @@ class SampleNearestSurface(NodeBuilder):
         self.node.data_type = value
 
 
-class SampleUVSurface(NodeBuilder):
+class SampleUVSurface(BaseNode):
     """
     Calculate the interpolated values of a mesh attribute at a UV coordinate
 
@@ -5341,7 +5342,7 @@ class SampleUVSurface(NodeBuilder):
         self.node.data_type = value
 
 
-class ScaleElements(NodeBuilder):
+class ScaleElements(BaseNode):
     """
     Scale groups of connected edges and faces
 
@@ -5479,7 +5480,7 @@ class ScaleElements(NodeBuilder):
         self.node.domain = value
 
 
-class ScaleInstances(NodeBuilder):
+class ScaleInstances(BaseNode):
     """
     Scale geometry instances in local or global space
 
@@ -5561,7 +5562,7 @@ class ScaleInstances(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SeparateComponents(NodeBuilder):
+class SeparateComponents(BaseNode):
     """
     Split a geometry into a separate output for each type of data in the geometry
 
@@ -5626,7 +5627,7 @@ class SeparateComponents(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SeparateGeometry(NodeBuilder):
+class SeparateGeometry(BaseNode):
     """
     Split a geometry into two geometry outputs based on a selection
 
@@ -5741,7 +5742,7 @@ class SeparateGeometry(NodeBuilder):
         self.node.domain = value
 
 
-class SetCurveNormal(NodeBuilder):
+class SetCurveNormal(BaseNode):
     """
     Set the evaluation mode for curve normals
 
@@ -5815,7 +5816,7 @@ class SetCurveNormal(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetCurveRadius(NodeBuilder):
+class SetCurveRadius(BaseNode):
     """
     Set the radius of the curve at each control point
 
@@ -5877,7 +5878,7 @@ class SetCurveRadius(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetCurveTilt(NodeBuilder):
+class SetCurveTilt(BaseNode):
     """
     Set the tilt angle at each curve control point
 
@@ -5939,7 +5940,7 @@ class SetCurveTilt(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetFaceSet(NodeBuilder):
+class SetFaceSet(BaseNode):
     """
     Set sculpt face set values for faces
 
@@ -6001,7 +6002,7 @@ class SetFaceSet(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetGeometryBundle(NodeBuilder):
+class SetGeometryBundle(BaseNode):
     """
     Set the bundle of a geometry
 
@@ -6056,7 +6057,7 @@ class SetGeometryBundle(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetGeometryName(NodeBuilder):
+class SetGeometryName(BaseNode):
     """
     Set the name of a geometry for easier debugging
 
@@ -6111,7 +6112,7 @@ class SetGeometryName(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetGreasePencilColor(NodeBuilder):
+class SetGreasePencilColor(BaseNode):
     """
     Set color and opacity attributes on Grease Pencil geometry
 
@@ -6229,7 +6230,7 @@ class SetGreasePencilColor(NodeBuilder):
         self.node.mode = value
 
 
-class SetGreasePencilDepth(NodeBuilder):
+class SetGreasePencilDepth(BaseNode):
     """
     Set the Grease Pencil depth order to use
 
@@ -6287,7 +6288,7 @@ class SetGreasePencilDepth(NodeBuilder):
         self.node.depth_order = value
 
 
-class SetGreasePencilSoftness(NodeBuilder):
+class SetGreasePencilSoftness(BaseNode):
     """
     Set softness attribute on Grease Pencil geometry
 
@@ -6353,7 +6354,7 @@ class SetGreasePencilSoftness(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetHandlePositions(NodeBuilder):
+class SetHandlePositions(BaseNode):
     """
     Set the positions for the handles of Bézier curves
 
@@ -6471,7 +6472,7 @@ class SetHandlePositions(NodeBuilder):
         self.node.mode = value
 
 
-class SetID(NodeBuilder):
+class SetID(BaseNode):
     """
     Set the id attribute on the input geometry, mainly used internally for randomizing
 
@@ -6533,7 +6534,7 @@ class SetID(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetInstanceTransform(NodeBuilder):
+class SetInstanceTransform(BaseNode):
     """
     Set the transformation matrix of every instance
 
@@ -6599,7 +6600,7 @@ class SetInstanceTransform(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetMaterial(NodeBuilder):
+class SetMaterial(BaseNode):
     """
     Assign a material to geometry elements
 
@@ -6661,7 +6662,7 @@ class SetMaterial(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetMaterialIndex(NodeBuilder):
+class SetMaterialIndex(BaseNode):
     """
     Set the material index for each selected geometry element
 
@@ -6727,7 +6728,7 @@ class SetMaterialIndex(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetMeshNormal(NodeBuilder):
+class SetMeshNormal(BaseNode):
     """
     Store a normal vector for each mesh element
 
@@ -6913,7 +6914,7 @@ class SetMeshNormal(NodeBuilder):
         self.node.domain = value
 
 
-class SetPointRadius(NodeBuilder):
+class SetPointRadius(BaseNode):
     """
     Set the display size of point cloud points
 
@@ -6975,7 +6976,7 @@ class SetPointRadius(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetPosition(NodeBuilder):
+class SetPosition(BaseNode):
     """
     Set the location of each point
 
@@ -7049,7 +7050,7 @@ class SetPosition(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetSelection(NodeBuilder):
+class SetSelection(BaseNode):
     """
     Set selection of the edited geometry, for tool execution
 
@@ -7166,7 +7167,7 @@ class SetSelection(NodeBuilder):
         self.node.selection_type = value
 
 
-class SetShadeSmooth(NodeBuilder):
+class SetShadeSmooth(BaseNode):
     """
     Control the smoothness of mesh normals around each face by changing the "shade smooth" attribute
 
@@ -7272,7 +7273,7 @@ class SetShadeSmooth(NodeBuilder):
         self.node.domain = value
 
 
-class SetSplineCyclic(NodeBuilder):
+class SetSplineCyclic(BaseNode):
     """
     Control whether each spline loops back on itself by changing the "cyclic" attribute
 
@@ -7334,7 +7335,7 @@ class SetSplineCyclic(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetSplineResolution(NodeBuilder):
+class SetSplineResolution(BaseNode):
     """
     Control how many evaluated points should be generated on every curve segment
 
@@ -7400,7 +7401,7 @@ class SetSplineResolution(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SetSplineType(NodeBuilder):
+class SetSplineType(BaseNode):
     """
     Change the type of curves
 
@@ -7493,7 +7494,7 @@ class SetSplineType(NodeBuilder):
         self.node.spline_type = value
 
 
-class SortElements(NodeBuilder):
+class SortElements(BaseNode):
     """
     Rearrange geometry elements, changing their indices
 
@@ -7662,7 +7663,7 @@ class SortElements(NodeBuilder):
         self.node.domain = value
 
 
-class Spiral(NodeBuilder):
+class Spiral(BaseNode):
     """
     Generate a poly spline in a spiral shape
 
@@ -7752,7 +7753,7 @@ class Spiral(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SplitEdges(NodeBuilder):
+class SplitEdges(BaseNode):
     """
     Duplicate mesh edges and break connections with the surrounding faces
 
@@ -7807,7 +7808,7 @@ class SplitEdges(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SplitToInstances(NodeBuilder):
+class SplitToInstances(BaseNode):
     """
     Create separate geometries containing the elements from the same group
 
@@ -7959,7 +7960,7 @@ class SplitToInstances(NodeBuilder):
         self.node.domain = value
 
 
-class Star(NodeBuilder):
+class Star(BaseNode):
     """
     Generate a poly spline in a star pattern by connecting alternating points of two circles
 
@@ -8037,7 +8038,7 @@ class Star(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class StringToCurves(NodeBuilder):
+class StringToCurves(BaseNode):
     """
     Generate a paragraph of text with a specific font, using a curve instance to store each character
 
@@ -8205,7 +8206,7 @@ class StringToCurves(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SubdivideCurve(NodeBuilder):
+class SubdivideCurve(BaseNode):
     """
     Dividing each curve segment into a specified number of pieces
 
@@ -8260,7 +8261,7 @@ class SubdivideCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SubdivideMesh(NodeBuilder):
+class SubdivideMesh(BaseNode):
     """
     Divide mesh faces into smaller ones without changing the shape or volume, using linear interpolation to place the new vertices
 
@@ -8315,7 +8316,7 @@ class SubdivideMesh(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SubdivisionSurface(NodeBuilder):
+class SubdivisionSurface(BaseNode):
     """
     Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision method
 
@@ -8421,7 +8422,7 @@ class SubdivisionSurface(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TransformGeometry(NodeBuilder):
+class TransformGeometry(BaseNode):
     """
     Translate, rotate or scale the geometry
 
@@ -8511,7 +8512,7 @@ class TransformGeometry(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TranslateInstances(NodeBuilder):
+class TranslateInstances(BaseNode):
     """
     Move top-level geometry instances in local or global space
 
@@ -8585,7 +8586,7 @@ class TranslateInstances(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Triangulate(NodeBuilder):
+class Triangulate(BaseNode):
     """
     Convert all faces in a mesh to triangular faces
 
@@ -8666,7 +8667,7 @@ class Triangulate(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TrimCurve(NodeBuilder):
+class TrimCurve(BaseNode):
     """
     Shorten curves by removing portions at the start or end
 
@@ -8796,7 +8797,7 @@ class TrimCurve(NodeBuilder):
         self.node.mode = value
 
 
-class UVSphere(NodeBuilder):
+class UVSphere(BaseNode):
     """
     Generate a spherical mesh with quads, except for triangles at the top and bottom
 

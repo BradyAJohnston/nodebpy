@@ -5,23 +5,24 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     ColorSocket,
     FloatSocket,
     ShaderSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputColor,
-    InputShader,
     InputFloat,
+    InputShader,
     InputVector,
 )
 
 
-class AovOutput(NodeBuilder):
+class AovOutput(BaseNode):
     """
         Arbitrary Output Variables.
     Provide custom render passes for arbitrary shader node outputs
@@ -81,7 +82,7 @@ class AovOutput(NodeBuilder):
         self.node.aov_name = value
 
 
-class LightOutput(NodeBuilder):
+class LightOutput(BaseNode):
     """
     Output light information to a light object
 
@@ -143,7 +144,7 @@ class LightOutput(NodeBuilder):
         self.node.target = value
 
 
-class LineStyleOutput(NodeBuilder):
+class LineStyleOutput(BaseNode):
     """
     Control the mixing of texture information into the base color of line styles
 
@@ -326,7 +327,7 @@ class LineStyleOutput(NodeBuilder):
         self.node.use_clamp = value
 
 
-class MaterialOutput(NodeBuilder):
+class MaterialOutput(BaseNode):
     """
     Output surface material information for use in rendering
 
@@ -414,7 +415,7 @@ class MaterialOutput(NodeBuilder):
         self.node.target = value
 
 
-class WorldOutput(NodeBuilder):
+class WorldOutput(BaseNode):
     """
     Output light color information to the scene's World
 

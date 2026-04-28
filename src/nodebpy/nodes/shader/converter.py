@@ -5,25 +5,26 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     ColorSocket,
     FloatSocket,
     RotationSocket,
     ShaderSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputColor,
+    InputFloat,
     InputRotation,
     InputShader,
-    InputFloat,
     InputVector,
 )
 
 
-class CombineColor(NodeBuilder):
+class CombineColor(BaseNode):
     """
     Create a color from individual components using multiple models
 
@@ -116,7 +117,7 @@ class CombineColor(NodeBuilder):
         self.node.mode = value
 
 
-class Mix(NodeBuilder):
+class Mix(BaseNode):
     """
     Mix values by a factor
 
@@ -391,7 +392,7 @@ class Mix(NodeBuilder):
         self.node.clamp_result = value
 
 
-class RGBToBW(NodeBuilder):
+class RGBToBW(BaseNode):
     """
     Convert a color's luminance to a grayscale value
 
@@ -436,7 +437,7 @@ class RGBToBW(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SeparateColor(NodeBuilder):
+class SeparateColor(BaseNode):
     """
     Split a color into its individual components using multiple models
 
@@ -517,7 +518,7 @@ class SeparateColor(NodeBuilder):
         self.node.mode = value
 
 
-class ShaderToRGB(NodeBuilder):
+class ShaderToRGB(BaseNode):
     """
         Convert rendering effect (such as light and shadow) to color. Typically used for non-photorealistic rendering, to apply additional effects on the output of BSDFs.
     Note: only supported in EEVEE
@@ -567,7 +568,7 @@ class ShaderToRGB(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Wavelength(NodeBuilder):
+class Wavelength(BaseNode):
     """
     Convert a wavelength value to an RGB value
 

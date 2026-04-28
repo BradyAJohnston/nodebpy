@@ -6,7 +6,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import VectorSocket
-from nodebpy.builder.interface import InterfaceSocket
+from nodebpy.builder import Socket
 
 # ---------------------------------------------------------------------------
 # Geometry tree — existing test
@@ -47,9 +47,9 @@ def test_geometry_scalar_sockets():
         i = tree.inputs.integer("Count", default_value=4)
         b = tree.inputs.boolean("Enabled", default_value=True)
 
-    assert isinstance(f, InterfaceSocket)
-    assert isinstance(i, InterfaceSocket)
-    assert isinstance(b, InterfaceSocket)
+    assert isinstance(f, Socket)
+    assert isinstance(i, Socket)
+    assert isinstance(b, Socket)
     assert f.interface_socket.name == "Value"
     assert i.interface_socket.name == "Count"
     assert b.interface_socket.name == "Enabled"

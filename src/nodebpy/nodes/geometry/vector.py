@@ -5,19 +5,20 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     FloatSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputFloat,
     InputVector,
 )
 
 
-class RadialTiling(NodeBuilder):
+class RadialTiling(BaseNode):
     """
     Transform Coordinate System for Radial Tiling
 
@@ -101,7 +102,7 @@ class RadialTiling(NodeBuilder):
         self.node.normalize = value
 
 
-class VectorCurves(NodeBuilder):
+class VectorCurves(BaseNode):
     """
     Map input vector components with curves
 
@@ -156,7 +157,7 @@ class VectorCurves(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VectorMath(NodeBuilder):
+class VectorMath(BaseNode):
     """
     Perform vector math operation
 
@@ -557,7 +558,7 @@ class VectorMath(NodeBuilder):
         self.node.operation = value
 
 
-class VectorRotate(NodeBuilder):
+class VectorRotate(BaseNode):
     """
     Rotate a vector around a pivot point (center)
 

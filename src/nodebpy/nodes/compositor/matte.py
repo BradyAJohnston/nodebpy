@@ -5,27 +5,28 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
     IntegerSocket,
     MenuSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputBoolean,
     InputColor,
+    InputFloat,
     InputInteger,
     InputMenu,
-    InputFloat,
     InputVector,
 )
 
 
-class BoxMask(NodeBuilder):
+class BoxMask(BaseNode):
     """
     Create rectangular mask suitable for use as a simple matte
 
@@ -115,7 +116,7 @@ class BoxMask(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ChannelKey(NodeBuilder):
+class ChannelKey(BaseNode):
     """
     Create matte based on differences in color channels
 
@@ -265,7 +266,7 @@ class ChannelKey(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ChromaKey(NodeBuilder):
+class ChromaKey(BaseNode):
     """
     Create matte based on chroma values
 
@@ -351,7 +352,7 @@ class ChromaKey(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ColorKey(NodeBuilder):
+class ColorKey(BaseNode):
     """
     Create matte using a given color, for green or blue screen footage
 
@@ -437,7 +438,7 @@ class ColorKey(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ColorSpill(NodeBuilder):
+class ColorSpill(BaseNode):
     """
     Remove colors from a blue or green screen, by reducing one RGB channel compared to the others
 
@@ -543,7 +544,7 @@ class ColorSpill(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class DifferenceKey(NodeBuilder):
+class DifferenceKey(BaseNode):
     """
     Produce a matte that isolates foreground content by comparing it with a reference background image
 
@@ -621,7 +622,7 @@ class DifferenceKey(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class DistanceKey(NodeBuilder):
+class DistanceKey(BaseNode):
     """
     Create matte based on 3D distance between colors
 
@@ -707,7 +708,7 @@ class DistanceKey(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class DoubleEdgeMask(NodeBuilder):
+class DoubleEdgeMask(BaseNode):
     """
     Create a gradient between two masks
 
@@ -781,7 +782,7 @@ class DoubleEdgeMask(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EllipseMask(NodeBuilder):
+class EllipseMask(BaseNode):
     """
     Create elliptical mask suitable for use as a simple matte or vignette mask
 
@@ -871,7 +872,7 @@ class EllipseMask(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Keying(NodeBuilder):
+class Keying(BaseNode):
     """
     Perform both chroma keying (to remove the backdrop) and despill (to correct color cast from the backdrop)
 
@@ -1052,7 +1053,7 @@ class Keying(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class KeyingScreen(NodeBuilder):
+class KeyingScreen(BaseNode):
     """
     Create plates for use as a color reference for keying nodes
 
@@ -1110,7 +1111,7 @@ class KeyingScreen(NodeBuilder):
         self.node.tracking_object = value
 
 
-class LuminanceKey(NodeBuilder):
+class LuminanceKey(BaseNode):
     """
     Create a matte based on luminance (brightness) difference
 

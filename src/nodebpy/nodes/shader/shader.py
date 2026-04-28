@@ -5,23 +5,24 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     ColorSocket,
     FloatSocket,
     ShaderSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputColor,
-    InputShader,
     InputFloat,
+    InputShader,
     InputVector,
 )
 
 
-class AddShader(NodeBuilder):
+class AddShader(BaseNode):
     """
     Add two Shaders together
 
@@ -76,7 +77,7 @@ class AddShader(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Background(NodeBuilder):
+class Background(BaseNode):
     """
         Add background light emission.
     Note: This node should only be used for the world surface output
@@ -139,7 +140,7 @@ class Background(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class DiffuseBSDF(NodeBuilder):
+class DiffuseBSDF(BaseNode):
     """
     Lambertian and Oren-Nayar diffuse reflection
 
@@ -213,7 +214,7 @@ class DiffuseBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Emission(NodeBuilder):
+class Emission(BaseNode):
     """
     Lambertian emission shader
 
@@ -275,7 +276,7 @@ class Emission(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GlassBSDF(NodeBuilder):
+class GlassBSDF(BaseNode):
     """
     Glass-like shader mixing refraction and reflection at grazing angles
 
@@ -383,7 +384,7 @@ class GlassBSDF(NodeBuilder):
         self.node.distribution = value
 
 
-class GlossyBSDF(NodeBuilder):
+class GlossyBSDF(BaseNode):
     """
     Reflection with microfacet distribution, used for materials such as metal or mirrors
 
@@ -497,7 +498,7 @@ class GlossyBSDF(NodeBuilder):
         self.node.distribution = value
 
 
-class HairBSDF(NodeBuilder):
+class HairBSDF(BaseNode):
     """
     Reflection and transmission shaders optimized for hair rendering
 
@@ -597,7 +598,7 @@ class HairBSDF(NodeBuilder):
         self.node.component = value
 
 
-class Holdout(NodeBuilder):
+class Holdout(BaseNode):
     """
         Create a "hole" in the image with zero alpha transparency, which is useful for compositing.
     Note: the holdout shader can only create alpha when transparency is enabled in the film settings
@@ -643,7 +644,7 @@ class Holdout(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MetallicBSDF(NodeBuilder):
+class MetallicBSDF(BaseNode):
     """
     Metallic reflection with microfacet distribution, and metallic fresnel
 
@@ -855,7 +856,7 @@ class MetallicBSDF(NodeBuilder):
         self.node.fresnel_type = value
 
 
-class MixShader(NodeBuilder):
+class MixShader(BaseNode):
     """
     Mix two shaders together. Typically used for material layering
 
@@ -917,7 +918,7 @@ class MixShader(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PrincipledBSDF(NodeBuilder):
+class PrincipledBSDF(BaseNode):
     """
     Physically-based, easy-to-use shader for rendering surface materials, based on the OpenPBR model
 
@@ -1231,7 +1232,7 @@ class PrincipledBSDF(NodeBuilder):
         self.node.subsurface_method = value
 
 
-class PrincipledHairBSDF(NodeBuilder):
+class PrincipledHairBSDF(BaseNode):
     """
     Physically-based, easy-to-use shader for rendering hair and fur
 
@@ -1437,7 +1438,7 @@ class PrincipledHairBSDF(NodeBuilder):
         self.node.parametrization = value
 
 
-class RayPortalBSDF(NodeBuilder):
+class RayPortalBSDF(BaseNode):
     """
     Continue tracing from an arbitrary new position and in a new direction
 
@@ -1511,7 +1512,7 @@ class RayPortalBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RefractionBSDF(NodeBuilder):
+class RefractionBSDF(BaseNode):
     """
     Glossy refraction with sharp or microfacet distribution, typically used for materials that transmit light
 
@@ -1603,7 +1604,7 @@ class RefractionBSDF(NodeBuilder):
         self.node.distribution = value
 
 
-class SheenBSDF(NodeBuilder):
+class SheenBSDF(BaseNode):
     """
         Reflection for materials such as cloth.
     Typically mixed with other shaders (such as a Diffuse Shader) and is not particularly useful on its own
@@ -1688,7 +1689,7 @@ class SheenBSDF(NodeBuilder):
         self.node.distribution = value
 
 
-class SpecularBSDF(NodeBuilder):
+class SpecularBSDF(BaseNode):
     """
     Similar to the Principled BSDF node but uses the specular workflow instead of metallic, which functions by specifying the facing (along normal) reflection color. Energy is not conserved, so the result may not be physically accurate
 
@@ -1810,7 +1811,7 @@ class SpecularBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SubsurfaceScattering(NodeBuilder):
+class SubsurfaceScattering(BaseNode):
     """
         Subsurface multiple scattering shader to simulate light entering the surface and bouncing internally.
     Typically used for materials such as skin, wax, marble or milk
@@ -1927,7 +1928,7 @@ class SubsurfaceScattering(NodeBuilder):
         self.node.falloff = value
 
 
-class ToonBSDF(NodeBuilder):
+class ToonBSDF(BaseNode):
     """
     Diffuse and Glossy shaders with cartoon light effects
 
@@ -2019,7 +2020,7 @@ class ToonBSDF(NodeBuilder):
         self.node.component = value
 
 
-class TranslucentBSDF(NodeBuilder):
+class TranslucentBSDF(BaseNode):
     """
     Lambertian diffuse transmission
 
@@ -2081,7 +2082,7 @@ class TranslucentBSDF(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TransparentBSDF(NodeBuilder):
+class TransparentBSDF(BaseNode):
     """
     Transparency without refraction, passing straight through the surface as if there were no geometry
 

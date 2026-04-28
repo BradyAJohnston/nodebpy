@@ -5,23 +5,24 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
     MenuSocket,
+    SocketAccessor,
 )
-
 from ...types import (
     InputBoolean,
     InputColor,
-    InputMenu,
     InputFloat,
+    InputMenu,
 )
 
 
-class AlphaOver(NodeBuilder):
+class AlphaOver(BaseNode):
     """
     Overlay a foreground image onto a background image
 
@@ -154,7 +155,7 @@ class AlphaOver(NodeBuilder):
         )
 
 
-class Brightnesscontrast(NodeBuilder):
+class Brightnesscontrast(BaseNode):
     """
     Adjust brightness and contrast
 
@@ -216,7 +217,7 @@ class Brightnesscontrast(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ColorBalance(NodeBuilder):
+class ColorBalance(BaseNode):
     """
     Adjust color and values
 
@@ -504,7 +505,7 @@ class ColorBalance(NodeBuilder):
         self.node.output_whitepoint = value
 
 
-class ColorCorrection(NodeBuilder):
+class ColorCorrection(BaseNode):
     """
     Adjust the color of an image, separately in several tonal ranges (highlights, midtones and shadows)
 
@@ -762,7 +763,7 @@ class ColorCorrection(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class DepthCombine(NodeBuilder):
+class DepthCombine(BaseNode):
     """
     Combine two images using depth maps
 
@@ -856,7 +857,7 @@ class DepthCombine(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Exposure(NodeBuilder):
+class Exposure(BaseNode):
     """
     Adjust brightness using a camera exposure parameter
 
@@ -911,7 +912,7 @@ class Exposure(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class HueCorrect(NodeBuilder):
+class HueCorrect(BaseNode):
     """
     Adjust hue, saturation, and value with a curve
 
@@ -966,7 +967,7 @@ class HueCorrect(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Huesaturationvalue(NodeBuilder):
+class Huesaturationvalue(BaseNode):
     """
     Apply a color transformation in the HSV color model
 
@@ -1048,7 +1049,7 @@ class Huesaturationvalue(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InvertColor(NodeBuilder):
+class InvertColor(BaseNode):
     """
     Invert colors, producing a negative
 
@@ -1122,7 +1123,7 @@ class InvertColor(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Posterize(NodeBuilder):
+class Posterize(BaseNode):
     """
     Reduce number of colors in an image, converting smooth gradients into sharp transitions
 
@@ -1177,7 +1178,7 @@ class Posterize(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RGBCurves(NodeBuilder):
+class RGBCurves(BaseNode):
     """
     Perform level adjustments on each color channel of an image
 
@@ -1251,7 +1252,7 @@ class RGBCurves(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Tonemap(NodeBuilder):
+class Tonemap(BaseNode):
     """
     Map one set of colors to another in order to approximate the appearance of high dynamic range
 

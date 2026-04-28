@@ -5,19 +5,20 @@ from typing import TYPE_CHECKING
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     ColorSocket,
     FloatSocket,
+    SocketAccessor,
 )
-
 from ...types import (
     InputColor,
     InputFloat,
 )
 
 
-class Gamma(NodeBuilder):
+class Gamma(BaseNode):
     """
     Apply a gamma correction
 
@@ -72,7 +73,7 @@ class Gamma(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RGBCurves(NodeBuilder):
+class RGBCurves(BaseNode):
     """
     Apply color corrections for each color channel
 

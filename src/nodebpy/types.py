@@ -33,7 +33,7 @@ from bpy.types import (
 from mathutils import Euler
 
 if typing.TYPE_CHECKING:
-    from .builder import BaseNode as NodeBuilder
+    from .builder import BaseNode as BaseNode
     from .builder import Socket as SocketLinker
 
 
@@ -42,9 +42,7 @@ def _is_default_value(value: InputAny):
 
 
 # Type aliases for node inputs using typing.Union for runtime compatibility
-InputLinkable = typing.Union[
-    "NodeBuilder", "SocketLinker", NodeSocket, None, EllipsisType
-]
+InputLinkable = typing.Union["BaseNode", "SocketLinker", NodeSocket, None, EllipsisType]
 
 InputFloat = typing.Union[
     float, int, NodeSocketFloat, NodeSocketInt, NodeSocketVector, InputLinkable

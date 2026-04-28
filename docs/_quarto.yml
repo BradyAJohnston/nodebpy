@@ -133,4 +133,4 @@ quartodoc:
       desc: Internal nodes used by nodebpy
       contents:
         - TreeBuilder
-        - builder.NodeBuilder
+        - builder.BaseNode

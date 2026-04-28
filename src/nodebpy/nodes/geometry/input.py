@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     BooleanSocket,
     CollectionSocket,
     ColorSocket,
@@ -18,24 +19,24 @@ from ...builder import (
     MenuSocket,
     ObjectSocket,
     RotationSocket,
+    SocketAccessor,
     StringSocket,
     VectorSocket,
 )
-
 from ...types import (
     InputBoolean,
     InputCollection,
+    InputFloat,
     InputImage,
     InputInteger,
     InputMenu,
     InputObject,
     InputString,
-    InputFloat,
     InputVector,
 )
 
 
-class Cursor3D(NodeBuilder):
+class Cursor3D(BaseNode):
     """
     The scene's 3D cursor location and rotation
 
@@ -73,7 +74,7 @@ class Cursor3D(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ActiveCamera(NodeBuilder):
+class ActiveCamera(BaseNode):
     """
     Retrieve the scene's active camera
 
@@ -107,7 +108,7 @@ class ActiveCamera(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ActiveElement(NodeBuilder):
+class ActiveElement(BaseNode):
     """
     Active element indices of the edited geometry, for tool execution
 
@@ -173,7 +174,7 @@ class ActiveElement(NodeBuilder):
         self.node.domain = value
 
 
-class BoneInfo(NodeBuilder):
+class BoneInfo(BaseNode):
     """
     Retrieve information of armature bones
 
@@ -254,7 +255,7 @@ class BoneInfo(NodeBuilder):
         self.node.transform_space = value
 
 
-class Boolean(NodeBuilder):
+class Boolean(BaseNode):
     """
     Provide a True/False value that can be connected to other nodes in the tree
 
@@ -296,7 +297,7 @@ class Boolean(NodeBuilder):
         self.node.boolean = value
 
 
-class CameraInfo(NodeBuilder):
+class CameraInfo(BaseNode):
     """
     Retrieve information from a camera object
 
@@ -373,7 +374,7 @@ class CameraInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CollectionInfo(NodeBuilder):
+class CollectionInfo(BaseNode):
     """
     Retrieve geometry instances from a collection
 
@@ -449,7 +450,7 @@ class CollectionInfo(NodeBuilder):
         self.node.transform_space = value
 
 
-class Color(NodeBuilder):
+class Color(BaseNode):
     """
     Output a color value chosen with the color picker widget
 
@@ -493,7 +494,7 @@ class Color(NodeBuilder):
         self.node.value = value
 
 
-class CornersOfEdge(NodeBuilder):
+class CornersOfEdge(BaseNode):
     """
     Retrieve face corners connected to edges
 
@@ -563,7 +564,7 @@ class CornersOfEdge(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CornersOfFace(NodeBuilder):
+class CornersOfFace(BaseNode):
     """
     Retrieve corners that make up a face
 
@@ -633,7 +634,7 @@ class CornersOfFace(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CornersOfVertex(NodeBuilder):
+class CornersOfVertex(BaseNode):
     """
     Retrieve face corners connected to vertices
 
@@ -703,7 +704,7 @@ class CornersOfVertex(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CurveHandlePositions(NodeBuilder):
+class CurveHandlePositions(BaseNode):
     """
     Retrieve the position of each Bézier control point's handles
 
@@ -752,7 +753,7 @@ class CurveHandlePositions(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CurveTangent(NodeBuilder):
+class CurveTangent(BaseNode):
     """
     Retrieve the direction of curves at each control point
 
@@ -786,7 +787,7 @@ class CurveTangent(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CurveTilt(NodeBuilder):
+class CurveTilt(BaseNode):
     """
     Retrieve the angle at each control point used to twist the curve's normal around its tangent
 
@@ -820,7 +821,7 @@ class CurveTilt(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CurveOfPoint(NodeBuilder):
+class CurveOfPoint(BaseNode):
     """
     Retrieve the curve a control point is part of
 
@@ -869,7 +870,7 @@ class CurveOfPoint(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EdgeAngle(NodeBuilder):
+class EdgeAngle(BaseNode):
     """
     The angle between the normals of connected manifold faces
 
@@ -907,7 +908,7 @@ class EdgeAngle(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EdgeNeighbors(NodeBuilder):
+class EdgeNeighbors(BaseNode):
     """
     Retrieve the number of faces that use each edge as one of their sides
 
@@ -941,7 +942,7 @@ class EdgeNeighbors(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EdgePathsToSelection(NodeBuilder):
+class EdgePathsToSelection(BaseNode):
     """
     Output a selection of edges by following paths across mesh edges
 
@@ -999,7 +1000,7 @@ class EdgePathsToSelection(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EdgeVertices(NodeBuilder):
+class EdgeVertices(BaseNode):
     """
     Retrieve topology information relating to each edge of a mesh
 
@@ -1045,7 +1046,7 @@ class EdgeVertices(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EdgesOfCorner(NodeBuilder):
+class EdgesOfCorner(BaseNode):
     """
     Retrieve the edges on both sides of a face corner
 
@@ -1094,7 +1095,7 @@ class EdgesOfCorner(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EdgesOfVertex(NodeBuilder):
+class EdgesOfVertex(BaseNode):
     """
     Retrieve the edges connected to each vertex
 
@@ -1164,7 +1165,7 @@ class EdgesOfVertex(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EdgesToFaceGroups(NodeBuilder):
+class EdgesToFaceGroups(BaseNode):
     """
     Group faces into regions surrounded by the selected boundary edges
 
@@ -1209,7 +1210,7 @@ class EdgesToFaceGroups(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EndpointSelection(NodeBuilder):
+class EndpointSelection(BaseNode):
     """
     Provide a selection for an arbitrary number of endpoints in each spline
 
@@ -1264,7 +1265,7 @@ class EndpointSelection(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FaceArea(NodeBuilder):
+class FaceArea(BaseNode):
     """
     Calculate the surface area of a mesh's faces
 
@@ -1298,7 +1299,7 @@ class FaceArea(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FaceGroupBoundaries(NodeBuilder):
+class FaceGroupBoundaries(BaseNode):
     """
     Find edges on the boundaries between groups of faces with the same ID value
 
@@ -1343,7 +1344,7 @@ class FaceGroupBoundaries(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FaceNeighbors(NodeBuilder):
+class FaceNeighbors(BaseNode):
     """
     Retrieve topology information relating to each face of a mesh
 
@@ -1381,7 +1382,7 @@ class FaceNeighbors(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FaceSet(NodeBuilder):
+class FaceSet(BaseNode):
     """
     Each face's sculpt face set value
 
@@ -1419,7 +1420,7 @@ class FaceSet(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FaceOfCorner(NodeBuilder):
+class FaceOfCorner(BaseNode):
     """
     Retrieve the face each face corner is part of
 
@@ -1468,7 +1469,7 @@ class FaceOfCorner(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ID(NodeBuilder):
+class ID(BaseNode):
     """
     Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist
 
@@ -1502,7 +1503,7 @@ class ID(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Image(NodeBuilder):
+class Image(BaseNode):
     """
     Input an image data-block
 
@@ -1536,7 +1537,7 @@ class Image(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImageInfo(NodeBuilder):
+class ImageInfo(BaseNode):
     """
     Retrieve information about an image
 
@@ -1607,7 +1608,7 @@ class ImageInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImportCSV(NodeBuilder):
+class ImportCSV(BaseNode):
     """
     Import geometry from an CSV file
 
@@ -1662,7 +1663,7 @@ class ImportCSV(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImportOBJ(NodeBuilder):
+class ImportOBJ(BaseNode):
     """
     Import geometry from an OBJ file
 
@@ -1707,7 +1708,7 @@ class ImportOBJ(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImportPLY(NodeBuilder):
+class ImportPLY(BaseNode):
     """
     Import a point cloud from a PLY file
 
@@ -1752,7 +1753,7 @@ class ImportPLY(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImportSTL(NodeBuilder):
+class ImportSTL(BaseNode):
     """
     Import a mesh from an STL file
 
@@ -1797,7 +1798,7 @@ class ImportSTL(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImportText(NodeBuilder):
+class ImportText(BaseNode):
     """
     Import a string from a text file
 
@@ -1842,7 +1843,7 @@ class ImportText(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImportVDB(NodeBuilder):
+class ImportVDB(BaseNode):
     """
     Import volume data from a .vdb file
 
@@ -1887,7 +1888,7 @@ class ImportVDB(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Index(NodeBuilder):
+class Index(BaseNode):
     """
     Retrieve an integer value indicating the position of each element in the list, starting at zero
 
@@ -1921,7 +1922,7 @@ class Index(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InstanceBounds(NodeBuilder):
+class InstanceBounds(BaseNode):
     """
     Calculate position bounds of each instance's geometry set
 
@@ -1970,7 +1971,7 @@ class InstanceBounds(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InstanceRotation(NodeBuilder):
+class InstanceRotation(BaseNode):
     """
     Retrieve the rotation of each instance in the geometry
 
@@ -2004,7 +2005,7 @@ class InstanceRotation(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InstanceScale(NodeBuilder):
+class InstanceScale(BaseNode):
     """
     Retrieve the scale of each instance in the geometry
 
@@ -2038,7 +2039,7 @@ class InstanceScale(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InstanceTransform(NodeBuilder):
+class InstanceTransform(BaseNode):
     """
     Retrieve the full transformation of each instance in the geometry
 
@@ -2072,7 +2073,7 @@ class InstanceTransform(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Integer(NodeBuilder):
+class Integer(BaseNode):
     """
     Provide an integer value that can be connected to other nodes in the tree
 
@@ -2114,7 +2115,7 @@ class Integer(NodeBuilder):
         self.node.integer = value
 
 
-class IsEdgeSmooth(NodeBuilder):
+class IsEdgeSmooth(BaseNode):
     """
     Retrieve whether each edge is marked for smooth or split normals
 
@@ -2148,7 +2149,7 @@ class IsEdgeSmooth(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class IsFacePlanar(NodeBuilder):
+class IsFacePlanar(BaseNode):
     """
     Retrieve whether all triangles in a face are on the same plane, i.e. whether they have the same normal
 
@@ -2193,7 +2194,7 @@ class IsFacePlanar(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class IsFaceSmooth(NodeBuilder):
+class IsFaceSmooth(BaseNode):
     """
     Retrieve whether each face is marked for smooth or sharp normals
 
@@ -2227,7 +2228,7 @@ class IsFaceSmooth(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class IsSplineCyclic(NodeBuilder):
+class IsSplineCyclic(BaseNode):
     """
     Retrieve whether each spline endpoint connects to the beginning
 
@@ -2261,7 +2262,7 @@ class IsSplineCyclic(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class IsViewport(NodeBuilder):
+class IsViewport(BaseNode):
     """
     Retrieve whether the nodes are being evaluated for the viewport rather than the final render
 
@@ -2295,7 +2296,7 @@ class IsViewport(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MaterialIndex(NodeBuilder):
+class MaterialIndex(BaseNode):
     """
     Retrieve the index of the material used for each element in the geometry's list of materials
 
@@ -2329,7 +2330,7 @@ class MaterialIndex(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MeshIsland(NodeBuilder):
+class MeshIsland(BaseNode):
     """
     Retrieve information about separate connected regions in a mesh
 
@@ -2367,7 +2368,7 @@ class MeshIsland(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MousePosition(NodeBuilder):
+class MousePosition(BaseNode):
     """
     Retrieve the position of the mouse cursor
 
@@ -2413,7 +2414,7 @@ class MousePosition(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class NamedAttribute(NodeBuilder):
+class NamedAttribute(BaseNode):
     """
     Retrieve the data of a specified attribute
 
@@ -2539,7 +2540,7 @@ class NamedAttribute(NodeBuilder):
         self.node.data_type = value
 
 
-class NamedLayerSelection(NodeBuilder):
+class NamedLayerSelection(BaseNode):
     """
     Output a selection of a Grease Pencil layer
 
@@ -2584,7 +2585,7 @@ class NamedLayerSelection(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Normal(NodeBuilder):
+class Normal(BaseNode):
     """
     Retrieve a unit length vector indicating the direction pointing away from the geometry at each element
 
@@ -2630,7 +2631,7 @@ class Normal(NodeBuilder):
         self.node.legacy_corner_normals = value
 
 
-class ObjectInfo(NodeBuilder):
+class ObjectInfo(BaseNode):
     """
     Retrieve information from an object
 
@@ -2711,7 +2712,7 @@ class ObjectInfo(NodeBuilder):
         self.node.transform_space = value
 
 
-class OffsetCornerInFace(NodeBuilder):
+class OffsetCornerInFace(BaseNode):
     """
     Retrieve corners in the same face as another
 
@@ -2766,7 +2767,7 @@ class OffsetCornerInFace(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class OffsetPointInCurve(NodeBuilder):
+class OffsetPointInCurve(BaseNode):
     """
     Offset a control point index within its curve
 
@@ -2825,7 +2826,7 @@ class OffsetPointInCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PointsOfCurve(NodeBuilder):
+class PointsOfCurve(BaseNode):
     """
     Retrieve a point index within a curve
 
@@ -2895,7 +2896,7 @@ class PointsOfCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Position(NodeBuilder):
+class Position(BaseNode):
     """
     Retrieve a vector indicating the location of each element
 
@@ -2929,7 +2930,7 @@ class Position(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Radius(NodeBuilder):
+class Radius(BaseNode):
     """
     Retrieve the radius at each point on curve or point cloud geometry
 
@@ -2963,7 +2964,7 @@ class Radius(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Rotation(NodeBuilder):
+class Rotation(BaseNode):
     """
     Provide a rotation value that can be connected to other nodes in the tree
 
@@ -3005,7 +3006,7 @@ class Rotation(NodeBuilder):
         self.node.rotation_euler = value
 
 
-class SceneTime(NodeBuilder):
+class SceneTime(BaseNode):
     """
     Retrieve the current time in the scene's animation in units of seconds or frames
 
@@ -3043,7 +3044,7 @@ class SceneTime(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Selection(NodeBuilder):
+class Selection(BaseNode):
     """
     User selection of the edited geometry, for tool execution
 
@@ -3081,7 +3082,7 @@ class Selection(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SelfObject(NodeBuilder):
+class SelfObject(BaseNode):
     """
     Retrieve the object that contains the geometry nodes modifier currently being executed
 
@@ -3115,7 +3116,7 @@ class SelfObject(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ShortestEdgePaths(NodeBuilder):
+class ShortestEdgePaths(BaseNode):
     """
     Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge
 
@@ -3174,7 +3175,7 @@ class ShortestEdgePaths(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SpecialCharacters(NodeBuilder):
+class SpecialCharacters(BaseNode):
     """
     Output string characters that cannot be typed directly with the keyboard
 
@@ -3212,7 +3213,7 @@ class SpecialCharacters(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SplineLength(NodeBuilder):
+class SplineLength(BaseNode):
     """
     Retrieve the total length of each spline, as a distance or as a number of points
 
@@ -3250,7 +3251,7 @@ class SplineLength(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SplineParameter(NodeBuilder):
+class SplineParameter(BaseNode):
     """
     Retrieve how far along each spline a control point is
 
@@ -3292,7 +3293,7 @@ class SplineParameter(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SplineResolution(NodeBuilder):
+class SplineResolution(BaseNode):
     """
     Retrieve the number of evaluated points that will be generated for every control point on curves
 
@@ -3326,7 +3327,7 @@ class SplineResolution(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class String(NodeBuilder):
+class String(BaseNode):
     """
     Provide a string value that can be connected to other nodes in the tree
 
@@ -3368,7 +3369,7 @@ class String(NodeBuilder):
         self.node.string = value
 
 
-class UVTangent(NodeBuilder):
+class UVTangent(BaseNode):
     """
     Generate tangent directions based on a UV map
 
@@ -3423,7 +3424,7 @@ class UVTangent(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Vector(NodeBuilder):
+class Vector(BaseNode):
     """
     Provide a vector value that can be connected to other nodes in the tree
 
@@ -3465,7 +3466,7 @@ class Vector(NodeBuilder):
         self.node.vector = value
 
 
-class VertexNeighbors(NodeBuilder):
+class VertexNeighbors(BaseNode):
     """
     Retrieve topology information relating to each vertex of a mesh
 
@@ -3503,7 +3504,7 @@ class VertexNeighbors(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VertexOfCorner(NodeBuilder):
+class VertexOfCorner(BaseNode):
     """
     Retrieve the vertex each face corner is attached to
 
@@ -3548,7 +3549,7 @@ class VertexOfCorner(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ViewportTransform(NodeBuilder):
+class ViewportTransform(BaseNode):
     """
     Retrieve the view direction and location of the 3D viewport
 
@@ -3590,7 +3591,7 @@ class ViewportTransform(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VoxelIndex(NodeBuilder):
+class VoxelIndex(BaseNode):
     """
     Retrieve the integer coordinates of the voxel that the field is evaluated on
 

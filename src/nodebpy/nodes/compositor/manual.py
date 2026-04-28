@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING, Generic, Literal
 from bpy.types import CompositorNodeCryptomatteV2, CompositorNodeImage
 
 from ...builder import (
+    BaseNode,
     BooleanSocket,
     ColorSocket,
     FloatSocket,
     IntegerSocket,
     MenuSocket,
-    NodeBuilder,
     SocketAccessor,
     StringSocket,
     TreeBuilder,
@@ -87,7 +87,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
         return MenuSwitch(*args, menu=menu, data_type="MENU", **kwargs)
 
 
-class Image(NodeBuilder):
+class Image(BaseNode):
     """
     Input image or movie file
 
@@ -216,7 +216,7 @@ class Image(NodeBuilder):
         return self.node.has_views
 
 
-class Cryptomatte(NodeBuilder):
+class Cryptomatte(BaseNode):
     """
     Generate matte for individual objects and materials using Cryptomatte render passes
 

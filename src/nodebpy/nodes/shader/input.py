@@ -5,13 +5,14 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     ColorSocket,
     FloatSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputColor,
     InputFloat,
@@ -19,7 +20,7 @@ from ...types import (
 )
 
 
-class AmbientOcclusion(NodeBuilder):
+class AmbientOcclusion(BaseNode):
     """
         Compute how much the hemisphere above the shading point is occluded, for example to add weathering effects to corners.
     Note: For Cycles, this may slow down renders significantly
@@ -116,7 +117,7 @@ class AmbientOcclusion(NodeBuilder):
         self.node.only_local = value
 
 
-class Bevel(NodeBuilder):
+class Bevel(BaseNode):
     """
         Generates normals with round corners.
     Note: only supported in Cycles, and may slow down renders
@@ -182,7 +183,7 @@ class Bevel(NodeBuilder):
         self.node.samples = value
 
 
-class CameraData(NodeBuilder):
+class CameraData(BaseNode):
     """
     Retrieve information about the camera and how it relates to the current shading point's position
 
@@ -224,7 +225,7 @@ class CameraData(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Color(NodeBuilder):
+class Color(BaseNode):
     """
     A color picker
 
@@ -258,7 +259,7 @@ class Color(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ColorAttribute(NodeBuilder):
+class ColorAttribute(BaseNode):
     """
     Retrieve a color attribute, or the default fallback if none is specified
 
@@ -304,7 +305,7 @@ class ColorAttribute(NodeBuilder):
         self.node.layer_name = value
 
 
-class CurvesInfo(NodeBuilder):
+class CurvesInfo(BaseNode):
     """
     Retrieve hair curve information
 
@@ -358,7 +359,7 @@ class CurvesInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Fresnel(NodeBuilder):
+class Fresnel(BaseNode):
     """
         Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations.
     Typically used for mixing reflections at grazing angles
@@ -414,7 +415,7 @@ class Fresnel(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Geometry(NodeBuilder):
+class Geometry(BaseNode):
     """
     Retrieve geometric information about the current shading point
 
@@ -480,7 +481,7 @@ class Geometry(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class LayerWeight(NodeBuilder):
+class LayerWeight(BaseNode):
     """
         Produce a blending factor depending on the angle between the surface normal and the view direction.
     Typically used for layering shaders with the Mix Shader node
@@ -540,7 +541,7 @@ class LayerWeight(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class LightPath(NodeBuilder):
+class LightPath(BaseNode):
     """
         Retrieve the type of incoming ray for which the shader is being executed.
     Typically used for non-physically-based tricks
@@ -631,7 +632,7 @@ class LightPath(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ObjectInfo(NodeBuilder):
+class ObjectInfo(BaseNode):
     """
     Retrieve information about the object instance
 
@@ -685,7 +686,7 @@ class ObjectInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ParticleInfo(NodeBuilder):
+class ParticleInfo(BaseNode):
     """
     Retrieve the data of the particle that spawned the object instance, for example to give variation to multiple instances of an object
 
@@ -747,7 +748,7 @@ class ParticleInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PointInfo(NodeBuilder):
+class PointInfo(BaseNode):
     """
     Retrieve information about points in a point cloud
 
@@ -789,7 +790,7 @@ class PointInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Raycast(NodeBuilder):
+class Raycast(BaseNode):
     """
     Cast rays and retrieve information from the hit point
 
@@ -877,7 +878,7 @@ class Raycast(NodeBuilder):
         self.node.only_local = value
 
 
-class Tangent(NodeBuilder):
+class Tangent(BaseNode):
     """
     Generate a tangent direction for the Anisotropic BSDF
 
@@ -942,7 +943,7 @@ class Tangent(NodeBuilder):
         self.node.uv_map = value
 
 
-class TextureCoordinate(NodeBuilder):
+class TextureCoordinate(BaseNode):
     """
         Retrieve multiple types of texture coordinates.
     Typically used as inputs for texture nodes
@@ -1009,7 +1010,7 @@ class TextureCoordinate(NodeBuilder):
         self.node.from_instancer = value
 
 
-class UVAlongStroke(NodeBuilder):
+class UVAlongStroke(BaseNode):
     """
     UV coordinates that map a texture along the stroke length
 
@@ -1051,7 +1052,7 @@ class UVAlongStroke(NodeBuilder):
         self.node.use_tips = value
 
 
-class UVMap(NodeBuilder):
+class UVMap(BaseNode):
     """
     Retrieve a UV map from the geometry, or the default fallback if none is specified
 
@@ -1106,7 +1107,7 @@ class UVMap(NodeBuilder):
         self.node.uv_map = value
 
 
-class Wireframe(NodeBuilder):
+class Wireframe(BaseNode):
     """
         Retrieve the edges of an object as it appears to Cycles.
     Note: as meshes are triangulated before being processed by Cycles, topology will always appear triangulated

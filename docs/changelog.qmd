@@ -93,7 +93,7 @@ node.o.position.y * 0.2            # operate on the y component
 In node definitions, `_Inputs` / `_Outputs` inner classes declare the available sockets and their types so IDEs can provide auto-complete:
 
 ```python
-class SetPosition(NodeBuilder):
+class SetPosition(BaseNode):
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
         position: VectorSocket
@@ -168,7 +168,7 @@ The previous context-manager form still works.
 
 #### `==` / `!=` comparison operators ([#28](https://github.com/BradyAJohnston/nodebpy/pull/28))
 
-`NodeBuilder` objects now support Python equality operators, returning a `Compare` node. Chain `.switch()` to immediately branch on the result:
+`BaseNode` objects now support Python equality operators, returning a `Compare` node. Chain `.switch()` to immediately branch on the result:
 
 ```python
 # Creates a Compare node then routes into a Switch

@@ -5,27 +5,28 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
     IntegerSocket,
     MenuSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputBoolean,
     InputColor,
+    InputFloat,
     InputInteger,
     InputMenu,
-    InputFloat,
     InputVector,
 )
 
 
-class CornerPin(NodeBuilder):
+class CornerPin(BaseNode):
     """
     Plane warp transformation using explicit corner values
 
@@ -136,7 +137,7 @@ class CornerPin(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Crop(NodeBuilder):
+class Crop(BaseNode):
     """
     Crops image to a smaller region, either making the cropped area transparent or resizing the image
 
@@ -226,7 +227,7 @@ class Crop(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Displace(NodeBuilder):
+class Displace(BaseNode):
     """
     Displace pixel position using an offset vector
 
@@ -309,7 +310,7 @@ class Displace(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Flip(NodeBuilder):
+class Flip(BaseNode):
     """
     Flip an image along a defined axis
 
@@ -371,7 +372,7 @@ class Flip(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class LensDistortion(NodeBuilder):
+class LensDistortion(BaseNode):
     """
     Simulate distortion and dispersion from camera lenses
 
@@ -487,7 +488,7 @@ class LensDistortion(NodeBuilder):
         return cls(image=image, dispersion=dispersion, type="Horizontal")
 
 
-class MapUV(NodeBuilder):
+class MapUV(BaseNode):
     """
     Map a texture using UV coordinates, to apply a texture to objects in compositing
 
@@ -570,7 +571,7 @@ class MapUV(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MovieDistortion(NodeBuilder):
+class MovieDistortion(BaseNode):
     """
     Remove lens distortion from footage, using motion tracking camera lens settings
 
@@ -635,7 +636,7 @@ class MovieDistortion(NodeBuilder):
         return cls(image=image, type="Distort")
 
 
-class PlaneTrackDeform(NodeBuilder):
+class PlaneTrackDeform(BaseNode):
     """
     Replace flat planes in footage by another image, detected by plane tracks from motion tracking
 
@@ -733,7 +734,7 @@ class PlaneTrackDeform(NodeBuilder):
         self.node.plane_track_name = value
 
 
-class Rotate(NodeBuilder):
+class Rotate(BaseNode):
     """
     Rotate image by specified angle
 
@@ -816,7 +817,7 @@ class Rotate(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Scale(NodeBuilder):
+class Scale(BaseNode):
     """
     Change the size of the image
 
@@ -1006,7 +1007,7 @@ class Scale(NodeBuilder):
         )
 
 
-class Stabilize2D(NodeBuilder):
+class Stabilize2D(BaseNode):
     """
     Stabilize footage using 2D stabilization motion tracking settings
 
@@ -1089,7 +1090,7 @@ class Stabilize2D(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Transform(NodeBuilder):
+class Transform(BaseNode):
     """
     Scale, translate and rotate an image
 
@@ -1196,7 +1197,7 @@ class Transform(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Translate(NodeBuilder):
+class Translate(BaseNode):
     """
     Offset an image
 

@@ -5,25 +5,26 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     ColorSocket,
     FloatSocket,
     ImageSocket,
     IntegerSocket,
+    SocketAccessor,
     VectorSocket,
 )
-
 from ...types import (
     InputColor,
+    InputFloat,
     InputImage,
     InputInteger,
-    InputFloat,
     InputVector,
 )
 
 
-class BrickTexture(NodeBuilder):
+class BrickTexture(BaseNode):
     """
     Generate a procedural texture producing bricks
 
@@ -189,7 +190,7 @@ class BrickTexture(NodeBuilder):
         self.node.squash = value
 
 
-class CheckerTexture(NodeBuilder):
+class CheckerTexture(BaseNode):
     """
     Generate a checkerboard texture
 
@@ -267,7 +268,7 @@ class CheckerTexture(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GaborTexture(NodeBuilder):
+class GaborTexture(BaseNode):
     """
     Generate Gabor noise
 
@@ -413,7 +414,7 @@ class GaborTexture(NodeBuilder):
         self.node.gabor_type = value
 
 
-class GradientTexture(NodeBuilder):
+class GradientTexture(BaseNode):
     """
     Generate interpolated color and intensity values based on the input vector
 
@@ -539,7 +540,7 @@ class GradientTexture(NodeBuilder):
         self.node.gradient_type = value
 
 
-class ImageTexture(NodeBuilder):
+class ImageTexture(BaseNode):
     """
     Sample values from an image texture
 
@@ -625,7 +626,7 @@ class ImageTexture(NodeBuilder):
         self.node.extension = value
 
 
-class MagicTexture(NodeBuilder):
+class MagicTexture(BaseNode):
     """
     Generate a psychedelic color texture
 
@@ -701,7 +702,7 @@ class MagicTexture(NodeBuilder):
         self.node.turbulence_depth = value
 
 
-class NoiseTexture(NodeBuilder):
+class NoiseTexture(BaseNode):
     """
     Generate fractal Perlin noise
 
@@ -987,7 +988,7 @@ class NoiseTexture(NodeBuilder):
         self.node.normalize = value
 
 
-class VoronoiTexture(NodeBuilder):
+class VoronoiTexture(BaseNode):
     """
     Generate Worley noise based on the distance to random points. Typically used to generate textures such as stones, water, or biological cells
 
@@ -1168,7 +1169,7 @@ class VoronoiTexture(NodeBuilder):
         self.node.normalize = value
 
 
-class WaveTexture(NodeBuilder):
+class WaveTexture(BaseNode):
     """
     Generate procedural bands or rings with noise
 
@@ -1356,7 +1357,7 @@ class WaveTexture(NodeBuilder):
         self.node.wave_profile = value
 
 
-class WhiteNoiseTexture(NodeBuilder):
+class WhiteNoiseTexture(BaseNode):
     """
     Calculate a random value or color based on an input seed
 

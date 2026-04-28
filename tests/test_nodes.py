@@ -11,7 +11,7 @@ from nodebpy.builder import (
     FloatSocket,
     IntegerSocket,
     MatrixSocket,
-    SocketString,
+    StringSocket,
     VectorSocket,
 )
 
@@ -110,7 +110,7 @@ def test_format_string():
 
         assert len(format.node.format_items) == 3
         assert format.i[0].default_value == str_to_format  # type: ignore
-        i_string: SocketString = format.i[1]  # ty: ignore[invalid-assignment]
+        i_string: StringSocket = format.i[1]  # ty: ignore[invalid-assignment]
         assert i_string.name == "String"
         assert i_string.type == "STRING"
         assert i_string.default_value == ""

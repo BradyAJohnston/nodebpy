@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-    SocketAccessor,
+    BaseNode as BaseNode,
+)
+from ...builder import (
     BooleanSocket,
     BundleSocket,
     ColorSocket,
@@ -15,16 +16,18 @@ from ...builder import (
     MatrixSocket,
     MenuSocket,
     RotationSocket,
+    SocketAccessor,
     StringSocket,
     VectorSocket,
 )
-
 from ...types import (
     InputBoolean,
     InputBundle,
     InputClosure,
     InputCollection,
     InputColor,
+    InputFloat,
+    InputFont,
     InputGeometry,
     InputImage,
     InputInteger,
@@ -34,13 +37,11 @@ from ...types import (
     InputObject,
     InputRotation,
     InputString,
-    InputFloat,
     InputVector,
-    InputFont,
 )
 
 
-class AlignRotationToVector(NodeBuilder):
+class AlignRotationToVector(BaseNode):
     """
     Orient a rotation along the given direction
 
@@ -122,7 +123,7 @@ class AlignRotationToVector(NodeBuilder):
         self.node.pivot_axis = value
 
 
-class AxesToRotation(NodeBuilder):
+class AxesToRotation(BaseNode):
     """
     Create a rotation from a primary and (ideally orthogonal) secondary axis
 
@@ -197,7 +198,7 @@ class AxesToRotation(NodeBuilder):
         self.node.secondary_axis = value
 
 
-class AxisAngleToRotation(NodeBuilder):
+class AxisAngleToRotation(BaseNode):
     """
     Build a rotation from an axis and a rotation around that axis
 
@@ -252,7 +253,7 @@ class AxisAngleToRotation(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class BitMath(NodeBuilder):
+class BitMath(BaseNode):
     """
     Perform bitwise operations on 32-bit integers
 
@@ -354,7 +355,7 @@ class BitMath(NodeBuilder):
         self.node.operation = value
 
 
-class Blackbody(NodeBuilder):
+class Blackbody(BaseNode):
     """
     Convert a blackbody temperature to an RGB value
 
@@ -399,7 +400,7 @@ class Blackbody(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class BooleanMath(NodeBuilder):
+class BooleanMath(BaseNode):
     """
     Perform a logical operation on the given boolean inputs
 
@@ -534,7 +535,7 @@ class BooleanMath(NodeBuilder):
         self.node.operation = value
 
 
-class Clamp(NodeBuilder):
+class Clamp(BaseNode):
     """
     Clamp a value between a minimum and a maximum
 
@@ -620,7 +621,7 @@ class Clamp(NodeBuilder):
         self.node.clamp_type = value
 
 
-class ColorRamp(NodeBuilder):
+class ColorRamp(BaseNode):
     """
     Map values to colors with the use of a gradient
 
@@ -669,7 +670,7 @@ class ColorRamp(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CombineBundle(NodeBuilder):
+class CombineBundle(BaseNode):
     """
     Combine multiple socket values into one.
 
@@ -711,7 +712,7 @@ class CombineBundle(NodeBuilder):
         self.node.define_signature = value
 
 
-class CombineColor(NodeBuilder):
+class CombineColor(BaseNode):
     """
     Combine four channels into a single color, based on a particular color model
 
@@ -823,7 +824,7 @@ class CombineColor(NodeBuilder):
         self.node.mode = value
 
 
-class CombineMatrix(NodeBuilder):
+class CombineMatrix(BaseNode):
     """
     Construct a 4x4 matrix from its individual values
 
@@ -993,7 +994,7 @@ class CombineMatrix(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CombineTransform(NodeBuilder):
+class CombineTransform(BaseNode):
     """
     Combine a translation vector, a rotation, and a scale vector into a transformation matrix
 
@@ -1055,7 +1056,7 @@ class CombineTransform(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class CombineXYZ(NodeBuilder):
+class CombineXYZ(BaseNode):
     """
     Create a vector from X, Y, and Z components
 
@@ -1117,7 +1118,7 @@ class CombineXYZ(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class EulerToRotation(NodeBuilder):
+class EulerToRotation(BaseNode):
     """
     Build a rotation from separate angles around each axis
 
@@ -1162,7 +1163,7 @@ class EulerToRotation(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FindInString(NodeBuilder):
+class FindInString(BaseNode):
     """
     Find the number of times a given string occurs in another string and the position of the first match
 
@@ -1221,7 +1222,7 @@ class FindInString(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FloatCurve(NodeBuilder):
+class FloatCurve(BaseNode):
     """
     Map an input float to a curve and outputs a float value
 
@@ -1276,7 +1277,7 @@ class FloatCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class FloatToInteger(NodeBuilder):
+class FloatToInteger(BaseNode):
     """
     Convert the given floating-point number to an integer, with a choice of methods
 
@@ -1334,7 +1335,7 @@ class FloatToInteger(NodeBuilder):
         self.node.rounding_mode = value
 
 
-class GetBundleItem(NodeBuilder):
+class GetBundleItem(BaseNode):
     """
     Retrieve a bundle item by path.
 
@@ -1719,7 +1720,7 @@ class GetBundleItem(NodeBuilder):
         self.node.structure_type = value
 
 
-class HashValue(NodeBuilder):
+class HashValue(BaseNode):
     """
     Generate a randomized integer using the given input value as a seed
 
@@ -1830,7 +1831,7 @@ class HashValue(NodeBuilder):
         self.node.data_type = value
 
 
-class IndexOfNearest(NodeBuilder):
+class IndexOfNearest(BaseNode):
     """
     Find the nearest element in a group. Similar to the "Sample Nearest" node
 
@@ -1889,7 +1890,7 @@ class IndexOfNearest(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class IntegerMath(NodeBuilder):
+class IntegerMath(BaseNode):
     """
     Perform various math operations on the given integer inputs
 
@@ -2149,7 +2150,7 @@ class IntegerMath(NodeBuilder):
         self.node.operation = value
 
 
-class InvertMatrix(NodeBuilder):
+class InvertMatrix(BaseNode):
     """
     Compute the inverse of the given matrix, if one exists
 
@@ -2198,7 +2199,7 @@ class InvertMatrix(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InvertRotation(NodeBuilder):
+class InvertRotation(BaseNode):
     """
     Compute the inverse of the given rotation
 
@@ -2243,7 +2244,7 @@ class InvertRotation(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class JoinBundle(NodeBuilder):
+class JoinBundle(BaseNode):
     """
     Join multiple bundles together
 
@@ -2288,7 +2289,7 @@ class JoinBundle(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MapRange(NodeBuilder):
+class MapRange(BaseNode):
     """
     Remap a value from a range to a target range
 
@@ -2582,7 +2583,7 @@ class MapRange(NodeBuilder):
         self.node.data_type = value
 
 
-class MatchString(NodeBuilder):
+class MatchString(BaseNode):
     """
     Check if a given string exists within another string
 
@@ -2645,7 +2646,7 @@ class MatchString(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Math(NodeBuilder):
+class Math(BaseNode):
     """
     Perform math operations
 
@@ -3113,7 +3114,7 @@ class Math(NodeBuilder):
         self.node.use_clamp = value
 
 
-class MatrixDeterminant(NodeBuilder):
+class MatrixDeterminant(BaseNode):
     """
     Compute the determinant of the given matrix
 
@@ -3158,7 +3159,7 @@ class MatrixDeterminant(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MatrixSVD(NodeBuilder):
+class MatrixSVD(BaseNode):
     """
     Compute the singular value decomposition of the 3x3 part of a matrix
 
@@ -3211,7 +3212,7 @@ class MatrixSVD(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Mix(NodeBuilder):
+class Mix(BaseNode):
     """
     Mix values by a factor
 
@@ -3501,7 +3502,7 @@ class Mix(NodeBuilder):
         self.node.clamp_result = value
 
 
-class MultiplyMatrices(NodeBuilder):
+class MultiplyMatrices(BaseNode):
     """
     Perform a matrix multiplication on two input matrices
 
@@ -3556,7 +3557,7 @@ class MultiplyMatrices(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PackUVIslands(NodeBuilder):
+class PackUVIslands(BaseNode):
     """
     Scale islands of a UV map and move them so they fill the UV space as much as possible
 
@@ -3655,7 +3656,7 @@ class PackUVIslands(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ProjectPoint(NodeBuilder):
+class ProjectPoint(BaseNode):
     """
     Project a point using a matrix, using location, rotation, scale, and perspective divide
 
@@ -3710,7 +3711,7 @@ class ProjectPoint(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class QuaternionToRotation(NodeBuilder):
+class QuaternionToRotation(BaseNode):
     """
     Build a rotation from quaternion components
 
@@ -3779,7 +3780,7 @@ class QuaternionToRotation(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RandomValue(NodeBuilder):
+class RandomValue(BaseNode):
     """
     Output a randomized value
 
@@ -3955,7 +3956,7 @@ class RandomValue(NodeBuilder):
         self.node.data_type = value
 
 
-class ReplaceString(NodeBuilder):
+class ReplaceString(BaseNode):
     """
     Replace a given string segment with another
 
@@ -4017,7 +4018,7 @@ class ReplaceString(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RotateEuler(NodeBuilder):
+class RotateEuler(BaseNode):
     """
     Apply a secondary Euler rotation to a given Euler rotation
 
@@ -4130,7 +4131,7 @@ class RotateEuler(NodeBuilder):
         self.node.space = value
 
 
-class RotateRotation(NodeBuilder):
+class RotateRotation(BaseNode):
     """
     Apply a secondary rotation to a given rotation value
 
@@ -4195,7 +4196,7 @@ class RotateRotation(NodeBuilder):
         self.node.rotation_space = value
 
 
-class RotateVector(NodeBuilder):
+class RotateVector(BaseNode):
     """
     Apply a rotation to a given vector
 
@@ -4250,7 +4251,7 @@ class RotateVector(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RotationToAxisAngle(NodeBuilder):
+class RotationToAxisAngle(BaseNode):
     """
     Convert a rotation to axis angle components
 
@@ -4299,7 +4300,7 @@ class RotationToAxisAngle(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RotationToEuler(NodeBuilder):
+class RotationToEuler(BaseNode):
     """
     Convert a standard rotation value to an Euler rotation
 
@@ -4344,7 +4345,7 @@ class RotationToEuler(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RotationToQuaternion(NodeBuilder):
+class RotationToQuaternion(BaseNode):
     """
     Retrieve the quaternion components representing a rotation
 
@@ -4401,7 +4402,7 @@ class RotationToQuaternion(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SeparateBundle(NodeBuilder):
+class SeparateBundle(BaseNode):
     """
     Split a bundle into multiple sockets.
 
@@ -4453,7 +4454,7 @@ class SeparateBundle(NodeBuilder):
         self.node.define_signature = value
 
 
-class SeparateColor(NodeBuilder):
+class SeparateColor(BaseNode):
     """
     Split a color into separate channels, based on a particular color model
 
@@ -4538,7 +4539,7 @@ class SeparateColor(NodeBuilder):
         self.node.mode = value
 
 
-class SeparateMatrix(NodeBuilder):
+class SeparateMatrix(BaseNode):
     """
     Split a 4x4 matrix into its individual values
 
@@ -4643,7 +4644,7 @@ class SeparateMatrix(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SeparateTransform(NodeBuilder):
+class SeparateTransform(BaseNode):
     """
     Split a transformation matrix into a translation vector, a rotation, and a scale vector
 
@@ -4696,7 +4697,7 @@ class SeparateTransform(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SeparateXYZ(NodeBuilder):
+class SeparateXYZ(BaseNode):
     """
     Split a vector into its X, Y, and Z components
 
@@ -4749,7 +4750,7 @@ class SeparateXYZ(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SliceString(NodeBuilder):
+class SliceString(BaseNode):
     """
     Extract a string segment from a larger string
 
@@ -4811,7 +4812,7 @@ class SliceString(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class StoreBundleItem(NodeBuilder):
+class StoreBundleItem(BaseNode):
     """
     Store a bundle item by path and data type.
 
@@ -5149,7 +5150,7 @@ class StoreBundleItem(NodeBuilder):
         self.node.structure_type = value
 
 
-class StringLength(NodeBuilder):
+class StringLength(BaseNode):
     """
     Output the number of characters in the given string
 
@@ -5194,7 +5195,7 @@ class StringLength(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class StringToValue(NodeBuilder):
+class StringToValue(BaseNode):
     """
     Derive a numeric value from a given string representation
 
@@ -5266,7 +5267,7 @@ class StringToValue(NodeBuilder):
         self.node.data_type = value
 
 
-class Switch(NodeBuilder):
+class Switch(BaseNode):
     """
     Switch between two inputs
 
@@ -5567,7 +5568,7 @@ class Switch(NodeBuilder):
         self.node.input_type = value
 
 
-class TransformDirection(NodeBuilder):
+class TransformDirection(BaseNode):
     """
     Apply a transformation matrix (excluding translation) to the given vector
 
@@ -5622,7 +5623,7 @@ class TransformDirection(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TransformPoint(NodeBuilder):
+class TransformPoint(BaseNode):
     """
     Apply a transformation matrix to the given vector
 
@@ -5677,7 +5678,7 @@ class TransformPoint(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TransposeMatrix(NodeBuilder):
+class TransposeMatrix(BaseNode):
     """
     Flip a matrix over its diagonal, turning columns into rows and vice-versa
 
@@ -5722,7 +5723,7 @@ class TransposeMatrix(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class UVUnwrap(NodeBuilder):
+class UVUnwrap(BaseNode):
     """
     Generate a UV map based on seam edges
 
@@ -5821,7 +5822,7 @@ class UVUnwrap(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ValueToString(NodeBuilder):
+class ValueToString(BaseNode):
     """
     Generate a string representation of the given input value
 

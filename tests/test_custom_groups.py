@@ -8,7 +8,7 @@ from nodebpy.builder import (
     CustomCompositorGroup,
     CustomGeometryGroup,
     CustomShaderGroup,
-    SocketLinker,
+    Socket,
     TreeBuilder,
 )
 from nodebpy.nodes import compositor as c
@@ -77,26 +77,26 @@ def test_custom_group_with_offset():
     assert math.operation == "ADD"
 
 
-# --- Instance access returns SocketLinker (Blender) ---
+# --- Instance access returns Socket (Blender) ---
 
 
 def test_i_prefix_returns_socket_linker():
-    """Accessing i_* on an instance returns a SocketLinker for that input socket."""
+    """Accessing i_* on an instance returns a Socket for that input socket."""
     with TreeBuilder():
         node = OtherVertex()
         linker = node.i.vertex_index
 
-    assert isinstance(linker, SocketLinker)
+    assert isinstance(linker, Socket)
     assert linker.socket_name == "Vertex Index"
 
 
 def test_o_prefix_returns_socket_linker():
-    """Accessing o_* on an instance returns a SocketLinker for that output socket."""
+    """Accessing o_* on an instance returns a Socket for that output socket."""
     with TreeBuilder():
         node = OtherVertex()
         out = node.o.other_vertex
 
-    assert isinstance(out, SocketLinker)
+    assert isinstance(out, Socket)
 
 
 def test_wrong_attribute_access():
