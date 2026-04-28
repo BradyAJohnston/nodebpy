@@ -183,7 +183,7 @@ class SimulationZone:
 
 class BaseRepeatZone(BaseZone):
     _socket_data_types = (
-        "FLOAT",
+        "VALUE",
         "INT",
         "BOOLEAN",
         "VECTOR",
@@ -199,6 +199,8 @@ class BaseRepeatZone(BaseZone):
         "BUNDLE",
         "CLOSURE",
     )
+
+    _type_map = {"VALUE": "FLOAT"}
 
     @property
     def items(self) -> bpy.types.NodeGeometryRepeatOutputItems:
@@ -250,7 +252,7 @@ class RepeatZone:
         self.input._establish_links(**self.input._add_inputs(*args, **kwargs))
 
     @property
-    def i(self) -> SocketLinker:
+    def iteration(self) -> SocketLinker:
         """The current iteration index."""
         return self.input.o.iteration
 
@@ -264,7 +266,7 @@ class RepeatZone:
         if self._index > 0:
             raise StopIteration
         self._index += 1
-        return self.i, self.input, self.output
+        return self.iteration, self.input, self.output
 
 
 class ForEachGeometryElementZone:

@@ -314,7 +314,13 @@ def test_repeat(snapshot_tree):
         join = g.JoinGeometry()
         zone.output.capture(join)
         zone.input >> join
-        _ = g.Points(zone.i, position=g.RandomValue.vector(min=-1, seed=zone.i)) >> join
+        _ = (
+            g.Points(
+                zone.iteration,
+                position=g.RandomValue.vector(min=-1, seed=zone.iteration),
+            )
+            >> join
+        )
     assert all(
         [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
     )
@@ -402,7 +408,7 @@ def test_switch_repeatzone(snapshot_tree):
 
         items = (g.Cube(), g.IcoSphere(), g.Grid())
         zone = g.RepeatZone(5, input)
-        switch = g.IndexSwitch.geometry(*items, index=zone.i)
+        switch = g.IndexSwitch.geometry(*items, index=zone.iteration)
         join = g.JoinGeometry(zone.input, switch)
         join >> zone.output >> output
 
