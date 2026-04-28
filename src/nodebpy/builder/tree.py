@@ -46,6 +46,8 @@ from .socket import (
     VectorSocket,
 )
 
+_SocketT = TypeVar("_SocketT", bound=Socket)
+
 
 class PanelContext:
     """Context manager for grouping sockets into a panel."""
@@ -120,14 +122,19 @@ class SocketContext:
         for key, value in kwargs.items():
             if value is None:
                 continue
-            if interface_socket.socket_type == "NodeSocketMenu" and key == "default_value":
+            if (
+                interface_socket.socket_type == "NodeSocketMenu"
+                and key == "default_value"
+            ):
                 self.builder._menu_defaults[interface_socket.identifier] = value
             else:
                 setattr(interface_socket, key, value)
 
     def _wrap(
-        self, socket_cls: type, interface_socket: bpy.types.NodeTreeInterfaceSocket
-    ) -> Socket:
+        self,
+        socket_cls: type[_SocketT],
+        interface_socket: bpy.types.NodeTreeInterfaceSocket,
+    ) -> _SocketT:
         if self._direction == "INPUT":
             bpy_socket = self.builder._input_node().outputs[interface_socket.identifier]
         else:
@@ -152,13 +159,21 @@ class SocketContext:
         subtype: FloatInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> FloatSocket:
+    ) -> "FloatSocket":
         iface = self._add_socket("NodeSocketFloat", name, description)
-        self._set_props(iface, default_value=default_value, min_value=min_value,
-                        max_value=max_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier,
-                        structure_type=structure_type, subtype=subtype,
-                        attribute_domain=attribute_domain, default_attribute=default_attribute)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
         return self._wrap(FloatSocket, iface)
 
     def integer(
@@ -177,14 +192,22 @@ class SocketContext:
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> IntegerSocket:
+    ) -> "IntegerSocket":
         iface = self._add_socket("NodeSocketInt", name, description)
-        self._set_props(iface, default_value=default_value, min_value=min_value,
-                        max_value=max_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier,
-                        structure_type=structure_type, default_input=default_input,
-                        subtype=subtype, attribute_domain=attribute_domain,
-                        default_attribute=default_attribute)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
+            subtype=subtype,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
         return self._wrap(IntegerSocket, iface)
 
     def boolean(
@@ -201,13 +224,20 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         is_panel_toggle: bool = False,
-    ) -> BooleanSocket:
+    ) -> "BooleanSocket":
         iface = self._add_socket("NodeSocketBool", name, description)
-        self._set_props(iface, default_value=default_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier,
-                        structure_type=structure_type, layer_selection_field=layer_selection_field,
-                        attribute_domain=attribute_domain, default_attribute=default_attribute,
-                        is_panel_toggle=is_panel_toggle)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            layer_selection_field=layer_selection_field,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+            is_panel_toggle=is_panel_toggle,
+        )
         return self._wrap(BooleanSocket, iface)
 
     def vector(
@@ -229,15 +259,26 @@ class SocketContext:
             "VALUE", "NORMAL", "POSITION", "HANDLE_LEFT", "HANDLE_RIGHT"
         ] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
-    ) -> VectorSocket:
-        assert len(default_value) == dimensions, "Default value length must match dimensions"
+    ) -> "VectorSocket":
+        assert len(default_value) == dimensions, (
+            "Default value length must match dimensions"
+        )
         iface = self._add_socket("NodeSocketVector", name, description)
-        self._set_props(iface, dimensions=dimensions, default_value=default_value,
-                        min_value=min_value, max_value=max_value,
-                        optional_label=optional_label, hide_value=hide_value,
-                        hide_in_modifier=hide_in_modifier, structure_type=structure_type,
-                        subtype=subtype, default_input=default_input,
-                        default_attribute=default_attribute, attribute_domain=attribute_domain)
+        self._set_props(
+            iface,
+            dimensions=dimensions,
+            default_value=default_value,
+            min_value=min_value,
+            max_value=max_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            subtype=subtype,
+            default_input=default_input,
+            default_attribute=default_attribute,
+            attribute_domain=attribute_domain,
+        )
         return self._wrap(VectorSocket, iface)
 
     def color(
@@ -252,13 +293,19 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> ColorSocket:
+    ) -> "ColorSocket":
         assert len(default_value) == 4, "Default color must be RGBA tuple"
         iface = self._add_socket("NodeSocketColor", name, description)
-        self._set_props(iface, default_value=default_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier,
-                        structure_type=structure_type, attribute_domain=attribute_domain,
-                        default_attribute=default_attribute)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
         return self._wrap(ColorSocket, iface)
 
     def rotation(
@@ -273,12 +320,18 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> RotationSocket:
+    ) -> "RotationSocket":
         iface = self._add_socket("NodeSocketRotation", name, description)
-        self._set_props(iface, default_value=default_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier,
-                        structure_type=structure_type, attribute_domain=attribute_domain,
-                        default_attribute=default_attribute)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
         return self._wrap(RotationSocket, iface)
 
     def matrix(
@@ -293,12 +346,18 @@ class SocketContext:
         default_input: Literal["VALUE", "INSTANCE_TRANSFORM"] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> MatrixSocket:
+    ) -> "MatrixSocket":
         iface = self._add_socket("NodeSocketMatrix", name, description)
-        self._set_props(iface, optional_label=optional_label, hide_value=hide_value,
-                        hide_in_modifier=hide_in_modifier, structure_type=structure_type,
-                        default_input=default_input, attribute_domain=attribute_domain,
-                        default_attribute=default_attribute)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            default_input=default_input,
+            attribute_domain=attribute_domain,
+            default_attribute=default_attribute,
+        )
         return self._wrap(MatrixSocket, iface)
 
     def string(
@@ -311,11 +370,16 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         subtype: StringInterfaceSubtypes = "NONE",
-    ) -> StringSocket:
+    ) -> "StringSocket":
         iface = self._add_socket("NodeSocketString", name, description)
-        self._set_props(iface, default_value=default_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier,
-                        subtype=subtype)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            subtype=subtype,
+        )
         return self._wrap(StringSocket, iface)
 
     def menu(
@@ -329,11 +393,17 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MenuSocket:
+    ) -> "MenuSocket":
         iface = self._add_socket("NodeSocketMenu", name, description)
-        self._set_props(iface, default_value=default_value, menu_expanded=expanded,
-                        optional_label=optional_label, hide_value=hide_value,
-                        hide_in_modifier=hide_in_modifier, structure_type=structure_type)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            menu_expanded=expanded,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+        )
         return self._wrap(MenuSocket, iface)
 
     def object(
@@ -345,10 +415,15 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> ObjectSocket:
+    ) -> "ObjectSocket":
         iface = self._add_socket("NodeSocketObject", name, description)
-        self._set_props(iface, default_value=default_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
         return self._wrap(ObjectSocket, iface)
 
     def geometry(
@@ -359,10 +434,14 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> GeometrySocket:
+    ) -> "GeometrySocket":
         iface = self._add_socket("NodeSocketGeometry", name, description)
-        self._set_props(iface, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
         return self._wrap(GeometrySocket, iface)
 
     def collection(
@@ -374,10 +453,15 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> CollectionSocket:
+    ) -> "CollectionSocket":
         iface = self._add_socket("NodeSocketCollection", name, description)
-        self._set_props(iface, default_value=default_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
         return self._wrap(CollectionSocket, iface)
 
     def image(
@@ -389,10 +473,15 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> ImageSocket:
+    ) -> "ImageSocket":
         iface = self._add_socket("NodeSocketImage", name, description)
-        self._set_props(iface, default_value=default_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
         return self._wrap(ImageSocket, iface)
 
     def material(
@@ -404,10 +493,15 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> MaterialSocket:
+    ) -> "MaterialSocket":
         iface = self._add_socket("NodeSocketMaterial", name, description)
-        self._set_props(iface, default_value=default_value, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
         return self._wrap(MaterialSocket, iface)
 
     def bundle(
@@ -418,10 +512,14 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> BundleSocket:
+    ) -> "BundleSocket":
         iface = self._add_socket("NodeSocketBundle", name, description)
-        self._set_props(iface, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
         return self._wrap(BundleSocket, iface)
 
     def closure(
@@ -432,10 +530,14 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> ClosureSocket:
+    ) -> "ClosureSocket":
         iface = self._add_socket("NodeSocketClosure", name, description)
-        self._set_props(iface, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
         return self._wrap(ClosureSocket, iface)
 
     def shader(
@@ -446,10 +548,14 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> ShaderSocket:
+    ) -> "ShaderSocket":
         iface = self._add_socket("NodeSocketShader", name, description)
-        self._set_props(iface, optional_label=optional_label,
-                        hide_value=hide_value, hide_in_modifier=hide_in_modifier)
+        self._set_props(
+            iface,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
         return self._wrap(ShaderSocket, iface)
 
     def __len__(self) -> int:

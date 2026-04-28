@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as BaseNode
-from ...builder import ColorSocket, SocketAccessor
+from ...builder import BaseNode as BaseNode, SocketAccessor, ColorSocket
+
 from ...types import (
     InputColor,
 )

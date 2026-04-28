@@ -163,9 +163,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             elif isinstance(value, NodeSocket):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
-                self._link_from(
-                    value.o._best_match(self.i._get(name).type), name
-                )
+                self._link_from(value.o._best_match(self.i._get(name).type), name)
             else:
                 if name in input_ids:
                     input = self.node.inputs[input_ids.index(name)]

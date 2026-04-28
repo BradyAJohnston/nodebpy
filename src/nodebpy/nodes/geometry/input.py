@@ -6,8 +6,7 @@ import bpy
 
 from ...builder import (
     BaseNode as BaseNode,
-)
-from ...builder import (
+    SocketAccessor,
     BooleanSocket,
     CollectionSocket,
     ColorSocket,
@@ -19,19 +18,19 @@ from ...builder import (
     MenuSocket,
     ObjectSocket,
     RotationSocket,
-    SocketAccessor,
     StringSocket,
     VectorSocket,
 )
+
 from ...types import (
     InputBoolean,
     InputCollection,
-    InputFloat,
     InputImage,
     InputInteger,
     InputMenu,
     InputObject,
     InputString,
+    InputFloat,
     InputVector,
 )
 

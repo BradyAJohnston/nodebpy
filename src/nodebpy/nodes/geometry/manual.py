@@ -3,13 +3,8 @@ from typing import TYPE_CHECKING, Any, Generic, Literal, TypeVar
 import bpy
 from bpy.types import NodeEvaluateClosure, NodeSocket
 
-from nodebpy.builder import GeometrySocket
-from nodebpy.builder.accessor import SocketAccessor
-
 from ...builder import (
-    BaseNode as BaseNode,
-)
-from ...builder import (
+    BaseNode,
     BooleanSocket,
     BundleSocket,
     ClosureSocket,
@@ -25,6 +20,7 @@ from ...builder import (
     MenuSocket,
     ObjectSocket,
     RotationSocket,
+    SocketAccessor,
     StringSocket,
     TreeBuilder,
     VectorSocket,

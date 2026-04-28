@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as BaseNode
-from ...builder import SocketAccessor
+from ...builder import BaseNode as BaseNode, SocketAccessor
 
 
 class Group(BaseNode):

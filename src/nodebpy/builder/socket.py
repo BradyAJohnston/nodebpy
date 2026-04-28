@@ -59,6 +59,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         self.node = socket.node
         self._default_output_id = socket.identifier
         self._tree = TreeBuilder(cast(NodeTree, socket.node.id_data))
+        self.interface_socket: bpy.types.NodeTreeInterfaceSocket | None = None
 
     @property
     def tree(self) -> TreeBuilder:

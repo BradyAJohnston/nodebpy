@@ -6,12 +6,11 @@ import bpy
 
 from ...builder import (
     BaseNode as BaseNode,
-)
-from ...builder import (
+    SocketAccessor,
     ColorSocket,
     FloatSocket,
-    SocketAccessor,
 )
+
 from ...types import (
     InputColor,
     InputFloat,
