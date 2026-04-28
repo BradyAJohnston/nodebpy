@@ -7,7 +7,13 @@ from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import FloatSocket, MatrixSocket, VectorSocket
+from nodebpy.builder import (
+    FloatSocket,
+    IntegerSocket,
+    MatrixSocket,
+    SocketString,
+    VectorSocket,
+)
 
 
 def test_capture_attribute():
@@ -85,9 +91,9 @@ class TestMathOperators:
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 
-        assert len(set_pos.i.offset.socket.links) == 0
-        assert len(set_pos.i.geometry.socket.links) == 0
-        assert len(set_pos.i.position.socket.links) == 1
+        assert len(set_pos.i.offset.links) == 0
+        assert len(set_pos.i.geometry.links) == 0
+        assert len(set_pos.i.position.links) == 1
 
 
 def test_format_string():
@@ -103,19 +109,20 @@ def test_format_string():
         )
 
         assert len(format.node.format_items) == 3
-        assert format.node.inputs[0].default_value == str_to_format  # type: ignore
-        assert format.node.inputs[1].name == "String"
-        assert format.node.inputs[1].type == "STRING"
-        assert format.node.inputs[1].default_value == ""
-        assert format.node.inputs[2].name == "x"
-        assert format.node.inputs[2].type == "INT"
-        assert format.node.inputs[2].default_value == 0  # type: ignore
-        assert format.node.inputs[3].name == "y"
-        assert format.node.inputs[3].type == "VALUE"
-        assert format.node.inputs[3].default_value == 0.0
-        assert format.items["String"].socket == format.node.inputs[1]
-        assert format.items["x"].socket == format.node.inputs[2]
-        assert format.items["y"].socket == format.node.inputs[3]
+        assert format.i[0].default_value == str_to_format  # type: ignore
+        i_string: SocketString = format.i[1]  # ty: ignore[invalid-assignment]
+        assert i_string.name == "String"
+        assert i_string.type == "STRING"
+        assert i_string.default_value == ""
+        assert format.i[2].name == "x"
+        assert isinstance(format.i[2], IntegerSocket)
+        assert format.i[2].default_value == 0
+        assert format.i[3].name == "y"
+        assert isinstance(format.i[3], FloatSocket)
+        assert format.i[3].default_value == 0.0
+        assert format.items["String"].socket == format.i[1].socket
+        assert format.items["x"].socket == format.i[2].socket
+        assert format.items["y"].socket == format.i[3].socket
 
 
 def test_field_to_grid():
