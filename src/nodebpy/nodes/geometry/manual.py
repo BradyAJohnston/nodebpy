@@ -2413,3 +2413,681 @@ class AttributeStatistic(NodeBuilder, Generic[_T]):
         value: _AttributeDomains,
     ):
         self.node.domain = value
+
+
+_SampleCurveDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "FLOAT_VECTOR",
+    "FLOAT_COLOR",
+    "QUATERNION",
+    "FLOAT4X4",
+]
+
+
+class SampleCurve(NodeBuilder, Generic[_T]):
+    """
+    Retrieve data from a point on a curve at a certain distance from its start
+
+    Parameters
+    ----------
+    curves : InputGeometry
+        Curves
+    value : InputFloat
+        Value
+    factor : InputFloat
+        Factor
+    length : InputFloat
+        Length
+    curve_index : InputInteger
+        Curve Index
+
+    Inputs
+    ------
+    i.curves : GeometrySocket
+        Curves
+    i.value : FloatSocket
+        Value
+    i.factor : FloatSocket
+        Factor
+    i.length : FloatSocket
+        Length
+    i.curve_index : IntegerSocket
+        Curve Index
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    o.position : VectorSocket
+        Position
+    o.tangent : VectorSocket
+        Tangent
+    o.normal : VectorSocket
+        Normal
+    """
+
+    class _SampleCurveFactorFactory:
+        def float(
+            self,
+            curves: InputGeometry = None,
+            value: InputFloat = 0.0,
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[FloatSocket]":
+            """Create Sample Curve with operation 'Float'. Floating-point value"""
+            return SampleCurve(
+                data_type="FLOAT",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def integer(
+            self,
+            curves: InputGeometry = None,
+            value: InputInteger = 0,
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[IntegerSocket]":
+            """Create Sample Curve with operation 'Integer'. Integer value"""
+            return SampleCurve(
+                data_type="INT",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def boolean(
+            self,
+            curves: InputGeometry = None,
+            value: InputBoolean = False,
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[BooleanSocket]":
+            """Create Sample Curve with operation 'Boolean'. Boolean value"""
+            return SampleCurve(
+                data_type="BOOLEAN",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def vector(
+            self,
+            curves: InputGeometry = None,
+            value: InputVector = (0.0, 0.0, 0.0),
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[VectorSocket]":
+            """Create Sample Curve with operation 'Vector'. Vector value"""
+            return SampleCurve(
+                data_type="FLOAT_VECTOR",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def color(
+            self,
+            curves: InputGeometry = None,
+            value: InputColor = (0.0, 0.0, 0.0, 0.0),
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[VectorSocket]":
+            """Create Sample Curve with operation 'Color'. Color value"""
+            return SampleCurve(
+                data_type="FLOAT_COLOR",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def rotation(
+            self,
+            curves: InputGeometry = None,
+            value: InputRotation = (0.0, 0.0, 0.0),
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[RotationSocket]":
+            """Create Sample Curve with operation 'Quaternion'. Quaternion value"""
+            return SampleCurve(
+                data_type="QUATERNION",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def matrix(
+            self,
+            curves: InputGeometry = None,
+            value: InputMatrix = None,
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[MatrixSocket]":
+            """Create Sample Curve with operation 'Matrix'. Matrix value"""
+            return SampleCurve(
+                data_type="FLOAT4X4",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+    class _SampleCurveLengthFactory:
+        def float(
+            self,
+            curves: InputGeometry = None,
+            value: InputFloat = 0.0,
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[FloatSocket]":
+            """Create Sample Curve with operation 'Float'. Floating-point value"""
+            return SampleCurve(
+                data_type="FLOAT",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def integer(
+            self,
+            curves: InputGeometry = None,
+            value: InputInteger = 0,
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[IntegerSocket]":
+            """Create Sample Curve with operation 'Integer'. Integer value"""
+            return SampleCurve(
+                data_type="INT",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def boolean(
+            self,
+            curves: InputGeometry = None,
+            value: InputBoolean = False,
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[BooleanSocket]":
+            """Create Sample Curve with operation 'Boolean'. Boolean value"""
+            return SampleCurve(
+                data_type="BOOLEAN",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def vector(
+            self,
+            curves: InputGeometry = None,
+            value: InputVector = (0.0, 0.0, 0.0),
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[VectorSocket]":
+            """Create Sample Curve with operation 'Vector'. Vector value"""
+            return SampleCurve(
+                data_type="FLOAT_VECTOR",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def color(
+            self,
+            curves: InputGeometry = None,
+            value: InputColor = (0.0, 0.0, 0.0, 0.0),
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[VectorSocket]":
+            """Create Sample Curve with operation 'Color'. Color value"""
+            return SampleCurve(
+                data_type="FLOAT_COLOR",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def rotation(
+            self,
+            curves: InputGeometry = None,
+            value: InputRotation = (0.0, 0.0, 0.0),
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[RotationSocket]":
+            """Create Sample Curve with operation 'Quaternion'. Quaternion value"""
+            return SampleCurve(
+                data_type="QUATERNION",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def matrix(
+            self,
+            curves: InputGeometry = None,
+            value: InputMatrix = None,
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[MatrixSocket]":
+            """Create Sample Curve with operation 'Matrix'. Matrix value"""
+            return SampleCurve(
+                data_type="FLOAT4X4",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+    length = _SampleCurveLengthFactory()
+    factor = _SampleCurveFactorFactory()
+
+    _bl_idname = "GeometryNodeSampleCurve"
+    node: bpy.types.GeometryNodeSampleCurve
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        curves: GeometrySocket
+        """Curves"""
+        value: _S
+        """Value"""
+        factor: FloatSocket
+        """Factor"""
+        length: FloatSocket
+        """Length"""
+        curve_index: IntegerSocket
+        """Curve Index"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+        position: VectorSocket
+        """Position"""
+        tangent: VectorSocket
+        """Tangent"""
+        normal: VectorSocket
+        """Normal"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        curves: InputGeometry = None,
+        value: InputAny = 0.0,
+        factor: InputFloat = 0.0,
+        length: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
+        *,
+        mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
+        use_all_curves: bool = False,
+        data_type: _SampleCurveDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {
+            "Curves": curves,
+            "Value": value,
+            "Factor": factor,
+            "Length": length,
+            "Curve Index": curve_index,
+        }
+        self.mode = mode
+        self.use_all_curves = use_all_curves
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def mode(self) -> Literal["FACTOR", "LENGTH"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["FACTOR", "LENGTH"]):
+        self.node.mode = value
+
+    @property
+    def use_all_curves(self) -> bool:
+        return self.node.use_all_curves
+
+    @use_all_curves.setter
+    def use_all_curves(self, value: bool):
+        self.node.use_all_curves = value
+
+    @property
+    def data_type(
+        self,
+    ) -> _SampleCurveDataTypes:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _SampleCurveDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class SampleIndex(NodeBuilder, Generic[_T]):
+    """
+    Retrieve values from specific geometry elements
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    value : InputFloat
+        Value
+    index : InputInteger
+        Index
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.value : FloatSocket
+        Value
+    i.index : IntegerSocket
+        Index
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    """
+
+    class _SampleIndexDomainFactory:
+        def __init__(
+            self,
+            domain: _AttributeDomains,
+        ):
+            self._domain = domain
+
+        def float(
+            self,
+            geometry: InputGeometry = None,
+            value: InputFloat = 0.0,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[FloatSocket]":
+            """Create Sample Index with operation 'Float'. Floating-point value"""
+            return SampleIndex(
+                data_type="FLOAT",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def integer(
+            self,
+            geometry: InputGeometry = None,
+            value: InputInteger = 0,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[IntegerSocket]":
+            """Create Sample Index with operation 'Integer'. 32-bit integer"""
+            return SampleIndex(
+                data_type="INT",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def boolean(
+            self,
+            geometry: InputGeometry = None,
+            value: InputBoolean = False,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[BooleanSocket]":
+            """Create Sample Index with operation 'Boolean'. True or false"""
+            return SampleIndex(
+                data_type="BOOLEAN",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def vector(
+            self,
+            geometry: InputGeometry = None,
+            value: InputVector = None,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[VectorSocket]":
+            """Create Sample Index with operation 'Vector'. 3D vector with floating-point values"""
+            return SampleIndex(
+                data_type="FLOAT_VECTOR",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def color(
+            self,
+            geometry: InputGeometry = None,
+            value: InputColor = None,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[ColorSocket]":
+            """Create Sample Index with operation 'Color'. RGBA color with 32-bit floating-point values"""
+            return SampleIndex(
+                data_type="FLOAT_COLOR",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def rotation(
+            self,
+            geometry: InputGeometry = None,
+            value: InputRotation = None,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[RotationSocket]":
+            """Create Sample Index with operation 'Quaternion'. Floating point quaternion rotation"""
+            return SampleIndex(
+                data_type="QUATERNION",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def matrix(
+            self,
+            geometry: InputGeometry = None,
+            value: InputMatrix = None,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[MatrixSocket]":
+            """Create Sample Index with operation '4x4 Matrix'. Floating point matrix"""
+            return SampleIndex(
+                data_type="FLOAT4X4",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+    point = _SampleIndexDomainFactory("POINT")
+    edge = _SampleIndexDomainFactory("EDGE")
+    face = _SampleIndexDomainFactory("FACE")
+    face_corner = _SampleIndexDomainFactory("CORNER")
+    spline = _SampleIndexDomainFactory("CURVE")
+    instance = _SampleIndexDomainFactory("INSTANCE")
+    layer = _SampleIndexDomainFactory("LAYER")
+
+    _bl_idname = "GeometryNodeSampleIndex"
+    node: bpy.types.GeometryNodeSampleIndex
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        geometry: GeometrySocket
+        """Geometry"""
+        value: _S
+        """Value"""
+        index: IntegerSocket
+        """Index"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        value: InputAny = 0.0,
+        index: InputInteger = 0,
+        *,
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+        ] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+        clamp: bool = False,
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry, "Value": value, "Index": index}
+        self.data_type = data_type
+        self.domain = domain
+        self.clamp = clamp
+        self._establish_links(**key_args)
+
+    @property
+    def data_type(
+        self,
+    ) -> _SampleCurveDataTypes:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _SampleCurveDataTypes,
+    ):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+    @property
+    def clamp(self) -> bool:
+        return self.node.clamp
+
+    @clamp.setter
+    def clamp(self, value: bool):
+        self.node.clamp = value
