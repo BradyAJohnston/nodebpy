@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.10.2</span>
+    <span class="navbar-title">nodebpy 0.13.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -334,12 +334,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.interface.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.interface</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.shader.manual</span></a>
   </div>
@@ -515,6 +509,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#nodebpy.nodes.geometry.groups.OffsetVector" id="toc-nodebpy.nodes.geometry.groups.OffsetVector" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.OffsetVector">OffsetVector</a></li>
   <li><a href="#nodebpy.nodes.geometry.groups.OtherVertex" id="toc-nodebpy.nodes.geometry.groups.OtherVertex" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.OtherVertex">OtherVertex</a></li>
+  <li><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents" id="toc-nodebpy.nodes.geometry.groups.PrincipalComponents" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.PrincipalComponents">PrincipalComponents</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -546,6 +541,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.groups.OtherVertex">OtherVertex</a></td>
 <td>Given a vertex and an edge number from that vertex, returns the other</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents">PrincipalComponents</a></td>
+<td>Compute PCA on a given vector field.</td>
 </tr>
 </tbody>
 </table>
@@ -580,18 +579,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.node_tree"><code>node_tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.groups.OffsetVector.type"><code>type</code></a></td>
 <td></td>
 </tr>
@@ -630,19 +633,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.node_tree"><code>node_tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.groups.OtherVertex.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.groups.PrincipalComponents" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.groups.PrincipalComponents">PrincipalComponents</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>PrincipalComponents(position<span class="op">=</span><span class="va">None</span>, group_id<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Compute PCA on a given vector field.</p>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.node_tree"><code>node_tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>

@@ -8,6 +8,7 @@
 |----|----|
 | [ActiveCamera](#nodebpy.nodes.geometry.input.ActiveCamera) | Retrieve the scene’s active camera |
 | [ActiveElement](#nodebpy.nodes.geometry.input.ActiveElement) | Active element indices of the edited geometry, for tool execution |
+| [BoneInfo](#nodebpy.nodes.geometry.input.BoneInfo) | Retrieve information of armature bones |
 | [Boolean](#nodebpy.nodes.geometry.input.Boolean) | Provide a True/False value that can be connected to other nodes in the tree |
 | [CameraInfo](#nodebpy.nodes.geometry.input.CameraInfo) | Retrieve information from a camera object |
 | [CollectionInfo](#nodebpy.nodes.geometry.input.CollectionInfo) | Retrieve geometry instances from a collection |
@@ -178,6 +179,52 @@ Create Active Element with operation ‘Point’.
 |------------|-----------------|-------------|
 | `o.index`  | `IntegerSocket` | Index       |
 | `o.exists` | `BooleanSocket` | Exists      |
+
+### BoneInfo
+
+``` python
+BoneInfo(armature=None, bone_name='', *, transform_space='ORIGINAL')
+```
+
+Retrieve information of armature bones
+
+#### Parameters
+
+| Name      | Type        | Description | Default |
+|-----------|-------------|-------------|---------|
+| armature  | InputObject | Armature    | `None`  |
+| bone_name | InputString | Bone Name   | `''`    |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.BoneInfo.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.input.BoneInfo.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.input.BoneInfo.name) |  |
+| [`node`](#nodebpy.nodes.geometry.input.BoneInfo.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.BoneInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.BoneInfo.outputs) |  |
+| [`transform_space`](#nodebpy.nodes.geometry.input.BoneInfo.transform_space) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.BoneInfo.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.input.BoneInfo.type) |  |
+
+**Inputs**
+
+| Attribute     | Type           | Description |
+|---------------|----------------|-------------|
+| `i.armature`  | `ObjectSocket` | Armature    |
+| `i.bone_name` | `StringSocket` | Bone Name   |
+
+**Outputs**
+
+| Attribute          | Type           | Description    |
+|--------------------|----------------|----------------|
+| `o.pose`           | `MatrixSocket` | Pose           |
+| `o.local_pose`     | `MatrixSocket` | Local Pose     |
+| `o.transform_pose` | `MatrixSocket` | Transform Pose |
+| `o.rest_pose`      | `MatrixSocket` | Rest Pose      |
+| `o.rest_length`    | `FloatSocket`  | Rest Length    |
 
 ### Boolean
 

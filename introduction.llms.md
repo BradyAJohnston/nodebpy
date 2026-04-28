@@ -155,7 +155,7 @@ with g.tree(arrange=None) as tree:
     # to the zone output, which is then available for the zone.input >> join
     join >> zone.output >> g.SetPosition()
     zone.input >> join
-    g.Points(zone.i, position=g.RandomValue.vector(seed=zone.i)) >> join
+    g.Points(zone.iteration, position=g.RandomValue.vector(seed=zone.iteration)) >> join
 
 
 tree

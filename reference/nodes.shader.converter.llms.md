@@ -7,9 +7,8 @@
 | Name | Description |
 |----|----|
 | [CombineColor](#nodebpy.nodes.shader.converter.CombineColor) | Create a color from individual components using multiple models |
-| [EvaluateClosure](#nodebpy.nodes.shader.converter.EvaluateClosure) | Execute a given closure |
 | [Mix](#nodebpy.nodes.shader.converter.Mix) | Mix values by a factor |
-| [RGBToBw](#nodebpy.nodes.shader.converter.RGBToBw) | Convert a color’s luminance to a grayscale value |
+| [RGBToBW](#nodebpy.nodes.shader.converter.RGBToBW) | Convert a color’s luminance to a grayscale value |
 | [SeparateColor](#nodebpy.nodes.shader.converter.SeparateColor) | Split a color into its individual components using multiple models |
 | [ShaderToRGB](#nodebpy.nodes.shader.converter.ShaderToRGB) | Convert rendering effect (such as light and shadow) to color. Typically used for non-photorealistic rendering, to apply additional effects on the output of BSDFs. |
 | [Wavelength](#nodebpy.nodes.shader.converter.Wavelength) | Convert a wavelength value to an RGB value |
@@ -89,48 +88,6 @@ Create Combine Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color 
 | Attribute | Type          | Description |
 |-----------|---------------|-------------|
 | `o.color` | `ColorSocket` | Color       |
-
-### EvaluateClosure
-
-``` python
-EvaluateClosure(
-    closure=None,
-    *,
-    active_input_index=0,
-    active_output_index=0,
-    define_signature=False,
-)
-```
-
-Execute a given closure
-
-#### Parameters
-
-| Name    | Type         | Description | Default |
-|---------|--------------|-------------|---------|
-| closure | InputClosure | Closure     | `None`  |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`active_input_index`](#nodebpy.nodes.shader.converter.EvaluateClosure.active_input_index) |  |
-| [`active_output_index`](#nodebpy.nodes.shader.converter.EvaluateClosure.active_output_index) |  |
-| [`define_signature`](#nodebpy.nodes.shader.converter.EvaluateClosure.define_signature) |  |
-| [`i`](#nodebpy.nodes.shader.converter.EvaluateClosure.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.converter.EvaluateClosure.inputs) |  |
-| [`name`](#nodebpy.nodes.shader.converter.EvaluateClosure.name) |  |
-| [`node`](#nodebpy.nodes.shader.converter.EvaluateClosure.node) |  |
-| [`o`](#nodebpy.nodes.shader.converter.EvaluateClosure.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.converter.EvaluateClosure.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.converter.EvaluateClosure.tree) |  |
-| [`type`](#nodebpy.nodes.shader.converter.EvaluateClosure.type) |  |
-
-**Inputs**
-
-| Attribute   | Type            | Description |
-|-------------|-----------------|-------------|
-| `i.closure` | `ClosureSocket` | Closure     |
 
 ### Mix
 
@@ -246,10 +203,10 @@ Create Mix with operation ‘Vector’.
 | `o.result_color`    | `ColorSocket`    | Result      |
 | `o.result_rotation` | `RotationSocket` | Result      |
 
-### RGBToBw
+### RGBToBW
 
 ``` python
-RGBToBw(color=None)
+RGBToBW(color=None)
 ```
 
 Convert a color’s luminance to a grayscale value
@@ -264,14 +221,14 @@ Convert a color’s luminance to a grayscale value
 
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.converter.RGBToBw.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.converter.RGBToBw.inputs)   |             |
-| [`name`](#nodebpy.nodes.shader.converter.RGBToBw.name)       |             |
-| [`node`](#nodebpy.nodes.shader.converter.RGBToBw.node)       |             |
-| [`o`](#nodebpy.nodes.shader.converter.RGBToBw.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.converter.RGBToBw.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.converter.RGBToBw.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.converter.RGBToBw.type)       |             |
+| [`i`](#nodebpy.nodes.shader.converter.RGBToBW.i)             |             |
+| [`inputs`](#nodebpy.nodes.shader.converter.RGBToBW.inputs)   |             |
+| [`name`](#nodebpy.nodes.shader.converter.RGBToBW.name)       |             |
+| [`node`](#nodebpy.nodes.shader.converter.RGBToBW.node)       |             |
+| [`o`](#nodebpy.nodes.shader.converter.RGBToBW.o)             |             |
+| [`outputs`](#nodebpy.nodes.shader.converter.RGBToBW.outputs) |             |
+| [`tree`](#nodebpy.nodes.shader.converter.RGBToBW.tree)       |             |
+| [`type`](#nodebpy.nodes.shader.converter.RGBToBW.type)       |             |
 
 **Inputs**
 

@@ -6,14 +6,71 @@
 
 | Name | Description |
 |----|----|
+| [BokehImage](#nodebpy.nodes.compositor.input.BokehImage) | Generate image with bokeh shape for use with the Bokeh Blur filter node |
 | [Color](#nodebpy.nodes.compositor.input.Color) | A color picker |
+| [ImageCoordinates](#nodebpy.nodes.compositor.input.ImageCoordinates) | Returns the coordinates of the pixels of an image |
+| [ImageInfo](#nodebpy.nodes.compositor.input.ImageInfo) | Returns information about an image |
 | [Mask](#nodebpy.nodes.compositor.input.Mask) | Input mask from a mask data-block, created in the image editor |
 | [MovieClip](#nodebpy.nodes.compositor.input.MovieClip) | Input image or movie from a movie clip data-block, typically used for motion tracking |
 | [Normal](#nodebpy.nodes.compositor.input.Normal) | Input normalized normal values to other nodes in the tree |
 | [RenderLayers](#nodebpy.nodes.compositor.input.RenderLayers) | Input render passes from a scene render |
 | [SceneTime](#nodebpy.nodes.compositor.input.SceneTime) | Input the current scene time in seconds or frames |
+| [SequencerStripInfo](#nodebpy.nodes.compositor.input.SequencerStripInfo) | Returns information about the active strip of the modifier |
 | [TimeCurve](#nodebpy.nodes.compositor.input.TimeCurve) | Generate a factor value (from 0.0 to 1.0) between scene start and end time, using a curve mapping |
 | [TrackPosition](#nodebpy.nodes.compositor.input.TrackPosition) | Provide information about motion tracking points, such as x and y values |
+
+### BokehImage
+
+``` python
+BokehImage(
+    flaps=5,
+    angle=0.0,
+    roundness=0.0,
+    catadioptric_size=0.0,
+    color_shift=0.0,
+)
+```
+
+Generate image with bokeh shape for use with the Bokeh Blur filter node
+
+#### Parameters
+
+| Name              | Type         | Description       | Default |
+|-------------------|--------------|-------------------|---------|
+| flaps             | InputInteger | Flaps             | `5`     |
+| angle             | InputFloat   | Angle             | `0.0`   |
+| roundness         | InputFloat   | Roundness         | `0.0`   |
+| catadioptric_size | InputFloat   | Catadioptric Size | `0.0`   |
+| color_shift       | InputFloat   | Color Shift       | `0.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.BokehImage.i) |  |
+| [`inputs`](#nodebpy.nodes.compositor.input.BokehImage.inputs) |  |
+| [`name`](#nodebpy.nodes.compositor.input.BokehImage.name) |  |
+| [`node`](#nodebpy.nodes.compositor.input.BokehImage.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.BokehImage.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.BokehImage.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.BokehImage.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.input.BokehImage.type) |  |
+
+**Inputs**
+
+| Attribute             | Type            | Description       |
+|-----------------------|-----------------|-------------------|
+| `i.flaps`             | `IntegerSocket` | Flaps             |
+| `i.angle`             | `FloatSocket`   | Angle             |
+| `i.roundness`         | `FloatSocket`   | Roundness         |
+| `i.catadioptric_size` | `FloatSocket`   | Catadioptric Size |
+| `i.color_shift`       | `FloatSocket`   | Color Shift       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.image` | `ColorSocket` | Image       |
 
 ### Color
 
@@ -41,6 +98,90 @@ A color picker
 | Attribute | Type          | Description |
 |-----------|---------------|-------------|
 | `o.color` | `ColorSocket` | Color       |
+
+### ImageCoordinates
+
+``` python
+ImageCoordinates(image=None)
+```
+
+Returns the coordinates of the pixels of an image
+
+#### Parameters
+
+| Name  | Type       | Description | Default |
+|-------|------------|-------------|---------|
+| image | InputColor | Image       | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.ImageCoordinates.i) |  |
+| [`inputs`](#nodebpy.nodes.compositor.input.ImageCoordinates.inputs) |  |
+| [`name`](#nodebpy.nodes.compositor.input.ImageCoordinates.name) |  |
+| [`node`](#nodebpy.nodes.compositor.input.ImageCoordinates.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.ImageCoordinates.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.ImageCoordinates.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.ImageCoordinates.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.input.ImageCoordinates.type) |  |
+
+**Inputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.image` | `ColorSocket` | Image       |
+
+**Outputs**
+
+| Attribute      | Type           | Description |
+|----------------|----------------|-------------|
+| `o.uniform`    | `VectorSocket` | Uniform     |
+| `o.normalized` | `VectorSocket` | Normalized  |
+| `o.pixel`      | `VectorSocket` | Pixel       |
+
+### ImageInfo
+
+``` python
+ImageInfo(image=None)
+```
+
+Returns information about an image
+
+#### Parameters
+
+| Name  | Type       | Description | Default |
+|-------|------------|-------------|---------|
+| image | InputColor | Image       | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.ImageInfo.i) |  |
+| [`inputs`](#nodebpy.nodes.compositor.input.ImageInfo.inputs) |  |
+| [`name`](#nodebpy.nodes.compositor.input.ImageInfo.name) |  |
+| [`node`](#nodebpy.nodes.compositor.input.ImageInfo.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.ImageInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.ImageInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.ImageInfo.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.input.ImageInfo.type) |  |
+
+**Inputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.image` | `ColorSocket` | Image       |
+
+**Outputs**
+
+| Attribute      | Type           | Description |
+|----------------|----------------|-------------|
+| `o.dimensions` | `VectorSocket` | Dimensions  |
+| `o.resolution` | `VectorSocket` | Resolution  |
+| `o.location`   | `VectorSocket` | Location    |
+| `o.rotation`   | `FloatSocket`  | Rotation    |
+| `o.scale`      | `VectorSocket` | Scale       |
 
 ### Mask
 
@@ -184,39 +325,10 @@ Input render passes from a scene render
 
 **Outputs**
 
-| Attribute                 | Type           | Description           |
-|---------------------------|----------------|-----------------------|
-| `o.image`                 | `ColorSocket`  | Image                 |
-| `o.alpha`                 | `FloatSocket`  | Alpha                 |
-| `o.depth`                 | `FloatSocket`  | Depth                 |
-| `o.normal`                | `VectorSocket` | Normal                |
-| `o.uv`                    | `VectorSocket` | UV                    |
-| `o.vector`                | `VectorSocket` | Vector                |
-| `o.position`              | `VectorSocket` | Position              |
-| `o.deprecated`            | `ColorSocket`  | Deprecated            |
-| `o.deprecated_001`        | `ColorSocket`  | Deprecated            |
-| `o.shadow`                | `ColorSocket`  | Shadow                |
-| `o.ambient_occlusion`     | `ColorSocket`  | Ambient Occlusion     |
-| `o.deprecated_002`        | `ColorSocket`  | Deprecated            |
-| `o.deprecated_003`        | `ColorSocket`  | Deprecated            |
-| `o.deprecated_004`        | `ColorSocket`  | Deprecated            |
-| `o.object_index`          | `FloatSocket`  | Object Index          |
-| `o.material_index`        | `FloatSocket`  | Material Index        |
-| `o.mist`                  | `FloatSocket`  | Mist                  |
-| `o.emission`              | `ColorSocket`  | Emission              |
-| `o.environment`           | `ColorSocket`  | Environment           |
-| `o.diffuse_direct`        | `ColorSocket`  | Diffuse Direct        |
-| `o.diffuse_indirect`      | `ColorSocket`  | Diffuse Indirect      |
-| `o.diffuse_color`         | `ColorSocket`  | Diffuse Color         |
-| `o.glossy_direct`         | `ColorSocket`  | Glossy Direct         |
-| `o.glossy_indirect`       | `ColorSocket`  | Glossy Indirect       |
-| `o.glossy_color`          | `ColorSocket`  | Glossy Color          |
-| `o.transmission_direct`   | `ColorSocket`  | Transmission Direct   |
-| `o.transmission_indirect` | `ColorSocket`  | Transmission Indirect |
-| `o.transmission_color`    | `ColorSocket`  | Transmission Color    |
-| `o.subsurface_direct`     | `ColorSocket`  | Subsurface Direct     |
-| `o.subsurface_indirect`   | `ColorSocket`  | Subsurface Indirect   |
-| `o.subsurface_color`      | `ColorSocket`  | Subsurface Color      |
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.image` | `ColorSocket` | Image       |
+| `o.alpha` | `FloatSocket` | Alpha       |
 
 ### SceneTime
 
@@ -245,6 +357,37 @@ Input the current scene time in seconds or frames
 |-------------|---------------|-------------|
 | `o.seconds` | `FloatSocket` | Seconds     |
 | `o.frame`   | `FloatSocket` | Frame       |
+
+### SequencerStripInfo
+
+``` python
+SequencerStripInfo()
+```
+
+Returns information about the active strip of the modifier
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.SequencerStripInfo.i) |  |
+| [`inputs`](#nodebpy.nodes.compositor.input.SequencerStripInfo.inputs) |  |
+| [`name`](#nodebpy.nodes.compositor.input.SequencerStripInfo.name) |  |
+| [`node`](#nodebpy.nodes.compositor.input.SequencerStripInfo.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.SequencerStripInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.SequencerStripInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.SequencerStripInfo.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.input.SequencerStripInfo.type) |  |
+
+**Outputs**
+
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `o.start_frame` | `IntegerSocket` | Start Frame |
+| `o.end_frame`   | `IntegerSocket` | End Frame   |
+| `o.location`    | `VectorSocket`  | Location    |
+| `o.rotation`    | `FloatSocket`   | Rotation    |
+| `o.scale`       | `VectorSocket`  | Scale       |
 
 ### TimeCurve
 

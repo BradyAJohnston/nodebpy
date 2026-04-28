@@ -429,8 +429,10 @@ Matrix socket - 4x4 transformation matrix.
 |----|----|
 | [`default_value`](#nodebpy.builder.interface.SocketMatrix.default_value) |  |
 | [`description`](#nodebpy.builder.interface.SocketMatrix.description) |  |
+| [`determinant`](#nodebpy.builder.interface.SocketMatrix.determinant) |  |
 | [`inputs`](#nodebpy.builder.interface.SocketMatrix.inputs) |  |
 | [`interface_socket`](#nodebpy.builder.interface.SocketMatrix.interface_socket) |  |
+| [`invert`](#nodebpy.builder.interface.SocketMatrix.invert) |  |
 | [`links`](#nodebpy.builder.interface.SocketMatrix.links) |  |
 | [`name`](#nodebpy.builder.interface.SocketMatrix.name) |  |
 | [`node`](#nodebpy.builder.interface.SocketMatrix.node) |  |
@@ -440,6 +442,7 @@ Matrix socket - 4x4 transformation matrix.
 | [`socket`](#nodebpy.builder.interface.SocketMatrix.socket) |  |
 | [`socket_name`](#nodebpy.builder.interface.SocketMatrix.socket_name) |  |
 | [`translation`](#nodebpy.builder.interface.SocketMatrix.translation) |  |
+| [`transpose`](#nodebpy.builder.interface.SocketMatrix.transpose) |  |
 | [`tree`](#nodebpy.builder.interface.SocketMatrix.tree) |  |
 | [`type`](#nodebpy.builder.interface.SocketMatrix.type) |  |
 
@@ -536,8 +539,10 @@ Rotation socket - rotation value (Euler or Quaternion).
 |----|----|
 | [`default_value`](#nodebpy.builder.interface.SocketRotation.default_value) |  |
 | [`description`](#nodebpy.builder.interface.SocketRotation.description) |  |
+| [`euler`](#nodebpy.builder.interface.SocketRotation.euler) |  |
 | [`inputs`](#nodebpy.builder.interface.SocketRotation.inputs) |  |
 | [`interface_socket`](#nodebpy.builder.interface.SocketRotation.interface_socket) |  |
+| [`invert`](#nodebpy.builder.interface.SocketRotation.invert) |  |
 | [`links`](#nodebpy.builder.interface.SocketRotation.links) |  |
 | [`name`](#nodebpy.builder.interface.SocketRotation.name) |  |
 | [`node`](#nodebpy.builder.interface.SocketRotation.node) |  |

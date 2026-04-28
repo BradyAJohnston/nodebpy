@@ -163,6 +163,7 @@ Perform vector math operation
 | [project](#nodebpy.nodes.geometry.vector.VectorMath.project) | Create Vector Math with operation ‘Project’. Project A onto B |
 | [reflect](#nodebpy.nodes.geometry.vector.VectorMath.reflect) | Create Vector Math with operation ‘Reflect’. Reflect A around the normal B. B does not need to be normalized. |
 | [refract](#nodebpy.nodes.geometry.vector.VectorMath.refract) | Create Vector Math with operation ‘Refract’. For a given incident vector A, surface normal B and ratio of indices of refraction, Ior, refract returns the refraction vector, R |
+| [round](#nodebpy.nodes.geometry.vector.VectorMath.round) | Create Vector Math with operation ‘Round’. Entry-wise round to the nearest integer. Round upward if the fraction part is 0.5 |
 | [scale](#nodebpy.nodes.geometry.vector.VectorMath.scale) | Create Vector Math with operation ‘Scale’. A multiplied by Scale |
 | [sign](#nodebpy.nodes.geometry.vector.VectorMath.sign) | Create Vector Math with operation ‘Sign’. Entry-wise sign |
 | [sine](#nodebpy.nodes.geometry.vector.VectorMath.sine) | Create Vector Math with operation ‘Sine’. Entry-wise sin(A) |
@@ -346,6 +347,14 @@ refract(vector=None, vector_001=None, scale=1.0)
 ```
 
 Create Vector Math with operation ‘Refract’. For a given incident vector A, surface normal B and ratio of indices of refraction, Ior, refract returns the refraction vector, R
+
+##### round
+
+``` python
+round(vector=None)
+```
+
+Create Vector Math with operation ‘Round’. Entry-wise round to the nearest integer. Round upward if the fraction part is 0.5
 
 ##### scale
 

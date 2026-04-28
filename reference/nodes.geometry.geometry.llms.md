@@ -30,6 +30,7 @@
 | [FilletCurve](#nodebpy.nodes.geometry.geometry.FilletCurve) | Round corners by generating circular arcs on each control point |
 | [FlipFaces](#nodebpy.nodes.geometry.geometry.FlipFaces) | Reverse the order of the vertices and edges of selected faces, flipping their normal direction |
 | [GeometryProximity](#nodebpy.nodes.geometry.geometry.GeometryProximity) | Compute the closest location on the target geometry |
+| [GetGeometryBundle](#nodebpy.nodes.geometry.geometry.GetGeometryBundle) | Get the bundle of a geometry |
 | [GreasePencilToCurves](#nodebpy.nodes.geometry.geometry.GreasePencilToCurves) | Convert Grease Pencil layers into curve instances |
 | [Grid](#nodebpy.nodes.geometry.geometry.Grid) | Generate a planar mesh on the XY plane |
 | [IcoSphere](#nodebpy.nodes.geometry.geometry.IcoSphere) | Generate a spherical mesh that consists of equally sized triangles |
@@ -54,8 +55,6 @@
 | [ResampleCurve](#nodebpy.nodes.geometry.geometry.ResampleCurve) | Generate a poly spline for each input spline |
 | [ReverseCurve](#nodebpy.nodes.geometry.geometry.ReverseCurve) | Change the direction of curves by swapping their start and end data |
 | [RotateInstances](#nodebpy.nodes.geometry.geometry.RotateInstances) | Rotate geometry instances in local or global space |
-| [SampleCurve](#nodebpy.nodes.geometry.geometry.SampleCurve) | Retrieve data from a point on a curve at a certain distance from its start |
-| [SampleIndex](#nodebpy.nodes.geometry.geometry.SampleIndex) | Retrieve values from specific geometry elements |
 | [SampleNearest](#nodebpy.nodes.geometry.geometry.SampleNearest) | Find the element of a geometry closest to a position. Similar to the “Index of Nearest” node |
 | [SampleNearestSurface](#nodebpy.nodes.geometry.geometry.SampleNearestSurface) | Calculate the interpolated value of a mesh attribute on the closest point of its surface |
 | [SampleUVSurface](#nodebpy.nodes.geometry.geometry.SampleUVSurface) | Calculate the interpolated values of a mesh attribute at a UV coordinate |
@@ -67,6 +66,7 @@
 | [SetCurveRadius](#nodebpy.nodes.geometry.geometry.SetCurveRadius) | Set the radius of the curve at each control point |
 | [SetCurveTilt](#nodebpy.nodes.geometry.geometry.SetCurveTilt) | Set the tilt angle at each curve control point |
 | [SetFaceSet](#nodebpy.nodes.geometry.geometry.SetFaceSet) | Set sculpt face set values for faces |
+| [SetGeometryBundle](#nodebpy.nodes.geometry.geometry.SetGeometryBundle) | Set the bundle of a geometry |
 | [SetGeometryName](#nodebpy.nodes.geometry.geometry.SetGeometryName) | Set the name of a geometry for easier debugging |
 | [SetGreasePencilColor](#nodebpy.nodes.geometry.geometry.SetGreasePencilColor) | Set color and opacity attributes on Grease Pencil geometry |
 | [SetGreasePencilDepth](#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth) | Set the Grease Pencil depth order to use |
@@ -1495,7 +1495,7 @@ Create Extrude Mesh with operation ‘Vertices’.
 ### FillCurve
 
 ``` python
-FillCurve(curve=None, group_id=0, mode='Triangles')
+FillCurve(curve=None, group_id=0, mode='Triangles', fill_rule='Even-Odd')
 ```
 
 Generate a mesh on the XY plane with faces on the inside of input curves
@@ -1507,6 +1507,7 @@ Generate a mesh on the XY plane with faces on the inside of input curves
 | curve | InputGeometry | Curve | `None` |
 | group_id | InputInteger | Group ID | `0` |
 | mode | InputMenu \| Literal\['Triangles', 'N-gons'\] | Mode | `'Triangles'` |
+| fill_rule | InputMenu \| Literal\['Even-Odd', 'Non-Zero'\] | Fill Rule | `'Even-Odd'` |
 
 #### Attributes
 
@@ -1523,11 +1524,12 @@ Generate a mesh on the XY plane with faces on the inside of input curves
 
 **Inputs**
 
-| Attribute    | Type             | Description |
-|--------------|------------------|-------------|
-| `i.curve`    | `GeometrySocket` | Curve       |
-| `i.group_id` | `IntegerSocket`  | Group ID    |
-| `i.mode`     | `MenuSocket`     | Mode        |
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `i.curve`     | `GeometrySocket` | Curve       |
+| `i.group_id`  | `IntegerSocket`  | Group ID    |
+| `i.mode`      | `MenuSocket`     | Mode        |
+| `i.fill_rule` | `MenuSocket`     | Fill Rule   |
 
 **Outputs**
 
@@ -1677,6 +1679,48 @@ Compute the closest location on the target geometry
 | `o.position` | `VectorSocket`  | Position    |
 | `o.distance` | `FloatSocket`   | Distance    |
 | `o.is_valid` | `BooleanSocket` | Is Valid    |
+
+### GetGeometryBundle
+
+``` python
+GetGeometryBundle(geometry=None, remove=False)
+```
+
+Get the bundle of a geometry
+
+#### Parameters
+
+| Name     | Type          | Description | Default |
+|----------|---------------|-------------|---------|
+| geometry | InputGeometry | Geometry    | `None`  |
+| remove   | InputBoolean  | Remove      | `False` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.type) |  |
+
+**Inputs**
+
+| Attribute    | Type             | Description |
+|--------------|------------------|-------------|
+| `i.geometry` | `GeometrySocket` | Geometry    |
+| `i.remove`   | `BooleanSocket`  | Remove      |
+
+**Outputs**
+
+| Attribute    | Type             | Description |
+|--------------|------------------|-------------|
+| `o.geometry` | `GeometrySocket` | Geometry    |
+| `o.bundle`   | `BundleSocket`   | Bundle      |
 
 ### GreasePencilToCurves
 
@@ -2930,7 +2974,14 @@ Create Raycast with operation ‘Vector’. 3D vector with floating-point values
 ### RealizeInstances
 
 ``` python
-RealizeInstances(geometry=None, selection=True, realize_all=True, depth=0)
+RealizeInstances(
+    geometry=None,
+    selection=True,
+    realize_all=True,
+    depth=0,
+    *,
+    realize_to_point_domain=False,
+)
 ```
 
 Convert instances into real geometry data
@@ -2954,6 +3005,7 @@ Convert instances into real geometry data
 | [`node`](#nodebpy.nodes.geometry.geometry.RealizeInstances.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.RealizeInstances.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.geometry.RealizeInstances.outputs) |  |
+| [`realize_to_point_domain`](#nodebpy.nodes.geometry.geometry.RealizeInstances.realize_to_point_domain) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.RealizeInstances.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.geometry.RealizeInstances.type) |  |
 
@@ -3164,340 +3216,6 @@ Rotate geometry instances in local or global space
 | Attribute     | Type             | Description |
 |---------------|------------------|-------------|
 | `o.instances` | `GeometrySocket` | Instances   |
-
-### SampleCurve
-
-``` python
-SampleCurve(
-    curves=None,
-    value=0.0,
-    factor=0.0,
-    length=0.0,
-    curve_index=0,
-    *,
-    mode='FACTOR',
-    use_all_curves=False,
-    data_type='FLOAT',
-)
-```
-
-Retrieve data from a point on a curve at a certain distance from its start
-
-#### Parameters
-
-| Name        | Type          | Description | Default |
-|-------------|---------------|-------------|---------|
-| curves      | InputGeometry | Curves      | `None`  |
-| value       | InputFloat    | Value       | `0.0`   |
-| factor      | InputFloat    | Factor      | `0.0`   |
-| length      | InputFloat    | Length      | `0.0`   |
-| curve_index | InputInteger  | Curve Index | `0`     |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`data_type`](#nodebpy.nodes.geometry.geometry.SampleCurve.data_type) |  |
-| [`i`](#nodebpy.nodes.geometry.geometry.SampleCurve.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.geometry.SampleCurve.inputs) |  |
-| [`mode`](#nodebpy.nodes.geometry.geometry.SampleCurve.mode) |  |
-| [`name`](#nodebpy.nodes.geometry.geometry.SampleCurve.name) |  |
-| [`node`](#nodebpy.nodes.geometry.geometry.SampleCurve.node) |  |
-| [`o`](#nodebpy.nodes.geometry.geometry.SampleCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SampleCurve.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.geometry.SampleCurve.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.geometry.SampleCurve.type) |  |
-| [`use_all_curves`](#nodebpy.nodes.geometry.geometry.SampleCurve.use_all_curves) |  |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [boolean](#nodebpy.nodes.geometry.geometry.SampleCurve.boolean) | Create Sample Curve with operation ‘Boolean’. True or false |
-| [color](#nodebpy.nodes.geometry.geometry.SampleCurve.color) | Create Sample Curve with operation ‘Color’. RGBA color with 32-bit floating-point values |
-| [factor](#nodebpy.nodes.geometry.geometry.SampleCurve.factor) | Create Sample Curve with operation ‘Factor’. Find sample positions on the curve using a factor of its total length |
-| [float](#nodebpy.nodes.geometry.geometry.SampleCurve.float) | Create Sample Curve with operation ‘Float’. Floating-point value |
-| [input_4x4_matrix](#nodebpy.nodes.geometry.geometry.SampleCurve.input_4x4_matrix) | Create Sample Curve with operation ‘4x4 Matrix’. Floating point matrix |
-| [integer](#nodebpy.nodes.geometry.geometry.SampleCurve.integer) | Create Sample Curve with operation ‘Integer’. 32-bit integer |
-| [length](#nodebpy.nodes.geometry.geometry.SampleCurve.length) | Create Sample Curve with operation ‘Length’. Find sample positions on the curve using a distance from its beginning |
-| [quaternion](#nodebpy.nodes.geometry.geometry.SampleCurve.quaternion) | Create Sample Curve with operation ‘Quaternion’. Floating point quaternion rotation |
-| [vector](#nodebpy.nodes.geometry.geometry.SampleCurve.vector) | Create Sample Curve with operation ‘Vector’. 3D vector with floating-point values |
-
-##### boolean
-
-``` python
-boolean(curves=None, value=False, factor=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘Boolean’. True or false
-
-##### color
-
-``` python
-color(curves=None, value=None, factor=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘Color’. RGBA color with 32-bit floating-point values
-
-##### factor
-
-``` python
-factor(curves=None, value=0.0, factor=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘Factor’. Find sample positions on the curve using a factor of its total length
-
-##### float
-
-``` python
-float(curves=None, value=0.0, factor=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘Float’. Floating-point value
-
-##### input_4x4_matrix
-
-``` python
-input_4x4_matrix(curves=None, value=None, factor=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘4x4 Matrix’. Floating point matrix
-
-##### integer
-
-``` python
-integer(curves=None, value=0, factor=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘Integer’. 32-bit integer
-
-##### length
-
-``` python
-length(curves=None, value=0.0, length=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘Length’. Find sample positions on the curve using a distance from its beginning
-
-##### quaternion
-
-``` python
-quaternion(curves=None, value=None, factor=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘Quaternion’. Floating point quaternion rotation
-
-##### vector
-
-``` python
-vector(curves=None, value=None, factor=0.0, curve_index=0)
-```
-
-Create Sample Curve with operation ‘Vector’. 3D vector with floating-point values
-
-**Inputs**
-
-| Attribute       | Type             | Description |
-|-----------------|------------------|-------------|
-| `i.curves`      | `GeometrySocket` | Curves      |
-| `i.value`       | `FloatSocket`    | Value       |
-| `i.factor`      | `FloatSocket`    | Factor      |
-| `i.length`      | `FloatSocket`    | Length      |
-| `i.curve_index` | `IntegerSocket`  | Curve Index |
-
-**Outputs**
-
-| Attribute    | Type           | Description |
-|--------------|----------------|-------------|
-| `o.value`    | `FloatSocket`  | Value       |
-| `o.position` | `VectorSocket` | Position    |
-| `o.tangent`  | `VectorSocket` | Tangent     |
-| `o.normal`   | `VectorSocket` | Normal      |
-
-### SampleIndex
-
-``` python
-SampleIndex(
-    geometry=None,
-    value=0.0,
-    index=0,
-    *,
-    data_type='FLOAT',
-    domain='POINT',
-    clamp=False,
-)
-```
-
-Retrieve values from specific geometry elements
-
-#### Parameters
-
-| Name     | Type          | Description | Default |
-|----------|---------------|-------------|---------|
-| geometry | InputGeometry | Geometry    | `None`  |
-| value    | InputFloat    | Value       | `0.0`   |
-| index    | InputInteger  | Index       | `0`     |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`clamp`](#nodebpy.nodes.geometry.geometry.SampleIndex.clamp) |  |
-| [`data_type`](#nodebpy.nodes.geometry.geometry.SampleIndex.data_type) |  |
-| [`domain`](#nodebpy.nodes.geometry.geometry.SampleIndex.domain) |  |
-| [`i`](#nodebpy.nodes.geometry.geometry.SampleIndex.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.geometry.SampleIndex.inputs) |  |
-| [`name`](#nodebpy.nodes.geometry.geometry.SampleIndex.name) |  |
-| [`node`](#nodebpy.nodes.geometry.geometry.SampleIndex.node) |  |
-| [`o`](#nodebpy.nodes.geometry.geometry.SampleIndex.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SampleIndex.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.geometry.SampleIndex.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.geometry.SampleIndex.type) |  |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [boolean](#nodebpy.nodes.geometry.geometry.SampleIndex.boolean) | Create Sample Index with operation ‘Boolean’. True or false |
-| [color](#nodebpy.nodes.geometry.geometry.SampleIndex.color) | Create Sample Index with operation ‘Color’. RGBA color with 32-bit floating-point values |
-| [edge](#nodebpy.nodes.geometry.geometry.SampleIndex.edge) | Create Sample Index with operation ‘Edge’. Attribute on mesh edge |
-| [face](#nodebpy.nodes.geometry.geometry.SampleIndex.face) | Create Sample Index with operation ‘Face’. Attribute on mesh faces |
-| [face_corner](#nodebpy.nodes.geometry.geometry.SampleIndex.face_corner) | Create Sample Index with operation ‘Face Corner’. Attribute on mesh face corner |
-| [float](#nodebpy.nodes.geometry.geometry.SampleIndex.float) | Create Sample Index with operation ‘Float’. Floating-point value |
-| [input_4x4_matrix](#nodebpy.nodes.geometry.geometry.SampleIndex.input_4x4_matrix) | Create Sample Index with operation ‘4x4 Matrix’. Floating point matrix |
-| [instance](#nodebpy.nodes.geometry.geometry.SampleIndex.instance) | Create Sample Index with operation ‘Instance’. Attribute on instance |
-| [integer](#nodebpy.nodes.geometry.geometry.SampleIndex.integer) | Create Sample Index with operation ‘Integer’. 32-bit integer |
-| [layer](#nodebpy.nodes.geometry.geometry.SampleIndex.layer) | Create Sample Index with operation ‘Layer’. Attribute on Grease Pencil layer |
-| [point](#nodebpy.nodes.geometry.geometry.SampleIndex.point) | Create Sample Index with operation ‘Point’. Attribute on point |
-| [quaternion](#nodebpy.nodes.geometry.geometry.SampleIndex.quaternion) | Create Sample Index with operation ‘Quaternion’. Floating point quaternion rotation |
-| [spline](#nodebpy.nodes.geometry.geometry.SampleIndex.spline) | Create Sample Index with operation ‘Spline’. Attribute on spline |
-| [vector](#nodebpy.nodes.geometry.geometry.SampleIndex.vector) | Create Sample Index with operation ‘Vector’. 3D vector with floating-point values |
-
-##### boolean
-
-``` python
-boolean(geometry=None, value=False, index=0)
-```
-
-Create Sample Index with operation ‘Boolean’. True or false
-
-##### color
-
-``` python
-color(geometry=None, value=None, index=0)
-```
-
-Create Sample Index with operation ‘Color’. RGBA color with 32-bit floating-point values
-
-##### edge
-
-``` python
-edge(geometry=None, value=0.0, index=0)
-```
-
-Create Sample Index with operation ‘Edge’. Attribute on mesh edge
-
-##### face
-
-``` python
-face(geometry=None, value=0.0, index=0)
-```
-
-Create Sample Index with operation ‘Face’. Attribute on mesh faces
-
-##### face_corner
-
-``` python
-face_corner(geometry=None, value=0.0, index=0)
-```
-
-Create Sample Index with operation ‘Face Corner’. Attribute on mesh face corner
-
-##### float
-
-``` python
-float(geometry=None, value=0.0, index=0)
-```
-
-Create Sample Index with operation ‘Float’. Floating-point value
-
-##### input_4x4_matrix
-
-``` python
-input_4x4_matrix(geometry=None, value=None, index=0)
-```
-
-Create Sample Index with operation ‘4x4 Matrix’. Floating point matrix
-
-##### instance
-
-``` python
-instance(geometry=None, value=0.0, index=0)
-```
-
-Create Sample Index with operation ‘Instance’. Attribute on instance
-
-##### integer
-
-``` python
-integer(geometry=None, value=0, index=0)
-```
-
-Create Sample Index with operation ‘Integer’. 32-bit integer
-
-##### layer
-
-``` python
-layer(geometry=None, value=0.0, index=0)
-```
-
-Create Sample Index with operation ‘Layer’. Attribute on Grease Pencil layer
-
-##### point
-
-``` python
-point(geometry=None, value=0.0, index=0)
-```
-
-Create Sample Index with operation ‘Point’. Attribute on point
-
-##### quaternion
-
-``` python
-quaternion(geometry=None, value=None, index=0)
-```
-
-Create Sample Index with operation ‘Quaternion’. Floating point quaternion rotation
-
-##### spline
-
-``` python
-spline(geometry=None, value=0.0, index=0)
-```
-
-Create Sample Index with operation ‘Spline’. Attribute on spline
-
-##### vector
-
-``` python
-vector(geometry=None, value=None, index=0)
-```
-
-Create Sample Index with operation ‘Vector’. 3D vector with floating-point values
-
-**Inputs**
-
-| Attribute    | Type             | Description |
-|--------------|------------------|-------------|
-| `i.geometry` | `GeometrySocket` | Geometry    |
-| `i.value`    | `FloatSocket`    | Value       |
-| `i.index`    | `IntegerSocket`  | Index       |
-
-**Outputs**
-
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.value` | `FloatSocket` | Value       |
 
 ### SampleNearest
 
@@ -4325,6 +4043,47 @@ Set sculpt face set values for faces
 | Attribute | Type             | Description |
 |-----------|------------------|-------------|
 | `o.mesh`  | `GeometrySocket` | Mesh        |
+
+### SetGeometryBundle
+
+``` python
+SetGeometryBundle(geometry=None, bundle=None)
+```
+
+Set the bundle of a geometry
+
+#### Parameters
+
+| Name     | Type          | Description | Default |
+|----------|---------------|-------------|---------|
+| geometry | InputGeometry | Geometry    | `None`  |
+| bundle   | InputBundle   | Bundle      | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.type) |  |
+
+**Inputs**
+
+| Attribute    | Type             | Description |
+|--------------|------------------|-------------|
+| `i.geometry` | `GeometrySocket` | Geometry    |
+| `i.bundle`   | `BundleSocket`   | Bundle      |
+
+**Outputs**
+
+| Attribute    | Type             | Description |
+|--------------|------------------|-------------|
+| `o.geometry` | `GeometrySocket` | Geometry    |
 
 ### SetGeometryName
 
@@ -5695,16 +5454,16 @@ Generate a poly spline in a star pattern by connecting alternating points of two
 StringToCurves(
     string='',
     size=1.0,
+    font=None,
+    align_x='Left',
+    align_y='Top Baseline',
+    pivot_point='Midpoint',
     character_spacing=1.0,
     word_spacing=1.0,
     line_spacing=1.0,
+    overflow='Overflow',
     text_box_width=0.0,
     text_box_height=0.0,
-    *,
-    overflow='OVERFLOW',
-    align_x='LEFT',
-    align_y='TOP_BASELINE',
-    pivot_mode='BOTTOM_LEFT',
 )
 ```
 
@@ -5712,30 +5471,31 @@ Generate a paragraph of text with a specific font, using a curve instance to sto
 
 #### Parameters
 
-| Name              | Type        | Description       | Default |
-|-------------------|-------------|-------------------|---------|
-| string            | InputString | String            | `''`    |
-| size              | InputFloat  | Size              | `1.0`   |
-| character_spacing | InputFloat  | Character Spacing | `1.0`   |
-| word_spacing      | InputFloat  | Word Spacing      | `1.0`   |
-| line_spacing      | InputFloat  | Line Spacing      | `1.0`   |
-| text_box_width    | InputFloat  | Text Box Width    | `0.0`   |
-| text_box_height   | InputFloat  | Text Box Height   | `0.0`   |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| string | InputString | String | `''` |
+| size | InputFloat | Size | `1.0` |
+| font | InputFont | Font | `None` |
+| align_x | InputMenu \| Literal\['Left', 'Center', 'Right', 'Justify', 'Flush'\] | Align X | `'Left'` |
+| align_y | InputMenu \| Literal\['Top', 'Top Baseline', 'Middle', 'Bottom Baseline', 'Bottom'\] | Align Y | `'Top Baseline'` |
+| pivot_point | InputMenu \| Literal\['Midpoint', 'Top Left', 'Top Center', 'Top Right', 'Bottom Left', 'Bottom Center', 'Bottom Right'\] | Pivot Point | `'Midpoint'` |
+| character_spacing | InputFloat | Character Spacing | `1.0` |
+| word_spacing | InputFloat | Word Spacing | `1.0` |
+| line_spacing | InputFloat | Line Spacing | `1.0` |
+| overflow | InputMenu \| Literal\['Overflow', 'Scale To Fit', 'Truncate'\] | Overflow | `'Overflow'` |
+| text_box_width | InputFloat | Text Box Width | `0.0` |
+| text_box_height | InputFloat | Text Box Height | `0.0` |
 
 #### Attributes
 
 | Name | Description |
 |----|----|
-| [`align_x`](#nodebpy.nodes.geometry.geometry.StringToCurves.align_x) |  |
-| [`align_y`](#nodebpy.nodes.geometry.geometry.StringToCurves.align_y) |  |
 | [`i`](#nodebpy.nodes.geometry.geometry.StringToCurves.i) |  |
 | [`inputs`](#nodebpy.nodes.geometry.geometry.StringToCurves.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.geometry.StringToCurves.name) |  |
 | [`node`](#nodebpy.nodes.geometry.geometry.StringToCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.StringToCurves.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.geometry.StringToCurves.outputs) |  |
-| [`overflow`](#nodebpy.nodes.geometry.geometry.StringToCurves.overflow) |  |
-| [`pivot_mode`](#nodebpy.nodes.geometry.geometry.StringToCurves.pivot_mode) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.StringToCurves.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.geometry.StringToCurves.type) |  |
 
@@ -5745,9 +5505,14 @@ Generate a paragraph of text with a specific font, using a curve instance to sto
 |-----------------------|----------------|-------------------|
 | `i.string`            | `StringSocket` | String            |
 | `i.size`              | `FloatSocket`  | Size              |
+| `i.font`              | `FontSocket`   | Font              |
+| `i.align_x`           | `MenuSocket`   | Align X           |
+| `i.align_y`           | `MenuSocket`   | Align Y           |
+| `i.pivot_point`       | `MenuSocket`   | Pivot Point       |
 | `i.character_spacing` | `FloatSocket`  | Character Spacing |
 | `i.word_spacing`      | `FloatSocket`  | Word Spacing      |
 | `i.line_spacing`      | `FloatSocket`  | Line Spacing      |
+| `i.overflow`          | `MenuSocket`   | Overflow          |
 | `i.text_box_width`    | `FloatSocket`  | Text Box Width    |
 | `i.text_box_height`   | `FloatSocket`  | Text Box Height   |
 
@@ -5758,6 +5523,7 @@ Generate a paragraph of text with a specific font, using a curve instance to sto
 | `o.curve_instances` | `GeometrySocket` | Curve Instances |
 | `o.remainder`       | `StringSocket`   | Remainder       |
 | `o.line`            | `IntegerSocket`  | Line            |
+| `o.word`            | `IntegerSocket`  | Word            |
 | `o.pivot_point`     | `VectorSocket`   | Pivot Point     |
 
 ### SubdivideCurve

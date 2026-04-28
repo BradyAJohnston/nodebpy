@@ -1,4 +1,4 @@
-# nodebpy 0.10.2
+# nodebpy 0.13.0
 
 ## Pages
 
@@ -22,12 +22,11 @@
 - [nodes.compositor.output](reference/nodes.compositor.output.llms.md)
 - [nodes.geometry.converter](reference/nodes.geometry.converter.llms.md)
 - [nodes.geometry.vector](reference/nodes.geometry.vector.llms.md)
-- [Custom Node Groups](custom-node-groups.llms.md)
-- [Changelog](changelog.llms.md)
-- [Node API Design](node-api.llms.md)
-- [index](index.llms.md)
 - [Writing Node Trees](introduction.llms.md)
-- [nodes.shader.interface](reference/nodes.shader.interface.llms.md)
+- [index](index.llms.md)
+- [Node API Design](node-api.llms.md)
+- [Changelog](changelog.llms.md)
+- [Custom Node Groups](custom-node-groups.llms.md)
 - [nodes.compositor.interface](reference/nodes.compositor.interface.llms.md)
 - [nodes.shader.vector](reference/nodes.shader.vector.llms.md)
 - [nodes.compositor.manual](reference/nodes.compositor.manual.llms.md)

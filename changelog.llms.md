@@ -4,7 +4,56 @@
 
 ### Enhancements
 
-- Refactor the mermaid diagram generation. Change `screenshot.py` -\> `diagram.py` and added test coverage
+- Support adding of closure nodes (`EvaluateClosure` and the `ClosureInput` / `ClosureOutput` nodes). Convenience `ClosureZone` class is added similar to the repeat, simulation and for-each-element zones. ([`#60`](https://github.com/BradyAJohnston/nodebpy/pull/60))
+- Iteration output for the `RepeatZone` has change `.i` -\> `.iteration` to not confuse with input / output socket access ([`#60`](https://github.com/BradyAJohnston/nodebpy/pull/60))
+- Add a `Float()` class which just wraps the `Value()` class / node but is better for hinting towards it’s type and more discoverage (`[#58](https://github.com/BradyAJohnston/nodebpy/pull/58)`)
+
+### Bug Fixes
+
+- Properly expose mode, domain and data_type as methods and method factories for `SampleIndex` and `SampleCurve`. ([`#61`](https://github.com/BradyAJohnston/nodebpy/pull/61))
+- Math on a `ColorSocket` now uses the `VectorMath` instead of `Math` preserving the RGB channels as XYZ. ([`#56`](https://github.com/BradyAJohnston/nodebpy/pull/56))
+
+## v0.12.0 - 2026-04-25
+
+### Enhancements
+
+- Support custom node groups for each node tree via `CustomGeometryGroup`, `CustomShaderGroup`, `CustomCompositorGroup` ([`#53`](https://github.com/BradyAJohnston/nodebpy/pull/53))
+
+## v0.11.1 - 2026-04-24
+
+### Bug Fixes
+
+- Fix type inference for the `>>` operator in chains, properly propagating the correct node’s return type.
+
+## v0.11.0 — 2026-04-24
+
+### Enhancements
+
+- Refactor the mermaid diagram generation. Change `screenshot.py` -\> `diagram.py` and added test coverage.
+- **Socket iteration and indexing** — `VectorSocket`, `ColorSocket`, and `MatrixSocket` now support `__getitem__`, `__iter__`, and `__len__` on both output and input sockets. ([\#48](https://github.com/BradyAJohnston/nodebpy/pull/48)) Output sockets decompose via `SeparateXYZ`/`SeparateColor`/`SeparateMatrix` (node reuse on repeated access); input sockets auto-wire a `CombineXYZ`/`CombineColor`/`CombineMatrix` and return the component input socket.
+
+``` python
+for i, axis in enumerate(g.Position().o.position):
+    math = axis * float(i)
+
+# Pipe a value into the Y component of a position input
+g.Value(5.0) >> g.SetPosition().i.position[1]
+
+mat = g.InstanceTransform().o.transform
+vec = g.CombineXYZ(*mat[:3])
+```
+
+- **`RotationSocket`/`MatrixSocket` helpers** — Added `.invert` and `.transpose` properties on `MatrixSocket`, `.invert` on `RotationSocket`, following the same node-reuse pattern as `.x`/`.y`/`.z`.
+- **`SocketAccessor` overloads** — `__getitem__` and `_get` are overloaded so slices return `list[Socket]` and str/int keys return `Socket`, eliminating the `Socket | list[Socket]` union that was blocking `enumerate` and unpacking.
+- **Blender 5.1 compatibility** — Generator updated for Blender 5.1: `FontSocket` type, `Frame` node moved to `manually_defined`, `SVD` class name normalisation, and classmethod param deduplication fix (`min_x`/`min_y`/`min_z` no longer collapsed to `min`). ([\#50](https://github.com/BradyAJohnston/nodebpy/pull/50))
+- **Precise operator return types** — Arithmetic operators on `FloatSocket` → `Math`, `VectorSocket` → `VectorMath`, `IntegerSocket` → `IntegerMath`. Comparison operators (`<`, `>`, `<=`, `>=`, `==`, `!=`) → `Compare`. The `>>` operator is typed via `TypeVar` so the right-hand operand’s exact type is preserved through chains.
+- **Generic factory nodes** — `AccumulateField`, `EvaluateAtIndex`, `FieldAverage`, `FieldMinAndMax`, `EvaluateOnDomain`, `FieldVariance`, and `Compare` are now `Generic[_T]`. Their `_Inputs`/`_Outputs` inner classes carry the type parameter so e.g. `.point.vector(...)` returns `FieldAverage[VectorSocket]` and `.o.mean` resolves to `VectorSocket`.
+
+### Bug Fixes
+
+- Fix doc building and will only deploy on tagged releases. ([\#49](https://github.com/BradyAJohnston/nodebpy/pull/49))
+- **Domain factory pattern** — All `_domain_factory` / local-class patterns replaced with proper `_DomainFactory` inner classes (including `CaptureAttribute`) so the type checker can resolve their return types.
+- **`SocketAccessor` identifier lookup fix** — Added a normalised-identifier pass (`normalize_name(id)`) so attribute access like `.i.value_001` correctly resolves Blender identifiers such as `Value_001` that cannot be round-tripped through `denormalize_name`.
 
 ## v0.10.2 - 2026-04-21
 

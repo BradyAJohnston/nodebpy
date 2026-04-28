@@ -19,6 +19,7 @@
 | [ObjectInfo](#nodebpy.nodes.shader.input.ObjectInfo) | Retrieve information about the object instance |
 | [ParticleInfo](#nodebpy.nodes.shader.input.ParticleInfo) | Retrieve the data of the particle that spawned the object instance, for example to give variation to multiple instances of an object |
 | [PointInfo](#nodebpy.nodes.shader.input.PointInfo) | Retrieve information about points in a point cloud |
+| [Raycast](#nodebpy.nodes.shader.input.Raycast) | Cast rays and retrieve information from the hit point |
 | [Tangent](#nodebpy.nodes.shader.input.Tangent) | Generate a tangent direction for the Anisotropic BSDF |
 | [TextureCoordinate](#nodebpy.nodes.shader.input.TextureCoordinate) | Retrieve multiple types of texture coordinates. |
 | [UVAlongStroke](#nodebpy.nodes.shader.input.UVAlongStroke) | UV coordinates that map a texture along the stroke length |
@@ -515,6 +516,54 @@ Retrieve information about points in a point cloud
 | `o.position` | `VectorSocket` | Position    |
 | `o.radius`   | `FloatSocket`  | Radius      |
 | `o.random`   | `FloatSocket`  | Random      |
+
+### Raycast
+
+``` python
+Raycast(position=None, direction=None, length=1.0, *, only_local=False)
+```
+
+Cast rays and retrieve information from the hit point
+
+#### Parameters
+
+| Name      | Type        | Description | Default |
+|-----------|-------------|-------------|---------|
+| position  | InputVector | Position    | `None`  |
+| direction | InputVector | Direction   | `None`  |
+| length    | InputFloat  | Length      | `1.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.Raycast.i) |  |
+| [`inputs`](#nodebpy.nodes.shader.input.Raycast.inputs) |  |
+| [`name`](#nodebpy.nodes.shader.input.Raycast.name) |  |
+| [`node`](#nodebpy.nodes.shader.input.Raycast.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.Raycast.o) |  |
+| [`only_local`](#nodebpy.nodes.shader.input.Raycast.only_local) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.Raycast.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Raycast.tree) |  |
+| [`type`](#nodebpy.nodes.shader.input.Raycast.type) |  |
+
+**Inputs**
+
+| Attribute     | Type           | Description |
+|---------------|----------------|-------------|
+| `i.position`  | `VectorSocket` | Position    |
+| `i.direction` | `VectorSocket` | Direction   |
+| `i.length`    | `FloatSocket`  | Length      |
+
+**Outputs**
+
+| Attribute        | Type           | Description  |
+|------------------|----------------|--------------|
+| `o.is_hit`       | `FloatSocket`  | Is Hit       |
+| `o.self_hit`     | `FloatSocket`  | Self Hit     |
+| `o.hit_distance` | `FloatSocket`  | Hit Distance |
+| `o.hit_position` | `VectorSocket` | Hit Position |
+| `o.hit_normal`   | `VectorSocket` | Hit Normal   |
 
 ### Tangent
 

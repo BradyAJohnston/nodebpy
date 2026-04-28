@@ -260,7 +260,15 @@ Generate a normal vector and a dot product
 ### NormalMap
 
 ``` python
-NormalMap(strength=1.0, color=None, *, space='TANGENT', uv_map='')
+NormalMap(
+    strength=1.0,
+    color=None,
+    *,
+    space='TANGENT',
+    uv_map='',
+    convention='OPENGL',
+    base='DISPLACED',
+)
 ```
 
 Generate a perturbed normal from an RGB normal map image. Typically used for faking highly detailed surfaces
@@ -274,18 +282,20 @@ Generate a perturbed normal from an RGB normal map image. Typically used for fak
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.vector.NormalMap.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.vector.NormalMap.inputs)   |             |
-| [`name`](#nodebpy.nodes.shader.vector.NormalMap.name)       |             |
-| [`node`](#nodebpy.nodes.shader.vector.NormalMap.node)       |             |
-| [`o`](#nodebpy.nodes.shader.vector.NormalMap.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.vector.NormalMap.outputs) |             |
-| [`space`](#nodebpy.nodes.shader.vector.NormalMap.space)     |             |
-| [`tree`](#nodebpy.nodes.shader.vector.NormalMap.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.vector.NormalMap.type)       |             |
-| [`uv_map`](#nodebpy.nodes.shader.vector.NormalMap.uv_map)   |             |
+| Name | Description |
+|----|----|
+| [`base`](#nodebpy.nodes.shader.vector.NormalMap.base) |  |
+| [`convention`](#nodebpy.nodes.shader.vector.NormalMap.convention) |  |
+| [`i`](#nodebpy.nodes.shader.vector.NormalMap.i) |  |
+| [`inputs`](#nodebpy.nodes.shader.vector.NormalMap.inputs) |  |
+| [`name`](#nodebpy.nodes.shader.vector.NormalMap.name) |  |
+| [`node`](#nodebpy.nodes.shader.vector.NormalMap.node) |  |
+| [`o`](#nodebpy.nodes.shader.vector.NormalMap.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.vector.NormalMap.outputs) |  |
+| [`space`](#nodebpy.nodes.shader.vector.NormalMap.space) |  |
+| [`tree`](#nodebpy.nodes.shader.vector.NormalMap.tree) |  |
+| [`type`](#nodebpy.nodes.shader.vector.NormalMap.type) |  |
+| [`uv_map`](#nodebpy.nodes.shader.vector.NormalMap.uv_map) |  |
 
 **Inputs**
 

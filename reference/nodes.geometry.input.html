@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.10.2</span>
+    <span class="navbar-title">nodebpy 0.13.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -334,12 +334,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.interface.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.interface</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.shader.manual</span></a>
   </div>
@@ -515,6 +509,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#nodebpy.nodes.geometry.input.ActiveCamera" id="toc-nodebpy.nodes.geometry.input.ActiveCamera" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.input.ActiveCamera">ActiveCamera</a></li>
   <li><a href="#nodebpy.nodes.geometry.input.ActiveElement" id="toc-nodebpy.nodes.geometry.input.ActiveElement" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.input.ActiveElement">ActiveElement</a></li>
+  <li><a href="#nodebpy.nodes.geometry.input.BoneInfo" id="toc-nodebpy.nodes.geometry.input.BoneInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.input.BoneInfo">BoneInfo</a></li>
   <li><a href="#nodebpy.nodes.geometry.input.Boolean" id="toc-nodebpy.nodes.geometry.input.Boolean" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.input.Boolean">Boolean</a></li>
   <li><a href="#nodebpy.nodes.geometry.input.CameraInfo" id="toc-nodebpy.nodes.geometry.input.CameraInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.input.CameraInfo">CameraInfo</a></li>
   <li><a href="#nodebpy.nodes.geometry.input.CollectionInfo" id="toc-nodebpy.nodes.geometry.input.CollectionInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.input.CollectionInfo">CollectionInfo</a></li>
@@ -621,294 +616,298 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Active element indices of the edited geometry, for tool execution</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo">BoneInfo</a></td>
+<td>Retrieve information of armature bones</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.Boolean">Boolean</a></td>
 <td>Provide a True/False value that can be connected to other nodes in the tree</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.CameraInfo">CameraInfo</a></td>
 <td>Retrieve information from a camera object</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.CollectionInfo">CollectionInfo</a></td>
 <td>Retrieve geometry instances from a collection</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.Color">Color</a></td>
 <td>Output a color value chosen with the color picker widget</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.CornersOfEdge">CornersOfEdge</a></td>
 <td>Retrieve face corners connected to edges</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.CornersOfFace">CornersOfFace</a></td>
 <td>Retrieve corners that make up a face</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.CornersOfVertex">CornersOfVertex</a></td>
 <td>Retrieve face corners connected to vertices</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.Cursor3D">Cursor3D</a></td>
 <td>The scene’s 3D cursor location and rotation</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.CurveHandlePositions">CurveHandlePositions</a></td>
 <td>Retrieve the position of each Bézier control point’s handles</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.CurveOfPoint">CurveOfPoint</a></td>
 <td>Retrieve the curve a control point is part of</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.CurveTangent">CurveTangent</a></td>
 <td>Retrieve the direction of curves at each control point</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.CurveTilt">CurveTilt</a></td>
 <td>Retrieve the angle at each control point used to twist the curve’s normal around its tangent</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.EdgeAngle">EdgeAngle</a></td>
 <td>The angle between the normals of connected manifold faces</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.EdgeNeighbors">EdgeNeighbors</a></td>
 <td>Retrieve the number of faces that use each edge as one of their sides</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.EdgePathsToSelection">EdgePathsToSelection</a></td>
 <td>Output a selection of edges by following paths across mesh edges</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.EdgeVertices">EdgeVertices</a></td>
 <td>Retrieve topology information relating to each edge of a mesh</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.EdgesOfCorner">EdgesOfCorner</a></td>
 <td>Retrieve the edges on both sides of a face corner</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.EdgesOfVertex">EdgesOfVertex</a></td>
 <td>Retrieve the edges connected to each vertex</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.EdgesToFaceGroups">EdgesToFaceGroups</a></td>
 <td>Group faces into regions surrounded by the selected boundary edges</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.EndpointSelection">EndpointSelection</a></td>
 <td>Provide a selection for an arbitrary number of endpoints in each spline</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.FaceArea">FaceArea</a></td>
 <td>Calculate the surface area of a mesh’s faces</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.FaceGroupBoundaries">FaceGroupBoundaries</a></td>
 <td>Find edges on the boundaries between groups of faces with the same ID value</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.FaceNeighbors">FaceNeighbors</a></td>
 <td>Retrieve topology information relating to each face of a mesh</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.FaceOfCorner">FaceOfCorner</a></td>
 <td>Retrieve the face each face corner is part of</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.FaceSet">FaceSet</a></td>
 <td>Each face’s sculpt face set value</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.ID">ID</a></td>
 <td>Retrieve a stable random identifier value from the “id” attribute on the point domain, or the index if the attribute does not exist</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.Image">Image</a></td>
 <td>Input an image data-block</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.ImageInfo">ImageInfo</a></td>
 <td>Retrieve information about an image</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.ImportCSV">ImportCSV</a></td>
 <td>Import geometry from an CSV file</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.ImportOBJ">ImportOBJ</a></td>
 <td>Import geometry from an OBJ file</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.ImportPLY">ImportPLY</a></td>
 <td>Import a point cloud from a PLY file</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.ImportSTL">ImportSTL</a></td>
 <td>Import a mesh from an STL file</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.ImportText">ImportText</a></td>
 <td>Import a string from a text file</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.ImportVDB">ImportVDB</a></td>
 <td>Import volume data from a .vdb file</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.Index">Index</a></td>
 <td>Retrieve an integer value indicating the position of each element in the list, starting at zero</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.InstanceBounds">InstanceBounds</a></td>
 <td>Calculate position bounds of each instance’s geometry set</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.InstanceRotation">InstanceRotation</a></td>
 <td>Retrieve the rotation of each instance in the geometry</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.InstanceScale">InstanceScale</a></td>
 <td>Retrieve the scale of each instance in the geometry</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.InstanceTransform">InstanceTransform</a></td>
 <td>Retrieve the full transformation of each instance in the geometry</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.Integer">Integer</a></td>
 <td>Provide an integer value that can be connected to other nodes in the tree</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.IsEdgeSmooth">IsEdgeSmooth</a></td>
 <td>Retrieve whether each edge is marked for smooth or split normals</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.IsFacePlanar">IsFacePlanar</a></td>
 <td>Retrieve whether all triangles in a face are on the same plane, i.e.&nbsp;whether they have the same normal</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.IsFaceSmooth">IsFaceSmooth</a></td>
 <td>Retrieve whether each face is marked for smooth or sharp normals</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.IsSplineCyclic">IsSplineCyclic</a></td>
 <td>Retrieve whether each spline endpoint connects to the beginning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.IsViewport">IsViewport</a></td>
 <td>Retrieve whether the nodes are being evaluated for the viewport rather than the final render</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.MaterialIndex">MaterialIndex</a></td>
 <td>Retrieve the index of the material used for each element in the geometry’s list of materials</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.MeshIsland">MeshIsland</a></td>
 <td>Retrieve information about separate connected regions in a mesh</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.MousePosition">MousePosition</a></td>
 <td>Retrieve the position of the mouse cursor</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.NamedAttribute">NamedAttribute</a></td>
 <td>Retrieve the data of a specified attribute</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.NamedLayerSelection">NamedLayerSelection</a></td>
 <td>Output a selection of a Grease Pencil layer</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.Normal">Normal</a></td>
 <td>Retrieve a unit length vector indicating the direction pointing away from the geometry at each element</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.ObjectInfo">ObjectInfo</a></td>
 <td>Retrieve information from an object</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.OffsetCornerInFace">OffsetCornerInFace</a></td>
 <td>Retrieve corners in the same face as another</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.OffsetPointInCurve">OffsetPointInCurve</a></td>
 <td>Offset a control point index within its curve</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.PointsOfCurve">PointsOfCurve</a></td>
 <td>Retrieve a point index within a curve</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.Position">Position</a></td>
 <td>Retrieve a vector indicating the location of each element</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.Radius">Radius</a></td>
 <td>Retrieve the radius at each point on curve or point cloud geometry</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.Rotation">Rotation</a></td>
 <td>Provide a rotation value that can be connected to other nodes in the tree</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.SceneTime">SceneTime</a></td>
 <td>Retrieve the current time in the scene’s animation in units of seconds or frames</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.Selection">Selection</a></td>
 <td>User selection of the edited geometry, for tool execution</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.SelfObject">SelfObject</a></td>
 <td>Retrieve the object that contains the geometry nodes modifier currently being executed</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.ShortestEdgePaths">ShortestEdgePaths</a></td>
 <td>Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.SpecialCharacters">SpecialCharacters</a></td>
 <td>Output string characters that cannot be typed directly with the keyboard</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.SplineLength">SplineLength</a></td>
 <td>Retrieve the total length of each spline, as a distance or as a number of points</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.SplineParameter">SplineParameter</a></td>
 <td>Retrieve how far along each spline a control point is</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.SplineResolution">SplineResolution</a></td>
 <td>Retrieve the number of evaluated points that will be generated for every control point on curves</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.String">String</a></td>
 <td>Provide a string value that can be connected to other nodes in the tree</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.UVTangent">UVTangent</a></td>
 <td>Generate tangent directions based on a UV map</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.Vector">Vector</a></td>
 <td>Provide a vector value that can be connected to other nodes in the tree</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.VertexNeighbors">VertexNeighbors</a></td>
 <td>Retrieve topology information relating to each vertex of a mesh</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.VertexOfCorner">VertexOfCorner</a></td>
 <td>Retrieve the vertex each face corner is attached to</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.input.ViewportTransform">ViewportTransform</a></td>
 <td>Retrieve the view direction and location of the 3D viewport</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.input.VoxelIndex">VoxelIndex</a></td>
 <td>Retrieve the integer coordinates of the voxel that the field is evaluated on</td>
 </tr>
@@ -1106,12 +1105,152 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.input.Boolean" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Boolean">Boolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Boolean(boolean<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Provide a True/False value that can be connected to other nodes in the tree</p>
+<section id="nodebpy.nodes.geometry.input.BoneInfo" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.BoneInfo">BoneInfo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>BoneInfo(armature<span class="op">=</span><span class="va">None</span>, bone_name<span class="op">=</span><span class="st">''</span>, <span class="op">*</span>, transform_space<span class="op">=</span><span class="st">'ORIGINAL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Retrieve information of armature bones</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>armature</td>
+<td>InputObject</td>
+<td>Armature</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>bone_name</td>
+<td>InputString</td>
+<td>Bone Name</td>
+<td><code>''</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes-2" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.transform_space"><code>transform_space</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.input.BoneInfo.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.armature</code></td>
+<td><code>ObjectSocket</code></td>
+<td>Armature</td>
+</tr>
+<tr class="even">
+<td><code>i.bone_name</code></td>
+<td><code>StringSocket</code></td>
+<td>Bone Name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.pose</code></td>
+<td><code>MatrixSocket</code></td>
+<td>Pose</td>
+</tr>
+<tr class="even">
+<td><code>o.local_pose</code></td>
+<td><code>MatrixSocket</code></td>
+<td>Local Pose</td>
+</tr>
+<tr class="odd">
+<td><code>o.transform_pose</code></td>
+<td><code>MatrixSocket</code></td>
+<td>Transform Pose</td>
+</tr>
+<tr class="even">
+<td><code>o.rest_pose</code></td>
+<td><code>MatrixSocket</code></td>
+<td>Rest Pose</td>
+</tr>
+<tr class="odd">
+<td><code>o.rest_length</code></td>
+<td><code>FloatSocket</code></td>
+<td>Rest Length</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.input.Boolean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Boolean">Boolean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Boolean(boolean<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Provide a True/False value that can be connected to other nodes in the tree</p>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1179,10 +1318,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CameraInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CameraInfo">CameraInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>CameraInfo(camera<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>CameraInfo(camera<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information from a camera object</p>
-<section id="parameters" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1202,8 +1341,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-3" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1324,16 +1463,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CollectionInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CollectionInfo">CollectionInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>CollectionInfo(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    collection<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    separate_children<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    reset_children<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    transform_space<span class="op">=</span><span class="st">'ORIGINAL'</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>CollectionInfo(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    collection<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    separate_children<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    reset_children<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    transform_space<span class="op">=</span><span class="st">'ORIGINAL'</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve geometry instances from a collection</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1365,8 +1504,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-4" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1461,10 +1600,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Color" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Color">Color</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Color(value<span class="op">=</span>(<span class="fl">0.735</span>, <span class="fl">0.735</span>, <span class="fl">0.735</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Color(value<span class="op">=</span>(<span class="fl">0.735</span>, <span class="fl">0.735</span>, <span class="fl">0.735</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output a color value chosen with the color picker widget</p>
-<section id="attributes-5" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1532,10 +1671,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CornersOfEdge" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CornersOfEdge">CornersOfEdge</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>CornersOfEdge(edge_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>CornersOfEdge(edge_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve face corners connected to edges</p>
-<section id="parameters-2" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1567,8 +1706,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-6" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1664,10 +1803,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CornersOfFace" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CornersOfFace">CornersOfFace</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>CornersOfFace(face_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>CornersOfFace(face_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve corners that make up a face</p>
-<section id="parameters-3" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1699,8 +1838,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-7" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1796,10 +1935,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CornersOfVertex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CornersOfVertex">CornersOfVertex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>CornersOfVertex(vertex_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>CornersOfVertex(vertex_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve face corners connected to vertices</p>
-<section id="parameters-4" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1831,8 +1970,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-8" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1928,10 +2067,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Cursor3D" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Cursor3D">Cursor3D</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Cursor3D()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Cursor3D()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The scene’s 3D cursor location and rotation</p>
-<section id="attributes-9" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2000,10 +2139,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CurveHandlePositions" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CurveHandlePositions">CurveHandlePositions</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>CurveHandlePositions(relative<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>CurveHandlePositions(relative<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the position of each Bézier control point’s handles</p>
-<section id="parameters-5" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2023,8 +2162,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-10" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2110,10 +2249,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CurveOfPoint" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CurveOfPoint">CurveOfPoint</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>CurveOfPoint(point_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>CurveOfPoint(point_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the curve a control point is part of</p>
-<section id="parameters-6" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
+<section id="parameters-7" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2133,8 +2272,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-11" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2220,10 +2359,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CurveTangent" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CurveTangent">CurveTangent</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>CurveTangent()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>CurveTangent()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the direction of curves at each control point</p>
-<section id="attributes-12" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2287,10 +2426,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.CurveTilt" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.CurveTilt">CurveTilt</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>CurveTilt()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>CurveTilt()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the angle at each control point used to twist the curve’s normal around its tangent</p>
-<section id="attributes-13" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2354,10 +2493,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.EdgeAngle" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.EdgeAngle">EdgeAngle</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>EdgeAngle()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>EdgeAngle()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The angle between the normals of connected manifold faces</p>
-<section id="attributes-14" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2426,10 +2565,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.EdgeNeighbors" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.EdgeNeighbors">EdgeNeighbors</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>EdgeNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>EdgeNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the number of faces that use each edge as one of their sides</p>
-<section id="attributes-15" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2493,10 +2632,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.EdgePathsToSelection" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.EdgePathsToSelection">EdgePathsToSelection</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>EdgePathsToSelection(start_vertices<span class="op">=</span><span class="va">True</span>, next_vertex_index<span class="op">=-</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>EdgePathsToSelection(start_vertices<span class="op">=</span><span class="va">True</span>, next_vertex_index<span class="op">=-</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output a selection of edges by following paths across mesh edges</p>
-<section id="parameters-7" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
+<section id="parameters-8" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2522,8 +2661,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-16" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<section id="attributes-17" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2609,10 +2748,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.EdgeVertices" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.EdgeVertices">EdgeVertices</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>EdgeVertices()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>EdgeVertices()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve topology information relating to each edge of a mesh</p>
-<section id="attributes-17" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2691,10 +2830,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.EdgesOfCorner" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.EdgesOfCorner">EdgesOfCorner</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>EdgesOfCorner(corner_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>EdgesOfCorner(corner_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the edges on both sides of a face corner</p>
-<section id="parameters-8" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<section id="parameters-9" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2714,8 +2853,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-18" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2801,10 +2940,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.EdgesOfVertex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.EdgesOfVertex">EdgesOfVertex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>EdgesOfVertex(vertex_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>EdgesOfVertex(vertex_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the edges connected to each vertex</p>
-<section id="parameters-9" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
+<section id="parameters-10" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2836,8 +2975,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-19" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<section id="attributes-20" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2933,10 +3072,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.EdgesToFaceGroups" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.EdgesToFaceGroups">EdgesToFaceGroups</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>EdgesToFaceGroups(boundary_edges<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>EdgesToFaceGroups(boundary_edges<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Group faces into regions surrounded by the selected boundary edges</p>
-<section id="parameters-10" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
+<section id="parameters-11" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2956,8 +3095,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-20" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<section id="attributes-21" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3038,10 +3177,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.EndpointSelection" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.EndpointSelection">EndpointSelection</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>EndpointSelection(start_size<span class="op">=</span><span class="dv">1</span>, end_size<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>EndpointSelection(start_size<span class="op">=</span><span class="dv">1</span>, end_size<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide a selection for an arbitrary number of endpoints in each spline</p>
-<section id="parameters-11" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
+<section id="parameters-12" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3067,8 +3206,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-21" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<section id="attributes-22" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3154,10 +3293,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.FaceArea" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.FaceArea">FaceArea</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>FaceArea()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>FaceArea()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the surface area of a mesh’s faces</p>
-<section id="attributes-22" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
+<section id="attributes-23" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3221,10 +3360,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.FaceGroupBoundaries" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.FaceGroupBoundaries">FaceGroupBoundaries</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>FaceGroupBoundaries(face_set<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>FaceGroupBoundaries(face_set<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Find edges on the boundaries between groups of faces with the same ID value</p>
-<section id="parameters-12" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
+<section id="parameters-13" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3244,8 +3383,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-23" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
+<section id="attributes-24" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3326,10 +3465,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.FaceNeighbors" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.FaceNeighbors">FaceNeighbors</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>FaceNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>FaceNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve topology information relating to each face of a mesh</p>
-<section id="attributes-24" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
+<section id="attributes-25" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3398,10 +3537,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.FaceOfCorner" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.FaceOfCorner">FaceOfCorner</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>FaceOfCorner(corner_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>FaceOfCorner(corner_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the face each face corner is part of</p>
-<section id="parameters-13" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
+<section id="parameters-14" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3421,8 +3560,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-25" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
+<section id="attributes-26" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3508,10 +3647,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.FaceSet" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.FaceSet">FaceSet</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>FaceSet()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>FaceSet()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Each face’s sculpt face set value</p>
-<section id="attributes-26" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
+<section id="attributes-27" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3580,10 +3719,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ID" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ID">ID</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ID()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ID()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a stable random identifier value from the “id” attribute on the point domain, or the index if the attribute does not exist</p>
-<section id="attributes-27" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
+<section id="attributes-28" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3647,10 +3786,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Image" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Image">Image</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>Image()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>Image()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input an image data-block</p>
-<section id="attributes-28" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
+<section id="attributes-29" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3714,10 +3853,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ImageInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ImageInfo">ImageInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>ImageInfo(image<span class="op">=</span><span class="va">None</span>, frame<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ImageInfo(image<span class="op">=</span><span class="va">None</span>, frame<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information about an image</p>
-<section id="parameters-14" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
+<section id="parameters-15" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3743,8 +3882,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-29" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
+<section id="attributes-30" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-30">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3850,10 +3989,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ImportCSV" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ImportCSV">ImportCSV</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ImportCSV(path<span class="op">=</span><span class="st">''</span>, delimiter<span class="op">=</span><span class="st">','</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>ImportCSV(path<span class="op">=</span><span class="st">''</span>, delimiter<span class="op">=</span><span class="st">','</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import geometry from an CSV file</p>
-<section id="parameters-15" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
+<section id="parameters-16" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-16">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3879,8 +4018,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-30" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-30">Attributes</h4>
+<section id="attributes-31" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-31">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3966,10 +4105,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ImportOBJ" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ImportOBJ">ImportOBJ</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>ImportOBJ(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>ImportOBJ(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import geometry from an OBJ file</p>
-<section id="parameters-16" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-16">Parameters</h4>
+<section id="parameters-17" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-17">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3989,8 +4128,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-31" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-31">Attributes</h4>
+<section id="attributes-32" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-32">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4071,10 +4210,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ImportPLY" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ImportPLY">ImportPLY</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>ImportPLY(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>ImportPLY(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import a point cloud from a PLY file</p>
-<section id="parameters-17" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-17">Parameters</h4>
+<section id="parameters-18" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4094,8 +4233,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-32" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-32">Attributes</h4>
+<section id="attributes-33" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-33">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4176,10 +4315,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ImportSTL" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ImportSTL">ImportSTL</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>ImportSTL(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>ImportSTL(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import a mesh from an STL file</p>
-<section id="parameters-18" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
+<section id="parameters-19" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-19">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4199,8 +4338,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-33" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-33">Attributes</h4>
+<section id="attributes-34" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-34">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4281,10 +4420,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ImportText" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ImportText">ImportText</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>ImportText(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>ImportText(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import a string from a text file</p>
-<section id="parameters-19" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-19">Parameters</h4>
+<section id="parameters-20" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-20">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4304,8 +4443,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-34" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-34">Attributes</h4>
+<section id="attributes-35" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-35">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4386,10 +4525,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ImportVDB" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ImportVDB">ImportVDB</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>ImportVDB(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>ImportVDB(path<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Import volume data from a .vdb file</p>
-<section id="parameters-20" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-20">Parameters</h4>
+<section id="parameters-21" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-21">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4409,8 +4548,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-35" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-35">Attributes</h4>
+<section id="attributes-36" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-36">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4491,10 +4630,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Index" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Index">Index</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>Index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>Index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve an integer value indicating the position of each element in the list, starting at zero</p>
-<section id="attributes-36" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-36">Attributes</h4>
+<section id="attributes-37" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-37">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4558,10 +4697,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.InstanceBounds" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.InstanceBounds">InstanceBounds</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>InstanceBounds(use_radius<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>InstanceBounds(use_radius<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate position bounds of each instance’s geometry set</p>
-<section id="parameters-21" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-21">Parameters</h4>
+<section id="parameters-22" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-22">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4581,8 +4720,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-37" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-37">Attributes</h4>
+<section id="attributes-38" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-38">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4668,10 +4807,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.InstanceRotation" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.InstanceRotation">InstanceRotation</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>InstanceRotation()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>InstanceRotation()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the rotation of each instance in the geometry</p>
-<section id="attributes-38" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-38">Attributes</h4>
+<section id="attributes-39" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-39">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4735,10 +4874,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.InstanceScale" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.InstanceScale">InstanceScale</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>InstanceScale()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>InstanceScale()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the scale of each instance in the geometry</p>
-<section id="attributes-39" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-39">Attributes</h4>
+<section id="attributes-40" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-40">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4802,10 +4941,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.InstanceTransform" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.InstanceTransform">InstanceTransform</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>InstanceTransform()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>InstanceTransform()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the full transformation of each instance in the geometry</p>
-<section id="attributes-40" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-40">Attributes</h4>
+<section id="attributes-41" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-41">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4869,10 +5008,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Integer" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Integer">Integer</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>Integer(integer<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>Integer(integer<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide an integer value that can be connected to other nodes in the tree</p>
-<section id="attributes-41" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-41">Attributes</h4>
+<section id="attributes-42" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-42">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4940,10 +5079,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.IsEdgeSmooth" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.IsEdgeSmooth">IsEdgeSmooth</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>IsEdgeSmooth()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>IsEdgeSmooth()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve whether each edge is marked for smooth or split normals</p>
-<section id="attributes-42" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-42">Attributes</h4>
+<section id="attributes-43" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-43">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5007,10 +5146,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.IsFacePlanar" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.IsFacePlanar">IsFacePlanar</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>IsFacePlanar(threshold<span class="op">=</span><span class="fl">0.01</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>IsFacePlanar(threshold<span class="op">=</span><span class="fl">0.01</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve whether all triangles in a face are on the same plane, i.e.&nbsp;whether they have the same normal</p>
-<section id="parameters-22" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-22">Parameters</h4>
+<section id="parameters-23" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-23">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5030,8 +5169,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-43" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-43">Attributes</h4>
+<section id="attributes-44" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-44">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5112,10 +5251,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.IsFaceSmooth" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.IsFaceSmooth">IsFaceSmooth</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>IsFaceSmooth()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>IsFaceSmooth()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve whether each face is marked for smooth or sharp normals</p>
-<section id="attributes-44" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-44">Attributes</h4>
+<section id="attributes-45" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-45">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5179,10 +5318,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.IsSplineCyclic" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.IsSplineCyclic">IsSplineCyclic</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>IsSplineCyclic()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>IsSplineCyclic()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve whether each spline endpoint connects to the beginning</p>
-<section id="attributes-45" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-45">Attributes</h4>
+<section id="attributes-46" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-46">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5246,10 +5385,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.IsViewport" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.IsViewport">IsViewport</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>IsViewport()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>IsViewport()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve whether the nodes are being evaluated for the viewport rather than the final render</p>
-<section id="attributes-46" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-46">Attributes</h4>
+<section id="attributes-47" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-47">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5313,10 +5452,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.MaterialIndex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.MaterialIndex">MaterialIndex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>MaterialIndex()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>MaterialIndex()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the index of the material used for each element in the geometry’s list of materials</p>
-<section id="attributes-47" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-47">Attributes</h4>
+<section id="attributes-48" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-48">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5380,10 +5519,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.MeshIsland" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.MeshIsland">MeshIsland</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>MeshIsland()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>MeshIsland()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information about separate connected regions in a mesh</p>
-<section id="attributes-48" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-48">Attributes</h4>
+<section id="attributes-49" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-49">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5452,10 +5591,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.MousePosition" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.MousePosition">MousePosition</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>MousePosition()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>MousePosition()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the position of the mouse cursor</p>
-<section id="attributes-49" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-49">Attributes</h4>
+<section id="attributes-50" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-50">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5534,10 +5673,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.NamedAttribute" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedAttribute">NamedAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>NamedAttribute(name<span class="op">=</span><span class="st">''</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>NamedAttribute(name<span class="op">=</span><span class="st">''</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the data of a specified attribute</p>
-<section id="parameters-23" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-23">Parameters</h4>
+<section id="parameters-24" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-24">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5557,8 +5696,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-50" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-50">Attributes</h4>
+<section id="attributes-51" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-51">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5648,37 +5787,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.input.NamedAttribute.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedAttribute.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>boolean(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>boolean(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Named Attribute with operation ‘Boolean’. True or false</p>
 </section>
 <section id="nodebpy.nodes.geometry.input.NamedAttribute.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedAttribute.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>color(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>color(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Named Attribute with operation ‘Color’. RGBA color with 32-bit floating-point values</p>
 </section>
 <section id="nodebpy.nodes.geometry.input.NamedAttribute.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedAttribute.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Named Attribute with operation ‘Float’. Floating-point value</p>
 </section>
 <section id="nodebpy.nodes.geometry.input.NamedAttribute.input_4x4_matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedAttribute.input_4x4_matrix">input_4x4_matrix</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>input_4x4_matrix(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>input_4x4_matrix(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Named Attribute with operation ‘4x4 Matrix’. Floating point matrix</p>
 </section>
 <section id="nodebpy.nodes.geometry.input.NamedAttribute.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedAttribute.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>integer(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>integer(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Named Attribute with operation ‘Integer’. 32-bit integer</p>
 </section>
 <section id="nodebpy.nodes.geometry.input.NamedAttribute.quaternion" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedAttribute.quaternion">quaternion</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>quaternion(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>quaternion(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Named Attribute with operation ‘Quaternion’. Floating point quaternion rotation</p>
 </section>
 <section id="nodebpy.nodes.geometry.input.NamedAttribute.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedAttribute.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>vector(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>vector(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Named Attribute with operation ‘Vector’. 3D vector with floating-point values</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -5724,10 +5863,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.NamedLayerSelection" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.NamedLayerSelection">NamedLayerSelection</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>NamedLayerSelection(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>NamedLayerSelection(name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output a selection of a Grease Pencil layer</p>
-<section id="parameters-24" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-24">Parameters</h4>
+<section id="parameters-25" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-25">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5747,8 +5886,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-51" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-51">Attributes</h4>
+<section id="attributes-52" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-52">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5829,10 +5968,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Normal" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Normal">Normal</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>Normal(legacy_corner_normals<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>Normal(legacy_corner_normals<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a unit length vector indicating the direction pointing away from the geometry at each element</p>
-<section id="attributes-52" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-52">Attributes</h4>
+<section id="attributes-53" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-53">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5905,10 +6044,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ObjectInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ObjectInfo">ObjectInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>ObjectInfo(<span class="bu">object</span><span class="op">=</span><span class="va">None</span>, as_instance<span class="op">=</span><span class="va">False</span>, <span class="op">*</span>, transform_space<span class="op">=</span><span class="st">'ORIGINAL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>ObjectInfo(<span class="bu">object</span><span class="op">=</span><span class="va">None</span>, as_instance<span class="op">=</span><span class="va">False</span>, <span class="op">*</span>, transform_space<span class="op">=</span><span class="st">'ORIGINAL'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information from an object</p>
-<section id="parameters-25" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-25">Parameters</h4>
+<section id="parameters-26" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-26">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5934,8 +6073,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-53" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-53">Attributes</h4>
+<section id="attributes-54" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-54">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6045,10 +6184,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.OffsetCornerInFace" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.OffsetCornerInFace">OffsetCornerInFace</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>OffsetCornerInFace(corner_index<span class="op">=</span><span class="dv">0</span>, offset<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>OffsetCornerInFace(corner_index<span class="op">=</span><span class="dv">0</span>, offset<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve corners in the same face as another</p>
-<section id="parameters-26" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-26">Parameters</h4>
+<section id="parameters-27" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-27">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6074,8 +6213,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-54" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-54">Attributes</h4>
+<section id="attributes-55" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-55">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6161,10 +6300,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.OffsetPointInCurve" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.OffsetPointInCurve">OffsetPointInCurve</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>OffsetPointInCurve(point_index<span class="op">=</span><span class="dv">0</span>, offset<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>OffsetPointInCurve(point_index<span class="op">=</span><span class="dv">0</span>, offset<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Offset a control point index within its curve</p>
-<section id="parameters-27" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-27">Parameters</h4>
+<section id="parameters-28" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-28">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6190,8 +6329,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-55" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-55">Attributes</h4>
+<section id="attributes-56" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-56">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6282,10 +6421,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.PointsOfCurve" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.PointsOfCurve">PointsOfCurve</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>PointsOfCurve(curve_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>PointsOfCurve(curve_index<span class="op">=</span><span class="dv">0</span>, weights<span class="op">=</span><span class="fl">0.0</span>, sort_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a point index within a curve</p>
-<section id="parameters-28" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-28">Parameters</h4>
+<section id="parameters-29" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-29">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6317,8 +6456,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-56" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-56">Attributes</h4>
+<section id="attributes-57" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-57">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6414,10 +6553,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Position" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Position">Position</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>Position()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>Position()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a vector indicating the location of each element</p>
-<section id="attributes-57" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-57">Attributes</h4>
+<section id="attributes-58" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-58">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6481,10 +6620,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Radius" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Radius">Radius</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>Radius()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>Radius()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the radius at each point on curve or point cloud geometry</p>
-<section id="attributes-58" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-58">Attributes</h4>
+<section id="attributes-59" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-59">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6548,10 +6687,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Rotation" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Rotation">Rotation</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>Rotation(rotation_euler<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>Rotation(rotation_euler<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide a rotation value that can be connected to other nodes in the tree</p>
-<section id="attributes-59" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-59">Attributes</h4>
+<section id="attributes-60" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-60">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6619,10 +6758,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.SceneTime" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.SceneTime">SceneTime</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>SceneTime()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>SceneTime()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the current time in the scene’s animation in units of seconds or frames</p>
-<section id="attributes-60" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-60">Attributes</h4>
+<section id="attributes-61" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-61">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6691,10 +6830,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Selection" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Selection">Selection</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>Selection()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>Selection()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>User selection of the edited geometry, for tool execution</p>
-<section id="attributes-61" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-61">Attributes</h4>
+<section id="attributes-62" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-62">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6763,10 +6902,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.SelfObject" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.SelfObject">SelfObject</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>SelfObject()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>SelfObject()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the object that contains the geometry nodes modifier currently being executed</p>
-<section id="attributes-62" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-62">Attributes</h4>
+<section id="attributes-63" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-63">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6830,10 +6969,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ShortestEdgePaths" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ShortestEdgePaths">ShortestEdgePaths</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>ShortestEdgePaths(end_vertex<span class="op">=</span><span class="va">False</span>, edge_cost<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>ShortestEdgePaths(end_vertex<span class="op">=</span><span class="va">False</span>, edge_cost<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Find the shortest paths along mesh edges to selected end vertices, with customizable cost per edge</p>
-<section id="parameters-29" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-29">Parameters</h4>
+<section id="parameters-30" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-30">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6859,8 +6998,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-63" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-63">Attributes</h4>
+<section id="attributes-64" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-64">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -6951,10 +7090,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.SpecialCharacters" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.SpecialCharacters">SpecialCharacters</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>SpecialCharacters()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>SpecialCharacters()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Output string characters that cannot be typed directly with the keyboard</p>
-<section id="attributes-64" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-64">Attributes</h4>
+<section id="attributes-65" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-65">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7023,10 +7162,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.SplineLength" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.SplineLength">SplineLength</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>SplineLength()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>SplineLength()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the total length of each spline, as a distance or as a number of points</p>
-<section id="attributes-65" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-65">Attributes</h4>
+<section id="attributes-66" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-66">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7095,10 +7234,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.SplineParameter" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.SplineParameter">SplineParameter</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>SplineParameter()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>SplineParameter()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve how far along each spline a control point is</p>
-<section id="attributes-66" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-66">Attributes</h4>
+<section id="attributes-67" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-67">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7172,10 +7311,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.SplineResolution" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.SplineResolution">SplineResolution</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>SplineResolution()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>SplineResolution()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the number of evaluated points that will be generated for every control point on curves</p>
-<section id="attributes-67" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-67">Attributes</h4>
+<section id="attributes-68" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-68">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7239,10 +7378,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.String" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.String">String</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>String(string<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>String(string<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide a string value that can be connected to other nodes in the tree</p>
-<section id="attributes-68" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-68">Attributes</h4>
+<section id="attributes-69" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-69">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7310,10 +7449,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.UVTangent" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.UVTangent">UVTangent</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>UVTangent(method<span class="op">=</span><span class="st">'Exact'</span>, uv<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>UVTangent(method<span class="op">=</span><span class="st">'Exact'</span>, uv<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate tangent directions based on a UV map</p>
-<section id="parameters-30" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-30">Parameters</h4>
+<section id="parameters-31" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-31">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 10%">
@@ -7345,8 +7484,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-69" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-69">Attributes</h4>
+<section id="attributes-70" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-70">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7432,10 +7571,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.Vector" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.Vector">Vector</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>Vector(vector<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>Vector(vector<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide a vector value that can be connected to other nodes in the tree</p>
-<section id="attributes-70" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-70">Attributes</h4>
+<section id="attributes-71" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-71">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7503,10 +7642,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.VertexNeighbors" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.VertexNeighbors">VertexNeighbors</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>VertexNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>VertexNeighbors()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve topology information relating to each vertex of a mesh</p>
-<section id="attributes-71" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-71">Attributes</h4>
+<section id="attributes-72" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-72">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7575,10 +7714,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.VertexOfCorner" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.VertexOfCorner">VertexOfCorner</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>VertexOfCorner(corner_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>VertexOfCorner(corner_index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the vertex each face corner is attached to</p>
-<section id="parameters-31" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-31">Parameters</h4>
+<section id="parameters-32" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-32">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7598,8 +7737,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-72" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-72">Attributes</h4>
+<section id="attributes-73" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-73">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7680,10 +7819,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.ViewportTransform" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.ViewportTransform">ViewportTransform</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>ViewportTransform()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>ViewportTransform()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the view direction and location of the 3D viewport</p>
-<section id="attributes-73" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-73">Attributes</h4>
+<section id="attributes-74" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-74">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -7757,10 +7896,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.input.VoxelIndex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.input.VoxelIndex">VoxelIndex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>VoxelIndex()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>VoxelIndex()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve the integer coordinates of the voxel that the field is evaluated on</p>
-<section id="attributes-74" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-74">Attributes</h4>
+<section id="attributes-75" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-75">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">

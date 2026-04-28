@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.10.2</span>
+    <span class="navbar-title">nodebpy 0.13.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -334,12 +334,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.interface.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.interface</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.shader.manual</span></a>
   </div>
@@ -513,12 +507,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
+  <li><a href="#nodebpy.nodes.compositor.input.BokehImage" id="toc-nodebpy.nodes.compositor.input.BokehImage" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.BokehImage">BokehImage</a></li>
   <li><a href="#nodebpy.nodes.compositor.input.Color" id="toc-nodebpy.nodes.compositor.input.Color" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.Color">Color</a></li>
+  <li><a href="#nodebpy.nodes.compositor.input.ImageCoordinates" id="toc-nodebpy.nodes.compositor.input.ImageCoordinates" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.ImageCoordinates">ImageCoordinates</a></li>
+  <li><a href="#nodebpy.nodes.compositor.input.ImageInfo" id="toc-nodebpy.nodes.compositor.input.ImageInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.ImageInfo">ImageInfo</a></li>
   <li><a href="#nodebpy.nodes.compositor.input.Mask" id="toc-nodebpy.nodes.compositor.input.Mask" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.Mask">Mask</a></li>
   <li><a href="#nodebpy.nodes.compositor.input.MovieClip" id="toc-nodebpy.nodes.compositor.input.MovieClip" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.MovieClip">MovieClip</a></li>
   <li><a href="#nodebpy.nodes.compositor.input.Normal" id="toc-nodebpy.nodes.compositor.input.Normal" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.Normal">Normal</a></li>
   <li><a href="#nodebpy.nodes.compositor.input.RenderLayers" id="toc-nodebpy.nodes.compositor.input.RenderLayers" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.RenderLayers">RenderLayers</a></li>
   <li><a href="#nodebpy.nodes.compositor.input.SceneTime" id="toc-nodebpy.nodes.compositor.input.SceneTime" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.SceneTime">SceneTime</a></li>
+  <li><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo" id="toc-nodebpy.nodes.compositor.input.SequencerStripInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.SequencerStripInfo">SequencerStripInfo</a></li>
   <li><a href="#nodebpy.nodes.compositor.input.TimeCurve" id="toc-nodebpy.nodes.compositor.input.TimeCurve" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.TimeCurve">TimeCurve</a></li>
   <li><a href="#nodebpy.nodes.compositor.input.TrackPosition" id="toc-nodebpy.nodes.compositor.input.TrackPosition" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.input.TrackPosition">TrackPosition</a></li>
   </ul></li>
@@ -546,28 +544,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage">BokehImage</a></td>
+<td>Generate image with bokeh shape for use with the Bokeh Blur filter node</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.input.Color">Color</a></td>
 <td>A color picker</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates">ImageCoordinates</a></td>
+<td>Returns the coordinates of the pixels of an image</td>
+</tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo">ImageInfo</a></td>
+<td>Returns information about an image</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.input.Mask">Mask</a></td>
 <td>Input mask from a mask data-block, created in the image editor</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.input.MovieClip">MovieClip</a></td>
 <td>Input image or movie from a movie clip data-block, typically used for motion tracking</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.input.Normal">Normal</a></td>
 <td>Input normalized normal values to other nodes in the tree</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.input.RenderLayers">RenderLayers</a></td>
 <td>Input render passes from a scene render</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.input.SceneTime">SceneTime</a></td>
 <td>Input the current scene time in seconds or frames</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo">SequencerStripInfo</a></td>
+<td>Returns information about the active strip of the modifier</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.input.TimeCurve">TimeCurve</a></td>
@@ -579,12 +593,167 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.compositor.input.Color" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.Color">Color</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Color()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A color picker</p>
+<section id="nodebpy.nodes.compositor.input.BokehImage" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.BokehImage">BokehImage</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>BokehImage(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    flaps<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    angle<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    roundness<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    catadioptric_size<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    color_shift<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate image with bokeh shape for use with the Bokeh Blur filter node</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>flaps</td>
+<td>InputInteger</td>
+<td>Flaps</td>
+<td><code>5</code></td>
+</tr>
+<tr class="even">
+<td>angle</td>
+<td>InputFloat</td>
+<td>Angle</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>roundness</td>
+<td>InputFloat</td>
+<td>Roundness</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>catadioptric_size</td>
+<td>InputFloat</td>
+<td>Catadioptric Size</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="odd">
+<td>color_shift</td>
+<td>InputFloat</td>
+<td>Color Shift</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="attributes" class="level4">
 <h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.BokehImage.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.flaps</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Flaps</td>
+</tr>
+<tr class="even">
+<td><code>i.angle</code></td>
+<td><code>FloatSocket</code></td>
+<td>Angle</td>
+</tr>
+<tr class="odd">
+<td><code>i.roundness</code></td>
+<td><code>FloatSocket</code></td>
+<td>Roundness</td>
+</tr>
+<tr class="even">
+<td><code>i.catadioptric_size</code></td>
+<td><code>FloatSocket</code></td>
+<td>Catadioptric Size</td>
+</tr>
+<tr class="odd">
+<td><code>i.color_shift</code></td>
+<td><code>FloatSocket</code></td>
+<td>Color Shift</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.input.Color" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.Color">Color</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Color()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A color picker</p>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -646,20 +815,260 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
+<section id="nodebpy.nodes.compositor.input.ImageCoordinates" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.ImageCoordinates">ImageCoordinates</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ImageCoordinates(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Returns the coordinates of the pixels of an image</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageCoordinates.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.uniform</code></td>
+<td><code>VectorSocket</code></td>
+<td>Uniform</td>
+</tr>
+<tr class="even">
+<td><code>o.normalized</code></td>
+<td><code>VectorSocket</code></td>
+<td>Normalized</td>
+</tr>
+<tr class="odd">
+<td><code>o.pixel</code></td>
+<td><code>VectorSocket</code></td>
+<td>Pixel</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.input.ImageInfo" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.ImageInfo">ImageInfo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ImageInfo(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Returns information about an image</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>image</td>
+<td>InputColor</td>
+<td>Image</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.ImageInfo.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.image</code></td>
+<td><code>ColorSocket</code></td>
+<td>Image</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.dimensions</code></td>
+<td><code>VectorSocket</code></td>
+<td>Dimensions</td>
+</tr>
+<tr class="even">
+<td><code>o.resolution</code></td>
+<td><code>VectorSocket</code></td>
+<td>Resolution</td>
+</tr>
+<tr class="odd">
+<td><code>o.location</code></td>
+<td><code>VectorSocket</code></td>
+<td>Location</td>
+</tr>
+<tr class="even">
+<td><code>o.rotation</code></td>
+<td><code>FloatSocket</code></td>
+<td>Rotation</td>
+</tr>
+<tr class="odd">
+<td><code>o.scale</code></td>
+<td><code>VectorSocket</code></td>
+<td>Scale</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
 <section id="nodebpy.nodes.compositor.input.Mask" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.Mask">Mask</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Mask(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    size_source<span class="op">=</span><span class="st">'Scene Size'</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    size_x<span class="op">=</span><span class="dv">256</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    size_y<span class="op">=</span><span class="dv">256</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    feather<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    motion_blur<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    motion_blur_samples<span class="op">=</span><span class="dv">16</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    motion_blur_shutter<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Mask(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    size_source<span class="op">=</span><span class="st">'Scene Size'</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    size_x<span class="op">=</span><span class="dv">256</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    size_y<span class="op">=</span><span class="dv">256</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    feather<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    motion_blur<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    motion_blur_samples<span class="op">=</span><span class="dv">16</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    motion_blur_shutter<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input mask from a mask data-block, created in the image editor</p>
-<section id="parameters" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 17%">
@@ -721,8 +1130,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-1" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -833,10 +1242,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.input.MovieClip" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.MovieClip">MovieClip</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>MovieClip()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>MovieClip()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input image or movie from a movie clip data-block, typically used for motion tracking</p>
-<section id="attributes-2" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -925,10 +1334,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.input.Normal" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.Normal">Normal</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Normal()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Normal()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input normalized normal values to other nodes in the tree</p>
-<section id="attributes-3" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -992,10 +1401,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.input.RenderLayers" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.RenderLayers">RenderLayers</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>RenderLayers(layer<span class="op">=</span><span class="st">'ViewLayer'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>RenderLayers(layer<span class="op">=</span><span class="st">'ViewLayer'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input render passes from a scene render</p>
-<section id="attributes-4" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1062,161 +1471,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>FloatSocket</code></td>
 <td>Alpha</td>
 </tr>
-<tr class="odd">
-<td><code>o.depth</code></td>
-<td><code>FloatSocket</code></td>
-<td>Depth</td>
-</tr>
-<tr class="even">
-<td><code>o.normal</code></td>
-<td><code>VectorSocket</code></td>
-<td>Normal</td>
-</tr>
-<tr class="odd">
-<td><code>o.uv</code></td>
-<td><code>VectorSocket</code></td>
-<td>UV</td>
-</tr>
-<tr class="even">
-<td><code>o.vector</code></td>
-<td><code>VectorSocket</code></td>
-<td>Vector</td>
-</tr>
-<tr class="odd">
-<td><code>o.position</code></td>
-<td><code>VectorSocket</code></td>
-<td>Position</td>
-</tr>
-<tr class="even">
-<td><code>o.deprecated</code></td>
-<td><code>ColorSocket</code></td>
-<td>Deprecated</td>
-</tr>
-<tr class="odd">
-<td><code>o.deprecated_001</code></td>
-<td><code>ColorSocket</code></td>
-<td>Deprecated</td>
-</tr>
-<tr class="even">
-<td><code>o.shadow</code></td>
-<td><code>ColorSocket</code></td>
-<td>Shadow</td>
-</tr>
-<tr class="odd">
-<td><code>o.ambient_occlusion</code></td>
-<td><code>ColorSocket</code></td>
-<td>Ambient Occlusion</td>
-</tr>
-<tr class="even">
-<td><code>o.deprecated_002</code></td>
-<td><code>ColorSocket</code></td>
-<td>Deprecated</td>
-</tr>
-<tr class="odd">
-<td><code>o.deprecated_003</code></td>
-<td><code>ColorSocket</code></td>
-<td>Deprecated</td>
-</tr>
-<tr class="even">
-<td><code>o.deprecated_004</code></td>
-<td><code>ColorSocket</code></td>
-<td>Deprecated</td>
-</tr>
-<tr class="odd">
-<td><code>o.object_index</code></td>
-<td><code>FloatSocket</code></td>
-<td>Object Index</td>
-</tr>
-<tr class="even">
-<td><code>o.material_index</code></td>
-<td><code>FloatSocket</code></td>
-<td>Material Index</td>
-</tr>
-<tr class="odd">
-<td><code>o.mist</code></td>
-<td><code>FloatSocket</code></td>
-<td>Mist</td>
-</tr>
-<tr class="even">
-<td><code>o.emission</code></td>
-<td><code>ColorSocket</code></td>
-<td>Emission</td>
-</tr>
-<tr class="odd">
-<td><code>o.environment</code></td>
-<td><code>ColorSocket</code></td>
-<td>Environment</td>
-</tr>
-<tr class="even">
-<td><code>o.diffuse_direct</code></td>
-<td><code>ColorSocket</code></td>
-<td>Diffuse Direct</td>
-</tr>
-<tr class="odd">
-<td><code>o.diffuse_indirect</code></td>
-<td><code>ColorSocket</code></td>
-<td>Diffuse Indirect</td>
-</tr>
-<tr class="even">
-<td><code>o.diffuse_color</code></td>
-<td><code>ColorSocket</code></td>
-<td>Diffuse Color</td>
-</tr>
-<tr class="odd">
-<td><code>o.glossy_direct</code></td>
-<td><code>ColorSocket</code></td>
-<td>Glossy Direct</td>
-</tr>
-<tr class="even">
-<td><code>o.glossy_indirect</code></td>
-<td><code>ColorSocket</code></td>
-<td>Glossy Indirect</td>
-</tr>
-<tr class="odd">
-<td><code>o.glossy_color</code></td>
-<td><code>ColorSocket</code></td>
-<td>Glossy Color</td>
-</tr>
-<tr class="even">
-<td><code>o.transmission_direct</code></td>
-<td><code>ColorSocket</code></td>
-<td>Transmission Direct</td>
-</tr>
-<tr class="odd">
-<td><code>o.transmission_indirect</code></td>
-<td><code>ColorSocket</code></td>
-<td>Transmission Indirect</td>
-</tr>
-<tr class="even">
-<td><code>o.transmission_color</code></td>
-<td><code>ColorSocket</code></td>
-<td>Transmission Color</td>
-</tr>
-<tr class="odd">
-<td><code>o.subsurface_direct</code></td>
-<td><code>ColorSocket</code></td>
-<td>Subsurface Direct</td>
-</tr>
-<tr class="even">
-<td><code>o.subsurface_indirect</code></td>
-<td><code>ColorSocket</code></td>
-<td>Subsurface Indirect</td>
-</tr>
-<tr class="odd">
-<td><code>o.subsurface_color</code></td>
-<td><code>ColorSocket</code></td>
-<td>Subsurface Color</td>
-</tr>
 </tbody>
 </table>
 </section>
 </section>
 <section id="nodebpy.nodes.compositor.input.SceneTime" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.SceneTime">SceneTime</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>SceneTime()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>SceneTime()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input the current scene time in seconds or frames</p>
-<section id="attributes-5" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1283,12 +1547,99 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
+<section id="nodebpy.nodes.compositor.input.SequencerStripInfo" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.SequencerStripInfo">SequencerStripInfo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>SequencerStripInfo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Returns information about the active strip of the modifier</p>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.input.SequencerStripInfo.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.start_frame</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Start Frame</td>
+</tr>
+<tr class="even">
+<td><code>o.end_frame</code></td>
+<td><code>IntegerSocket</code></td>
+<td>End Frame</td>
+</tr>
+<tr class="odd">
+<td><code>o.location</code></td>
+<td><code>VectorSocket</code></td>
+<td>Location</td>
+</tr>
+<tr class="even">
+<td><code>o.rotation</code></td>
+<td><code>FloatSocket</code></td>
+<td>Rotation</td>
+</tr>
+<tr class="odd">
+<td><code>o.scale</code></td>
+<td><code>VectorSocket</code></td>
+<td>Scale</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
 <section id="nodebpy.nodes.compositor.input.TimeCurve" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.TimeCurve">TimeCurve</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>TimeCurve(start_frame<span class="op">=</span><span class="dv">1</span>, end_frame<span class="op">=</span><span class="dv">250</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>TimeCurve(start_frame<span class="op">=</span><span class="dv">1</span>, end_frame<span class="op">=</span><span class="dv">250</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a factor value (from 0.0 to 1.0) between scene start and end time, using a curve mapping</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1314,8 +1665,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-6" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1401,10 +1752,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.input.TrackPosition" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.input.TrackPosition">TrackPosition</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>TrackPosition(mode<span class="op">=</span><span class="st">'Absolute'</span>, frame<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, tracking_object<span class="op">=</span><span class="st">''</span>, track_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>TrackPosition(mode<span class="op">=</span><span class="st">'Absolute'</span>, frame<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, tracking_object<span class="op">=</span><span class="st">''</span>, track_name<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide information about motion tracking points, such as x and y values</p>
-<section id="parameters-2" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 5%">
@@ -1436,8 +1787,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-7" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">

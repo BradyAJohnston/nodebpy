@@ -7,15 +7,21 @@
 | Name | Description |
 |----|----|
 | [AdvectGrid](#nodebpy.nodes.geometry.grid.AdvectGrid) | Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs |
+| [ClipGrid](#nodebpy.nodes.geometry.grid.ClipGrid) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
+| [CubeGridTopology](#nodebpy.nodes.geometry.grid.CubeGridTopology) | Create a boolean grid topology with the given dimensions, for use with the Field to Grid node |
 | [DistributePointsInGrid](#nodebpy.nodes.geometry.grid.DistributePointsInGrid) | Generate points inside a volume grid |
 | [DistributePointsInVolume](#nodebpy.nodes.geometry.grid.DistributePointsInVolume) | Generate points inside a volume |
 | [GetNamedGrid](#nodebpy.nodes.geometry.grid.GetNamedGrid) | Get volume grid from a volume geometry with the specified name |
 | [GridCurl](#nodebpy.nodes.geometry.grid.GridCurl) | Calculate the magnitude and direction of circulation of a directional vector grid |
+| [GridDilateErode](#nodebpy.nodes.geometry.grid.GridDilateErode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
 | [GridDivergence](#nodebpy.nodes.geometry.grid.GridDivergence) | Calculate the flow into and out of each point of a directional vector grid |
 | [GridGradient](#nodebpy.nodes.geometry.grid.GridGradient) | Calculate the direction and magnitude of the change in values of a scalar grid |
 | [GridInfo](#nodebpy.nodes.geometry.grid.GridInfo) | Retrieve information about a volume grid |
 | [GridLaplacian](#nodebpy.nodes.geometry.grid.GridLaplacian) | Compute the divergence of the gradient of the input grid |
+| [GridMean](#nodebpy.nodes.geometry.grid.GridMean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
+| [GridMedian](#nodebpy.nodes.geometry.grid.GridMedian) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [GridToMesh](#nodebpy.nodes.geometry.grid.GridToMesh) | Generate a mesh on the “surface” of a volume grid |
+| [GridToPoints](#nodebpy.nodes.geometry.grid.GridToPoints) | Generate a point cloud from a volume grid’s active voxels |
 | [MeshToDensityGrid](#nodebpy.nodes.geometry.grid.MeshToDensityGrid) | Create a filled volume grid from a mesh |
 | [MeshToSDFGrid](#nodebpy.nodes.geometry.grid.MeshToSDFGrid) | Create a signed distance volume grid from a mesh |
 | [MeshToVolume](#nodebpy.nodes.geometry.grid.MeshToVolume) | Create a fog volume with the shape of the input mesh’s surface |
@@ -142,6 +148,171 @@ Create Advect Grid with operation ‘Vector’.
 | Attribute | Type          | Description |
 |-----------|---------------|-------------|
 | `o.grid`  | `FloatSocket` | Grid        |
+
+### ClipGrid
+
+``` python
+ClipGrid(
+    grid=0.0,
+    min_x=0,
+    min_y=0,
+    min_z=0,
+    max_x=32,
+    max_y=32,
+    max_z=32,
+    *,
+    data_type='FLOAT',
+)
+```
+
+Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
+
+#### Parameters
+
+| Name  | Type         | Description | Default |
+|-------|--------------|-------------|---------|
+| grid  | InputFloat   | Grid        | `0.0`   |
+| min_x | InputInteger | Min X       | `0`     |
+| min_y | InputInteger | Min Y       | `0`     |
+| min_z | InputInteger | Min Z       | `0`     |
+| max_x | InputInteger | Max X       | `32`    |
+| max_y | InputInteger | Max Y       | `32`    |
+| max_z | InputInteger | Max Z       | `32`    |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.grid.ClipGrid.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.grid.ClipGrid.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.grid.ClipGrid.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.ClipGrid.name) |  |
+| [`node`](#nodebpy.nodes.geometry.grid.ClipGrid.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.ClipGrid.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.grid.ClipGrid.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.ClipGrid.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.grid.ClipGrid.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.grid.ClipGrid.boolean) | Create Clip Grid with operation ‘Boolean’. |
+| [float](#nodebpy.nodes.geometry.grid.ClipGrid.float) | Create Clip Grid with operation ‘Float’. |
+| [integer](#nodebpy.nodes.geometry.grid.ClipGrid.integer) | Create Clip Grid with operation ‘Integer’. |
+| [vector](#nodebpy.nodes.geometry.grid.ClipGrid.vector) | Create Clip Grid with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(grid=False, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+```
+
+Create Clip Grid with operation ‘Boolean’.
+
+##### float
+
+``` python
+float(grid=0.0, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+```
+
+Create Clip Grid with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(grid=0, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+```
+
+Create Clip Grid with operation ‘Integer’.
+
+##### vector
+
+``` python
+vector(grid=None, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+```
+
+Create Clip Grid with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute | Type            | Description |
+|-----------|-----------------|-------------|
+| `i.grid`  | `FloatSocket`   | Grid        |
+| `i.min_x` | `IntegerSocket` | Min X       |
+| `i.min_y` | `IntegerSocket` | Min Y       |
+| `i.min_z` | `IntegerSocket` | Min Z       |
+| `i.max_x` | `IntegerSocket` | Max X       |
+| `i.max_y` | `IntegerSocket` | Max Y       |
+| `i.max_z` | `IntegerSocket` | Max Z       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.grid`  | `FloatSocket` | Grid        |
+
+### CubeGridTopology
+
+``` python
+CubeGridTopology(
+    bounds_min=None,
+    bounds_max=None,
+    resolution_x=32,
+    resolution_y=32,
+    resolution_z=32,
+    min_x=0,
+    min_y=0,
+    min_z=0,
+)
+```
+
+Create a boolean grid topology with the given dimensions, for use with the Field to Grid node
+
+#### Parameters
+
+| Name         | Type         | Description  | Default |
+|--------------|--------------|--------------|---------|
+| bounds_min   | InputVector  | Bounds Min   | `None`  |
+| bounds_max   | InputVector  | Bounds Max   | `None`  |
+| resolution_x | InputInteger | Resolution X | `32`    |
+| resolution_y | InputInteger | Resolution Y | `32`    |
+| resolution_z | InputInteger | Resolution Z | `32`    |
+| min_x        | InputInteger | Min X        | `0`     |
+| min_y        | InputInteger | Min Y        | `0`     |
+| min_z        | InputInteger | Min Z        | `0`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.grid.CubeGridTopology.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.grid.CubeGridTopology.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.CubeGridTopology.name) |  |
+| [`node`](#nodebpy.nodes.geometry.grid.CubeGridTopology.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.CubeGridTopology.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.grid.CubeGridTopology.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.CubeGridTopology.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.grid.CubeGridTopology.type) |  |
+
+**Inputs**
+
+| Attribute        | Type            | Description  |
+|------------------|-----------------|--------------|
+| `i.bounds_min`   | `VectorSocket`  | Bounds Min   |
+| `i.bounds_max`   | `VectorSocket`  | Bounds Max   |
+| `i.resolution_x` | `IntegerSocket` | Resolution X |
+| `i.resolution_y` | `IntegerSocket` | Resolution Y |
+| `i.resolution_z` | `IntegerSocket` | Resolution Z |
+| `i.min_x`        | `IntegerSocket` | Min X        |
+| `i.min_y`        | `IntegerSocket` | Min Y        |
+| `i.min_z`        | `IntegerSocket` | Min Z        |
+
+**Outputs**
+
+| Attribute    | Type            | Description |
+|--------------|-----------------|-------------|
+| `o.topology` | `BooleanSocket` | Topology    |
 
 ### DistributePointsInGrid
 
@@ -403,6 +574,100 @@ Calculate the magnitude and direction of circulation of a directional vector gri
 |-----------|----------------|-------------|
 | `o.curl`  | `VectorSocket` | Curl        |
 
+### GridDilateErode
+
+``` python
+GridDilateErode(
+    grid=0.0,
+    connectivity='Face',
+    tiles='Preserve',
+    steps=1,
+    *,
+    data_type='FLOAT',
+)
+```
+
+Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| grid | InputFloat | Grid | `0.0` |
+| connectivity | InputMenu \| Literal\['Face', 'Edge', 'Vertex'\] | Connectivity | `'Face'` |
+| tiles | InputMenu \| Literal\['Ignore', 'Expand', 'Preserve'\] | Tiles | `'Preserve'` |
+| steps | InputInteger | Steps | `1` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.grid.GridDilateErode.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.grid.GridDilateErode.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.grid.GridDilateErode.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.GridDilateErode.name) |  |
+| [`node`](#nodebpy.nodes.geometry.grid.GridDilateErode.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.GridDilateErode.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.grid.GridDilateErode.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.GridDilateErode.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.grid.GridDilateErode.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.grid.GridDilateErode.boolean) | Create Grid Dilate & Erode with operation ‘Boolean’. |
+| [float](#nodebpy.nodes.geometry.grid.GridDilateErode.float) | Create Grid Dilate & Erode with operation ‘Float’. |
+| [integer](#nodebpy.nodes.geometry.grid.GridDilateErode.integer) | Create Grid Dilate & Erode with operation ‘Integer’. |
+| [vector](#nodebpy.nodes.geometry.grid.GridDilateErode.vector) | Create Grid Dilate & Erode with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(grid=False, connectivity='Face', tiles='Preserve', steps=1)
+```
+
+Create Grid Dilate & Erode with operation ‘Boolean’.
+
+##### float
+
+``` python
+float(grid=0.0, connectivity='Face', tiles='Preserve', steps=1)
+```
+
+Create Grid Dilate & Erode with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(grid=0, connectivity='Face', tiles='Preserve', steps=1)
+```
+
+Create Grid Dilate & Erode with operation ‘Integer’.
+
+##### vector
+
+``` python
+vector(grid=None, connectivity='Face', tiles='Preserve', steps=1)
+```
+
+Create Grid Dilate & Erode with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute        | Type            | Description  |
+|------------------|-----------------|--------------|
+| `i.grid`         | `FloatSocket`   | Grid         |
+| `i.connectivity` | `MenuSocket`    | Connectivity |
+| `i.tiles`        | `MenuSocket`    | Tiles        |
+| `i.steps`        | `IntegerSocket` | Steps        |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.grid`  | `FloatSocket` | Grid        |
+
 ### GridDivergence
 
 ``` python
@@ -602,6 +867,158 @@ Compute the divergence of the gradient of the input grid
 |---------------|---------------|-------------|
 | `o.laplacian` | `FloatSocket` | Laplacian   |
 
+### GridMean
+
+``` python
+GridMean(grid=0.0, width=1, iterations=1, *, data_type='FLOAT')
+```
+
+Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
+#### Parameters
+
+| Name       | Type         | Description | Default |
+|------------|--------------|-------------|---------|
+| grid       | InputFloat   | Grid        | `0.0`   |
+| width      | InputInteger | Width       | `1`     |
+| iterations | InputInteger | Iterations  | `1`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.grid.GridMean.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.grid.GridMean.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.grid.GridMean.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.GridMean.name) |  |
+| [`node`](#nodebpy.nodes.geometry.grid.GridMean.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.GridMean.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.grid.GridMean.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.GridMean.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.grid.GridMean.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [float](#nodebpy.nodes.geometry.grid.GridMean.float) | Create Grid Mean with operation ‘Float’. |
+| [integer](#nodebpy.nodes.geometry.grid.GridMean.integer) | Create Grid Mean with operation ‘Integer’. |
+| [vector](#nodebpy.nodes.geometry.grid.GridMean.vector) | Create Grid Mean with operation ‘Vector’. |
+
+##### float
+
+``` python
+float(grid=0.0, width=1, iterations=1)
+```
+
+Create Grid Mean with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(grid=0, width=1, iterations=1)
+```
+
+Create Grid Mean with operation ‘Integer’.
+
+##### vector
+
+``` python
+vector(grid=None, width=1, iterations=1)
+```
+
+Create Grid Mean with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute      | Type            | Description |
+|----------------|-----------------|-------------|
+| `i.grid`       | `FloatSocket`   | Grid        |
+| `i.width`      | `IntegerSocket` | Width       |
+| `i.iterations` | `IntegerSocket` | Iterations  |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.grid`  | `FloatSocket` | Grid        |
+
+### GridMedian
+
+``` python
+GridMedian(grid=0.0, width=1, iterations=1, *, data_type='FLOAT')
+```
+
+Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
+#### Parameters
+
+| Name       | Type         | Description | Default |
+|------------|--------------|-------------|---------|
+| grid       | InputFloat   | Grid        | `0.0`   |
+| width      | InputInteger | Width       | `1`     |
+| iterations | InputInteger | Iterations  | `1`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.grid.GridMedian.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.grid.GridMedian.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.grid.GridMedian.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.GridMedian.name) |  |
+| [`node`](#nodebpy.nodes.geometry.grid.GridMedian.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.GridMedian.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.grid.GridMedian.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.GridMedian.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.grid.GridMedian.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [float](#nodebpy.nodes.geometry.grid.GridMedian.float) | Create Grid Median with operation ‘Float’. |
+| [integer](#nodebpy.nodes.geometry.grid.GridMedian.integer) | Create Grid Median with operation ‘Integer’. |
+| [vector](#nodebpy.nodes.geometry.grid.GridMedian.vector) | Create Grid Median with operation ‘Vector’. |
+
+##### float
+
+``` python
+float(grid=0.0, width=1, iterations=1)
+```
+
+Create Grid Median with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(grid=0, width=1, iterations=1)
+```
+
+Create Grid Median with operation ‘Integer’.
+
+##### vector
+
+``` python
+vector(grid=None, width=1, iterations=1)
+```
+
+Create Grid Median with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute      | Type            | Description |
+|----------------|-----------------|-------------|
+| `i.grid`       | `FloatSocket`   | Grid        |
+| `i.width`      | `IntegerSocket` | Width       |
+| `i.iterations` | `IntegerSocket` | Iterations  |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.grid`  | `FloatSocket` | Grid        |
+
 ### GridToMesh
 
 ``` python
@@ -644,6 +1061,93 @@ Generate a mesh on the “surface” of a volume grid
 | Attribute | Type             | Description |
 |-----------|------------------|-------------|
 | `o.mesh`  | `GeometrySocket` | Mesh        |
+
+### GridToPoints
+
+``` python
+GridToPoints(grid=0.0, *, data_type='FLOAT')
+```
+
+Generate a point cloud from a volume grid’s active voxels
+
+#### Parameters
+
+| Name | Type       | Description | Default |
+|------|------------|-------------|---------|
+| grid | InputFloat | Grid        | `0.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.grid.GridToPoints.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.grid.GridToPoints.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.grid.GridToPoints.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.grid.GridToPoints.name) |  |
+| [`node`](#nodebpy.nodes.geometry.grid.GridToPoints.node) |  |
+| [`o`](#nodebpy.nodes.geometry.grid.GridToPoints.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.grid.GridToPoints.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.grid.GridToPoints.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.grid.GridToPoints.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.grid.GridToPoints.boolean) | Create Grid to Points with operation ‘Boolean’. |
+| [float](#nodebpy.nodes.geometry.grid.GridToPoints.float) | Create Grid to Points with operation ‘Float’. |
+| [integer](#nodebpy.nodes.geometry.grid.GridToPoints.integer) | Create Grid to Points with operation ‘Integer’. |
+| [vector](#nodebpy.nodes.geometry.grid.GridToPoints.vector) | Create Grid to Points with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(grid=False)
+```
+
+Create Grid to Points with operation ‘Boolean’.
+
+##### float
+
+``` python
+float(grid=0.0)
+```
+
+Create Grid to Points with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(grid=0)
+```
+
+Create Grid to Points with operation ‘Integer’.
+
+##### vector
+
+``` python
+vector(grid=None)
+```
+
+Create Grid to Points with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.grid`  | `FloatSocket` | Grid        |
+
+**Outputs**
+
+| Attribute   | Type             | Description |
+|-------------|------------------|-------------|
+| `o.points`  | `GeometrySocket` | Points      |
+| `o.value`   | `FloatSocket`    | Value       |
+| `o.x`       | `IntegerSocket`  | X           |
+| `o.y`       | `IntegerSocket`  | Y           |
+| `o.z`       | `IntegerSocket`  | Z           |
+| `o.is_tile` | `BooleanSocket`  | Is Tile     |
+| `o.extent`  | `IntegerSocket`  | Extent      |
 
 ### MeshToDensityGrid
 
@@ -1404,17 +1908,24 @@ Create Sample Grid Index with operation ‘Vector’.
 ### SetGridBackground
 
 ``` python
-SetGridBackground(grid=0.0, background=0.0, *, data_type='FLOAT')
+SetGridBackground(
+    grid=0.0,
+    background=0.0,
+    update_inactive=False,
+    *,
+    data_type='FLOAT',
+)
 ```
 
 Set the background value used for inactive voxels and tiles
 
 #### Parameters
 
-| Name       | Type       | Description | Default |
-|------------|------------|-------------|---------|
-| grid       | InputFloat | Grid        | `0.0`   |
-| background | InputFloat | Background  | `0.0`   |
+| Name            | Type         | Description     | Default |
+|-----------------|--------------|-----------------|---------|
+| grid            | InputFloat   | Grid            | `0.0`   |
+| background      | InputFloat   | Background      | `0.0`   |
+| update_inactive | InputBoolean | Update Inactive | `False` |
 
 #### Attributes
 
@@ -1442,7 +1953,7 @@ Set the background value used for inactive voxels and tiles
 ##### boolean
 
 ``` python
-boolean(grid=False, background=False)
+boolean(grid=False, background=False, update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Boolean’.
@@ -1450,7 +1961,7 @@ Create Set Grid Background with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0, background=0.0)
+float(grid=0.0, background=0.0, update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Float’.
@@ -1458,7 +1969,7 @@ Create Set Grid Background with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, background=0)
+integer(grid=0, background=0, update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Integer’.
@@ -1466,17 +1977,18 @@ Create Set Grid Background with operation ‘Integer’.
 ##### vector
 
 ``` python
-vector(grid=None, background=None)
+vector(grid=None, background=None, update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute      | Type          | Description |
-|----------------|---------------|-------------|
-| `i.grid`       | `FloatSocket` | Grid        |
-| `i.background` | `FloatSocket` | Background  |
+| Attribute           | Type            | Description     |
+|---------------------|-----------------|-----------------|
+| `i.grid`            | `FloatSocket`   | Grid            |
+| `i.background`      | `FloatSocket`   | Background      |
+| `i.update_inactive` | `BooleanSocket` | Update Inactive |
 
 **Outputs**
 

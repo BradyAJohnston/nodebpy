@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.10.2</span>
+    <span class="navbar-title">nodebpy 0.13.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -334,12 +334,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.interface.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.interface</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.shader.manual</span></a>
   </div>
@@ -527,6 +521,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.compositor.filter.Glare" id="toc-nodebpy.nodes.compositor.filter.Glare" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.filter.Glare">Glare</a></li>
   <li><a href="#nodebpy.nodes.compositor.filter.Inpaint" id="toc-nodebpy.nodes.compositor.filter.Inpaint" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.filter.Inpaint">Inpaint</a></li>
   <li><a href="#nodebpy.nodes.compositor.filter.Kuwahara" id="toc-nodebpy.nodes.compositor.filter.Kuwahara" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.filter.Kuwahara">Kuwahara</a></li>
+  <li><a href="#nodebpy.nodes.compositor.filter.MaskToSDF" id="toc-nodebpy.nodes.compositor.filter.MaskToSDF" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.filter.MaskToSDF">MaskToSDF</a></li>
   <li><a href="#nodebpy.nodes.compositor.filter.Pixelate" id="toc-nodebpy.nodes.compositor.filter.Pixelate" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.filter.Pixelate">Pixelate</a></li>
   <li><a href="#nodebpy.nodes.compositor.filter.VectorBlur" id="toc-nodebpy.nodes.compositor.filter.VectorBlur" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.filter.VectorBlur">VectorBlur</a></li>
   </ul></li>
@@ -610,10 +605,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Apply smoothing filter that preserves edges, for stylized and painterly effects</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF">MaskToSDF</a></td>
+<td>Computes a signed distance field from the given mask</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Pixelate">Pixelate</a></td>
 <td>Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.filter.VectorBlur">VectorBlur</a></td>
 <td>Uses the vector speed render pass to blur the image pixels in 2D</td>
 </tr>
@@ -1466,7 +1465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    angle<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    f_stop<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    blur_max<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    use_zbuffer<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    use_zbuffer<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    z_scale<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply depth of field in 2D, using a Z depth map or mask</p>
@@ -2791,7 +2790,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span><span class="va">None</span>,</span>
@@ -2807,7 +2806,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span><span class="va">None</span>,</span>
@@ -2823,7 +2822,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span><span class="va">None</span>,</span>
@@ -2840,7 +2839,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span><span class="va">None</span>,</span>
@@ -2857,7 +2856,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span><span class="va">None</span>,</span>
@@ -2875,7 +2874,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span><span class="va">None</span>,</span>
@@ -2895,7 +2894,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    clamp_highlights<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="fl">10.0</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    maximum_highlights<span class="op">=</span><span class="fl">10.0</span>,</span>
 <span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    strength<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span><span class="va">None</span>,</span>
@@ -3388,12 +3387,122 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 </section>
-<section id="nodebpy.nodes.compositor.filter.Pixelate" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Pixelate">Pixelate</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>Pixelate(color<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance</p>
+<section id="nodebpy.nodes.compositor.filter.MaskToSDF" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.MaskToSDF">MaskToSDF</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>MaskToSDF(mask<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Computes a signed distance field from the given mask</p>
 <section id="parameters-14" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mask</td>
+<td>InputBoolean</td>
+<td>Mask</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.mask</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Mask</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.sdf</code></td>
+<td><code>FloatSocket</code></td>
+<td>SDF</td>
+</tr>
+<tr class="even">
+<td><code>o.nearest_pixel</code></td>
+<td><code>VectorSocket</code></td>
+<td>Nearest Pixel</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.compositor.filter.Pixelate" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Pixelate">Pixelate</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>Pixelate(color<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance</p>
+<section id="parameters-15" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3419,8 +3528,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-14" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3506,10 +3615,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.filter.VectorBlur" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.VectorBlur">VectorBlur</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>VectorBlur(image<span class="op">=</span><span class="va">None</span>, speed<span class="op">=</span><span class="va">None</span>, z<span class="op">=</span><span class="fl">0.0</span>, samples<span class="op">=</span><span class="dv">32</span>, shutter<span class="op">=</span><span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>VectorBlur(image<span class="op">=</span><span class="va">None</span>, speed<span class="op">=</span><span class="va">None</span>, z<span class="op">=</span><span class="fl">0.0</span>, samples<span class="op">=</span><span class="dv">32</span>, shutter<span class="op">=</span><span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Uses the vector speed render pass to blur the image pixels in 2D</p>
-<section id="parameters-15" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
+<section id="parameters-16" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-16">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3535,7 +3644,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>z</td>
 <td>InputFloat</td>
-<td>Z</td>
+<td>Depth</td>
 <td><code>0.0</code></td>
 </tr>
 <tr class="even">
@@ -3553,8 +3662,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-15" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3620,7 +3729,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><code>i.z</code></td>
 <td><code>FloatSocket</code></td>
-<td>Z</td>
+<td>Depth</td>
 </tr>
 <tr class="even">
 <td><code>i.samples</code></td>

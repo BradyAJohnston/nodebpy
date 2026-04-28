@@ -11,9 +11,10 @@
 | [ConvertColorspace](#nodebpy.nodes.compositor.converter.ConvertColorspace) | Convert between color spaces |
 | [ConvertToDisplay](#nodebpy.nodes.compositor.converter.ConvertToDisplay) | Convert from scene linear to display color space, with a view transform and look for tone mapping |
 | [IDMask](#nodebpy.nodes.compositor.converter.IDMask) | Create a matte from an object or material index pass |
+| [IndexSwitch](#nodebpy.nodes.compositor.converter.IndexSwitch) | Choose between an arbitrary number of values with an index |
 | [Levels](#nodebpy.nodes.compositor.converter.Levels) | Compute average and standard deviation of pixel values |
 | [Mix](#nodebpy.nodes.compositor.converter.Mix) | Mix values by a factor |
-| [RGBToBw](#nodebpy.nodes.compositor.converter.RGBToBw) | Convert RGB input into grayscale using luminance |
+| [RGBToBW](#nodebpy.nodes.compositor.converter.RGBToBW) | Convert RGB input into grayscale using luminance |
 | [RelativeToPixel](#nodebpy.nodes.compositor.converter.RelativeToPixel) | Converts values that are relative to the image size to be in terms of pixels |
 | [SeparateColor](#nodebpy.nodes.compositor.converter.SeparateColor) | Split an image into its composite color channels |
 | [SetAlpha](#nodebpy.nodes.compositor.converter.SetAlpha) | Add an alpha channel to an image |
@@ -320,6 +321,120 @@ Create a matte from an object or material index pass
 |-----------|---------------|-------------|
 | `o.alpha` | `FloatSocket` | Alpha       |
 
+### IndexSwitch
+
+``` python
+IndexSwitch(index=0, item_0=None, item_1=None, extend=None, *, data_type='RGBA')
+```
+
+Choose between an arbitrary number of values with an index
+
+#### Parameters
+
+| Name   | Type          | Description | Default |
+|--------|---------------|-------------|---------|
+| index  | InputInteger  | Index       | `0`     |
+| item_0 | InputColor    | 0           | `None`  |
+| item_1 | InputColor    | 1           | `None`  |
+| extend | InputLinkable |             | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.compositor.converter.IndexSwitch.data_type) |  |
+| [`i`](#nodebpy.nodes.compositor.converter.IndexSwitch.i) |  |
+| [`inputs`](#nodebpy.nodes.compositor.converter.IndexSwitch.inputs) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.IndexSwitch.name) |  |
+| [`node`](#nodebpy.nodes.compositor.converter.IndexSwitch.node) |  |
+| [`o`](#nodebpy.nodes.compositor.converter.IndexSwitch.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.converter.IndexSwitch.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.IndexSwitch.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.converter.IndexSwitch.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.compositor.converter.IndexSwitch.boolean) | Create Index Switch with operation ‘Boolean’. |
+| [color](#nodebpy.nodes.compositor.converter.IndexSwitch.color) | Create Index Switch with operation ‘Color’. |
+| [float](#nodebpy.nodes.compositor.converter.IndexSwitch.float) | Create Index Switch with operation ‘Float’. |
+| [integer](#nodebpy.nodes.compositor.converter.IndexSwitch.integer) | Create Index Switch with operation ‘Integer’. |
+| [menu](#nodebpy.nodes.compositor.converter.IndexSwitch.menu) | Create Index Switch with operation ‘Menu’. |
+| [string](#nodebpy.nodes.compositor.converter.IndexSwitch.string) | Create Index Switch with operation ‘String’. |
+| [vector](#nodebpy.nodes.compositor.converter.IndexSwitch.vector) | Create Index Switch with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(index=0, item_0=False, item_1=False, extend=None)
+```
+
+Create Index Switch with operation ‘Boolean’.
+
+##### color
+
+``` python
+color(index=0, item_0=None, item_1=None, extend=None)
+```
+
+Create Index Switch with operation ‘Color’.
+
+##### float
+
+``` python
+float(index=0, item_0=0.0, item_1=0.0, extend=None)
+```
+
+Create Index Switch with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(index=0, item_0=0, item_1=0, extend=None)
+```
+
+Create Index Switch with operation ‘Integer’.
+
+##### menu
+
+``` python
+menu(index=0, item_0=None, item_1=None, extend=None)
+```
+
+Create Index Switch with operation ‘Menu’.
+
+##### string
+
+``` python
+string(index=0, item_0='', item_1='', extend=None)
+```
+
+Create Index Switch with operation ‘String’.
+
+##### vector
+
+``` python
+vector(index=0, item_0=None, item_1=None, extend=None)
+```
+
+Create Index Switch with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute  | Type            | Description |
+|------------|-----------------|-------------|
+| `i.index`  | `IntegerSocket` | Index       |
+| `i.item_0` | `ColorSocket`   | 0           |
+| `i.item_1` | `ColorSocket`   | 1           |
+| `i.extend` | `Socket`        |             |
+
+**Outputs**
+
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.output` | `ColorSocket` | Output      |
+
 ### Levels
 
 ``` python
@@ -476,10 +591,10 @@ Create Mix with operation ‘Vector’.
 | `o.result_color`    | `ColorSocket`    | Result      |
 | `o.result_rotation` | `RotationSocket` | Result      |
 
-### RGBToBw
+### RGBToBW
 
 ``` python
-RGBToBw(image=None)
+RGBToBW(image=None)
 ```
 
 Convert RGB input into grayscale using luminance
@@ -494,14 +609,14 @@ Convert RGB input into grayscale using luminance
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.compositor.converter.RGBToBw.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.RGBToBw.inputs) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.RGBToBw.name) |  |
-| [`node`](#nodebpy.nodes.compositor.converter.RGBToBw.node) |  |
-| [`o`](#nodebpy.nodes.compositor.converter.RGBToBw.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.RGBToBw.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.RGBToBw.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.RGBToBw.type) |  |
+| [`i`](#nodebpy.nodes.compositor.converter.RGBToBW.i) |  |
+| [`inputs`](#nodebpy.nodes.compositor.converter.RGBToBW.inputs) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.RGBToBW.name) |  |
+| [`node`](#nodebpy.nodes.compositor.converter.RGBToBW.node) |  |
+| [`o`](#nodebpy.nodes.compositor.converter.RGBToBW.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.converter.RGBToBW.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.RGBToBW.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.converter.RGBToBW.type) |  |
 
 **Inputs**
 

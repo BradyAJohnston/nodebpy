@@ -20,6 +20,7 @@
 | [Glare](#nodebpy.nodes.compositor.filter.Glare) | Add lens flares, fog and glows around bright parts of the image |
 | [Inpaint](#nodebpy.nodes.compositor.filter.Inpaint) | Extend borders of an image into transparent or masked regions |
 | [Kuwahara](#nodebpy.nodes.compositor.filter.Kuwahara) | Apply smoothing filter that preserves edges, for stylized and painterly effects |
+| [MaskToSDF](#nodebpy.nodes.compositor.filter.MaskToSDF) | Computes a signed distance field from the given mask |
 | [Pixelate](#nodebpy.nodes.compositor.filter.Pixelate) | Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance |
 | [VectorBlur](#nodebpy.nodes.compositor.filter.VectorBlur) | Uses the vector speed render pass to blur the image pixels in 2D |
 
@@ -359,7 +360,7 @@ Defocus(
     angle=0.0,
     f_stop=0.0,
     blur_max=0.0,
-    use_zbuffer=False,
+    use_zbuffer=True,
     z_scale=0.0,
 )
 ```
@@ -865,7 +866,7 @@ bloom(
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
     clamp_highlights=False,
-    max=10.0,
+    maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
     tint=None,
@@ -884,7 +885,7 @@ fog_glow(
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
     clamp_highlights=False,
-    max=10.0,
+    maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
     tint=None,
@@ -903,7 +904,7 @@ ghosts(
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
     clamp_highlights=False,
-    max=10.0,
+    maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
     tint=None,
@@ -923,7 +924,7 @@ kernel(
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
     clamp_highlights=False,
-    max=10.0,
+    maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
     tint=None,
@@ -943,7 +944,7 @@ simple_star(
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
     clamp_highlights=False,
-    max=10.0,
+    maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
     tint=None,
@@ -964,7 +965,7 @@ streaks(
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
     clamp_highlights=False,
-    max=10.0,
+    maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
     tint=None,
@@ -987,7 +988,7 @@ sun_beams(
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
     clamp_highlights=False,
-    max=10.0,
+    maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
     tint=None,
@@ -1157,6 +1158,46 @@ Create Kuwahara node with type ‘Classic’.
 |-----------|---------------|-------------|
 | `o.image` | `ColorSocket` | Image       |
 
+### MaskToSDF
+
+``` python
+MaskToSDF(mask=False)
+```
+
+Computes a signed distance field from the given mask
+
+#### Parameters
+
+| Name | Type         | Description | Default |
+|------|--------------|-------------|---------|
+| mask | InputBoolean | Mask        | `False` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.filter.MaskToSDF.i) |  |
+| [`inputs`](#nodebpy.nodes.compositor.filter.MaskToSDF.inputs) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.MaskToSDF.name) |  |
+| [`node`](#nodebpy.nodes.compositor.filter.MaskToSDF.node) |  |
+| [`o`](#nodebpy.nodes.compositor.filter.MaskToSDF.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.filter.MaskToSDF.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.MaskToSDF.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.filter.MaskToSDF.type) |  |
+
+**Inputs**
+
+| Attribute | Type            | Description |
+|-----------|-----------------|-------------|
+| `i.mask`  | `BooleanSocket` | Mask        |
+
+**Outputs**
+
+| Attribute         | Type           | Description   |
+|-------------------|----------------|---------------|
+| `o.sdf`           | `FloatSocket`  | SDF           |
+| `o.nearest_pixel` | `VectorSocket` | Nearest Pixel |
+
 ### Pixelate
 
 ``` python
@@ -1212,7 +1253,7 @@ Uses the vector speed render pass to blur the image pixels in 2D
 |---------|--------------|-------------|---------|
 | image   | InputColor   | Image       | `None`  |
 | speed   | InputVector  | Speed       | `None`  |
-| z       | InputFloat   | Z           | `0.0`   |
+| z       | InputFloat   | Depth       | `0.0`   |
 | samples | InputInteger | Samples     | `32`    |
 | shutter | InputFloat   | Shutter     | `0.5`   |
 
@@ -1235,7 +1276,7 @@ Uses the vector speed render pass to blur the image pixels in 2D
 |-------------|-----------------|-------------|
 | `i.image`   | `ColorSocket`   | Image       |
 | `i.speed`   | `VectorSocket`  | Speed       |
-| `i.z`       | `FloatSocket`   | Z           |
+| `i.z`       | `FloatSocket`   | Depth       |
 | `i.samples` | `IntegerSocket` | Samples     |
 | `i.shutter` | `FloatSocket`   | Shutter     |
 

@@ -23,6 +23,7 @@
 | [FindInString](#nodebpy.nodes.geometry.converter.FindInString) | Find the number of times a given string occurs in another string and the position of the first match |
 | [FloatCurve](#nodebpy.nodes.geometry.converter.FloatCurve) | Map an input float to a curve and outputs a float value |
 | [FloatToInteger](#nodebpy.nodes.geometry.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
+| [GetBundleItem](#nodebpy.nodes.geometry.converter.GetBundleItem) | Retrieve a bundle item by path. |
 | [HashValue](#nodebpy.nodes.geometry.converter.HashValue) | Generate a randomized integer using the given input value as a seed |
 | [IndexOfNearest](#nodebpy.nodes.geometry.converter.IndexOfNearest) | Find the nearest element in a group. Similar to the “Sample Nearest” node |
 | [IntegerMath](#nodebpy.nodes.geometry.converter.IntegerMath) | Perform various math operations on the given integer inputs |
@@ -33,6 +34,7 @@
 | [MatchString](#nodebpy.nodes.geometry.converter.MatchString) | Check if a given string exists within another string |
 | [Math](#nodebpy.nodes.geometry.converter.Math) | Perform math operations |
 | [MatrixDeterminant](#nodebpy.nodes.geometry.converter.MatrixDeterminant) | Compute the determinant of the given matrix |
+| [MatrixSVD](#nodebpy.nodes.geometry.converter.MatrixSVD) | Compute the singular value decomposition of the 3x3 part of a matrix |
 | [Mix](#nodebpy.nodes.geometry.converter.Mix) | Mix values by a factor |
 | [MultiplyMatrices](#nodebpy.nodes.geometry.converter.MultiplyMatrices) | Perform a matrix multiplication on two input matrices |
 | [PackUVIslands](#nodebpy.nodes.geometry.converter.PackUVIslands) | Scale islands of a UV map and move them so they fill the UV space as much as possible |
@@ -52,6 +54,7 @@
 | [SeparateTransform](#nodebpy.nodes.geometry.converter.SeparateTransform) | Split a transformation matrix into a translation vector, a rotation, and a scale vector |
 | [SeparateXYZ](#nodebpy.nodes.geometry.converter.SeparateXYZ) | Split a vector into its X, Y, and Z components |
 | [SliceString](#nodebpy.nodes.geometry.converter.SliceString) | Extract a string segment from a larger string |
+| [StoreBundleItem](#nodebpy.nodes.geometry.converter.StoreBundleItem) | Store a bundle item by path and data type. |
 | [StringLength](#nodebpy.nodes.geometry.converter.StringLength) | Output the number of characters in the given string |
 | [StringToValue](#nodebpy.nodes.geometry.converter.StringToValue) | Derive a numeric value from a given string representation |
 | [Switch](#nodebpy.nodes.geometry.converter.Switch) | Switch between two inputs |
@@ -1021,6 +1024,272 @@ Convert the given floating-point number to an integer, with a choice of methods
 | Attribute   | Type            | Description |
 |-------------|-----------------|-------------|
 | `o.integer` | `IntegerSocket` | Integer     |
+
+### GetBundleItem
+
+``` python
+GetBundleItem(
+    bundle=None,
+    path='',
+    remove=False,
+    *,
+    socket_type='FLOAT',
+    structure_type='AUTO',
+)
+```
+
+Retrieve a bundle item by path.
+
+#### Parameters
+
+| Name   | Type         | Description | Default |
+|--------|--------------|-------------|---------|
+| bundle | InputBundle  | Bundle      | `None`  |
+| path   | InputString  | Path        | `''`    |
+| remove | InputBoolean | Remove      | `False` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.GetBundleItem.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.converter.GetBundleItem.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.GetBundleItem.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.GetBundleItem.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.GetBundleItem.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.GetBundleItem.outputs) |  |
+| [`socket_type`](#nodebpy.nodes.geometry.converter.GetBundleItem.socket_type) |  |
+| [`structure_type`](#nodebpy.nodes.geometry.converter.GetBundleItem.structure_type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.GetBundleItem.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.GetBundleItem.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [auto](#nodebpy.nodes.geometry.converter.GetBundleItem.auto) | Create Get Bundle Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used |
+| [boolean](#nodebpy.nodes.geometry.converter.GetBundleItem.boolean) | Create Get Bundle Item with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.converter.GetBundleItem.bundle) | Create Get Bundle Item with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.converter.GetBundleItem.closure) | Create Get Bundle Item with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.converter.GetBundleItem.collection) | Create Get Bundle Item with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.converter.GetBundleItem.color) | Create Get Bundle Item with operation ‘Color’. |
+| [dynamic](#nodebpy.nodes.geometry.converter.GetBundleItem.dynamic) | Create Get Bundle Item with operation ‘Dynamic’. Socket can work with different kinds of structures |
+| [field](#nodebpy.nodes.geometry.converter.GetBundleItem.field) | Create Get Bundle Item with operation ‘Field’. Socket expects a field |
+| [float](#nodebpy.nodes.geometry.converter.GetBundleItem.float) | Create Get Bundle Item with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.GetBundleItem.font) | Create Get Bundle Item with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.converter.GetBundleItem.geometry) | Create Get Bundle Item with operation ‘Geometry’. |
+| [grid](#nodebpy.nodes.geometry.converter.GetBundleItem.grid) | Create Get Bundle Item with operation ‘Grid’. Socket expects a grid |
+| [image](#nodebpy.nodes.geometry.converter.GetBundleItem.image) | Create Get Bundle Item with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.converter.GetBundleItem.integer) | Create Get Bundle Item with operation ‘Integer’. |
+| [list](#nodebpy.nodes.geometry.converter.GetBundleItem.list) | Create Get Bundle Item with operation ‘List’. Socket expects a list |
+| [material](#nodebpy.nodes.geometry.converter.GetBundleItem.material) | Create Get Bundle Item with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.converter.GetBundleItem.matrix) | Create Get Bundle Item with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.converter.GetBundleItem.menu) | Create Get Bundle Item with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.converter.GetBundleItem.object) | Create Get Bundle Item with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.converter.GetBundleItem.rotation) | Create Get Bundle Item with operation ‘Rotation’. |
+| [single](#nodebpy.nodes.geometry.converter.GetBundleItem.single) | Create Get Bundle Item with operation ‘Single’. Socket expects a single value |
+| [string](#nodebpy.nodes.geometry.converter.GetBundleItem.string) | Create Get Bundle Item with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.converter.GetBundleItem.vector) | Create Get Bundle Item with operation ‘Vector’. |
+
+##### auto
+
+``` python
+auto(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used
+
+##### boolean
+
+``` python
+boolean(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Collection’.
+
+##### color
+
+``` python
+color(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Color’.
+
+##### dynamic
+
+``` python
+dynamic(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Dynamic’. Socket can work with different kinds of structures
+
+##### field
+
+``` python
+field(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Field’. Socket expects a field
+
+##### float
+
+``` python
+float(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Float’.
+
+##### font
+
+``` python
+font(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Geometry’.
+
+##### grid
+
+``` python
+grid(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Grid’. Socket expects a grid
+
+##### image
+
+``` python
+image(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Integer’.
+
+##### list
+
+``` python
+list(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘List’. Socket expects a list
+
+##### material
+
+``` python
+material(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Menu’.
+
+##### object
+
+``` python
+object(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Rotation’.
+
+##### single
+
+``` python
+single(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Single’. Socket expects a single value
+
+##### string
+
+``` python
+string(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘String’.
+
+##### vector
+
+``` python
+vector(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute  | Type            | Description |
+|------------|-----------------|-------------|
+| `i.bundle` | `BundleSocket`  | Bundle      |
+| `i.path`   | `StringSocket`  | Path        |
+| `i.remove` | `BooleanSocket` | Remove      |
+
+**Outputs**
+
+| Attribute  | Type            | Description |
+|------------|-----------------|-------------|
+| `o.bundle` | `BundleSocket`  | Bundle      |
+| `o.item`   | `FloatSocket`   | Item        |
+| `o.exists` | `BooleanSocket` | Exists      |
 
 ### HashValue
 
@@ -2159,6 +2428,47 @@ Compute the determinant of the given matrix
 |-----------------|---------------|-------------|
 | `o.determinant` | `FloatSocket` | Determinant |
 
+### MatrixSVD
+
+``` python
+MatrixSVD(matrix=None)
+```
+
+Compute the singular value decomposition of the 3x3 part of a matrix
+
+#### Parameters
+
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| matrix | InputMatrix | Matrix      | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.MatrixSVD.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.converter.MatrixSVD.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.MatrixSVD.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.MatrixSVD.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.MatrixSVD.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.MatrixSVD.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.MatrixSVD.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.MatrixSVD.type) |  |
+
+**Inputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `i.matrix` | `MatrixSocket` | Matrix      |
+
+**Outputs**
+
+| Attribute | Type           | Description |
+|-----------|----------------|-------------|
+| `o.u`     | `MatrixSocket` | U           |
+| `o.s`     | `VectorSocket` | S           |
+| `o.v`     | `MatrixSocket` | V           |
+
 ### Mix
 
 ``` python
@@ -2332,6 +2642,8 @@ PackUVIslands(
     margin=0.001,
     rotate=True,
     method='Bounding Box',
+    bottom_left=None,
+    top_right=None,
 )
 ```
 
@@ -2346,6 +2658,8 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 | margin | InputFloat | Margin | `0.001` |
 | rotate | InputBoolean | Rotate | `True` |
 | method | InputMenu \| Literal\['Bounding Box', 'Convex Hull', 'Exact Shape'\] | Method | `'Bounding Box'` |
+| bottom_left | InputVector | Bottom Left | `None` |
+| top_right | InputVector | Top Right | `None` |
 
 #### Attributes
 
@@ -2362,13 +2676,15 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 
 **Inputs**
 
-| Attribute     | Type            | Description |
-|---------------|-----------------|-------------|
-| `i.uv`        | `VectorSocket`  | UV          |
-| `i.selection` | `BooleanSocket` | Selection   |
-| `i.margin`    | `FloatSocket`   | Margin      |
-| `i.rotate`    | `BooleanSocket` | Rotate      |
-| `i.method`    | `MenuSocket`    | Method      |
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `i.uv`          | `VectorSocket`  | UV          |
+| `i.selection`   | `BooleanSocket` | Selection   |
+| `i.margin`      | `FloatSocket`   | Margin      |
+| `i.rotate`      | `BooleanSocket` | Rotate      |
+| `i.method`      | `MenuSocket`    | Method      |
+| `i.bottom_left` | `VectorSocket`  | Bottom Left |
+| `i.top_right`   | `VectorSocket`  | Top Right   |
 
 **Outputs**
 
@@ -3187,6 +3503,270 @@ Extract a string segment from a larger string
 |------------|----------------|-------------|
 | `o.string` | `StringSocket` | String      |
 
+### StoreBundleItem
+
+``` python
+StoreBundleItem(
+    bundle=None,
+    path='',
+    item=0.0,
+    *,
+    socket_type='FLOAT',
+    structure_type='AUTO',
+)
+```
+
+Store a bundle item by path and data type.
+
+#### Parameters
+
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| bundle | InputBundle | Bundle      | `None`  |
+| path   | InputString | Path        | `''`    |
+| item   | InputFloat  | Item        | `0.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.StoreBundleItem.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.converter.StoreBundleItem.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.StoreBundleItem.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.StoreBundleItem.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.StoreBundleItem.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.StoreBundleItem.outputs) |  |
+| [`socket_type`](#nodebpy.nodes.geometry.converter.StoreBundleItem.socket_type) |  |
+| [`structure_type`](#nodebpy.nodes.geometry.converter.StoreBundleItem.structure_type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.StoreBundleItem.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.StoreBundleItem.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [auto](#nodebpy.nodes.geometry.converter.StoreBundleItem.auto) | Create Store Bundle Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used |
+| [boolean](#nodebpy.nodes.geometry.converter.StoreBundleItem.boolean) | Create Store Bundle Item with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.converter.StoreBundleItem.bundle) | Create Store Bundle Item with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.converter.StoreBundleItem.closure) | Create Store Bundle Item with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.converter.StoreBundleItem.collection) | Create Store Bundle Item with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.converter.StoreBundleItem.color) | Create Store Bundle Item with operation ‘Color’. |
+| [dynamic](#nodebpy.nodes.geometry.converter.StoreBundleItem.dynamic) | Create Store Bundle Item with operation ‘Dynamic’. Socket can work with different kinds of structures |
+| [field](#nodebpy.nodes.geometry.converter.StoreBundleItem.field) | Create Store Bundle Item with operation ‘Field’. Socket expects a field |
+| [float](#nodebpy.nodes.geometry.converter.StoreBundleItem.float) | Create Store Bundle Item with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.StoreBundleItem.font) | Create Store Bundle Item with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.converter.StoreBundleItem.geometry) | Create Store Bundle Item with operation ‘Geometry’. |
+| [grid](#nodebpy.nodes.geometry.converter.StoreBundleItem.grid) | Create Store Bundle Item with operation ‘Grid’. Socket expects a grid |
+| [image](#nodebpy.nodes.geometry.converter.StoreBundleItem.image) | Create Store Bundle Item with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.converter.StoreBundleItem.integer) | Create Store Bundle Item with operation ‘Integer’. |
+| [list](#nodebpy.nodes.geometry.converter.StoreBundleItem.list) | Create Store Bundle Item with operation ‘List’. Socket expects a list |
+| [material](#nodebpy.nodes.geometry.converter.StoreBundleItem.material) | Create Store Bundle Item with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.converter.StoreBundleItem.matrix) | Create Store Bundle Item with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.converter.StoreBundleItem.menu) | Create Store Bundle Item with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.converter.StoreBundleItem.object) | Create Store Bundle Item with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.converter.StoreBundleItem.rotation) | Create Store Bundle Item with operation ‘Rotation’. |
+| [single](#nodebpy.nodes.geometry.converter.StoreBundleItem.single) | Create Store Bundle Item with operation ‘Single’. Socket expects a single value |
+| [string](#nodebpy.nodes.geometry.converter.StoreBundleItem.string) | Create Store Bundle Item with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.converter.StoreBundleItem.vector) | Create Store Bundle Item with operation ‘Vector’. |
+
+##### auto
+
+``` python
+auto(bundle=None, path='', item=0.0)
+```
+
+Create Store Bundle Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used
+
+##### boolean
+
+``` python
+boolean(bundle=None, path='', item=False)
+```
+
+Create Store Bundle Item with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Collection’.
+
+##### color
+
+``` python
+color(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Color’.
+
+##### dynamic
+
+``` python
+dynamic(bundle=None, path='', item=0.0)
+```
+
+Create Store Bundle Item with operation ‘Dynamic’. Socket can work with different kinds of structures
+
+##### field
+
+``` python
+field(bundle=None, path='', item=0.0)
+```
+
+Create Store Bundle Item with operation ‘Field’. Socket expects a field
+
+##### float
+
+``` python
+float(bundle=None, path='', item=0.0)
+```
+
+Create Store Bundle Item with operation ‘Float’.
+
+##### font
+
+``` python
+font(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Geometry’.
+
+##### grid
+
+``` python
+grid(bundle=None, path='', item=0.0)
+```
+
+Create Store Bundle Item with operation ‘Grid’. Socket expects a grid
+
+##### image
+
+``` python
+image(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(bundle=None, path='', item=0)
+```
+
+Create Store Bundle Item with operation ‘Integer’.
+
+##### list
+
+``` python
+list(bundle=None, path='', item=0.0)
+```
+
+Create Store Bundle Item with operation ‘List’. Socket expects a list
+
+##### material
+
+``` python
+material(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Menu’.
+
+##### object
+
+``` python
+object(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Rotation’.
+
+##### single
+
+``` python
+single(bundle=None, path='', item=0.0)
+```
+
+Create Store Bundle Item with operation ‘Single’. Socket expects a single value
+
+##### string
+
+``` python
+string(bundle=None, path='', item='')
+```
+
+Create Store Bundle Item with operation ‘String’.
+
+##### vector
+
+``` python
+vector(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `i.bundle` | `BundleSocket` | Bundle      |
+| `i.path`   | `StringSocket` | Path        |
+| `i.item`   | `FloatSocket`  | Item        |
+
+**Outputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `o.bundle` | `BundleSocket` | Bundle      |
+
 ### StringLength
 
 ``` python
@@ -3293,18 +3873,18 @@ Create String to Value with operation ‘Integer’. 32-bit integer
 ### Switch
 
 ``` python
-Switch(switch=False, false=None, true=None, *, input_type='GEOMETRY')
+Switch(switch=False, false=0.0, true=0.0, *, input_type='FLOAT')
 ```
 
 Switch between two inputs
 
 #### Parameters
 
-| Name   | Type          | Description | Default |
-|--------|---------------|-------------|---------|
-| switch | InputBoolean  | Switch      | `False` |
-| false  | InputGeometry | False       | `None`  |
-| true   | InputGeometry | True        | `None`  |
+| Name   | Type         | Description | Default |
+|--------|--------------|-------------|---------|
+| switch | InputBoolean | Switch      | `False` |
+| false  | InputFloat   | False       | `0.0`   |
+| true   | InputFloat   | True        | `0.0`   |
 
 #### Attributes
 
@@ -3330,6 +3910,7 @@ Switch between two inputs
 | [collection](#nodebpy.nodes.geometry.converter.Switch.collection) | Create Switch with operation ‘Collection’. |
 | [color](#nodebpy.nodes.geometry.converter.Switch.color) | Create Switch with operation ‘Color’. |
 | [float](#nodebpy.nodes.geometry.converter.Switch.float) | Create Switch with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.Switch.font) | Create Switch with operation ‘Font’. |
 | [geometry](#nodebpy.nodes.geometry.converter.Switch.geometry) | Create Switch with operation ‘Geometry’. |
 | [image](#nodebpy.nodes.geometry.converter.Switch.image) | Create Switch with operation ‘Image’. |
 | [integer](#nodebpy.nodes.geometry.converter.Switch.integer) | Create Switch with operation ‘Integer’. |
@@ -3388,6 +3969,14 @@ float(switch=False, false=0.0, true=0.0)
 ```
 
 Create Switch with operation ‘Float’.
+
+##### font
+
+``` python
+font(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Font’.
 
 ##### geometry
 
@@ -3471,17 +4060,17 @@ Create Switch with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute  | Type             | Description |
-|------------|------------------|-------------|
-| `i.switch` | `BooleanSocket`  | Switch      |
-| `i.false`  | `GeometrySocket` | False       |
-| `i.true`   | `GeometrySocket` | True        |
+| Attribute  | Type            | Description |
+|------------|-----------------|-------------|
+| `i.switch` | `BooleanSocket` | Switch      |
+| `i.false`  | `FloatSocket`   | False       |
+| `i.true`   | `FloatSocket`   | True        |
 
 **Outputs**
 
-| Attribute  | Type             | Description |
-|------------|------------------|-------------|
-| `o.output` | `GeometrySocket` | Output      |
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.output` | `FloatSocket` | Output      |
 
 ### TransformDirection
 
@@ -3613,6 +4202,8 @@ UVUnwrap(
     margin=0.001,
     fill_holes=True,
     method='Angle Based',
+    iterations=10,
+    no_flip=False,
 )
 ```
 
@@ -3626,7 +4217,9 @@ Generate a UV map based on seam edges
 | seam | InputBoolean | Seam | `False` |
 | margin | InputFloat | Margin | `0.001` |
 | fill_holes | InputBoolean | Fill Holes | `True` |
-| method | InputMenu \| Literal\['Angle Based', 'Conformal'\] | Method | `'Angle Based'` |
+| method | InputMenu \| Literal\['Angle Based', 'Conformal', 'Minimum Stretch'\] | Method | `'Angle Based'` |
+| iterations | InputInteger | Iterations | `10` |
+| no_flip | InputBoolean | No Flip | `False` |
 
 #### Attributes
 
@@ -3650,6 +4243,8 @@ Generate a UV map based on seam edges
 | `i.margin`     | `FloatSocket`   | Margin      |
 | `i.fill_holes` | `BooleanSocket` | Fill Holes  |
 | `i.method`     | `MenuSocket`    | Method      |
+| `i.iterations` | `IntegerSocket` | Iterations  |
+| `i.no_flip`    | `BooleanSocket` | No Flip     |
 
 **Outputs**
 

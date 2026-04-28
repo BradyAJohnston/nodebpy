@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.10.2</span>
+    <span class="navbar-title">nodebpy 0.13.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -334,12 +334,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.interface.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.interface</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.shader.manual</span></a>
   </div>
@@ -514,15 +508,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
   <li><a href="#nodebpy.nodes.geometry.grid.AdvectGrid" id="toc-nodebpy.nodes.geometry.grid.AdvectGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.AdvectGrid">AdvectGrid</a></li>
+  <li><a href="#nodebpy.nodes.geometry.grid.ClipGrid" id="toc-nodebpy.nodes.geometry.grid.ClipGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.ClipGrid">ClipGrid</a></li>
+  <li><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology" id="toc-nodebpy.nodes.geometry.grid.CubeGridTopology" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.CubeGridTopology">CubeGridTopology</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid" id="toc-nodebpy.nodes.geometry.grid.DistributePointsInGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.DistributePointsInGrid">DistributePointsInGrid</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.DistributePointsInVolume" id="toc-nodebpy.nodes.geometry.grid.DistributePointsInVolume" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.DistributePointsInVolume">DistributePointsInVolume</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.GetNamedGrid" id="toc-nodebpy.nodes.geometry.grid.GetNamedGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GetNamedGrid">GetNamedGrid</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.GridCurl" id="toc-nodebpy.nodes.geometry.grid.GridCurl" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridCurl">GridCurl</a></li>
+  <li><a href="#nodebpy.nodes.geometry.grid.GridDilateErode" id="toc-nodebpy.nodes.geometry.grid.GridDilateErode" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridDilateErode">GridDilateErode</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.GridDivergence" id="toc-nodebpy.nodes.geometry.grid.GridDivergence" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridDivergence">GridDivergence</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.GridGradient" id="toc-nodebpy.nodes.geometry.grid.GridGradient" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridGradient">GridGradient</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.GridInfo" id="toc-nodebpy.nodes.geometry.grid.GridInfo" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridInfo">GridInfo</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.GridLaplacian" id="toc-nodebpy.nodes.geometry.grid.GridLaplacian" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridLaplacian">GridLaplacian</a></li>
+  <li><a href="#nodebpy.nodes.geometry.grid.GridMean" id="toc-nodebpy.nodes.geometry.grid.GridMean" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridMean">GridMean</a></li>
+  <li><a href="#nodebpy.nodes.geometry.grid.GridMedian" id="toc-nodebpy.nodes.geometry.grid.GridMedian" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridMedian">GridMedian</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.GridToMesh" id="toc-nodebpy.nodes.geometry.grid.GridToMesh" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridToMesh">GridToMesh</a></li>
+  <li><a href="#nodebpy.nodes.geometry.grid.GridToPoints" id="toc-nodebpy.nodes.geometry.grid.GridToPoints" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.GridToPoints">GridToPoints</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid" id="toc-nodebpy.nodes.geometry.grid.MeshToDensityGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.MeshToDensityGrid">MeshToDensityGrid</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.MeshToSDFGrid" id="toc-nodebpy.nodes.geometry.grid.MeshToSDFGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.MeshToSDFGrid">MeshToSDFGrid</a></li>
   <li><a href="#nodebpy.nodes.geometry.grid.MeshToVolume" id="toc-nodebpy.nodes.geometry.grid.MeshToVolume" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.grid.MeshToVolume">MeshToVolume</a></li>
@@ -572,6 +572,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid">ClipGrid</a></td>
+<td>Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology">CubeGridTopology</a></td>
+<td>Create a boolean grid topology with the given dimensions, for use with the Field to Grid node</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.grid.DistributePointsInGrid">DistributePointsInGrid</a></td>
 <td>Generate points inside a volume grid</td>
 </tr>
@@ -588,24 +596,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Calculate the magnitude and direction of circulation of a directional vector grid</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode">GridDilateErode</a></td>
+<td>Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.grid.GridDivergence">GridDivergence</a></td>
 <td>Calculate the flow into and out of each point of a directional vector grid</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.grid.GridGradient">GridGradient</a></td>
 <td>Calculate the direction and magnitude of the change in values of a scalar grid</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.grid.GridInfo">GridInfo</a></td>
 <td>Retrieve information about a volume grid</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.grid.GridLaplacian">GridLaplacian</a></td>
 <td>Compute the divergence of the gradient of the input grid</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean">GridMean</a></td>
+<td>Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.</td>
+</tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian">GridMedian</a></td>
+<td>Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.grid.GridToMesh">GridToMesh</a></td>
 <td>Generate a mesh on the “surface” of a volume grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints">GridToPoints</a></td>
+<td>Generate a point cloud from a volume grid’s active voxels</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.grid.MeshToDensityGrid">MeshToDensityGrid</a></td>
@@ -914,20 +938,445 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 </section>
-<section id="nodebpy.nodes.geometry.grid.DistributePointsInGrid" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.DistributePointsInGrid">DistributePointsInGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>DistributePointsInGrid(</span>
+<section id="nodebpy.nodes.geometry.grid.ClipGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.ClipGrid">ClipGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ClipGrid(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    spacing<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'DENSITY_RANDOM'</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Generate points inside a volume grid</p>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    min_x<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    min_y<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    min_z<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    max_x<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    max_y<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    max_z<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.</p>
 <section id="parameters-1" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>min_x</td>
+<td>InputInteger</td>
+<td>Min X</td>
+<td><code>0</code></td>
+</tr>
+<tr class="odd">
+<td>min_y</td>
+<td>InputInteger</td>
+<td>Min Y</td>
+<td><code>0</code></td>
+</tr>
+<tr class="even">
+<td>min_z</td>
+<td>InputInteger</td>
+<td>Min Z</td>
+<td><code>0</code></td>
+</tr>
+<tr class="odd">
+<td>max_x</td>
+<td>InputInteger</td>
+<td>Max X</td>
+<td><code>32</code></td>
+</tr>
+<tr class="even">
+<td>max_y</td>
+<td>InputInteger</td>
+<td>Max Y</td>
+<td><code>32</code></td>
+</tr>
+<tr class="odd">
+<td>max_z</td>
+<td>InputInteger</td>
+<td>Max Z</td>
+<td><code>32</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.data_type"><code>data_type</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-1" class="level4">
+<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.boolean">boolean</a></td>
+<td>Create Clip Grid with operation ‘Boolean’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.float">float</a></td>
+<td>Create Clip Grid with operation ‘Float’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.integer">integer</a></td>
+<td>Create Clip Grid with operation ‘Integer’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.ClipGrid.vector">vector</a></td>
+<td>Create Clip Grid with operation ‘Vector’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.grid.ClipGrid.boolean" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.ClipGrid.boolean">boolean</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, min_x<span class="op">=</span><span class="dv">0</span>, min_y<span class="op">=</span><span class="dv">0</span>, min_z<span class="op">=</span><span class="dv">0</span>, max_x<span class="op">=</span><span class="dv">32</span>, max_y<span class="op">=</span><span class="dv">32</span>, max_z<span class="op">=</span><span class="dv">32</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Clip Grid with operation ‘Boolean’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.ClipGrid.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.ClipGrid.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, min_x<span class="op">=</span><span class="dv">0</span>, min_y<span class="op">=</span><span class="dv">0</span>, min_z<span class="op">=</span><span class="dv">0</span>, max_x<span class="op">=</span><span class="dv">32</span>, max_y<span class="op">=</span><span class="dv">32</span>, max_z<span class="op">=</span><span class="dv">32</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Clip Grid with operation ‘Float’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.ClipGrid.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.ClipGrid.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, min_x<span class="op">=</span><span class="dv">0</span>, min_y<span class="op">=</span><span class="dv">0</span>, min_z<span class="op">=</span><span class="dv">0</span>, max_x<span class="op">=</span><span class="dv">32</span>, max_y<span class="op">=</span><span class="dv">32</span>, max_z<span class="op">=</span><span class="dv">32</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Clip Grid with operation ‘Integer’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.ClipGrid.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.ClipGrid.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, min_x<span class="op">=</span><span class="dv">0</span>, min_y<span class="op">=</span><span class="dv">0</span>, min_z<span class="op">=</span><span class="dv">0</span>, max_x<span class="op">=</span><span class="dv">32</span>, max_y<span class="op">=</span><span class="dv">32</span>, max_z<span class="op">=</span><span class="dv">32</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Clip Grid with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.min_x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Min X</td>
+</tr>
+<tr class="odd">
+<td><code>i.min_y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Min Y</td>
+</tr>
+<tr class="even">
+<td><code>i.min_z</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Min Z</td>
+</tr>
+<tr class="odd">
+<td><code>i.max_x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Max X</td>
+</tr>
+<tr class="even">
+<td><code>i.max_y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Max Y</td>
+</tr>
+<tr class="odd">
+<td><code>i.max_z</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Max Z</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.grid.CubeGridTopology" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.CubeGridTopology">CubeGridTopology</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>CubeGridTopology(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    bounds_min<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    bounds_max<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    resolution_x<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    resolution_y<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    resolution_z<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    min_x<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    min_y<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    min_z<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a boolean grid topology with the given dimensions, for use with the Field to Grid node</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>bounds_min</td>
+<td>InputVector</td>
+<td>Bounds Min</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>bounds_max</td>
+<td>InputVector</td>
+<td>Bounds Max</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>resolution_x</td>
+<td>InputInteger</td>
+<td>Resolution X</td>
+<td><code>32</code></td>
+</tr>
+<tr class="even">
+<td>resolution_y</td>
+<td>InputInteger</td>
+<td>Resolution Y</td>
+<td><code>32</code></td>
+</tr>
+<tr class="odd">
+<td>resolution_z</td>
+<td>InputInteger</td>
+<td>Resolution Z</td>
+<td><code>32</code></td>
+</tr>
+<tr class="even">
+<td>min_x</td>
+<td>InputInteger</td>
+<td>Min X</td>
+<td><code>0</code></td>
+</tr>
+<tr class="odd">
+<td>min_y</td>
+<td>InputInteger</td>
+<td>Min Y</td>
+<td><code>0</code></td>
+</tr>
+<tr class="even">
+<td>min_z</td>
+<td>InputInteger</td>
+<td>Min Z</td>
+<td><code>0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.CubeGridTopology.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.bounds_min</code></td>
+<td><code>VectorSocket</code></td>
+<td>Bounds Min</td>
+</tr>
+<tr class="even">
+<td><code>i.bounds_max</code></td>
+<td><code>VectorSocket</code></td>
+<td>Bounds Max</td>
+</tr>
+<tr class="odd">
+<td><code>i.resolution_x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Resolution X</td>
+</tr>
+<tr class="even">
+<td><code>i.resolution_y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Resolution Y</td>
+</tr>
+<tr class="odd">
+<td><code>i.resolution_z</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Resolution Z</td>
+</tr>
+<tr class="even">
+<td><code>i.min_x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Min X</td>
+</tr>
+<tr class="odd">
+<td><code>i.min_y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Min Y</td>
+</tr>
+<tr class="even">
+<td><code>i.min_z</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Min Z</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.topology</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Topology</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.grid.DistributePointsInGrid" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.DistributePointsInGrid">DistributePointsInGrid</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>DistributePointsInGrid(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    spacing<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'DENSITY_RANDOM'</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate points inside a volume grid</p>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -971,8 +1420,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-1" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1020,8 +1469,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-1" class="level4">
-<h4 class="anchored" data-anchor-id="methods-1">Methods</h4>
+<section id="methods-2" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1042,12 +1491,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.DistributePointsInGrid.grid" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.DistributePointsInGrid.grid">grid</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>grid(grid<span class="op">=</span><span class="fl">0.0</span>, spacing<span class="op">=</span><span class="va">None</span>, threshold<span class="op">=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>grid(grid<span class="op">=</span><span class="fl">0.0</span>, spacing<span class="op">=</span><span class="va">None</span>, threshold<span class="op">=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Distribute Points in Grid with operation ‘Grid’. Distribute the points in a grid pattern inside of the volume</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.DistributePointsInGrid.random" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.DistributePointsInGrid.random">random</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>random(grid<span class="op">=</span><span class="fl">0.0</span>, density<span class="op">=</span><span class="fl">1.0</span>, seed<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>random(grid<span class="op">=</span><span class="fl">0.0</span>, density<span class="op">=</span><span class="fl">1.0</span>, seed<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Distribute Points in Grid with operation ‘Random’. Distribute points randomly inside of the volume</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1108,17 +1557,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.DistributePointsInVolume" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.DistributePointsInVolume">DistributePointsInVolume</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>DistributePointsInVolume(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'Random'</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    spacing<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>DistributePointsInVolume(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'Random'</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    seed<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    spacing<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate points inside a volume</p>
-<section id="parameters-2" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<section id="parameters-4" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 13%">
@@ -1174,8 +1623,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-2" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1281,10 +1730,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.GetNamedGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GetNamedGrid">GetNamedGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>GetNamedGrid(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>GetNamedGrid(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get volume grid from a volume geometry with the specified name</p>
-<section id="parameters-3" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1316,8 +1765,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-3" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<section id="attributes-5" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1365,8 +1814,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-2" class="level4">
-<h4 class="anchored" data-anchor-id="methods-2">Methods</h4>
+<section id="methods-3" class="level4">
+<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1395,22 +1844,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.GetNamedGrid.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GetNamedGrid.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>boolean(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>boolean(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get Named Grid with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.GetNamedGrid.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GetNamedGrid.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get Named Grid with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.GetNamedGrid.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GetNamedGrid.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>integer(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>integer(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get Named Grid with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.GetNamedGrid.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GetNamedGrid.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>vector(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>vector(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, remove<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get Named Grid with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1466,10 +1915,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.GridCurl" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridCurl">GridCurl</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>GridCurl(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>GridCurl(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the magnitude and direction of circulation of a directional vector grid</p>
-<section id="parameters-4" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1489,8 +1938,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-4" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<section id="attributes-6" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1569,12 +2018,216 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
+<section id="nodebpy.nodes.geometry.grid.GridDilateErode" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridDilateErode">GridDilateErode</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>GridDilateErode(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    connectivity<span class="op">=</span><span class="st">'Face'</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    tiles<span class="op">=</span><span class="st">'Preserve'</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    steps<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.</p>
+<section id="parameters-7" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 59%">
+<col style="width: 14%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>connectivity</td>
+<td>InputMenu | Literal['Face', 'Edge', 'Vertex']</td>
+<td>Connectivity</td>
+<td><code>'Face'</code></td>
+</tr>
+<tr class="odd">
+<td>tiles</td>
+<td>InputMenu | Literal['Ignore', 'Expand', 'Preserve']</td>
+<td>Tiles</td>
+<td><code>'Preserve'</code></td>
+</tr>
+<tr class="even">
+<td>steps</td>
+<td>InputInteger</td>
+<td>Steps</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-7" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.data_type"><code>data_type</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-4" class="level4">
+<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.boolean">boolean</a></td>
+<td>Create Grid Dilate &amp; Erode with operation ‘Boolean’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.float">float</a></td>
+<td>Create Grid Dilate &amp; Erode with operation ‘Float’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.integer">integer</a></td>
+<td>Create Grid Dilate &amp; Erode with operation ‘Integer’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridDilateErode.vector">vector</a></td>
+<td>Create Grid Dilate &amp; Erode with operation ‘Vector’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.grid.GridDilateErode.boolean" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridDilateErode.boolean">boolean</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, connectivity<span class="op">=</span><span class="st">'Face'</span>, tiles<span class="op">=</span><span class="st">'Preserve'</span>, steps<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Dilate &amp; Erode with operation ‘Boolean’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridDilateErode.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridDilateErode.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, connectivity<span class="op">=</span><span class="st">'Face'</span>, tiles<span class="op">=</span><span class="st">'Preserve'</span>, steps<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Dilate &amp; Erode with operation ‘Float’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridDilateErode.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridDilateErode.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, connectivity<span class="op">=</span><span class="st">'Face'</span>, tiles<span class="op">=</span><span class="st">'Preserve'</span>, steps<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Dilate &amp; Erode with operation ‘Integer’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridDilateErode.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridDilateErode.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, connectivity<span class="op">=</span><span class="st">'Face'</span>, tiles<span class="op">=</span><span class="st">'Preserve'</span>, steps<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Dilate &amp; Erode with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.connectivity</code></td>
+<td><code>MenuSocket</code></td>
+<td>Connectivity</td>
+</tr>
+<tr class="odd">
+<td><code>i.tiles</code></td>
+<td><code>MenuSocket</code></td>
+<td>Tiles</td>
+</tr>
+<tr class="even">
+<td><code>i.steps</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Steps</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
 <section id="nodebpy.nodes.geometry.grid.GridDivergence" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridDivergence">GridDivergence</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>GridDivergence(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>GridDivergence(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the flow into and out of each point of a directional vector grid</p>
-<section id="parameters-5" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<section id="parameters-8" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1594,8 +2247,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-5" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-5">Attributes</h4>
+<section id="attributes-8" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1676,10 +2329,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.GridGradient" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridGradient">GridGradient</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>GridGradient(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>GridGradient(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the direction and magnitude of the change in values of a scalar grid</p>
-<section id="parameters-6" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
+<section id="parameters-9" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1699,8 +2352,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-6" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-6">Attributes</h4>
+<section id="attributes-9" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1781,10 +2434,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.GridInfo" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridInfo">GridInfo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>GridInfo(grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>GridInfo(grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve information about a volume grid</p>
-<section id="parameters-7" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
+<section id="parameters-10" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1804,8 +2457,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-7" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-7">Attributes</h4>
+<section id="attributes-10" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1853,8 +2506,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-3" class="level4">
-<h4 class="anchored" data-anchor-id="methods-3">Methods</h4>
+<section id="methods-5" class="level4">
+<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1883,22 +2536,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.GridInfo.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridInfo.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Grid Info with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.GridInfo.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridInfo.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Grid Info with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.GridInfo.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridInfo.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Grid Info with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.GridInfo.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridInfo.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Grid Info with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1944,10 +2597,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.GridLaplacian" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridLaplacian">GridLaplacian</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>GridLaplacian(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>GridLaplacian(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Compute the divergence of the gradient of the input grid</p>
-<section id="parameters-8" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
+<section id="parameters-11" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1967,8 +2620,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-8" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-8">Attributes</h4>
+<section id="attributes-11" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2047,12 +2700,354 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
+<section id="nodebpy.nodes.geometry.grid.GridMean" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridMean">GridMean</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>GridMean(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.</p>
+<section id="parameters-12" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>width</td>
+<td>InputInteger</td>
+<td>Width</td>
+<td><code>1</code></td>
+</tr>
+<tr class="odd">
+<td>iterations</td>
+<td>InputInteger</td>
+<td>Iterations</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.data_type"><code>data_type</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-6" class="level4">
+<h4 class="anchored" data-anchor-id="methods-6">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.float">float</a></td>
+<td>Create Grid Mean with operation ‘Float’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.integer">integer</a></td>
+<td>Create Grid Mean with operation ‘Integer’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMean.vector">vector</a></td>
+<td>Create Grid Mean with operation ‘Vector’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.grid.GridMean.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridMean.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Mean with operation ‘Float’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridMean.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridMean.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Mean with operation ‘Integer’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridMean.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridMean.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Mean with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.width</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Width</td>
+</tr>
+<tr class="odd">
+<td><code>i.iterations</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridMedian" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridMedian">GridMedian</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>GridMedian(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.</p>
+<section id="parameters-13" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+<tr class="even">
+<td>width</td>
+<td>InputInteger</td>
+<td>Width</td>
+<td><code>1</code></td>
+</tr>
+<tr class="odd">
+<td>iterations</td>
+<td>InputInteger</td>
+<td>Iterations</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.data_type"><code>data_type</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-7" class="level4">
+<h4 class="anchored" data-anchor-id="methods-7">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.float">float</a></td>
+<td>Create Grid Median with operation ‘Float’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.integer">integer</a></td>
+<td>Create Grid Median with operation ‘Integer’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridMedian.vector">vector</a></td>
+<td>Create Grid Median with operation ‘Vector’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.grid.GridMedian.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridMedian.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Median with operation ‘Float’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridMedian.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridMedian.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Median with operation ‘Integer’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridMedian.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridMedian.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid Median with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+<tr class="even">
+<td><code>i.width</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Width</td>
+</tr>
+<tr class="odd">
+<td><code>i.iterations</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
 <section id="nodebpy.nodes.geometry.grid.GridToMesh" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridToMesh">GridToMesh</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>GridToMesh(grid<span class="op">=</span><span class="fl">0.0</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, adaptivity<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>GridToMesh(grid<span class="op">=</span><span class="fl">0.0</span>, threshold<span class="op">=</span><span class="fl">0.1</span>, adaptivity<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a mesh on the “surface” of a volume grid</p>
-<section id="parameters-9" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
+<section id="parameters-14" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2084,8 +3079,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-9" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-9">Attributes</h4>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2174,12 +3169,200 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 </section>
+<section id="nodebpy.nodes.geometry.grid.GridToPoints" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridToPoints">GridToPoints</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>GridToPoints(grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a point cloud from a volume grid’s active voxels</p>
+<section id="parameters-15" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>grid</td>
+<td>InputFloat</td>
+<td>Grid</td>
+<td><code>0.0</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.data_type"><code>data_type</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.inputs"><code>inputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-8" class="level4">
+<h4 class="anchored" data-anchor-id="methods-8">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.boolean">boolean</a></td>
+<td>Create Grid to Points with operation ‘Boolean’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.float">float</a></td>
+<td>Create Grid to Points with operation ‘Float’.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.integer">integer</a></td>
+<td>Create Grid to Points with operation ‘Integer’.</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.grid.GridToPoints.vector">vector</a></td>
+<td>Create Grid to Points with operation ‘Vector’.</td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.grid.GridToPoints.boolean" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridToPoints.boolean">boolean</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid to Points with operation ‘Boolean’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridToPoints.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridToPoints.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid to Points with operation ‘Float’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridToPoints.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridToPoints.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid to Points with operation ‘Integer’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.grid.GridToPoints.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.GridToPoints.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Grid to Points with operation ‘Vector’.</p>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.grid</code></td>
+<td><code>FloatSocket</code></td>
+<td>Grid</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>o.points</code></td>
+<td><code>GeometrySocket</code></td>
+<td>Points</td>
+</tr>
+<tr class="even">
+<td><code>o.value</code></td>
+<td><code>FloatSocket</code></td>
+<td>Value</td>
+</tr>
+<tr class="odd">
+<td><code>o.x</code></td>
+<td><code>IntegerSocket</code></td>
+<td>X</td>
+</tr>
+<tr class="even">
+<td><code>o.y</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Y</td>
+</tr>
+<tr class="odd">
+<td><code>o.z</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Z</td>
+</tr>
+<tr class="even">
+<td><code>o.is_tile</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Is Tile</td>
+</tr>
+<tr class="odd">
+<td><code>o.extent</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Extent</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
 <section id="nodebpy.nodes.geometry.grid.MeshToDensityGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.MeshToDensityGrid">MeshToDensityGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>MeshToDensityGrid(mesh<span class="op">=</span><span class="va">None</span>, density<span class="op">=</span><span class="fl">1.0</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>, gradient_width<span class="op">=</span><span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>MeshToDensityGrid(mesh<span class="op">=</span><span class="va">None</span>, density<span class="op">=</span><span class="fl">1.0</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>, gradient_width<span class="op">=</span><span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a filled volume grid from a mesh</p>
-<section id="parameters-10" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
+<section id="parameters-16" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-16">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2217,8 +3400,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-10" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2314,10 +3497,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.MeshToSDFGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.MeshToSDFGrid">MeshToSDFGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>MeshToSDFGrid(mesh<span class="op">=</span><span class="va">None</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>, band_width<span class="op">=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>MeshToSDFGrid(mesh<span class="op">=</span><span class="va">None</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>, band_width<span class="op">=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a signed distance volume grid from a mesh</p>
-<section id="parameters-11" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
+<section id="parameters-17" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-17">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2349,8 +3532,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-11" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-11">Attributes</h4>
+<section id="attributes-17" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2441,17 +3624,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.MeshToVolume" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.MeshToVolume">MeshToVolume</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>MeshToVolume(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    resolution_mode<span class="op">=</span><span class="st">'Amount'</span>,</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.3</span>,</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    voxel_amount<span class="op">=</span><span class="fl">64.0</span>,</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    interior_band_width<span class="op">=</span><span class="fl">0.2</span>,</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>MeshToVolume(</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    mesh<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    resolution_mode<span class="op">=</span><span class="st">'Amount'</span>,</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    voxel_amount<span class="op">=</span><span class="fl">64.0</span>,</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    interior_band_width<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a fog volume with the shape of the input mesh’s surface</p>
-<section id="parameters-12" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
+<section id="parameters-18" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 21%">
@@ -2507,8 +3690,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-12" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2614,10 +3797,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.PointsToSDFGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PointsToSDFGrid">PointsToSDFGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>PointsToSDFGrid(points<span class="op">=</span><span class="va">None</span>, radius<span class="op">=</span><span class="fl">0.5</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>PointsToSDFGrid(points<span class="op">=</span><span class="va">None</span>, radius<span class="op">=</span><span class="fl">0.5</span>, voxel_size<span class="op">=</span><span class="fl">0.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a signed distance volume grid from points</p>
-<section id="parameters-13" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
+<section id="parameters-19" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-19">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2649,8 +3832,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-13" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2741,17 +3924,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.PointsToVolume" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PointsToVolume">PointsToVolume</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>PointsToVolume(</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    points<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    resolution_mode<span class="op">=</span><span class="st">'Amount'</span>,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.3</span>,</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    voxel_amount<span class="op">=</span><span class="fl">64.0</span>,</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    radius<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>PointsToVolume(</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    points<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    resolution_mode<span class="op">=</span><span class="st">'Amount'</span>,</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    voxel_amount<span class="op">=</span><span class="fl">64.0</span>,</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    radius<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a fog volume sphere around every point</p>
-<section id="parameters-14" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
+<section id="parameters-20" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-20">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 18%">
@@ -2807,8 +3990,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-14" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<section id="attributes-20" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2914,10 +4097,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.PruneGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PruneGrid">PruneGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>PruneGrid(grid<span class="op">=</span><span class="fl">0.0</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="fl">0.01</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>PruneGrid(grid<span class="op">=</span><span class="fl">0.0</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="fl">0.01</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes</p>
-<section id="parameters-15" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
+<section id="parameters-21" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-21">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 10%">
@@ -2955,8 +4138,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-15" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<section id="attributes-21" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3004,8 +4187,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-4" class="level4">
-<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
+<section id="methods-9" class="level4">
+<h4 class="anchored" data-anchor-id="methods-9">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3034,22 +4217,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.PruneGrid.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PruneGrid.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Prune Grid with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.PruneGrid.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PruneGrid.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="fl">0.01</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="fl">0.01</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Prune Grid with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.PruneGrid.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PruneGrid.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Prune Grid with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.PruneGrid.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.PruneGrid.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, mode<span class="op">=</span><span class="st">'Threshold'</span>, threshold<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Prune Grid with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -3100,10 +4283,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SDFGridFillet" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridFillet">SDFGridFillet</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>SDFGridFillet(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>SDFGridFillet(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces</p>
-<section id="parameters-16" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-16">Parameters</h4>
+<section id="parameters-22" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-22">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3129,8 +4312,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-16" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<section id="attributes-22" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3216,10 +4399,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SDFGridLaplacian" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridLaplacian">SDFGridLaplacian</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>SDFGridLaplacian(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>SDFGridLaplacian(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization</p>
-<section id="parameters-17" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-17">Parameters</h4>
+<section id="parameters-23" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-23">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3245,8 +4428,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-17" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<section id="attributes-23" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3332,10 +4515,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SDFGridMean" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridMean">SDFGridMean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>SDFGridMean(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>SDFGridMean(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field</p>
-<section id="parameters-18" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
+<section id="parameters-24" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-24">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3367,8 +4550,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-18" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<section id="attributes-24" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3459,10 +4642,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SDFGridMeanCurvature" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridMeanCurvature">SDFGridMeanCurvature</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>SDFGridMeanCurvature(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>SDFGridMeanCurvature(grid<span class="op">=</span><span class="fl">0.0</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas</p>
-<section id="parameters-19" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-19">Parameters</h4>
+<section id="parameters-25" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-25">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3488,8 +4671,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-19" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<section id="attributes-25" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3575,10 +4758,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SDFGridMedian" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridMedian">SDFGridMedian</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>SDFGridMedian(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>SDFGridMedian(grid<span class="op">=</span><span class="fl">0.0</span>, width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field</p>
-<section id="parameters-20" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-20">Parameters</h4>
+<section id="parameters-26" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-26">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3610,8 +4793,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-20" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<section id="attributes-26" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3702,10 +4885,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SDFGridOffset" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SDFGridOffset">SDFGridOffset</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>SDFGridOffset(grid<span class="op">=</span><span class="fl">0.0</span>, distance<span class="op">=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>SDFGridOffset(grid<span class="op">=</span><span class="fl">0.0</span>, distance<span class="op">=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property</p>
-<section id="parameters-21" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-21">Parameters</h4>
+<section id="parameters-27" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-27">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3731,8 +4914,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-21" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<section id="attributes-27" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3818,16 +5001,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SampleGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGrid">SampleGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>SampleGrid(</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    position<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Trilinear'</span>,</span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>SampleGrid(</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>    position<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>    interpolation<span class="op">=</span><span class="st">'Trilinear'</span>,</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve values from the specified volume grid</p>
-<section id="parameters-22" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-22">Parameters</h4>
+<section id="parameters-28" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-28">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 12%">
@@ -3865,8 +5048,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-22" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
+<section id="attributes-28" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3914,8 +5097,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-5" class="level4">
-<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
+<section id="methods-10" class="level4">
+<h4 class="anchored" data-anchor-id="methods-10">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3944,22 +5127,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.SampleGrid.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGrid.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SampleGrid.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGrid.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SampleGrid.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGrid.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SampleGrid.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGrid.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -4010,10 +5193,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SampleGridIndex" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGridIndex">SampleGridIndex</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>SampleGridIndex(grid<span class="op">=</span><span class="fl">0.0</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>SampleGridIndex(grid<span class="op">=</span><span class="fl">0.0</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve volume grid values at specific voxels</p>
-<section id="parameters-23" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-23">Parameters</h4>
+<section id="parameters-29" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-29">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4051,8 +5234,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-23" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
+<section id="attributes-29" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4100,8 +5283,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-6" class="level4">
-<h4 class="anchored" data-anchor-id="methods-6">Methods</h4>
+<section id="methods-11" class="level4">
+<h4 class="anchored" data-anchor-id="methods-11">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4130,22 +5313,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.SampleGridIndex.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGridIndex.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid Index with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SampleGridIndex.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGridIndex.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid Index with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SampleGridIndex.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGridIndex.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid Index with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SampleGridIndex.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SampleGridIndex.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sample Grid Index with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -4201,10 +5384,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SetGridBackground" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridBackground">SetGridBackground</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>SetGridBackground(grid<span class="op">=</span><span class="fl">0.0</span>, background<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>SetGridBackground(</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>    grid<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>    background<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>    update_inactive<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set the background value used for inactive voxels and tiles</p>
-<section id="parameters-24" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-24">Parameters</h4>
+<section id="parameters-30" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-30">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4227,11 +5416,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Background</td>
 <td><code>0.0</code></td>
 </tr>
+<tr class="odd">
+<td>update_inactive</td>
+<td>InputBoolean</td>
+<td>Update Inactive</td>
+<td><code>False</code></td>
+</tr>
 </tbody>
 </table>
 </section>
-<section id="attributes-24" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
+<section id="attributes-30" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-30">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4279,8 +5474,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-7" class="level4">
-<h4 class="anchored" data-anchor-id="methods-7">Methods</h4>
+<section id="methods-12" class="level4">
+<h4 class="anchored" data-anchor-id="methods-12">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4309,22 +5504,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.SetGridBackground.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridBackground.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, background<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, background<span class="op">=</span><span class="va">False</span>, update_inactive<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Background with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SetGridBackground.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridBackground.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, background<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, background<span class="op">=</span><span class="fl">0.0</span>, update_inactive<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Background with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SetGridBackground.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridBackground.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, background<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, background<span class="op">=</span><span class="dv">0</span>, update_inactive<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Background with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SetGridBackground.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridBackground.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, background<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, background<span class="op">=</span><span class="va">None</span>, update_inactive<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Background with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -4345,6 +5540,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>i.background</code></td>
 <td><code>FloatSocket</code></td>
 <td>Background</td>
+</tr>
+<tr class="odd">
+<td><code>i.update_inactive</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Update Inactive</td>
 </tr>
 </tbody>
 </table>
@@ -4370,10 +5570,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.SetGridTransform" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridTransform">SetGridTransform</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>SetGridTransform(grid<span class="op">=</span><span class="fl">0.0</span>, transform<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>SetGridTransform(grid<span class="op">=</span><span class="fl">0.0</span>, transform<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set the transform for the grid from index space into object space.</p>
-<section id="parameters-25" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-25">Parameters</h4>
+<section id="parameters-31" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-31">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4399,8 +5599,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-25" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
+<section id="attributes-31" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-31">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4448,8 +5648,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-8" class="level4">
-<h4 class="anchored" data-anchor-id="methods-8">Methods</h4>
+<section id="methods-13" class="level4">
+<h4 class="anchored" data-anchor-id="methods-13">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4478,22 +5678,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.SetGridTransform.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridTransform.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Transform with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SetGridTransform.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridTransform.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Transform with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SetGridTransform.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridTransform.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Transform with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.SetGridTransform.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.SetGridTransform.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>, transform<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Grid Transform with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -4544,10 +5744,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.StoreNamedGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.StoreNamedGrid">StoreNamedGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>StoreNamedGrid(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>StoreNamedGrid(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store grid data in a volume geometry with the specified name</p>
-<section id="parameters-26" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-26">Parameters</h4>
+<section id="parameters-32" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-32">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4579,8 +5779,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-26" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
+<section id="attributes-32" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-32">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4628,8 +5828,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-9" class="level4">
-<h4 class="anchored" data-anchor-id="methods-9">Methods</h4>
+<section id="methods-14" class="level4">
+<h4 class="anchored" data-anchor-id="methods-14">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4658,22 +5858,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.StoreNamedGrid.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.StoreNamedGrid.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>boolean(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>boolean(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Store Named Grid with operation ‘Boolean’. Boolean</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.StoreNamedGrid.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.StoreNamedGrid.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Store Named Grid with operation ‘Float’. Single precision float</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.StoreNamedGrid.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.StoreNamedGrid.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>integer(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>integer(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Store Named Grid with operation ‘Integer’. 32-bit integer</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.StoreNamedGrid.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.StoreNamedGrid.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>vector(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>vector(volume<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">''</span>, grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Store Named Grid with operation ‘Vector’. 3D float vector</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -4724,18 +5924,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.VolumeCube" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VolumeCube">VolumeCube</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>VolumeCube(</span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>    background<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">min</span><span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>    resolution_x<span class="op">=</span><span class="dv">32</span>,</span>
-<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>    resolution_y<span class="op">=</span><span class="dv">32</span>,</span>
-<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>    resolution_z<span class="op">=</span><span class="dv">32</span>,</span>
-<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>VolumeCube(</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>    density<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>    background<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">min</span><span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span><span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>    resolution_x<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>    resolution_y<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>    resolution_z<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a dense volume with a field that controls the density at each grid voxel based on its position</p>
-<section id="parameters-27" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-27">Parameters</h4>
+<section id="parameters-33" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-33">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4791,8 +5991,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-27" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
+<section id="attributes-33" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-33">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4903,17 +6103,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.VolumeToMesh" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VolumeToMesh">VolumeToMesh</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>VolumeToMesh(</span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    resolution_mode<span class="op">=</span><span class="st">'Grid'</span>,</span>
-<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.3</span>,</span>
-<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>    voxel_amount<span class="op">=</span><span class="fl">64.0</span>,</span>
-<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>    adaptivity<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>VolumeToMesh(</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>    resolution_mode<span class="op">=</span><span class="st">'Grid'</span>,</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>    voxel_size<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>    voxel_amount<span class="op">=</span><span class="fl">64.0</span>,</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>    adaptivity<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a mesh on the “surface” of a volume</p>
-<section id="parameters-28" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-28">Parameters</h4>
+<section id="parameters-34" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-34">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 16%">
@@ -4969,8 +6169,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-28" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
+<section id="attributes-34" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-34">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5076,10 +6276,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.grid.VoxelizeGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VoxelizeGrid">VoxelizeGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>VoxelizeGrid(grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>VoxelizeGrid(grid<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Remove sparseness from a volume grid by making the active tiles into voxels</p>
-<section id="parameters-29" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-29">Parameters</h4>
+<section id="parameters-35" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-35">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5099,8 +6299,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-29" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
+<section id="attributes-35" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-35">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5148,8 +6348,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-10" class="level4">
-<h4 class="anchored" data-anchor-id="methods-10">Methods</h4>
+<section id="methods-15" class="level4">
+<h4 class="anchored" data-anchor-id="methods-15">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -5178,22 +6378,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.grid.VoxelizeGrid.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VoxelizeGrid.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>boolean(grid<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Voxelize Grid with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.VoxelizeGrid.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VoxelizeGrid.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(grid<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Voxelize Grid with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.VoxelizeGrid.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VoxelizeGrid.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>integer(grid<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Voxelize Grid with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.grid.VoxelizeGrid.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.grid.VoxelizeGrid.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb95"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>vector(grid<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Voxelize Grid with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">

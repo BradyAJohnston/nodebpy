@@ -11,6 +11,9 @@
 | [BaseZone](#nodebpy.nodes.geometry.zone.BaseZone) |  |
 | [BaseZoneInput](#nodebpy.nodes.geometry.zone.BaseZoneInput) | Base class for zone input nodes |
 | [BaseZoneOutput](#nodebpy.nodes.geometry.zone.BaseZoneOutput) | Base class for zone output nodes |
+| [ClosureInput](#nodebpy.nodes.geometry.zone.ClosureInput) | Closure Input node |
+| [ClosureOutput](#nodebpy.nodes.geometry.zone.ClosureOutput) | Closure Output node |
+| [ClosureZone](#nodebpy.nodes.geometry.zone.ClosureZone) |  |
 | [ForEachGeometryElementInput](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput) | For Each Geometry Element Input node |
 | [ForEachGeometryElementOutput](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput) | For Each Geometry Element Output node |
 | [ForEachGeometryElementZone](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone) |  |
@@ -24,7 +27,7 @@
 ### BaseRepeatZone
 
 ``` python
-BaseRepeatZone()
+BaseRepeatZone(node=None)
 ```
 
 #### Attributes
@@ -58,7 +61,7 @@ Capture something as an input to the simulation
 ### BaseSimulationZone
 
 ``` python
-BaseSimulationZone()
+BaseSimulationZone(node=None)
 ```
 
 #### Attributes
@@ -92,7 +95,7 @@ Capture something as an input to the simulation
 ### BaseZone
 
 ``` python
-BaseZone()
+BaseZone(node=None)
 ```
 
 #### Attributes
@@ -126,7 +129,7 @@ Capture something as an input to the simulation
 ### BaseZoneInput
 
 ``` python
-BaseZoneInput()
+BaseZoneInput(node=None)
 ```
 
 Base class for zone input nodes
@@ -163,7 +166,7 @@ Capture something as an input to the simulation
 ### BaseZoneOutput
 
 ``` python
-BaseZoneOutput()
+BaseZoneOutput(node=None)
 ```
 
 Base class for zone output nodes
@@ -195,6 +198,99 @@ capture(value, domain='POINT')
 ```
 
 Capture something as an input to the simulation
+
+### ClosureInput
+
+``` python
+ClosureInput()
+```
+
+Closure Input node
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.zone.ClosureInput.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.zone.ClosureInput.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.zone.ClosureInput.name) |  |
+| [`node`](#nodebpy.nodes.geometry.zone.ClosureInput.node) |  |
+| [`o`](#nodebpy.nodes.geometry.zone.ClosureInput.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.zone.ClosureInput.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.zone.ClosureInput.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.zone.ClosureInput.type) |  |
+
+#### Methods
+
+| Name                                                   | Description |
+|--------------------------------------------------------|-------------|
+| [link](#nodebpy.nodes.geometry.zone.ClosureInput.link) |             |
+
+##### link
+
+``` python
+link(target)
+```
+
+### ClosureOutput
+
+``` python
+ClosureOutput(define_signature=False)
+```
+
+Closure Output node
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`define_signature`](#nodebpy.nodes.geometry.zone.ClosureOutput.define_signature) |  |
+| [`i`](#nodebpy.nodes.geometry.zone.ClosureOutput.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.zone.ClosureOutput.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.zone.ClosureOutput.name) |  |
+| [`node`](#nodebpy.nodes.geometry.zone.ClosureOutput.node) |  |
+| [`o`](#nodebpy.nodes.geometry.zone.ClosureOutput.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.zone.ClosureOutput.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.zone.ClosureOutput.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.zone.ClosureOutput.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [link](#nodebpy.nodes.geometry.zone.ClosureOutput.link) |  |
+| [sync_signature](#nodebpy.nodes.geometry.zone.ClosureOutput.sync_signature) |  |
+
+##### link
+
+``` python
+link(source)
+```
+
+##### sync_signature
+
+``` python
+sync_signature(node)
+```
+
+**Outputs**
+
+| Attribute   | Type            | Description |
+|-------------|-----------------|-------------|
+| `o.closure` | `ClosureSocket` | Closure     |
+
+### ClosureZone
+
+``` python
+ClosureZone()
+```
+
+#### Attributes
+
+| Name                                                        | Description |
+|-------------------------------------------------------------|-------------|
+| [`input`](#nodebpy.nodes.geometry.zone.ClosureZone.input)   |             |
+| [`output`](#nodebpy.nodes.geometry.zone.ClosureZone.output) |             |
 
 ### ForEachGeometryElementInput
 
@@ -332,7 +428,7 @@ Capture something as an input to the simulation
 ### RepeatOutput
 
 ``` python
-RepeatOutput()
+RepeatOutput(node=None)
 ```
 
 Repeat Output node
@@ -377,14 +473,14 @@ Wrapper that supports both direct unpacking and iteration
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.geometry.zone.RepeatZone.i) | The current iteration index. |
 | [`input`](#nodebpy.nodes.geometry.zone.RepeatZone.input) |  |
+| [`iteration`](#nodebpy.nodes.geometry.zone.RepeatZone.iteration) | The current iteration index. |
 | [`output`](#nodebpy.nodes.geometry.zone.RepeatZone.output) |  |
 
 ### SimulationInput
 
 ``` python
-SimulationInput()
+SimulationInput(node=None)
 ```
 
 Simulation Input node
@@ -421,7 +517,7 @@ Capture something as an input to the simulation
 ### SimulationOutput
 
 ``` python
-SimulationOutput()
+SimulationOutput(node=None)
 ```
 
 Simulation Output node

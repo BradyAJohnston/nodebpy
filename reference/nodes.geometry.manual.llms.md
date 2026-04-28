@@ -12,12 +12,15 @@
 | [CaptureAttribute](#nodebpy.nodes.geometry.manual.CaptureAttribute) | Store the result of a field on a geometry and output the data as a node socket. |
 | [Compare](#nodebpy.nodes.geometry.manual.Compare) | Perform a comparison operation on the two given inputs |
 | [EvaluateAtIndex](#nodebpy.nodes.geometry.manual.EvaluateAtIndex) | Retrieve data of other elements in the context’s geometry |
+| [EvaluateClosure](#nodebpy.nodes.geometry.manual.EvaluateClosure) | Execute a given closure |
 | [EvaluateOnDomain](#nodebpy.nodes.geometry.manual.EvaluateOnDomain) | Retrieve values from a field on a different domain besides the domain from the context |
 | [FieldAverage](#nodebpy.nodes.geometry.manual.FieldAverage) | Calculate the mean and median of a given field |
 | [FieldMinAndMax](#nodebpy.nodes.geometry.manual.FieldMinAndMax) | Calculate the minimum and maximum of a given field |
 | [FieldToGrid](#nodebpy.nodes.geometry.manual.FieldToGrid) | Create new grids by evaluating new values on an existing volume grid topology |
 | [FieldVariance](#nodebpy.nodes.geometry.manual.FieldVariance) | Calculate the standard deviation and variance of a given field |
+| [Float](#nodebpy.nodes.geometry.manual.Float) | Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper of the Value node. |
 | [FormatString](#nodebpy.nodes.geometry.manual.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
+| [Frame](#nodebpy.nodes.geometry.manual.Frame) |  |
 | [GeometryToInstance](#nodebpy.nodes.geometry.manual.GeometryToInstance) | Convert each input geometry into an instance, which can be much faster |
 | [HandleTypeSelection](#nodebpy.nodes.geometry.manual.HandleTypeSelection) | Provide a selection based on the handle types of Bézier control points |
 | [IndexSwitch](#nodebpy.nodes.geometry.manual.IndexSwitch) | Node builder for the Index Switch node |
@@ -66,6 +69,51 @@ Add the values of an evaluated field together and output the running total for e
 | [`tree`](#nodebpy.nodes.geometry.manual.AccumulateField.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.AccumulateField.type) |  |
 
+#### Classes
+
+| Name | Description |
+|----|----|
+| [AccumulateFieldDomainFactory](#nodebpy.nodes.geometry.manual.AccumulateField.AccumulateFieldDomainFactory) |  |
+
+##### AccumulateFieldDomainFactory
+
+``` python
+AccumulateFieldDomainFactory(domain)
+```
+
+###### Methods
+
+| Name | Description |
+|----|----|
+| [float](#nodebpy.nodes.geometry.manual.AccumulateField.AccumulateFieldDomainFactory.float) |  |
+| [integer](#nodebpy.nodes.geometry.manual.AccumulateField.AccumulateFieldDomainFactory.integer) |  |
+| [transform](#nodebpy.nodes.geometry.manual.AccumulateField.AccumulateFieldDomainFactory.transform) |  |
+| [vector](#nodebpy.nodes.geometry.manual.AccumulateField.AccumulateFieldDomainFactory.vector) |  |
+
+float
+
+``` python
+float(value=None, index=0)
+```
+
+integer
+
+``` python
+integer(value=None, index=0)
+```
+
+transform
+
+``` python
+transform(value=None, index=0)
+```
+
+vector
+
+``` python
+vector(value=None, index=0)
+```
+
 ### AttributeStatistic
 
 ``` python
@@ -86,14 +134,21 @@ Calculate statistics about a data set from a field evaluated on a geometry
 
 | Name | Description |
 |----|----|
+| [`corner`](#nodebpy.nodes.geometry.manual.AttributeStatistic.corner) |  |
 | [`data_type`](#nodebpy.nodes.geometry.manual.AttributeStatistic.data_type) |  |
 | [`domain`](#nodebpy.nodes.geometry.manual.AttributeStatistic.domain) |  |
+| [`edge`](#nodebpy.nodes.geometry.manual.AttributeStatistic.edge) |  |
+| [`face`](#nodebpy.nodes.geometry.manual.AttributeStatistic.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.AttributeStatistic.i) |  |
 | [`inputs`](#nodebpy.nodes.geometry.manual.AttributeStatistic.inputs) |  |
+| [`instance`](#nodebpy.nodes.geometry.manual.AttributeStatistic.instance) |  |
+| [`layer`](#nodebpy.nodes.geometry.manual.AttributeStatistic.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.AttributeStatistic.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.AttributeStatistic.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.AttributeStatistic.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.AttributeStatistic.outputs) |  |
+| [`point`](#nodebpy.nodes.geometry.manual.AttributeStatistic.point) |  |
+| [`spline`](#nodebpy.nodes.geometry.manual.AttributeStatistic.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.AttributeStatistic.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.AttributeStatistic.type) |  |
 
@@ -235,6 +290,60 @@ Retrieve data of other elements in the context’s geometry
 | [`spline`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.type) |  |
+
+### EvaluateClosure
+
+``` python
+EvaluateClosure(
+    closure=None,
+    *,
+    active_input_index=0,
+    active_output_index=0,
+    define_signature=False,
+)
+```
+
+Execute a given closure
+
+#### Parameters
+
+| Name    | Type         | Description | Default |
+|---------|--------------|-------------|---------|
+| closure | InputClosure | Closure     | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`active_input_index`](#nodebpy.nodes.geometry.manual.EvaluateClosure.active_input_index) |  |
+| [`active_output_index`](#nodebpy.nodes.geometry.manual.EvaluateClosure.active_output_index) |  |
+| [`define_signature`](#nodebpy.nodes.geometry.manual.EvaluateClosure.define_signature) |  |
+| [`i`](#nodebpy.nodes.geometry.manual.EvaluateClosure.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.EvaluateClosure.name) |  |
+| [`node`](#nodebpy.nodes.geometry.manual.EvaluateClosure.node) |  |
+| [`o`](#nodebpy.nodes.geometry.manual.EvaluateClosure.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateClosure.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.manual.EvaluateClosure.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [sync_signature](#nodebpy.nodes.geometry.manual.EvaluateClosure.sync_signature) |  |
+
+##### sync_signature
+
+``` python
+sync_signature(node)
+```
+
+**Inputs**
+
+| Attribute   | Type            | Description |
+|-------------|-----------------|-------------|
+| `i.closure` | `ClosureSocket` | Closure     |
 
 ### EvaluateOnDomain
 
@@ -432,6 +541,28 @@ Calculate the standard deviation and variance of a given field
 | [`tree`](#nodebpy.nodes.geometry.manual.FieldVariance.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.FieldVariance.type) |  |
 
+### Float
+
+``` python
+Float(value=0.0)
+```
+
+Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper of the Value node.
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.manual.Float.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`inputs`](#nodebpy.nodes.geometry.manual.Float.inputs) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Float.name) |  |
+| [`node`](#nodebpy.nodes.geometry.manual.Float.node) |  |
+| [`o`](#nodebpy.nodes.geometry.manual.Float.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.manual.Float.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.Float.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.manual.Float.type) |  |
+| [`value`](#nodebpy.nodes.geometry.manual.Float.value) | Input socket: Value |
+
 ### FormatString
 
 ``` python
@@ -453,6 +584,28 @@ Insert values into a string using a Python and path template compatible formatti
 | [`outputs`](#nodebpy.nodes.geometry.manual.FormatString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.FormatString.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.FormatString.type) |  |
+
+### Frame
+
+``` python
+Frame(label=None, shrink=True, text=None)
+```
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.manual.Frame.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`inputs`](#nodebpy.nodes.geometry.manual.Frame.inputs) |  |
+| [`label`](#nodebpy.nodes.geometry.manual.Frame.label) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Frame.name) |  |
+| [`node`](#nodebpy.nodes.geometry.manual.Frame.node) |  |
+| [`o`](#nodebpy.nodes.geometry.manual.Frame.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`outputs`](#nodebpy.nodes.geometry.manual.Frame.outputs) |  |
+| [`shrink`](#nodebpy.nodes.geometry.manual.Frame.shrink) |  |
+| [`text`](#nodebpy.nodes.geometry.manual.Frame.text) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.Frame.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.manual.Frame.type) |  |
 
 ### GeometryToInstance
 
@@ -642,11 +795,11 @@ Cut, subtract, or join multiple mesh inputs
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.geometry.manual.MeshBoolean.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`i`](#nodebpy.nodes.geometry.manual.MeshBoolean.i) |  |
 | [`inputs`](#nodebpy.nodes.geometry.manual.MeshBoolean.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.MeshBoolean.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.MeshBoolean.node) |  |
-| [`o`](#nodebpy.nodes.geometry.manual.MeshBoolean.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`o`](#nodebpy.nodes.geometry.manual.MeshBoolean.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.manual.MeshBoolean.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.MeshBoolean.outputs) |  |
 | [`solver`](#nodebpy.nodes.geometry.manual.MeshBoolean.solver) |  |
@@ -667,8 +820,8 @@ Cut, subtract, or join multiple mesh inputs
 difference(
     *args,
     mesh_1=None,
-    hole_tolerant=False,
     self_intersection=False,
+    hole_tolerant=False,
     solver='FLOAT',
 )
 ```
@@ -682,7 +835,7 @@ intersect(*args, self_intersection=False, hole_tolerant=False, solver='FLOAT')
 ##### union
 
 ``` python
-union(*args, hole_tolerant=False, self_intersection=False, solver='FLOAT')
+union(*args, self_intersection=False, hole_tolerant=False, solver='FLOAT')
 ```
 
 ### SDFGridBoolean

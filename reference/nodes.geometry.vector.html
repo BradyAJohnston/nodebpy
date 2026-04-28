@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.10.2</span>
+    <span class="navbar-title">nodebpy 0.13.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -330,12 +330,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.shader.input.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.shader.input</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.interface.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.interface</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -1019,30 +1013,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Create Vector Math with operation ‘Refract’. For a given incident vector A, surface normal B and ratio of indices of refraction, Ior, refract returns the refraction vector, R</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.vector.VectorMath.round">round</a></td>
+<td>Create Vector Math with operation ‘Round’. Entry-wise round to the nearest integer. Round upward if the fraction part is 0.5</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.vector.VectorMath.scale">scale</a></td>
 <td>Create Vector Math with operation ‘Scale’. A multiplied by Scale</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.vector.VectorMath.sign">sign</a></td>
 <td>Create Vector Math with operation ‘Sign’. Entry-wise sign</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.vector.VectorMath.sine">sine</a></td>
 <td>Create Vector Math with operation ‘Sine’. Entry-wise sin(A)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.vector.VectorMath.snap">snap</a></td>
 <td>Create Vector Math with operation ‘Snap’. Round A to the largest integer multiple of B less than or equal A</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.vector.VectorMath.subtract">subtract</a></td>
 <td>Create Vector Math with operation ‘Subtract’. A - B</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.vector.VectorMath.tangent">tangent</a></td>
 <td>Create Vector Math with operation ‘Tangent’. Entry-wise tan(A)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.vector.VectorMath.wrap">wrap</a></td>
 <td>Create Vector Math with operation ‘Wrap’. Entry-wise wrap(A,B)</td>
 </tr>
@@ -1158,39 +1156,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>refract(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Math with operation ‘Refract’. For a given incident vector A, surface normal B and ratio of indices of refraction, Ior, refract returns the refraction vector, R</p>
 </section>
+<section id="nodebpy.nodes.geometry.vector.VectorMath.round" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorMath.round">round</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">round</span>(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Vector Math with operation ‘Round’. Entry-wise round to the nearest integer. Round upward if the fraction part is 0.5</p>
+</section>
 <section id="nodebpy.nodes.geometry.vector.VectorMath.scale" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorMath.scale">scale</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>scale(vector<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>scale(vector<span class="op">=</span><span class="va">None</span>, scale<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Math with operation ‘Scale’. A multiplied by Scale</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorMath.sign" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorMath.sign">sign</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sign(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>sign(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Math with operation ‘Sign’. Entry-wise sign</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorMath.sine" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorMath.sine">sine</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>sine(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>sine(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Math with operation ‘Sine’. Entry-wise sin(A)</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorMath.snap" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorMath.snap">snap</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>snap(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>snap(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Math with operation ‘Snap’. Round A to the largest integer multiple of B less than or equal A</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorMath.subtract" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorMath.subtract">subtract</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>subtract(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>subtract(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Math with operation ‘Subtract’. A - B</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorMath.tangent" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorMath.tangent">tangent</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>tangent(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tangent(vector<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Math with operation ‘Tangent’. Entry-wise tan(A)</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorMath.wrap" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorMath.wrap">wrap</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>wrap(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>, vector_002<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>wrap(vector<span class="op">=</span><span class="va">None</span>, vector_001<span class="op">=</span><span class="va">None</span>, vector_002<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Math with operation ‘Wrap’. Entry-wise wrap(A,B)</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1251,16 +1254,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorRotate" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorRotate">VectorRotate</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>VectorRotate(</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    angle<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    rotation_type<span class="op">=</span><span class="st">'AXIS_ANGLE'</span>,</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    invert<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>VectorRotate(</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    vector<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    angle<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    rotation_type<span class="op">=</span><span class="st">'AXIS_ANGLE'</span>,</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    invert<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Rotate a vector around a pivot point (center)</p>
 <section id="parameters-3" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
@@ -1394,27 +1397,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.vector.VectorRotate.axis_angle" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorRotate.axis_angle">axis_angle</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>axis_angle(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, axis<span class="op">=</span><span class="va">None</span>, angle<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>axis_angle(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, axis<span class="op">=</span><span class="va">None</span>, angle<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Rotate with operation ‘Axis Angle’. Rotate a point using axis angle</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorRotate.euler" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorRotate.euler">euler</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>euler(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, rotation<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>euler(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, rotation<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Rotate with operation ‘Euler’. Rotate a point using XYZ order</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorRotate.x_axis" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorRotate.x_axis">x_axis</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>x_axis(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, angle<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>x_axis(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, angle<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Rotate with operation ‘X Axis’. Rotate a point using X axis</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorRotate.y_axis" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorRotate.y_axis">y_axis</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>y_axis(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, angle<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>y_axis(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, angle<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Rotate with operation ‘Y Axis’. Rotate a point using Y axis</p>
 </section>
 <section id="nodebpy.nodes.geometry.vector.VectorRotate.z_axis" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.vector.VectorRotate.z_axis">z_axis</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>z_axis(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, angle<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>z_axis(vector<span class="op">=</span><span class="va">None</span>, center<span class="op">=</span><span class="va">None</span>, angle<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Vector Rotate with operation ‘Z Axis’. Rotate a point using Z axis</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
