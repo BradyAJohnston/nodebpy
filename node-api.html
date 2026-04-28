@@ -263,7 +263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>The design approach for interfacing with the nodes takes several aspects into consideration.</p>
-<div id="4be850c1" class="cell" data-execution_count="1">
+<div id="d03471e2" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="sockets" class="level2">
@@ -281,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ):</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>We can either pass in nodes / sockets / values into the constructor, or link them after construction.</p>
 <p>The <code>g.Cube()</code> is used as a positional argument to <code>geometry</code>, while we explicitly state the offset with a keyword argument. On the second line we scale <code>Position()</code> by <code>0.5</code> and then link that to the <code>position</code> input of <code>SetPosition</code>.</p>
-<div id="e0684a28" class="cell" data-execution_count="2">
+<div id="cef2ffb4" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    sp <span class="op">=</span> g.SetPosition(g.Cube(), offset<span class="op">=</span>g.RandomValue() <span class="op">*</span> <span class="fl">0.1</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (g.Position() <span class="op">*</span> <span class="fl">0.5</span>) <span class="op">&gt;&gt;</span> sp.i.position</span>
@@ -317,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="outputs" class="level3">
 <h3 class="anchored" data-anchor-id="outputs">Outputs</h3>
 <p>Selection of outputs is done automatically to best match the data types of the inputs. You can be specific with the output though, with outputs available behind the <code>outputs</code> / <code>o</code> accessor.</p>
-<div id="00e800fa" class="cell" data-execution_count="3">
+<div id="9560c90c" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    time <span class="op">=</span> g.SceneTime()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -358,7 +358,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="slicing-inputs-and-outputs" class="level3">
 <h3 class="anchored" data-anchor-id="slicing-inputs-and-outputs">Slicing Inputs and Outputs</h3>
 <p>You can use slicing to access individual or multiple components of input and output sockets.</p>
-<div id="1689ed48" class="cell" data-execution_count="4">
+<div id="9d8619d4" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    sep <span class="op">=</span> g.SeparateXYZ(g.Position())</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    comb <span class="op">=</span> g.CombineXYZ(<span class="op">*</span>sep.o[:])</span>
@@ -392,7 +392,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We can replicate part of a PCA analysis, getting the mean difference of the position field, scaling and combining into a matrix.</p>
-<div id="7541f115" class="cell" data-execution_count="5">
+<div id="b53532b8" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">=</span> g.FieldAverage.point.vector(pos).o.mean <span class="op">-</span> pos</span>
@@ -447,9 +447,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N12 --&gt;|"X-&gt;Column 3 Row 1"| N13
     N12 --&gt;|"Y-&gt;Column 3 Row 2"| N13
     N12 --&gt;|"Z-&gt;Column 3 Row 3"| N13
-    N2 --&gt;|"Vector-&gt;Vector"| N6
     N2 --&gt;|"Vector-&gt;Vector"| N4
     N2 --&gt;|"Vector-&gt;Vector"| N5
+    N2 --&gt;|"Vector-&gt;Vector"| N6
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -461,7 +461,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="vector-outputs" class="level4">
 <h4 class="anchored" data-anchor-id="vector-outputs">Vector Outputs</h4>
 <p>Some output attributes have convenience methods for simpler chaining. Vector outputs can access the <code>x/y/z/</code> components quickly, which internally adds the <code>SeparateXYZ</code> required. The same SeparateXYZ node is re-used across different outputs.</p>
-<div id="a0491f43" class="cell" data-execution_count="6">
+<div id="921dab95" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.Position().o.position</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -498,7 +498,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="matrix" class="level5">
 <h5 class="anchored" data-anchor-id="matrix">Matrix</h5>
 <p>Matrix sockets have access to the <code>translation</code>, <code>rotation</code> and <code>scale</code> from the transform.</p>
-<div id="fa4bfb2b" class="cell" data-execution_count="7">
+<div id="5c4695ba" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    mat <span class="op">=</span> g.CombineMatrix().o.matrix</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    mat.translation <span class="op">*</span> <span class="fl">0.5</span></span>
@@ -534,7 +534,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="color" class="level5">
 <h5 class="anchored" data-anchor-id="color">Color</h5>
 <p>Color sockets have <code>r</code> <code>g</code> <code>b</code> <code>a</code> properties.</p>
-<div id="36008369" class="cell" data-execution_count="8">
+<div id="673b5b2e" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> g.CombineColor().o.color</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    col.r <span class="op">+</span> <span class="dv">10</span></span>
@@ -590,7 +590,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        data_type: _EvaluateAtIndexDataTypes <span class="op">=</span> <span class="st">"FLOAT"</span>,</span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    ):</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>They are set during the class construction, but can also be set and changed afterwards.</p>
-<div id="6a241ab0" class="cell" data-execution_count="9">
+<div id="0777b136" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    eai <span class="op">=</span> g.EvaluateAtIndex(data_type<span class="op">=</span><span class="st">"FLOAT_VECTOR"</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    eai.data_type <span class="op">=</span> <span class="st">"QUATERNION"</span></span>
@@ -606,7 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>g.Compare.<span class="bu">float</span>.less_than()       <span class="co"># .data_type.operation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </blockquote>
 <p>Because sockets are the only positional for the node constructors, enum values like <code>data_typa</code> have to be specified with as key word arguments to the constructor. All enum options are type-hinted with <code>Literal[]</code> so IDE auto-complete and type hinting will work, but the convenience class methods enable a cleaner way of writing the nodes. For the example below both methods do work, but the second is cleaner to write and flows better with what the node is doing; ‘On the edge domain, evaluate a float attribute’.</p>
-<div id="8e8fce7d" class="cell" data-execution_count="10">
+<div id="18e58b8d" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># domain and data_type require kwargs</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    eod1 <span class="op">=</span> g.EvaluateOnDomain(domain<span class="op">=</span><span class="st">"EDGE"</span>, data_type<span class="op">=</span><span class="st">"FLOAT"</span>)</span>
@@ -641,7 +641,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="comparing-node-objects">Comparing Node Objects</h3>
 <p>In this instance <code>comp</code> will be a <code>g.Compare</code> node, set with the <code>operation="GREATER_THAN"</code> and <code>data_type="INT"</code>.</p>
 <p>As this is a node within the node graph, the inputs have the potential to change during node tree evaluation meaning the result of the comparison could change. During playback on an animation the output will be <code>Cube</code> at frames &lt;=50 and <code>Cone</code> when above that value.</p>
-<div id="1667c01a" class="cell" data-execution_count="11">
+<div id="380f601b" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> g.SceneTime().o.frame</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> g.Integer(<span class="dv">50</span>)</span>
@@ -651,7 +651,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>comp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
-<pre><code>&lt;nodebpy.nodes.geometry.manual.Compare at 0x123e39160&gt;</code></pre>
+<pre><code>&lt;nodebpy.nodes.geometry.manual.Compare at 0x162e31010&gt;</code></pre>
 </div>
 </div>
 </section>
@@ -659,7 +659,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="comparing-python-objects">Comparing Python Objects</h3>
 <p>If the comparison was of just regular python values, then the result at runtime will just be boolean <code>True</code> and <em>not</em> a <code>Compare</code> node. This means the value <em>won’t</em> change during node tree evaluation, and will only be evaluated a single time in node tree construction.</p>
 <p>The result below will <em>always</em> output a <code>Cone</code> geoemtry because the input will always be <code>True</code>.</p>
-<div id="1fa4b7db" class="cell" data-execution_count="12">
+<div id="f9b78bbe" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="dv">0</span></span>
@@ -753,7 +753,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
