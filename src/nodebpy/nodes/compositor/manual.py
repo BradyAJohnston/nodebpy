@@ -1,17 +1,30 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Generic, Literal
 
 from bpy.types import CompositorNodeCryptomatteV2, CompositorNodeImage
 
-from nodebpy.types import Image, InputColor
-
 from ...builder import (
+    BooleanSocket,
     ColorSocket,
     FloatSocket,
+    IntegerSocket,
+    MenuSocket,
     NodeBuilder,
     SocketAccessor,
+    StringSocket,
     TreeBuilder,
+    VectorSocket,
 )
-from ..geometry.manual import Float, Frame, _MenuSwitchBase
+from ...types import (
+    Image,
+    InputBoolean,
+    InputColor,
+    InputFloat,
+    InputInteger,
+    InputMenu,
+    InputString,
+    InputVector,
+)
+from ..geometry.manual import _T, Float, Frame, _MenuSwitchBase
 
 __all__ = ["Frame", "MenuSwitch", "tree", "Float"]
 
@@ -28,16 +41,50 @@ def tree(
     )
 
 
-class MenuSwitch(_MenuSwitchBase):
+class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     """Node builder for the Menu Switch node (Compositor tree)"""
 
-    float = _MenuSwitchBase._typed("FLOAT")
-    integer = _MenuSwitchBase._typed("INT")
-    boolean = _MenuSwitchBase._typed("BOOLEAN")
-    vector = _MenuSwitchBase._typed("VECTOR")
-    color = _MenuSwitchBase._typed("RGBA")
-    string = _MenuSwitchBase._typed("STRING")
-    menu = _MenuSwitchBase._typed("MENU")
+    @classmethod
+    def float(
+        cls, *args: InputFloat, menu: InputMenu = None, **kwargs: InputFloat
+    ) -> "MenuSwitch[FloatSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="FLOAT", **kwargs)
+
+    @classmethod
+    def integer(
+        cls, *args: InputInteger, menu: InputMenu = None, **kwargs: InputInteger
+    ) -> "MenuSwitch[IntegerSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="INT", **kwargs)
+
+    @classmethod
+    def boolean(
+        cls, *args: InputBoolean, menu: InputMenu = None, **kwargs: InputBoolean
+    ) -> "MenuSwitch[BooleanSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="BOOLEAN", **kwargs)
+
+    @classmethod
+    def vector(
+        cls, *args: InputVector, menu: InputMenu = None, **kwargs: InputVector
+    ) -> "MenuSwitch[VectorSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="VECTOR", **kwargs)
+
+    @classmethod
+    def color(
+        cls, *args: InputColor, menu: InputMenu = None, **kwargs: InputColor
+    ) -> "MenuSwitch[ColorSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="RGBA", **kwargs)
+
+    @classmethod
+    def string(
+        cls, *args: InputString, menu: InputMenu = None, **kwargs: InputString
+    ) -> "MenuSwitch[StringSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="STRING", **kwargs)
+
+    @classmethod
+    def menu(
+        cls, *args: InputMenu, menu: InputMenu = None, **kwargs: InputMenu
+    ) -> "MenuSwitch[MenuSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="MENU", **kwargs)
 
 
 class Image(NodeBuilder):

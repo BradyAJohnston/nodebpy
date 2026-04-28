@@ -4,7 +4,6 @@ from itertools import product
 from operator import and_
 
 import bpy
-from tornado.web import DEFAULT_SIGNED_VALUE_MIN_VERSION
 
 from nodebpy import geometry as g
 from nodebpy.builder import FloatSocket

@@ -9,7 +9,6 @@ from bpy.types import (
     NodeClosureOutputItems,
     NodeEvaluateClosureInputItems,
     NodeEvaluateClosureOutputItems,
-    NodeSocket,
 )
 
 from nodebpy.builder._registry import _get_socket_linker

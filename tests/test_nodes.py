@@ -8,7 +8,6 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import FloatSocket, MatrixSocket, VectorSocket
-from nodebpy.types import _AttributeDomains
 
 
 def test_capture_attribute():

@@ -364,3 +364,35 @@ class TestCustomCompositorGroup:
             assert isinstance(node.node_tree, CompositorNodeTree)
             assert len(node.node_tree.nodes) == 4
             node >> tree.outputs.color("Image")
+
+
+class TestMenuDefaultValue:
+    class SimpleMenuGroup(CustomGeometryGroup):
+        _name = "SimpleMenuGroup"
+
+        def __init__(self, letter: str = "B"):
+            kwargs = {
+                "Letter": letter,
+            }
+            super().__init__(**kwargs)
+
+        def _build_group(self, tree: TreeBuilder):
+            (
+                tree.inputs.menu("Letter", "B")
+                >> g.MenuSwitch.string(
+                    **{letter: letter for letter in "ABCDEFG"}, menu=...
+                )
+                >> tree.outputs.string()
+            )
+
+    def test_simple_menu_group(self):
+        with g.tree():
+            node = self.SimpleMenuGroup()
+            assert node.i.letter.default_value == "B"
+            node = self.SimpleMenuGroup("C")
+            assert node.i.letter.default_value == "C"
+
+            ms = g.MenuSwitch.string(
+                **{letter: letter for letter in "ABCDEFG"}, menu=...
+            )
+            assert ms.i.menu.default_value == "A"
