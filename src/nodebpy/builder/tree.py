@@ -147,11 +147,11 @@ class SocketContext:
     def float(
         self,
         name: str = "Value",
-        default_value: float = 0.0,
+        default_value: float = 0.0,  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
-        min_value: float | None = None,
-        max_value: float | None = None,
+        min_value: float | None = None,  # ty: ignore[invalid-type-form]
+        max_value: float | None = None,  # ty: ignore[invalid-type-form]
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
@@ -243,12 +243,12 @@ class SocketContext:
     def vector(
         self,
         name: str = "Vector",
-        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
         dimensions: int = 3,
-        min_value: float | None = None,
-        max_value: float | None = None,
+        min_value: float | None = None,  # ty: ignore[invalid-type-form]
+        max_value: float | None = None,  # ty: ignore[invalid-type-form]
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
@@ -284,7 +284,7 @@ class SocketContext:
     def color(
         self,
         name: str = "Color",
-        default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
+        default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
         optional_label: bool = False,
@@ -311,7 +311,7 @@ class SocketContext:
     def rotation(
         self,
         name: str = "Rotation",
-        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
         optional_label: bool = False,
