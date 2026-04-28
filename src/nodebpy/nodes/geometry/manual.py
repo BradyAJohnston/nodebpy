@@ -11,12 +11,14 @@ from ...builder import (
 )
 from ...builder import (
     BooleanSocket,
+    BundleSocket,
     ClosureSocket,
     CollectionSocket,
     ColorSocket,
     DynamicInputsMixin,
     FloatSocket,
     GeometrySocket,
+    ImageSocket,
     IntegerSocket,
     MaterialSocket,
     MatrixSocket,
@@ -893,7 +895,7 @@ class IndexSwitch(NodeBuilder):
         self.node.data_type = value
 
 
-class _MenuSwitchBase(NodeBuilder):
+class _MenuSwitchBase(NodeBuilder, Generic[_T]):
     """Base class for MenuSwitch nodes across all tree types."""
 
     _bl_idname = "GeometryNodeMenuSwitch"
@@ -907,7 +909,7 @@ class _MenuSwitchBase(NodeBuilder):
             *args: InputAny,
             menu: InputMenu = None,
             **kwargs: InputAny,
-        ) -> "MenuSwitch":
+        ) -> "MenuSwitch[_T]":
             """Create a MenuSwitch node with a pre-set data_type"""
             return cls(*args, menu=menu, data_type=data_type, **kwargs)
 
@@ -920,8 +922,8 @@ class _MenuSwitchBase(NodeBuilder):
     def i(self) -> "MenuSwitch._Inputs":
         return MenuSwitch._Inputs(self.node.inputs, "input")
 
-    class _Outputs(SocketAccessor):
-        output: Socket
+    class _Outputs(SocketAccessor, Generic[_S]):
+        output: _S
 
     @property
     def o(self) -> "MenuSwitch._Outputs":
@@ -996,6 +998,41 @@ class MenuSwitch(_MenuSwitchBase):
     material = _MenuSwitchBase._typed("MATERIAL")
     bundle = _MenuSwitchBase._typed("BUNDLE")
     closure = _MenuSwitchBase._typed("CLOSURE")
+
+    if TYPE_CHECKING:
+
+        @classmethod
+        def float(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[FloatSocket]": ...
+        @classmethod
+        def integer(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[IntegerSocket]": ...
+        @classmethod
+        def boolean(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[BooleanSocket]": ...
+        @classmethod
+        def vector(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[VectorSocket]": ...
+        @classmethod
+        def color(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ColorSocket]": ...
+        @classmethod
+        def rotation(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[RotationSocket]": ...
+        @classmethod
+        def matrix(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[MatrixSocket]": ...
+        @classmethod
+        def string(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[StringSocket]": ...
+        @classmethod
+        def menu(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[MenuSocket]": ...
+        @classmethod
+        def object(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ObjectSocket]": ...
+        @classmethod
+        def geometry(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[GeometrySocket]": ...
+        @classmethod
+        def collection(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[CollectionSocket]": ...
+        @classmethod
+        def image(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ImageSocket]": ...
+        @classmethod
+        def material(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[MaterialSocket]": ...
+        @classmethod
+        def bundle(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[BundleSocket]": ...
+        @classmethod
+        def closure(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ClosureSocket]": ...
 
 
 class CaptureAttribute(NodeBuilder, DynamicInputsMixin):

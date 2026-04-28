@@ -5,13 +5,19 @@ from bpy.types import CompositorNodeCryptomatteV2, CompositorNodeImage
 from nodebpy.types import Image, InputColor
 
 from ...builder import (
+    BooleanSocket,
     ColorSocket,
     FloatSocket,
+    IntegerSocket,
+    MenuSocket,
     NodeBuilder,
     SocketAccessor,
+    StringSocket,
     TreeBuilder,
+    VectorSocket,
 )
 from ..geometry.manual import Float, Frame, _MenuSwitchBase
+from ...types import InputAny, InputMenu
 
 __all__ = ["Frame", "MenuSwitch", "tree", "Float"]
 
@@ -38,6 +44,23 @@ class MenuSwitch(_MenuSwitchBase):
     color = _MenuSwitchBase._typed("RGBA")
     string = _MenuSwitchBase._typed("STRING")
     menu = _MenuSwitchBase._typed("MENU")
+
+    if TYPE_CHECKING:
+
+        @classmethod
+        def float(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[FloatSocket]": ...
+        @classmethod
+        def integer(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[IntegerSocket]": ...
+        @classmethod
+        def boolean(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[BooleanSocket]": ...
+        @classmethod
+        def vector(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[VectorSocket]": ...
+        @classmethod
+        def color(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ColorSocket]": ...
+        @classmethod
+        def string(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[StringSocket]": ...
+        @classmethod
+        def menu(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[MenuSocket]": ...
 
 
 class Image(NodeBuilder):

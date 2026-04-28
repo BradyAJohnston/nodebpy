@@ -3,16 +3,23 @@ from typing import TYPE_CHECKING, Literal
 from bpy.types import ShaderNodeAttribute
 
 from ...builder import (
+    BooleanSocket,
+    BundleSocket,
+    ClosureSocket,
     ColorSocket,
     FloatSocket,
+    IntegerSocket,
     MaterialBuilder,
+    MenuSocket,
     NodeBuilder,
+    ShaderSocket,
     TreeBuilder,
     VectorSocket,
 )
 from ...builder.accessor import SocketAccessor
 from ..geometry import Frame, RepeatInput, RepeatOutput, RepeatZone
 from ..geometry.manual import Float, _MenuSwitchBase
+from ...types import InputAny, InputMenu
 
 __all__ = [
     "MenuSwitch",
@@ -63,6 +70,27 @@ class MenuSwitch(_MenuSwitchBase):
     closure = _MenuSwitchBase._typed("CLOSURE")
     bundle = _MenuSwitchBase._typed("BUNDLE")
     shader = _MenuSwitchBase._typed("SHADER")
+
+    if TYPE_CHECKING:
+
+        @classmethod
+        def float(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[FloatSocket]": ...
+        @classmethod
+        def integer(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[IntegerSocket]": ...
+        @classmethod
+        def boolean(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[BooleanSocket]": ...
+        @classmethod
+        def vector(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[VectorSocket]": ...
+        @classmethod
+        def color(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ColorSocket]": ...
+        @classmethod
+        def menu(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[MenuSocket]": ...
+        @classmethod
+        def closure(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ClosureSocket]": ...
+        @classmethod
+        def bundle(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[BundleSocket]": ...
+        @classmethod
+        def shader(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ShaderSocket]": ...
 
 
 class Attribute(NodeBuilder):
