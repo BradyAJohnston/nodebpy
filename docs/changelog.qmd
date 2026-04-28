@@ -2,7 +2,7 @@
 title: Changelog
 ---
 
-## Unreleased
+## v0.13.0 - 2026-04-28
 
 ### Enhancements
 - Support adding of closure nodes (`EvaluateClosure` and the `ClosureInput` / `ClosureOutput` nodes). Convenience `ClosureZone` class is added similar to the repeat, simulation and for-each-element zones. ([`#60`](https://github.com/BradyAJohnston/nodebpy/pull/60))
