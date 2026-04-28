@@ -379,7 +379,9 @@ class TestMenuDefaultValue:
         def _build_group(self, tree: TreeBuilder):
             (
                 tree.inputs.menu("Letter", "B")
-                >> g.MenuSwitch.string(**{l: l for l in "ABCDEFG"}, menu=...)
+                >> g.MenuSwitch.string(
+                    **{letter: letter for letter in "ABCDEFG"}, menu=...
+                )
                 >> tree.outputs.string()
             )
 
@@ -390,4 +392,7 @@ class TestMenuDefaultValue:
             node = self.SimpleMenuGroup("C")
             assert node.i.letter.default_value == "C"
 
-            g.MenuSwitch.string(**{letter: letter for letter in "ABCDEFG"}, menu=...)
+            ms = g.MenuSwitch.string(
+                **{letter: letter for letter in "ABCDEFG"}, menu=...
+            )
+            assert ms.i.menu.default_value == "A"

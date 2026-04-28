@@ -918,16 +918,16 @@ class _MenuSwitchBase(NodeBuilder, Generic[_T]):
     class _Inputs(SocketAccessor):
         menu: MenuSocket
 
-    @property
-    def i(self) -> "MenuSwitch._Inputs":
-        return MenuSwitch._Inputs(self.node.inputs, "input")
-
     class _Outputs(SocketAccessor, Generic[_S]):
         output: _S
 
-    @property
-    def o(self) -> "MenuSwitch._Outputs":
-        return MenuSwitch._Outputs(self.node.outputs, "output")
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> "_Inputs": ...
+
+        @property
+        def o(self) -> "_Outputs[_T]": ...
 
     def __init__(
         self,
@@ -979,7 +979,7 @@ class _MenuSwitchBase(NodeBuilder, Generic[_T]):
         self.node.data_type = value
 
 
-class MenuSwitch(_MenuSwitchBase):
+class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     """Node builder for the Menu Switch node"""
 
     float = _MenuSwitchBase._typed("FLOAT")

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Generic, Literal
 
 from bpy.types import ShaderNodeAttribute
 
@@ -18,7 +18,7 @@ from ...builder import (
 )
 from ...builder.accessor import SocketAccessor
 from ..geometry import Frame, RepeatInput, RepeatOutput, RepeatZone
-from ..geometry.manual import Float, _MenuSwitchBase
+from ..geometry.manual import Float, _MenuSwitchBase, _T
 from ...types import InputAny, InputMenu
 
 __all__ = [
@@ -58,7 +58,7 @@ def material(
     )
 
 
-class MenuSwitch(_MenuSwitchBase):
+class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     """Node builder for the Menu Switch node (Shader tree)"""
 
     float = _MenuSwitchBase._typed("FLOAT")

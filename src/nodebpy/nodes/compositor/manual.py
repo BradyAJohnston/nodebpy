@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Generic, Literal
 
 from bpy.types import CompositorNodeCryptomatteV2, CompositorNodeImage
 
@@ -16,7 +16,7 @@ from ...builder import (
     TreeBuilder,
     VectorSocket,
 )
-from ..geometry.manual import Float, Frame, _MenuSwitchBase
+from ..geometry.manual import Float, Frame, _MenuSwitchBase, _T
 from ...types import InputAny, InputMenu
 
 __all__ = ["Frame", "MenuSwitch", "tree", "Float"]
@@ -34,7 +34,7 @@ def tree(
     )
 
 
-class MenuSwitch(_MenuSwitchBase):
+class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     """Node builder for the Menu Switch node (Compositor tree)"""
 
     float = _MenuSwitchBase._typed("FLOAT")
