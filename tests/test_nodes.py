@@ -2,11 +2,13 @@ import itertools
 
 import bpy
 import pytest
+from numpy import isin
 
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
+from nodebpy.builder import FloatSocket, MatrixSocket
 
 
 def test_capture_attribute():
@@ -1165,3 +1167,112 @@ def test_geometry_reroute():
     assert len(tree.tree.links) == 2
     assert bpy.data.node_groups["test"].nodes["Reroute"].inputs[0].type == "GEOMETRY"
     assert bpy.data.node_groups["test"].nodes["Reroute"].outputs[0].type == "GEOMETRY"
+
+
+def test_sample_index():
+    with g.tree():
+        points = g.Points(10, g.RandomValue.vector().o.value)
+        node = g.SampleIndex.point.vector(points, g.Position(), g.Index())
+
+        assert node.data_type == "FLOAT_VECTOR"
+        assert node.domain == "POINT"
+        assert node.i.value.links[0].from_node.bl_idname == g.Position._bl_idname
+
+        si = g.SampleIndex.edge.float()
+        assert si.data_type == "FLOAT"
+        assert si.domain == "EDGE"
+        assert not si.clamp
+        si.clamp = True
+        assert si.clamp
+
+        si = g.SampleIndex.face.vector(clamp=True)
+        assert si.data_type == "FLOAT_VECTOR"
+        assert si.domain == "FACE"
+        assert si.clamp
+
+        si = g.SampleIndex.layer.integer()
+        assert si.data_type == "INT"
+        assert si.domain == "LAYER"
+
+        si = g.SampleIndex.spline.boolean()
+        assert si.data_type == "BOOLEAN"
+        assert si.domain == "CURVE"
+
+        si = g.SampleIndex.edge.color()
+        assert si.data_type == "FLOAT_COLOR"
+        assert si.domain == "EDGE"
+
+        si = g.SampleIndex.instance.rotation()
+        assert si.data_type == "QUATERNION"
+        assert si.domain == "INSTANCE"
+
+        si = g.SampleIndex.instance.matrix()
+        assert si.data_type == "FLOAT4X4"
+        assert si.domain == "INSTANCE"
+        assert isinstance(si.i.value, MatrixSocket)
+
+        si.data_type = "FLOAT"
+        assert si.data_type == "FLOAT"
+        assert isinstance(si.i.value, FloatSocket)
+
+
+def test_sample_curve():
+    with g.tree():
+        sc = g.SampleCurve.factor.boolean()
+        assert sc.data_type == "BOOLEAN"
+        assert sc.mode == "FACTOR"
+        assert not sc.use_all_curves
+        sc.use_all_curves = True
+        assert sc.use_all_curves
+        sc.data_type = "FLOAT"
+        assert sc.data_type == "FLOAT"
+        assert isinstance(sc.i.value, FloatSocket)
+
+        sc = g.SampleCurve.factor.color()
+        assert sc.data_type == "FLOAT_COLOR"
+        assert sc.mode == "FACTOR"
+
+        sc = g.SampleCurve.factor.vector()
+        assert sc.data_type == "FLOAT_VECTOR"
+
+        sc = g.SampleCurve.factor.float()
+        assert sc.data_type == "FLOAT"
+
+        sc = g.SampleCurve.factor.integer()
+        assert sc.data_type == "INT"
+
+        sc = g.SampleCurve.factor.matrix()
+        assert sc.data_type == "FLOAT4X4"
+        assert sc.mode == "FACTOR"
+
+        sc = g.SampleCurve.factor.rotation()
+        assert sc.data_type == "QUATERNION"
+        assert sc.mode == "FACTOR"
+
+        sc = g.SampleCurve.length.float()
+        assert sc.data_type == "FLOAT"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.integer()
+        assert sc.data_type == "INT"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.boolean()
+        assert sc.data_type == "BOOLEAN"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.vector()
+        assert sc.data_type == "FLOAT_VECTOR"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.color()
+        assert sc.data_type == "FLOAT_COLOR"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.matrix()
+        assert sc.data_type == "FLOAT4X4"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.rotation()
+        assert sc.data_type == "QUATERNION"
+        assert sc.mode == "LENGTH"

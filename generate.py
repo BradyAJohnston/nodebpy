@@ -117,6 +117,8 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "FieldVariance",
         "Compare",
         "AttributeStatistic",
+        "SampleIndex",
+        "SampleCurve",
         "Frame",
         "Float",
         "tree",
