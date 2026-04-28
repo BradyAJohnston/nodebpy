@@ -83,7 +83,7 @@ class BaseZoneInput(BaseZone, NodeBuilder, ABC):
     def _add_socket(self, name: str, type: _BakeDataTypes):
         """Add a socket to the zone"""
         item = self.items.new(type, name)
-        return self.inputs[item.name]
+        return self.i[item.name]
 
 
 class BaseZoneOutput(BaseZone, NodeBuilder, ABC):

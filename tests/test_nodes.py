@@ -7,7 +7,13 @@ from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import FloatSocket, MatrixSocket, VectorSocket
+from nodebpy.builder import (
+    FloatSocket,
+    IntegerSocket,
+    MatrixSocket,
+    SocketString,
+    VectorSocket,
+)
 
 
 def test_capture_attribute():
@@ -85,9 +91,9 @@ class TestMathOperators:
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 
-        assert len(set_pos.i.offset.socket.links) == 0
-        assert len(set_pos.i.geometry.socket.links) == 0
-        assert len(set_pos.i.position.socket.links) == 1
+        assert len(set_pos.i.offset.links) == 0
+        assert len(set_pos.i.geometry.links) == 0
+        assert len(set_pos.i.position.links) == 1
 
 
 def test_format_string():
@@ -103,19 +109,20 @@ def test_format_string():
         )
 
         assert len(format.node.format_items) == 3
-        assert format.node.inputs[0].default_value == str_to_format  # type: ignore
-        assert format.node.inputs[1].name == "String"
-        assert format.node.inputs[1].type == "STRING"
-        assert format.node.inputs[1].default_value == ""
-        assert format.node.inputs[2].name == "x"
-        assert format.node.inputs[2].type == "INT"
-        assert format.node.inputs[2].default_value == 0  # type: ignore
-        assert format.node.inputs[3].name == "y"
-        assert format.node.inputs[3].type == "VALUE"
-        assert format.node.inputs[3].default_value == 0.0
-        assert format.items["String"].socket == format.node.inputs[1]
-        assert format.items["x"].socket == format.node.inputs[2]
-        assert format.items["y"].socket == format.node.inputs[3]
+        assert format.i[0].default_value == str_to_format  # type: ignore
+        i_string: SocketString = format.i[1]  # ty: ignore[invalid-assignment]
+        assert i_string.name == "String"
+        assert i_string.type == "STRING"
+        assert i_string.default_value == ""
+        assert format.i[2].name == "x"
+        assert isinstance(format.i[2], IntegerSocket)
+        assert format.i[2].default_value == 0
+        assert format.i[3].name == "y"
+        assert isinstance(format.i[3], FloatSocket)
+        assert format.i[3].default_value == 0.0
+        assert format.items["String"].socket == format.i[1].socket
+        assert format.items["x"].socket == format.i[2].socket
+        assert format.items["y"].socket == format.i[3].socket
 
 
 def test_field_to_grid():
@@ -125,15 +132,15 @@ def test_field_to_grid():
         math = g.Math.add()
 
         ftg = g.FieldToGrid(*inputs, test=g.Value())
-        _ = ftg.outputs["test"] >> math
+        _ = ftg.o["test"] >> math
 
         ftg2 = g.FieldToGrid(test_value=0.3)
-        assert ftg2.inputs["test_value"].socket.default_value == pytest.approx(0.3)
+        assert ftg2.i["test_value"].socket.default_value == pytest.approx(0.3)
 
     assert len(tree) == 9
     assert len(ftg.node.grid_items) == 6
     assert ftg.node.grid_items[5].name == "test"
-    assert ftg.outputs["test"].socket.links[0].to_socket.node == math.node
+    assert ftg.o["test"].socket.links[0].to_socket.node == math.node
     assert all(
         [i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs]
     )
@@ -150,7 +157,7 @@ def test_field_to_grid():
     assert len(ftg.node.grid_items) == 1
     assert ftg.i.topology.socket.links[0].from_node == grid.node
     assert ftg.i.topology.socket.links[0].from_socket == grid.o.grid.socket
-    assert ftg.inputs["Color"].socket.links[0].from_node.name == "Noise Texture.001"
+    assert ftg.i["Color"].socket.links[0].from_node.name == "Noise Texture.001"
 
 
 def test_field_variance():
@@ -286,7 +293,7 @@ def test_simulation(snapshot_tree):
             )
             >> output
         )
-        _ = output >> g.SetPosition(position=output.outputs["Position"])
+        _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(output.node.inputs["Skip"].links) == 0
     assert len(tree) == 13
     assert snapshot_tree == tree
@@ -303,7 +310,7 @@ def test_repeat(snapshot_tree):
                 >> g.SetPosition(offset=i * g.Vector((0, 0, 0.1)) * pos_math)
                 >> output
             )
-            _ = output >> g.SetPosition(position=output.outputs["Position"])
+            _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(tree) == 13
     assert len(input.items) == 2
     assert snapshot_tree == tree
@@ -368,10 +375,10 @@ def test_menu_switch():
                 name,
                 x.socket.default_value if hasattr(x.socket, "default_value") else None,
             )
-            for name, x in switch.inputs._items()
+            for name, x in switch.i._items()
         ]
     )
-    assert switch.inputs["Input_5"].socket.default_value == 5
+    assert switch.i["Input_5"].socket.default_value == 5
 
 
 def test_menu_switch_menu_connection():
@@ -379,10 +386,10 @@ def test_menu_switch_menu_connection():
         switch = g.MenuSwitch.geometry(
             cube=g.Cube(), sphere=g.UVSphere(), cone=g.Cone(), menu=g.Switch.menu()
         )
-    assert switch.inputs["Menu"].links
-    assert switch.inputs["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
-    assert switch.inputs["Menu"].links[0].from_node.input_type == "MENU"
-    assert switch.inputs["Menu"].socket.default_value == "cube"
+    assert switch.i["Menu"].links
+    assert switch.i["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
+    assert switch.i["Menu"].links[0].from_node.input_type == "MENU"
+    assert switch.i["Menu"].socket.default_value == "cube"
 
 
 def test_multi_menu():
@@ -412,7 +419,7 @@ def test_switch_repeatzone(snapshot_tree):
         join >> zone.output >> output
 
     assert len(zone.output.items) == 1
-    assert zone.output.inputs["Geometry"].socket.links[0].from_node == join.node
+    assert zone.output.i["Geometry"].socket.links[0].from_node == join.node
     assert snapshot_tree == tree
 
 
@@ -510,7 +517,7 @@ def test_foreachgeometryelement_zone():
         zone.output.capture_generated(pos)
         zone.output.capture_generated(transformed)
         _ = transformed >> zone.output
-        _ = g.JoinGeometry(zone.output.outputs._get("Generation_0"), cube) >> out
+        _ = g.JoinGeometry(zone.output.o._get("Generation_0"), cube) >> out
 
     input, output = zone
     with pytest.raises(IndexError):
@@ -1189,7 +1196,7 @@ def test_closure_nodes():
 
         input, output = g.ClosureZone()
         vec = g.CombineXYZ()
-        _ = [input.link(x) for x in vec.i[:]]
+        _ = [input.link(x) for x in vec.i]
         output.link(vec.o.vector)
 
         ec = g.EvaluateClosure()
@@ -1200,7 +1207,7 @@ def test_closure_nodes():
 
         output.sync_signature(ec)
         assert isinstance(output.i[0], VectorSocket)
-        assert len(input.o[:]) == 4
+        assert len(input.o) == 4
         assert isinstance(input.o[0], FloatSocket)
 
 

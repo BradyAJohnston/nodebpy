@@ -492,7 +492,7 @@ def test_socket_accessor():
         with pytest.raises(AttributeError, match="_some_name"):
             pos.o._some_name
 
-    assert pos.inputs._node == pos.node
+    assert pos.i._node == pos.node
 
     with g.tree() as tree:
         cube = g.Cube()
@@ -508,7 +508,7 @@ def test_socket_accessor():
 def test_accessor_slice():
     with g.tree():
         sep = g.SeparateXYZ(g.Position())
-        comb = g.CombineXYZ(*sep.o[:])
+        comb = g.CombineXYZ(*sep.o)
         comb2 = g.CombineXYZ()
 
         sep.o[1] >> comb2.i[2]
@@ -518,8 +518,8 @@ def test_accessor_slice():
         with pytest.raises(IndexError):
             sep.o[0] >> comb2.i[3]
 
-    assert all(input.links for input in comb.i[:])
-    assert all(input.links[0].from_node == sep.node for input in comb.i[:])
+    assert all(input.links for input in comb.i)
+    assert all(input.links[0].from_node == sep.node for input in comb.i)
     assert comb2.i.z.links
     assert comb2.i.z.links[0].from_node == sep.node
     assert comb2.i.z.links[0].from_socket == sep.o.y.socket
@@ -528,28 +528,28 @@ def test_accessor_slice():
 def test_accessor_slice_matrix():
     with g.tree():
         mat = g.InstanceTransform()
-        comb = g.CombineMatrix(*mat.o.transform[:])
+        comb = g.CombineMatrix(*mat.o.transform)
 
         vec = g.Position()
-        vec_comb = g.CombineXYZ(*vec.o.position[:])
+        vec_comb = g.CombineXYZ(*vec.o.position)
 
         col = g.Color()
-        col_comb = g.CombineColor(*col.o.color[:])
+        col_comb = g.CombineColor(*col.o.color)
 
-    assert all(input.links for input in comb.i[:])
+    assert all(input.links for input in comb.i)
     assert all(
-        (input.links[0].from_node.bl_idname == g.SeparateMatrix._bl_idname)  # ty: ignore[unresolved-attribute]
-        for input in comb.i[:]
+        (input.links[0].from_node.bl_idname == g.SeparateMatrix._bl_idname)
+        for input in comb.i
     )
-    assert all(input.links for input in vec_comb.i[:])
+    assert all(input.links for input in vec_comb.i)
     assert all(
-        (input.links[0].from_node.bl_idname == g.SeparateXYZ._bl_idname)  # ty: ignore[unresolved-attribute]
-        for input in vec_comb.i[:]
+        (input.links[0].from_node.bl_idname == g.SeparateXYZ._bl_idname)
+        for input in vec_comb.i
     )
-    assert all(input.links for input in col_comb.i[:])
+    assert all(input.links for input in col_comb.i)
     assert all(
-        (input.links[0].from_node.bl_idname == g.SeparateColor._bl_idname)  # ty: ignore[unresolved-attribute]
-        for input in col_comb.i[:]
+        (input.links[0].from_node.bl_idname == g.SeparateColor._bl_idname)
+        for input in col_comb.i
     )
 
 
@@ -733,8 +733,8 @@ def test_matrix_socket_output_iteration():
     assert len(components) == 16
     sep_node = components[0].socket.node
     assert all(
-        input.links[0].from_node.bl_idname == g.SeparateMatrix._bl_idname  # ty: ignore[unresolved-attribute]
-        for input in comb.i[:]
+        input.links[0].from_node.bl_idname == g.SeparateMatrix._bl_idname
+        for input in comb.i
     )
     assert sep_node
     assert sep_node.bl_idname == g.SeparateMatrix._bl_idname
@@ -746,8 +746,8 @@ def test_accessor_rotation():
     with g.tree():
         rot = g.AlignRotationToVector()
         quat = g.RotationToQuaternion(rot.o.rotation)
-        assert quat.inputs[0].links
-        rot_to_quat = quat.inputs[0].links[0].from_node
+        assert quat.i[0].links
+        rot_to_quat = quat.i[0].links[0].from_node
         assert quat.o.w.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
         assert quat.o.x.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
         assert quat.o.y.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]

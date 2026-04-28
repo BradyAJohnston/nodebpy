@@ -41,7 +41,7 @@ if TYPE_CHECKING:
         def _add_inputs(self, *args: Any, **kwargs: Any) -> dict[str, NodeSocket]: ...
 
         @property
-        def inputs(self) -> SocketAccessor: ...
+        def i(self) -> SocketAccessor: ...
 
 
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
@@ -84,13 +84,13 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     @property
     def _default_input_socket(self) -> NodeSocket:
         if self._default_input_id is not None:
-            return self.node.inputs[self.inputs._index(self._default_input_id)]
+            return self.node.inputs[self.i._index(self._default_input_id)]
         return self.node.inputs[0]
 
     @property
     def _default_output_socket(self) -> NodeSocket:
         if self._default_output_id is not None:
-            return self.node.outputs[self.outputs._index(self._default_output_id)]
+            return self.node.outputs[self.o._index(self._default_output_id)]
 
         counter = 0
         socket = self.node.outputs[counter]
@@ -115,7 +115,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                     if link.to_node.bl_idname == cls._bl_idname:
                         return cls._from_node(link.to_node)
             node = cls()
-            node.tree.link(socket, node.inputs._best_match(socket.type))
+            node.tree.link(socket, node.i._best_match(socket.type))
             return node
         else:
             if socket.links:
@@ -164,7 +164,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
                 self._link_from(
-                    value.outputs._best_match(self.inputs._get(name).type), name
+                    value.o._best_match(self.i._get(name).type), name
                 )
             else:
                 if name in input_ids:
@@ -176,14 +176,6 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                     else:
                         input = self.node.inputs[name.replace("_", " ").title()]
                     self._set_input_default_value(input, value)
-
-    @property
-    def outputs(self) -> SocketAccessor:
-        return SocketAccessor(self.node.outputs, "output")
-
-    @property
-    def inputs(self) -> SocketAccessor:
-        return SocketAccessor(self.node.inputs, "input")
 
     @property
     def o(self) -> SocketAccessor:
@@ -225,7 +217,7 @@ class DynamicInputsMixin(ABC):
         except SocketError:
             dyn = cast("_DynamicTarget", target)
             target_name, source_socket = list(dyn._add_inputs(source).items())[0]
-            return (source_socket, dyn.inputs[target_name].socket)
+            return (source_socket, dyn.i[target_name].socket)
 
     @abstractmethod
     def _add_socket(self, name: str, *args: Any, **kwargs: Any) -> NodeSocket: ...
@@ -238,7 +230,7 @@ class DynamicInputsMixin(ABC):
             items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
-            socket_source, type = self._match_compatible_data(source.outputs._available)
+            socket_source, type = self._match_compatible_data(source.o._available)
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)
