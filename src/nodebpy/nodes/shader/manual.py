@@ -17,9 +17,21 @@ from ...builder import (
     VectorSocket,
 )
 from ...builder.accessor import SocketAccessor
+from ...types import (
+    InputAny,
+    InputBoolean,
+    InputBundle,
+    InputClosure,
+    InputCollection,
+    InputColor,
+    InputFloat,
+    InputInteger,
+    InputMenu,
+    InputShader,
+    InputVector,
+)
 from ..geometry import Frame, RepeatInput, RepeatOutput, RepeatZone
-from ..geometry.manual import Float, _MenuSwitchBase, _T
-from ...types import InputAny, InputMenu
+from ..geometry.manual import _T, Float, _MenuSwitchBase
 
 __all__ = [
     "MenuSwitch",
@@ -74,23 +86,41 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     if TYPE_CHECKING:
 
         @classmethod
-        def float(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[FloatSocket]": ...
+        def float(
+            cls, *args: InputFloat, menu: InputMenu = None, **kwargs: InputFloat
+        ) -> "MenuSwitch[FloatSocket]": ...
         @classmethod
-        def integer(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[IntegerSocket]": ...
+        def integer(
+            cls, *args: InputInteger, menu: InputMenu = None, **kwargs: InputInteger
+        ) -> "MenuSwitch[IntegerSocket]": ...
         @classmethod
-        def boolean(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[BooleanSocket]": ...
+        def boolean(
+            cls, *args: InputBoolean, menu: InputMenu = None, **kwargs: InputBoolean
+        ) -> "MenuSwitch[BooleanSocket]": ...
         @classmethod
-        def vector(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[VectorSocket]": ...
+        def vector(
+            cls, *args: InputVector, menu: InputMenu = None, **kwargs: InputVector
+        ) -> "MenuSwitch[VectorSocket]": ...
         @classmethod
-        def color(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ColorSocket]": ...
+        def color(
+            cls, *args: InputColor, menu: InputMenu = None, **kwargs: InputColor
+        ) -> "MenuSwitch[ColorSocket]": ...
         @classmethod
-        def menu(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[MenuSocket]": ...
+        def menu(
+            cls, *args: InputMenu, menu: InputMenu = None, **kwargs: InputMenu
+        ) -> "MenuSwitch[MenuSocket]": ...
         @classmethod
-        def closure(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ClosureSocket]": ...
+        def closure(
+            cls, *args: InputClosure, menu: InputMenu = None, **kwargs: InputClosure
+        ) -> "MenuSwitch[ClosureSocket]": ...
         @classmethod
-        def bundle(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[BundleSocket]": ...
+        def bundle(
+            cls, *args: InputBundle, menu: InputMenu = None, **kwargs: InputBundle
+        ) -> "MenuSwitch[BundleSocket]": ...
         @classmethod
-        def shader(cls, *args: InputAny, menu: InputMenu = None, **kwargs: InputAny) -> "MenuSwitch[ShaderSocket]": ...
+        def shader(
+            cls, *args: InputShader, menu: InputMenu = None, **kwargs: InputShader
+        ) -> "MenuSwitch[ShaderSocket]": ...
 
 
 class Attribute(NodeBuilder):
