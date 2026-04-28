@@ -179,7 +179,7 @@ class PrincipalComponents(CustomGeometryGroup):
             out_short = tree.outputs.vector("Shortest Axis")
 
         with Frame("Centroid"):
-            centroid = FieldAverage.point.vector(position, group_id)
+            centroid = FieldAverage.point.vector(position, group_id).o.mean
             centroid >> out_centroid
 
         with Frame("Covariance Matrix"):
@@ -187,8 +187,8 @@ class PrincipalComponents(CustomGeometryGroup):
             matrix = CombineMatrix()
 
             for i, axis1 in enumerate(diff.o.vector):
-                mean = FieldAverage.point.vector(diff * axis1, group_id)
-                for j, axis2 in enumerate(mean.o.mean):
+                mean = FieldAverage.point.vector(diff * axis1, group_id).o.mean
+                for j, axis2 in enumerate(mean):
                     axis2 >> matrix.i[int(i * 4 + j)]
 
         with Frame("SVD"):

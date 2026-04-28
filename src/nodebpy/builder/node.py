@@ -24,6 +24,7 @@ from bpy.types import (
     ShaderNodeGroup,
     ShaderNodeTree,
 )
+from mathutils import Vector
 
 from ..types import SOCKET_COMPATIBILITY, SOCKET_TYPES, InputAny
 from ._utils import SocketError, _NodeLike, _SocketLike
@@ -70,16 +71,78 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         self.node = node if node else self._tree.add(self.__class__._bl_idname)
 
     @property
+    def show_options(self) -> bool:
+        return self.node.show_options
+
+    @show_options.setter
+    def show_options(self, value: bool) -> None:
+        self.node.show_options = value
+
+    @property
+    def mute(self) -> bool:
+        return self.node.mute
+
+    @mute.setter
+    def mute(self, value: bool) -> None:
+        self.node.mute = value
+
+    @property
+    def warning_propagation(
+        self,
+    ) -> Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"]:
+        return self.node.warning_propagation
+
+    @warning_propagation.setter
+    def warning_propagation(
+        self, value: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"]
+    ) -> None:
+        self.node.warning_propagation = value
+
+    @property
+    def name(self) -> str:
+        "Unique name of the node within the node tree."
+        return str(self.node.name)
+
+    @name.setter
+    def name(self, value: str) -> None:
+        self.node.name = value
+
+    @property
+    def label(self) -> str:
+        "Optional label for display instead of the node name. Doesn't have to be unique."
+        return str(self.node.label)
+
+    @label.setter
+    def label(self, value: str) -> None:
+        self.node.label = value
+
+    @property
+    def location(self) -> Vector:
+        "Location of the node in the node tree."
+        return self.node.location
+
+    @location.setter
+    def location(self, value: Vector) -> None:
+        self.node.location = value
+
+    @property
     def tree(self) -> TreeBuilder:
+        "The `~TreeBuilder` instance this node belongs to."
         return self._tree
+
+    @property
+    def o(self) -> SocketAccessor:
+        """Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
+        return SocketAccessor(self.node.outputs, "output")
+
+    @property
+    def i(self) -> SocketAccessor:
+        """Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
+        return SocketAccessor(self.node.inputs, "input")
 
     @property
     def type(self) -> SOCKET_TYPES:
         return self._default_output_socket.type  # type: ignore
-
-    @property
-    def name(self) -> str:
-        return str(self.node.name)
 
     @property
     def _default_input_socket(self) -> NodeSocket:
@@ -163,9 +226,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             elif isinstance(value, NodeSocket):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
-                self._link_from(
-                    value.o._best_match(self.i._get(name).type), name
-                )
+                self._link_from(value.o._best_match(self.i._get(name).type), name)
             else:
                 if name in input_ids:
                     input = self.node.inputs[input_ids.index(name)]
@@ -176,16 +237,6 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                     else:
                         input = self.node.inputs[name.replace("_", " ").title()]
                     self._set_input_default_value(input, value)
-
-    @property
-    def o(self) -> SocketAccessor:
-        """Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
-        return SocketAccessor(self.node.outputs, "output")
-
-    @property
-    def i(self) -> SocketAccessor:
-        """Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
-        return SocketAccessor(self.node.inputs, "input")
 
 
 class DynamicInputsMixin(ABC):

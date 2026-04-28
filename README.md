@@ -3,6 +3,7 @@
 [![Run
 Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml)
 [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/BradyAJohnston/nodebpy)
 
 A package to build node trees in blender more elegantly with python code. Geometry Nodes, Shader Nodes and Compositor nodes are all fully supported. Look at the [documentation](https://bradyajohnston.github.io/nodebpy) for more examples.
 
