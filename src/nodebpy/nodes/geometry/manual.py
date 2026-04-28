@@ -11,19 +11,20 @@ from ...builder import (
 )
 from ...builder import (
     BooleanSocket,
+    BundleSocket,
     ClosureSocket,
     CollectionSocket,
     ColorSocket,
     DynamicInputsMixin,
     FloatSocket,
     GeometrySocket,
+    ImageSocket,
     IntegerSocket,
     MaterialSocket,
     MatrixSocket,
     MenuSocket,
     ObjectSocket,
     RotationSocket,
-    Socket,
     StringSocket,
     TreeBuilder,
     VectorSocket,
@@ -35,15 +36,20 @@ from ...types import (
     SOCKET_TYPES,
     InputAny,
     InputBoolean,
+    InputBundle,
     InputClosure,
+    InputCollection,
     InputColor,
     InputFloat,
     InputGeometry,
     InputGrid,
+    InputImage,
     InputInteger,
     InputLinkable,
+    InputMaterial,
     InputMatrix,
     InputMenu,
+    InputObject,
     InputRotation,
     InputString,
     InputVector,
@@ -810,50 +816,120 @@ class HandleTypeSelection(NodeBuilder):
         self.node.mode = value
 
 
-class IndexSwitch(NodeBuilder):
+class IndexSwitch(NodeBuilder, Generic[_T]):
     """Node builder for the Index Switch node"""
 
     _bl_idname = "GeometryNodeIndexSwitch"
     node: bpy.types.GeometryNodeIndexSwitch
 
-    @staticmethod
-    def _typed(data_type: SOCKET_TYPES):
-        @classmethod
-        def method(cls, *args: InputAny, index: InputInteger = 0) -> "IndexSwitch":
-            """Create an IndexSwitch node with a pre-set data_type"""
-            return cls(*args, index=index, data_type=data_type)
+    @classmethod
+    def float(
+        cls, *args: InputFloat, index: InputInteger = 0
+    ) -> "IndexSwitch[FloatSocket]":
+        return IndexSwitch(*args, index=index, data_type="FLOAT")
 
-        return method
+    @classmethod
+    def integer(
+        cls, *args: InputInteger, index: InputInteger = 0
+    ) -> "IndexSwitch[IntegerSocket]":
+        return IndexSwitch(*args, index=index, data_type="INT")
 
-    float = _typed("FLOAT")
-    integer = _typed("INT")
-    boolean = _typed("BOOLEAN")
-    vector = _typed("VECTOR")
-    color = _typed("RGBA")
-    rotation = _typed("ROTATION")
-    matrix = _typed("MATRIX")
-    string = _typed("STRING")
-    menu = _typed("MENU")
-    object = _typed("OBJECT")
-    geometry = _typed("GEOMETRY")
-    collection = _typed("COLLECTION")
-    image = _typed("IMAGE")
-    material = _typed("MATERIAL")
-    bundle = _typed("BUNDLE")
-    closure = _typed("CLOSURE")
+    @classmethod
+    def boolean(
+        cls, *args: InputBoolean, index: InputInteger = 0
+    ) -> "IndexSwitch[BooleanSocket]":
+        return IndexSwitch(*args, index=index, data_type="BOOLEAN")
+
+    @classmethod
+    def vector(
+        cls, *args: InputVector, index: InputInteger = 0
+    ) -> "IndexSwitch[VectorSocket]":
+        return IndexSwitch(*args, index=index, data_type="VECTOR")
+
+    @classmethod
+    def color(
+        cls, *args: InputColor, index: InputInteger = 0
+    ) -> "IndexSwitch[ColorSocket]":
+        return IndexSwitch(*args, index=index, data_type="RGBA")
+
+    @classmethod
+    def rotation(
+        cls, *args: InputRotation, index: InputInteger = 0
+    ) -> "IndexSwitch[RotationSocket]":
+        return IndexSwitch(*args, index=index, data_type="ROTATION")
+
+    @classmethod
+    def matrix(
+        cls, *args: InputMatrix, index: InputInteger = 0
+    ) -> "IndexSwitch[MatrixSocket]":
+        return IndexSwitch(*args, index=index, data_type="MATRIX")
+
+    @classmethod
+    def string(
+        cls, *args: InputString, index: InputInteger = 0
+    ) -> "IndexSwitch[StringSocket]":
+        return IndexSwitch(*args, index=index, data_type="STRING")
+
+    @classmethod
+    def menu(
+        cls, *args: InputMenu, index: InputInteger = 0
+    ) -> "IndexSwitch[MenuSocket]":
+        return IndexSwitch(*args, index=index, data_type="MENU")
+
+    @classmethod
+    def object(
+        cls, *args: InputObject, index: InputInteger = 0
+    ) -> "IndexSwitch[ObjectSocket]":
+        return IndexSwitch(*args, index=index, data_type="OBJECT")
+
+    @classmethod
+    def geometry(
+        cls, *args: InputGeometry, index: InputInteger = 0
+    ) -> "IndexSwitch[GeometrySocket]":
+        return IndexSwitch(*args, index=index, data_type="GEOMETRY")
+
+    @classmethod
+    def collection(
+        cls, *args: InputCollection, index: InputInteger = 0
+    ) -> "IndexSwitch[CollectionSocket]":
+        return IndexSwitch(*args, index=index, data_type="COLLECTION")
+
+    @classmethod
+    def image(
+        cls, *args: InputImage, index: InputInteger = 0
+    ) -> "IndexSwitch[ImageSocket]":
+        return IndexSwitch(*args, index=index, data_type="IMAGE")
+
+    @classmethod
+    def material(
+        cls, *args: InputMaterial, index: InputInteger = 0
+    ) -> "IndexSwitch[MaterialSocket]":
+        return IndexSwitch(*args, index=index, data_type="MATERIAL")
+
+    @classmethod
+    def bundle(
+        cls, *args: InputBundle, index: InputInteger = 0
+    ) -> "IndexSwitch[BundleSocket]":
+        return IndexSwitch(*args, index=index, data_type="BUNDLE")
+
+    @classmethod
+    def closure(
+        cls, *args: InputClosure, index: InputInteger = 0
+    ) -> "IndexSwitch[ClosureSocket]":
+        return IndexSwitch(*args, index=index, data_type="CLOSURE")
 
     class _Inputs(SocketAccessor):
         index: IntegerSocket
 
-    class _Outputs(SocketAccessor):
-        output: Socket
+    class _Outputs(SocketAccessor, Generic[_S]):
+        output: _S
 
     if TYPE_CHECKING:
 
         @property
         def i(self) -> _Inputs: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> "_Outputs[_T]": ...
 
     def __init__(
         self,
@@ -893,39 +969,25 @@ class IndexSwitch(NodeBuilder):
         self.node.data_type = value
 
 
-class _MenuSwitchBase(NodeBuilder):
+class _MenuSwitchBase(NodeBuilder, Generic[_T]):
     """Base class for MenuSwitch nodes across all tree types."""
 
     _bl_idname = "GeometryNodeMenuSwitch"
     node: bpy.types.GeometryNodeMenuSwitch
 
-    @staticmethod
-    def _typed(data_type: SOCKET_TYPES):
-        @classmethod
-        def method(
-            cls,
-            *args: InputAny,
-            menu: InputMenu = None,
-            **kwargs: InputAny,
-        ) -> "MenuSwitch":
-            """Create a MenuSwitch node with a pre-set data_type"""
-            return cls(*args, menu=menu, data_type=data_type, **kwargs)
-
-        return method
-
     class _Inputs(SocketAccessor):
         menu: MenuSocket
 
-    @property
-    def i(self) -> "MenuSwitch._Inputs":
-        return MenuSwitch._Inputs(self.node.inputs, "input")
+    class _Outputs(SocketAccessor, Generic[_S]):
+        output: _S
 
-    class _Outputs(SocketAccessor):
-        output: Socket
+    if TYPE_CHECKING:
 
-    @property
-    def o(self) -> "MenuSwitch._Outputs":
-        return MenuSwitch._Outputs(self.node.outputs, "output")
+        @property
+        def i(self) -> "_Inputs": ...
+
+        @property
+        def o(self) -> "_Outputs[_T]": ...
 
     def __init__(
         self,
@@ -977,25 +1039,104 @@ class _MenuSwitchBase(NodeBuilder):
         self.node.data_type = value
 
 
-class MenuSwitch(_MenuSwitchBase):
+class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     """Node builder for the Menu Switch node"""
 
-    float = _MenuSwitchBase._typed("FLOAT")
-    integer = _MenuSwitchBase._typed("INT")
-    boolean = _MenuSwitchBase._typed("BOOLEAN")
-    vector = _MenuSwitchBase._typed("VECTOR")
-    color = _MenuSwitchBase._typed("RGBA")
-    rotation = _MenuSwitchBase._typed("ROTATION")
-    matrix = _MenuSwitchBase._typed("MATRIX")
-    string = _MenuSwitchBase._typed("STRING")
-    menu = _MenuSwitchBase._typed("MENU")
-    object = _MenuSwitchBase._typed("OBJECT")
-    geometry = _MenuSwitchBase._typed("GEOMETRY")
-    collection = _MenuSwitchBase._typed("COLLECTION")
-    image = _MenuSwitchBase._typed("IMAGE")
-    material = _MenuSwitchBase._typed("MATERIAL")
-    bundle = _MenuSwitchBase._typed("BUNDLE")
-    closure = _MenuSwitchBase._typed("CLOSURE")
+    @classmethod
+    def float(
+        cls, *args: InputFloat, menu: InputMenu = None, **kwargs: InputFloat
+    ) -> "MenuSwitch[FloatSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="FLOAT", **kwargs)
+
+    @classmethod
+    def integer(
+        cls, *args: InputInteger, menu: InputMenu = None, **kwargs: InputInteger
+    ) -> "MenuSwitch[IntegerSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="INT", **kwargs)
+
+    @classmethod
+    def boolean(
+        cls, *args: InputBoolean, menu: InputMenu = None, **kwargs: InputBoolean
+    ) -> "MenuSwitch[BooleanSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="BOOLEAN", **kwargs)
+
+    @classmethod
+    def vector(
+        cls, *args: InputVector, menu: InputMenu = None, **kwargs: InputVector
+    ) -> "MenuSwitch[VectorSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="VECTOR", **kwargs)
+
+    @classmethod
+    def color(
+        cls, *args: InputColor, menu: InputMenu = None, **kwargs: InputColor
+    ) -> "MenuSwitch[ColorSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="RGBA", **kwargs)
+
+    @classmethod
+    def rotation(
+        cls, *args: InputRotation, menu: InputMenu = None, **kwargs: InputRotation
+    ) -> "MenuSwitch[RotationSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="ROTATION", **kwargs)
+
+    @classmethod
+    def matrix(
+        cls, *args: InputMatrix, menu: InputMenu = None, **kwargs: InputMatrix
+    ) -> "MenuSwitch[MatrixSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="MATRIX", **kwargs)
+
+    @classmethod
+    def string(
+        cls, *args: InputString, menu: InputMenu = None, **kwargs: InputString
+    ) -> "MenuSwitch[StringSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="STRING", **kwargs)
+
+    @classmethod
+    def menu(
+        cls, *args: InputMenu, menu: InputMenu = None, **kwargs: InputMenu
+    ) -> "MenuSwitch[MenuSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="MENU", **kwargs)
+
+    @classmethod
+    def object(
+        cls, *args: InputObject, menu: InputMenu = None, **kwargs: InputObject
+    ) -> "MenuSwitch[ObjectSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="OBJECT", **kwargs)
+
+    @classmethod
+    def geometry(
+        cls, *args: InputGeometry, menu: InputMenu = None, **kwargs: InputGeometry
+    ) -> "MenuSwitch[GeometrySocket]":
+        return MenuSwitch(*args, menu=menu, data_type="GEOMETRY", **kwargs)
+
+    @classmethod
+    def collection(
+        cls, *args: InputCollection, menu: InputMenu = None, **kwargs: InputCollection
+    ) -> "MenuSwitch[CollectionSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="COLLECTION", **kwargs)
+
+    @classmethod
+    def image(
+        cls, *args: InputImage, menu: InputMenu = None, **kwargs: InputImage
+    ) -> "MenuSwitch[ImageSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="IMAGE", **kwargs)
+
+    @classmethod
+    def material(
+        cls, *args: InputMaterial, menu: InputMenu = None, **kwargs: InputMaterial
+    ) -> "MenuSwitch[MaterialSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="MATERIAL", **kwargs)
+
+    @classmethod
+    def bundle(
+        cls, *args: InputBundle, menu: InputMenu = None, **kwargs: InputBundle
+    ) -> "MenuSwitch[BundleSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="BUNDLE", **kwargs)
+
+    @classmethod
+    def closure(
+        cls, *args: InputClosure, menu: InputMenu = None, **kwargs: InputClosure
+    ) -> "MenuSwitch[ClosureSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="CLOSURE", **kwargs)
 
 
 class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
