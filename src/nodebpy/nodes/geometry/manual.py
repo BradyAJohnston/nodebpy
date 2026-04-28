@@ -179,8 +179,9 @@ class EvaluateClosure(NodeBuilder):
     def sync_signature(self, node: ClosureOutput | ClosureZone) -> None:
         if isinstance(node, ClosureZone):
             node = node.output
-        _sync_closure_items(node.node.input_items, self.node.input_items)
-        _sync_closure_items(node.node.output_items, self.node.output_items)
+
+        for name in ["input_items", "output_items"]:
+            _sync_closure_items(getattr(node.node, name), getattr(self.node, name))
 
 
 class Frame(NodeBuilder):

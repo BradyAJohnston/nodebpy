@@ -12,6 +12,7 @@ from bpy.types import (
     NodeSocket,
 )
 
+from nodebpy.builder._registry import _get_socket_linker
 from nodebpy.builder._utils import _SocketLike
 
 if TYPE_CHECKING:
@@ -522,9 +523,9 @@ class ClosureInput(NodeBuilder):
 
         self._establish_links(**key_args)
 
-    def link(self, target: _SocketLike) -> NodeSocket:
+    def link(self, target: _SocketLike) -> SocketLinker:
         self.tree.link(self.node.outputs[-1], target.socket)
-        return self.node.outputs[-2]
+        return _get_socket_linker(self.node.outputs[-2])
 
 
 class ClosureOutput(NodeBuilder):
@@ -563,10 +564,11 @@ class ClosureOutput(NodeBuilder):
         self.define_signature = define_signature
         self._establish_links(**key_args)
 
-    def link(self, source: _SocketLike) -> NodeSocket:
+    def link(self, source: _SocketLike) -> SocketLinker:
         self.tree.link(source.socket, self.node.inputs[-1])
-        return self.node.inputs[-2]
+
+        return _get_socket_linker(self.node.inputs[-2])
 
     def sync_signature(self, node: "EvaluateClosure") -> None:
         for name in ["input_items", "output_items"]:
-            _sync_closure_items(getattr(node, name), getattr(self.node, name))
+            _sync_closure_items(getattr(node.node, name), getattr(self.node, name))

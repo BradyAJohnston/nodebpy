@@ -7,7 +7,8 @@ from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import FloatSocket, MatrixSocket
+from nodebpy.builder import FloatSocket, MatrixSocket, VectorSocket
+from nodebpy.types import _AttributeDomains
 
 
 def test_capture_attribute():
@@ -1180,6 +1181,22 @@ def test_closure_nodes():
         ec = g.EvaluateClosure()
         ec.sync_signature(cl)
         cl.output >> ec >> tree.outputs.geometry()
+
+        input, output = g.ClosureZone()
+        vec = g.CombineXYZ()
+        _ = [input.link(x) for x in vec.i[:]]
+        output.link(vec.o.vector)
+
+        ec = g.EvaluateClosure()
+        ec.sync_signature(output)
+        output >> ec >> tree.outputs.vector()
+
+        input, output = g.ClosureZone()
+
+        output.sync_signature(ec)
+        assert isinstance(output.i[0], VectorSocket)
+        assert len(input.o[:]) == 4
+        assert isinstance(input.o[0], FloatSocket)
 
 
 def test_sample_index():
