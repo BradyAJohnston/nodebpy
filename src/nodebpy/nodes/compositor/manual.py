@@ -44,44 +44,47 @@ def tree(
 class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     """Node builder for the Menu Switch node (Compositor tree)"""
 
-    float = _MenuSwitchBase._typed("FLOAT")
-    integer = _MenuSwitchBase._typed("INT")
-    boolean = _MenuSwitchBase._typed("BOOLEAN")
-    vector = _MenuSwitchBase._typed("VECTOR")
-    color = _MenuSwitchBase._typed("RGBA")
-    string = _MenuSwitchBase._typed("STRING")
-    menu = _MenuSwitchBase._typed("MENU")
+    @classmethod
+    def float(
+        cls, *args: InputFloat, menu: InputMenu = None, **kwargs: InputFloat
+    ) -> "MenuSwitch[FloatSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="FLOAT", **kwargs)
 
-    if TYPE_CHECKING:
+    @classmethod
+    def integer(
+        cls, *args: InputInteger, menu: InputMenu = None, **kwargs: InputInteger
+    ) -> "MenuSwitch[IntegerSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="INT", **kwargs)
 
-        @classmethod
-        def float(
-            cls, *args: InputFloat, menu: InputMenu = None, **kwargs: InputFloat
-        ) -> "MenuSwitch[FloatSocket]": ...
-        @classmethod
-        def integer(
-            cls, *args: InputInteger, menu: InputMenu = None, **kwargs: InputInteger
-        ) -> "MenuSwitch[IntegerSocket]": ...
-        @classmethod
-        def boolean(
-            cls, *args: InputBoolean, menu: InputMenu = None, **kwargs: InputBoolean
-        ) -> "MenuSwitch[BooleanSocket]": ...
-        @classmethod
-        def vector(
-            cls, *args: InputVector, menu: InputMenu = None, **kwargs: InputVector
-        ) -> "MenuSwitch[VectorSocket]": ...
-        @classmethod
-        def color(
-            cls, *args: InputColor, menu: InputMenu = None, **kwargs: InputColor
-        ) -> "MenuSwitch[ColorSocket]": ...
-        @classmethod
-        def string(
-            cls, *args: InputString, menu: InputMenu = None, **kwargs: InputString
-        ) -> "MenuSwitch[StringSocket]": ...
-        @classmethod
-        def menu(
-            cls, *args: InputMenu, menu: InputMenu = None, **kwargs: InputMenu
-        ) -> "MenuSwitch[MenuSocket]": ...
+    @classmethod
+    def boolean(
+        cls, *args: InputBoolean, menu: InputMenu = None, **kwargs: InputBoolean
+    ) -> "MenuSwitch[BooleanSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="BOOLEAN", **kwargs)
+
+    @classmethod
+    def vector(
+        cls, *args: InputVector, menu: InputMenu = None, **kwargs: InputVector
+    ) -> "MenuSwitch[VectorSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="VECTOR", **kwargs)
+
+    @classmethod
+    def color(
+        cls, *args: InputColor, menu: InputMenu = None, **kwargs: InputColor
+    ) -> "MenuSwitch[ColorSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="RGBA", **kwargs)
+
+    @classmethod
+    def string(
+        cls, *args: InputString, menu: InputMenu = None, **kwargs: InputString
+    ) -> "MenuSwitch[StringSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="STRING", **kwargs)
+
+    @classmethod
+    def menu(
+        cls, *args: InputMenu, menu: InputMenu = None, **kwargs: InputMenu
+    ) -> "MenuSwitch[MenuSocket]":
+        return MenuSwitch(*args, menu=menu, data_type="MENU", **kwargs)
 
 
 class Image(NodeBuilder):
