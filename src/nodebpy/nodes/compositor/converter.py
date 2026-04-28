@@ -1111,7 +1111,7 @@ class Mix(NodeBuilder):
         self.node.clamp_result = value
 
 
-class RGBToBw(NodeBuilder):
+class RGBToBW(NodeBuilder):
     """
     Convert RGB input into grayscale using luminance
 

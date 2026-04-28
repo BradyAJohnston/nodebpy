@@ -830,6 +830,7 @@ class TreeBuilder(Generic[_TreeT]):
         if (
             not is_reroute
             and socket1.type not in SOCKET_COMPATIBILITY.get(socket2.type, ())
+            and socket1.type != "CUSTOM"
             and socket2.type != "CUSTOM"
         ):
             raise SocketError(

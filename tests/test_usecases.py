@@ -1,10 +1,13 @@
+import math
 from functools import reduce
 from itertools import product
 from operator import and_
 
 import bpy
+from tornado.web import DEFAULT_SIGNED_VALUE_MIN_VERSION
 
 from nodebpy import geometry as g
+from nodebpy.builder import FloatSocket
 from nodebpy.nodes.geometry.groups import PrincipalComponents
 
 
@@ -95,3 +98,30 @@ def test_surface_hello_world():
         mesh >> tree.outputs.geometry("Mesh")
 
     assert len(tree) == 22
+
+
+def test_eulers_number():
+    with g.tree("Euler's Number") as tree:
+        tau = g.Float(math.tau)
+        e = g.Float(math.e)
+        value = g.Float(1.0)
+
+        zone = g.RepeatZone(100, value=value)
+
+        with g.Frame("Factorial"):
+            value = g.Math.square_root(zone.iteration * tau) * (
+                (zone.iteration / e) ** zone.iteration
+            )
+
+        (zone.input.o.value + 1 / value) >> zone.output.i.value
+
+        (
+            zone.output.o.value
+            >> g.ValueToString(decimals=10)
+            >> g.StringToCurves()
+            >> g.FillCurve()
+            >> g.ExtrudeMesh(offset_scale=0.1)
+            >> tree.outputs.geometry()
+        )
+
+    assert isinstance(zone.input.i.value, FloatSocket)

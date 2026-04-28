@@ -33,6 +33,9 @@ from ..geometry.interface import (
     GroupOutput,
 )
 from ..geometry.manual import (
+    ClosureInput,
+    ClosureOutput,
+    EvaluateClosure,
     Value,
 )
 from ..geometry.texture import (
@@ -54,19 +57,6 @@ from ..geometry.vector import (
     VectorCurves,
     VectorMath,
     VectorRotate,
-)
-from .interface import (
-    ClosureInput,
-    ClosureOutput,
-)
-from .converter import (
-    CombineColor,
-    EvaluateClosure,
-    Mix,
-    RGBToBw,
-    SeparateColor,
-    ShaderToRGB,
-    Wavelength,
 )
 from .shader import (
     AddShader,
@@ -125,6 +115,14 @@ from .vector import (
     NormalMap,
     VectorDisplacement,
     VectorTransform,
+)
+from .converter import (
+    CombineColor,
+    Mix,
+    RGBToBW,
+    SeparateColor,
+    ShaderToRGB,
+    Wavelength,
 )
 from .group import (
     Group,
@@ -225,7 +223,7 @@ __all__ = (
     "PrincipledHairBSDF",
     "PrincipledVolume",
     "RGBCurves",
-    "RGBToBw",
+    "RGBToBW",
     "RadialTiling",
     "RayPortalBSDF",
     "Raycast",
