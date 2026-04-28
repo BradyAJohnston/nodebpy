@@ -68,22 +68,6 @@ def test_interface_socket_creation(method, kwargs):
     assert s is not None
 
 
-@pytest.mark.parametrize(
-    "op,value",
-    [("get", None), ("set", 1.0)],
-    ids=["get", "set"],
-)
-def test_geometry_socket_default_value_raises(op, value):
-    """SocketGeometry has no default_value — both get and set should raise AttributeError."""
-    tree = TreeBuilder("GeoDefTest")
-    geo = tree.inputs.geometry("Geo")
-    with pytest.raises(AttributeError):
-        if op == "get":
-            _ = geo.default_value
-        else:
-            geo.default_value = value
-
-
 def test_interface_socket_default_value_getter():
     """reading default_value on a socket that supports it."""
     tree = TreeBuilder("FloatDefGetTest")

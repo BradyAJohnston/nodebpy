@@ -36,11 +36,11 @@ from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
-    from .tree import TreeBuilder
     from ..nodes.geometry.converter import IntegerMath, Math
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
+    from .tree import TreeBuilder
 
 
 class Socket(_SocketLike, OperatorMixin, LinkingMixin):
@@ -97,22 +97,6 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
     @property
     def name(self) -> str:
         return str(self.socket.name)
-
-    @property
-    def default_value(self):
-        if not hasattr(self.socket, "default_value"):
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute 'default_value'"
-            )
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value) -> None:
-        if not hasattr(self.socket, "default_value"):
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute 'default_value'"
-            )
-        self.socket.default_value = value
 
     # -- Dispatch methods: per-type math logic. --
     # Called by OperatorMixin operators via _get_socket_linker().
