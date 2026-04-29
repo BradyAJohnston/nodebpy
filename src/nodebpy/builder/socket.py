@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator, cast, overload
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, cast, overload
 
 import bpy
 from bpy.types import (
@@ -29,10 +29,11 @@ from bpy.types import (
 )
 from mathutils import Euler
 
+from nodebpy.builder import SocketError
+
 from ..types import SOCKET_TYPES
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
 from ._utils import _NodeLike, _SocketLike
-from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
@@ -79,14 +80,6 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         return self.socket
 
     @property
-    def o(self) -> SocketAccessor:
-        return SocketAccessor([self.socket], "output")
-
-    @property
-    def i(self) -> SocketAccessor:
-        return SocketAccessor([self.socket], "input")
-
-    @property
     def type(self) -> SOCKET_TYPES:
         return self.socket.type  # type: ignore
 
@@ -97,6 +90,18 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
     @property
     def name(self) -> str:
         return str(self.socket.name)
+
+    def _best_match(self, sockets: Iterable[NodeSocket]) -> tuple[NodeSocket, str]:
+        from ..types import SOCKET_COMPATIBILITY
+
+        possible = []
+        for socket in sockets:
+            type = socket.type
+            if type in SOCKET_COMPATIBILITY[self.type]:
+                possible.append((socket, type))
+        if not possible:
+            raise SocketError(f"No compatible socket found for {self.type}")
+        return max(possible, key=lambda x: SOCKET_COMPATIBILITY[self.type].index(x[1]))
 
     # -- Dispatch methods: per-type math logic. --
     # Called by OperatorMixin operators via _get_socket_linker().

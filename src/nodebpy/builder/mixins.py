@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from ..types import InputLinkable
     from .node import BaseNode
     from .socket import Socket
+    from .tree import TreeBuilder
 
 
 class OperatorMixin:
@@ -200,6 +201,8 @@ class LinkingMixin:
     and ``_default_input_socket`` on the concrete class.
     """
 
+    tree: "TreeBuilder"
+
     def _source_socket(self, node: "InputLinkable | Socket | NodeSocket") -> NodeSocket:
         assert node
         if isinstance(node, NodeSocket):
@@ -224,18 +227,22 @@ class LinkingMixin:
         target: "BaseNode | Socket | NodeSocket | EllipsisType | LinkingMixin",
     ) -> tuple[NodeSocket, NodeSocket]:
         """Find the best compatible pair of sockets between two nodes/sockets."""
+        from ..builder.node import BaseNode
+        from ..builder.socket import Socket
         from ..types import SOCKET_COMPATIBILITY
 
         possible_combos = []
-        if hasattr(source, "o"):
-            outputs = source.o._available  # type: ignore[union-attr]
+        if isinstance(source, BaseNode):
+            outputs = source.o._available
         elif isinstance(source, NodeSocket):
             outputs = [source]
+        elif isinstance(source, Socket):
+            outputs = [source.socket]
         else:
             raise TypeError(f"Cannot get outputs from {type(source)}")
 
-        if hasattr(target, "i"):
-            inputs = target.i._available  # type: ignore[union-attr]
+        if isinstance(target, BaseNode):
+            inputs = target.i._available
         else:
             inputs = [target]
 
@@ -269,7 +276,7 @@ class LinkingMixin:
     ) -> NodeLink:
         source_socket = self._source_socket(source)
         target_socket = self._target_socket(target)
-        return self.tree.link(source_socket, target_socket)  # type: ignore[attr-defined]
+        return self.tree.link(source_socket, target_socket)
 
     def _link_from(
         self,
@@ -278,9 +285,9 @@ class LinkingMixin:
     ):
         if isinstance(input, str):
             try:
-                self._link(source, self.node.inputs[input])  # type: ignore[attr-defined]
+                self._link(source, self.node.inputs[input])
             except KeyError:
-                self._link(source, self.node.inputs[self.i._index(input)])  # type: ignore[attr-defined]
+                self._link(source, self.node.inputs[self.i._index(input)])
         else:
             self._link(source, input)
 
@@ -305,7 +312,7 @@ class LinkingMixin:
                 target = other.node.inputs[name]
             except KeyError:
                 target = other.node.inputs[other.i._index(name)]
-            source = self.o._best_match(target.type)
+            source = self.o._best_match(target.type) if hasattr(self, "o") else self
         else:
             try:
                 source, target = self._find_best_socket_pair(self, other)
