@@ -683,7 +683,7 @@ def test_add_all_nodes(module, tree_type, class_names):
 
 def test_iter_outputs():
     with TreeBuilder("IndexSwitch"):
-        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).o._values())
+        switch = g.IndexSwitch.float(items=g.SeparateXYZ(g.Position()).o._values())
 
     assert len(switch.node.outputs) == 1
     # 1 input for the index, another for the dynamic socket
@@ -694,7 +694,7 @@ def test_iter_outputs():
             _ = output >> tree.outputs.float(name)
 
     with TreeBuilder("MenuSwitch") as tree:
-        switch = g.MenuSwitch.float(**dict(g.SeparateXYZ().o._items()))
+        switch = g.MenuSwitch.float(items=dict(g.SeparateXYZ().o._items()))
 
     assert len(switch.i) == 5
 

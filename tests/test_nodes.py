@@ -337,9 +337,9 @@ def test_repeat(snapshot_tree):
 def test_index_switch(snapshot_tree):
     with TreeBuilder() as tree:
         items = (g.Cube(), g.UVSphere(), g.Cube(), g.Cube())
-        index = g.IndexSwitch.geometry(*items, index=5)
+        index = g.IndexSwitch.geometry(5, items)
 
-        index2 = g.IndexSwitch.float(*range(10))
+        index2 = g.IndexSwitch.float(items=range(10))
 
     assert len(index.node.index_switch_items) == 4
     assert len(tree) == 6
@@ -352,21 +352,20 @@ def test_index_switch(snapshot_tree):
 def test_menu_switch():
     with TreeBuilder() as tree:
         menu = tree.inputs.menu()
-        items = (
-            g.Cube(),
-            g.UVSphere(),
-            g.Cube(),
-            g.Cube(),
-        )
-        switch = g.MenuSwitch.geometry(*items, custom=g.Cone())
+        items = {
+            "Mesh": g.Cube(),
+            "UVSphere": g.UVSphere(),
+            "Cube": g.Cube(),
+        }
+        switch = g.MenuSwitch.geometry(items=items)
         menu >> switch
         menu.socket.default_value = "Mesh"
 
     assert switch.i.menu.socket.links[0].from_socket == menu.socket
-    assert len(switch.node.enum_items) == 5
+    assert len(switch.node.enum_items) == 3
 
     with TreeBuilder() as tree:
-        switch = g.MenuSwitch.float(*range(10))
+        switch = g.MenuSwitch.float(items={f"Input_{i}": i for i in range(10)})
 
     assert len(switch.node.enum_items) == 10
     print(
@@ -384,7 +383,12 @@ def test_menu_switch():
 def test_menu_switch_menu_connection():
     with TreeBuilder("AnotherMenuSwitch"):
         switch = g.MenuSwitch.geometry(
-            cube=g.Cube(), sphere=g.UVSphere(), cone=g.Cone(), menu=g.Switch.menu()
+            g.Switch.menu(),
+            items={
+                "cube": g.Cube(),
+                "UVSphere": g.UVSphere(),
+                "Cone": g.Cone(),
+            },
         )
     assert switch.i["Menu"].links
     assert switch.i["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
@@ -396,9 +400,9 @@ def test_multi_menu():
     with TreeBuilder() as tree:
         items = (g.Cube(), g.IcoSphere(), g.Grid())
 
-        menu = g.MenuSwitch.integer(test=0, another=1, again=2)
-        switch1 = g.IndexSwitch.geometry(*items, index=menu)
-        switch2 = g.IndexSwitch.geometry(*reversed(items), index=menu)
+        menu = g.MenuSwitch.integer(items={"test": 0, "another": 1, "again": 2})
+        switch1 = g.IndexSwitch.geometry(menu, items)
+        switch2 = g.IndexSwitch.geometry(menu, reversed(items))
 
         menu_input = tree.inputs.menu()
         menu_input >> menu
@@ -414,7 +418,7 @@ def test_switch_repeatzone(snapshot_tree):
 
         items = (g.Cube(), g.IcoSphere(), g.Grid())
         zone = g.RepeatZone(5, input)
-        switch = g.IndexSwitch.geometry(*items, index=zone.iteration)
+        switch = g.IndexSwitch.geometry(zone.iteration, items)
         join = g.JoinGeometry(zone.input, switch)
         join >> zone.output >> output
 
@@ -426,8 +430,8 @@ def test_switch_repeatzone(snapshot_tree):
 def test_generate_select_group():
     with TreeBuilder() as tree:
         switch = g.IndexSwitch.boolean(
-            *[tree.inputs.boolean(str(i)) for i in range(20)],
-            index=g.NamedAttribute.integer("chain_id"),
+            g.NamedAttribute.integer("chain_id"),
+            [tree.inputs.boolean(str(i)) for i in range(20)],
         )
         switch >> tree.outputs.boolean("Selection")
 

@@ -58,7 +58,7 @@ def test_diagram_shared_input(snapshot):
 def test_diagram_custom_node_group(snapshot):
     with g.tree() as tree:
         items = [OtherVertex() for _ in range(10)]
-        switch = g.IndexSwitch.integer(*items)
+        switch = g.IndexSwitch.integer(items=items)
         switch >> OffsetVector() >> tree.outputs.vector("Vector")
 
     assert snapshot == to_mermaid(tree)

@@ -29,7 +29,9 @@ def test_shader_math():
 
 def test_shader_menu_switch():
     with s.tree() as tree:
-        menu = s.MenuSwitch.shader(*[s.PrincipledBSDF() for _ in range(10)])
+        menu = s.MenuSwitch.shader(
+            items={f"Input_{i}": s.PrincipledBSDF() for i in range(10)}
+        )
         _ = menu >> tree.outputs.shader()
 
     assert len(menu.node.enum_items) == 10
@@ -37,7 +39,7 @@ def test_shader_menu_switch():
 
     with s.tree() as tree:
         menu = s.MenuSwitch.float(
-            **{f"Input_{i}": float(value) for i, value in enumerate(range(10))}
+            items={f"Input_{i}": float(value) for i, value in enumerate(range(10))}
         )
         _ = menu >> tree.outputs.float()
 
@@ -48,7 +50,7 @@ def test_shader_menu_switch():
 
     with s.tree() as tree:
         menu = s.MenuSwitch.float(
-            **{f"Input_{i}": s.Value(value) for i, value in enumerate(range(10))}
+            items={f"Input_{i}": s.Value(value) for i, value in enumerate(range(10))}
         )
         _ = menu >> tree.outputs.float()
 

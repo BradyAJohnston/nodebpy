@@ -33,18 +33,20 @@ def test_initial_compositor(snapshot):
 
         with c.Frame("Final Composit"):
             outline_switch = c.MenuSwitch.color(
-                **{
+                outline_menu,
+                {
                     "None": active_image,
                     "Outline": c.AlphaOver(outline_comp, outline_color),
                 },
-                menu=outline_menu,
             )
 
             _ = (
                 c.MenuSwitch.color(
-                    outline_switch,
-                    c.AlphaOver(background_color, outline_switch),
-                    menu=background_menu,
+                    background_menu,
+                    {
+                        "Output": outline_switch,
+                        "Image": c.AlphaOver(background_color, outline_switch),
+                    },
                 )
                 >> output_color
             )
@@ -53,7 +55,7 @@ def test_initial_compositor(snapshot):
 
 def test_compositor_menu_switch():
     with c.tree() as tree:
-        menu = c.MenuSwitch.string(*[str(x) for x in range(10)])
+        menu = c.MenuSwitch.string(items={str(x): str(x) for x in range(10)})
         menu >> tree.outputs.string()
 
     assert len(menu.node.enum_items) == 10
@@ -61,7 +63,7 @@ def test_compositor_menu_switch():
 
     with c.tree() as tree:
         menu = c.MenuSwitch.float(
-            **{f"Input_{i}": float(value) for i, value in enumerate(range(10))}
+            items={f"Input_{i}": float(value) for i, value in enumerate(range(10))}
         )
         menu >> tree.outputs.float()
 
@@ -72,7 +74,7 @@ def test_compositor_menu_switch():
 
     with c.tree() as tree:
         menu = c.MenuSwitch.float(
-            **{f"Input_{i}": c.Value(value) for i, value in enumerate(range(10))}
+            items={f"Input_{i}": c.Value(value) for i, value in enumerate(range(10))}
         )
         menu >> tree.outputs.float()
 
