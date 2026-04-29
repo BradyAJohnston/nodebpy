@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Generate Python code from a Blender node tree using nodebpy."""
+
 from __future__ import annotations
 
 import inspect
@@ -52,7 +53,9 @@ _SKIP_BL_IDNAMES = frozenset({"NodeGroupInput", "NodeGroupOutput", "NodeReroute"
 _OP_PREC: dict[str, int] = {"+": 1, "-": 1, "*": 2, "/": 2, "%": 2, "**": 3}
 
 
-def _maybe_parens(expr: str, expr_op: str | None, ctx_op: str, is_rhs: bool = False) -> str:
+def _maybe_parens(
+    expr: str, expr_op: str | None, ctx_op: str, is_rhs: bool = False
+) -> str:
     """Wrap expr in parentheses only when strictly required by operator precedence.
 
     is_rhs: True when expr is the right-hand operand.  Right operands at equal
@@ -101,7 +104,10 @@ def _lift_op(node) -> str | None:
 
 def _lift_pair(node):
     """Return (lhs_socket, rhs_socket) for the two operand sockets, or None."""
-    if node.bl_idname == "ShaderNodeVectorMath" and getattr(node, "operation", "") == "SCALE":
+    if (
+        node.bl_idname == "ShaderNodeVectorMath"
+        and getattr(node, "operation", "") == "SCALE"
+    ):
         if len(node.inputs) > 3:
             return node.inputs[0], node.inputs[3]
         return None
@@ -114,8 +120,13 @@ def _operand_ref(socket, node, node_tree, var_map) -> str | None:
     """Expression for a socket: upstream var/expr reference or formatted literal."""
     if socket.is_linked:
         for link in node_tree.links:
-            if link.to_node.name == node.name and link.to_socket.identifier == socket.identifier:
-                return _upstream_ref(link.from_node, link.from_socket, node_tree, var_map)
+            if (
+                link.to_node.name == node.name
+                and link.to_socket.identifier == socket.identifier
+            ):
+                return _upstream_ref(
+                    link.from_node, link.from_socket, node_tree, var_map
+                )
         return None
     if hasattr(socket, "default_value"):
         return _fmt(socket.default_value)
@@ -142,6 +153,7 @@ def _try_lift_node(node, node_tree, var_map) -> str | None:
     if lhs is None or rhs is None:
         return None
     return f"{lhs} {op} {rhs}"
+
 
 _BLENDER_SOCKET_DEFAULTS: dict[str, dict[str, object]] = {}
 
@@ -418,8 +430,16 @@ def _build_chain_data(node_tree):
         if socket_out.get((fn.name, fs.identifier), 0) != 1:
             continue
 
-        from_key = f"_iface_inputs_{fs.identifier}" if fn.bl_idname == "NodeGroupInput" else fn.name
-        to_key = f"_iface_outputs_{ts.identifier}" if tn.bl_idname == "NodeGroupOutput" else tn.name
+        from_key = (
+            f"_iface_inputs_{fs.identifier}"
+            if fn.bl_idname == "NodeGroupInput"
+            else fn.name
+        )
+        to_key = (
+            f"_iface_outputs_{ts.identifier}"
+            if tn.bl_idname == "NodeGroupOutput"
+            else tn.name
+        )
 
         chain_prev[to_key] = (from_key, ts.identifier)
         chain_next[from_key] = (to_key, ts.identifier)
@@ -479,7 +499,9 @@ def _find_chains(
         if start_key.startswith("_iface_inputs_"):
             interior = regular_nodes[:-1]  # All except tail are interior
         else:
-            interior = regular_nodes[1:-1]  # Skip head; all except head and tail are interior
+            interior = regular_nodes[
+                1:-1
+            ]  # Skip head; all except head and tail are interior
 
         if all(n in inline_nodes for n in interior):
             chains.append(chain)
@@ -574,7 +596,9 @@ def _upstream_ref(from_node, from_socket, node_tree, var_map: dict) -> str | Non
     return f"{var}.o.{_normalize(from_socket.name)}"
 
 
-def _node_kwargs(node, node_tree, var_map, skip_input_id: str | None = None) -> list[str]:
+def _node_kwargs(
+    node, node_tree, var_map, skip_input_id: str | None = None
+) -> list[str]:
     """Build the constructor kwarg strings for a node.
 
     skip_input_id: socket identifier to omit (the chain-link input).
@@ -638,7 +662,9 @@ def _node_kwargs(node, node_tree, var_map, skip_input_id: str | None = None) -> 
                 # Python default is None (optional socket param) — compare against
                 # Blender's actual socket default for a freshly-created node.
                 if blender_defaults is None:
-                    blender_defaults = _get_blender_socket_defaults(node_tree, node.bl_idname)
+                    blender_defaults = _get_blender_socket_defaults(
+                        node_tree, node.bl_idname
+                    )
                 blender_default = blender_defaults.get(socket.identifier)
                 if blender_default is not None:
                     if _eq(val, blender_default):

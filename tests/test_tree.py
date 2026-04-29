@@ -128,8 +128,6 @@ def test_panel_context_clears_after_exit():
         assert outside.parent != panel
 
 
-from nodebpy import TreeBuilder
-from nodebpy import geometry as g
 
 with TreeBuilder("Outline") as tree:
     geo_in = tree.inputs.geometry()

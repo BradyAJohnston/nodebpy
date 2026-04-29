@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for nodebpy.codegen.to_python() — node tree → Python code generation."""
 
-import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
@@ -189,7 +188,12 @@ def test_chain_with_extra_kwargs():
     with TreeBuilder("ChainExtra") as tree:
         geo_in = tree.inputs.geometry()
         pos = g.Position()
-        geo_in >> g.SetPosition(offset=pos) >> g.TransformGeometry() >> tree.outputs.geometry()
+        (
+            geo_in
+            >> g.SetPosition(offset=pos)
+            >> g.TransformGeometry()
+            >> tree.outputs.geometry()
+        )
     code = to_python(tree)
     assert "offset=" in code
     assert ">>" in code
@@ -343,7 +347,12 @@ def test_snapshot_chain_with_extra_kwargs(snapshot):
     with TreeBuilder("ChainKwargs") as tree:
         geo_in = tree.inputs.geometry()
         pos = g.Position()
-        geo_in >> g.SetPosition(offset=pos) >> g.TransformGeometry() >> tree.outputs.geometry()
+        (
+            geo_in
+            >> g.SetPosition(offset=pos)
+            >> g.TransformGeometry()
+            >> tree.outputs.geometry()
+        )
     assert snapshot == to_python(tree)
 
 
