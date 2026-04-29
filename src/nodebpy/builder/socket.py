@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, cast, overload
+from typing import TYPE_CHECKING, Any, Iterator, cast, overload
 
 import bpy
 from bpy.types import (
@@ -30,7 +30,6 @@ from bpy.types import (
 )
 from mathutils import Euler
 
-from nodebpy.builder import SocketError
 
 from ..types import SOCKET_TYPES
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
@@ -38,7 +37,12 @@ from ._utils import _NodeLike, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
-    from ..nodes.geometry.converter import IntegerMath, Math
+    from ..nodes.geometry.converter import (
+        IntegerMath,
+        Math,
+        MultiplyMatrices,
+        TransformPoint,
+    )
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
@@ -741,6 +745,17 @@ class _MatrixMixin(BaseSocket):
 
     def __len__(self) -> int:
         return 16
+
+    if TYPE_CHECKING:
+
+        @overload
+        def __matmul__(
+            self, other: "VectorSocket | NodeSocketVector"
+        ) -> "TransformPoint": ...
+        @overload
+        def __matmul__(self, other: Any) -> "MultiplyMatrices": ...
+
+        def __rmatmul__(self, other: Any) -> "MultiplyMatrices": ...
 
 
 # ---------------------------------------------------------------------------
