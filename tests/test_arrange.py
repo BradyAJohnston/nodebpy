@@ -5,7 +5,6 @@ import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy import sockets as s
 from nodebpy.arrange import (
     arrange_tree,
     build_dependency_graph,
@@ -38,10 +37,8 @@ class TestArrangeTree:
     def test_linear_chain_left_to_right(self):
         """Nodes in a linear chain should be arranged left-to-right."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> g.RealizeInstances() >> out
 
         arrange_tree(tree.tree)
@@ -53,14 +50,9 @@ class TestArrangeTree:
     def test_does_not_delete_nodes(self):
         """arrange_tree must never remove nodes from the tree."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
-
-            # connected chain
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> out
-            # disconnected node
             g.Value()
 
         count_before = len(tree.tree.nodes)
@@ -70,11 +62,8 @@ class TestArrangeTree:
     def test_nodes_do_not_overlap_vertically(self):
         """Multiple nodes in the same column should not overlap."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
-
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             v1 = g.Value()
             v2 = g.Value()
             add = g.Math.add(v1, v2)
@@ -119,10 +108,8 @@ class TestBuildDependencyGraph:
     def test_connection_counts(self):
         """Socket connection counts should reflect the number of incoming links."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> out
 
         _, counts = build_dependency_graph(tree.tree)
@@ -136,10 +123,8 @@ class TestTopologicalSort:
     def test_linear_chain_order(self):
         """Nodes should be sorted so dependencies come before dependents."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> g.RealizeInstances() >> out
 
         graph, _ = build_dependency_graph(tree.tree)
@@ -184,9 +169,7 @@ class TestOrganizeIntoColumns:
     def test_fan_in_shares_column(self):
         """Nodes at the same dependency depth should share a column."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.outputs:
-                out = s.SocketGeometry()
-
+            out = tree.outputs.geometry()
             v1 = g.Value()
             v2 = g.Value()
             _ = g.CombineXYZ(x=v1, y=v2) >> g.SetPosition() >> out
@@ -253,10 +236,8 @@ class TestReroutePositioning:
     def test_reroute_positioned_between_neighbours(self):
         """A reroute node should be placed between its connected nodes."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> out
 
         # Insert a reroute between SetPosition and GroupOutput
@@ -286,10 +267,8 @@ class TestReroutePositioning:
     def test_disconnected_reroute_not_moved(self):
         """A reroute with no connections should stay at its original position."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> out
 
         reroute = tree.tree.nodes.new("NodeReroute")
@@ -306,10 +285,8 @@ class TestFrameHandling:
     def test_frame_not_repositioned(self):
         """Frame nodes should not be moved by arrange_tree."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> out
 
         frame = tree.tree.nodes.new("NodeFrame")
@@ -326,10 +303,8 @@ class TestArrangeIntegration:
     def test_simple_arrange_strategy(self):
         """TreeBuilder with arrange='simple' should arrange without error."""
         with TreeBuilder(arrange="simple") as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             _ = geo >> g.SetPosition() >> g.RealizeInstances() >> out
 
         set_pos = tree.tree.nodes["Set Position"]
@@ -339,11 +314,8 @@ class TestArrangeIntegration:
     def test_none_arrange_skips(self):
         """TreeBuilder with arrange=None should not move any nodes."""
         with TreeBuilder(arrange=None) as tree:
-            with tree.inputs:
-                geo = s.SocketGeometry()
-            with tree.outputs:
-                out = s.SocketGeometry()
-
+            geo = tree.inputs.geometry()
+            out = tree.outputs.geometry()
             set_pos_node = g.SetPosition()
             _ = geo >> set_pos_node >> out
 

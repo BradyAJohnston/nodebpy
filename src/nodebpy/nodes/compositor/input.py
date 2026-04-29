@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     BooleanSocket,
     ColorSocket,
@@ -24,7 +24,7 @@ from ...types import (
 )
 
 
-class BokehImage(NodeBuilder):
+class BokehImage(BaseNode):
     """
     Generate image with bokeh shape for use with the Bokeh Blur filter node
 
@@ -106,7 +106,7 @@ class BokehImage(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Color(NodeBuilder):
+class Color(BaseNode):
     """
     A color picker
 
@@ -140,7 +140,7 @@ class Color(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImageCoordinates(NodeBuilder):
+class ImageCoordinates(BaseNode):
     """
     Returns the coordinates of the pixels of an image
 
@@ -193,7 +193,7 @@ class ImageCoordinates(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class ImageInfo(NodeBuilder):
+class ImageInfo(BaseNode):
     """
     Returns information about an image
 
@@ -254,7 +254,7 @@ class ImageInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Mask(NodeBuilder):
+class Mask(BaseNode):
     """
     Input mask from a mask data-block, created in the image editor
 
@@ -353,7 +353,7 @@ class Mask(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MovieClip(NodeBuilder):
+class MovieClip(BaseNode):
     """
     Input image or movie from a movie clip data-block, typically used for motion tracking
 
@@ -407,7 +407,7 @@ class MovieClip(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Normal(NodeBuilder):
+class Normal(BaseNode):
     """
     Input normalized normal values to other nodes in the tree
 
@@ -441,7 +441,7 @@ class Normal(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RenderLayers(NodeBuilder):
+class RenderLayers(BaseNode):
     """
     Input render passes from a scene render
 
@@ -487,7 +487,7 @@ class RenderLayers(NodeBuilder):
         self.node.layer = value
 
 
-class SceneTime(NodeBuilder):
+class SceneTime(BaseNode):
     """
     Input the current scene time in seconds or frames
 
@@ -525,7 +525,7 @@ class SceneTime(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SequencerStripInfo(NodeBuilder):
+class SequencerStripInfo(BaseNode):
     """
     Returns information about the active strip of the modifier
 
@@ -575,7 +575,7 @@ class SequencerStripInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TimeCurve(NodeBuilder):
+class TimeCurve(BaseNode):
     """
     Generate a factor value (from 0.0 to 1.0) between scene start and end time, using a curve mapping
 
@@ -630,7 +630,7 @@ class TimeCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TrackPosition(NodeBuilder):
+class TrackPosition(BaseNode):
     """
     Provide information about motion tracking points, such as x and y values
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     BooleanSocket,
     FloatSocket,
@@ -22,7 +22,7 @@ from ...types import (
 )
 
 
-class EnableOutput(NodeBuilder):
+class EnableOutput(BaseNode):
     """
     Either pass through the input value or output the fallback value
 

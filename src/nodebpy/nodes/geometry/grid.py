@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     BooleanSocket,
     FloatSocket,
@@ -29,7 +29,7 @@ from ...types import (
 )
 
 
-class AdvectGrid(NodeBuilder):
+class AdvectGrid(BaseNode):
     """
     Move grid values through a velocity field using numerical integration. Supports multiple integration schemes for different accuracy and performance trade-offs
 
@@ -210,7 +210,7 @@ class AdvectGrid(NodeBuilder):
         self.node.data_type = value
 
 
-class ClipGrid(NodeBuilder):
+class ClipGrid(BaseNode):
     """
     Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
 
@@ -410,7 +410,7 @@ class ClipGrid(NodeBuilder):
         self.node.data_type = value
 
 
-class CubeGridTopology(NodeBuilder):
+class CubeGridTopology(BaseNode):
     """
     Create a boolean grid topology with the given dimensions, for use with the Field to Grid node
 
@@ -516,7 +516,7 @@ class CubeGridTopology(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class DistributePointsInGrid(NodeBuilder):
+class DistributePointsInGrid(BaseNode):
     """
     Generate points inside a volume grid
 
@@ -625,7 +625,7 @@ class DistributePointsInGrid(NodeBuilder):
         self.node.mode = value
 
 
-class DistributePointsInVolume(NodeBuilder):
+class DistributePointsInVolume(BaseNode):
     """
     Generate points inside a volume
 
@@ -715,7 +715,7 @@ class DistributePointsInVolume(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GetNamedGrid(NodeBuilder):
+class GetNamedGrid(BaseNode):
     """
     Get volume grid from a volume geometry with the specified name
 
@@ -831,7 +831,7 @@ class GetNamedGrid(NodeBuilder):
         self.node.data_type = value
 
 
-class GridCurl(NodeBuilder):
+class GridCurl(BaseNode):
     """
     Calculate the magnitude and direction of circulation of a directional vector grid
 
@@ -876,7 +876,7 @@ class GridCurl(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GridDilateErode(NodeBuilder):
+class GridDilateErode(BaseNode):
     """
     Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.
 
@@ -1028,7 +1028,7 @@ class GridDilateErode(NodeBuilder):
         self.node.data_type = value
 
 
-class GridDivergence(NodeBuilder):
+class GridDivergence(BaseNode):
     """
     Calculate the flow into and out of each point of a directional vector grid
 
@@ -1073,7 +1073,7 @@ class GridDivergence(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GridGradient(NodeBuilder):
+class GridGradient(BaseNode):
     """
     Calculate the direction and magnitude of the change in values of a scalar grid
 
@@ -1118,7 +1118,7 @@ class GridGradient(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GridInfo(NodeBuilder):
+class GridInfo(BaseNode):
     """
     Retrieve information about a volume grid
 
@@ -1200,7 +1200,7 @@ class GridInfo(NodeBuilder):
         self.node.data_type = value
 
 
-class GridLaplacian(NodeBuilder):
+class GridLaplacian(BaseNode):
     """
     Compute the divergence of the gradient of the input grid
 
@@ -1245,7 +1245,7 @@ class GridLaplacian(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GridMean(NodeBuilder):
+class GridMean(BaseNode):
     """
     Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
 
@@ -1347,7 +1347,7 @@ class GridMean(NodeBuilder):
         self.node.data_type = value
 
 
-class GridMedian(NodeBuilder):
+class GridMedian(BaseNode):
     """
     Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
 
@@ -1449,7 +1449,7 @@ class GridMedian(NodeBuilder):
         self.node.data_type = value
 
 
-class GridToMesh(NodeBuilder):
+class GridToMesh(BaseNode):
     """
     Generate a mesh on the "surface" of a volume grid
 
@@ -1511,7 +1511,7 @@ class GridToMesh(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GridToPoints(NodeBuilder):
+class GridToPoints(BaseNode):
     """
     Generate a point cloud from a volume grid's active voxels
 
@@ -1613,7 +1613,7 @@ class GridToPoints(NodeBuilder):
         self.node.data_type = value
 
 
-class MeshToDensityGrid(NodeBuilder):
+class MeshToDensityGrid(BaseNode):
     """
     Create a filled volume grid from a mesh
 
@@ -1687,7 +1687,7 @@ class MeshToDensityGrid(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MeshToSDFGrid(NodeBuilder):
+class MeshToSDFGrid(BaseNode):
     """
     Create a signed distance volume grid from a mesh
 
@@ -1749,7 +1749,7 @@ class MeshToSDFGrid(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MeshToVolume(NodeBuilder):
+class MeshToVolume(BaseNode):
     """
     Create a fog volume with the shape of the input mesh's surface
 
@@ -1839,7 +1839,7 @@ class MeshToVolume(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PointsToSDFGrid(NodeBuilder):
+class PointsToSDFGrid(BaseNode):
     """
     Create a signed distance volume grid from points
 
@@ -1901,7 +1901,7 @@ class PointsToSDFGrid(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PointsToVolume(NodeBuilder):
+class PointsToVolume(BaseNode):
     """
     Generate a fog volume sphere around every point
 
@@ -1991,7 +1991,7 @@ class PointsToVolume(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class PruneGrid(NodeBuilder):
+class PruneGrid(BaseNode):
     """
     Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes
 
@@ -2102,7 +2102,7 @@ class PruneGrid(NodeBuilder):
         self.node.data_type = value
 
 
-class SDFGridFillet(NodeBuilder):
+class SDFGridFillet(BaseNode):
     """
     Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces
 
@@ -2157,7 +2157,7 @@ class SDFGridFillet(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SDFGridLaplacian(NodeBuilder):
+class SDFGridLaplacian(BaseNode):
     """
     Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization
 
@@ -2212,7 +2212,7 @@ class SDFGridLaplacian(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SDFGridMean(NodeBuilder):
+class SDFGridMean(BaseNode):
     """
     Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field
 
@@ -2274,7 +2274,7 @@ class SDFGridMean(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SDFGridMeanCurvature(NodeBuilder):
+class SDFGridMeanCurvature(BaseNode):
     """
     Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas
 
@@ -2329,7 +2329,7 @@ class SDFGridMeanCurvature(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SDFGridMedian(NodeBuilder):
+class SDFGridMedian(BaseNode):
     """
     Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field
 
@@ -2391,7 +2391,7 @@ class SDFGridMedian(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SDFGridOffset(NodeBuilder):
+class SDFGridOffset(BaseNode):
     """
     Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property
 
@@ -2446,7 +2446,7 @@ class SDFGridOffset(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SampleGrid(NodeBuilder):
+class SampleGrid(BaseNode):
     """
     Retrieve values from the specified volume grid
 
@@ -2577,7 +2577,7 @@ class SampleGrid(NodeBuilder):
         self.node.data_type = value
 
 
-class SampleGridIndex(NodeBuilder):
+class SampleGridIndex(BaseNode):
     """
     Retrieve volume grid values at specific voxels
 
@@ -2700,7 +2700,7 @@ class SampleGridIndex(NodeBuilder):
         self.node.data_type = value
 
 
-class SetGridBackground(NodeBuilder):
+class SetGridBackground(BaseNode):
     """
     Set the background value used for inactive voxels and tiles
 
@@ -2836,7 +2836,7 @@ class SetGridBackground(NodeBuilder):
         self.node.data_type = value
 
 
-class SetGridTransform(NodeBuilder):
+class SetGridTransform(BaseNode):
     """
     Set the transform for the grid from index space into object space.
 
@@ -2933,7 +2933,7 @@ class SetGridTransform(NodeBuilder):
         self.node.data_type = value
 
 
-class StoreNamedGrid(NodeBuilder):
+class StoreNamedGrid(BaseNode):
     """
     Store grid data in a volume geometry with the specified name
 
@@ -3045,7 +3045,7 @@ class StoreNamedGrid(NodeBuilder):
         self.node.data_type = value
 
 
-class VolumeCube(NodeBuilder):
+class VolumeCube(BaseNode):
     """
     Generate a dense volume with a field that controls the density at each grid voxel based on its position
 
@@ -3143,7 +3143,7 @@ class VolumeCube(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VolumeToMesh(NodeBuilder):
+class VolumeToMesh(BaseNode):
     """
     Generate a mesh on the "surface" of a volume
 
@@ -3233,7 +3233,7 @@ class VolumeToMesh(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VoxelizeGrid(NodeBuilder):
+class VoxelizeGrid(BaseNode):
     """
     Remove sparseness from a volume grid by making the active tiles into voxels
 

@@ -3,13 +3,8 @@ from typing import TYPE_CHECKING, Any, Generic, Literal, TypeVar
 import bpy
 from bpy.types import NodeEvaluateClosure, NodeSocket
 
-from nodebpy.builder.accessor import SocketAccessor
-from nodebpy.builder.interface import SocketGeometry
-
 from ...builder import (
-    BaseNode as NodeBuilder,
-)
-from ...builder import (
+    BaseNode,
     BooleanSocket,
     BundleSocket,
     ClosureSocket,
@@ -25,6 +20,7 @@ from ...builder import (
     MenuSocket,
     ObjectSocket,
     RotationSocket,
+    SocketAccessor,
     StringSocket,
     TreeBuilder,
     VectorSocket,
@@ -135,7 +131,7 @@ def tree(
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
 
 
-class EvaluateClosure(NodeBuilder):
+class EvaluateClosure(BaseNode):
     """
     Execute a given closure
 
@@ -190,7 +186,7 @@ class EvaluateClosure(NodeBuilder):
             _sync_closure_items(getattr(node.node, name), getattr(self.node, name))
 
 
-class Frame(NodeBuilder):
+class Frame(BaseNode):
     """ """
 
     _bl_idname = "NodeFrame"
@@ -241,7 +237,7 @@ class Frame(NodeBuilder):
         TreeBuilder._frame_contexts.pop()
 
 
-class Bake(NodeBuilder, DynamicInputsMixin):
+class Bake(BaseNode, DynamicInputsMixin):
     """Cache the incoming data so that it can be used without recomputation
 
     TODO: properly handle Animation / Still bake opations and ability to bake to a file
@@ -262,7 +258,7 @@ class Bake(NodeBuilder, DynamicInputsMixin):
         return self.node.inputs[item.name]
 
 
-class GeometryToInstance(NodeBuilder):
+class GeometryToInstance(BaseNode):
     """
     Convert each input geometry into an instance, which can be much faster
     than the Join Geometry node when the inputs are large
@@ -283,10 +279,10 @@ class GeometryToInstance(NodeBuilder):
     node: bpy.types.GeometryNodeGeometryToInstance
 
     class _Inputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
 
     class _Outputs(SocketAccessor):
-        instances: SocketGeometry
+        instances: GeometrySocket
 
     if TYPE_CHECKING:
 
@@ -306,7 +302,7 @@ class GeometryToInstance(NodeBuilder):
 # up by the generate script. TODO: debug why not
 
 
-class Collection(NodeBuilder):
+class Collection(BaseNode):
     """
     Output a single collection
     """
@@ -336,7 +332,7 @@ class Collection(NodeBuilder):
         self.node.collection = value
 
 
-class Material(NodeBuilder):
+class Material(BaseNode):
     """
     Output a single material
     """
@@ -366,7 +362,7 @@ class Material(NodeBuilder):
         self.node.material = value
 
 
-class Object(NodeBuilder):
+class Object(BaseNode):
     """
     Output a single object
     """
@@ -401,7 +397,7 @@ class Object(NodeBuilder):
 # and access the default values from the output sockets themselves
 
 
-class Value(NodeBuilder):
+class Value(BaseNode):
     """Input numerical values to other nodes in the tree"""
 
     _bl_idname = "ShaderNodeValue"
@@ -437,7 +433,7 @@ class Float(Value):
 ### === ###
 
 
-class FormatString(NodeBuilder, DynamicInputsMixin):
+class FormatString(BaseNode, DynamicInputsMixin):
     """Insert values into a string using a Python and path template compatible formatting syntax"""
 
     _bl_idname = "FunctionNodeFormatString"
@@ -489,7 +485,7 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
         return {socket.name: self.i._get(socket.name) for socket in self.node.inputs}
 
 
-class JoinStrings(NodeBuilder):
+class JoinStrings(BaseNode):
     """Combine any number of input strings"""
 
     _bl_idname = "GeometryNodeStringJoin"
@@ -517,7 +513,7 @@ class JoinStrings(NodeBuilder):
             self._link_from(arg, "Strings")
 
 
-class MeshBoolean(NodeBuilder):
+class MeshBoolean(BaseNode):
     """Cut, subtract, or join multiple mesh inputs"""
 
     _bl_idname = "GeometryNodeMeshBoolean"
@@ -632,17 +628,17 @@ class MeshBoolean(NodeBuilder):
         self.node.solver = value
 
 
-class JoinGeometry(NodeBuilder):
+class JoinGeometry(BaseNode):
     """Merge separately generated geometries into a single one"""
 
     _bl_idname = "GeometryNodeJoinGeometry"
     node: bpy.types.GeometryNodeJoinGeometry
 
     class _Inputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
 
     class _Outputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
 
     if TYPE_CHECKING:
 
@@ -658,18 +654,18 @@ class JoinGeometry(NodeBuilder):
             self._link(*self._find_best_socket_pair(source, self))
 
 
-class SetHandleType(NodeBuilder):
+class SetHandleType(BaseNode):
     """Set the handle type for the control points of a Bézier curve"""
 
     _bl_idname = "GeometryNodeCurveSetHandles"
     node: bpy.types.GeometryNodeCurveSetHandles
 
     class _Inputs(SocketAccessor):
-        curve: SocketGeometry
+        curve: GeometrySocket
         selection: BooleanSocket
 
     class _Outputs(SocketAccessor):
-        curve: SocketGeometry
+        curve: GeometrySocket
 
     if TYPE_CHECKING:
 
@@ -735,7 +731,7 @@ class SetHandleType(NodeBuilder):
                 self.node.mode = set()
 
 
-class HandleTypeSelection(NodeBuilder):
+class HandleTypeSelection(BaseNode):
     """Provide a selection based on the handle types of Bézier control points"""
 
     _bl_idname = "GeometryNodeCurveHandleTypeSelection"
@@ -809,7 +805,7 @@ class HandleTypeSelection(NodeBuilder):
         self.node.mode = value
 
 
-class IndexSwitch(NodeBuilder, Generic[_T]):
+class IndexSwitch(BaseNode, Generic[_T]):
     """Node builder for the Index Switch node"""
 
     _bl_idname = "GeometryNodeIndexSwitch"
@@ -962,7 +958,7 @@ class IndexSwitch(NodeBuilder, Generic[_T]):
         self.node.data_type = value
 
 
-class _MenuSwitchBase(NodeBuilder, Generic[_T]):
+class _MenuSwitchBase(BaseNode, Generic[_T]):
     """Base class for MenuSwitch nodes across all tree types."""
 
     _bl_idname = "GeometryNodeMenuSwitch"
@@ -1132,7 +1128,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
         return MenuSwitch(*args, menu=menu, data_type="CLOSURE", **kwargs)
 
 
-class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
+class CaptureAttribute(BaseNode, DynamicInputsMixin):
     """
     Store the result of a field on a geometry and output the data as a node socket.
     Allows remembering or interpolating data as the geometry changes,
@@ -1182,11 +1178,11 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
     layer = _DomainFactory("LAYER")
 
     class _Inputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
         """Input geometry."""
 
     class _Outputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
         """Output geometry."""
 
     if TYPE_CHECKING:
@@ -1243,7 +1239,7 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         self.node.domain = value
 
 
-class FieldToGrid(DynamicInputsMixin, NodeBuilder):
+class FieldToGrid(DynamicInputsMixin, BaseNode):
     """Create new grids by evaluating new values on an existing volume grid topology
 
     New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
@@ -1346,7 +1342,7 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
         self.node.data_type = value
 
 
-class SDFGridBoolean(NodeBuilder):
+class SDFGridBoolean(BaseNode):
     """Cut, subtract, or join multiple SDF volume grid inputs"""
 
     _bl_idname = "GeometryNodeSDFGridBoolean"
@@ -1425,7 +1421,7 @@ class SDFGridBoolean(NodeBuilder):
         self.node.operation = value
 
 
-class AccumulateField(NodeBuilder, Generic[_T]):
+class AccumulateField(BaseNode, Generic[_T]):
     """Add the values of an evaluated field together and output the running total for each element"""
 
     _bl_idname = "GeometryNodeAccumulateField"
@@ -1527,7 +1523,7 @@ class AccumulateField(NodeBuilder, Generic[_T]):
         self.node.domain = value
 
 
-class EvaluateAtIndex(NodeBuilder, Generic[_T]):
+class EvaluateAtIndex(BaseNode, Generic[_T]):
     """Retrieve data of other elements in the context's geometry"""
 
     _bl_idname = "GeometryNodeFieldAtIndex"
@@ -1647,7 +1643,7 @@ class EvaluateAtIndex(NodeBuilder, Generic[_T]):
         self.node.data_type = value
 
 
-class FieldAverage(NodeBuilder, Generic[_T]):
+class FieldAverage(BaseNode, Generic[_T]):
     """Calculate the mean and median of a given field"""
 
     _bl_idname = "GeometryNodeFieldAverage"
@@ -1741,7 +1737,7 @@ class FieldAverage(NodeBuilder, Generic[_T]):
         self.node.domain = value
 
 
-class FieldMinAndMax(NodeBuilder, Generic[_T]):
+class FieldMinAndMax(BaseNode, Generic[_T]):
     """Calculate the minimum and maximum of a given field"""
 
     _bl_idname = "GeometryNodeFieldMinAndMax"
@@ -1845,7 +1841,7 @@ class FieldMinAndMax(NodeBuilder, Generic[_T]):
         self.node.domain = value
 
 
-class EvaluateOnDomain(NodeBuilder, Generic[_T]):
+class EvaluateOnDomain(BaseNode, Generic[_T]):
     """Retrieve values from a field on a different domain besides the domain from the context"""
 
     _bl_idname = "GeometryNodeFieldOnDomain"
@@ -1952,7 +1948,7 @@ class EvaluateOnDomain(NodeBuilder, Generic[_T]):
         self.node.data_type = value
 
 
-class FieldVariance(NodeBuilder, Generic[_T]):
+class FieldVariance(BaseNode, Generic[_T]):
     """Calculate the standard deviation and variance of a given field"""
 
     _bl_idname = "GeometryNodeFieldVariance"
@@ -2071,7 +2067,7 @@ _CompareVectorModes = Literal[
 ]
 
 
-class Compare(NodeBuilder, Generic[_T]):
+class Compare(BaseNode, Generic[_T]):
     """Perform a comparison operation on the two given inputs"""
 
     _bl_idname = "FunctionNodeCompare"
@@ -2472,7 +2468,7 @@ class Compare(NodeBuilder, Generic[_T]):
         self.node.mode = value
 
 
-class AttributeStatistic(NodeBuilder, Generic[_T]):
+class AttributeStatistic(BaseNode, Generic[_T]):
     """Calculate statistics about a data set from a field evaluated on a geometry"""
 
     _bl_idname = "GeometryNodeAttributeStatistic"
@@ -2522,7 +2518,7 @@ class AttributeStatistic(NodeBuilder, Generic[_T]):
     layer = _AttributeStatisticDomainFactor("LAYER")
 
     class _Inputs(SocketAccessor, Generic[_S]):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
         """The geometry whose attribute to analyze."""
         selection: BooleanSocket
         """Limits which elements are included in the statistics."""
@@ -2625,7 +2621,7 @@ _SampleCurveDataTypes = Literal[
 ]
 
 
-class SampleCurve(NodeBuilder, Generic[_T]):
+class SampleCurve(BaseNode, Generic[_T]):
     """
     Retrieve data from a point on a curve at a certain distance from its start
 
@@ -3039,7 +3035,7 @@ class SampleCurve(NodeBuilder, Generic[_T]):
         self.node.data_type = value
 
 
-class SampleIndex(NodeBuilder, Generic[_T]):
+class SampleIndex(BaseNode, Generic[_T]):
     """
     Retrieve values from specific geometry elements
 

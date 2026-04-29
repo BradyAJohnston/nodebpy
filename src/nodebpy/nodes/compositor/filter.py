@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     BooleanSocket,
     ColorSocket,
@@ -25,7 +25,7 @@ from ...types import (
 )
 
 
-class AntiAliasing(NodeBuilder):
+class AntiAliasing(BaseNode):
     """
     Smooth away jagged edges
 
@@ -99,7 +99,7 @@ class AntiAliasing(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class BilateralBlur(NodeBuilder):
+class BilateralBlur(BaseNode):
     """
     Adaptively blur image, while retaining sharp edges
 
@@ -173,7 +173,7 @@ class BilateralBlur(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Blur(NodeBuilder):
+class Blur(BaseNode):
     """
     Blur an image, using several blur modes
 
@@ -401,7 +401,7 @@ class Blur(NodeBuilder):
         )
 
 
-class BokehBlur(NodeBuilder):
+class BokehBlur(BaseNode):
     """
     Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region is defined in the compositor
 
@@ -483,7 +483,7 @@ class BokehBlur(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Convolve(NodeBuilder):
+class Convolve(BaseNode):
     """
     Convolves an image with a kernel
 
@@ -565,7 +565,7 @@ class Convolve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Defocus(NodeBuilder):
+class Defocus(BaseNode):
     """
     Apply depth of field in 2D, using a Z depth map or mask
 
@@ -691,7 +691,7 @@ class Defocus(NodeBuilder):
         self.node.z_scale = value
 
 
-class Denoise(NodeBuilder):
+class Denoise(BaseNode):
     """
     Denoise renders from Cycles and other ray tracing renderers
 
@@ -782,7 +782,7 @@ class Denoise(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Despeckle(NodeBuilder):
+class Despeckle(BaseNode):
     """
     Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched
 
@@ -856,7 +856,7 @@ class Despeckle(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Dilateerode(NodeBuilder):
+class Dilateerode(BaseNode):
     """
     Expand and shrink masks
 
@@ -975,7 +975,7 @@ class Dilateerode(NodeBuilder):
         return cls(mask=mask, size=size, falloff=falloff, type="Feather")
 
 
-class DirectionalBlur(NodeBuilder):
+class DirectionalBlur(BaseNode):
     """
     Blur an image along a direction
 
@@ -1073,7 +1073,7 @@ class DirectionalBlur(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Filter(NodeBuilder):
+class Filter(BaseNode):
     """
     Apply common image enhancement filters
 
@@ -1187,7 +1187,7 @@ class Filter(NodeBuilder):
         return cls(image=image, fac=fac, type="Shadow")
 
 
-class Glare(NodeBuilder):
+class Glare(BaseNode):
     """
     Add lens flares, fog and glows around bright parts of the image
 
@@ -1645,7 +1645,7 @@ class Glare(NodeBuilder):
         )
 
 
-class Inpaint(NodeBuilder):
+class Inpaint(BaseNode):
     """
     Extend borders of an image into transparent or masked regions
 
@@ -1700,7 +1700,7 @@ class Inpaint(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Kuwahara(NodeBuilder):
+class Kuwahara(BaseNode):
     """
     Apply smoothing filter that preserves edges, for stylized and painterly effects
 
@@ -1829,7 +1829,7 @@ class Kuwahara(NodeBuilder):
         )
 
 
-class MaskToSDF(NodeBuilder):
+class MaskToSDF(BaseNode):
     """
     Computes a signed distance field from the given mask
 
@@ -1878,7 +1878,7 @@ class MaskToSDF(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Pixelate(NodeBuilder):
+class Pixelate(BaseNode):
     """
     Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance
 
@@ -1933,7 +1933,7 @@ class Pixelate(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class VectorBlur(NodeBuilder):
+class VectorBlur(BaseNode):
     """
     Uses the vector speed render pass to blur the image pixels in 2D
 

@@ -76,6 +76,15 @@ quartodoc:
     signature_name: short
 
   sections:
+    - title: Interface
+      contents:
+        - builder.tree
+        - builder.socket
+        - builder.node
+        - builder.accessor
+        - TreeBuilder
+        - builder.BaseNode
+
     - title: Geometry Nodes
       desc: Nodes use in Geometry Nodes trees.
       contents:
@@ -123,14 +132,3 @@ quartodoc:
         - nodes.compositor.matte
         - nodes.compositor.output
         - nodes.compositor.vector
-
-    - title: Interface
-      contents:
-        - builder.interface
-        - builder.tree
-
-    - title: Internals
-      desc: Internal nodes used by nodebpy
-      contents:
-        - TreeBuilder
-        - builder.NodeBuilder

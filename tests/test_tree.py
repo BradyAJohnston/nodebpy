@@ -2,15 +2,12 @@ import bpy
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy import sockets as s
 
 
 def test_create_tree_and_save():
     with TreeBuilder("AnotherTree") as tree:
-        with tree.inputs:
-            count = s.SocketInteger("Count")
-        with tree.outputs:
-            instances = s.SocketGeometry("Instances")
+        count = tree.inputs.integer("Count")
+        instances = tree.outputs.geometry("Instances")
 
         rotation = (
             g.RandomValue.vector(min=(-1, -1, -1), seed=2)
@@ -38,11 +35,10 @@ def test_create_tree_and_save():
 def test_panel_groups_input_sockets():
     """Test that sockets created inside a panel context are children of that panel."""
     with TreeBuilder("PanelInputTest") as tree:
-        with tree.inputs:
-            s.SocketGeometry("Geometry")
-            with tree.inputs.panel("Settings"):
-                s.SocketInteger("Count")
-                s.SocketFloat("Scale")
+        tree.inputs.geometry("Geometry")
+        with tree.inputs.panel("Settings"):
+            tree.inputs.integer("Count")
+            tree.inputs.float("Scale")
 
         items = list(tree.tree.interface.items_tree)
         panel_items = [
@@ -51,13 +47,11 @@ def test_panel_groups_input_sockets():
         assert len(panel_items) == 1
         assert panel_items[0].name == "Settings"
 
-        # Sockets inside the panel should have the panel as parent
         count_item = next(i for i in items if getattr(i, "name", None) == "Count")
         scale_item = next(i for i in items if getattr(i, "name", None) == "Scale")
         assert count_item.parent == panel_items[0]
         assert scale_item.parent == panel_items[0]
 
-        # Socket outside the panel should have no panel parent
         geo_item = next(i for i in items if getattr(i, "name", None) == "Geometry")
         assert geo_item.parent != panel_items[0]
 
@@ -65,10 +59,9 @@ def test_panel_groups_input_sockets():
 def test_panel_groups_output_sockets():
     """Test that panels work on outputs too."""
     with TreeBuilder("PanelOutputTest") as tree:
-        with tree.outputs:
-            with tree.outputs.panel("Results"):
-                s.SocketGeometry("Geometry")
-            s.SocketFloat("Extra")
+        with tree.outputs.panel("Results"):
+            tree.outputs.geometry("Geometry")
+        tree.outputs.float("Extra")
 
         items = list(tree.tree.interface.items_tree)
         panel_items = [
@@ -86,11 +79,10 @@ def test_panel_groups_output_sockets():
 def test_multiple_panels():
     """Test creating multiple panels in the same inputs context."""
     with TreeBuilder("MultiPanelTest") as tree:
-        with tree.inputs:
-            with tree.inputs.panel("Transform"):
-                s.SocketVector("Position")
-            with tree.inputs.panel("Appearance"):
-                s.SocketColor("Color")
+        with tree.inputs.panel("Transform"):
+            tree.inputs.vector("Position")
+        with tree.inputs.panel("Appearance"):
+            tree.inputs.color("Color")
 
         items = list(tree.tree.interface.items_tree)
         panel_items = [
@@ -109,9 +101,8 @@ def test_multiple_panels():
 def test_panel_default_closed():
     """Test that the default_closed option is applied to the panel."""
     with TreeBuilder("PanelClosedTest") as tree:
-        with tree.inputs:
-            with tree.inputs.panel("Advanced", default_closed=True):
-                s.SocketFloat("Threshold")
+        with tree.inputs.panel("Advanced", default_closed=True):
+            tree.inputs.float("Threshold")
 
         items = list(tree.tree.interface.items_tree)
         panel = next(
@@ -123,10 +114,9 @@ def test_panel_default_closed():
 def test_panel_context_clears_after_exit():
     """Test that sockets after the panel block are not in the panel."""
     with TreeBuilder("PanelClearTest") as tree:
-        with tree.inputs:
-            with tree.inputs.panel("Group"):
-                s.SocketInteger("Inside")
-            s.SocketInteger("Outside")
+        with tree.inputs.panel("Group"):
+            tree.inputs.integer("Inside")
+        tree.inputs.integer("Outside")
 
         items = list(tree.tree.interface.items_tree)
         panel = next(

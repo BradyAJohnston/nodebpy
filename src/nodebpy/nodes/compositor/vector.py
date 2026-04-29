@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, SocketAccessor, FloatSocket
+from ...builder import BaseNode as BaseNode, SocketAccessor, FloatSocket
 
 from ...types import (
     InputFloat,
 )
 
 
-class Normalize(NodeBuilder):
+class Normalize(BaseNode):
     """
     Map values to 0 to 1 range, based on the minimum and maximum pixel values
 

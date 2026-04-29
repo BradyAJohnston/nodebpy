@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     BooleanSocket,
     FloatSocket,
@@ -29,7 +29,7 @@ from ...types import (
 )
 
 
-class BlurAttribute(NodeBuilder):
+class BlurAttribute(BaseNode):
     """
     Mix attribute values of neighboring elements
 
@@ -145,7 +145,7 @@ class BlurAttribute(NodeBuilder):
         self.node.data_type = value
 
 
-class DomainSize(NodeBuilder):
+class DomainSize(BaseNode):
     """
     Retrieve the number of elements in a geometry for each attribute domain
 
@@ -233,7 +233,7 @@ class DomainSize(NodeBuilder):
         self.node.component = value
 
 
-class RemoveNamedAttribute(NodeBuilder):
+class RemoveNamedAttribute(BaseNode):
     """
     Delete an attribute with a specified name from a geometry. Typically used to optimize performance
 
@@ -295,7 +295,7 @@ class RemoveNamedAttribute(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class StoreNamedAttribute(NodeBuilder):
+class StoreNamedAttribute(BaseNode):
     """
     Store the result of a field on a geometry as an attribute with the specified name
 

@@ -7,7 +7,6 @@ import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy import sockets as socket
 from nodebpy.builder import (
     BooleanSocket,
     FloatSocket,
@@ -40,16 +39,16 @@ def test_normalize_name(name, expected):
 
 
 @pytest.mark.parametrize(
-    "sock_cls,kwargs",
+    "method,kwargs",
     [
-        (socket.SocketRotation, {"name": "Rot", "default_value": (0.0, 0.0, 1.0)}),
-        (socket.SocketMatrix, {"name": "Mat"}),
-        (socket.SocketObject, {"name": "Obj"}),
-        (socket.SocketCollection, {"name": "Col"}),
-        (socket.SocketImage, {"name": "Img"}),
-        (socket.SocketMaterial, {"name": "Mat"}),
-        (socket.SocketBundle, {"name": "Bnd"}),
-        (socket.SocketClosure, {"name": "Cls"}),
+        ("rotation", {"name": "Rot", "default_value": (0.0, 0.0, 1.0)}),
+        ("matrix", {"name": "Mat"}),
+        ("object", {"name": "Obj"}),
+        ("collection", {"name": "Col"}),
+        ("image", {"name": "Img"}),
+        ("material", {"name": "Mat"}),
+        ("bundle", {"name": "Bnd"}),
+        ("closure", {"name": "Cls"}),
     ],
     ids=[
         "rotation",
@@ -62,44 +61,24 @@ def test_normalize_name(name, expected):
         "closure",
     ],
 )
-def test_interface_socket_creation(sock_cls, kwargs):
-    """All interface socket types can be instantiated inside a tree.inputs context."""
-    tree = TreeBuilder(f"Test_{sock_cls.__name__}")
-    with tree.inputs:
-        s = sock_cls(**kwargs)
+def test_interface_socket_creation(method, kwargs):
+    """All interface socket types can be instantiated via tree.inputs.method()."""
+    tree = TreeBuilder(f"Test_{method}")
+    s = getattr(tree.inputs, method)(**kwargs)
     assert s is not None
-
-
-@pytest.mark.parametrize(
-    "op,value",
-    [("get", None), ("set", 1.0)],
-    ids=["get", "set"],
-)
-def test_geometry_socket_default_value_raises(op, value):
-    """SocketGeometry has no default_value — both get and set should raise AttributeError."""
-    tree = TreeBuilder("GeoDefTest")
-    with tree.inputs:
-        geo = socket.SocketGeometry("Geo")
-    with pytest.raises(AttributeError):
-        if op == "get":
-            _ = geo.default_value
-        else:
-            geo.default_value = value
 
 
 def test_interface_socket_default_value_getter():
     """reading default_value on a socket that supports it."""
     tree = TreeBuilder("FloatDefGetTest")
-    with tree.inputs:
-        f = socket.SocketFloat("Value", 3.14)
+    f = tree.inputs.float("Value", 3.14)
     assert f.default_value == pytest.approx(3.14)
 
 
 def test_interface_socket_default_value_setter():
     """setting default_value on a socket that supports it."""
     tree = TreeBuilder("FloatDefSetTest")
-    with tree.inputs:
-        f = socket.SocketFloat("Value", 1.0)
+    f = tree.inputs.float("Value", 1.0)
     f.default_value = 2.5
     assert f.default_value == pytest.approx(2.5)
 
@@ -107,8 +86,7 @@ def test_interface_socket_default_value_setter():
 def test_menu_socket_default_triggers_apply_defaults():
     """_apply_input_defaults runs when SocketMenu has a non-None default."""
     tree = TreeBuilder("MenuDefaultTest")
-    with tree.inputs:
-        m = socket.SocketMenu("Options", default_value="OPTION_A")
+    m = tree.inputs.menu("Options", default_value="OPTION_A")
     assert m is not None
 
 
@@ -431,10 +409,8 @@ def test_rshift_fallback_path():
 def test_rshift_to_socket_wrapper():
     """>> to a _SocketLike links via _from_socket path."""
     tree = TreeBuilder("RShiftSock")
-    with tree.inputs:
-        in_geo = socket.SocketGeometry()
-    with tree.outputs:
-        out_geo = socket.SocketGeometry()
+    in_geo = tree.inputs.geometry()
+    out_geo = tree.outputs.geometry()
     with tree:
         _ = in_geo >> out_geo
     assert len(tree.tree.links) >= 1
