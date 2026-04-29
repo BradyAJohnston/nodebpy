@@ -23,11 +23,13 @@ def import_channel() -> bpy.types.GeometryNodeTree:
 
         volume = g.ImportVDB(
             g.FormatString(
-                time=time,
-                channel_number=channel_number,
-                base_path=base_path,
-                scale=g.Integer(0),
-                format=string_to_format,
+                string_to_format,
+                {
+                    "time": time,
+                    "channel_number": channel_number,
+                    "base_path": base_path,
+                    "scale": g.Integer(0),
+                },
             )
         )
         gng = g.GetNamedGrid.float(volume, "data")
@@ -105,7 +107,7 @@ def test_eulers_number():
         e = g.Float(math.e)
         value = g.Float(1.0)
 
-        zone = g.RepeatZone(100, value=value)
+        zone = g.RepeatZone(100, {"value": value})
 
         with g.Frame("Factorial"):
             value = g.Math.square_root(zone.iteration * tau) * (

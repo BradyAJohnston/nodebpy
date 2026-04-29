@@ -38,8 +38,10 @@ def test_complex_tree_snapshot(snapshot_tree):
 
         _ = (
             g.JoinGeometry(
-                input >> subdivide >> transform1,
-                input >> transform2,
+                [
+                    input >> subdivide >> transform1,
+                    input >> transform2,
+                ]
             )
             >> output
         )

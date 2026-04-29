@@ -156,13 +156,13 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
 
 
 class SimulationZone:
-    def __init__(self, *args: InputLinkable, **kwargs: InputLinkable):
+    def __init__(self, items: dict[str, InputLinkable] = {}):
         self.input = SimulationInput()
         self.output = SimulationOutput()
         self.input.node.pair_with_output(self.output.node)
 
         self.output.node.state_items.clear()
-        socket_lookup = self.output._add_inputs(*args, **kwargs)
+        socket_lookup = self.output._add_inputs(**items)
         for name, source in socket_lookup.items():
             self.input._link_from(source, name)
 
@@ -240,15 +240,14 @@ class RepeatZone:
     def __init__(
         self,
         iterations: InputInteger = 1,
-        *args: InputLinkable,
-        **kwargs: InputLinkable,
+        items: dict[str, InputLinkable] = {},
     ):
         self.input = RepeatInput(iterations)
         self.output = RepeatOutput()
         self.input.node.pair_with_output(self.output.node)
 
         self.output.node.repeat_items.clear()
-        self.input._establish_links(**self.input._add_inputs(*args, **kwargs))
+        self.input._establish_links(**self.input._add_inputs(**items))
 
     @property
     def iteration(self) -> SocketLinker:

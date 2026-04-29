@@ -46,45 +46,45 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
 
     @classmethod
     def float(
-        cls, *args: InputFloat, menu: InputMenu = None, **kwargs: InputFloat
+        cls, menu: InputMenu = None, items: dict[str, InputFloat] = {}
     ) -> "MenuSwitch[FloatSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="FLOAT", **kwargs)
+        return MenuSwitch(menu, items, data_type="FLOAT")
 
     @classmethod
     def integer(
-        cls, *args: InputInteger, menu: InputMenu = None, **kwargs: InputInteger
+        cls, menu: InputMenu = None, items: dict[str, InputInteger] = {}
     ) -> "MenuSwitch[IntegerSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="INT", **kwargs)
+        return MenuSwitch(menu, items, data_type="INT")
 
     @classmethod
     def boolean(
-        cls, *args: InputBoolean, menu: InputMenu = None, **kwargs: InputBoolean
+        cls, menu: InputMenu = None, items: dict[str, InputBoolean] = {}
     ) -> "MenuSwitch[BooleanSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="BOOLEAN", **kwargs)
+        return MenuSwitch(menu, items, data_type="BOOLEAN")
 
     @classmethod
     def vector(
-        cls, *args: InputVector, menu: InputMenu = None, **kwargs: InputVector
+        cls, menu: InputMenu = None, items: dict[str, InputVector] = {}
     ) -> "MenuSwitch[VectorSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="VECTOR", **kwargs)
+        return MenuSwitch(menu, items, data_type="VECTOR")
 
     @classmethod
     def color(
-        cls, *args: InputColor, menu: InputMenu = None, **kwargs: InputColor
+        cls, menu: InputMenu = None, items: dict[str, InputColor] = {}
     ) -> "MenuSwitch[ColorSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="RGBA", **kwargs)
+        return MenuSwitch(menu, items, data_type="RGBA")
 
     @classmethod
     def string(
-        cls, *args: InputString, menu: InputMenu = None, **kwargs: InputString
+        cls, menu: InputMenu = None, items: dict[str, InputString] = {}
     ) -> "MenuSwitch[StringSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="STRING", **kwargs)
+        return MenuSwitch(menu, items, data_type="STRING")
 
     @classmethod
     def menu(
-        cls, *args: InputMenu, menu: InputMenu = None, **kwargs: InputMenu
+        cls, menu: InputMenu = None, items: dict[str, InputMenu] = {}
     ) -> "MenuSwitch[MenuSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="MENU", **kwargs)
+        return MenuSwitch(menu, items, data_type="MENU")
 
 
 class Image(BaseNode):

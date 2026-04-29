@@ -8,6 +8,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
+    ColorSocket,
     FloatSocket,
     IntegerSocket,
     MatrixSocket,
@@ -40,9 +41,11 @@ def test_capture_attribute():
         cap = g.Points(
             count=10, position=g.RandomValue.vector(), radius=g.RandomValue.float()
         ) >> g.CaptureAttribute.point(
-            g.Position(),
-            g.Radius(),
-            normal=g.Normal(),
+            items={
+                "Position": g.Position(),
+                "Radius": g.Radius(),
+                "Normal": g.Normal(),
+            }
         )
         assert len(cap.node.capture_items) == 3
         assert cap.i.normal.links[0].from_node.bl_idname == "GeometryNodeInputNormal"
@@ -54,7 +57,7 @@ def test_capture_attribute():
 def test_join_geometry():
     with g.tree() as tree:
         items = [g.Cube(), g.UVSphere(), g.Cone(), g.Cylinder(), g.Grid()]
-        join = g.JoinGeometry(*items)
+        join = g.JoinGeometry(items)
 
     assert "Join Geometry" in tree.nodes
     assert len(join.node.inputs["Geometry"].links) == 5
@@ -102,10 +105,12 @@ def test_format_string():
         x_int = g.Integer(5)
         y_value = g.Value(12.50)
         format = g.FormatString(
-            g.String("test"),
-            format=str_to_format,
-            x=x_int,
-            y=y_value,
+            str_to_format,
+            items={
+                "String": g.String("test"),
+                "x": x_int,
+                "y": y_value,
+            },
         )
 
         assert len(format.node.format_items) == 3
@@ -129,12 +134,14 @@ def test_field_to_grid():
     with TreeBuilder() as tree:
         # the rotation value should add a vector item as the next available compatible data type
         inputs = [g.Vector(), g.Value(), g.Boolean(), g.Integer(), g.Rotation()]
-        math = g.Math.add()
+        items = {i.name: i for i in inputs}
+        items["test"] = g.Value()
 
-        ftg = g.FieldToGrid(*inputs, test=g.Value())
+        ftg = g.FieldToGrid(items=items)
+        math = g.Math.add()
         _ = ftg.o["test"] >> math
 
-        ftg2 = g.FieldToGrid(test_value=0.3)
+        ftg2 = g.FieldToGrid(items={"test_value": 0.3})
         assert ftg2.i["test_value"].socket.default_value == pytest.approx(0.3)
 
     assert len(tree) == 9
@@ -151,13 +158,27 @@ def test_field_to_grid():
 
     with TreeBuilder() as tree:
         grid = g.VolumeCube(g.NoiseTexture()) >> g.GetNamedGrid(name="density")
-        ftg = g.FieldToGrid.vector(g.NoiseTexture().o.color, topology=grid)
+        ftg = g.FieldToGrid.vector(grid, {"Color": g.NoiseTexture().o.color})
 
     assert ftg.data_type == "VECTOR"
     assert len(ftg.node.grid_items) == 1
     assert ftg.i.topology.socket.links[0].from_node == grid.node
     assert ftg.i.topology.socket.links[0].from_socket == grid.o.grid.socket
     assert ftg.i["Color"].socket.links[0].from_node.name == "Noise Texture.001"
+
+    with TreeBuilder() as tree:
+        nt = g.NoiseTexture()
+        ftg = g.FieldToGrid(g.CubeGridTopology())
+        pos, vec, fac = ftg.capture(
+            {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
+        )
+        assert len(ftg.o) == 4
+        assert isinstance(pos, VectorSocket)
+        assert pos.name == "position"
+        assert isinstance(vec, VectorSocket)
+        assert vec.name == "vec"
+        assert isinstance(nt.o.fac, FloatSocket)
+        assert fac.name == "fac"
 
 
 def test_field_variance():
@@ -186,19 +207,21 @@ def test_get_named_grid(snapshot_tree):
     with TreeBuilder() as tree:
         _ = (
             g.VolumeCube()
-            >> g.GetNamedGrid(name="density")
-            >> g.FieldToGrid(g.Position(), g.Position() * 2 + 10)
+            >> g.GetNamedGrid.float(name="density")
+            >> g.FieldToGrid.float(
+                items={"Position": g.Position(), "value": g.Position() * 2 + 10}
+            )
         )
 
     assert snapshot_tree == tree
 
 
-def test_advect_grid(snapshot_tree):
+def test_advect_grid():
     with TreeBuilder():
         grid = g.GetNamedGrid(g.VolumeCube(), name="density")
         ftg = g.FieldToGrid(
-            g.Position(),
-            topology=grid,
+            grid,
+            {"Position": g.Position()},
         )
 
         ag = grid >> g.AdvectGrid(
@@ -214,11 +237,11 @@ def test_sdf_grid_boolean():
     with TreeBuilder() as tree:
         trio = [g.PointsToSDFGrid() for _ in range(3)]
         bool1 = g.SDFGridBoolean.difference(
-            *trio,
-            grid_1=g.GetNamedGrid(g.VolumeCube(), name="density"),
+            g.GetNamedGrid(g.VolumeCube(), name="density"),
+            trio,
         )
-        bool2 = g.SDFGridBoolean.intersect(*trio)
-        bool3 = g.SDFGridBoolean.union(*trio)
+        bool2 = g.SDFGridBoolean.intersect(trio)
+        bool3 = g.SDFGridBoolean.union(trio)
 
     assert len(tree) == 8
     assert (
@@ -280,10 +303,10 @@ def test_bake():
     assert set_pos.node.inputs[0].links[0].from_socket == bake.node.outputs[0]
 
 
-def test_simulation(snapshot_tree):
+def test_simulation(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        input, output = g.SimulationZone(cube)
+        input, output = g.SimulationZone({"cube": cube})
         pos_math = input.capture(g.Position()) * g.Position()
         _ = pos_math >> output
         _ = (
@@ -296,13 +319,13 @@ def test_simulation(snapshot_tree):
         _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(output.node.inputs["Skip"].links) == 0
     assert len(tree) == 13
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
-def test_repeat(snapshot_tree):
+def test_repeat(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        for i, input, output in g.RepeatZone(10, cube):
+        for i, input, output in g.RepeatZone(10, {"cube": cube}):
             pos_math = input.capture(g.Position()) * g.Position()
             _ = pos_math >> output
             _ = (
@@ -313,7 +336,7 @@ def test_repeat(snapshot_tree):
             _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(tree) == 13
     assert len(input.items) == 2
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
     with TreeBuilder() as tree:
         zone = g.RepeatZone(5)
@@ -331,15 +354,15 @@ def test_repeat(snapshot_tree):
         [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
     )
     assert len(tree) == 7
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
 def test_index_switch(snapshot_tree):
     with TreeBuilder() as tree:
         items = (g.Cube(), g.UVSphere(), g.Cube(), g.Cube())
-        index = g.IndexSwitch.geometry(*items, index=5)
+        index = g.IndexSwitch.geometry(5, items)
 
-        index2 = g.IndexSwitch.float(*range(10))
+        index2 = g.IndexSwitch.float(items=range(10))
 
     assert len(index.node.index_switch_items) == 4
     assert len(tree) == 6
@@ -352,21 +375,20 @@ def test_index_switch(snapshot_tree):
 def test_menu_switch():
     with TreeBuilder() as tree:
         menu = tree.inputs.menu()
-        items = (
-            g.Cube(),
-            g.UVSphere(),
-            g.Cube(),
-            g.Cube(),
-        )
-        switch = g.MenuSwitch.geometry(*items, custom=g.Cone())
+        items = {
+            "Mesh": g.Cube(),
+            "UVSphere": g.UVSphere(),
+            "Cube": g.Cube(),
+        }
+        switch = g.MenuSwitch.geometry(items=items)
         menu >> switch
         menu.socket.default_value = "Mesh"
 
     assert switch.i.menu.socket.links[0].from_socket == menu.socket
-    assert len(switch.node.enum_items) == 5
+    assert len(switch.node.enum_items) == 3
 
     with TreeBuilder() as tree:
-        switch = g.MenuSwitch.float(*range(10))
+        switch = g.MenuSwitch.float(items={f"Input_{i}": i for i in range(10)})
 
     assert len(switch.node.enum_items) == 10
     print(
@@ -384,7 +406,12 @@ def test_menu_switch():
 def test_menu_switch_menu_connection():
     with TreeBuilder("AnotherMenuSwitch"):
         switch = g.MenuSwitch.geometry(
-            cube=g.Cube(), sphere=g.UVSphere(), cone=g.Cone(), menu=g.Switch.menu()
+            g.Switch.menu(),
+            items={
+                "cube": g.Cube(),
+                "UVSphere": g.UVSphere(),
+                "Cone": g.Cone(),
+            },
         )
     assert switch.i["Menu"].links
     assert switch.i["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
@@ -396,15 +423,15 @@ def test_multi_menu():
     with TreeBuilder() as tree:
         items = (g.Cube(), g.IcoSphere(), g.Grid())
 
-        menu = g.MenuSwitch.integer(test=0, another=1, again=2)
-        switch1 = g.IndexSwitch.geometry(*items, index=menu)
-        switch2 = g.IndexSwitch.geometry(*reversed(items), index=menu)
+        menu = g.MenuSwitch.integer(items={"test": 0, "another": 1, "again": 2})
+        switch1 = g.IndexSwitch.geometry(menu, items)
+        switch2 = g.IndexSwitch.geometry(menu, reversed(items))
 
         menu_input = tree.inputs.menu()
         menu_input >> menu
         menu_input.default_value = "test"
 
-        g.JoinGeometry(switch1, switch2) >> tree.outputs.geometry("Output")
+        g.JoinGeometry([switch1, switch2]) >> tree.outputs.geometry("Output")
 
 
 def test_switch_repeatzone(snapshot_tree):
@@ -413,9 +440,9 @@ def test_switch_repeatzone(snapshot_tree):
         output = tree.outputs.geometry()
 
         items = (g.Cube(), g.IcoSphere(), g.Grid())
-        zone = g.RepeatZone(5, input)
-        switch = g.IndexSwitch.geometry(*items, index=zone.iteration)
-        join = g.JoinGeometry(zone.input, switch)
+        zone = g.RepeatZone(5, {"Geometry": input})
+        switch = g.IndexSwitch.geometry(zone.iteration, items)
+        join = g.JoinGeometry([zone.input, switch])
         join >> zone.output >> output
 
     assert len(zone.output.items) == 1
@@ -426,8 +453,8 @@ def test_switch_repeatzone(snapshot_tree):
 def test_generate_select_group():
     with TreeBuilder() as tree:
         switch = g.IndexSwitch.boolean(
-            *[tree.inputs.boolean(str(i)) for i in range(20)],
-            index=g.NamedAttribute.integer("chain_id"),
+            g.NamedAttribute.integer("chain_id"),
+            [tree.inputs.boolean(str(i)) for i in range(20)],
         )
         switch >> tree.outputs.boolean("Selection")
 
@@ -517,7 +544,7 @@ def test_foreachgeometryelement_zone():
         zone.output.capture_generated(pos)
         zone.output.capture_generated(transformed)
         _ = transformed >> zone.output
-        _ = g.JoinGeometry(zone.output.o._get("Generation_0"), cube) >> out
+        _ = g.JoinGeometry([zone.output.o._get("Generation_0"), cube]) >> out
 
     input, output = zone
     with pytest.raises(IndexError):
@@ -640,7 +667,7 @@ def test_join_string():
     with g.tree():
         string = "abcdefg"
         letters = [g.String(x) for x in string]
-        join = g.JoinStrings(*letters)
+        join = g.JoinStrings(letters)
 
     assert len(letters) == len(join.i.strings.links)
 
@@ -649,26 +676,24 @@ def test_mesh_boolean():
     with g.tree():
         meshes = [g.Cube(), g.IcoSphere() >> g.TransformGeometry(translation=0.2)]
 
-        boolean = g.MeshBoolean.intersect(*meshes)
+        boolean = g.MeshBoolean.intersect(meshes)
         assert boolean.solver == "FLOAT"
         assert boolean.operation == "INTERSECT"
         boolean.solver = "EXACT"
         assert boolean.solver == "EXACT"
-        bool2 = g.MeshBoolean.difference(*meshes, mesh_1=g.Cone(), solver="EXACT")
+        bool2 = g.MeshBoolean.difference(g.Cone(), meshes, solver="EXACT")
         assert bool2.operation == "DIFFERENCE"
         assert bool2.solver == "EXACT"
         bool2.operation = "INTERSECT"
         assert bool2.operation == "INTERSECT"
-        bool3 = g.MeshBoolean.intersect(
-            *meshes, hole_tolerant=g.Boolean(), self_intersection=False, solver="EXACT"
-        )
+        bool3 = g.MeshBoolean.intersect(meshes, False, g.Boolean(), solver="EXACT")
         assert len(bool3.i.mesh_2.links) == 2
         assert bool3.solver == "EXACT"
         assert bool3.operation == "INTERSECT"
         assert (
             bool3.i.hole_tolerant.links[0].from_node.bl_idname == g.Boolean._bl_idname
         )
-        bool4 = g.MeshBoolean.union(*meshes, self_intersection=True, solver="EXACT")
+        bool4 = g.MeshBoolean.union(meshes, self_intersection=True, solver="EXACT")
         assert len(bool4.i.mesh_2.links) == 2
         assert bool4.solver == "EXACT"
         assert bool4.i.self_intersection.default_value is True
