@@ -26,7 +26,7 @@ def test_diagram_join_geometry(snapshot):
     with TreeBuilder("DiagramJoin") as tree:
         geo_in = tree.inputs.geometry()
         geo_out = tree.outputs.geometry()
-        g.JoinGeometry(geo_in, geo_in >> g.SubdivisionSurface()) >> geo_out
+        g.JoinGeometry([geo_in, geo_in >> g.SubdivisionSurface()]) >> geo_out
 
     assert snapshot == to_mermaid(tree)
 
@@ -50,7 +50,7 @@ def test_diagram_shared_input(snapshot):
         t2 = g.TransformGeometry(scale=scale)
         geo_in >> t1
         geo_in >> t2
-        g.JoinGeometry(t1, t2) >> tree.outputs.geometry()
+        g.JoinGeometry([t1, t2]) >> tree.outputs.geometry()
 
     assert snapshot == to_mermaid(tree)
 

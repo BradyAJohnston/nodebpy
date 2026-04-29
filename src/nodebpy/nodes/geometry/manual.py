@@ -2,7 +2,7 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
 
 import bpy
-from bpy.types import NodeEvaluateClosure, NodeSocket
+from bpy.types import NodeEvaluateClosure, NodeSocket, NodeSocketString
 
 from ...builder import (
     BaseNode,
@@ -109,6 +109,7 @@ __all__ = (
     "JoinStrings",
     "GeometryToInstance",
     "FormatString",
+    "JoinStrings",
     "Value",
     "AccumulateField",
     "EvaluateAtIndex",
@@ -505,12 +506,16 @@ class JoinStrings(BaseNode):
         @property
         def i(self) -> _Inputs: ...
 
-    def __init__(self, *args: InputLinkable, delimiter: InputString = ""):
+    def __init__(
+        self,
+        strings: Iterable[StringSocket | NodeSocketString | BaseNode] = (),
+        delimiter: InputString = "",
+    ):
         super().__init__()
 
         self._establish_links(Delimiter=delimiter)
-        for arg in args:
-            self._link_from(arg, "Strings")
+        for string in strings:
+            self._link_from(string, "Strings")
 
 
 class MeshBoolean(BaseNode):
@@ -538,26 +543,34 @@ class MeshBoolean(BaseNode):
 
     def __init__(
         self,
-        *args: InputGeometry,
+        mesh_1: InputGeometry = None,
+        mesh_2: Iterable[InputGeometry] = (),
+        *,
+        self_intersection: InputBoolean = False,
+        hole_tolerant: InputBoolean = False,
         operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
-        **kwargs,
     ):
         super().__init__()
-        key_args = {}
-        key_args.update(kwargs)
+        key_args = {
+            "Mesh 1": mesh_1,
+            "Self Intersection": self_intersection,
+            "Hole Tolerant": hole_tolerant,
+        }
+        for arg in mesh_2:
+            self._link_from(arg, "Mesh 2")
+
         self.operation = operation
         self.solver = solver
-        for arg in args:
-            self._link_from(arg, "Mesh 2")
         self._establish_links(**key_args)
 
     @classmethod
     def intersect(
         cls,
-        *args: InputGeometry,
+        items: Iterable[InputGeometry] = (),
         self_intersection: InputBoolean = False,
         hole_tolerant: InputBoolean = False,
+        *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
         key_args = {}
@@ -565,7 +578,7 @@ class MeshBoolean(BaseNode):
             key_args["self_intersection"] = self_intersection
             key_args["hole_tolerant"] = hole_tolerant
         return cls(
-            *args,
+            mesh_2=items,
             **key_args,
             solver=solver,
             operation="INTERSECT",
@@ -574,9 +587,10 @@ class MeshBoolean(BaseNode):
     @classmethod
     def union(
         cls,
-        *args: InputGeometry,
+        items: Iterable[InputGeometry] = (),
         self_intersection: InputBoolean = False,
         hole_tolerant: InputBoolean = False,
+        *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
         key_args = {}
@@ -584,7 +598,7 @@ class MeshBoolean(BaseNode):
             key_args["self_intersection"] = self_intersection
             key_args["hole_tolerant"] = hole_tolerant
         return cls(
-            *args,
+            mesh_2=items,
             **key_args,
             solver=solver,
             operation="UNION",
@@ -593,22 +607,23 @@ class MeshBoolean(BaseNode):
     @classmethod
     def difference(
         cls,
-        *args: InputGeometry,
         mesh_1: InputGeometry = None,
+        items: Iterable[InputGeometry] = (),
         self_intersection: InputBoolean = False,
         hole_tolerant: InputBoolean = False,
+        *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
         key_args = {}
-        key_args["Mesh 1"] = mesh_1
         if solver == "EXACT":
             key_args["self_intersection"] = self_intersection
             key_args["hole_tolerant"] = hole_tolerant
         return cls(
-            *args,
-            **key_args,
+            mesh_1=mesh_1,
+            mesh_2=items,
             solver=solver,
             operation="DIFFERENCE",
+            **key_args,
         )
 
     @property
@@ -647,9 +662,9 @@ class JoinGeometry(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, *args: InputLinkable):
+    def __init__(self, geometry: Iterable[InputGeometry] = ()):
         super().__init__()
-        for source in reversed(args):
+        for source in reversed(geometry):
             assert source
             self._link(*self._find_best_socket_pair(source, self))
 
@@ -1263,7 +1278,7 @@ class CaptureAttribute(BaseNode, DynamicInputsMixin):
         self.node.domain = value
 
 
-class FieldToGrid(DynamicInputsMixin, BaseNode):
+class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     """Create new grids by evaluating new values on an existing volume grid topology
 
     New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
@@ -1289,21 +1304,30 @@ class FieldToGrid(DynamicInputsMixin, BaseNode):
     _type_map = {"VALUE": "FLOAT"}
     _default_input_id = "Topology"
 
+    if TYPE_CHECKING:
+
+        class _Inputs(SocketAccessor, Generic[_S]):
+            topology: _S
+            """The grid which contains the topology to evaluate the different fields on."""
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+
     def __init__(
         self,
-        *args: InputGrid,
         topology: InputGrid = None,
+        items: dict[str, InputAny] = {},
+        *,
         data_type: _GridDataTypes = "FLOAT",
-        **kwargs: InputGrid,
     ):
         super().__init__()
         self.data_type = data_type
         key_args = {"Topology": topology}
 
-        linkable = {k: v for k, v in kwargs.items() if not _is_default_value(v)}
-        defaults = {k: v for k, v in kwargs.items() if _is_default_value(v)}
+        linkable = {k: v for k, v in items.items() if not _is_default_value(v)}
+        defaults = {k: v for k, v in items.items() if _is_default_value(v)}
 
-        key_args.update(self._add_inputs(*args, **linkable))
+        key_args.update(self._add_inputs(**linkable))
         for name, value in defaults.items():
             self._add_socket(name=name, default_value=value)
 
@@ -1320,37 +1344,34 @@ class FieldToGrid(DynamicInputsMixin, BaseNode):
             self.node.inputs[item.name].default_value = default_value  # ty: ignore[unresolved-attribute]
         return self.node.inputs[item.name]
 
-    def capture(self, *args, **kwargs) -> list[SocketLinker]:
-        outputs = {
-            name: self.node.outputs[name] for name in self._add_inputs(*args, **kwargs)
-        }
+    def capture(self, items: dict[str, InputGrid]) -> list[SocketLinker]:
+        outputs = {name: self.node.outputs[name] for name in self._add_inputs(**items)}
 
         return [SocketLinker(x) for x in outputs.values()]
 
     @classmethod
-    def float(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
-        return cls(*args, data_type="FLOAT", topology=topology, **kwargs)
+    def float(
+        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[FloatSocket]":
+        return FieldToGrid(topology, items, data_type="FLOAT")
 
     @classmethod
-    def integer(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
-        return cls(*args, data_type="INT", topology=topology, **kwargs)
+    def integer(
+        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[IntegerSocket]":
+        return FieldToGrid(topology, items, data_type="INT")
 
     @classmethod
-    def vector(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
-        return cls(*args, data_type="VECTOR", topology=topology, **kwargs)
+    def vector(
+        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[VectorSocket]":
+        return FieldToGrid(topology, items, data_type="VECTOR")
 
     @classmethod
-    def boolean(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
-        return cls(*args, data_type="BOOLEAN", topology=topology, **kwargs)
-
-    class _Inputs(SocketAccessor):
-        topology: SocketLinker
-        """The grid which contains the topology to evaluate the different fields on."""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
+    def boolean(
+        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[BooleanSocket]":
+        return FieldToGrid(topology, items, data_type="BOOLEAN")
 
     @property
     def data_type(
@@ -1372,52 +1393,6 @@ class SDFGridBoolean(BaseNode):
     _bl_idname = "GeometryNodeSDFGridBoolean"
     node: bpy.types.GeometryNodeSDFGridBoolean
 
-    def __init__(
-        self, *, operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE"
-    ):
-        super().__init__()
-        self.operation = operation
-
-    @classmethod
-    def intersect(
-        cls,
-        *args: InputLinkable,
-    ) -> "SDFGridBoolean":
-        node = cls(operation="INTERSECT")
-        for arg in args:
-            if arg is None:
-                continue
-            node._link_from(*node._find_best_socket_pair(arg, node.i["Grid 2"]))
-        return node
-
-    @classmethod
-    def union(
-        cls,
-        *args: InputLinkable,
-    ) -> "SDFGridBoolean":
-        node = cls(operation="UNION")
-        for arg in args:
-            if arg is None:
-                continue
-            node._link_from(*node._find_best_socket_pair(arg, node.i["Grid 2"]))
-        return node
-
-    @classmethod
-    def difference(
-        cls,
-        *args: InputLinkable,
-        grid_1: InputLinkable = None,
-    ) -> "SDFGridBoolean":
-        """Create SDF Grid Boolean with operation 'Difference'."""
-        node = cls(operation="DIFFERENCE")
-        if grid_1 is not None:
-            node._link_from(*node._find_best_socket_pair(grid_1, node.i["Grid 1"]))
-        for arg in args:
-            if arg is None:
-                continue
-            node._link_from(*node._find_best_socket_pair(arg, node.i["Grid 2"]))
-        return node
-
     class _Inputs(SocketAccessor):
         grid_1: SocketLinker
         """First SDF grid input."""
@@ -1435,6 +1410,49 @@ class SDFGridBoolean(BaseNode):
 
         @property
         def o(self) -> _Outputs: ...
+
+    def __init__(
+        self, *, operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE"
+    ):
+        super().__init__()
+        self.operation = operation
+
+    @classmethod
+    def intersect(
+        cls,
+        grids: Iterable[InputGrid] = (),
+    ) -> "SDFGridBoolean":
+        node = cls(operation="INTERSECT")
+        for grid in grids:
+            assert grid
+            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
+        return node
+
+    @classmethod
+    def union(
+        cls,
+        grids: Iterable[InputGrid] = (),
+    ) -> "SDFGridBoolean":
+        node = cls(operation="UNION")
+        for grid in grids:
+            assert grid
+            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
+        return node
+
+    @classmethod
+    def difference(
+        cls,
+        grid_1: InputLinkable = None,
+        grids: Iterable[InputGrid] = (),
+    ) -> "SDFGridBoolean":
+        """Create SDF Grid Boolean with operation 'Difference'."""
+        node = cls(operation="DIFFERENCE")
+        if grid_1 is not None:
+            node._link_from(*node._find_best_socket_pair(grid_1, node.i["Grid 1"]))
+        for grid in grids:
+            assert grid
+            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
+        return node
 
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
@@ -1494,11 +1512,9 @@ class AccumulateField(BaseNode, Generic[_T]):
         *,
         data_type: _AccumulateFieldDataTypes = "FLOAT",
         domain: _AttributeDomains = "POINT",
-        **kwargs,
     ):
         super().__init__()
         key_args = {"Value": value, "Group Index": group_index}
-        key_args.update(kwargs)
         self.data_type = data_type
         self.domain = domain
         self._establish_links(**key_args)

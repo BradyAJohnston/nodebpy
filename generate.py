@@ -107,6 +107,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "ClosureOutput",
         "ClosureZone",
         "FormatString",
+        "JoinStrings",
         "Collection",
         "Material",
         "Object",

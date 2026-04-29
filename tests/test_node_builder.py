@@ -512,7 +512,7 @@ def test_nested_trees():
                 group,
             )
 
-            _ = g.JoinGeometry(*items) >> tree2.outputs.geometry("Output")
+            _ = g.JoinGeometry(items) >> tree2.outputs.geometry("Output")
 
         group = g.Group()
         group.node.node_tree = tree2.tree
