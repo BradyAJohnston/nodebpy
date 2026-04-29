@@ -2,16 +2,13 @@
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy import sockets as s
 
 
 def test_simple_tree_snapshot(snapshot_tree):
     """Test a simple geometry node tree snapshot."""
     with TreeBuilder("SimpleTest") as tree:
-        with tree.inputs:
-            input = s.SocketGeometry()
-        with tree.outputs:
-            output = s.SocketGeometry()
+        input = tree.inputs.geometry()
+        output = tree.outputs.geometry()
 
         # Create some nodes
         set_pos = g.SetPosition()
@@ -31,12 +28,9 @@ def test_simple_tree_snapshot(snapshot_tree):
 def test_complex_tree_snapshot(snapshot_tree):
     """Test a more complex geometry node tree snapshot."""
     with TreeBuilder("ComplexTest") as tree:
-        # Set up interface
-        with tree.inputs:
-            input = s.SocketGeometry()
-            scale = s.SocketFloat("Scale", 1.0, min_value=0.0, max_value=10.0)
-        with tree.outputs:
-            output = s.SocketGeometry()
+        input = tree.inputs.geometry()
+        scale = tree.inputs.float("Scale", 1.0, min_value=0.0, max_value=10.0)
+        output = tree.outputs.geometry()
 
         subdivide = g.SubdivisionSurface()
         transform1 = g.TransformGeometry(scale=scale)
@@ -44,8 +38,10 @@ def test_complex_tree_snapshot(snapshot_tree):
 
         _ = (
             g.JoinGeometry(
-                input >> subdivide >> transform1,
-                input >> transform2,
+                [
+                    input >> subdivide >> transform1,
+                    input >> transform2,
+                ]
             )
             >> output
         )
@@ -60,13 +56,10 @@ def test_complex_tree_snapshot(snapshot_tree):
 def test_tree_with_math_nodes(snapshot_tree):
     """Test tree with math operations."""
     with TreeBuilder("MathTest") as tree:
-        with tree.inputs:
-            geo_in = s.SocketGeometry()
-            value = s.SocketFloat("Value", 5.0)
-
-        with tree.outputs:
-            geo_out = s.SocketGeometry()
-            result = s.SocketFloat("Result")
+        geo_in = tree.inputs.geometry()
+        value = tree.inputs.float("Value", 5.0)
+        geo_out = tree.outputs.geometry()
+        result = tree.outputs.float("Result")
 
         # Create math operations using the overloaded operators
         math_result = value * 2.0 + 1.0

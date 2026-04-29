@@ -16,19 +16,13 @@ The `TreeBuilderSnapshotExtension` provides:
 def test_my_tree(snapshot_tree):
     """Test that demonstrates tree snapshot usage."""
     with TreeBuilder("MyTree") as tree:
-        # Set up interface
-        geom_in = sockets.SocketGeometry("Geometry") 
-        geom_out = sockets.SocketGeometry("Geometry")
-        tree.interface(inputs=[geom_in], outputs=[geom_out])
-        
-        # Create and connect nodes
-        set_pos = nodes.SetPosition()
-        tree.inputs.geometry >> set_pos >> tree.outputs.geometry
-        
-        # Set properties
+        geom_in = tree.inputs.geometry("Geometry")
+        geom_out = tree.outputs.geometry("Geometry")
+
+        set_pos = g.SetPosition()
+        geom_in >> set_pos >> geom_out
         set_pos.node.inputs["Offset"].default_value = (1.0, 2.0, 3.0)
-        
-    # This creates/compares a snapshot of the entire tree structure
+
     assert snapshot_tree == tree
 ```
 

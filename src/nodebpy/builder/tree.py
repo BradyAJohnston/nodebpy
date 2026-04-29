@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self
+from typing import Any, ClassVar, Generic, Literal, Self, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -25,30 +25,28 @@ from ..types import (
     _SocketShapeStructureType,
 )
 from ._utils import SocketError, _allow_innactive_sockets
+from .socket import (
+    BooleanSocket,
+    BundleSocket,
+    ClosureSocket,
+    CollectionSocket,
+    ColorSocket,
+    FloatSocket,
+    GeometrySocket,
+    ImageSocket,
+    IntegerSocket,
+    MaterialSocket,
+    MatrixSocket,
+    MenuSocket,
+    ObjectSocket,
+    RotationSocket,
+    ShaderSocket,
+    Socket,
+    StringSocket,
+    VectorSocket,
+)
 
-if TYPE_CHECKING:
-    from .interface import (
-        InterfaceSocket,
-    )
-    from .socket import (
-        BooleanSocket,
-        BundleSocket,
-        ClosureSocket,
-        CollectionSocket,
-        ColorSocket,
-        FloatSocket,
-        GeometrySocket,
-        ImageSocket,
-        IntegerSocket,
-        MaterialSocket,
-        MatrixSocket,
-        MenuSocket,
-        ObjectSocket,
-        RotationSocket,
-        ShaderSocket,
-        StringSocket,
-        VectorSocket,
-    )
+_SocketT = TypeVar("_SocketT", bound=Socket)
 
 
 class PanelContext:
@@ -79,7 +77,6 @@ class PanelContext:
 
 class SocketContext:
     _direction: Literal["INPUT", "OUTPUT"] | None
-    _active_context: "SocketContext | None" = None
 
     def __init__(self, tree_builder: "TreeBuilder"):
         self.builder = tree_builder
@@ -105,23 +102,56 @@ class SocketContext:
     # Socket factory methods
     # ------------------------------------------------------------------
 
-    def _make_socket(self, socket_cls: type, /, *args: Any, **kwargs: Any):
-        """Temporarily activate this context, instantiate socket_cls, restore."""
-        prev = SocketContext._active_context
-        SocketContext._active_context = self
-        try:
-            return socket_cls(*args, **kwargs)
-        finally:
-            SocketContext._active_context = prev
+    def _add_socket(
+        self, socket_type: str, name: str, description: str
+    ) -> bpy.types.NodeTreeInterfaceSocket:
+        kwargs: dict[str, Any] = {
+            "name": name,
+            "in_out": self._direction,
+            "socket_type": socket_type,
+        }
+        if self._active_panel is not None:
+            kwargs["parent"] = self._active_panel
+        interface_socket = self.interface.new_socket(**kwargs)
+        interface_socket.description = description
+        return interface_socket
+
+    def _set_props(
+        self, interface_socket: bpy.types.NodeTreeInterfaceSocket, **kwargs: Any
+    ) -> None:
+        for key, value in kwargs.items():
+            if value is None:
+                continue
+            if (
+                interface_socket.socket_type == "NodeSocketMenu"
+                and key == "default_value"
+            ):
+                self.builder._menu_defaults[interface_socket.identifier] = value
+            else:
+                setattr(interface_socket, key, value)
+
+    def _wrap(
+        self,
+        socket_cls: type[_SocketT],
+        interface_socket: bpy.types.NodeTreeInterfaceSocket,
+    ) -> _SocketT:
+        if self._direction == "INPUT":
+            bpy_socket = self.builder._input_node().outputs[interface_socket.identifier]
+        else:
+            bpy_socket = self.builder._output_node().inputs[interface_socket.identifier]
+        s = socket_cls(bpy_socket)
+        s._tree = self.builder
+        s.interface_socket = interface_socket
+        return s
 
     def float(
         self,
         name: str = "Value",
-        default_value: float = 0.0,
+        default_value: float = 0.0,  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
-        min_value: float | None = None,
-        max_value: float | None = None,
+        min_value: float | None = None,  # ty: ignore[invalid-type-form]
+        max_value: float | None = None,  # ty: ignore[invalid-type-form]
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
@@ -130,14 +160,10 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ) -> "FloatSocket":
-        """Add a Float socket to this input/output interface."""
-        from .interface import SocketFloat
-
-        return self._make_socket(
-            SocketFloat,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketFloat", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             min_value=min_value,
             max_value=max_value,
             optional_label=optional_label,
@@ -148,6 +174,7 @@ class SocketContext:
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
+        return self._wrap(FloatSocket, iface)
 
     def integer(
         self,
@@ -166,14 +193,10 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ) -> "IntegerSocket":
-        """Add an Integer socket to this input/output interface."""
-        from .interface import SocketInteger
-
-        return self._make_socket(
-            SocketInteger,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketInt", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             min_value=min_value,
             max_value=max_value,
             optional_label=optional_label,
@@ -185,6 +208,7 @@ class SocketContext:
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
+        return self._wrap(IntegerSocket, iface)
 
     def boolean(
         self,
@@ -201,14 +225,10 @@ class SocketContext:
         default_attribute: str | None = None,
         is_panel_toggle: bool = False,
     ) -> "BooleanSocket":
-        """Add a Boolean socket to this input/output interface."""
-        from .interface import SocketBoolean
-
-        return self._make_socket(
-            SocketBoolean,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketBool", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
@@ -218,16 +238,17 @@ class SocketContext:
             default_attribute=default_attribute,
             is_panel_toggle=is_panel_toggle,
         )
+        return self._wrap(BooleanSocket, iface)
 
     def vector(
         self,
         name: str = "Vector",
-        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
         dimensions: int = 3,
-        min_value: float | None = None,
-        max_value: float | None = None,
+        min_value: float | None = None,  # ty: ignore[invalid-type-form]
+        max_value: float | None = None,  # ty: ignore[invalid-type-form]
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
@@ -239,15 +260,14 @@ class SocketContext:
         ] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
     ) -> "VectorSocket":
-        """Add a Vector socket to this input/output interface."""
-        from .interface import SocketVector
-
-        return self._make_socket(
-            SocketVector,
-            name,
-            default_value,
-            description,
+        assert len(default_value) == dimensions, (
+            "Default value length must match dimensions"
+        )
+        iface = self._add_socket("NodeSocketVector", name, description)
+        self._set_props(
+            iface,
             dimensions=dimensions,
+            default_value=default_value,
             min_value=min_value,
             max_value=max_value,
             optional_label=optional_label,
@@ -255,15 +275,16 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             subtype=subtype,
-            default_attribute=default_attribute,
             default_input=default_input,
+            default_attribute=default_attribute,
             attribute_domain=attribute_domain,
         )
+        return self._wrap(VectorSocket, iface)
 
     def color(
         self,
         name: str = "Color",
-        default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
+        default_value: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
         optional_label: bool = False,
@@ -273,14 +294,11 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ) -> "ColorSocket":
-        """Add a Color socket to this input/output interface."""
-        from .interface import SocketColor
-
-        return self._make_socket(
-            SocketColor,
-            name,
-            default_value,
-            description,
+        assert len(default_value) == 4, "Default color must be RGBA tuple"
+        iface = self._add_socket("NodeSocketColor", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
@@ -288,11 +306,12 @@ class SocketContext:
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
+        return self._wrap(ColorSocket, iface)
 
     def rotation(
         self,
         name: str = "Rotation",
-        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
         optional_label: bool = False,
@@ -302,14 +321,10 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ) -> "RotationSocket":
-        """Add a Rotation socket to this input/output interface."""
-        from .interface import SocketRotation
-
-        return self._make_socket(
-            SocketRotation,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketRotation", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
@@ -317,6 +332,7 @@ class SocketContext:
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
+        return self._wrap(RotationSocket, iface)
 
     def matrix(
         self,
@@ -331,13 +347,9 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
     ) -> "MatrixSocket":
-        """Add a Matrix socket to this input/output interface."""
-        from .interface import SocketMatrix
-
-        return self._make_socket(
-            SocketMatrix,
-            name,
-            description,
+        iface = self._add_socket("NodeSocketMatrix", name, description)
+        self._set_props(
+            iface,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
@@ -346,6 +358,7 @@ class SocketContext:
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
         )
+        return self._wrap(MatrixSocket, iface)
 
     def string(
         self,
@@ -358,19 +371,16 @@ class SocketContext:
         hide_in_modifier: bool = False,
         subtype: StringInterfaceSubtypes = "NONE",
     ) -> "StringSocket":
-        """Add a String socket to this input/output interface."""
-        from .interface import SocketString
-
-        return self._make_socket(
-            SocketString,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketString", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
             subtype=subtype,
         )
+        return self._wrap(StringSocket, iface)
 
     def menu(
         self,
@@ -384,20 +394,17 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
     ) -> "MenuSocket":
-        """Add a Menu socket to this input/output interface."""
-        from .interface import SocketMenu
-
-        return self._make_socket(
-            SocketMenu,
-            name,
-            default_value,
-            description,
-            expanded=expanded,
+        iface = self._add_socket("NodeSocketMenu", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            menu_expanded=expanded,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
         )
+        return self._wrap(MenuSocket, iface)
 
     def object(
         self,
@@ -409,18 +416,15 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
     ) -> "ObjectSocket":
-        """Add an Object socket to this input/output interface."""
-        from .interface import SocketObject
-
-        return self._make_socket(
-            SocketObject,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketObject", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+        return self._wrap(ObjectSocket, iface)
 
     def geometry(
         self,
@@ -431,17 +435,14 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
     ) -> "GeometrySocket":
-        """Add a Geometry socket to this input/output interface."""
-        from .interface import SocketGeometry
-
-        return self._make_socket(
-            SocketGeometry,
-            name,
-            description,
+        iface = self._add_socket("NodeSocketGeometry", name, description)
+        self._set_props(
+            iface,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+        return self._wrap(GeometrySocket, iface)
 
     def collection(
         self,
@@ -453,18 +454,15 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
     ) -> "CollectionSocket":
-        """Add a Collection socket to this input/output interface."""
-        from .interface import SocketCollection
-
-        return self._make_socket(
-            SocketCollection,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketCollection", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+        return self._wrap(CollectionSocket, iface)
 
     def image(
         self,
@@ -476,18 +474,15 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
     ) -> "ImageSocket":
-        """Add an Image socket to this input/output interface."""
-        from .interface import SocketImage
-
-        return self._make_socket(
-            SocketImage,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketImage", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+        return self._wrap(ImageSocket, iface)
 
     def material(
         self,
@@ -499,18 +494,15 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
     ) -> "MaterialSocket":
-        """Add a Material socket to this input/output interface."""
-        from .interface import SocketMaterial
-
-        return self._make_socket(
-            SocketMaterial,
-            name,
-            default_value,
-            description,
+        iface = self._add_socket("NodeSocketMaterial", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+        return self._wrap(MaterialSocket, iface)
 
     def bundle(
         self,
@@ -521,17 +513,14 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
     ) -> "BundleSocket":
-        """Add a Bundle socket to this input/output interface."""
-        from .interface import SocketBundle
-
-        return self._make_socket(
-            SocketBundle,
-            name,
-            description,
+        iface = self._add_socket("NodeSocketBundle", name, description)
+        self._set_props(
+            iface,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+        return self._wrap(BundleSocket, iface)
 
     def closure(
         self,
@@ -542,17 +531,14 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
     ) -> "ClosureSocket":
-        """Add a Closure socket to this input/output interface."""
-        from .interface import SocketClosure
-
-        return self._make_socket(
-            SocketClosure,
-            name,
-            description,
+        iface = self._add_socket("NodeSocketClosure", name, description)
+        self._set_props(
+            iface,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
+        return self._wrap(ClosureSocket, iface)
 
     def shader(
         self,
@@ -563,40 +549,14 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
     ) -> "ShaderSocket":
-        """Add a Shader socket to this input/output interface."""
-        from .interface import SocketShader
-
-        return self._make_socket(
-            SocketShader,
-            name,
-            description,
+        iface = self._add_socket("NodeSocketShader", name, description)
+        self._set_props(
+            iface,
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
         )
-
-    def _create_socket(
-        self, socket_def: "InterfaceSocket", name: str
-    ) -> bpy.types.NodeTreeInterfaceSocket:
-        """Create a socket from a socket definition."""
-        kwargs: dict[str, Any] = {
-            "name": name,
-            "in_out": self._direction,
-            "socket_type": socket_def._bl_socket_type,
-        }
-        if self._active_panel is not None:
-            kwargs["parent"] = self._active_panel
-        socket = self.interface.new_socket(**kwargs)
-        socket.description = socket_def.description
-        return socket
-
-    def __enter__(self):
-        SocketContext._active_context = self
-        return self
-
-    def __exit__(self, *args):
-        SocketContext._direction = None
-        SocketContext._active_context = None
+        return self._wrap(ShaderSocket, iface)
 
     def __len__(self) -> int:
         return len(
@@ -612,7 +572,6 @@ class DirectionalContext(SocketContext):
     """Base class for directional socket contexts"""
 
     _direction = "INPUT"
-    _active_context = None
 
 
 class InputInterfaceContext(DirectionalContext):
@@ -623,12 +582,16 @@ class OutputInterfaceContext(DirectionalContext):
     _direction = "OUTPUT"
 
 
-class TreeBuilder:
+_TreeT = TypeVar("_TreeT", bound=NodeTree)
+
+
+class TreeBuilder(Generic[_TreeT]):
     """Builder for creating Blender node trees with a clean Python API.
 
     Supports geometry, shader, and compositor node trees.
     """
 
+    tree: _TreeT
     _tree_contexts: ClassVar["list[TreeBuilder]"] = []
     _frame_contexts: ClassVar["list[NodeFrame]"] = []
 
@@ -645,9 +608,9 @@ class TreeBuilder:
         ignore_visibility: bool = False,
     ):
         if isinstance(tree, str):
-            self.tree = bpy.data.node_groups.new(tree, tree_type)
+            self.tree = bpy.data.node_groups.new(tree, tree_type)  # type: ignore[assignment]
         else:
-            self.tree = tree
+            self.tree = tree  # type: ignore[assignment]
 
         self._menu_defaults: dict[str, str] = {}
         self.inputs = InputInterfaceContext(self)
@@ -665,14 +628,17 @@ class TreeBuilder:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder":
+    ) -> "TreeBuilder[GeometryNodeTree]":
         """Create a geometry node tree."""
-        return cls(
-            name,
-            tree_type="GeometryNodeTree",
-            collapse=collapse,
-            arrange=arrange,
-            fake_user=fake_user,
+        return cast(
+            "TreeBuilder[GeometryNodeTree]",
+            cls(
+                name,
+                tree_type="GeometryNodeTree",
+                collapse=collapse,
+                arrange=arrange,
+                fake_user=fake_user,
+            ),
         )
 
     @classmethod
@@ -683,14 +649,17 @@ class TreeBuilder:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder":
+    ) -> "TreeBuilder[ShaderNodeTree]":
         """Create a shader node tree."""
-        return cls(
-            name,
-            tree_type="ShaderNodeTree",
-            collapse=collapse,
-            arrange=arrange,
-            fake_user=fake_user,
+        return cast(
+            "TreeBuilder[ShaderNodeTree]",
+            cls(
+                name,
+                tree_type="ShaderNodeTree",
+                collapse=collapse,
+                arrange=arrange,
+                fake_user=fake_user,
+            ),
         )
 
     @classmethod
@@ -701,14 +670,17 @@ class TreeBuilder:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder":
+    ) -> "TreeBuilder[CompositorNodeTree]":
         """Create a compositor node tree."""
-        return cls(
-            name,
-            tree_type="CompositorNodeTree",
-            collapse=collapse,
-            arrange=arrange,
-            fake_user=fake_user,
+        return cast(
+            "TreeBuilder[CompositorNodeTree]",
+            cls(
+                name,
+                tree_type="CompositorNodeTree",
+                collapse=collapse,
+                arrange=arrange,
+                fake_user=fake_user,
+            ),
         )
 
     @property
@@ -810,8 +782,14 @@ class TreeBuilder:
         if not isinstance(socket2, NodeSocket):
             socket2 = socket2.socket  # type: ignore[attr-defined]
 
+        is_reroute = (
+            getattr(socket1.node, "bl_idname", None) == "NodeReroute"
+            or getattr(socket2.node, "bl_idname", None) == "NodeReroute"
+        )
         if (
-            socket1.type not in SOCKET_COMPATIBILITY.get(socket2.type, ())
+            not is_reroute
+            and socket1.type not in SOCKET_COMPATIBILITY.get(socket2.type, ())
+            and socket1.type != "CUSTOM"
             and socket2.type != "CUSTOM"
         ):
             raise SocketError(

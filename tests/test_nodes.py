@@ -4,8 +4,17 @@ import bpy
 import pytest
 
 from nodebpy import TreeBuilder
+from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
+from nodebpy.builder import (
+    ColorSocket,
+    FloatSocket,
+    IntegerSocket,
+    MatrixSocket,
+    StringSocket,
+    VectorSocket,
+)
 
 
 def test_capture_attribute():
@@ -32,9 +41,11 @@ def test_capture_attribute():
         cap = g.Points(
             count=10, position=g.RandomValue.vector(), radius=g.RandomValue.float()
         ) >> g.CaptureAttribute.point(
-            g.Position(),
-            g.Radius(),
-            normal=g.Normal(),
+            items={
+                "Position": g.Position(),
+                "Radius": g.Radius(),
+                "Normal": g.Normal(),
+            }
         )
         assert len(cap.node.capture_items) == 3
         assert cap.i.normal.links[0].from_node.bl_idname == "GeometryNodeInputNormal"
@@ -46,7 +57,7 @@ def test_capture_attribute():
 def test_join_geometry():
     with g.tree() as tree:
         items = [g.Cube(), g.UVSphere(), g.Cone(), g.Cylinder(), g.Grid()]
-        join = g.JoinGeometry(*items)
+        join = g.JoinGeometry(items)
 
     assert "Join Geometry" in tree.nodes
     assert len(join.node.inputs["Geometry"].links) == 5
@@ -83,9 +94,9 @@ class TestMathOperators:
 
             eval(f"input() {operator} 1.0 {operator} pos >> set_pos")
 
-        assert len(set_pos.i.offset.socket.links) == 0
-        assert len(set_pos.i.geometry.socket.links) == 0
-        assert len(set_pos.i.position.socket.links) == 1
+        assert len(set_pos.i.offset.links) == 0
+        assert len(set_pos.i.geometry.links) == 0
+        assert len(set_pos.i.position.links) == 1
 
 
 def test_format_string():
@@ -94,44 +105,49 @@ def test_format_string():
         x_int = g.Integer(5)
         y_value = g.Value(12.50)
         format = g.FormatString(
-            g.String("test"),
-            format=str_to_format,
-            x=x_int,
-            y=y_value,
+            str_to_format,
+            items={
+                "String": g.String("test"),
+                "x": x_int,
+                "y": y_value,
+            },
         )
 
         assert len(format.node.format_items) == 3
-        assert format.node.inputs[0].default_value == str_to_format  # type: ignore
-        assert format.node.inputs[1].name == "String"
-        assert format.node.inputs[1].type == "STRING"
-        assert format.node.inputs[1].default_value == ""
-        assert format.node.inputs[2].name == "x"
-        assert format.node.inputs[2].type == "INT"
-        assert format.node.inputs[2].default_value == 0  # type: ignore
-        assert format.node.inputs[3].name == "y"
-        assert format.node.inputs[3].type == "VALUE"
-        assert format.node.inputs[3].default_value == 0.0
-        assert format.items["String"].socket == format.node.inputs[1]
-        assert format.items["x"].socket == format.node.inputs[2]
-        assert format.items["y"].socket == format.node.inputs[3]
+        assert format.i[0].default_value == str_to_format  # type: ignore
+        i_string: StringSocket = format.i[1]  # ty: ignore[invalid-assignment]
+        assert i_string.name == "String"
+        assert i_string.type == "STRING"
+        assert i_string.default_value == ""
+        assert format.i[2].name == "x"
+        assert isinstance(format.i[2], IntegerSocket)
+        assert format.i[2].default_value == 0
+        assert format.i[3].name == "y"
+        assert isinstance(format.i[3], FloatSocket)
+        assert format.i[3].default_value == 0.0
+        assert format.items["String"].socket == format.i[1].socket
+        assert format.items["x"].socket == format.i[2].socket
+        assert format.items["y"].socket == format.i[3].socket
 
 
 def test_field_to_grid():
     with TreeBuilder() as tree:
         # the rotation value should add a vector item as the next available compatible data type
         inputs = [g.Vector(), g.Value(), g.Boolean(), g.Integer(), g.Rotation()]
+        items = {i.name: i for i in inputs}
+        items["test"] = g.Value()
+
+        ftg = g.FieldToGrid(items=items)
         math = g.Math.add()
+        _ = ftg.o["test"] >> math
 
-        ftg = g.FieldToGrid(*inputs, test=g.Value())
-        _ = ftg.outputs["test"] >> math
-
-        ftg2 = g.FieldToGrid(test_value=0.3)
-        assert ftg2.inputs["test_value"].socket.default_value == pytest.approx(0.3)
+        ftg2 = g.FieldToGrid(items={"test_value": 0.3})
+        assert ftg2.i["test_value"].socket.default_value == pytest.approx(0.3)
 
     assert len(tree) == 9
     assert len(ftg.node.grid_items) == 6
     assert ftg.node.grid_items[5].name == "test"
-    assert ftg.outputs["test"].socket.links[0].to_socket.node == math.node
+    assert ftg.o["test"].socket.links[0].to_socket.node == math.node
     assert all(
         [i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs]
     )
@@ -142,13 +158,27 @@ def test_field_to_grid():
 
     with TreeBuilder() as tree:
         grid = g.VolumeCube(g.NoiseTexture()) >> g.GetNamedGrid(name="density")
-        ftg = g.FieldToGrid.vector(g.NoiseTexture().o.color, topology=grid)
+        ftg = g.FieldToGrid.vector(grid, {"Color": g.NoiseTexture().o.color})
 
     assert ftg.data_type == "VECTOR"
     assert len(ftg.node.grid_items) == 1
     assert ftg.i.topology.socket.links[0].from_node == grid.node
     assert ftg.i.topology.socket.links[0].from_socket == grid.o.grid.socket
-    assert ftg.inputs["Color"].socket.links[0].from_node.name == "Noise Texture.001"
+    assert ftg.i["Color"].socket.links[0].from_node.name == "Noise Texture.001"
+
+    with TreeBuilder() as tree:
+        nt = g.NoiseTexture()
+        ftg = g.FieldToGrid(g.CubeGridTopology())
+        pos, vec, fac = ftg.capture(
+            {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
+        )
+        assert len(ftg.o) == 4
+        assert isinstance(pos, VectorSocket)
+        assert pos.name == "position"
+        assert isinstance(vec, VectorSocket)
+        assert vec.name == "vec"
+        assert isinstance(nt.o.fac, FloatSocket)
+        assert fac.name == "fac"
 
 
 def test_field_variance():
@@ -177,19 +207,21 @@ def test_get_named_grid(snapshot_tree):
     with TreeBuilder() as tree:
         _ = (
             g.VolumeCube()
-            >> g.GetNamedGrid(name="density")
-            >> g.FieldToGrid(g.Position(), g.Position() * 2 + 10)
+            >> g.GetNamedGrid.float(name="density")
+            >> g.FieldToGrid.float(
+                items={"Position": g.Position(), "value": g.Position() * 2 + 10}
+            )
         )
 
     assert snapshot_tree == tree
 
 
-def test_advect_grid(snapshot_tree):
+def test_advect_grid():
     with TreeBuilder():
         grid = g.GetNamedGrid(g.VolumeCube(), name="density")
         ftg = g.FieldToGrid(
-            g.Position(),
-            topology=grid,
+            grid,
+            {"Position": g.Position()},
         )
 
         ag = grid >> g.AdvectGrid(
@@ -205,11 +237,11 @@ def test_sdf_grid_boolean():
     with TreeBuilder() as tree:
         trio = [g.PointsToSDFGrid() for _ in range(3)]
         bool1 = g.SDFGridBoolean.difference(
-            *trio,
-            grid_1=g.GetNamedGrid(g.VolumeCube(), name="density"),
+            g.GetNamedGrid(g.VolumeCube(), name="density"),
+            trio,
         )
-        bool2 = g.SDFGridBoolean.intersect(*trio)
-        bool3 = g.SDFGridBoolean.union(*trio)
+        bool2 = g.SDFGridBoolean.intersect(trio)
+        bool3 = g.SDFGridBoolean.union(trio)
 
     assert len(tree) == 8
     assert (
@@ -271,10 +303,10 @@ def test_bake():
     assert set_pos.node.inputs[0].links[0].from_socket == bake.node.outputs[0]
 
 
-def test_simulation(snapshot_tree):
+def test_simulation(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        input, output = g.SimulationZone(cube)
+        input, output = g.SimulationZone({"cube": cube})
         pos_math = input.capture(g.Position()) * g.Position()
         _ = pos_math >> output
         _ = (
@@ -284,16 +316,16 @@ def test_simulation(snapshot_tree):
             )
             >> output
         )
-        _ = output >> g.SetPosition(position=output.outputs["Position"])
+        _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(output.node.inputs["Skip"].links) == 0
     assert len(tree) == 13
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
-def test_repeat(snapshot_tree):
+def test_repeat(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        for i, input, output in g.RepeatZone(10, cube):
+        for i, input, output in g.RepeatZone(10, {"cube": cube}):
             pos_math = input.capture(g.Position()) * g.Position()
             _ = pos_math >> output
             _ = (
@@ -301,30 +333,36 @@ def test_repeat(snapshot_tree):
                 >> g.SetPosition(offset=i * g.Vector((0, 0, 0.1)) * pos_math)
                 >> output
             )
-            _ = output >> g.SetPosition(position=output.outputs["Position"])
+            _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(tree) == 13
     assert len(input.items) == 2
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
     with TreeBuilder() as tree:
         zone = g.RepeatZone(5)
         join = g.JoinGeometry()
         zone.output.capture(join)
         zone.input >> join
-        _ = g.Points(zone.i, position=g.RandomValue.vector(min=-1, seed=zone.i)) >> join
+        _ = (
+            g.Points(
+                zone.iteration,
+                position=g.RandomValue.vector(min=-1, seed=zone.iteration),
+            )
+            >> join
+        )
     assert all(
         [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
     )
     assert len(tree) == 7
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
 def test_index_switch(snapshot_tree):
     with TreeBuilder() as tree:
         items = (g.Cube(), g.UVSphere(), g.Cube(), g.Cube())
-        index = g.IndexSwitch.geometry(*items, index=5)
+        index = g.IndexSwitch.geometry(5, items)
 
-        index2 = g.IndexSwitch.float(*range(10))
+        index2 = g.IndexSwitch.float(items=range(10))
 
     assert len(index.node.index_switch_items) == 4
     assert len(tree) == 6
@@ -337,21 +375,20 @@ def test_index_switch(snapshot_tree):
 def test_menu_switch():
     with TreeBuilder() as tree:
         menu = tree.inputs.menu()
-        items = (
-            g.Cube(),
-            g.UVSphere(),
-            g.Cube(),
-            g.Cube(),
-        )
-        switch = g.MenuSwitch.geometry(*items, custom=g.Cone())
+        items = {
+            "Mesh": g.Cube(),
+            "UVSphere": g.UVSphere(),
+            "Cube": g.Cube(),
+        }
+        switch = g.MenuSwitch.geometry(items=items)
         menu >> switch
         menu.socket.default_value = "Mesh"
 
     assert switch.i.menu.socket.links[0].from_socket == menu.socket
-    assert len(switch.node.enum_items) == 5
+    assert len(switch.node.enum_items) == 3
 
     with TreeBuilder() as tree:
-        switch = g.MenuSwitch.float(*range(10))
+        switch = g.MenuSwitch.float(items={f"Input_{i}": i for i in range(10)})
 
     assert len(switch.node.enum_items) == 10
     print(
@@ -360,36 +397,41 @@ def test_menu_switch():
                 name,
                 x.socket.default_value if hasattr(x.socket, "default_value") else None,
             )
-            for name, x in switch.inputs._items()
+            for name, x in switch.i._items()
         ]
     )
-    assert switch.inputs["Input_5"].socket.default_value == 5
+    assert switch.i["Input_5"].socket.default_value == 5
 
 
 def test_menu_switch_menu_connection():
     with TreeBuilder("AnotherMenuSwitch"):
         switch = g.MenuSwitch.geometry(
-            cube=g.Cube(), sphere=g.UVSphere(), cone=g.Cone(), menu=g.Switch.menu()
+            g.Switch.menu(),
+            items={
+                "cube": g.Cube(),
+                "UVSphere": g.UVSphere(),
+                "Cone": g.Cone(),
+            },
         )
-    assert switch.inputs["Menu"].links
-    assert switch.inputs["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
-    assert switch.inputs["Menu"].links[0].from_node.input_type == "MENU"
-    assert switch.inputs["Menu"].socket.default_value == "cube"
+    assert switch.i["Menu"].links
+    assert switch.i["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
+    assert switch.i["Menu"].links[0].from_node.input_type == "MENU"
+    assert switch.i["Menu"].socket.default_value == "cube"
 
 
 def test_multi_menu():
     with TreeBuilder() as tree:
         items = (g.Cube(), g.IcoSphere(), g.Grid())
 
-        menu = g.MenuSwitch.integer(test=0, another=1, again=2)
-        switch1 = g.IndexSwitch.geometry(*items, index=menu)
-        switch2 = g.IndexSwitch.geometry(*reversed(items), index=menu)
+        menu = g.MenuSwitch.integer(items={"test": 0, "another": 1, "again": 2})
+        switch1 = g.IndexSwitch.geometry(menu, items)
+        switch2 = g.IndexSwitch.geometry(menu, reversed(items))
 
         menu_input = tree.inputs.menu()
         menu_input >> menu
         menu_input.default_value = "test"
 
-        g.JoinGeometry(switch1, switch2) >> tree.outputs.geometry("Output")
+        g.JoinGeometry([switch1, switch2]) >> tree.outputs.geometry("Output")
 
 
 def test_switch_repeatzone(snapshot_tree):
@@ -398,21 +440,21 @@ def test_switch_repeatzone(snapshot_tree):
         output = tree.outputs.geometry()
 
         items = (g.Cube(), g.IcoSphere(), g.Grid())
-        zone = g.RepeatZone(5, input)
-        switch = g.IndexSwitch.geometry(*items, index=zone.i)
-        join = g.JoinGeometry(zone.input, switch)
+        zone = g.RepeatZone(5, {"Geometry": input})
+        switch = g.IndexSwitch.geometry(zone.iteration, items)
+        join = g.JoinGeometry([zone.input, switch])
         join >> zone.output >> output
 
     assert len(zone.output.items) == 1
-    assert zone.output.inputs["Geometry"].socket.links[0].from_node == join.node
+    assert zone.output.i["Geometry"].socket.links[0].from_node == join.node
     assert snapshot_tree == tree
 
 
 def test_generate_select_group():
     with TreeBuilder() as tree:
         switch = g.IndexSwitch.boolean(
-            *[tree.inputs.boolean(str(i)) for i in range(20)],
-            index=g.NamedAttribute.integer("chain_id"),
+            g.NamedAttribute.integer("chain_id"),
+            [tree.inputs.boolean(str(i)) for i in range(20)],
         )
         switch >> tree.outputs.boolean("Selection")
 
@@ -502,7 +544,7 @@ def test_foreachgeometryelement_zone():
         zone.output.capture_generated(pos)
         zone.output.capture_generated(transformed)
         _ = transformed >> zone.output
-        _ = g.JoinGeometry(zone.output.outputs._get("Generation_0"), cube) >> out
+        _ = g.JoinGeometry([zone.output.o._get("Generation_0"), cube]) >> out
 
     input, output = zone
     with pytest.raises(IndexError):
@@ -625,7 +667,7 @@ def test_join_string():
     with g.tree():
         string = "abcdefg"
         letters = [g.String(x) for x in string]
-        join = g.JoinStrings(*letters)
+        join = g.JoinStrings(letters)
 
     assert len(letters) == len(join.i.strings.links)
 
@@ -634,26 +676,24 @@ def test_mesh_boolean():
     with g.tree():
         meshes = [g.Cube(), g.IcoSphere() >> g.TransformGeometry(translation=0.2)]
 
-        boolean = g.MeshBoolean.intersect(*meshes)
+        boolean = g.MeshBoolean.intersect(meshes)
         assert boolean.solver == "FLOAT"
         assert boolean.operation == "INTERSECT"
         boolean.solver = "EXACT"
         assert boolean.solver == "EXACT"
-        bool2 = g.MeshBoolean.difference(*meshes, mesh_1=g.Cone(), solver="EXACT")
+        bool2 = g.MeshBoolean.difference(g.Cone(), meshes, solver="EXACT")
         assert bool2.operation == "DIFFERENCE"
         assert bool2.solver == "EXACT"
         bool2.operation = "INTERSECT"
         assert bool2.operation == "INTERSECT"
-        bool3 = g.MeshBoolean.intersect(
-            *meshes, hole_tolerant=g.Boolean(), self_intersection=False, solver="EXACT"
-        )
+        bool3 = g.MeshBoolean.intersect(meshes, False, g.Boolean(), solver="EXACT")
         assert len(bool3.i.mesh_2.links) == 2
         assert bool3.solver == "EXACT"
         assert bool3.operation == "INTERSECT"
         assert (
             bool3.i.hole_tolerant.links[0].from_node.bl_idname == g.Boolean._bl_idname
         )
-        bool4 = g.MeshBoolean.union(*meshes, self_intersection=True, solver="EXACT")
+        bool4 = g.MeshBoolean.union(meshes, self_intersection=True, solver="EXACT")
         assert len(bool4.i.mesh_2.links) == 2
         assert bool4.solver == "EXACT"
         assert bool4.i.self_intersection.default_value is True
@@ -1073,3 +1113,233 @@ def test_geometry_nodes():
         assert not res.keep_last_segment
         res.keep_last_segment = True
         assert res.keep_last_segment
+
+
+def test_node_float_input():
+    with g.tree():
+        node = g.Float(5.0)
+        assert node.value == pytest.approx(5.0)
+        assert node.node.bl_idname == g.Value._bl_idname
+
+    with c.tree():
+        node = c.Float(5.0)
+        assert node.value == pytest.approx(5.0)
+        assert node.node.bl_idname == g.Value._bl_idname
+
+    with s.tree():
+        node = s.Float(5.0)
+        assert node.value == pytest.approx(5.0)
+        assert node.node.bl_idname == g.Value._bl_idname
+
+
+def test_compositor_node_image():
+    with c.tree():
+        im = bpy.data.images.new("test", width=100, height=100)
+        node = c.Image(image=im)
+        assert node.node.bl_idname == "CompositorNodeImage"
+        assert node.frame_duration == 0
+        node.frame_duration = 10
+        assert node.frame_duration == 10
+        assert node.frame_start == 0
+        node.frame_start = 10
+        assert node.frame_start == 10
+        assert node.frame_offset == 0
+        node.frame_offset = 10
+        assert node.frame_offset == 10
+        assert not node.use_cyclic
+        node.use_cyclic = True
+        assert node.use_cyclic
+        assert not node.use_auto_refresh
+        node.use_auto_refresh = True
+        assert node.use_auto_refresh
+        assert not node.has_layers
+        assert node.image == im
+        node.image = None
+        assert node.image is None
+        node.image = im
+        assert node.layer == ""
+        assert node.view == ""
+        assert not node.has_views
+
+        matt = c.Cryptomatte()
+        assert matt.source == "RENDER"
+        matt.source = "IMAGE"
+        assert matt.source == "IMAGE"
+        assert matt.matte_id == ""
+        matt.matte_id = "test"
+        assert matt.matte_id == "test"
+        assert matt.layer_name == ""
+        assert matt.layer == ""
+        assert matt.view == ""
+        assert not matt.has_views
+        assert matt.frame_duration == 0
+        matt.frame_duration = 10
+        assert matt.frame_duration == 10
+        assert matt.frame_start == 0
+        matt.frame_start = 10
+        assert matt.frame_start == 10
+        assert matt.frame_offset == 0
+        matt.frame_offset = 10
+        assert matt.frame_offset == 10
+        assert not matt.use_cyclic
+        matt.use_cyclic = True
+        assert matt.use_cyclic
+        assert not matt.use_auto_refresh
+        matt.use_auto_refresh = True
+        assert matt.use_auto_refresh
+        assert not matt.has_layers
+
+
+def test_geometry_reroute():
+    with g.tree():
+        node = g.Reroute()
+        assert node.socket_idname == "NodeSocketColor"
+        node.socket_idname = "NodeSocketFloat"
+        assert node.socket_idname == "NodeSocketFloat"
+
+    with g.tree("test", arrange=None) as tree:
+        g.Cube().o.mesh >> g.Reroute() >> tree.outputs.geometry()
+
+    assert len(tree) == 3
+    assert len(tree.tree.links) == 2
+    assert bpy.data.node_groups["test"].nodes["Reroute"].inputs[0].type == "GEOMETRY"
+    assert bpy.data.node_groups["test"].nodes["Reroute"].outputs[0].type == "GEOMETRY"
+
+
+def test_closure_nodes():
+    with g.tree() as tree:
+        setpos = g.SetPosition()
+
+        cl = g.ClosureZone()
+
+        cl.input.link(setpos.i.geometry)
+        cl.output.link(setpos.o.geometry)
+
+        ec = g.EvaluateClosure()
+        ec.sync_signature(cl)
+        cl.output >> ec >> tree.outputs.geometry()
+
+        input, output = g.ClosureZone()
+        vec = g.CombineXYZ()
+        _ = [input.link(x) for x in vec.i]
+        output.link(vec.o.vector)
+
+        ec = g.EvaluateClosure()
+        ec.sync_signature(output)
+        output >> ec >> tree.outputs.vector()
+
+        input, output = g.ClosureZone()
+
+        output.sync_signature(ec)
+        assert isinstance(output.i[0], VectorSocket)
+        assert len(input.o) == 4
+        assert isinstance(input.o[0], FloatSocket)
+
+
+def test_sample_index():
+    with g.tree():
+        points = g.Points(10, g.RandomValue.vector().o.value)
+        node = g.SampleIndex.point.vector(points, g.Position(), g.Index())
+
+        assert node.data_type == "FLOAT_VECTOR"
+        assert node.domain == "POINT"
+        assert node.i.value.links[0].from_node.bl_idname == g.Position._bl_idname
+
+        si = g.SampleIndex.edge.float()
+        assert si.data_type == "FLOAT"
+        assert si.domain == "EDGE"
+        assert not si.clamp
+        si.clamp = True
+        assert si.clamp
+
+        si = g.SampleIndex.face.vector(clamp=True)
+        assert si.data_type == "FLOAT_VECTOR"
+        assert si.domain == "FACE"
+        assert si.clamp
+
+        si = g.SampleIndex.layer.integer()
+        assert si.data_type == "INT"
+        assert si.domain == "LAYER"
+
+        si = g.SampleIndex.spline.boolean()
+        assert si.data_type == "BOOLEAN"
+        assert si.domain == "CURVE"
+
+        si = g.SampleIndex.edge.color()
+        assert si.data_type == "FLOAT_COLOR"
+        assert si.domain == "EDGE"
+
+        si = g.SampleIndex.instance.rotation()
+        assert si.data_type == "QUATERNION"
+        assert si.domain == "INSTANCE"
+
+        si = g.SampleIndex.instance.matrix()
+        assert si.data_type == "FLOAT4X4"
+        assert si.domain == "INSTANCE"
+        assert isinstance(si.i.value, MatrixSocket)
+
+        si.data_type = "FLOAT"
+        assert si.data_type == "FLOAT"
+        assert isinstance(si.i.value, FloatSocket)
+
+
+def test_sample_curve():
+    with g.tree():
+        sc = g.SampleCurve.factor.boolean()
+        assert sc.data_type == "BOOLEAN"
+        assert sc.mode == "FACTOR"
+        assert not sc.use_all_curves
+        sc.use_all_curves = True
+        assert sc.use_all_curves
+        sc.data_type = "FLOAT"
+        assert sc.data_type == "FLOAT"
+        assert isinstance(sc.i.value, FloatSocket)
+
+        sc = g.SampleCurve.factor.color()
+        assert sc.data_type == "FLOAT_COLOR"
+        assert sc.mode == "FACTOR"
+
+        sc = g.SampleCurve.factor.vector()
+        assert sc.data_type == "FLOAT_VECTOR"
+
+        sc = g.SampleCurve.factor.float()
+        assert sc.data_type == "FLOAT"
+
+        sc = g.SampleCurve.factor.integer()
+        assert sc.data_type == "INT"
+
+        sc = g.SampleCurve.factor.matrix()
+        assert sc.data_type == "FLOAT4X4"
+        assert sc.mode == "FACTOR"
+
+        sc = g.SampleCurve.factor.rotation()
+        assert sc.data_type == "QUATERNION"
+        assert sc.mode == "FACTOR"
+
+        sc = g.SampleCurve.length.float()
+        assert sc.data_type == "FLOAT"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.integer()
+        assert sc.data_type == "INT"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.boolean()
+        assert sc.data_type == "BOOLEAN"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.vector()
+        assert sc.data_type == "FLOAT_VECTOR"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.color()
+        assert sc.data_type == "FLOAT_COLOR"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.matrix()
+        assert sc.data_type == "FLOAT4X4"
+        assert sc.mode == "LENGTH"
+
+        sc = g.SampleCurve.length.rotation()
+        assert sc.data_type == "QUATERNION"
+        assert sc.mode == "LENGTH"

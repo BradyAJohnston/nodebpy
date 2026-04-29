@@ -5,9 +5,8 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
-    ClosureSocket,
     ColorSocket,
     FloatSocket,
     RotationSocket,
@@ -16,7 +15,6 @@ from ...builder import (
 )
 
 from ...types import (
-    InputClosure,
     InputColor,
     InputRotation,
     InputShader,
@@ -25,7 +23,7 @@ from ...types import (
 )
 
 
-class CombineColor(NodeBuilder):
+class CombineColor(BaseNode):
     """
     Create a color from individual components using multiple models
 
@@ -118,79 +116,7 @@ class CombineColor(NodeBuilder):
         self.node.mode = value
 
 
-class EvaluateClosure(NodeBuilder):
-    """
-    Execute a given closure
-
-    Parameters
-    ----------
-    closure : InputClosure
-        Closure
-
-    Inputs
-    ------
-    i.closure : ClosureSocket
-        Closure
-    """
-
-    _bl_idname = "NodeEvaluateClosure"
-    node: bpy.types.Node
-
-    class _Inputs(SocketAccessor):
-        closure: ClosureSocket
-        """Closure"""
-
-    class _Outputs(SocketAccessor):
-        pass
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        closure: InputClosure = None,
-        *,
-        active_input_index: int = 0,
-        active_output_index: int = 0,
-        define_signature: bool = False,
-    ):
-        super().__init__()
-        key_args = {"Closure": closure}
-        self.active_input_index = active_input_index
-        self.active_output_index = active_output_index
-        self.define_signature = define_signature
-        self._establish_links(**key_args)
-
-    @property
-    def active_input_index(self) -> int:
-        return self.node.active_input_index
-
-    @active_input_index.setter
-    def active_input_index(self, value: int):
-        self.node.active_input_index = value
-
-    @property
-    def active_output_index(self) -> int:
-        return self.node.active_output_index
-
-    @active_output_index.setter
-    def active_output_index(self, value: int):
-        self.node.active_output_index = value
-
-    @property
-    def define_signature(self) -> bool:
-        return self.node.define_signature
-
-    @define_signature.setter
-    def define_signature(self, value: bool):
-        self.node.define_signature = value
-
-
-class Mix(NodeBuilder):
+class Mix(BaseNode):
     """
     Mix values by a factor
 
@@ -465,7 +391,7 @@ class Mix(NodeBuilder):
         self.node.clamp_result = value
 
 
-class RGBToBw(NodeBuilder):
+class RGBToBW(BaseNode):
     """
     Convert a color's luminance to a grayscale value
 
@@ -510,7 +436,7 @@ class RGBToBw(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SeparateColor(NodeBuilder):
+class SeparateColor(BaseNode):
     """
     Split a color into its individual components using multiple models
 
@@ -591,7 +517,7 @@ class SeparateColor(NodeBuilder):
         self.node.mode = value
 
 
-class ShaderToRGB(NodeBuilder):
+class ShaderToRGB(BaseNode):
     """
         Convert rendering effect (such as light and shadow) to color. Typically used for non-photorealistic rendering, to apply additional effects on the output of BSDFs.
     Note: only supported in EEVEE
@@ -641,7 +567,7 @@ class ShaderToRGB(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Wavelength(NodeBuilder):
+class Wavelength(BaseNode):
     """
     Convert a wavelength value to an RGB value
 

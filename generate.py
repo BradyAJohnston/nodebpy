@@ -76,12 +76,10 @@ GEOMETRY_CONFIG = TreeTypeConfig(
     nodes_to_skip=[
         "AlignEulerToVector",
         "Legacy",
-        "Closure",
         "Simulation",
         "For Each",
         "GridBoolean",
-        "Reroute",
-        "FieldMinAndMax",
+        "Field Min",
     ],
     manually_defined=(
         "SetHandleType",
@@ -104,7 +102,12 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "ForEachGeometryElementInput",
         "ForEachGeometryElementOutput",
         "ForEachGeometryElementZone",
+        "EvaluateClosure",
+        "ClosureInput",
+        "ClosureOutput",
+        "ClosureZone",
         "FormatString",
+        "JoinStrings",
         "Collection",
         "Material",
         "Object",
@@ -118,7 +121,10 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "FieldVariance",
         "Compare",
         "AttributeStatistic",
+        "SampleIndex",
+        "SampleCurve",
         "Frame",
+        "Float",
         "tree",
     ),
     class_name_prefix_strips=[
@@ -134,7 +140,6 @@ SHADER_CONFIG = TreeTypeConfig(
     output_dir_name="shader",
     nodes_to_skip=[
         "Legacy",
-        "Reroute",
     ],
     manually_defined=(
         "MenuSwitch",
@@ -144,6 +149,7 @@ SHADER_CONFIG = TreeTypeConfig(
         "Attribute",
         "Frame",
         "tree",
+        "Float",
         "material",
     ),
     class_name_prefix_strips=[
@@ -157,14 +163,14 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
     output_dir_name="compositor",
     nodes_to_skip=[
         "Legacy",
-        "Reroute",
-        "Cryptomatte",
-        "Image",
     ],
     manually_defined=(
         "MenuSwitch",
         "Frame",
         "tree",
+        "Float",
+        "Image",
+        "Cryptomatte",
     ),
     class_name_prefix_strips=[
         "CompositorNode",
@@ -408,6 +414,7 @@ class NodeInfo:
             "3DLocation": "Location3D",
             "Bsdf": "BSDF",
             "Svd": "SVD",
+            "Bw": "BW",
         }
 
         # Add prefix strips from config
@@ -1119,7 +1126,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     else:
         init_body = f"\n{establish_call}\n{property_setting}"
 
-    class_code = f'''class {class_name}(NodeBuilder):
+    class_code = f'''class {class_name}(BaseNode):
     """
     {docstring_body}
     """
@@ -1195,7 +1202,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     lines.append("import bpy")
 
     # Builder imports
-    builder_imports = ["BaseNode as NodeBuilder", "SocketAccessor"]
+    builder_imports = ["BaseNode as BaseNode", "SocketAccessor"]
     if has_sockets:
         builder_imports.append("Socket")
     # Add only the specific output socket classes actually used in this file

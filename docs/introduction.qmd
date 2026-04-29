@@ -62,7 +62,7 @@ We define them in a similar way to the socekts themselves, using context with th
 ```{python}
 with g.tree("NewTree") as tree:
     geom_inputs = [tree.inputs.geometry(f"Geometry_{i}") for i in range(5)]
-    g.JoinGeometry(*geom_inputs) >> tree.outputs.geometry("The Output Socket")
+    g.JoinGeometry(geom_inputs) >> tree.outputs.geometry("The Output Socket")
 
 tree
 
@@ -111,7 +111,7 @@ with g.tree(arrange=None) as tree:
     # to the zone output, which is then available for the zone.input >> join
     join >> zone.output >> g.SetPosition()
     zone.input >> join
-    g.Points(zone.i, position=g.RandomValue.vector(seed=zone.i)) >> join
+    g.Points(zone.iteration, position=g.RandomValue.vector(seed=zone.iteration)) >> join
 
 
 tree
@@ -121,12 +121,10 @@ tree
 ```{python}
 with g.tree(arrange=None) as tree:
     # this initializes the zone with two socket inputs for each of the values
-    zone = g.SimulationZone(g.Value(), g.Vector())
+    # we manually specify the socket names
+    zone = g.SimulationZone({"Value": g.Value(), "Vector": g.Vector()})
+    zone.input.o["Value"] + 10 >> zone.output
 
-    # this explicitly grabs the "Value" socket (which got it's name from the g.Value() node)
-    # and adds 10 then attempts to plug it into the zone output (it will choose the float
-    # socket instead of the vector socket because that is the most compatible)
-    zone.input.outputs["Value"] + 10 >> zone.output
     # this should automatically pick the vector input socket because we are
     # explicity about the VectorMath and it will be the most compatible
     zone.input >> g.VectorMath.add((1.2, 1.2, 1.2)) >> zone.output

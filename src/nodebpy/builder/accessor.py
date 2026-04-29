@@ -28,7 +28,7 @@ class SocketAccessor:
 
     def __init__(
         self,
-        collection: bpy.types.NodeInputs | bpy.types.NodeOutputs,
+        collection: bpy.types.NodeInputs | bpy.types.NodeOutputs | list[NodeSocket],
         direction: Literal["input", "output"],
     ):
         self._direction = direction
@@ -190,8 +190,7 @@ class SocketAccessor:
         return len(self._items())
 
     def __iter__(self):
-        """Iterate over socket names (enables ``**node.outputs`` unpacking)."""
-        return iter(self._keys())
+        return iter(self._values())
 
     def __getattr__(self, name: str) -> "Socket":
         """Dynamic socket access by normalised attribute name.

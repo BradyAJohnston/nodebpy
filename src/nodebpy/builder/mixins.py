@@ -11,10 +11,11 @@ from ._utils import SocketError, _resolve_promotion, _SocketLike
 _RShiftT = TypeVar("_RShiftT")
 
 if TYPE_CHECKING:
-    from ..nodes.geometry import Compare, Math
+    from ..nodes.geometry import Compare, Math, MultiplyMatrices, TransformPoint
     from ..types import InputLinkable
     from .node import BaseNode
-    from .socket import Socket
+    from .socket import MatrixSocket, Socket
+    from .tree import TreeBuilder
 
 
 class OperatorMixin:
@@ -100,9 +101,12 @@ class OperatorMixin:
         )
 
     def _apply_compare_operation(self, other: Any, operation: str) -> "Math":
-        return _get_socket_linker(self._default_output_socket)._dispatch_compare(  # type: ignore[attr-defined]
-            other, operation
+        socket, other, _ = _resolve_promotion(
+            self._default_output_socket,  # type: ignore[attr-defined]
+            other,
+            False,
         )
+        return _get_socket_linker(socket)._dispatch_compare(other, operation)
 
     def __lt__(self, other: Any) -> "Compare":
         return self._apply_compare_operation(other, "less_than")
@@ -157,45 +161,45 @@ class OperatorMixin:
         return BooleanMath.l_not(self)
 
     @staticmethod
-    def _cast_to_matrix(value):
+    def _cast_to_matrix(value) -> MatrixSocket:
         from ..nodes.geometry.converter import CombineMatrix
 
         if hasattr(value, "shape") and value.shape == (4, 4):
-            return CombineMatrix(*value.ravel())
+            return CombineMatrix(*value.ravel()).o.matrix
         else:
             return value
 
-    def __matmul__(self, other: Any):
+    def __matmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
         from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
         other = self._cast_to_matrix(other)
-        socket = self._default_output_socket  # type: ignore[attr-defined]
-        other_type = getattr(other, "type", None)
+        socket = self._default_output_socket
 
-        if socket.type == "MATRIX" and other_type == "VECTOR":
+        if socket.type == "MATRIX" and other.type == "VECTOR":
             return TransformPoint(other, socket)
 
-        return MultiplyMatrices(self, other)
+        return MultiplyMatrices(socket, other)
 
-    def __rmatmul__(self, other: Any):
+    def __rmatmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
         from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
         other = self._cast_to_matrix(other)
-        socket = self._default_output_socket  # type: ignore[attr-defined]
-        other_type = getattr(other, "type", None)
+        socket = self._default_output_socket
 
-        if socket.type == "VECTOR" and other_type == "MATRIX":
+        if socket.type == "VECTOR" and getattr(other, "type", None) == "MATRIX":
             return TransformPoint(socket, other)
 
-        return MultiplyMatrices(other, self)
+        return MultiplyMatrices(other, socket)
 
 
 class LinkingMixin:
     """Node/socket linking logic: ``>>``, ``_link``, best-socket matching.
 
-    Requires ``tree``, ``inputs``, ``outputs``, ``_default_output_socket``,
+    Requires ``tree``, ``i``, ``o``, ``_default_output_socket``,
     and ``_default_input_socket`` on the concrete class.
     """
+
+    tree: "TreeBuilder"
 
     def _source_socket(self, node: "InputLinkable | Socket | NodeSocket") -> NodeSocket:
         assert node
@@ -221,20 +225,44 @@ class LinkingMixin:
         target: "BaseNode | Socket | NodeSocket | EllipsisType | LinkingMixin",
     ) -> tuple[NodeSocket, NodeSocket]:
         """Find the best compatible pair of sockets between two nodes/sockets."""
-        from ..types import SOCKET_COMPATIBILITY
+        from ..builder.node import BaseNode
+        from ..builder.socket import Socket
+        from ..types import PREFER_FIRST_SOCKET, SOCKET_COMPATIBILITY
 
         possible_combos = []
-        if hasattr(source, "outputs"):
-            outputs = source.outputs._available  # type: ignore[union-attr]
+        if isinstance(source, BaseNode):
+            outputs = source.o._available
         elif isinstance(source, NodeSocket):
             outputs = [source]
+        elif isinstance(source, Socket):
+            outputs = [source.socket]
         else:
             raise TypeError(f"Cannot get outputs from {type(source)}")
 
-        if hasattr(target, "inputs"):
-            inputs = target.inputs._available  # type: ignore[union-attr]
+        if isinstance(target, BaseNode):
+            inputs = target.i._available
         else:
             inputs = [target]
+
+        # NodeReroute adapts its type to whatever is linked — skip type matching
+        if getattr(getattr(target, "node", None), "bl_idname", None) == "NodeReroute":
+            if outputs and inputs:
+                return inputs[0], outputs[0]
+
+        # Try first available input first — if the output type matches it exactly,
+        # or is a "preferred" implicit conversion (e.g. float→color, vector→color),
+        # use the first socket rather than searching for a better-typed later one.
+        # This keeps float→Image working in the compositor instead of drifting to
+        # a float Factor socket that scores higher on raw compatibility.
+        # Pairs not in PREFER_FIRST_SOCKET (e.g. VALUE→BOOLEAN, VECTOR→ROTATION)
+        # fall through to the ranked search below.
+        if inputs:
+            first_input = inputs[0]
+            for output in outputs:
+                if first_input.type == output.type:
+                    return first_input, output
+                if (output.type, first_input.type) in PREFER_FIRST_SOCKET:
+                    return first_input, output
 
         for output in outputs:
             compat_sockets = SOCKET_COMPATIBILITY.get(output.type, ())
@@ -261,7 +289,7 @@ class LinkingMixin:
     ) -> NodeLink:
         source_socket = self._source_socket(source)
         target_socket = self._target_socket(target)
-        return self.tree.link(source_socket, target_socket)  # type: ignore[attr-defined]
+        return self.tree.link(source_socket, target_socket)
 
     def _link_from(
         self,
@@ -270,13 +298,13 @@ class LinkingMixin:
     ):
         if isinstance(input, str):
             try:
-                self._link(source, self.node.inputs[input])  # type: ignore[attr-defined]
+                self._link(source, self.node.inputs[input])
             except KeyError:
-                self._link(source, self.node.inputs[self.inputs._index(input)])  # type: ignore[attr-defined]
+                self._link(source, self.node.inputs[self.i._index(input)])
         else:
             self._link(source, input)
 
-    def __rshift__(self, other: "BaseNode | Socket") -> "BaseNode | Socket":
+    def __rshift__(self, other: _RShiftT) -> _RShiftT:
         """Chain nodes using >> operator. Links output to input.
 
         Usage:
@@ -296,8 +324,8 @@ class LinkingMixin:
             try:
                 target = other.node.inputs[name]
             except KeyError:
-                target = other.node.inputs[other.inputs._index(name)]
-            source = self.outputs._best_match(target.type)
+                target = other.node.inputs[other.i._index(name)]
+            source = self.o._best_match(target.type) if hasattr(self, "o") else self
         else:
             try:
                 source, target = self._find_best_socket_pair(self, other)

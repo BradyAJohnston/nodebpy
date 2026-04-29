@@ -6,7 +6,6 @@ import pytest
 from nodebpy import TreeBuilder, shader
 from nodebpy import compositor as c
 from nodebpy import geometry as g
-from nodebpy import sockets as s
 
 from .snapshots import TreeBuilderSnapshotExtension
 
@@ -38,10 +37,8 @@ def clean_and_save(request):
         bpy.data.objects["Cube"].modifiers.new("StoreTrees", "NODES")
         mod: bpy.types.NodesModifier = bpy.data.objects["Cube"].modifiers["StoreTrees"]  # type: ignore
         with TreeBuilder("StoredTrees") as tree:
-            with tree.inputs:
-                ing = s.SocketGeometry()
-            with tree.outputs:
-                ong = s.SocketGeometry()
+            ing = tree.inputs.geometry()
+            ong = tree.outputs.geometry()
 
             for i, name in enumerate(geo_tree_names):
                 node = g.Group()

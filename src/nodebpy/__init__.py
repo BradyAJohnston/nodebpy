@@ -1,5 +1,6 @@
-from . import nodes, diagram, sockets, codegen
-from .builder import TreeBuilder, NodeGroupBuilder
+from . import nodes, diagram, codegen
+from .builder import TreeBuilder
+
 from .nodes import compositor, geometry, shader
 
 __all__ = [
@@ -7,9 +8,7 @@ __all__ = [
     "compositor",
     "geometry",
     "shader",
-    "sockets",
     "diagram",
     "codegen",
     "TreeBuilder",
-    "NodeGroupBuilder",
 ]

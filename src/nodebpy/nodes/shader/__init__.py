@@ -8,6 +8,7 @@ from .manual import (
     Attribute,
     Frame,
     tree,
+    Float,
     material,
 )
 from ..geometry.color import (
@@ -32,6 +33,9 @@ from ..geometry.interface import (
     GroupOutput,
 )
 from ..geometry.manual import (
+    ClosureInput,
+    ClosureOutput,
+    EvaluateClosure,
     Value,
 )
 from ..geometry.texture import (
@@ -45,24 +49,14 @@ from ..geometry.texture import (
     WaveTexture,
     WhiteNoiseTexture,
 )
+from ..geometry.utilities import (
+    Reroute,
+)
 from ..geometry.vector import (
     RadialTiling,
     VectorCurves,
     VectorMath,
     VectorRotate,
-)
-from .interface import (
-    ClosureInput,
-    ClosureOutput,
-)
-from .converter import (
-    CombineColor,
-    EvaluateClosure,
-    Mix,
-    RGBToBw,
-    SeparateColor,
-    ShaderToRGB,
-    Wavelength,
 )
 from .shader import (
     AddShader,
@@ -122,6 +116,14 @@ from .vector import (
     VectorDisplacement,
     VectorTransform,
 )
+from .converter import (
+    CombineColor,
+    Mix,
+    RGBToBW,
+    SeparateColor,
+    ShaderToRGB,
+    Wavelength,
+)
 from .group import (
     Group,
 )
@@ -177,6 +179,7 @@ __all__ = (
     "Emission",
     "EnvironmentTexture",
     "EvaluateClosure",
+    "Float",
     "FloatCurve",
     "Frame",
     "Fresnel",
@@ -220,7 +223,7 @@ __all__ = (
     "PrincipledHairBSDF",
     "PrincipledVolume",
     "RGBCurves",
-    "RGBToBw",
+    "RGBToBW",
     "RadialTiling",
     "RayPortalBSDF",
     "Raycast",
@@ -228,6 +231,7 @@ __all__ = (
     "RepeatInput",
     "RepeatOutput",
     "RepeatZone",
+    "Reroute",
     "Script",
     "SeparateBundle",
     "SeparateColor",

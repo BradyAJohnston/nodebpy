@@ -33,7 +33,7 @@ from bpy.types import (
 from mathutils import Euler
 
 if typing.TYPE_CHECKING:
-    from .builder import BaseNode as NodeBuilder
+    from .builder import BaseNode as BaseNode
     from .builder import Socket as SocketLinker
 
 
@@ -42,9 +42,7 @@ def _is_default_value(value: InputAny):
 
 
 # Type aliases for node inputs using typing.Union for runtime compatibility
-InputLinkable = typing.Union[
-    "NodeBuilder", "SocketLinker", NodeSocket, None, EllipsisType
-]
+InputLinkable = typing.Union["BaseNode", "SocketLinker", NodeSocket, None, EllipsisType]
 
 InputFloat = typing.Union[
     float, int, NodeSocketFloat, NodeSocketInt, NodeSocketVector, InputLinkable
@@ -157,6 +155,7 @@ _SocketShapeStructureType = Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "SINGLE"
 
 
 SOCKET_TYPES = Literal[
+    # "VALUE",
     "FLOAT",
     "INT",
     "BOOLEAN",
@@ -174,6 +173,8 @@ SOCKET_TYPES = Literal[
     "BUNDLE",
     "CLOSURE",
     "SHADER",
+    "FONT",
+    # "CUSTOM",
 ]
 
 SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
@@ -228,6 +229,23 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
     "CLOSURE": ("CLOSURE",),
     "SHADER": ("SHADER", "RGBA"),
 }
+
+# Type pairs (output, input) where the first available input socket should be
+# preferred over a later socket with a closer type match. Covers the common
+# float ↔ color ↔ vector implicit conversions in compositor / shader nodes.
+# Intentionally excludes low-semantic-overlap pairs like VALUE→BOOLEAN or
+# VECTOR→ROTATION, which should still fall through to best-match logic.
+PREFER_FIRST_SOCKET: frozenset[tuple[str, str]] = frozenset(
+    {
+        ("VALUE", "RGBA"),
+        ("RGBA", "VALUE"),
+        ("VECTOR", "RGBA"),
+        ("RGBA", "VECTOR"),
+        ("VALUE", "SHADER"),
+        ("VECTOR", "SHADER"),
+        ("RGBA", "SHADER"),
+    }
+)
 
 
 FloatInterfaceSubtypes = typing.Literal[

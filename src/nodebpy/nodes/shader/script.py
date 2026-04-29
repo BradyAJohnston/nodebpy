@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, SocketAccessor
+from ...builder import BaseNode as BaseNode, SocketAccessor
 
 
-class Script(NodeBuilder):
+class Script(BaseNode):
     """
         Generate an OSL shader from a file or text data-block.
     Note: OSL shaders are not supported on all GPU backends

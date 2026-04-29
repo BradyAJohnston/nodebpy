@@ -4,6 +4,9 @@ from .manual import (
     MenuSwitch,
     Frame,
     tree,
+    Float,
+    Image,
+    Cryptomatte,
 )
 from ..geometry.color import (
     Gamma,
@@ -40,6 +43,9 @@ from ..geometry.texture import (
     VoronoiTexture,
     WaveTexture,
     WhiteNoiseTexture,
+)
+from ..geometry.utilities import (
+    Reroute,
 )
 from ..geometry.vector import (
     RadialTiling,
@@ -80,6 +86,20 @@ from .filter import (
     Pixelate,
     VectorBlur,
 )
+from .input import (
+    BokehImage,
+    Color,
+    ImageCoordinates,
+    ImageInfo,
+    Mask,
+    MovieClip,
+    Normal,
+    RenderLayers,
+    SceneTime,
+    SequencerStripInfo,
+    TimeCurve,
+    TrackPosition,
+)
 from .matte import (
     BoxMask,
     ChannelKey,
@@ -103,7 +123,7 @@ from .converter import (
     IndexSwitch,
     Levels,
     Mix,
-    RGBToBw,
+    RGBToBW,
     RelativeToPixel,
     SeparateColor,
     SetAlpha,
@@ -129,17 +149,6 @@ from .distort import (
 from .group import (
     Group,
 )
-from .input import (
-    Color,
-    Mask,
-    MovieClip,
-    Normal,
-    RenderLayers,
-    SceneTime,
-    SequencerStripInfo,
-    TimeCurve,
-    TrackPosition,
-)
 from .vector import (
     Normalize,
 )
@@ -159,6 +168,7 @@ __all__ = (
     "Blackbody",
     "Blur",
     "BokehBlur",
+    "BokehImage",
     "Boolean",
     "BoxMask",
     "BrickTexture",
@@ -180,6 +190,7 @@ __all__ = (
     "Convolve",
     "CornerPin",
     "Crop",
+    "Cryptomatte",
     "Defocus",
     "Denoise",
     "DepthCombine",
@@ -196,6 +207,7 @@ __all__ = (
     "FileOutput",
     "Filter",
     "Flip",
+    "Float",
     "FloatCurve",
     "Frame",
     "GaborTexture",
@@ -208,6 +220,9 @@ __all__ = (
     "HueCorrect",
     "Huesaturationvalue",
     "IDMask",
+    "Image",
+    "ImageCoordinates",
+    "ImageInfo",
     "IndexSwitch",
     "Inpaint",
     "Integer",
@@ -235,10 +250,11 @@ __all__ = (
     "PlaneTrackDeform",
     "Posterize",
     "RGBCurves",
-    "RGBToBw",
+    "RGBToBW",
     "RadialTiling",
     "RelativeToPixel",
     "RenderLayers",
+    "Reroute",
     "Rotate",
     "Scale",
     "SceneTime",

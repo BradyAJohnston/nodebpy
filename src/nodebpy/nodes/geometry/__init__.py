@@ -21,6 +21,10 @@ from .manual import (
     ForEachGeometryElementInput,
     ForEachGeometryElementOutput,
     ForEachGeometryElementZone,
+    EvaluateClosure,
+    ClosureInput,
+    ClosureOutput,
+    ClosureZone,
     FormatString,
     Collection,
     Material,
@@ -35,7 +39,10 @@ from .manual import (
     FieldVariance,
     Compare,
     AttributeStatistic,
+    SampleIndex,
+    SampleCurve,
     Frame,
+    Float,
     tree,
 )
 from .converter import (
@@ -231,8 +238,6 @@ from .geometry import (
     ResampleCurve,
     ReverseCurve,
     RotateInstances,
-    SampleCurve,
-    SampleIndex,
     SampleNearest,
     SampleNearestSurface,
     SampleUVSurface,
@@ -342,6 +347,9 @@ from .texture import (
 from .output import (
     Viewer,
 )
+from .utilities import (
+    Reroute,
+)
 from .color import (
     Gamma,
     RGBCurves,
@@ -378,6 +386,9 @@ __all__ = (
     "CheckerTexture",
     "Clamp",
     "ClipGrid",
+    "ClosureInput",
+    "ClosureOutput",
+    "ClosureZone",
     "Collection",
     "CollectionInfo",
     "Color",
@@ -428,6 +439,7 @@ __all__ = (
     "EndpointSelection",
     "EulerToRotation",
     "EvaluateAtIndex",
+    "EvaluateClosure",
     "EvaluateOnDomain",
     "ExtrudeMesh",
     "FaceArea",
@@ -443,6 +455,7 @@ __all__ = (
     "FilletCurve",
     "FindInString",
     "FlipFaces",
+    "Float",
     "FloatCurve",
     "FloatToInteger",
     "ForEachGeometryElementInput",
@@ -566,6 +579,7 @@ __all__ = (
     "RepeatZone",
     "ReplaceMaterial",
     "ReplaceString",
+    "Reroute",
     "ResampleCurve",
     "ReverseCurve",
     "RotateEuler",

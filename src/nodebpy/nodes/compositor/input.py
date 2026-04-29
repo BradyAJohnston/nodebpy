@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     BooleanSocket,
     ColorSocket,
@@ -17,13 +17,96 @@ from ...builder import (
 
 from ...types import (
     InputBoolean,
+    InputColor,
     InputInteger,
     InputMenu,
     InputFloat,
 )
 
 
-class Color(NodeBuilder):
+class BokehImage(BaseNode):
+    """
+    Generate image with bokeh shape for use with the Bokeh Blur filter node
+
+    Parameters
+    ----------
+    flaps : InputInteger
+        Flaps
+    angle : InputFloat
+        Angle
+    roundness : InputFloat
+        Roundness
+    catadioptric_size : InputFloat
+        Catadioptric Size
+    color_shift : InputFloat
+        Color Shift
+
+    Inputs
+    ------
+    i.flaps : IntegerSocket
+        Flaps
+    i.angle : FloatSocket
+        Angle
+    i.roundness : FloatSocket
+        Roundness
+    i.catadioptric_size : FloatSocket
+        Catadioptric Size
+    i.color_shift : FloatSocket
+        Color Shift
+
+    Outputs
+    -------
+    o.image : ColorSocket
+        Image
+    """
+
+    _bl_idname = "CompositorNodeBokehImage"
+    node: bpy.types.CompositorNodeBokehImage
+
+    class _Inputs(SocketAccessor):
+        flaps: IntegerSocket
+        """Flaps"""
+        angle: FloatSocket
+        """Angle"""
+        roundness: FloatSocket
+        """Roundness"""
+        catadioptric_size: FloatSocket
+        """Catadioptric Size"""
+        color_shift: FloatSocket
+        """Color Shift"""
+
+    class _Outputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        flaps: InputInteger = 5,
+        angle: InputFloat = 0.0,
+        roundness: InputFloat = 0.0,
+        catadioptric_size: InputFloat = 0.0,
+        color_shift: InputFloat = 0.0,
+    ):
+        super().__init__()
+        key_args = {
+            "Flaps": flaps,
+            "Angle": angle,
+            "Roundness": roundness,
+            "Catadioptric Size": catadioptric_size,
+            "Color Shift": color_shift,
+        }
+
+        self._establish_links(**key_args)
+
+
+class Color(BaseNode):
     """
     A color picker
 
@@ -57,7 +140,121 @@ class Color(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Mask(NodeBuilder):
+class ImageCoordinates(BaseNode):
+    """
+    Returns the coordinates of the pixels of an image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+
+    Outputs
+    -------
+    o.uniform : VectorSocket
+        Uniform
+    o.normalized : VectorSocket
+        Normalized
+    o.pixel : VectorSocket
+        Pixel
+    """
+
+    _bl_idname = "CompositorNodeImageCoordinates"
+    node: bpy.types.CompositorNodeImageCoordinates
+
+    class _Inputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    class _Outputs(SocketAccessor):
+        uniform: VectorSocket
+        """Uniform"""
+        normalized: VectorSocket
+        """Normalized"""
+        pixel: VectorSocket
+        """Pixel"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, image: InputColor = None):
+        super().__init__()
+        key_args = {"Image": image}
+
+        self._establish_links(**key_args)
+
+
+class ImageInfo(BaseNode):
+    """
+    Returns information about an image
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+
+    Outputs
+    -------
+    o.dimensions : VectorSocket
+        Dimensions
+    o.resolution : VectorSocket
+        Resolution
+    o.location : VectorSocket
+        Location
+    o.rotation : FloatSocket
+        Rotation
+    o.scale : VectorSocket
+        Scale
+    """
+
+    _bl_idname = "CompositorNodeImageInfo"
+    node: bpy.types.CompositorNodeImageInfo
+
+    class _Inputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    class _Outputs(SocketAccessor):
+        dimensions: VectorSocket
+        """Dimensions"""
+        resolution: VectorSocket
+        """Resolution"""
+        location: VectorSocket
+        """Location"""
+        rotation: FloatSocket
+        """Rotation"""
+        scale: VectorSocket
+        """Scale"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, image: InputColor = None):
+        super().__init__()
+        key_args = {"Image": image}
+
+        self._establish_links(**key_args)
+
+
+class Mask(BaseNode):
     """
     Input mask from a mask data-block, created in the image editor
 
@@ -156,7 +353,7 @@ class Mask(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class MovieClip(NodeBuilder):
+class MovieClip(BaseNode):
     """
     Input image or movie from a movie clip data-block, typically used for motion tracking
 
@@ -210,7 +407,7 @@ class MovieClip(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Normal(NodeBuilder):
+class Normal(BaseNode):
     """
     Input normalized normal values to other nodes in the tree
 
@@ -244,7 +441,7 @@ class Normal(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RenderLayers(NodeBuilder):
+class RenderLayers(BaseNode):
     """
     Input render passes from a scene render
 
@@ -290,7 +487,7 @@ class RenderLayers(NodeBuilder):
         self.node.layer = value
 
 
-class SceneTime(NodeBuilder):
+class SceneTime(BaseNode):
     """
     Input the current scene time in seconds or frames
 
@@ -328,7 +525,7 @@ class SceneTime(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SequencerStripInfo(NodeBuilder):
+class SequencerStripInfo(BaseNode):
     """
     Returns information about the active strip of the modifier
 
@@ -378,7 +575,7 @@ class SequencerStripInfo(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TimeCurve(NodeBuilder):
+class TimeCurve(BaseNode):
     """
     Generate a factor value (from 0.0 to 1.0) between scene start and end time, using a curve mapping
 
@@ -433,7 +630,7 @@ class TimeCurve(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class TrackPosition(NodeBuilder):
+class TrackPosition(BaseNode):
     """
     Provide information about motion tracking points, such as x and y values
 

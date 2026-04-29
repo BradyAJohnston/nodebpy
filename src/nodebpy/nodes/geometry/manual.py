@@ -1,28 +1,29 @@
-from typing import TYPE_CHECKING, Any, Generic, Literal, TypeVar
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
 
 import bpy
-from bpy.types import NodeSocket
+from bpy.types import NodeEvaluateClosure, NodeSocket, NodeSocketString
 
-from nodebpy.builder.accessor import SocketAccessor
-from nodebpy.builder.interface import SocketGeometry
+from nodebpy.builder._registry import _get_socket_linker
 
 from ...builder import (
-    BaseNode as NodeBuilder,
-)
-from ...builder import (
+    BaseNode,
     BooleanSocket,
+    BundleSocket,
+    ClosureSocket,
     CollectionSocket,
     ColorSocket,
     DynamicInputsMixin,
     FloatSocket,
     GeometrySocket,
+    ImageSocket,
     IntegerSocket,
     MaterialSocket,
     MatrixSocket,
     MenuSocket,
     ObjectSocket,
     RotationSocket,
-    Socket,
+    SocketAccessor,
     StringSocket,
     TreeBuilder,
     VectorSocket,
@@ -34,14 +35,20 @@ from ...types import (
     SOCKET_TYPES,
     InputAny,
     InputBoolean,
+    InputBundle,
+    InputClosure,
+    InputCollection,
     InputColor,
     InputFloat,
     InputGeometry,
     InputGrid,
+    InputImage,
     InputInteger,
     InputLinkable,
+    InputMaterial,
     InputMatrix,
     InputMenu,
+    InputObject,
     InputRotation,
     InputString,
     InputVector,
@@ -56,6 +63,9 @@ from ...types import (
 )
 from .converter import Switch
 from .zone import (
+    ClosureInput,
+    ClosureOutput,
+    ClosureZone,
     ForEachGeometryElementInput,
     ForEachGeometryElementOutput,
     ForEachGeometryElementZone,
@@ -65,6 +75,7 @@ from .zone import (
     SimulationInput,
     SimulationOutput,
     SimulationZone,
+    _sync_closure_items,
 )
 
 _T = TypeVar("_T")
@@ -80,6 +91,10 @@ __all__ = (
     "ForEachGeometryElementInput",
     "ForEachGeometryElementOutput",
     "ForEachGeometryElementZone",
+    "EvaluateClosure",
+    "ClosureInput",
+    "ClosureOutput",
+    "ClosureZone",
     "GeometryToInstance",
     "SDFGridBoolean",
     #
@@ -96,6 +111,7 @@ __all__ = (
     "JoinStrings",
     "GeometryToInstance",
     "FormatString",
+    "JoinStrings",
     "Value",
     "AccumulateField",
     "EvaluateAtIndex",
@@ -106,6 +122,7 @@ __all__ = (
     "Compare",
     "AttributeStatistic",
     "Frame",
+    "Float",
 )
 
 
@@ -118,7 +135,62 @@ def tree(
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
 
 
-class Frame(NodeBuilder):
+class EvaluateClosure(BaseNode):
+    """
+    Execute a given closure
+
+    Parameters
+    ----------
+    closure : InputClosure
+        Closure
+
+    Inputs
+    ------
+    i.closure : ClosureSocket
+        Closure
+    """
+
+    _bl_idname = "NodeEvaluateClosure"
+    node: NodeEvaluateClosure
+
+    class _Inputs(SocketAccessor):
+        closure: ClosureSocket
+        """Closure"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        closure: InputClosure = None,
+        *,
+        active_input_index: int = 0,
+        active_output_index: int = 0,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        key_args = {"Closure": closure}
+        self.active_input_index = active_input_index
+        self.active_output_index = active_output_index
+        self.define_signature = define_signature
+        self._establish_links(**key_args)
+
+    def sync_signature(self, node: ClosureOutput | ClosureZone) -> None:
+        if isinstance(node, ClosureZone):
+            node = node.output
+
+        for name in ["input_items", "output_items"]:
+            _sync_closure_items(getattr(node.node, name), getattr(self.node, name))
+
+
+class Frame(BaseNode):
     """ """
 
     _bl_idname = "NodeFrame"
@@ -169,7 +241,7 @@ class Frame(NodeBuilder):
         TreeBuilder._frame_contexts.pop()
 
 
-class Bake(NodeBuilder, DynamicInputsMixin):
+class Bake(BaseNode, DynamicInputsMixin):
     """Cache the incoming data so that it can be used without recomputation
 
     TODO: properly handle Animation / Still bake opations and ability to bake to a file
@@ -190,7 +262,7 @@ class Bake(NodeBuilder, DynamicInputsMixin):
         return self.node.inputs[item.name]
 
 
-class GeometryToInstance(NodeBuilder):
+class GeometryToInstance(BaseNode):
     """
     Convert each input geometry into an instance, which can be much faster
     than the Join Geometry node when the inputs are large
@@ -211,10 +283,10 @@ class GeometryToInstance(NodeBuilder):
     node: bpy.types.GeometryNodeGeometryToInstance
 
     class _Inputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
 
     class _Outputs(SocketAccessor):
-        instances: SocketGeometry
+        instances: GeometrySocket
 
     if TYPE_CHECKING:
 
@@ -234,7 +306,7 @@ class GeometryToInstance(NodeBuilder):
 # up by the generate script. TODO: debug why not
 
 
-class Collection(NodeBuilder):
+class Collection(BaseNode):
     """
     Output a single collection
     """
@@ -264,7 +336,7 @@ class Collection(NodeBuilder):
         self.node.collection = value
 
 
-class Material(NodeBuilder):
+class Material(BaseNode):
     """
     Output a single material
     """
@@ -294,7 +366,7 @@ class Material(NodeBuilder):
         self.node.material = value
 
 
-class Object(NodeBuilder):
+class Object(BaseNode):
     """
     Output a single object
     """
@@ -329,7 +401,7 @@ class Object(NodeBuilder):
 # and access the default values from the output sockets themselves
 
 
-class Value(NodeBuilder):
+class Value(BaseNode):
     """Input numerical values to other nodes in the tree"""
 
     _bl_idname = "ShaderNodeValue"
@@ -358,10 +430,14 @@ class Value(NodeBuilder):
         self.node.outputs[0].default_value = value  # type: ignore
 
 
+class Float(Value):
+    """Input numerical values to other nodes in the tree. A 'type-hinted' wrapper of the Value node."""
+
+
 ### === ###
 
 
-class FormatString(NodeBuilder, DynamicInputsMixin):
+class FormatString(BaseNode, DynamicInputsMixin):
     """Insert values into a string using a Python and path template compatible formatting syntax"""
 
     _bl_idname = "FunctionNodeFormatString"
@@ -387,13 +463,12 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
 
     def __init__(
         self,
-        *args,
         format: InputString = "",
-        **kwargs,
+        items: dict[str, InputAny] = {},
     ):
         super().__init__()
         key_args = {"Format": format}
-        key_args.update(self._add_inputs(*args, **kwargs))
+        key_args.update(self._add_inputs(**items))
         self._establish_links(**key_args)
 
     def _add_socket(
@@ -403,24 +478,17 @@ class FormatString(NodeBuilder, DynamicInputsMixin):
         default_value: float | int | str | None = None,
     ):
         item = self.node.format_items.new(socket_type=type, name=name)
-        if default_value is not None:
-            try:
-                self.node.inputs[item.name].default_value = default_value  # type: ignore
-            except TypeError as e:
-                raise ValueError(
-                    f"Invalid default value for {type}: {default_value}"
-                ) from e
+        if default_value is not None and hasattr(self.i[item.name], "default_value"):
+            self.i[item.name].default_value = default_value  # ty: ignore[unresolved-attribute]
         return self.node.inputs[item.name]
 
     @property
     def items(self) -> dict[str, SocketLinker]:
         """Input sockets:"""
-        return {
-            socket.name: self.inputs._get(socket.name) for socket in self.node.inputs
-        }
+        return {socket.name: self.i._get(socket.name) for socket in self.node.inputs}
 
 
-class JoinStrings(NodeBuilder):
+class JoinStrings(BaseNode):
     """Combine any number of input strings"""
 
     _bl_idname = "GeometryNodeStringJoin"
@@ -440,15 +508,19 @@ class JoinStrings(NodeBuilder):
         @property
         def i(self) -> _Inputs: ...
 
-    def __init__(self, *args: InputLinkable, delimiter: InputString = ""):
+    def __init__(
+        self,
+        strings: Iterable[StringSocket | NodeSocketString | BaseNode] = (),
+        delimiter: InputString = "",
+    ):
         super().__init__()
 
         self._establish_links(Delimiter=delimiter)
-        for arg in args:
-            self._link_from(arg, "Strings")
+        for string in strings:
+            self._link_from(string, "Strings")
 
 
-class MeshBoolean(NodeBuilder):
+class MeshBoolean(BaseNode):
     """Cut, subtract, or join multiple mesh inputs"""
 
     _bl_idname = "GeometryNodeMeshBoolean"
@@ -473,26 +545,34 @@ class MeshBoolean(NodeBuilder):
 
     def __init__(
         self,
-        *args: InputGeometry,
+        mesh_1: InputGeometry = None,
+        mesh_2: Iterable[InputGeometry] = (),
+        *,
+        self_intersection: InputBoolean = False,
+        hole_tolerant: InputBoolean = False,
         operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE",
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
-        **kwargs,
     ):
         super().__init__()
-        key_args = {}
-        key_args.update(kwargs)
+        key_args = {
+            "Mesh 1": mesh_1,
+            "Self Intersection": self_intersection,
+            "Hole Tolerant": hole_tolerant,
+        }
+        for arg in mesh_2:
+            self._link_from(arg, "Mesh 2")
+
         self.operation = operation
         self.solver = solver
-        for arg in args:
-            self._link_from(arg, "Mesh 2")
         self._establish_links(**key_args)
 
     @classmethod
     def intersect(
         cls,
-        *args: InputGeometry,
+        items: Iterable[InputGeometry] = (),
         self_intersection: InputBoolean = False,
         hole_tolerant: InputBoolean = False,
+        *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
         key_args = {}
@@ -500,7 +580,7 @@ class MeshBoolean(NodeBuilder):
             key_args["self_intersection"] = self_intersection
             key_args["hole_tolerant"] = hole_tolerant
         return cls(
-            *args,
+            mesh_2=items,
             **key_args,
             solver=solver,
             operation="INTERSECT",
@@ -509,9 +589,10 @@ class MeshBoolean(NodeBuilder):
     @classmethod
     def union(
         cls,
-        *args: InputGeometry,
+        items: Iterable[InputGeometry] = (),
         self_intersection: InputBoolean = False,
         hole_tolerant: InputBoolean = False,
+        *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
         key_args = {}
@@ -519,7 +600,7 @@ class MeshBoolean(NodeBuilder):
             key_args["self_intersection"] = self_intersection
             key_args["hole_tolerant"] = hole_tolerant
         return cls(
-            *args,
+            mesh_2=items,
             **key_args,
             solver=solver,
             operation="UNION",
@@ -528,22 +609,23 @@ class MeshBoolean(NodeBuilder):
     @classmethod
     def difference(
         cls,
-        *args: InputGeometry,
         mesh_1: InputGeometry = None,
+        items: Iterable[InputGeometry] = (),
         self_intersection: InputBoolean = False,
         hole_tolerant: InputBoolean = False,
+        *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
         key_args = {}
-        key_args["Mesh 1"] = mesh_1
         if solver == "EXACT":
             key_args["self_intersection"] = self_intersection
             key_args["hole_tolerant"] = hole_tolerant
         return cls(
-            *args,
-            **key_args,
+            mesh_1=mesh_1,
+            mesh_2=items,
             solver=solver,
             operation="DIFFERENCE",
+            **key_args,
         )
 
     @property
@@ -563,17 +645,17 @@ class MeshBoolean(NodeBuilder):
         self.node.solver = value
 
 
-class JoinGeometry(NodeBuilder):
+class JoinGeometry(BaseNode):
     """Merge separately generated geometries into a single one"""
 
     _bl_idname = "GeometryNodeJoinGeometry"
     node: bpy.types.GeometryNodeJoinGeometry
 
     class _Inputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
 
     class _Outputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
 
     if TYPE_CHECKING:
 
@@ -582,25 +664,25 @@ class JoinGeometry(NodeBuilder):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, *args: InputLinkable):
+    def __init__(self, geometry: Iterable[InputGeometry] = ()):
         super().__init__()
-        for source in reversed(args):
+        for source in reversed(geometry):
             assert source
             self._link(*self._find_best_socket_pair(source, self))
 
 
-class SetHandleType(NodeBuilder):
+class SetHandleType(BaseNode):
     """Set the handle type for the control points of a Bézier curve"""
 
     _bl_idname = "GeometryNodeCurveSetHandles"
     node: bpy.types.GeometryNodeCurveSetHandles
 
     class _Inputs(SocketAccessor):
-        curve: SocketGeometry
+        curve: GeometrySocket
         selection: BooleanSocket
 
     class _Outputs(SocketAccessor):
-        curve: SocketGeometry
+        curve: GeometrySocket
 
     if TYPE_CHECKING:
 
@@ -666,7 +748,7 @@ class SetHandleType(NodeBuilder):
                 self.node.mode = set()
 
 
-class HandleTypeSelection(NodeBuilder):
+class HandleTypeSelection(BaseNode):
     """Provide a selection based on the handle types of Bézier control points"""
 
     _bl_idname = "GeometryNodeCurveHandleTypeSelection"
@@ -740,62 +822,132 @@ class HandleTypeSelection(NodeBuilder):
         self.node.mode = value
 
 
-class IndexSwitch(NodeBuilder):
+class IndexSwitch(BaseNode, Generic[_T]):
     """Node builder for the Index Switch node"""
 
     _bl_idname = "GeometryNodeIndexSwitch"
     node: bpy.types.GeometryNodeIndexSwitch
 
-    @staticmethod
-    def _typed(data_type: SOCKET_TYPES):
-        @classmethod
-        def method(cls, *args: InputAny, index: InputInteger = 0) -> "IndexSwitch":
-            """Create an IndexSwitch node with a pre-set data_type"""
-            return cls(*args, index=index, data_type=data_type)
+    @classmethod
+    def float(
+        cls, index: InputInteger = 0, items: Iterable[InputFloat] = ()
+    ) -> "IndexSwitch[FloatSocket]":
+        return IndexSwitch(index=index, items=items, data_type="FLOAT")
 
-        return method
+    @classmethod
+    def integer(
+        cls, index: InputInteger = 0, items: Iterable[InputInteger] = ()
+    ) -> "IndexSwitch[IntegerSocket]":
+        return IndexSwitch(index=index, items=items, data_type="INT")
 
-    float = _typed("FLOAT")
-    integer = _typed("INT")
-    boolean = _typed("BOOLEAN")
-    vector = _typed("VECTOR")
-    color = _typed("RGBA")
-    rotation = _typed("ROTATION")
-    matrix = _typed("MATRIX")
-    string = _typed("STRING")
-    menu = _typed("MENU")
-    object = _typed("OBJECT")
-    geometry = _typed("GEOMETRY")
-    collection = _typed("COLLECTION")
-    image = _typed("IMAGE")
-    material = _typed("MATERIAL")
-    bundle = _typed("BUNDLE")
-    closure = _typed("CLOSURE")
+    @classmethod
+    def boolean(
+        cls, index: InputInteger = 0, items: Iterable[InputBoolean] = ()
+    ) -> "IndexSwitch[BooleanSocket]":
+        return IndexSwitch(index=index, items=items, data_type="BOOLEAN")
+
+    @classmethod
+    def vector(
+        cls, index: InputInteger = 0, items: Iterable[InputVector] = ()
+    ) -> "IndexSwitch[VectorSocket]":
+        return IndexSwitch(index=index, items=items, data_type="VECTOR")
+
+    @classmethod
+    def color(
+        cls, index: InputInteger = 0, items: Iterable[InputColor] = ()
+    ) -> "IndexSwitch[ColorSocket]":
+        return IndexSwitch(index=index, items=items, data_type="RGBA")
+
+    @classmethod
+    def rotation(
+        cls, index: InputInteger = 0, items: Iterable[InputRotation] = ()
+    ) -> "IndexSwitch[RotationSocket]":
+        return IndexSwitch(index=index, items=items, data_type="ROTATION")
+
+    @classmethod
+    def matrix(
+        cls, index: InputInteger = 0, items: Iterable[InputMatrix] = ()
+    ) -> "IndexSwitch[MatrixSocket]":
+        return IndexSwitch(index=index, items=items, data_type="MATRIX")
+
+    @classmethod
+    def string(
+        cls, index: InputInteger = 0, items: Iterable[InputString] = ()
+    ) -> "IndexSwitch[StringSocket]":
+        return IndexSwitch(index=index, items=items, data_type="STRING")
+
+    @classmethod
+    def menu(
+        cls, index: InputInteger = 0, items: Iterable[InputMenu] = ()
+    ) -> "IndexSwitch[MenuSocket]":
+        return IndexSwitch(index=index, items=items, data_type="MENU")
+
+    @classmethod
+    def object(
+        cls, index: InputInteger = 0, items: Iterable[InputObject] = ()
+    ) -> "IndexSwitch[ObjectSocket]":
+        return IndexSwitch(index=index, items=items, data_type="OBJECT")
+
+    @classmethod
+    def geometry(
+        cls, index: InputInteger = 0, items: Iterable[InputGeometry] = ()
+    ) -> "IndexSwitch[GeometrySocket]":
+        return IndexSwitch(index=index, items=items, data_type="GEOMETRY")
+
+    @classmethod
+    def collection(
+        cls, index: InputInteger = 0, items: Iterable[InputCollection] = ()
+    ) -> "IndexSwitch[CollectionSocket]":
+        return IndexSwitch(index=index, items=items, data_type="COLLECTION")
+
+    @classmethod
+    def image(
+        cls, index: InputInteger = 0, items: Iterable[InputImage] = ()
+    ) -> "IndexSwitch[ImageSocket]":
+        return IndexSwitch(index=index, items=items, data_type="IMAGE")
+
+    @classmethod
+    def material(
+        cls, index: InputInteger = 0, items: Iterable[InputMaterial] = ()
+    ) -> "IndexSwitch[MaterialSocket]":
+        return IndexSwitch(index=index, items=items, data_type="MATERIAL")
+
+    @classmethod
+    def bundle(
+        cls, index: InputInteger = 0, items: Iterable[InputBundle] = ()
+    ) -> "IndexSwitch[BundleSocket]":
+        return IndexSwitch(index=index, items=items, data_type="BUNDLE")
+
+    @classmethod
+    def closure(
+        cls, index: InputInteger = 0, items: Iterable[InputClosure] = ()
+    ) -> "IndexSwitch[ClosureSocket]":
+        return IndexSwitch(index=index, items=items, data_type="CLOSURE")
 
     class _Inputs(SocketAccessor):
         index: IntegerSocket
 
-    class _Outputs(SocketAccessor):
-        output: Socket
+    class _Outputs(SocketAccessor, Generic[_S]):
+        output: _S
 
     if TYPE_CHECKING:
 
         @property
         def i(self) -> _Inputs: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> "_Outputs[_T]": ...
 
     def __init__(
         self,
-        *args: InputAny,
         index: InputInteger = 0,
+        items: Iterable[InputAny] = (),
         data_type: SOCKET_TYPES = "FLOAT",
     ):
         super().__init__()
         self.data_type = data_type
         key_args: dict[str, InputAny] = {"Index": index}
         self.node.index_switch_items.clear()
-        self._link_args(*args)
+        self._link_args(*items)
         self._establish_links(**key_args)
 
     def _create_socket(self) -> NodeSocket:
@@ -815,7 +967,7 @@ class IndexSwitch(NodeBuilder):
     @property
     def data_type(self) -> SOCKET_TYPES:
         """Input socket: Data Type"""
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: SOCKET_TYPES):
@@ -823,65 +975,43 @@ class IndexSwitch(NodeBuilder):
         self.node.data_type = value
 
 
-class _MenuSwitchBase(NodeBuilder):
+class _MenuSwitchBase(BaseNode, Generic[_T]):
     """Base class for MenuSwitch nodes across all tree types."""
 
     _bl_idname = "GeometryNodeMenuSwitch"
     node: bpy.types.GeometryNodeMenuSwitch
 
-    @staticmethod
-    def _typed(data_type: SOCKET_TYPES):
-        @classmethod
-        def method(
-            cls,
-            *args: InputAny,
-            menu: InputMenu = None,
-            **kwargs: InputAny,
-        ) -> "MenuSwitch":
-            """Create a MenuSwitch node with a pre-set data_type"""
-            return cls(*args, menu=menu, data_type=data_type, **kwargs)
-
-        return method
-
     class _Inputs(SocketAccessor):
         menu: MenuSocket
 
-    @property
-    def i(self) -> "MenuSwitch._Inputs":
-        return MenuSwitch._Inputs(self.node.inputs, "input")
+    class _Outputs(SocketAccessor, Generic[_S]):
+        output: _S
 
-    class _Outputs(SocketAccessor):
-        output: Socket
+    if TYPE_CHECKING:
 
-    @property
-    def o(self) -> "MenuSwitch._Outputs":
-        return MenuSwitch._Outputs(self.node.outputs, "output")
+        @property
+        def i(self) -> "_Inputs": ...
+
+        @property
+        def o(self) -> "_Outputs[_T]": ...
 
     def __init__(
         self,
-        *args: InputAny,
         menu: InputMenu = None,
+        items: Mapping[str, InputAny] = {},
+        *,
         data_type: SOCKET_TYPES = "FLOAT",
-        **kwargs: InputAny,
     ):
         super().__init__()
         self.data_type = data_type
         self.node.enum_items.clear()
         key_args = {"Menu": menu}
-        self._link_args(*args, **kwargs)
+        self._link_args(**items)
         self._establish_links(**key_args)
         if self.node.enum_items:
             self.node.inputs[0].default_value = self.node.enum_items[0].name  # type: ignore
 
-    def _link_args(self, *args: InputAny, **kwargs: InputAny):
-        for arg in args:
-            if _is_default_value(arg):
-                socket = self._create_socket(f"Input_{len(self.node.enum_items)}")
-                socket.default_value = arg  # type: ignore
-            else:
-                source = self._source_socket(arg)
-                self.tree.link(source, self.node.inputs["__extend__"])
-
+    def _link_args(self, **kwargs: InputAny):
         for key, value in kwargs.items():
             if _is_default_value(value):
                 socket = self._create_socket(key)
@@ -907,28 +1037,139 @@ class _MenuSwitchBase(NodeBuilder):
         self.node.data_type = value
 
 
-class MenuSwitch(_MenuSwitchBase):
+class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     """Node builder for the Menu Switch node"""
 
-    float = _MenuSwitchBase._typed("FLOAT")
-    integer = _MenuSwitchBase._typed("INT")
-    boolean = _MenuSwitchBase._typed("BOOLEAN")
-    vector = _MenuSwitchBase._typed("VECTOR")
-    color = _MenuSwitchBase._typed("RGBA")
-    rotation = _MenuSwitchBase._typed("ROTATION")
-    matrix = _MenuSwitchBase._typed("MATRIX")
-    string = _MenuSwitchBase._typed("STRING")
-    menu = _MenuSwitchBase._typed("MENU")
-    object = _MenuSwitchBase._typed("OBJECT")
-    geometry = _MenuSwitchBase._typed("GEOMETRY")
-    collection = _MenuSwitchBase._typed("COLLECTION")
-    image = _MenuSwitchBase._typed("IMAGE")
-    material = _MenuSwitchBase._typed("MATERIAL")
-    bundle = _MenuSwitchBase._typed("BUNDLE")
-    closure = _MenuSwitchBase._typed("CLOSURE")
+    @classmethod
+    def float(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputFloat] = {},
+    ) -> "MenuSwitch[FloatSocket]":
+        return MenuSwitch(menu, items, data_type="FLOAT")
+
+    @classmethod
+    def integer(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputInteger] = {},
+    ) -> "MenuSwitch[IntegerSocket]":
+        return MenuSwitch(menu, items, data_type="INT")
+
+    @classmethod
+    def boolean(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputBoolean] = {},
+    ) -> "MenuSwitch[BooleanSocket]":
+        return MenuSwitch(menu, items, data_type="BOOLEAN")
+
+    @classmethod
+    def vector(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputVector] = {},
+    ) -> "MenuSwitch[VectorSocket]":
+        return MenuSwitch(menu, items, data_type="VECTOR")
+
+    @classmethod
+    def color(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputColor] = {},
+    ) -> "MenuSwitch[ColorSocket]":
+        return MenuSwitch(menu, items, data_type="RGBA")
+
+    @classmethod
+    def rotation(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputRotation] = {},
+    ) -> "MenuSwitch[RotationSocket]":
+        return MenuSwitch(menu, items, data_type="ROTATION")
+
+    @classmethod
+    def matrix(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputMatrix] = {},
+    ) -> "MenuSwitch[MatrixSocket]":
+        return MenuSwitch(menu, items, data_type="MATRIX")
+
+    @classmethod
+    def string(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputString] = {},
+    ) -> "MenuSwitch[StringSocket]":
+        return MenuSwitch(menu, items, data_type="STRING")
+
+    @classmethod
+    def menu(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputMenu] = {},
+    ) -> "MenuSwitch[MenuSocket]":
+        return MenuSwitch(menu, items, data_type="MENU")
+
+    @classmethod
+    def object(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputObject] = {},
+    ) -> "MenuSwitch[ObjectSocket]":
+        return MenuSwitch(menu, items, data_type="OBJECT")
+
+    @classmethod
+    def geometry(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputGeometry] = {},
+    ) -> "MenuSwitch[GeometrySocket]":
+        return MenuSwitch(menu, items, data_type="GEOMETRY")
+
+    @classmethod
+    def collection(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputCollection] = {},
+    ) -> "MenuSwitch[CollectionSocket]":
+        return MenuSwitch(menu, items, data_type="COLLECTION")
+
+    @classmethod
+    def image(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputImage] = {},
+    ) -> "MenuSwitch[ImageSocket]":
+        return MenuSwitch(menu, items, data_type="IMAGE")
+
+    @classmethod
+    def material(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputMaterial] = {},
+    ) -> "MenuSwitch[MaterialSocket]":
+        return MenuSwitch(menu, items, data_type="MATERIAL")
+
+    @classmethod
+    def bundle(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputBundle] = {},
+    ) -> "MenuSwitch[BundleSocket]":
+        return MenuSwitch(menu, items, data_type="BUNDLE")
+
+    @classmethod
+    def closure(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputClosure] = {},
+    ) -> "MenuSwitch[ClosureSocket]":
+        return MenuSwitch(menu, items, data_type="CLOSURE")
 
 
-class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
+class CaptureAttribute(BaseNode, DynamicInputsMixin):
     """
     Store the result of a field on a geometry and output the data as a node socket.
     Allows remembering or interpolating data as the geometry changes,
@@ -960,14 +1201,11 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
 
         def __call__(
             self,
-            *args: InputLinkable,
             geometry: InputGeometry = None,
-            **kwargs,
+            items: dict[str, InputLinkable] = {},
         ) -> "CaptureAttribute":
             """Create a CaptureAttribute node with a pre-set domain"""
-            return CaptureAttribute(
-                *args, geometry=geometry, domain=self._domain, **kwargs
-            )
+            return CaptureAttribute(geometry=geometry, domain=self._domain, items=items)
 
     point = _DomainFactory("POINT")
     edge = _DomainFactory("EDGE")
@@ -978,11 +1216,11 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
     layer = _DomainFactory("LAYER")
 
     class _Inputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
         """Input geometry."""
 
     class _Outputs(SocketAccessor):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
         """Output geometry."""
 
     if TYPE_CHECKING:
@@ -995,15 +1233,15 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
 
     def __init__(
         self,
-        *args: InputLinkable,
         geometry: InputGeometry = None,
+        items: dict[str, InputLinkable] = {},
+        *,
         domain: _AttributeDomains = "POINT",
-        **kwargs,
     ):
         super().__init__()
         key_args = {"Geometry": geometry}
         self.domain = domain
-        key_args.update(self._add_inputs(*args, **kwargs))
+        key_args.update(self._add_inputs(**items))
         self._establish_links(**key_args)
 
     def _add_socket(self, name: str, type: _AttributeDataTypes):
@@ -1039,7 +1277,7 @@ class CaptureAttribute(NodeBuilder, DynamicInputsMixin):
         self.node.domain = value
 
 
-class FieldToGrid(DynamicInputsMixin, NodeBuilder):
+class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     """Create new grids by evaluating new values on an existing volume grid topology
 
     New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
@@ -1065,21 +1303,30 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
     _type_map = {"VALUE": "FLOAT"}
     _default_input_id = "Topology"
 
+    if TYPE_CHECKING:
+
+        class _Inputs(SocketAccessor, Generic[_S]):
+            topology: _S
+            """The grid which contains the topology to evaluate the different fields on."""
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+
     def __init__(
         self,
-        *args: InputGrid,
         topology: InputGrid = None,
+        items: dict[str, InputAny] = {},
+        *,
         data_type: _GridDataTypes = "FLOAT",
-        **kwargs: InputGrid,
     ):
         super().__init__()
         self.data_type = data_type
         key_args = {"Topology": topology}
 
-        linkable = {k: v for k, v in kwargs.items() if not _is_default_value(v)}
-        defaults = {k: v for k, v in kwargs.items() if _is_default_value(v)}
+        linkable = {k: v for k, v in items.items() if not _is_default_value(v)}
+        defaults = {k: v for k, v in items.items() if _is_default_value(v)}
 
-        key_args.update(self._add_inputs(*args, **linkable))
+        key_args.update(self._add_inputs(**linkable))
         for name, value in defaults.items():
             self._add_socket(name=name, default_value=value)
 
@@ -1096,37 +1343,34 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
             self.node.inputs[item.name].default_value = default_value  # ty: ignore[unresolved-attribute]
         return self.node.inputs[item.name]
 
-    def capture(self, *args, **kwargs) -> list[SocketLinker]:
-        outputs = {
-            name: self.node.outputs[name] for name in self._add_inputs(*args, **kwargs)
-        }
+    def capture(self, items: dict[str, InputAny]) -> list[SocketLinker]:
+        outputs = {name: self.node.outputs[name] for name in self._add_inputs(**items)}
 
-        return [SocketLinker(x) for x in outputs.values()]
+        return [_get_socket_linker(x) for x in outputs.values()]
 
     @classmethod
-    def float(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
-        return cls(*args, data_type="FLOAT", topology=topology, **kwargs)
+    def float(
+        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[FloatSocket]":
+        return FieldToGrid(topology, items, data_type="FLOAT")
 
     @classmethod
-    def integer(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
-        return cls(*args, data_type="INT", topology=topology, **kwargs)
+    def integer(
+        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[IntegerSocket]":
+        return FieldToGrid(topology, items, data_type="INT")
 
     @classmethod
-    def vector(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
-        return cls(*args, data_type="VECTOR", topology=topology, **kwargs)
+    def vector(
+        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[VectorSocket]":
+        return FieldToGrid(topology, items, data_type="VECTOR")
 
     @classmethod
-    def boolean(cls, *args: InputGrid, topology: InputGrid = None, **kwargs):
-        return cls(*args, data_type="BOOLEAN", topology=topology, **kwargs)
-
-    class _Inputs(SocketAccessor):
-        topology: SocketLinker
-        """The grid which contains the topology to evaluate the different fields on."""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
+    def boolean(
+        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[BooleanSocket]":
+        return FieldToGrid(topology, items, data_type="BOOLEAN")
 
     @property
     def data_type(
@@ -1142,57 +1386,11 @@ class FieldToGrid(DynamicInputsMixin, NodeBuilder):
         self.node.data_type = value
 
 
-class SDFGridBoolean(NodeBuilder):
+class SDFGridBoolean(BaseNode):
     """Cut, subtract, or join multiple SDF volume grid inputs"""
 
     _bl_idname = "GeometryNodeSDFGridBoolean"
     node: bpy.types.GeometryNodeSDFGridBoolean
-
-    def __init__(
-        self, *, operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE"
-    ):
-        super().__init__()
-        self.operation = operation
-
-    @classmethod
-    def intersect(
-        cls,
-        *args: InputLinkable,
-    ) -> "SDFGridBoolean":
-        node = cls(operation="INTERSECT")
-        for arg in args:
-            if arg is None:
-                continue
-            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
-        return node
-
-    @classmethod
-    def union(
-        cls,
-        *args: InputLinkable,
-    ) -> "SDFGridBoolean":
-        node = cls(operation="UNION")
-        for arg in args:
-            if arg is None:
-                continue
-            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
-        return node
-
-    @classmethod
-    def difference(
-        cls,
-        *args: InputLinkable,
-        grid_1: InputLinkable = None,
-    ) -> "SDFGridBoolean":
-        """Create SDF Grid Boolean with operation 'Difference'."""
-        node = cls(operation="DIFFERENCE")
-        if grid_1 is not None:
-            node._link_from(*node._find_best_socket_pair(grid_1, node.inputs["Grid 1"]))
-        for arg in args:
-            if arg is None:
-                continue
-            node._link_from(*node._find_best_socket_pair(arg, node.inputs["Grid 2"]))
-        return node
 
     class _Inputs(SocketAccessor):
         grid_1: SocketLinker
@@ -1212,6 +1410,49 @@ class SDFGridBoolean(NodeBuilder):
         @property
         def o(self) -> _Outputs: ...
 
+    def __init__(
+        self, *, operation: Literal["INTERSECT", "UNION", "DIFFERENCE"] = "DIFFERENCE"
+    ):
+        super().__init__()
+        self.operation = operation
+
+    @classmethod
+    def intersect(
+        cls,
+        grids: Iterable[InputGrid] = (),
+    ) -> "SDFGridBoolean":
+        node = cls(operation="INTERSECT")
+        for grid in grids:
+            assert grid
+            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
+        return node
+
+    @classmethod
+    def union(
+        cls,
+        grids: Iterable[InputGrid] = (),
+    ) -> "SDFGridBoolean":
+        node = cls(operation="UNION")
+        for grid in grids:
+            assert grid
+            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
+        return node
+
+    @classmethod
+    def difference(
+        cls,
+        grid_1: InputLinkable = None,
+        grids: Iterable[InputGrid] = (),
+    ) -> "SDFGridBoolean":
+        """Create SDF Grid Boolean with operation 'Difference'."""
+        node = cls(operation="DIFFERENCE")
+        if grid_1 is not None:
+            node._link_from(*node._find_best_socket_pair(grid_1, node.i["Grid 1"]))
+        for grid in grids:
+            assert grid
+            node._link_from(*node._find_best_socket_pair(grid, node.i["Grid 2"]))
+        return node
+
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
         return self.node.operation
@@ -1221,7 +1462,7 @@ class SDFGridBoolean(NodeBuilder):
         self.node.operation = value
 
 
-class AccumulateField(NodeBuilder, Generic[_T]):
+class AccumulateField(BaseNode, Generic[_T]):
     """Add the values of an evaluated field together and output the running total for each element"""
 
     _bl_idname = "GeometryNodeAccumulateField"
@@ -1270,11 +1511,9 @@ class AccumulateField(NodeBuilder, Generic[_T]):
         *,
         data_type: _AccumulateFieldDataTypes = "FLOAT",
         domain: _AttributeDomains = "POINT",
-        **kwargs,
     ):
         super().__init__()
         key_args = {"Value": value, "Group Index": group_index}
-        key_args.update(kwargs)
         self.data_type = data_type
         self.domain = domain
         self._establish_links(**key_args)
@@ -1323,7 +1562,7 @@ class AccumulateField(NodeBuilder, Generic[_T]):
         self.node.domain = value
 
 
-class EvaluateAtIndex(NodeBuilder, Generic[_T]):
+class EvaluateAtIndex(BaseNode, Generic[_T]):
     """Retrieve data of other elements in the context's geometry"""
 
     _bl_idname = "GeometryNodeFieldAtIndex"
@@ -1443,7 +1682,7 @@ class EvaluateAtIndex(NodeBuilder, Generic[_T]):
         self.node.data_type = value
 
 
-class FieldAverage(NodeBuilder, Generic[_T]):
+class FieldAverage(BaseNode, Generic[_T]):
     """Calculate the mean and median of a given field"""
 
     _bl_idname = "GeometryNodeFieldAverage"
@@ -1537,7 +1776,7 @@ class FieldAverage(NodeBuilder, Generic[_T]):
         self.node.domain = value
 
 
-class FieldMinAndMax(NodeBuilder, Generic[_T]):
+class FieldMinAndMax(BaseNode, Generic[_T]):
     """Calculate the minimum and maximum of a given field"""
 
     _bl_idname = "GeometryNodeFieldMinAndMax"
@@ -1641,7 +1880,7 @@ class FieldMinAndMax(NodeBuilder, Generic[_T]):
         self.node.domain = value
 
 
-class EvaluateOnDomain(NodeBuilder, Generic[_T]):
+class EvaluateOnDomain(BaseNode, Generic[_T]):
     """Retrieve values from a field on a different domain besides the domain from the context"""
 
     _bl_idname = "GeometryNodeFieldOnDomain"
@@ -1748,7 +1987,7 @@ class EvaluateOnDomain(NodeBuilder, Generic[_T]):
         self.node.data_type = value
 
 
-class FieldVariance(NodeBuilder, Generic[_T]):
+class FieldVariance(BaseNode, Generic[_T]):
     """Calculate the standard deviation and variance of a given field"""
 
     _bl_idname = "GeometryNodeFieldVariance"
@@ -1867,7 +2106,7 @@ _CompareVectorModes = Literal[
 ]
 
 
-class Compare(NodeBuilder, Generic[_T]):
+class Compare(BaseNode, Generic[_T]):
     """Perform a comparison operation on the two given inputs"""
 
     _bl_idname = "FunctionNodeCompare"
@@ -2268,7 +2507,7 @@ class Compare(NodeBuilder, Generic[_T]):
         self.node.mode = value
 
 
-class AttributeStatistic(NodeBuilder, Generic[_T]):
+class AttributeStatistic(BaseNode, Generic[_T]):
     """Calculate statistics about a data set from a field evaluated on a geometry"""
 
     _bl_idname = "GeometryNodeAttributeStatistic"
@@ -2318,7 +2557,7 @@ class AttributeStatistic(NodeBuilder, Generic[_T]):
     layer = _AttributeStatisticDomainFactor("LAYER")
 
     class _Inputs(SocketAccessor, Generic[_S]):
-        geometry: SocketGeometry
+        geometry: GeometrySocket
         """The geometry whose attribute to analyze."""
         selection: BooleanSocket
         """Limits which elements are included in the statistics."""
@@ -2408,3 +2647,681 @@ class AttributeStatistic(NodeBuilder, Generic[_T]):
         value: _AttributeDomains,
     ):
         self.node.domain = value
+
+
+_SampleCurveDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "FLOAT_VECTOR",
+    "FLOAT_COLOR",
+    "QUATERNION",
+    "FLOAT4X4",
+]
+
+
+class SampleCurve(BaseNode, Generic[_T]):
+    """
+    Retrieve data from a point on a curve at a certain distance from its start
+
+    Parameters
+    ----------
+    curves : InputGeometry
+        Curves
+    value : InputFloat
+        Value
+    factor : InputFloat
+        Factor
+    length : InputFloat
+        Length
+    curve_index : InputInteger
+        Curve Index
+
+    Inputs
+    ------
+    i.curves : GeometrySocket
+        Curves
+    i.value : FloatSocket
+        Value
+    i.factor : FloatSocket
+        Factor
+    i.length : FloatSocket
+        Length
+    i.curve_index : IntegerSocket
+        Curve Index
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    o.position : VectorSocket
+        Position
+    o.tangent : VectorSocket
+        Tangent
+    o.normal : VectorSocket
+        Normal
+    """
+
+    class _SampleCurveFactorFactory:
+        def float(
+            self,
+            curves: InputGeometry = None,
+            value: InputFloat = 0.0,
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[FloatSocket]":
+            """Create Sample Curve with operation 'Float'. Floating-point value"""
+            return SampleCurve(
+                data_type="FLOAT",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def integer(
+            self,
+            curves: InputGeometry = None,
+            value: InputInteger = 0,
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[IntegerSocket]":
+            """Create Sample Curve with operation 'Integer'. Integer value"""
+            return SampleCurve(
+                data_type="INT",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def boolean(
+            self,
+            curves: InputGeometry = None,
+            value: InputBoolean = False,
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[BooleanSocket]":
+            """Create Sample Curve with operation 'Boolean'. Boolean value"""
+            return SampleCurve(
+                data_type="BOOLEAN",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def vector(
+            self,
+            curves: InputGeometry = None,
+            value: InputVector = (0.0, 0.0, 0.0),
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[VectorSocket]":
+            """Create Sample Curve with operation 'Vector'. Vector value"""
+            return SampleCurve(
+                data_type="FLOAT_VECTOR",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def color(
+            self,
+            curves: InputGeometry = None,
+            value: InputColor = (0.0, 0.0, 0.0, 0.0),
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[VectorSocket]":
+            """Create Sample Curve with operation 'Color'. Color value"""
+            return SampleCurve(
+                data_type="FLOAT_COLOR",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def rotation(
+            self,
+            curves: InputGeometry = None,
+            value: InputRotation = (0.0, 0.0, 0.0),
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[RotationSocket]":
+            """Create Sample Curve with operation 'Quaternion'. Quaternion value"""
+            return SampleCurve(
+                data_type="QUATERNION",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+        def matrix(
+            self,
+            curves: InputGeometry = None,
+            value: InputMatrix = None,
+            factor: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[MatrixSocket]":
+            """Create Sample Curve with operation 'Matrix'. Matrix value"""
+            return SampleCurve(
+                data_type="FLOAT4X4",
+                curves=curves,
+                value=value,
+                factor=factor,
+                curve_index=curve_index,
+                mode="FACTOR",
+                use_all_curves=use_all_curves,
+            )
+
+    class _SampleCurveLengthFactory:
+        def float(
+            self,
+            curves: InputGeometry = None,
+            value: InputFloat = 0.0,
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[FloatSocket]":
+            """Create Sample Curve with operation 'Float'. Floating-point value"""
+            return SampleCurve(
+                data_type="FLOAT",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def integer(
+            self,
+            curves: InputGeometry = None,
+            value: InputInteger = 0,
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[IntegerSocket]":
+            """Create Sample Curve with operation 'Integer'. Integer value"""
+            return SampleCurve(
+                data_type="INT",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def boolean(
+            self,
+            curves: InputGeometry = None,
+            value: InputBoolean = False,
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[BooleanSocket]":
+            """Create Sample Curve with operation 'Boolean'. Boolean value"""
+            return SampleCurve(
+                data_type="BOOLEAN",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def vector(
+            self,
+            curves: InputGeometry = None,
+            value: InputVector = (0.0, 0.0, 0.0),
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[VectorSocket]":
+            """Create Sample Curve with operation 'Vector'. Vector value"""
+            return SampleCurve(
+                data_type="FLOAT_VECTOR",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def color(
+            self,
+            curves: InputGeometry = None,
+            value: InputColor = (0.0, 0.0, 0.0, 0.0),
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[VectorSocket]":
+            """Create Sample Curve with operation 'Color'. Color value"""
+            return SampleCurve(
+                data_type="FLOAT_COLOR",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def rotation(
+            self,
+            curves: InputGeometry = None,
+            value: InputRotation = (0.0, 0.0, 0.0),
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[RotationSocket]":
+            """Create Sample Curve with operation 'Quaternion'. Quaternion value"""
+            return SampleCurve(
+                data_type="QUATERNION",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+        def matrix(
+            self,
+            curves: InputGeometry = None,
+            value: InputMatrix = None,
+            length: InputFloat = 0.0,
+            curve_index: InputInteger = 0,
+            *,
+            use_all_curves: bool = False,
+        ) -> "SampleCurve[MatrixSocket]":
+            """Create Sample Curve with operation 'Matrix'. Matrix value"""
+            return SampleCurve(
+                data_type="FLOAT4X4",
+                curves=curves,
+                value=value,
+                length=length,
+                curve_index=curve_index,
+                mode="LENGTH",
+                use_all_curves=use_all_curves,
+            )
+
+    length = _SampleCurveLengthFactory()
+    factor = _SampleCurveFactorFactory()
+
+    _bl_idname = "GeometryNodeSampleCurve"
+    node: bpy.types.GeometryNodeSampleCurve
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        curves: GeometrySocket
+        """Curves"""
+        value: _S
+        """Value"""
+        factor: FloatSocket
+        """Factor"""
+        length: FloatSocket
+        """Length"""
+        curve_index: IntegerSocket
+        """Curve Index"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+        position: VectorSocket
+        """Position"""
+        tangent: VectorSocket
+        """Tangent"""
+        normal: VectorSocket
+        """Normal"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        curves: InputGeometry = None,
+        value: InputAny = 0.0,
+        factor: InputFloat = 0.0,
+        length: InputFloat = 0.0,
+        curve_index: InputInteger = 0,
+        *,
+        mode: Literal["FACTOR", "LENGTH"] = "FACTOR",
+        use_all_curves: bool = False,
+        data_type: _SampleCurveDataTypes = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {
+            "Curves": curves,
+            "Value": value,
+            "Factor": factor,
+            "Length": length,
+            "Curve Index": curve_index,
+        }
+        self.mode = mode
+        self.use_all_curves = use_all_curves
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @property
+    def mode(self) -> Literal["FACTOR", "LENGTH"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["FACTOR", "LENGTH"]):
+        self.node.mode = value
+
+    @property
+    def use_all_curves(self) -> bool:
+        return self.node.use_all_curves
+
+    @use_all_curves.setter
+    def use_all_curves(self, value: bool):
+        self.node.use_all_curves = value
+
+    @property
+    def data_type(
+        self,
+    ) -> _SampleCurveDataTypes:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _SampleCurveDataTypes,
+    ):
+        self.node.data_type = value
+
+
+class SampleIndex(BaseNode, Generic[_T]):
+    """
+    Retrieve values from specific geometry elements
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    value : InputFloat
+        Value
+    index : InputInteger
+        Index
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.value : FloatSocket
+        Value
+    i.index : IntegerSocket
+        Index
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    """
+
+    class _SampleIndexDomainFactory:
+        def __init__(
+            self,
+            domain: _AttributeDomains,
+        ):
+            self._domain = domain
+
+        def float(
+            self,
+            geometry: InputGeometry = None,
+            value: InputFloat = 0.0,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[FloatSocket]":
+            """Create Sample Index with operation 'Float'. Floating-point value"""
+            return SampleIndex(
+                data_type="FLOAT",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def integer(
+            self,
+            geometry: InputGeometry = None,
+            value: InputInteger = 0,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[IntegerSocket]":
+            """Create Sample Index with operation 'Integer'. 32-bit integer"""
+            return SampleIndex(
+                data_type="INT",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def boolean(
+            self,
+            geometry: InputGeometry = None,
+            value: InputBoolean = False,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[BooleanSocket]":
+            """Create Sample Index with operation 'Boolean'. True or false"""
+            return SampleIndex(
+                data_type="BOOLEAN",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def vector(
+            self,
+            geometry: InputGeometry = None,
+            value: InputVector = None,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[VectorSocket]":
+            """Create Sample Index with operation 'Vector'. 3D vector with floating-point values"""
+            return SampleIndex(
+                data_type="FLOAT_VECTOR",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def color(
+            self,
+            geometry: InputGeometry = None,
+            value: InputColor = None,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[ColorSocket]":
+            """Create Sample Index with operation 'Color'. RGBA color with 32-bit floating-point values"""
+            return SampleIndex(
+                data_type="FLOAT_COLOR",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def rotation(
+            self,
+            geometry: InputGeometry = None,
+            value: InputRotation = None,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[RotationSocket]":
+            """Create Sample Index with operation 'Quaternion'. Floating point quaternion rotation"""
+            return SampleIndex(
+                data_type="QUATERNION",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+        def matrix(
+            self,
+            geometry: InputGeometry = None,
+            value: InputMatrix = None,
+            index: InputInteger = 0,
+            *,
+            clamp: bool = False,
+        ) -> "SampleIndex[MatrixSocket]":
+            """Create Sample Index with operation '4x4 Matrix'. Floating point matrix"""
+            return SampleIndex(
+                data_type="FLOAT4X4",
+                geometry=geometry,
+                value=value,
+                index=index,
+                domain=self._domain,
+                clamp=clamp,
+            )
+
+    point = _SampleIndexDomainFactory("POINT")
+    edge = _SampleIndexDomainFactory("EDGE")
+    face = _SampleIndexDomainFactory("FACE")
+    face_corner = _SampleIndexDomainFactory("CORNER")
+    spline = _SampleIndexDomainFactory("CURVE")
+    instance = _SampleIndexDomainFactory("INSTANCE")
+    layer = _SampleIndexDomainFactory("LAYER")
+
+    _bl_idname = "GeometryNodeSampleIndex"
+    node: bpy.types.GeometryNodeSampleIndex
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        geometry: GeometrySocket
+        """Geometry"""
+        value: _S
+        """Value"""
+        index: IntegerSocket
+        """Index"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        value: InputAny = 0.0,
+        index: InputInteger = 0,
+        *,
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+        ] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+        clamp: bool = False,
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry, "Value": value, "Index": index}
+        self.data_type = data_type
+        self.domain = domain
+        self.clamp = clamp
+        self._establish_links(**key_args)
+
+    @property
+    def data_type(
+        self,
+    ) -> _SampleCurveDataTypes:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _SampleCurveDataTypes,
+    ):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
+
+    @property
+    def clamp(self) -> bool:
+        return self.node.clamp
+
+    @clamp.setter
+    def clamp(self, value: bool):
+        self.node.clamp = value
