@@ -1346,7 +1346,7 @@ def test_sample_curve():
 
 
 def test_float_curve():
-    with g.tree() as tree:
+    with g.tree():
         rand = random.rand(12).reshape((6, 2))
         fc = g.FloatCurve(items=rand)
         assert len(fc.points) == 6
@@ -1358,3 +1358,11 @@ def test_float_curve():
         )
         fc = g.FloatCurve(items=values)
         assert fc.points[1].handle_type == "VECTOR"
+
+
+def test_color_ramp():
+    with g.tree():
+        rand = random.rand(16).reshape((4, 4))
+
+        cr = g.ColorRamp(items=((i / 4, x) for i, x in enumerate(rand)))
+        assert len(cr.elements) == 4

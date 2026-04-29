@@ -620,55 +620,6 @@ class Clamp(BaseNode):
         self.node.clamp_type = value
 
 
-class ColorRamp(BaseNode):
-    """
-    Map values to colors with the use of a gradient
-
-    Parameters
-    ----------
-    fac : InputFloat
-        Factor
-
-    Inputs
-    ------
-    i.fac : FloatSocket
-        Factor
-
-    Outputs
-    -------
-    o.color : ColorSocket
-        Color
-    o.alpha : FloatSocket
-        Alpha
-    """
-
-    _bl_idname = "ShaderNodeValToRGB"
-    node: bpy.types.ShaderNodeValToRGB
-
-    class _Inputs(SocketAccessor):
-        fac: FloatSocket
-        """Factor"""
-
-    class _Outputs(SocketAccessor):
-        color: ColorSocket
-        """Color"""
-        alpha: FloatSocket
-        """Alpha"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(self, fac: InputFloat = 0.5):
-        super().__init__()
-        key_args = {"Fac": fac}
-
-        self._establish_links(**key_args)
-
-
 class CombineBundle(BaseNode):
     """
     Combine multiple socket values into one.

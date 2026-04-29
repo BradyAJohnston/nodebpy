@@ -14,7 +14,6 @@ from ..geometry.color import (
 from ..geometry.converter import (
     Blackbody,
     Clamp,
-    ColorRamp,
     CombineXYZ,
     MapRange,
     Math,
@@ -30,6 +29,7 @@ from ..geometry.interface import (
     GroupOutput,
 )
 from ..geometry.manual import (
+    ColorRamp,
     FloatCurve,
     Value,
 )

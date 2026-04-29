@@ -18,7 +18,6 @@ from ..geometry.color import (
 from ..geometry.converter import (
     Blackbody,
     Clamp,
-    ColorRamp,
     CombineBundle,
     CombineXYZ,
     JoinBundle,
@@ -34,6 +33,7 @@ from ..geometry.interface import (
 from ..geometry.manual import (
     ClosureInput,
     ClosureOutput,
+    ColorRamp,
     EvaluateClosure,
     FloatCurve,
     Value,

@@ -44,6 +44,7 @@ from .manual import (
     Frame,
     Float,
     FloatCurve,
+    ColorRamp,
     tree,
 )
 from .converter import (
@@ -54,7 +55,6 @@ from .converter import (
     Blackbody,
     BooleanMath,
     Clamp,
-    ColorRamp,
     CombineBundle,
     CombineColor,
     CombineMatrix,

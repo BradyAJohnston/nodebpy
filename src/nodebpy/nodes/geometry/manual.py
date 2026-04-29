@@ -2,7 +2,13 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
 
 import bpy
-from bpy.types import CurveMapPoints, NodeEvaluateClosure, NodeSocket, NodeSocketString
+from bpy.types import (
+    ColorRampElements,
+    CurveMapPoints,
+    NodeEvaluateClosure,
+    NodeSocket,
+    NodeSocketString,
+)
 
 from nodebpy.builder._registry import _get_socket_linker
 
@@ -124,6 +130,7 @@ __all__ = (
     "Frame",
     "Float",
     "FloatCurve",
+    "ColorRamp",
 )
 
 
@@ -134,6 +141,71 @@ def tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
 ) -> TreeBuilder:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
+
+
+class ColorRamp(BaseNode):
+    """
+    Map values to colors with the use of a gradient
+
+    Parameters
+    ----------
+    fac : InputFloat
+        Factor
+
+    Inputs
+    ------
+    i.fac : FloatSocket
+        Factor
+
+    Outputs
+    -------
+    o.color : ColorSocket
+        Color
+    o.alpha : FloatSocket
+        Alpha
+    """
+
+    _bl_idname = "ShaderNodeValToRGB"
+    node: bpy.types.ShaderNodeValToRGB
+
+    class _Inputs(SocketAccessor):
+        fac: FloatSocket
+        """Factor"""
+
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+        alpha: FloatSocket
+        """Alpha"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        fac: InputFloat = 0.5,
+        *,
+        items: Iterable[tuple[float, tuple[float, float, float, float]]] = (),
+    ):
+        super().__init__()
+        key_args = {"Fac": fac}
+        for i, item in enumerate(items):
+            if i < 2:
+                point = self.elements[i]
+            else:
+                point = self.elements.new(0.0)
+            point.position = item[0]
+            point.color = item[1]
+
+        self._establish_links(**key_args)
+
+    @property
+    def elements(self) -> ColorRampElements:
+        return self.node.color_ramp.elements
 
 
 class FloatCurve(BaseNode):
