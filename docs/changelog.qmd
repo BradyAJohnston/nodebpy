@@ -2,7 +2,7 @@
 title: Changelog
 ---
 
-## UNRELEASED
+## v0.14.0 - 2026-04-29
 
 ### Enhancements
 

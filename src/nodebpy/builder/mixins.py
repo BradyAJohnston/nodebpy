@@ -11,10 +11,10 @@ from ._utils import SocketError, _resolve_promotion, _SocketLike
 _RShiftT = TypeVar("_RShiftT")
 
 if TYPE_CHECKING:
-    from ..nodes.geometry import Compare, Math
+    from ..nodes.geometry import Compare, Math, MultiplyMatrices, TransformPoint
     from ..types import InputLinkable
     from .node import BaseNode
-    from .socket import Socket
+    from .socket import MatrixSocket, Socket
     from .tree import TreeBuilder
 
 
@@ -161,37 +161,35 @@ class OperatorMixin:
         return BooleanMath.l_not(self)
 
     @staticmethod
-    def _cast_to_matrix(value):
+    def _cast_to_matrix(value) -> MatrixSocket:
         from ..nodes.geometry.converter import CombineMatrix
 
         if hasattr(value, "shape") and value.shape == (4, 4):
-            return CombineMatrix(*value.ravel())
+            return CombineMatrix(*value.ravel()).o.matrix
         else:
             return value
 
-    def __matmul__(self, other: Any):
+    def __matmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
         from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
         other = self._cast_to_matrix(other)
-        socket = self._default_output_socket  # type: ignore[attr-defined]
-        other_type = getattr(other, "type", None)
+        socket = self._default_output_socket
 
-        if socket.type == "MATRIX" and other_type == "VECTOR":
+        if socket.type == "MATRIX" and other.type == "VECTOR":
             return TransformPoint(other, socket)
 
-        return MultiplyMatrices(self, other)
+        return MultiplyMatrices(socket, other)
 
-    def __rmatmul__(self, other: Any):
+    def __rmatmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
         from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
         other = self._cast_to_matrix(other)
-        socket = self._default_output_socket  # type: ignore[attr-defined]
-        other_type = getattr(other, "type", None)
+        socket = self._default_output_socket
 
-        if socket.type == "VECTOR" and other_type == "MATRIX":
+        if socket.type == "VECTOR" and getattr(other, "type", None) == "MATRIX":
             return TransformPoint(socket, other)
 
-        return MultiplyMatrices(other, self)
+        return MultiplyMatrices(other, socket)
 
 
 class LinkingMixin:
