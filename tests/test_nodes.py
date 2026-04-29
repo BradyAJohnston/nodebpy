@@ -102,10 +102,12 @@ def test_format_string():
         x_int = g.Integer(5)
         y_value = g.Value(12.50)
         format = g.FormatString(
-            g.String("test"),
-            format=str_to_format,
-            x=x_int,
-            y=y_value,
+            str_to_format,
+            items={
+                "String": g.String("test"),
+                "x": x_int,
+                "y": y_value,
+            },
         )
 
         assert len(format.node.format_items) == 3

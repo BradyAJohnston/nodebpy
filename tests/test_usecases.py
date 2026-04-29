@@ -23,11 +23,13 @@ def import_channel() -> bpy.types.GeometryNodeTree:
 
         volume = g.ImportVDB(
             g.FormatString(
-                time=time,
-                channel_number=channel_number,
-                base_path=base_path,
-                scale=g.Integer(0),
-                format=string_to_format,
+                string_to_format,
+                {
+                    "time": time,
+                    "channel_number": channel_number,
+                    "base_path": base_path,
+                    "scale": g.Integer(0),
+                },
             )
         )
         gng = g.GetNamedGrid.float(volume, "data")

@@ -460,13 +460,12 @@ class FormatString(BaseNode, DynamicInputsMixin):
 
     def __init__(
         self,
-        *args,
         format: InputString = "",
-        **kwargs,
+        items: dict[str, InputAny] = {},
     ):
         super().__init__()
         key_args = {"Format": format}
-        key_args.update(self._add_inputs(*args, **kwargs))
+        key_args.update(self._add_inputs(**items))
         self._establish_links(**key_args)
 
     def _add_socket(
