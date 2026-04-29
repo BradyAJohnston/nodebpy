@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
 import bpy
 from bpy.types import NodeEvaluateClosure, NodeSocket, NodeSocketString
 
+from nodebpy.builder._registry import _get_socket_linker
+
 from ...builder import (
     BaseNode,
     BooleanSocket,
@@ -1344,7 +1346,7 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     def capture(self, items: dict[str, InputGrid]) -> list[SocketLinker]:
         outputs = {name: self.node.outputs[name] for name in self._add_inputs(**items)}
 
-        return [SocketLinker(x) for x in outputs.values()]
+        return [_get_socket_linker(x) for x in outputs.values()]
 
     @classmethod
     def float(

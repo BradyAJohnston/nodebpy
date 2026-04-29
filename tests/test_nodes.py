@@ -8,6 +8,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
+    ColorSocket,
     FloatSocket,
     IntegerSocket,
     MatrixSocket,
@@ -164,6 +165,20 @@ def test_field_to_grid():
     assert ftg.i.topology.socket.links[0].from_node == grid.node
     assert ftg.i.topology.socket.links[0].from_socket == grid.o.grid.socket
     assert ftg.i["Color"].socket.links[0].from_node.name == "Noise Texture.001"
+
+    with TreeBuilder() as tree:
+        nt = g.NoiseTexture()
+        ftg = g.FieldToGrid(g.CubeGridTopology())
+        pos, vec, fac = ftg.capture(
+            {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
+        )
+        assert len(ftg.o) == 4
+        assert isinstance(pos, VectorSocket)
+        assert pos.name == "position"
+        assert isinstance(vec, VectorSocket)
+        assert vec.name == "vec"
+        assert isinstance(nt.o.fac, FloatSocket)
+        assert fac.name == "fac"
 
 
 def test_field_variance():
