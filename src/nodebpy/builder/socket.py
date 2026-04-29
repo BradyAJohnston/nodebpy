@@ -112,18 +112,6 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
 
     """
 
-    def _best_match(self, sockets: Iterable[NodeSocket]) -> tuple[NodeSocket, str]:
-        from ..types import SOCKET_COMPATIBILITY
-
-        possible = []
-        for socket in sockets:
-            type = socket.type
-            if type in SOCKET_COMPATIBILITY[self.type]:
-                possible.append((socket, type))
-        if not possible:
-            raise SocketError(f"No compatible socket found for {self.type}")
-        return max(possible, key=lambda x: SOCKET_COMPATIBILITY[self.type].index(x[1]))
-
     # -- Dispatch methods: per-type math logic. --
     # Called by OperatorMixin operators via _get_socket_linker().
     # Subclasses (and type-specific mixins) override to provide type-specific behaviour.

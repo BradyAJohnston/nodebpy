@@ -5,7 +5,9 @@ title: Changelog
 ## UNRELEASED
 
 ### Enhancements
-- Tree interfaces are defined with `tree.inputs.geometry()` methods rather than using the old context-based `s.SocketGeometry()`. Both systems have been living side-by-side but this completely removed old system so is a hard breaking change. (See [#67](https://github.com/BradyAJohnston/nodebpy/pull/67))
+
+- Tree interfaces are defined with `tree.inputs.geometry()` methods rather than using the old context-based `s.SocketGeometry()`. Both systems have been living side-by-side but this completely removed old system so is a hard breaking change. ([#67](https://github.com/BradyAJohnston/nodebpy/pull/67))
+
 ```py
 # old system
 with tree.inputs:
@@ -14,11 +16,12 @@ with tree.inputs:
 # new system
 tree.inputs.geometry()
 ```
-- Drop the `.inputs` and `.outputs` accessors for the nodes, in favor of just using `.i` and `.o` properties directly. This will reduce confusion as `.inputs` and `.outputs` are available on the base `bpy` nodes themselves.
-- Better type hinting and stubs for the `MenuSwitch` and `IndexSwitch` nodes.
+
+- Drop the `.inputs` and `.outputs` accessors for the nodes, in favor of just using `.i` and `.o` properties directly. This will reduce confusion as `.inputs` and `.outputs` are available on the base `bpy` nodes themselves. ([`#65`](https://github.com/BradyAJohnston/nodebpy/pull/65))
+- Better type hinting and stubs for the `MenuSwitch` and `IndexSwitch` nodes. ([`#62`](https://github.com/BradyAJohnston/nodebpy/pull/62))
 
 ### Bug Fixes
--
+
 
 ## v0.13.0 - 2026-04-28
 

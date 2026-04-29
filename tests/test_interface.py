@@ -5,8 +5,7 @@ from mathutils import Euler
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import VectorSocket
-from nodebpy.builder import Socket
+from nodebpy.builder import Socket, VectorSocket
 
 # ---------------------------------------------------------------------------
 # Geometry tree — existing test
@@ -164,9 +163,11 @@ def test_socket_vector_default_input():
     with g.tree(arrange=None) as tree:
         pos = tree.inputs.vector("Position", default_input="POSITION")
         normal = tree.inputs.vector("Normal", default_input="NORMAL")
+        out = tree.outputs.vector()
 
     assert pos.interface_socket.default_input == "POSITION"
     assert normal.interface_socket.default_input == "NORMAL"
+    assert out._default_input_socket == out.socket
 
 
 def test_socket_hide_value():
