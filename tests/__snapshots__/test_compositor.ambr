@@ -1,0 +1,60 @@
+# serializer version: 1
+# name: test_initial_compositor
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Math<br/><small>(SUBTRACT)</small>"):::converter-node
+      N2("Filter"):::default-node
+      N3("Filter"):::default-node
+      N4("Math<br/><small>(DIVIDE)</small>"):::converter-node
+      N5("Math<br/><small>(POWER)</small>"):::converter-node
+      N6("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
+      N7("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
+      N8("Kuwahara"):::default-node
+      N9("Math<br/><small>(ADD)</small>"):::converter-node
+      N10("Mix<br/><small>(0.5,0.5,0.5)</small>"):::default-node
+      N11("Anti-Aliasing"):::default-node
+      N12("Math<br/><small>(SUBTRACT)</small>"):::converter-node
+      N13("Frame"):::default-node
+      N14("Frame"):::default-node
+      N15("Frame"):::default-node
+      N16("Dilate/Erode"):::default-node
+      N17("Anti-Aliasing"):::default-node
+      N18("Alpha Over"):::default-node
+      N19("Menu Switch"):::converter-node
+      N20("Alpha Over"):::default-node
+      N21("Menu Switch"):::converter-node
+      N22("Group Output"):::default-node
+      N0 -->|"AO->Value"| N1
+      N1 -->|"Value->Value"| N5
+      N5 -->|"Value->Image"| N8
+      N8 -->|"Image->Factor"| N10
+      N0 -->|"Image->A"| N10
+      N0 -->|"Depth->Image"| N2
+      N0 -->|"Socket Depth->Value"| N4
+      N2 -->|"Image->Value"| N6
+      N4 -->|"Value->Value"| N6
+      N0 -->|"Normal->Image"| N3
+      N3 -->|"Image->Value"| N7
+      N6 -->|"Value->Value"| N9
+      N7 -->|"Value->Value"| N9
+      N9 -->|"Value->Image"| N11
+      N12 -->|"Value->Size"| N16
+      N11 -->|"Image->Mask"| N16
+      N16 -->|"Mask->Image"| N17
+      N17 -->|"Image->Background"| N18
+      N18 -->|"Image->Outline"| N19
+      N19 -->|"Output->Foreground"| N20
+      N20 -->|"Image->Image"| N21
+      N21 -->|"Output->Image"| N22
+      N0 -->|"Background->Menu"| N21
+      N0 -->|"Background Color->Background"| N20
+      N0 -->|"Outline->Menu"| N19
+      N0 -->|"Outline Size->Value"| N12
+      N0 -->|"Outline Color->Foreground"| N18
+      N10 -->|"Result->None"| N19
+      N19 -->|"Output->Output"| N21
+  ```
+  '''
+# ---
