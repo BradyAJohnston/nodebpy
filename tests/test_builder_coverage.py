@@ -402,7 +402,7 @@ def test_find_best_socket_pair_bad_source_raises():
 def test_rshift_fallback_path():
     """__rshift__ falls back to other._find_best_socket_pair on SocketError."""
     with TreeBuilder("RShiftFallback"):
-        zone = g.SimulationZone(g.Value())
+        zone = g.SimulationZone({"Value": g.Value()})
         _ = g.AxisAngleToRotation(angle=1.0) >> zone.output
 
 

@@ -107,7 +107,7 @@ def test_eulers_number():
         e = g.Float(math.e)
         value = g.Float(1.0)
 
-        zone = g.RepeatZone(100, value=value)
+        zone = g.RepeatZone(100, {"value": value})
 
         with g.Frame("Factorial"):
             value = g.Math.square_root(zone.iteration * tau) * (

@@ -201,7 +201,7 @@ def test_get_named_grid(snapshot_tree):
     assert snapshot_tree == tree
 
 
-def test_advect_grid(snapshot_tree):
+def test_advect_grid():
     with TreeBuilder():
         grid = g.GetNamedGrid(g.VolumeCube(), name="density")
         ftg = g.FieldToGrid(
@@ -288,10 +288,10 @@ def test_bake():
     assert set_pos.node.inputs[0].links[0].from_socket == bake.node.outputs[0]
 
 
-def test_simulation(snapshot_tree):
+def test_simulation(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        input, output = g.SimulationZone(cube)
+        input, output = g.SimulationZone({"cube": cube})
         pos_math = input.capture(g.Position()) * g.Position()
         _ = pos_math >> output
         _ = (
@@ -304,13 +304,13 @@ def test_simulation(snapshot_tree):
         _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(output.node.inputs["Skip"].links) == 0
     assert len(tree) == 13
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
-def test_repeat(snapshot_tree):
+def test_repeat(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        for i, input, output in g.RepeatZone(10, cube):
+        for i, input, output in g.RepeatZone(10, {"cube": cube}):
             pos_math = input.capture(g.Position()) * g.Position()
             _ = pos_math >> output
             _ = (
@@ -321,7 +321,7 @@ def test_repeat(snapshot_tree):
             _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(tree) == 13
     assert len(input.items) == 2
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
     with TreeBuilder() as tree:
         zone = g.RepeatZone(5)
@@ -339,7 +339,7 @@ def test_repeat(snapshot_tree):
         [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
     )
     assert len(tree) == 7
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
 def test_index_switch(snapshot_tree):
@@ -425,7 +425,7 @@ def test_switch_repeatzone(snapshot_tree):
         output = tree.outputs.geometry()
 
         items = (g.Cube(), g.IcoSphere(), g.Grid())
-        zone = g.RepeatZone(5, input)
+        zone = g.RepeatZone(5, {"Geometry": input})
         switch = g.IndexSwitch.geometry(zone.iteration, items)
         join = g.JoinGeometry([zone.input, switch])
         join >> zone.output >> output
