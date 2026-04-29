@@ -134,11 +134,11 @@ def test_field_to_grid():
     with TreeBuilder() as tree:
         # the rotation value should add a vector item as the next available compatible data type
         inputs = [g.Vector(), g.Value(), g.Boolean(), g.Integer(), g.Rotation()]
-        math = g.Math.add()
-        items = dict(zip([i.name for i in inputs], inputs))
+        items = {i.name: i for i in inputs}
         items["test"] = g.Value()
 
         ftg = g.FieldToGrid(items=items)
+        math = g.Math.add()
         _ = ftg.o["test"] >> math
 
         ftg2 = g.FieldToGrid(items={"test_value": 0.3})

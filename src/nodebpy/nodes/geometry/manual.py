@@ -1343,7 +1343,7 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
             self.node.inputs[item.name].default_value = default_value  # ty: ignore[unresolved-attribute]
         return self.node.inputs[item.name]
 
-    def capture(self, items: dict[str, InputGrid]) -> list[SocketLinker]:
+    def capture(self, items: dict[str, InputAny]) -> list[SocketLinker]:
         outputs = {name: self.node.outputs[name] for name in self._add_inputs(**items)}
 
         return [_get_socket_linker(x) for x in outputs.values()]
