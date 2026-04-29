@@ -227,7 +227,7 @@ class LinkingMixin:
         """Find the best compatible pair of sockets between two nodes/sockets."""
         from ..builder.node import BaseNode
         from ..builder.socket import Socket
-        from ..types import SOCKET_COMPATIBILITY
+        from ..types import PREFER_FIRST_SOCKET, SOCKET_COMPATIBILITY
 
         possible_combos = []
         if isinstance(source, BaseNode):
@@ -248,6 +248,21 @@ class LinkingMixin:
         if getattr(getattr(target, "node", None), "bl_idname", None) == "NodeReroute":
             if outputs and inputs:
                 return inputs[0], outputs[0]
+
+        # Try first available input first — if the output type matches it exactly,
+        # or is a "preferred" implicit conversion (e.g. float→color, vector→color),
+        # use the first socket rather than searching for a better-typed later one.
+        # This keeps float→Image working in the compositor instead of drifting to
+        # a float Factor socket that scores higher on raw compatibility.
+        # Pairs not in PREFER_FIRST_SOCKET (e.g. VALUE→BOOLEAN, VECTOR→ROTATION)
+        # fall through to the ranked search below.
+        if inputs:
+            first_input = inputs[0]
+            for output in outputs:
+                if first_input.type == output.type:
+                    return first_input, output
+                if (output.type, first_input.type) in PREFER_FIRST_SOCKET:
+                    return first_input, output
 
         for output in outputs:
             compat_sockets = SOCKET_COMPATIBILITY.get(output.type, ())

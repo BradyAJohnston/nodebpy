@@ -230,6 +230,23 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
     "SHADER": ("SHADER", "RGBA"),
 }
 
+# Type pairs (output, input) where the first available input socket should be
+# preferred over a later socket with a closer type match. Covers the common
+# float ↔ color ↔ vector implicit conversions in compositor / shader nodes.
+# Intentionally excludes low-semantic-overlap pairs like VALUE→BOOLEAN or
+# VECTOR→ROTATION, which should still fall through to best-match logic.
+PREFER_FIRST_SOCKET: frozenset[tuple[str, str]] = frozenset(
+    {
+        ("VALUE", "RGBA"),
+        ("RGBA", "VALUE"),
+        ("VECTOR", "RGBA"),
+        ("RGBA", "VECTOR"),
+        ("VALUE", "SHADER"),
+        ("VECTOR", "SHADER"),
+        ("RGBA", "SHADER"),
+    }
+)
+
 
 FloatInterfaceSubtypes = typing.Literal[
     "NONE",

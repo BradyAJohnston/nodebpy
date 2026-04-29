@@ -1,7 +1,7 @@
 from nodebpy import compositor as c
 
 
-def test_initial_compositor():
+def test_initial_compositor(snapshot):
     with c.tree("comp", fake_user=True) as t:
         image = t.inputs.color("Image")
         depth = t.inputs.float("Depth")
@@ -19,11 +19,11 @@ def test_initial_compositor():
         output_color = t.outputs.color("Image")
 
         with c.Frame("Ambient Occlusion"):
-            ao_factor = (1 - ao) ** 0.94 >> c.Kuwahara(..., size=4.0)
+            ao_factor = (1 - ao) ** 0.94 >> c.Kuwahara(size=4.0)
             active_image = c.Mix.color(ao_factor, image)
         with c.Frame("Outline"):
-            depth_line = c.Filter.sobel(depth) > (outline_depth / 100)
-            normal_line = c.Filter.sobel(normal) > 1.5
+            depth_line = depth >> c.Filter.sobel() > (outline_depth / 100)
+            normal_line = normal >> c.Filter.sobel() > 1.5
             outline_comp = (
                 (depth_line + normal_line)
                 >> c.AntiAliasing()
@@ -48,6 +48,7 @@ def test_initial_compositor():
                 )
                 >> output_color
             )
+    assert snapshot == t._repr_markdown_()
 
 
 def test_compositor_menu_switch():
