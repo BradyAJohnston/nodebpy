@@ -14,7 +14,7 @@ from nodebpy import geometry as g
 Input sockets are exposed in two different ways, they are positional arguments in the class `__init__` signature and are available behind the `inputs / i` accessor on the nodes.
 
 ```py
-class SetPosition(NodeBuilder):
+class SetPosition(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
@@ -137,7 +137,7 @@ Many options aren't available as sockets. These are exposed on the node class it
 The non-socket options are always keyword arguments, requiring them to be explicitly stated.
 
 ```py
-class EvaluateAtIndex(NodeBuilder):
+class EvaluateAtIndex(BaseNode):
     def __init__(
         self,
         value: InputFloat

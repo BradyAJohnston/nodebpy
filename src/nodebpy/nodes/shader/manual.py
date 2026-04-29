@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Generic, Literal
 from bpy.types import ShaderNodeAttribute
 
 from ...builder import (
+    BaseNode,
     BooleanSocket,
     BundleSocket,
     ClosureSocket,
@@ -11,7 +12,6 @@ from ...builder import (
     IntegerSocket,
     MaterialBuilder,
     MenuSocket,
-    NodeBuilder,
     ShaderSocket,
     TreeBuilder,
     VectorSocket,
@@ -126,7 +126,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
         return MenuSwitch(*args, menu=menu, data_type="SHADER", **kwargs)
 
 
-class Attribute(NodeBuilder):
+class Attribute(BaseNode):
     """
     Retrieve attributes attached to objects or geometry
     """

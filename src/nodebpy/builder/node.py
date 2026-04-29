@@ -163,9 +163,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             elif isinstance(value, NodeSocket):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
-                self._link_from(
-                    value.o._best_match(self.i._get(name).type), name
-                )
+                self._link_from(value.o._best_match(self.i._get(name).type), name)
             else:
                 if name in input_ids:
                     input = self.node.inputs[input_ids.index(name)]
@@ -230,7 +228,9 @@ class DynamicInputsMixin(ABC):
             items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
-            socket_source, type = self._match_compatible_data(source.o._available)
+            socket_source, type = self._match_compatible_data(
+                source.o._available if hasattr(source, "o") else [source]
+            )
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)

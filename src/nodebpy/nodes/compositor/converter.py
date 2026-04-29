@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     Socket,
     BooleanSocket,
@@ -30,7 +30,7 @@ from ...types import (
 )
 
 
-class AlphaConvert(NodeBuilder):
+class AlphaConvert(BaseNode):
     """
     Convert to and from premultiplied (associated) alpha
 
@@ -96,7 +96,7 @@ class AlphaConvert(NodeBuilder):
         return cls(image=image, type="To Straight")
 
 
-class CombineColor(NodeBuilder):
+class CombineColor(BaseNode):
     """
     Combine an image from its composite color channels
 
@@ -240,7 +240,7 @@ class CombineColor(NodeBuilder):
         self.node.ycc_mode = value
 
 
-class ConvertColorspace(NodeBuilder):
+class ConvertColorspace(BaseNode):
     """
     Convert between color spaces
 
@@ -474,7 +474,7 @@ class ConvertColorspace(NodeBuilder):
         self.node.to_color_space = value
 
 
-class ConvertToDisplay(NodeBuilder):
+class ConvertToDisplay(BaseNode):
     """
     Convert from scene linear to display color space, with a view transform and look for tone mapping
 
@@ -529,7 +529,7 @@ class ConvertToDisplay(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class IDMask(NodeBuilder):
+class IDMask(BaseNode):
     """
     Create a matte from an object or material index pass
 
@@ -591,7 +591,7 @@ class IDMask(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class IndexSwitch(NodeBuilder):
+class IndexSwitch(BaseNode):
     """
     Choose between an arbitrary number of values with an index
 
@@ -776,7 +776,7 @@ class IndexSwitch(NodeBuilder):
         self.node.data_type = value
 
 
-class Levels(NodeBuilder):
+class Levels(BaseNode):
     """
     Compute average and standard deviation of pixel values
 
@@ -836,7 +836,7 @@ class Levels(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Mix(NodeBuilder):
+class Mix(BaseNode):
     """
     Mix values by a factor
 
@@ -1111,7 +1111,7 @@ class Mix(NodeBuilder):
         self.node.clamp_result = value
 
 
-class RGBToBW(NodeBuilder):
+class RGBToBW(BaseNode):
     """
     Convert RGB input into grayscale using luminance
 
@@ -1156,7 +1156,7 @@ class RGBToBW(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class RelativeToPixel(NodeBuilder):
+class RelativeToPixel(BaseNode):
     """
     Converts values that are relative to the image size to be in terms of pixels
 
@@ -1267,7 +1267,7 @@ class RelativeToPixel(NodeBuilder):
         self.node.reference_dimension = value
 
 
-class SeparateColor(NodeBuilder):
+class SeparateColor(BaseNode):
     """
     Split an image into its composite color channels
 
@@ -1372,7 +1372,7 @@ class SeparateColor(NodeBuilder):
         self.node.ycc_mode = value
 
 
-class SetAlpha(NodeBuilder):
+class SetAlpha(BaseNode):
     """
     Add an alpha channel to an image
 
@@ -1448,7 +1448,7 @@ class SetAlpha(NodeBuilder):
         return cls(image=image, alpha=alpha, type="Replace Alpha")
 
 
-class Split(NodeBuilder):
+class Split(BaseNode):
     """
     Combine two images for side-by-side display. Typically used in combination with a Viewer node
 
@@ -1522,7 +1522,7 @@ class Split(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Switch(NodeBuilder):
+class Switch(BaseNode):
     """
     Switch between two images using a checkbox
 
@@ -1584,7 +1584,7 @@ class Switch(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class SwitchView(NodeBuilder):
+class SwitchView(BaseNode):
     """
     Combine the views (left and right) into a single stereo 3D output
 

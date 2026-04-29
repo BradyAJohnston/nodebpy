@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     ColorSocket,
     FloatSocket,
@@ -17,7 +17,7 @@ from ...types import (
 )
 
 
-class Brightnesscontrast(NodeBuilder):
+class Brightnesscontrast(BaseNode):
     """
     Control the brightness and contrast of the input color
 
@@ -79,7 +79,7 @@ class Brightnesscontrast(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class Huesaturationvalue(NodeBuilder):
+class Huesaturationvalue(BaseNode):
     """
     Apply a color transformation in the HSV color model
 
@@ -161,7 +161,7 @@ class Huesaturationvalue(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class InvertColor(NodeBuilder):
+class InvertColor(BaseNode):
     """
     Invert a color, producing a negative
 
@@ -216,7 +216,7 @@ class InvertColor(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class LightFalloff(NodeBuilder):
+class LightFalloff(BaseNode):
     """
     Manipulate how light intensity decreases over distance. Typically used for non-physically-based effects; in reality light always falls off quadratically
 

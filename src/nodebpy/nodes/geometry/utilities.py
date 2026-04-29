@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, SocketAccessor, ColorSocket
+from ...builder import BaseNode as BaseNode, SocketAccessor, ColorSocket
 
 from ...types import (
     InputColor,
 )
 
 
-class Reroute(NodeBuilder):
+class Reroute(BaseNode):
     """
     A single-socket organization tool that supports one input and multiple outputs
 

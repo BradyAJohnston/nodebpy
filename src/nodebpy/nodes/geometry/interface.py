@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     BooleanSocket,
     FloatSocket,
@@ -37,7 +37,7 @@ from ...types import (
 )
 
 
-class DialGizmo(NodeBuilder):
+class DialGizmo(BaseNode):
     """
     Show a dial gizmo in the viewport for a value
 
@@ -129,7 +129,7 @@ class DialGizmo(NodeBuilder):
         self.node.color_id = value
 
 
-class EnableOutput(NodeBuilder):
+class EnableOutput(BaseNode):
     """
     Either pass through the input value or output the fallback value
 
@@ -372,7 +372,7 @@ class EnableOutput(NodeBuilder):
         self.node.data_type = value
 
 
-class GroupInput(NodeBuilder):
+class GroupInput(BaseNode):
     """
     Expose connected data from inside a node group as inputs to its interface
     """
@@ -400,7 +400,7 @@ class GroupInput(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class GroupOutput(NodeBuilder):
+class GroupOutput(BaseNode):
     """
     Output data from inside of a node group
     """
@@ -436,7 +436,7 @@ class GroupOutput(NodeBuilder):
         self.node.is_active_output = value
 
 
-class LinearGizmo(NodeBuilder):
+class LinearGizmo(BaseNode):
     """
     Show a linear gizmo in the viewport for a value
 
@@ -518,7 +518,7 @@ class LinearGizmo(NodeBuilder):
         self.node.draw_style = value
 
 
-class TransformGizmo(NodeBuilder):
+class TransformGizmo(BaseNode):
     """
     Show a transform gizmo in the viewport
 
@@ -670,7 +670,7 @@ class TransformGizmo(NodeBuilder):
         self.node.use_scale_z = value
 
 
-class Warning(NodeBuilder):
+class Warning(BaseNode):
     """
     Create custom warnings in node groups
 

@@ -17,7 +17,7 @@ from nodebpy.builder._utils import _SocketLike
 if TYPE_CHECKING:
     from .manual import EvaluateClosure
 
-from nodebpy.builder import BaseNode as NodeBuilder
+from nodebpy.builder import BaseNode as BaseNode
 from nodebpy.builder import ClosureSocket, DynamicInputsMixin
 from nodebpy.builder import Socket as SocketLinker
 from nodebpy.builder.accessor import SocketAccessor
@@ -32,7 +32,7 @@ from ...types import (
 )
 
 
-class BaseZone(DynamicInputsMixin, NodeBuilder, ABC):
+class BaseZone(DynamicInputsMixin, BaseNode, ABC):
     @property
     @abstractmethod
     def _items_node(
@@ -61,7 +61,7 @@ class BaseZone(DynamicInputsMixin, NodeBuilder, ABC):
         return SocketLinker(self.node.outputs[-2])
 
 
-class BaseZoneInput(BaseZone, NodeBuilder, ABC):
+class BaseZoneInput(BaseZone, BaseNode, ABC):
     """Base class for zone input nodes"""
 
     node: bpy.types.GeometryNodeSimulationInput | bpy.types.GeometryNodeRepeatInput
@@ -86,7 +86,7 @@ class BaseZoneInput(BaseZone, NodeBuilder, ABC):
         return self.i[item.name]
 
 
-class BaseZoneOutput(BaseZone, NodeBuilder, ABC):
+class BaseZoneOutput(BaseZone, BaseNode, ABC):
     """Base class for zone output nodes"""
 
     node: bpy.types.GeometryNodeSimulationOutput | bpy.types.GeometryNodeRepeatOutput
@@ -497,7 +497,7 @@ def _sync_closure_items(
         item.structure_type = source_item.structure_type
 
 
-class ClosureInput(NodeBuilder):
+class ClosureInput(BaseNode):
     """
     Closure Input node
     """
@@ -529,7 +529,7 @@ class ClosureInput(NodeBuilder):
         return _get_socket_linker(self.node.outputs[-2])
 
 
-class ClosureOutput(NodeBuilder):
+class ClosureOutput(BaseNode):
     """
     Closure Output node
 

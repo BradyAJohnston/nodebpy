@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator, cast, overload
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, cast, overload
 
 import bpy
 from bpy.types import (
     GeometryNodeTree,
+    Node,
     NodeLink,
     NodeSocket,
     NodeSocketBool,
@@ -29,38 +30,32 @@ from bpy.types import (
 )
 from mathutils import Euler
 
+from nodebpy.builder import SocketError
+
 from ..types import SOCKET_TYPES
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
 from ._utils import _NodeLike, _SocketLike
-from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
-from .tree import TreeBuilder
 
 if TYPE_CHECKING:
     from ..nodes.geometry.converter import IntegerMath, Math
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
+    from .tree import TreeBuilder
 
 
-class Socket(_SocketLike, OperatorMixin, LinkingMixin):
-    """Wraps a single Blender NodeSocket, providing operator overloads and linking.
-
-    Returned by ``SocketAccessor.get()`` / ``node.inputs[...]`` / ``node.outputs[...]``.
-    Type-specific subclasses (``VectorSocket``, ``ColorSocket``, ``IntegerSocket``)
-    are selected automatically via the registry.
-    """
-
+class BaseSocket:
     def __init__(self, socket: NodeSocket):
         assert socket.node is not None
+        self._tree = None
         self.socket = socket
-        self.node = socket.node
-        self._default_output_id = socket.identifier
-        self._tree = TreeBuilder(cast(NodeTree, socket.node.id_data))
+        self.interface_socket: bpy.types.NodeTreeInterfaceSocket | None = None
 
     @property
-    def tree(self) -> TreeBuilder:
-        return self._tree
+    def node(self) -> Node:
+        assert self.socket.node is not None
+        return self.socket.node
 
     @property
     def links(self) -> list[NodeLink]:
@@ -76,14 +71,6 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
         return self.socket
 
     @property
-    def o(self) -> SocketAccessor:
-        return SocketAccessor([self.socket], "output")
-
-    @property
-    def i(self) -> SocketAccessor:
-        return SocketAccessor([self.socket], "input")
-
-    @property
     def type(self) -> SOCKET_TYPES:
         return self.socket.type  # type: ignore
 
@@ -94,6 +81,36 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
     @property
     def name(self) -> str:
         return str(self.socket.name)
+
+    @property
+    def _is_geometry_tree(self) -> bool:
+        return self.tree.tree.bl_idname == "GeometryNodeTree"
+
+    @property
+    def tree(self) -> TreeBuilder:
+        if self._tree is None:
+            from .tree import TreeBuilder
+
+            self._tree = TreeBuilder(cast(NodeTree, self.node.id_data))
+
+        return self._tree
+
+
+class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
+    """Wraps a single Blender NodeSocket, providing operator overloads and linking.
+
+    Returned by ``SocketAccessor.get()`` / ``node.inputs[...]`` / ``node.outputs[...]``.
+    Type-specific subclasses (``VectorSocket``, ``ColorSocket``, ``IntegerSocket``)
+    are selected automatically via the registry.
+
+    Properties:
+    ----------
+    tree : TreeBuilder
+        The tree this socket belongs to.
+    socket : NodeSocket
+        The underlying Blender NodeSocket.
+
+    """
 
     # -- Dispatch methods: per-type math logic. --
     # Called by OperatorMixin operators via _get_socket_linker().
@@ -129,7 +146,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
 
     def _dispatch_compare(self, other: Any, operation: str) -> "Compare | Math":
         """Scalar comparison dispatch."""
-        if isinstance(self._tree.tree, GeometryNodeTree):
+        if isinstance(self.tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
             return getattr(Compare.float, operation)(self.socket, other)
@@ -180,7 +197,7 @@ class Socket(_SocketLike, OperatorMixin, LinkingMixin):
 # ---------------------------------------------------------------------------
 
 
-class _VectorMixin:
+class _VectorMixin(BaseSocket):
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketVector
@@ -307,7 +324,7 @@ class _VectorMixin:
         return VectorMath.floor(divided)
 
     def _dispatch_compare(self, other: Any, operation: str) -> "BaseNode":
-        if isinstance(self._tree.tree, GeometryNodeTree):
+        if self._is_geometry_tree:
             from ..nodes.geometry.manual import Compare
 
             return getattr(Compare.vector, operation)(self.socket, other)
@@ -341,31 +358,34 @@ _SEPARATE_COLOR_IDNAMES = (
 )
 
 
-class _ColorMixin:
+class _ColorMixin(BaseSocket):
     """Color-specific properties (.r, .g, .b, .a)."""
 
     socket: NodeSocketColor
-    _tree: TreeBuilder
-
-    def _get_separate_color_cls(self):
-        tree_type = self._tree.tree.bl_idname
-        if tree_type == "ShaderNodeTree":
-            from ..nodes.shader.converter import SeparateColor
-        elif tree_type == "CompositorNodeTree":
-            from ..nodes.compositor.converter import SeparateColor
-        else:
-            from ..nodes.geometry.converter import SeparateColor
-        return SeparateColor
 
     def _separated_channel(self, channel: str) -> Socket:
         assert self.socket.links is not None
+        tree_type = self.tree.tree.bl_idname
+
         for link in self.socket.links:
             assert link.to_node is not None
             if link.to_node.bl_idname in _SEPARATE_COLOR_IDNAMES:
                 return Socket(link.to_node.outputs[channel])
 
-        SeparateColor = self._get_separate_color_cls()
-        return SeparateColor(self).o._get(channel.lower())
+        if tree_type == "ShaderNodeTree":
+            from ..nodes.shader.converter import SeparateColor
+
+            sep = SeparateColor(self.socket)
+        elif tree_type == "CompositorNodeTree":
+            from ..nodes.compositor.converter import SeparateColor
+
+            sep = SeparateColor(self.socket)
+        else:
+            from ..nodes.geometry.converter import SeparateColor
+
+            sep = SeparateColor(self.socket)
+
+        return sep.o[channel.lower()]
 
     @property
     def r(self) -> Socket:
@@ -397,25 +417,26 @@ class _ColorMixin:
         "CompositorNodeCombineColor",
     )
 
-    def _get_combine_color_cls(self):
-        tree_type = self._tree.tree.bl_idname
-        if tree_type == "ShaderNodeTree":
-            from ..nodes.shader.converter import CombineColor
-        elif tree_type == "CompositorNodeTree":
-            from ..nodes.compositor.converter import CombineColor
-        else:
-            from ..nodes.geometry.converter import CombineColor
-        return CombineColor
-
-    def _get_or_create_combine_color(self) -> "bpy.types.Node":
+    def _get_or_create_combine_color(self) -> "Node":
         if self.socket.links:
             for link in self.socket.links:
                 assert link.from_node
                 if link.from_node.bl_idname in self._COMBINE_COLOR_IDNAMES:
                     return link.from_node
-        CombineColor = self._get_combine_color_cls()
-        combine = CombineColor()
-        self._tree.link(combine.node.outputs[0], self.socket)
+
+        if self.tree.tree.bl_idname == "CompositorNodeTree":
+            from ..nodes.compositor import CombineColor
+
+            combine = CombineColor()
+        elif self.tree.tree.bl_idname == "ShaderNodeTree":
+            from ..nodes.shader import CombineColor
+
+            combine = CombineColor()
+        else:
+            from ..nodes.geometry import CombineColor
+
+            combine = CombineColor()
+        self.tree.link(combine.node.outputs[0], self.socket)
         return combine.node
 
     @overload
@@ -477,10 +498,11 @@ class _ColorMixin:
             return vector_method(*values)
 
 
-class _IntegerMixin:
+class _IntegerMixin(BaseSocket):
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""
 
     socket: NodeSocketInt
+    tree: TreeBuilder
     _tree: TreeBuilder
 
     @property
@@ -490,10 +512,6 @@ class _IntegerMixin:
     @default_value.setter
     def default_value(self, value: int) -> None:
         self.socket.default_value = value
-
-    @property
-    def _is_geometry_tree(self) -> bool:
-        return self._tree.tree.bl_idname == "GeometryNodeTree"
 
     @staticmethod
     def _is_integer_socket(value: Any) -> bool:
@@ -534,7 +552,7 @@ class _IntegerMixin:
         return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
 
     def _dispatch_compare(self, other: Any, operation: str) -> "Compare | Math":
-        if isinstance(self._tree.tree, GeometryNodeTree):
+        if self._is_geometry_tree:
             from ..nodes.geometry.manual import Compare
 
             return getattr(Compare.integer, operation)(self.socket, other)
@@ -565,7 +583,7 @@ class _IntegerMixin:
 # ---------------------------------------------------------------------------
 
 
-class _BooleanMixin:
+class _BooleanMixin(BaseSocket):
     """Boolean-specific operator overrides — routes directly through BooleanMath."""
 
     socket: NodeSocketBool
@@ -589,11 +607,10 @@ class _BooleanMixin:
         return BooleanMath.l_and(self.socket, other)
 
 
-class _RotationMixin:
+class _RotationMixin(BaseSocket):
     """Rotation-specific properties (.w, .x, .y, .z) via RotationToQuaternion."""
 
     socket: NodeSocketRotation
-    _tree: TreeBuilder
 
     @property
     def default_value(self) -> Euler:
@@ -640,11 +657,10 @@ class _RotationMixin:
         return InvertRotation._find_or_create_linked(self.socket).o.rotation
 
 
-class _FloatMixin:
+class _FloatMixin(BaseSocket):
     """Float-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketFloat
-    _tree: TreeBuilder
 
     @property
     def default_value(self) -> float:
@@ -655,11 +671,10 @@ class _FloatMixin:
         self.socket.default_value = value
 
 
-class _MatrixMixin:
+class _MatrixMixin(BaseSocket):
     """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
 
     socket: NodeSocketMatrix
-    _tree: TreeBuilder
 
     @property
     def translation(self) -> "VectorSocket":

@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as NodeBuilder, SocketAccessor
+from ...builder import BaseNode as BaseNode, SocketAccessor
 
 
-class Group(NodeBuilder):
+class Group(BaseNode):
     """
     Group node
     """

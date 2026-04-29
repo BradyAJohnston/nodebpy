@@ -1,4 +1,4 @@
-from . import diagram, nodes, sockets
+from . import diagram, nodes
 from .builder import (
     TreeBuilder,
 )
@@ -9,7 +9,6 @@ __all__ = [
     "compositor",
     "geometry",
     "shader",
-    "sockets",
     "diagram",
     "TreeBuilder",
 ]

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import bpy
 
 from ...builder import (
-    BaseNode as NodeBuilder,
+    BaseNode as BaseNode,
     SocketAccessor,
     ColorSocket,
     FloatSocket,
@@ -19,7 +19,7 @@ from ...types import (
 )
 
 
-class Bump(NodeBuilder):
+class Bump(BaseNode):
     """
     Generate a perturbed normal from a height texture for bump mapping. Typically used for faking highly detailed surfaces
 
@@ -111,7 +111,7 @@ class Bump(NodeBuilder):
         self.node.invert = value
 
 
-class Displacement(NodeBuilder):
+class Displacement(BaseNode):
     """
     Displace the surface along the surface normal
 
@@ -195,7 +195,7 @@ class Displacement(NodeBuilder):
         self.node.space = value
 
 
-class Mapping(NodeBuilder):
+class Mapping(BaseNode):
     """
     Transform the input vector by applying translation, rotation, and scale
 
@@ -333,7 +333,7 @@ class Mapping(NodeBuilder):
         self.node.vector_type = value
 
 
-class Normal(NodeBuilder):
+class Normal(BaseNode):
     """
     Generate a normal vector and a dot product
 
@@ -382,7 +382,7 @@ class Normal(NodeBuilder):
         self._establish_links(**key_args)
 
 
-class NormalMap(NodeBuilder):
+class NormalMap(BaseNode):
     """
     Generate a perturbed normal from an RGB normal map image. Typically used for faking highly detailed surfaces
 
@@ -484,7 +484,7 @@ class NormalMap(NodeBuilder):
         self.node.base = value
 
 
-class VectorDisplacement(NodeBuilder):
+class VectorDisplacement(BaseNode):
     """
     Displace the surface along an arbitrary direction
 
@@ -556,7 +556,7 @@ class VectorDisplacement(NodeBuilder):
         self.node.space = value
 
 
-class VectorTransform(NodeBuilder):
+class VectorTransform(BaseNode):
     """
     Convert a vector, point, or normal between world, camera, and object coordinate space
 

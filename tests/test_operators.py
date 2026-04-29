@@ -1,6 +1,6 @@
-"""Tests for NodeBuilder operator overloads.
+"""Tests for BaseNode operator overloads.
 
-Tests arithmetic, comparison, boolean, and unary operators on NodeBuilder.
+Tests arithmetic, comparison, boolean, and unary operators on BaseNode.
 """
 
 import itertools
@@ -12,7 +12,6 @@ import nodebpy
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
-from nodebpy import sockets as s
 
 
 class TestPowerOperator:
@@ -765,11 +764,8 @@ class TestComplexExpressions:
     def test_operators_into_set_position(self):
         """Combine operators with >> chaining into a full node tree."""
         with TreeBuilder("TestOpsSetPos") as tree:
-            with tree.inputs:
-                i_geo = s.SocketGeometry()
-            with tree.outputs:
-                o_geo = s.SocketGeometry()
-
+            i_geo = tree.inputs.geometry()
+            o_geo = tree.outputs.geometry()
             pos = g.Position()
             offset = (pos**2) % (1, 1, 1)
             _ = i_geo >> g.SetPosition(offset=offset) >> o_geo
@@ -788,9 +784,7 @@ class TestComplexExpressions:
     def test_full_workflow(self):
         """A complete workflow using many of the new operators."""
         with TreeBuilder("TestFullWorkflow") as tree:
-            with tree.outputs:
-                out = s.SocketGeometry()
-
+            out = tree.outputs.geometry()
             count = g.Integer(100)
             pos = g.Position()
 
@@ -923,8 +917,7 @@ class TestMatrixMultiplcation:
     def test_matrix_multiplication(self):
         """Test matrix multiplication."""
         with TreeBuilder("MatrixMultiplication") as tree:
-            with tree.outputs:
-                out = s.SocketGeometry()
+            out = tree.outputs.geometry()
             cube = g.Cube()
             _ = (
                 g.SetPosition(
