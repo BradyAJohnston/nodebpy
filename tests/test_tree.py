@@ -1,5 +1,7 @@
 import bpy
+from bpy.types import FunctionNodeInputInt, GeometryNodeTree
 
+import nodebpy as nb
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 
@@ -126,3 +128,16 @@ def test_panel_context_clears_after_exit():
         outside = next(i for i in items if getattr(i, "name", None) == "Outside")
         assert inside.parent == panel
         assert outside.parent != panel
+
+
+def test_tree_decorator():
+    """Test that the tree decorator works correctly."""
+
+    @nb.geometry_tree("Simple Points Group")
+    def new_group(tree: nb.TreeBuilder[GeometryNodeTree], count: int):
+        g.Integer(count) >> g.Points() >> tree.outputs.geometry()
+
+    tree = new_group(100)
+    node: FunctionNodeInputInt = tree.nodes["Integer"]  # ty: ignore
+    assert node.integer == 100
+    assert len(tree.nodes) == 3

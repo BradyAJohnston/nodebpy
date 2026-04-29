@@ -1,6 +1,18 @@
 from __future__ import annotations
 
-from typing import Any, ClassVar, Generic, Literal, Self, TypeVar, cast
+from functools import wraps
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Concatenate,
+    Generic,
+    Literal,
+    ParamSpec,
+    Self,
+    TypeVar,
+    cast,
+)
 
 import bpy
 from bpy.types import (
@@ -583,6 +595,7 @@ class OutputInterfaceContext(DirectionalContext):
 
 
 _TreeT = TypeVar("_TreeT", bound=NodeTree)
+_P = ParamSpec("_P")
 
 
 class TreeBuilder(Generic[_TreeT]):
@@ -842,3 +855,84 @@ class MaterialBuilder(TreeBuilder):
             fake_user=fake_user,
             ignore_visibility=ignore_visibility,
         )
+
+
+def geometry_tree(
+    name: GeometryNodeTree | str = "Geometry Nodes",
+    *,
+    collapse: bool = False,
+    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+    fake_user: bool = False,
+) -> Callable[
+    [Callable[Concatenate[TreeBuilder, _P], None]], Callable[_P, GeometryNodeTree]
+]:
+    """Decorator that runs the function inside a geometry node tree context and returns the built tree."""
+
+    def decorator(
+        fn: Callable[Concatenate[TreeBuilder, _P], None],
+    ) -> Callable[_P, GeometryNodeTree]:
+        @wraps(fn)
+        def wrapper(*args: _P.args, **kwargs: _P.kwargs) -> GeometryNodeTree:
+            with TreeBuilder.geometry(
+                name, collapse=collapse, arrange=arrange, fake_user=fake_user
+            ) as tree:
+                fn(tree, *args, **kwargs)
+            return tree.tree
+
+        return wrapper
+
+    return decorator
+
+
+def shader_tree(
+    name: ShaderNodeTree | str = "Shader Nodes",
+    *,
+    collapse: bool = False,
+    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+    fake_user: bool = False,
+) -> Callable[
+    [Callable[Concatenate[TreeBuilder, _P], None]], Callable[_P, ShaderNodeTree]
+]:
+    """Decorator that runs the function inside a shader node tree context and returns the built tree."""
+
+    def decorator(
+        fn: Callable[Concatenate[TreeBuilder, _P], None],
+    ) -> Callable[_P, ShaderNodeTree]:
+        @wraps(fn)
+        def wrapper(*args: _P.args, **kwargs: _P.kwargs) -> ShaderNodeTree:
+            with TreeBuilder.shader(
+                name, collapse=collapse, arrange=arrange, fake_user=fake_user
+            ) as tree:
+                fn(tree, *args, **kwargs)
+            return tree.tree
+
+        return wrapper
+
+    return decorator
+
+
+def compositor_tree(
+    name: CompositorNodeTree | str = "Compositor Nodes",
+    *,
+    collapse: bool = False,
+    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+    fake_user: bool = False,
+) -> Callable[
+    [Callable[Concatenate[TreeBuilder, _P], None]], Callable[_P, CompositorNodeTree]
+]:
+    """Decorator that runs the function inside a compositor node tree context and returns the built tree."""
+
+    def decorator(
+        fn: Callable[Concatenate[TreeBuilder, _P], None],
+    ) -> Callable[_P, CompositorNodeTree]:
+        @wraps(fn)
+        def wrapper(*args: _P.args, **kwargs: _P.kwargs) -> CompositorNodeTree:
+            with TreeBuilder.compositor(
+                name, collapse=collapse, arrange=arrange, fake_user=fake_user
+            ) as tree:
+                fn(tree, *args, **kwargs)
+            return tree.tree
+
+        return wrapper
+
+    return decorator

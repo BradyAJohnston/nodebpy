@@ -37,6 +37,9 @@ from .tree import (
     PanelContext,
     SocketContext,
     TreeBuilder,
+    compositor_tree,
+    geometry_tree,
+    shader_tree,
 )
 
 __all__ = [
@@ -79,6 +82,10 @@ __all__ = [
     "PanelContext",
     "InputInterfaceContext",
     "OutputInterfaceContext",
+    # Tree decorators
+    "geometry_tree",
+    "shader_tree",
+    "compositor_tree",
     # Utilities
     "SocketError",
     "normalize_name",
